@@ -7,7 +7,8 @@ var router = express.Router();
 const initWebRouter = (app) => {
     //API Hùng
     router.get('/', ManagerFamilyTree.AllReligion)
-    
+    router.get('/InforMember', ManagerFamilyTree.informationMember)
+
     //API tuấn
 
     //API Nhật anh
