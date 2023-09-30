@@ -1,6 +1,5 @@
 const db = require("../../Models/ConnectDB")
 
-//Ví dụ
 function getAllReligion() {
     return new Promise((resolve, reject) => {
         let query = "SELECT * FROM religion";
@@ -15,8 +14,24 @@ function getAllReligion() {
         });
     });
 }
+function getAllNationality() {
+    return new Promise((resolve, reject) => {
+        let query = "select * from nationality";
+        db.connection.query(query, (err, result) => {
+            if (err) {
+                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                reject(err);
+            } else {
+                console.log("result" + result);
+                resolve(result);
+            }
+        });
+    });
+}
 
-function getInforMember(id) {    
+
+
+function getInforMember(id) {
     return new Promise((resolve, reject) => {
         let query = `select * from familymember where MemberID = '${id}'`;
         db.connection.query(query, (err, result) => {
@@ -87,5 +102,5 @@ function getEventMember(id) {
 
 
 module.exports = {
-    getAllReligion, getInforMember, getContactMember, getEducationMember, getJobMember, getEventMember
+    getAllReligion, getInforMember, getContactMember, getEducationMember, getJobMember, getEventMember, getAllNationality
 }

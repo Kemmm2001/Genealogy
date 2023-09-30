@@ -118,7 +118,7 @@ CREATE TABLE `contact` (
   PRIMARY KEY (`ContactID`),
   KEY `contact_idx` (`MemberID`),
   CONSTRAINT `contact` FOREIGN KEY (`MemberID`) REFERENCES `familymember` (`MemberID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -127,6 +127,7 @@ CREATE TABLE `contact` (
 
 LOCK TABLES `contact` WRITE;
 /*!40000 ALTER TABLE `contact` DISABLE KEYS */;
+INSERT INTO `contact` VALUES (1,1,'Yên thủy-hòa bình','0123456789','0123456788','gmai.com','gmai1l.com','123','123');
 /*!40000 ALTER TABLE `contact` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -147,7 +148,7 @@ CREATE TABLE `education` (
   PRIMARY KEY (`EducationID`),
   KEY `education_idx` (`MemberID`),
   CONSTRAINT `education` FOREIGN KEY (`MemberID`) REFERENCES `familymember` (`MemberID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -156,6 +157,7 @@ CREATE TABLE `education` (
 
 LOCK TABLES `education` WRITE;
 /*!40000 ALTER TABLE `education` DISABLE KEYS */;
+INSERT INTO `education` VALUES (1,1,'hùng1','hùng đã học ở đây','2001-02-26 00:00:00','2001-02-26 00:00:00');
 /*!40000 ALTER TABLE `education` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -214,7 +216,7 @@ CREATE TABLE `eventmember` (
   PRIMARY KEY (`EventMemberID`),
   KEY `eventMember_idx` (`MemberID`),
   CONSTRAINT `eventMember` FOREIGN KEY (`MemberID`) REFERENCES `familymember` (`MemberID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -223,6 +225,7 @@ CREATE TABLE `eventmember` (
 
 LOCK TABLES `eventmember` WRITE;
 /*!40000 ALTER TABLE `eventmember` DISABLE KEYS */;
+INSERT INTO `eventmember` VALUES (1,'Event test','123','123','2001-02-26 00:00:00','2001-02-26 00:00:00',1);
 /*!40000 ALTER TABLE `eventmember` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -300,18 +303,15 @@ CREATE TABLE `familymember` (
   `GraveSite` text,
   `Note` longtext NOT NULL,
   `Generation` int DEFAULT NULL,
-  `RoleID` int DEFAULT NULL,
   `CodeID` int DEFAULT NULL,
   PRIMARY KEY (`MemberID`),
-  KEY `Role_idx` (`RoleID`),
   KEY `religion_idx` (`ReligionID`),
   KEY `Nationality_idx` (`NationalityID`),
   KEY `FamilyTree_idx` (`CodeID`),
   CONSTRAINT `FamilyTree` FOREIGN KEY (`CodeID`) REFERENCES `familytree` (`CodeID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `Nationality` FOREIGN KEY (`NationalityID`) REFERENCES `nationality` (`NationalityID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `religion` FOREIGN KEY (`ReligionID`) REFERENCES `religion` (`ReligionID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `Role` FOREIGN KEY (`RoleID`) REFERENCES `role` (`RoleID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `religion` FOREIGN KEY (`ReligionID`) REFERENCES `religion` (`ReligionID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -320,6 +320,7 @@ CREATE TABLE `familymember` (
 
 LOCK TABLES `familymember` WRITE;
 /*!40000 ALTER TABLE `familymember` DISABLE KEYS */;
+INSERT INTO `familymember` VALUES (1,'Test1','NichName1',_binary '',1,'Hòa Bình',1,1,'2001-02-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',_binary '',NULL,NULL,NULL,'Note1',1,123);
 /*!40000 ALTER TABLE `familymember` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -377,6 +378,7 @@ CREATE TABLE `familytree` (
 
 LOCK TABLES `familytree` WRITE;
 /*!40000 ALTER TABLE `familytree` DISABLE KEYS */;
+INSERT INTO `familytree` VALUES (123,'Hùng');
 /*!40000 ALTER TABLE `familytree` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -440,7 +442,7 @@ CREATE TABLE `job` (
   PRIMARY KEY (`JobID`),
   KEY `JobID_idx` (`MemberID`),
   CONSTRAINT `Job` FOREIGN KEY (`MemberID`) REFERENCES `familymember` (`MemberID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -449,6 +451,7 @@ CREATE TABLE `job` (
 
 LOCK TABLES `job` WRITE;
 /*!40000 ALTER TABLE `job` DISABLE KEYS */;
+INSERT INTO `job` VALUES (1,1,'123','123','1','Test1','2001-02-26 00:00:00','2001-02-26 00:00:00');
 /*!40000 ALTER TABLE `job` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -476,6 +479,32 @@ CREATE TABLE `memberphoto` (
 LOCK TABLES `memberphoto` WRITE;
 /*!40000 ALTER TABLE `memberphoto` DISABLE KEYS */;
 /*!40000 ALTER TABLE `memberphoto` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `memberrole`
+--
+
+DROP TABLE IF EXISTS `memberrole`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `memberrole` (
+  `MemberID` int DEFAULT NULL,
+  `RoleID` int DEFAULT NULL,
+  KEY `roleMember_idx` (`MemberID`),
+  KEY `RoleID_idx` (`RoleID`),
+  CONSTRAINT `RoleID` FOREIGN KEY (`RoleID`) REFERENCES `role` (`RoleID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `roleMember` FOREIGN KEY (`MemberID`) REFERENCES `familymember` (`MemberID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `memberrole`
+--
+
+LOCK TABLES `memberrole` WRITE;
+/*!40000 ALTER TABLE `memberrole` DISABLE KEYS */;
+/*!40000 ALTER TABLE `memberrole` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -675,4 +704,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-29 17:06:27
+-- Dump completed on 2023-09-30 20:54:34
