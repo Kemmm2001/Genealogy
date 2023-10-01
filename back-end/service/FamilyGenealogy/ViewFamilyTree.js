@@ -8,12 +8,26 @@ function getAllReligion() {
                 console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
                 reject(err);
             } else {
-                console.log("result" + result);
                 resolve(result);
             }
         });
     });
 }
+
+function getAllMemberRole(id) {
+    return new Promise((resolve, reject) => {
+        let query = `SELECT * FROM memberrole where MemberID = '${id}'`;
+        db.connection.query(query, (err, result) => {
+            if (err) {
+                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+}
+
 function getAllNationality() {
     return new Promise((resolve, reject) => {
         let query = "select * from nationality";
@@ -22,7 +36,6 @@ function getAllNationality() {
                 console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
                 reject(err);
             } else {
-                console.log("result" + result);
                 resolve(result);
             }
         });
@@ -101,6 +114,65 @@ function getEventMember(id) {
 }
 
 
+
+function getRoleExist(MemberID, Role) {
+    return new Promise((resolve, reject) => {
+        let query = `SELECT * FROM memberrole
+        where MemberID = ${MemberID} and RoleID = ${Role}`;
+        db.connection.query(query, (err, result) => {
+            if (err) {
+                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+}
+
+async function setRoleMember(MemberId, roleId) {
+    try {
+        let query = `INSERT INTO memberrole (MemberID, RoleID) VALUES ('${MemberId}', '${roleId}')`;
+        db.connection.query(query, (err, result) => {
+            if (err) {
+                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                throw err;
+            } else {
+                console.log('Đã thêm vai trò thành công.');
+            }
+        });
+    } catch (e) {
+        console.error('Lỗi trong quá trình thêm vai trò:', e);
+    }
+}
+
+
+function removePaternalAncestor() {
+    let query = "DELETE FROM memberrole WHERE RoleID = 1";
+    db.connection.query(query, (err, result) => {
+        if (err) {
+            console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+        } else {
+            console.log("remove succesfully")
+        }
+    })
+}
+
+function removeFamilyHead(MemberId) {
+    let query = `DELETE FROM memberrole WHERE MemberID = ${MemberId} and RoleID = 2 `;
+    db.connection.query(query, (err, result) => {
+        if (err) {
+            console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+        } else {
+            console.log("remove succesfully")
+        }
+    })
+}
+
+
+
+
 module.exports = {
-    getAllReligion, getInforMember, getContactMember, getEducationMember, getJobMember, getEventMember, getAllNationality
+    getAllReligion, getInforMember, getContactMember, getEducationMember, getJobMember, getEventMember, getAllNationality, getAllMemberRole,
+    getRoleExist, setRoleMember, removePaternalAncestor, removeFamilyHead
 }

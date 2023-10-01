@@ -12,8 +12,10 @@ const initWebRouter = (app) => {
 
 
     router.get('/', ManagerFamilyTree.AllReligion)
+    router.get('/memberRole', ManagerFamilyTree.AllMemberRole)
     router.get('/InforMember', ManagerFamilyTree.informationMember)
-
+    router.post('/setRole', ManagerFamilyTree.setRole)
+    router.delete('/removeFamilyHead',ManagerFamilyTree.removeRoleFamilyHead)
 
     //API tuấn
 
