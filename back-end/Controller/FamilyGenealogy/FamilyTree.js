@@ -18,6 +18,15 @@ var AllNationality = async (req, res) => {
     }
 }
 
+var AllMemberInGenelogy = async (req, res) => {
+    try {
+
+    } catch (e) {
+
+    }
+}
+
+
 var AllMemberRole = async (req, res) => {
     try {
         let id = req.query.memberId

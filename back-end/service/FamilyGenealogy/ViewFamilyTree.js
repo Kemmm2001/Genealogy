@@ -130,6 +130,48 @@ function getRoleExist(MemberID, Role) {
     });
 }
 
+function turnOffSQL_SAFE_UPDATES() {
+    let query = "SET SQL_SAFE_UPDATES = 0";
+    db.connection.query(query, (err, result) => {
+        if (err) {
+            console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+        } else {
+            console.log("remove succesfully")
+        }
+    })
+}
+
+function turnOnSQL_SAFE_UPDATES() {
+    let query = "SET SQL_SAFE_UPDATES = 1";
+    db.connection.query(query, (err, result) => {
+        if (err) {
+            console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+        } else {
+            console.log("remove succesfully")
+        }
+    })
+}
+
+function setGenerationPaternalAncestor(CodeID) {
+    let query = `update familymember as f inner join memberrole as m
+    on  f.MemberID = m.MemberID
+    set f.generation  = 1
+    where m.RoleID = 1
+    and f.CodeID = ${CodeID}`;
+    db.connection.query(query, (err, result) => {
+        if (err) {
+            console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+        } else {
+            console.log("remove succesfully")
+        }
+    })
+}
+function setAllGenerationMember() {
+    
+}
+
+
+
 async function setRoleMember(MemberId, roleId) {
     try {
         let query = `INSERT INTO memberrole (MemberID, RoleID) VALUES ('${MemberId}', '${roleId}')`;
@@ -174,5 +216,6 @@ function removeFamilyHead(MemberId) {
 
 module.exports = {
     getAllReligion, getInforMember, getContactMember, getEducationMember, getJobMember, getEventMember, getAllNationality, getAllMemberRole,
-    getRoleExist, setRoleMember, removePaternalAncestor, removeFamilyHead
+    getRoleExist, setRoleMember, removePaternalAncestor, removeFamilyHead, turnOnSQL_SAFE_UPDATES, turnOffSQL_SAFE_UPDATES, setGenerationPaternalAncestor
+
 }
