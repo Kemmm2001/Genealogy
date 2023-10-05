@@ -1,7 +1,7 @@
 
 const express = require('express');
 const router = express.Router();
-const pdfController = require('../Controller/pdfController');
+const pdfController = require('../Controller/FamilyGenealogy/pdfController');
 
 router.post('/generate-pdf', async (req, res) => {
   try {
