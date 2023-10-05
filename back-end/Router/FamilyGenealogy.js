@@ -20,7 +20,6 @@ const initWebRouter = (app) => {
     //API tuấn
 
     //API Nhật anh
-
     //Tiền tố đứng trước route
     app.use('/api/v1', router);
 }
