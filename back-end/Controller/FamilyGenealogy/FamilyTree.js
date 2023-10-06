@@ -17,6 +17,16 @@ var AllNationality = async (req, res) => {
         res.send(e);
     }
 }
+// var setGeneration = async (req, res) => {
+//     try {
+//         let memberId = req.body.memberId;    
+//         console.log(memberId) 
+//         await FamilyTreeService.setAllGenerationMember(memberId,1);
+//         res.send("set successfully")
+//     } catch (e) {
+//         res.send(e);
+//     }
+// }
 
 var AllMemberInGenelogy = async (req, res) => {
     try {
@@ -42,6 +52,7 @@ var setRole = async (req, res) => {
     try {
         let memberId = req.body.memberId;
         let roleId = req.body.roleId;
+        let CodeId = req.body.CodeId;
         if (roleId == 2) {
             let existingFamilyHead = await FamilyTreeService.getRoleExist(memberId, 2);
             if (existingFamilyHead.length > 0) {
@@ -57,6 +68,10 @@ var setRole = async (req, res) => {
             } else {
                 await FamilyTreeService.removePaternalAncestor();
                 await FamilyTreeService.setRoleMember(memberId, roleId);
+                await FamilyTreeService.turnOffSQL_SAFE_UPDATES();
+                await FamilyTreeService.ResetAllGenerationMember(CodeId);
+                await FamilyTreeService.turnOnSQL_SAFE_UPDATES();
+                await FamilyTreeService.setAllGenerationMember(memberId, 1);
                 res.send("set success");
             }
         }
@@ -91,5 +106,5 @@ var informationMember = async (req, res) => {
 }
 
 module.exports = {
-    AllReligion, informationMember, AllNationality, AllMemberRole, setRole, removeRoleFamilyHead
+    AllReligion, informationMember, AllNationality, AllMemberRole, setRole, removeRoleFamilyHead,
 };

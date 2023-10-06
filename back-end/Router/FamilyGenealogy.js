@@ -15,11 +15,16 @@ const initWebRouter = (app) => {
     router.get('/memberRole', ManagerFamilyTree.AllMemberRole)
     router.get('/InforMember', ManagerFamilyTree.informationMember)
     router.post('/setRole', ManagerFamilyTree.setRole)
+    // router.post('/setGeneration', ManagerFamilyTree.setGeneration)
     router.delete('/removeFamilyHead',ManagerFamilyTree.removeRoleFamilyHead)
 
     //API tuấn
+   
+
 
     //API Nhật anh
+    
+
     //Tiền tố đứng trước route
     app.use('/api/v1', router);
 }

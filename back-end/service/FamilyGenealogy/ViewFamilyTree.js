@@ -152,12 +152,26 @@ function turnOnSQL_SAFE_UPDATES() {
     })
 }
 
-function setGenerationPaternalAncestor(CodeID) {
-    let query = `update familymember as f inner join memberrole as m
-    on  f.MemberID = m.MemberID
-    set f.generation  = 1
-    where m.RoleID = 1
-    and f.CodeID = ${CodeID}`;
+//Có thể xóa
+// function setGenerationPaternalAncestor(CodeID) {
+//     let query = `update familymember as f inner join memberrole as m
+//     on  f.MemberID = m.MemberID
+//     set f.generation  = 1
+//     where m.RoleID = 1
+//     and f.CodeID = ${CodeID}`;
+//     db.connection.query(query, (err, result) => {
+//         if (err) {
+//             console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+//         } else {
+//             console.log("remove succesfully")
+//         }
+//     })
+// }
+
+function ResetAllGenerationMember(CodeID) {
+    let query = `UPDATE familymember
+    SET Generation = 0
+    where CodeID = ${CodeID}`;
     db.connection.query(query, (err, result) => {
         if (err) {
             console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
@@ -166,9 +180,25 @@ function setGenerationPaternalAncestor(CodeID) {
         }
     })
 }
-function setAllGenerationMember() {
-    
+
+
+function setAllGenerationMember(memberId, generation) {
+    const updateQuery = `update familymember Set Generation =  ${generation}  where MemberID = ${memberId}`;
+    db.connection.query(updateQuery, (err, results) => {
+        if (err) throw err;
+
+        // Tìm tất cả các con của thành viên hiện tại        
+        const findChildrenQuery = `select Member2ID from familyrelationship where Relationship2ID = 7 and   Member1ID = ${memberId} `;
+        db.connection.query(findChildrenQuery, (err, childResults) => {
+            if (err) throw err;
+            // Đối với từng con, thực hiện đệ quy để cập nhật Generation
+            childResults.forEach((child) => {
+                setAllGenerationMember(child.Member2ID, generation + 1);
+            });
+        });
+    });
 }
+
 
 
 
@@ -216,6 +246,6 @@ function removeFamilyHead(MemberId) {
 
 module.exports = {
     getAllReligion, getInforMember, getContactMember, getEducationMember, getJobMember, getEventMember, getAllNationality, getAllMemberRole,
-    getRoleExist, setRoleMember, removePaternalAncestor, removeFamilyHead, turnOnSQL_SAFE_UPDATES, turnOffSQL_SAFE_UPDATES, setGenerationPaternalAncestor
-
+    getRoleExist, setRoleMember, removePaternalAncestor, removeFamilyHead, turnOnSQL_SAFE_UPDATES, turnOffSQL_SAFE_UPDATES,
+    setAllGenerationMember,ResetAllGenerationMember
 }
