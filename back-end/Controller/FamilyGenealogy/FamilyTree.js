@@ -30,7 +30,11 @@ var AllNationality = async (req, res) => {
 
 var AllMemberInGenelogy = async (req, res) => {
     try {
-
+        let memberID = req.query.memberID;
+        console.log("đã vào");
+        await FamilyTreeService.ViewFamilyTree(memberID, (familyData) => {
+            res.json(familyData);
+        });
     } catch (e) {
 
     }
@@ -106,5 +110,5 @@ var informationMember = async (req, res) => {
 }
 
 module.exports = {
-    AllReligion, informationMember, AllNationality, AllMemberRole, setRole, removeRoleFamilyHead,
+    AllReligion, informationMember, AllNationality, AllMemberRole, setRole, removeRoleFamilyHead,AllMemberInGenelogy
 };

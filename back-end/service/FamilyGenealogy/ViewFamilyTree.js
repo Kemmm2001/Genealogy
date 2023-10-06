@@ -198,8 +198,108 @@ function setAllGenerationMember(memberId, generation) {
         });
     });
 }
+// function ViewFamilyTree(memberId, callback) {
+//     const familyData = {
+//         name: '',
+//         birthDate: '',
+//         generation: 0,
+//         Marriagerelationship: 0,
+//         children: []
+//     };
 
+//     // Truy vấn thông tin của thành viên
+//     const memberQuery = `SELECT * FROM familymember WHERE MemberID = ${memberId}`;
+//     db.query(memberQuery, (err, memberResult) => {
+//         if (err) throw err;
 
+//         if (memberResult.length === 1) {
+//             const member = memberResult[0];
+//             familyData.name = member.MemberName;
+//             familyData.birthDate = member.Dob;
+//             familyData.generation = member.Generation;
+
+//             // Truy vấn thông tin quan hệ hôn nhân
+//             const marriageQuery = `select Relationship2ID from familyrelationship
+//             where Member1ID = ${memberId}
+//             AND Relationship2ID != 7`;
+//             db.query(marriageQuery, (err, marriageResult) => {
+//                 if (err) throw err;
+
+//                 if (marriageResult.length > 0) {
+//                     familyData.Marriagerelationship = 1; // Đã có quan hệ hôn nhân
+//                 }
+
+//                 // Truy vấn thông tin các con của thành viên hiện tại
+//                 const childrenQuery = `SELECT Member2ID FROM familyrelationship WHERE Relationship2ID = 7 AND Member1ID = ${memberId}`;
+//                 db.query(childrenQuery, (err, childrenResult) => {
+//                     if (err) throw err;
+
+//                     const childPromises = childrenResult.map((child) => {
+//                         return new Promise((resolve, reject) => {
+//                             const childId = child.Member2ID;
+//                             fetchFamilyTree(childId, (childData) => {
+//                                 familyData.children.push(childData);
+//                                 resolve();
+//                             });
+//                         });
+//                     });
+
+//                     Promise.all(childPromises)
+//                         .then(() => {
+//                             callback(familyData);
+//                         })
+//                         .catch((error) => {
+//                             throw error;
+//                         });
+//                 });
+//             });
+//         }
+//     });
+// }
+function ViewFamilyTree(memberId, callback) {
+    const familyData = {
+        name: '',
+        birthDate: '',
+        generation: 0,
+        children: []
+    };
+
+    // Truy vấn thông tin của thành viên
+    const memberQuery = `SELECT * FROM familymember WHERE MemberID = ${memberId}`;
+    db.connection.query(memberQuery, (err, memberResult) => {
+        if (err) throw err;
+
+        if (memberResult.length === 1) {
+            const member = memberResult[0];
+            familyData.name = member.MemberName;
+            familyData.birthDate = member.Dob;
+            familyData.generation = member.Generation;
+
+            const childrenQuery = `SELECT Member2ID FROM familyrelationship WHERE Relationship2ID = 7 AND Member1ID = ${memberId}`;
+            db.connection.query(childrenQuery, (err, childrenResult) => {
+                if (err) throw err;
+
+                const childPromises = childrenResult.map((child) => {
+                    return new Promise((resolve, reject) => {
+                        const childId = child.Member2ID;
+                        ViewFamilyTree(childId, (childData) => {
+                            familyData.children.push(childData);
+                            resolve();
+                        });
+                    });
+                });
+
+                Promise.all(childPromises)
+                    .then(() => {
+                        callback(familyData);
+                    })
+                    .catch((error) => {
+                        throw error;
+                    });
+            });
+        }
+    });
+}
 
 
 async function setRoleMember(MemberId, roleId) {
@@ -247,5 +347,5 @@ function removeFamilyHead(MemberId) {
 module.exports = {
     getAllReligion, getInforMember, getContactMember, getEducationMember, getJobMember, getEventMember, getAllNationality, getAllMemberRole,
     getRoleExist, setRoleMember, removePaternalAncestor, removeFamilyHead, turnOnSQL_SAFE_UPDATES, turnOffSQL_SAFE_UPDATES,
-    setAllGenerationMember,ResetAllGenerationMember
+    setAllGenerationMember, ResetAllGenerationMember, ViewFamilyTree
 }
