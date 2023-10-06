@@ -1,5 +1,6 @@
 const express = require('express');
 const ManagerFamilyTree = require('../Controller/FamilyGenealogy/FamilyTree')
+const FamilyMemberManagement = require('../Controller/FamilyGenealogy/FamilyMember')
 var router = express.Router();
 
 
@@ -18,6 +19,9 @@ const initWebRouter = (app) => {
     router.delete('/removeFamilyHead',ManagerFamilyTree.removeRoleFamilyHead)
 
     //API tuấn
+    router.post('/member', FamilyMemberManagement.addMember)
+    router.put('/member', FamilyMemberManagement.updateMember)
+    router.delete('/member', FamilyMemberManagement.deleteMember)
 
     //API Nhật anh
 
