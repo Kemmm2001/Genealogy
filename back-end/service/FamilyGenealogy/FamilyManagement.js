@@ -144,4 +144,72 @@ function createRelationship(member1Id, member2Id, relationship1Id, relationship2
     });
 }
 
-module.exports = { addMember, updateMember, deleteMember, getRelationship, getMember, createRelationship };
+function searchMember(searchTerm) {
+    return new Promise((resolve, reject) => {
+        const query = `
+        SELECT * FROM familymember
+        WHERE MemberName LIKE ? OR Dob = ? OR ...
+        `;
+
+        const values = [`%${searchTerm}%`, searchTerm, /* ... other criteria */];
+
+        db.connection.query(query, values, (err, result) => {
+            if (err) {
+                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+}
+
+function filterMember(filterOptions) {
+    return new Promise((resolve, reject) => {
+      const {
+        name,
+        dob,
+        origin,
+        // Có thể thêm sau
+      } = filterOptions;
+  
+      const conditions = [];
+      const values = [];
+  
+      if (name) {
+        conditions.push('MemberName LIKE ?');
+        values.push(`%${name}%`);
+      }
+  
+      if (dob) {
+        conditions.push('Dob = ?');
+        values.push(dob);
+      }
+  
+      if (origin) {
+        conditions.push('Origin = ?');
+        values.push(origin);
+      }
+  
+  
+      // Xây dựng câu truy vấn SQL
+      let query = 'SELECT * FROM familymember';
+  
+      if (conditions.length > 0) {
+        query += ` WHERE ${conditions.join(' AND ')}`;
+      }
+  
+      // Thực hiện truy vấn SQL
+      db.connection.query(query, values, (err, result) => {
+        if (err) {
+          console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+  }
+  
+
+module.exports = { addMember, updateMember, deleteMember, getRelationship, getMember, createRelationship, searchMember, filterMember };

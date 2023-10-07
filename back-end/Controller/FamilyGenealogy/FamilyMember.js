@@ -169,4 +169,29 @@ var deleteMember = async (req, res) => {
     }
 }
 
-module.exports = { addMember, updateMember, deleteMember };
+var searchMember = async (req, res) => {
+    try {
+        const { searchTerm } = req.body;
+        // Thực hiện tìm kiếm thành viên trong database dựa trên searchTerm
+        const searchResult = await FamilyManagementService.searchMember(searchTerm);
+        res.json(searchResult);
+    } catch (e) {
+        res.send(e);
+    }
+}
+async function filterMember(req, res) {
+    try {
+        const filterOptions = req.body; // Lấy filterOptions từ request body
+        const filteredMembers = await FamilyManagementService.filterMember(filterOptions);
+        
+        res.json({
+            success: true,
+            data: filteredMembers,
+        });
+    } catch (error) {
+        console.error('Lỗi khi lọc thành viên:', error);
+        res.status(500).json({ success: false, message: 'Lỗi khi lọc thành viên' });
+    }
+}
+
+module.exports = { addMember, updateMember, deleteMember, searchMember, filterMember};
