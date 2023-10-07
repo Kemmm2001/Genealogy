@@ -1,3 +1,4 @@
+const e = require("express");
 const FamilyManagementService = require("../../service/FamilyGenealogy/FamilyManagement");
 
 var addMember = async (req, res) => {
@@ -110,7 +111,7 @@ var updateMember = async (req, res) => {
 
             response = {
                 success: false,
-                message: 'Missing required fields',
+                message: 'Update member failed, missing required fields',
                 missingFields: missingFields
             };
 
@@ -137,9 +138,32 @@ var updateMember = async (req, res) => {
 var deleteMember = async (req, res) => {
     try {
         console.log("Request body: ", req.body);
+        let response;
         let result = await FamilyManagementService.deleteMember(req.body.memberID);
-
-        res.json(result);
+        if(result.affectedRows == 0){
+            response = {
+                success: false,
+                message: 'Delete member failed, no member found',
+                data: {
+                    memberId: req.body.memberId,
+                    affectedRows: result.affectedRows,
+                    changedRows: result.changedRows
+                }
+            };
+            return res.json(response);
+        }else{
+            response = {
+                success: true,
+                message: 'Delete member successfully',
+                data: {
+                    memberId: req.body.memberId,
+                    affectedRows: result.affectedRows,
+                    changedRows: result.changedRows
+                }
+            };
+            return res.json(response);
+        }
+       
     } catch (e) {
         res.send(e);
     }
