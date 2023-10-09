@@ -187,13 +187,27 @@ function setAllGenerationMember(memberId, generation) {
     db.connection.query(updateQuery, (err, results) => {
         if (err) throw err;
 
+        //Tìm tất cả mối hôn nhân hiện tại
+        const findMarriesQuery = `SELECT * FROM familymember where MemberID = ${memberId}`;
+        db.connection.query(findMarriesQuery, (err, childResults) => {
+            if (err) throw err;
+
+            childResults.forEach((child) => {
+                if (child.MarriageID != null) {
+                    setAllGenerationMember(child.MarriageID, generation);
+                }
+            });
+        });
+
+
+
         // Tìm tất cả các con của thành viên hiện tại        
-        const findChildrenQuery = `select Member2ID from familyrelationship where Relationship2ID = 7 and   Member1ID = ${memberId} `;
+        const findChildrenQuery = `SELECT * FROM familymember where ParentID = ${memberId}`;
         db.connection.query(findChildrenQuery, (err, childResults) => {
             if (err) throw err;
-            // Đối với từng con, thực hiện đệ quy để cập nhật Generation
+
             childResults.forEach((child) => {
-                setAllGenerationMember(child.Member2ID, generation + 1);
+                setAllGenerationMember(child.MemberID, generation + 1);
             });
         });
     });
@@ -275,7 +289,7 @@ function ViewFamilyTree(memberId, callback) {
             familyData.birthDate = member.Dob;
             familyData.generation = member.Generation;
 
-            const childrenQuery = `SELECT Member2ID FROM familyrelationship WHERE Relationship2ID = 7 AND Member1ID = ${memberId}`;
+            const childrenQuery = `SELECT * FROM familymember where ParentID = ${memberId}`
             db.connection.query(childrenQuery, (err, childrenResult) => {
                 if (err) throw err;
 
