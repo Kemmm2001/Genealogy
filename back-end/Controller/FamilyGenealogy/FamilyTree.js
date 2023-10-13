@@ -17,26 +17,14 @@ var AllNationality = async (req, res) => {
         res.send(e);
     }
 }
-// var setGeneration = async (req, res) => {
-//     try {
-//         let memberId = req.body.memberId;    
-//         console.log(memberId) 
-//         await FamilyTreeService.setAllGenerationMember(memberId,1);
-//         res.send("set successfully")
-//     } catch (e) {
-//         res.send(e);
-//     }
-// }
 
 var AllMemberInGenelogy = async (req, res) => {
     try {
         let memberID = req.query.memberID;
-        console.log("đã vào");
-        await FamilyTreeService.ViewFamilyTree(memberID, (familyData) => {
-            res.json(familyData);
-        });
+        let data = await FamilyTreeService.ViewFamilyTree(memberID);
+        res.send(data);
     } catch (e) {
-
+        console.log(e);
     }
 }
 
@@ -110,5 +98,5 @@ var informationMember = async (req, res) => {
 }
 
 module.exports = {
-    AllReligion, informationMember, AllNationality, AllMemberRole, setRole, removeRoleFamilyHead,AllMemberInGenelogy
+    AllReligion, informationMember, AllNationality, AllMemberRole, setRole, removeRoleFamilyHead, AllMemberInGenelogy
 };

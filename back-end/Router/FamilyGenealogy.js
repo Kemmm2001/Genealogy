@@ -17,7 +17,8 @@ const initWebRouter = (app) => {
     router.get('/memberRole', ManagerFamilyTree.AllMemberRole)
     router.get('/InforMember', ManagerFamilyTree.informationMember)
     router.post('/setRole', ManagerFamilyTree.setRole)
-    router.get('/test', ManagerFamilyTree.AllMemberInGenelogy)
+
+    router.get('/viewTree', ManagerFamilyTree.AllMemberInGenelogy)   
     // router.post('/setGeneration', ManagerFamilyTree.setGeneration)
     router.delete('/removeFamilyHead', ManagerFamilyTree.removeRoleFamilyHead)
 

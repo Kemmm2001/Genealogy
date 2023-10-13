@@ -58,7 +58,7 @@ CREATE TABLE `accountaccess` (
   `AccountID` int NOT NULL,
   `CodeID` int NOT NULL,
   `Amount` int DEFAULT NULL,
-  `IsAdmin` bit(1) DEFAULT NULL,
+  `IsAdmin` tinyint DEFAULT NULL,
   `AccountAccesscol` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`AccountID`,`CodeID`),
   CONSTRAINT `AccountAccess` FOREIGN KEY (`AccountID`) REFERENCES `account` (`AccountID`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -200,15 +200,16 @@ CREATE TABLE `eventfamily` (
   `EventID` int NOT NULL AUTO_INCREMENT,
   `EventName` varchar(80) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   `CodeID` int DEFAULT NULL,
-  `Status` bit(1) DEFAULT NULL,
+  `Status` tinyint DEFAULT NULL,
   `StartDate` datetime DEFAULT NULL,
   `EndDate` datetime DEFAULT NULL,
   `Description` varchar(1000) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
-  `IsImportant` bit(1) DEFAULT NULL,
+  `IsImportant` tinyint DEFAULT NULL,
   `Note` varchar(2000) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   `Place` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   `RepeatID` int DEFAULT NULL,
-  `IsSolarCalendar` bit(1) DEFAULT NULL,
+  `IsSolarCalendar` tinyint DEFAULT NULL,
+  `eventfamilycol` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`EventID`),
   KEY `Eventfamily_idx` (`CodeID`),
   KEY `Repeat_idx` (`RepeatID`),
@@ -319,7 +320,7 @@ CREATE TABLE `familymember` (
   `MarriageID` int DEFAULT NULL,
   `MemberName` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `NickName` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
-  `HasNickName` bit(1) DEFAULT NULL,
+  `HasNickName` tinyint DEFAULT NULL,
   `BirthOrder` int DEFAULT NULL,
   `Origin` text,
   `NationalityID` int DEFAULT NULL,
@@ -327,14 +328,15 @@ CREATE TABLE `familymember` (
   `Dob` datetime DEFAULT NULL,
   `LunarDob` datetime DEFAULT NULL,
   `BirthPlace` text,
-  `IsAlive` bit(1) DEFAULT NULL,
+  `IsAlive` tinyint NOT NULL,
   `Dod` datetime DEFAULT NULL,
   `PlaceOfDeadth` text,
   `GraveSite` text,
   `Note` longtext,
   `Generation` int DEFAULT NULL,
-  `CodeID` int DEFAULT NULL,
   `BloodType` varchar(3) DEFAULT NULL,
+  `CodeID` int DEFAULT NULL,
+  `Male` tinyint NOT NULL,
   PRIMARY KEY (`MemberID`),
   KEY `religion_idx` (`ReligionID`),
   KEY `Nationality_idx` (`NationalityID`),
@@ -351,7 +353,7 @@ CREATE TABLE `familymember` (
 
 LOCK TABLES `familymember` WRITE;
 /*!40000 ALTER TABLE `familymember` DISABLE KEYS */;
-INSERT INTO `familymember` VALUES (1,NULL,NULL,'Test1','NichName1',_binary '',1,'Hòa Bình',1,1,'2001-02-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',_binary '',NULL,NULL,NULL,'Note1',1,123,NULL),(2,NULL,NULL,'test2','NichName2',_binary '',1,'Hòa Bình',1,1,'2001-02-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',_binary '',NULL,NULL,NULL,'Note2',2,123,NULL),(3,NULL,NULL,'Test3','NichName3',_binary '',1,'Hòa Bình',1,1,'2001-02-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',_binary '',NULL,NULL,NULL,'Note3',0,123,NULL),(4,NULL,NULL,'Test4','NichName4',_binary '',1,'Hòa Bình',1,1,'2001-02-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',_binary '',NULL,NULL,NULL,'Note4',2,123,NULL),(5,NULL,NULL,'Test5','NichName5',_binary '',1,'Hòa Bình',1,1,'2001-02-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',_binary '',NULL,NULL,NULL,'Note5',3,123,NULL),(6,NULL,NULL,'Test6','NichName6',_binary '',1,'Hòa Bình',1,1,'2001-02-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',_binary '',NULL,NULL,NULL,'Note6',4,123,NULL),(7,NULL,NULL,'Test7','NichName7',_binary '',1,'Hòa Bình',1,1,'2001-02-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',_binary '',NULL,NULL,NULL,'Note7',5,123,NULL);
+INSERT INTO `familymember` VALUES (1,NULL,2,'Test1','NichName1',1,1,'Hòa Bình',1,1,'2001-02-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',1,NULL,NULL,NULL,'Note1',1,NULL,123,1),(2,NULL,1,'test2','NichName2',1,1,'Hòa Bình',1,1,'2001-02-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',1,NULL,NULL,NULL,'Note2',1,NULL,123,0),(3,1,NULL,'Test3','NichName3',1,1,'Hòa Bình',1,1,'2001-02-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',1,NULL,NULL,NULL,'Note3',2,NULL,123,1),(4,1,NULL,'Test4','NichName4',1,1,'Hòa Bình',1,1,'2001-02-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',1,NULL,NULL,NULL,'Note4',2,NULL,123,1),(5,3,NULL,'Test5','NichName5',1,1,'Hòa Bình',1,1,'2001-02-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',1,NULL,NULL,NULL,'Note5',3,NULL,123,1),(6,5,NULL,'Test6','NichName6',1,1,'Hòa Bình',1,1,'2001-02-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',1,NULL,NULL,NULL,'Note6',4,NULL,123,1),(7,6,NULL,'Test7','NichName7',1,1,'Hòa Bình',1,1,'2001-02-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',1,NULL,NULL,NULL,'Note7',5,NULL,123,0);
 /*!40000 ALTER TABLE `familymember` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -550,8 +552,8 @@ CREATE TABLE `printingconfig` (
   `BackgroundUrl` varchar(80) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   `BackgroundDesign` int DEFAULT NULL,
   `BackgroundDesignConfig` int DEFAULT NULL,
-  `HasCreateDate` bit(1) DEFAULT NULL,
-  `HasCreator` bit(1) DEFAULT NULL,
+  `HasCreateDate` tinyint DEFAULT NULL,
+  `HasCreator` tinyint DEFAULT NULL,
   `CreatorTextColor` varchar(60) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   `CreatorTextSize` varchar(60) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   PRIMARY KEY (`PrintID`),
@@ -654,10 +656,10 @@ CREATE TABLE `title` (
   `TitleName` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   `Font` varchar(20) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   `FamilyName` varchar(40) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
-  `IsFixedVertical` bit(1) DEFAULT NULL,
-  `IsFixedHorizontal` bit(1) DEFAULT NULL,
-  `IsBold` bit(1) DEFAULT NULL,
-  `IsItalic` bit(1) DEFAULT NULL,
+  `IsFixedVertical` tinyint DEFAULT NULL,
+  `IsFixedHorizontal` tinyint DEFAULT NULL,
+  `IsBold` tinyint DEFAULT NULL,
+  `IsItalic` tinyint DEFAULT NULL,
   `TextSize` int DEFAULT NULL,
   `LineSpacing` int DEFAULT NULL,
   `TextColor` varchar(15) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
@@ -684,4 +686,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-08 22:18:42
+-- Dump completed on 2023-10-12 22:10:21
