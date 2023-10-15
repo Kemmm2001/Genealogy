@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@balkangraph/familytree.js": "^1.8.11",
+    "axios": "^1.4.0",
     "chart.js": "^4.4.0",
     "core-js": "^3.8.3",
     "vue": "^2.6.14",

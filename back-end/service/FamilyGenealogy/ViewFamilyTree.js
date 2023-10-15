@@ -310,15 +310,26 @@ async function createFamilyData(member) {
             pids: [member.MarriageID],
             fid: fid,
             mid: mid,
-            name: member.MemberName,
-            gender: member.Male === 1 ? 'Male' : 'Female',
-            dob: member.Dob,
-            dod: member.IsAlive ? '' : member.Dod,
-            generation: member.Generation
+            // name: member.MemberName,
+            // gender: member.Male === 1 ? 'Male' : 'Female',
+            // dob: formatDOB(member.Dob),
+            // dod: member.IsAlive ? '' : formatDOB(member.Dod),
+            // generation: member.Generation
         };
     }
 }
+function formatDOB(dateString) {
 
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+
+    // Tạo chuỗi ngày sinh đã được định dạng (ví dụ: "25-02-2001")
+    const formattedDOB = `${day}-${month}-${year}`;
+
+    return formattedDOB;
+}
 
 async function setRoleMember(MemberId, roleId) {
     try {

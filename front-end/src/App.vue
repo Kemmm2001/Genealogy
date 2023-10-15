@@ -4,7 +4,7 @@
 
 <script>
 import FamilyTree from "@balkangraph/familytree.js";
-
+import { HTTP } from "./assets/js/baseAPI.js";
 export default {
   data() {
     return {
@@ -14,16 +14,16 @@ export default {
           pids: [2],
           name: "Amber McKenzie",
           gender: "female",
-          phone: "878 108 255",
-          email: "amber.mcKenzie@gmail.com",
+          // dob: "1985-05-01",
+          // dod: "2075-10-13",
         },
         {
           id: 2,
           pids: [1],
           name: "Ava Field",
           gender: "male",
-          phone: "554 484 126",
-          email: "ava.field@live.com",
+          dob: "1985-05-01",
+          dod: "2075-10-13",
         },
         {
           id: 3,
@@ -31,8 +31,8 @@ export default {
           fid: 2,
           name: "Peter Stevens",
           gender: "male",
-          title: "HR Manager",
-          phone: "897 112 444",
+          dob: "1985-05-01",
+          dod: "2075-10-13",
         },
       ],
     };
@@ -62,16 +62,28 @@ export default {
         nodeBinding: {
           field_0: "name",
           field_1: "gender",
-          field_2: "phone",
-          field_3: "email",
-        },       
+          field_2: "dob", // Changed from "phone"
+          field_3: "dod", //
+        },
       });
     },
-   
   },
 
   mounted() {
-    this.mytree(this.$refs.tree, this.nodes);
+    HTTP.get(`viewTree`, {
+      params: {
+        memberID: 1,
+      },
+    })
+      .then((response) => {
+        this.nodes = response.data;
+        // Draw the FamilyTree with the data from the API
+        this.mytree(this.$refs.tree, this.nodes);
+        console.log(this.nodes);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   },
 };
 </script>
