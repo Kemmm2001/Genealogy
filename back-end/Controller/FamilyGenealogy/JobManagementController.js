@@ -20,7 +20,7 @@ var InsertJobMember = async (req, res) => {
         ObjData.StartDate = req.body.StartDate;
         ObjData.EndDate = req.body.EndDate;
         await JobManagementService.AddJobByMemberID(ObjData);
-        res.send("Delete successfully")
+        res.send("Insert successfully")
     } catch (e) {
         console.log(e);
     }
