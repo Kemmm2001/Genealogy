@@ -1,0 +1,9 @@
+.list-item{
+    height: 32px;
+    margin-bottom: 8px;
+}
+
+.dropdown{
+    height: 32px;
+    background-image: none !important;
+}
