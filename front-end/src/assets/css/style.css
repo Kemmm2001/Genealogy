@@ -1,0 +1,42 @@
+body{
+    font-size: 16px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.container-fluid{
+    background-color: #E8C77B;
+    height: 100vh;
+    /* background-color: #E8C77B; */
+}
+
+main{
+    background-color: #E8C77B;
+}
+
+.sidebar-list{
+    width: 16% !important;
+    position: absolute;
+    left: 0;
+}
+
+.sidebar{
+    background-color: #13191C;
+    width: 25% !important;
+    height: 100vh;
+    transition: 0.4s;
+}
+
+.list{
+    background-color: #3A4B54;
+    width: 75% !important;
+    height: 100vh;
+    padding: 8px;
+}
+
+.config-sidebar{
+    background-color: #D9D9D9;
+    width: 18% !important;
+    height: 100vh;
+    position: absolute;
+    right: 0;
+}
