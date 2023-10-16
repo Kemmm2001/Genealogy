@@ -3,6 +3,7 @@ const ManagerFamilyTree = require('../Controller/FamilyGenealogy/FamilyTree')
 const FamilyMemberManagement = require('../Controller/FamilyGenealogy/FamilyMember')
 const PdfController = require('../Controller/FamilyGenealogy/pdfController')
 const JobManagementController = require('../Controller/FamilyGenealogy/JobManagementController')
+const ContactManagementController = require('../Controller/FamilyGenealogy/ContactManagementController')
 var router = express.Router();
 
 
@@ -23,6 +24,11 @@ const initWebRouter = (app) => {
     router.post('/addJob', JobManagementController.InsertJobMember)
     router.put('/updateJob', JobManagementController.UpdateJobMember)
     router.delete('/removeJob', JobManagementController.RemoveJobMember)
+
+    router.get('/contact', ContactManagementController.ViewContactMember)
+    router.post('/addContact', ContactManagementController.InsertContactMember)
+    router.put('/updateContact', ContactManagementController.updateContactMember)
+    router.delete('/deleteContact',ContactManagementController.removeContactMember)
 
     //API tuấn
     router.post('/member', FamilyMemberManagement.addMember)

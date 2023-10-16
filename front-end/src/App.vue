@@ -38,7 +38,7 @@ export default {
     };
   },
 
-  methods: {    
+  methods: {
     mytree: function (domEl, x) {
       FamilyTree.templates.tommy_male.field_0 =
         '<text class="field_0" style="font-size: 20px;" fill="#ffffff" x="125" y="30" text-anchor="middle">{val}</text>';
