@@ -8,33 +8,7 @@ import { HTTP } from "./assets/js/baseAPI.js";
 export default {
   data() {
     return {
-      nodes: [
-        {
-          id: 1,
-          pids: [2],
-          name: "Amber McKenzie",
-          gender: "female",
-          // dob: "1985-05-01",
-          // dod: "2075-10-13",
-        },
-        {
-          id: 2,
-          pids: [1],
-          name: "Ava Field",
-          gender: "male",
-          dob: "1985-05-01",
-          dod: "2075-10-13",
-        },
-        {
-          id: 3,
-          mid: 1,
-          fid: 2,
-          name: "Peter Stevens",
-          gender: "male",
-          dob: "1985-05-01",
-          dod: "2075-10-13",
-        },
-      ],
+      nodes: [],
     };
   },
 

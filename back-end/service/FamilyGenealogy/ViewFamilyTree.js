@@ -310,11 +310,11 @@ async function createFamilyData(member) {
             pids: [member.MarriageID],
             fid: fid,
             mid: mid,
-            // name: member.MemberName,
-            // gender: member.Male === 1 ? 'Male' : 'Female',
-            // dob: formatDOB(member.Dob),
-            // dod: member.IsAlive ? '' : formatDOB(member.Dod),
-            // generation: member.Generation
+            name: member.MemberName,
+            gender: member.Male === 1 ? 'male' : 'female',
+            dob: formatDOB(member.Dob),
+            dod: member.IsAlive ? '' : formatDOB(member.Dod),
+            generation: member.Generation
         };
     }
 }
