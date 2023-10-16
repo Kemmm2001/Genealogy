@@ -35,6 +35,7 @@
               </div>
               <div v-if="sidebarexpansion" class="col sidebar-item-content">Danh sách thành viên</div>
             </div>
+            
             <div class="d-flex sidebar-item align-items-center justify-content-center">
               <div class="d-flex align-items-center justify-content-center">
                 <svg class="fa fa-fw sidebar-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
