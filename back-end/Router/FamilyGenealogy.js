@@ -22,8 +22,7 @@ const initWebRouter = (app) => {
     router.get('/memberRole', ManagerFamilyTree.AllMemberRole)
     router.get('/InforMember', ManagerFamilyTree.informationMember)
     router.post('/setRole', ManagerFamilyTree.setRole)
-    router.get('/viewTree', ManagerFamilyTree.AllMemberInGenelogy)
-    router.delete('/removeFamilyHead', ManagerFamilyTree.removeRoleFamilyHead)
+    router.get('/viewTree', ManagerFamilyTree.AllMemberInGenelogy)    
 
     router.get('/getJob', JobManagementController.ViewJobMember)
     router.post('/addJob', JobManagementController.InsertJobMember)
