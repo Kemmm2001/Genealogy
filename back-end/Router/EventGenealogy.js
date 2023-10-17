@@ -10,6 +10,9 @@ const initWebRouter = (app) => {
     router.post('/addEvent', EventManagementController.InsertEvent)
     router.put('/updateEvent', EventManagementController.UpdateEvent)
     router.delete('/removeEvent', EventManagementController.RemoveEvent)
+
+    router.get('/birthday', EventManagementController.GetBirthDayInMonth)
+    router.get('/deadDay', EventManagementController.GetDeadDayInMonth)
     //API tuấn
 
 

@@ -76,10 +76,42 @@ async function RemoveEvent(EventID) {
     })
 }
 
+function GetBirthDayInMonth() {
+    return new Promise((resolve, reject) => {
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth() + 1;
+        let query = `SELECT * FROM familymember
+        WHERE MONTH(dob) = ${currentMonth}`;
+        db.connection.query(query, (err, result) => {
+            if (err) {
+                console.log(err);
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        })
+    })
+}
 
+function GetDeadDayInMonth() {
+    return new Promise((resolve, reject) => {
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth() + 1;
+        let query = `SELECT * FROM familymember
+        WHERE MONTH(dod) = ${currentMonth}`;
+        db.connection.query(query, (err, result) => {
+            if (err) {
+                console.log(err);
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        })
+    })
+}
 
 
 
 module.exports = {
-    getAllEvent, InsertNewEvent, UpdateEvent, RemoveEvent
+    getAllEvent, InsertNewEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth , GetDeadDayInMonth
 }

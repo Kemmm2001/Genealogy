@@ -64,6 +64,23 @@ var RemoveEvent = async (req, res) => {
     }
 }
 
+var GetBirthDayInMonth = async (req, res) => {
+    try {
+        let data = await EventManagementService.GetBirthDayInMonth();
+        res.send(data);
+    } catch (error) {
+        console.log(error)
+    }
+}
+var GetDeadDayInMonth = async (req, res) => {
+    try {
+        let data = await EventManagementService.GetDeadDayInMonth();
+        res.send(data);
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 module.exports = {
-    getAllEventGenealogy, InsertEvent, UpdateEvent, RemoveEvent
+    getAllEventGenealogy, InsertEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth , GetDeadDayInMonth
 }
