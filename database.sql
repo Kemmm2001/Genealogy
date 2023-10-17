@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `genealogy` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `genealogy`;
 -- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
 --
 -- Host: localhost    Database: genealogy
@@ -364,7 +366,10 @@ DROP TABLE IF EXISTS `familytree`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `familytree` (
   `CodeID` int NOT NULL,
-  `TreeName` varchar(30) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `TreeName` varchar(30) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `Ethnicity` varchar(45) NOT NULL,
+  `DeathAnniversary` datetime DEFAULT NULL,
+  `MemberId` int DEFAULT NULL,
   PRIMARY KEY (`CodeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -375,7 +380,7 @@ CREATE TABLE `familytree` (
 
 LOCK TABLES `familytree` WRITE;
 /*!40000 ALTER TABLE `familytree` DISABLE KEYS */;
-INSERT INTO `familytree` VALUES (123,'Hùng'),(199,'HUNG1');
+INSERT INTO `familytree` VALUES (123,'Lê','Kinh','1890-02-23 00:00:00',4),(199,'HUNG1','',NULL,NULL);
 /*!40000 ALTER TABLE `familytree` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -685,4 +690,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-16 22:18:23
+-- Dump completed on 2023-10-17 12:47:41

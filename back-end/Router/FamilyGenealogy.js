@@ -8,6 +8,7 @@ const ArticleController = require('../Controller/FamilyGenealogy/ArticleControll
 const JobManagementController = require('../Controller/FamilyGenealogy/JobManagementController')
 const ContactManagementController = require('../Controller/FamilyGenealogy/ContactManagementController')
 const EducationManagementController = require('../Controller/FamilyGenealogy/EducationManagementController')
+const FamilyHistoryController = require('../Controller/FamilyGenealogy/FamilyHistory');
 
 var router = express.Router();
 
@@ -22,8 +23,7 @@ const initWebRouter = (app) => {
     router.get('/memberRole', ManagerFamilyTree.AllMemberRole)
     router.get('/InforMember', ManagerFamilyTree.informationMember)
     router.post('/setRole', ManagerFamilyTree.setRole)
-    router.get('/viewTree', ManagerFamilyTree.AllMemberInGenelogy)
-    router.delete('/removeFamilyHead', ManagerFamilyTree.removeRoleFamilyHead)
+    router.get('/viewTree', ManagerFamilyTree.AllMemberInGenelogy)    
 
     router.get('/getJob', JobManagementController.ViewJobMember)
     router.post('/addJob', JobManagementController.InsertJobMember)
@@ -45,7 +45,16 @@ const initWebRouter = (app) => {
     router.put('/member', FamilyMemberManagement.updateMember)
     router.delete('/member', FamilyMemberManagement.deleteMember)
 
-
+    // Create a new FamilyHistory
+    router.post('/familyhistory', FamilyHistoryController.addFamilyHistory);
+    // Retrieve all FamilyHistories
+    router.get('/familyhistory', FamilyHistoryController.getAllFamilyHistory);
+    // Retrieve a single FamilyHistory with id
+    router.get('/familyhistory/:id', FamilyHistoryController.getFamilyHistoryById);
+    // Update a FamilyHistory with id
+    router.put('/familyhistory', FamilyHistoryController.updateFamilyHistory);
+    // Delete a FamilyHistory with id
+    router.delete('/familyhistory', FamilyHistoryController.deleteFamilyHistory);
 
     //API Nhật anh
     router.post('/search-member', FamilyMemberManagement.searchMember);

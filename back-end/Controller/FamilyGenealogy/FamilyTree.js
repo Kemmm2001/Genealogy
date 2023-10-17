@@ -72,15 +72,7 @@ var setRole = async (req, res) => {
     }
 }
 
-var removeRoleFamilyHead = async (req, res) => {
-    try {
-        let memberId = req.query.memberId;
-        await FamilyTreeService.removeFamilyHead(memberId);
-        res.send("remove successfuly");
-    } catch (e) {
-        res.send(e)
-    }
-}
+
 
 var informationMember = async (req, res) => {
     let id = req.query.memberId
@@ -98,5 +90,5 @@ var informationMember = async (req, res) => {
 }
 
 module.exports = {
-    AllReligion, informationMember, AllNationality, AllMemberRole, setRole, removeRoleFamilyHead, AllMemberInGenelogy
+    AllReligion, informationMember, AllNationality, AllMemberRole, setRole, AllMemberInGenelogy
 };
