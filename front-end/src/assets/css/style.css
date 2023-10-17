@@ -1,22 +1,21 @@
-body{
+#app{
     font-size: 16px;
     font-family: Arial, Helvetica, sans-serif;
 }
 
 .container-fluid{
-    background-color: #E8C77B;
     height: 100vh;
-    /* background-color: #E8C77B; */
+    background-color: #E8C77B;
 }
 
-main{
+.main-screen{
+    height: 100vh;
     background-color: #E8C77B;
+    flex-grow: 1;
 }
 
 .sidebar-list{
     width: 16% !important;
-    position: absolute;
-    left: 0;
 }
 
 .sidebar{
@@ -37,6 +36,4 @@ main{
     background-color: #D9D9D9;
     width: 18% !important;
     height: 100vh;
-    position: absolute;
-    right: 0;
 }
