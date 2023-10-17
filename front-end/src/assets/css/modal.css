@@ -2,6 +2,12 @@
     /* overflow: auto; */
     display: flex;
     flex-direction: column;
+    position: absolute !important;
+    top: 10% !important;
+    left: 10% !important;
+    right: 10% !important;
+    height: auto !important;
+    width: auto !important;
 }
 
 .btn-modal{
@@ -9,10 +15,11 @@
 }
 
 .modal-item{
-    height: 42px;
+    height: 36px;
 }
 
 .modal-title{
+    height: 40px;
     background-color: #E8C77B;
     font-size: 20px;
     font-weight: bold;
@@ -27,7 +34,20 @@
 .btn.colored{
     background-color: #E8C77B !important;
 }
-  
-.aaa{
-    background-color: black !important;
+
+.add-form-birthorder-label{
+    top: 25%;
+    left: 10%;
+}
+
+.add-form-birthorder-input{
+    padding-left: 85px !important;
+}
+
+.add-form-bloodtype-label{
+    padding-top: 9px;
+}
+
+.add-form-bloodtype-select{
+    padding-left: 25px !important;
 }
