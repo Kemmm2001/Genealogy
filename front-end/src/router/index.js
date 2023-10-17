@@ -7,12 +7,11 @@ const routes = [
     {
         path: '/',
         name: 'tree',
-      
+        component: () => import('../views/MainScreen.vue'),
     },
     {
         path: '/infor',
         name: 'information',
-       
     },
 ];
 
