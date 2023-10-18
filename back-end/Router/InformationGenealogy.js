@@ -1,6 +1,7 @@
 const express = require('express');
 const FamilyHeadController = require('../Controller/InformationGenealogy/FamilyHeadController')
 const GeneralInformation = require('../Controller/InformationGenealogy/GeneralInformationController')
+const StatisticsController = require('../Controller/InformationGenealogy/StatisticsController')
 var router = express.Router();
 
 
@@ -10,8 +11,11 @@ const initWebRouter = (app) => {
     router.get('/familyhead', FamilyHeadController.ListFamilyHead)
     router.delete('/removeFamilyHead', FamilyHeadController.removeRoleFamilyHead)
 
-    router.get('/generalInfor',GeneralInformation.GetGeneralInformation)
-    router.put('/updateInfor',GeneralInformation.UpdateGeneralInformation)
+    router.get('/generalInfor', GeneralInformation.GetGeneralInformation)
+    router.put('/updateInfor', GeneralInformation.UpdateGeneralInformation)
+
+    router.get('/statistics', StatisticsController.Statistics)
+    router.get('/filterMonth', StatisticsController.filterMemberByMonth)
     //API tuấn
 
 
