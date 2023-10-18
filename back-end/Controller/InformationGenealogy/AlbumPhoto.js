@@ -1,4 +1,4 @@
-const FamilyHistoryManagementService = require("../../service/InformationGenealogy/FamilyHistoryManagement");
+const AlbumPhotoManagementService = require("../../service/InformationGenealogy/AlbumPhotoManagement");
 
 missingFieldsError = function (missingFields) {
     console.error(`Missing required fields: ${missingFields.join(', ')}`);
@@ -19,16 +19,16 @@ noDataFound = function (res) {
     return res.status(404).json(response);
 }
 
-var addFamilyHistory = async (req, res) => {
+var addAlbumPhoto = async (req, res) => {
     try {
         // Log ra thông tin trong req.body
         console.log('Request body: ', req.body);
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
-            'CodeID',
-            'Description'
+            'AlbumName',
+            'CodeID'
         ];
-        // Kiểm tra xem có đủ các trường của FamilyHistory không
+        // Kiểm tra xem có đủ các trường của AlbumPhoto không
         const missingFields = requiredFields.filter(field => !(field in req.body));
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
@@ -36,19 +36,18 @@ var addFamilyHistory = async (req, res) => {
             return res.status(400).json(missingFieldsError(missingFields));
         }
         console.log("No missing fields");
-        // thêm FamilyHistory vào database
-        let data = await FamilyHistoryManagementService.insertFamilyHistory(req.body)
-        message = "Add FamilyHistory successfully";
+        // Thêm thông tin vào bảng albumphoto
+        let data = await AlbumPhotoManagementService.insertAlbumPhoto(req.body);
+        message = "Add albumphoto successfully";
         console.log(message);
         response = {
             success: true,
             message: message,
             data: {
-                familyHistoryId: data.insertId,
+                AlbumID: data.insertId,
                 affectedRows: data.affectedRows
             }
         };
-
         return res.json(response);
     } catch (e) {
         console.log(e);
@@ -60,17 +59,19 @@ var addFamilyHistory = async (req, res) => {
     }
 };
 
-var updateFamilyHistory = async (req, res) => {
+
+
+var updateAlbumPhoto = async (req, res) => {
     try {
         // Log ra thông tin trong req.body
         console.log('Request body: ', req.body);
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
-            'FamilyHistoryID',
-            'CodeID',
-            'Description'
+            'AlbumID',
+            'AlbumName',
+            'CodeID'
         ];
-        // Kiểm tra xem có đủ các trường của FamilyHistory không
+        // Kiểm tra xem có đủ các trường của AlbumPhoto không
         const missingFields = requiredFields.filter(field => !(field in req.body));
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
@@ -79,15 +80,15 @@ var updateFamilyHistory = async (req, res) => {
         }
         console.log("No missing fields");
 
-        // lấy thông tin FamilyHistory từ database
-        let data = await FamilyHistoryManagementService.getFamilyHistoryById(req.body.FamilyHistoryID)
+        // lấy thông tin AlbumPhoto từ database
+        let data = await AlbumPhotoManagementService.getAlbumPhotoById(req.body.AlbumID)
         if (data == null || data.length == 0) {
             return noDataFound(res);
         }
-        // cập nhật FamilyHistory vào database
-        let dataUpdate = await FamilyHistoryManagementService.updateFamilyHistory(req.body)
+        // cập nhật AlbumPhoto vào database
+        let dataUpdate = await AlbumPhotoManagementService.updateAlbumPhoto(req.body)
 
-        message = "Update FamilyHistory successfully";
+        message = "Update AlbumPhoto successfully";
         console.log(message);
         response = {
             success: true,
@@ -108,15 +109,15 @@ var updateFamilyHistory = async (req, res) => {
     }
 };
 
-var deleteFamilyHistory = async (req, res) => {
+var deleteAlbumPhoto = async (req, res) => {
     try {
         // Log ra thông tin trong req.body
         console.log('Request body: ', req.body);
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
-            'FamilyHistoryID'
+            'AlbumID'
         ];
-        // Kiểm tra xem có đủ các trường của FamilyHistory không
+        // Kiểm tra xem có đủ các trường của AlbumPhoto không
         const missingFields = requiredFields.filter(field => !(field in req.body));
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
@@ -124,15 +125,15 @@ var deleteFamilyHistory = async (req, res) => {
             return res.status(400).json(missingFieldsError(missingFields));
         }
         console.log("No missing fields");
-        // lấy thông tin FamilyHistory từ database
-        let data = await FamilyHistoryManagementService.getFamilyHistoryById(req.body.FamilyHistoryID)
+        // lấy thông tin AlbumPhoto từ database
+        let data = await AlbumPhotoManagementService.getAlbumPhotoById(req.body.AlbumID)
         if (data == null || data.length == 0) {
             return noDataFound(res);
         }
-        // xóa FamilyHistory khỏi database
-        let dataDelete = await FamilyHistoryManagementService.removeFamilyHistory(req.body.FamilyHistoryID)
+        // xóa AlbumPhoto khỏi database
+        let dataDelete = await AlbumPhotoManagementService.removeAlbumPhoto(req.body.AlbumID)
 
-        message = "Delete FamilyHistory successfully";
+        message = "Delete AlbumPhoto successfully";
         console.log(message);
         response = {
             success: true,
@@ -153,7 +154,7 @@ var deleteFamilyHistory = async (req, res) => {
 };
 
 
-var getFamilyHistoryById = async (req, res) => {
+var getAlbumPhotoById = async (req, res) => {
     try {
         // Log ra thông tin trong req.params
         console.log('Request params: ', req.params);
@@ -161,7 +162,7 @@ var getFamilyHistoryById = async (req, res) => {
         const requiredFields = [
             'id'
         ];
-        // Kiểm tra xem có đủ các trường của FamilyHistory không
+        // Kiểm tra xem có đủ các trường của AlbumPhoto không
         const missingFields = requiredFields.filter(field => !(field in req.params));
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
@@ -170,12 +171,12 @@ var getFamilyHistoryById = async (req, res) => {
         }
 
         console.log("No missing fields");
-        // lấy thông tin FamilyHistory từ database
-        let data = await FamilyHistoryManagementService.getFamilyHistoryById(req.params.id)
+        // lấy thông tin AlbumPhoto từ database
+        let data = await AlbumPhotoManagementService.getAlbumPhotoById(req.params.id)
         if (data == null || data.length == 0) {
             return noDataFound(res);
         } else {
-            message = "View one FamilyHistory successfully";
+            message = "View one AlbumPhoto successfully";
             console.log(message);
             response = {
                 success: true,
@@ -196,7 +197,7 @@ var getFamilyHistoryById = async (req, res) => {
     }
 };
 
-var getFamilyHistoryByCodeId = async (req, res) => {
+var getAlbumPhotoByCodeId = async (req, res) => {
     try {
         // Log ra thông tin trong req.params
         console.log('Request params: ', req.params);
@@ -204,7 +205,7 @@ var getFamilyHistoryByCodeId = async (req, res) => {
         const requiredFields = [
             'id'
         ];
-        // Kiểm tra xem có đủ các trường của FamilyHistory không
+        // Kiểm tra xem có đủ các trường của AlbumPhoto không
         const missingFields = requiredFields.filter(field => !(field in req.params));
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
@@ -213,12 +214,12 @@ var getFamilyHistoryByCodeId = async (req, res) => {
         }
 
         console.log("No missing fields");
-        // lấy thông tin FamilyHistory từ database
-        let data = await FamilyHistoryManagementService.getFamilyHistoryByCodeId(req.params.id)
+        // lấy thông tin AlbumPhoto từ database
+        let data = await AlbumPhotoManagementService.getAlbumPhotoByCodeId(req.params.id)
         if (data == null || data.length == 0) {
             return noDataFound(res);
         } else {
-            message = "View one FamilyHistory successfully";
+            message = "View one AlbumPhoto successfully";
             console.log(message);
             response = {
                 success: true,
@@ -227,8 +228,6 @@ var getFamilyHistoryByCodeId = async (req, res) => {
             };
         }
         return res.json(response);
-
-
     } catch (e) {
         console.log(e);
         response = {
@@ -239,13 +238,14 @@ var getFamilyHistoryByCodeId = async (req, res) => {
     }
 };
 
-var getAllFamilyHistories = async (req, res) => {
+
+var getAllAlbumPhotos = async (req, res) => {
     try {
         // Log ra thông tin trong req.body
         console.log('Request body: ', req.body);
-        // lấy thông tin tất cả FamilyHistory từ database
-        let data = await FamilyHistoryManagementService.getAllFamilyHistory();
-        message = "View all FamilyHistory successfully";
+        // lấy thông tin tất cả AlbumPhoto từ database
+        let data = await AlbumPhotoManagementService.getAllAlbumPhoto();
+        message = "View all AlbumPhoto successfully";
         console.log(message);
         response = {
             success: true,
@@ -265,4 +265,4 @@ var getAllFamilyHistories = async (req, res) => {
 
 
 
-module.exports = { addFamilyHistory, updateFamilyHistory, deleteFamilyHistory, getFamilyHistoryById,getFamilyHistoryByCodeId,  getAllFamilyHistories };
+module.exports = { addAlbumPhoto, updateAlbumPhoto, deleteAlbumPhoto, getAlbumPhotoById,getAlbumPhotoByCodeId, getAllAlbumPhotos };
