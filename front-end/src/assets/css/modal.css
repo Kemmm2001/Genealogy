@@ -3,7 +3,7 @@
     display: flex;
     flex-direction: column;
     position: absolute !important;
-    top: 10% !important;
+    top: 5% !important;
     left: 10% !important;
     right: 10% !important;
     height: auto !important;
@@ -12,6 +12,10 @@
 
 .btn-modal{
     background-color: #FFFFFF !important;
+}
+
+.alivebuttoncolor{
+    background-color: #D9D9D9 !important;
 }
 
 .modal-item{
@@ -27,16 +31,16 @@
 
 .profile-pic{
     background-color: #D9D9D9;
-    height: 110px;
+    height: 200px;
     border-radius: 4px;
 }
 
 .btn.colored{
-    background-color: #E8C77B !important;
+    background-color: #E8C77B;
 }
 
 .add-form-birthorder-label{
-    top: 25%;
+    top: 18%;
     left: 10%;
 }
 
@@ -45,9 +49,65 @@
 }
 
 .add-form-bloodtype-label{
-    padding-top: 9px;
+    padding-left: 4px;
+    padding-top: 5px;
 }
 
 .add-form-bloodtype-select{
-    padding-left: 25px !important;
+    padding-left: 30% !important;
+}
+
+.add-form-date-label{
+    padding-left: 4px;
+    padding-top: 9px;
+}
+
+.extended-info-tab{
+    height: 36px;
+    border-radius: 0.375rem 0.375rem 0 0;
+}
+
+.extended-info-container{
+    background-color: #E8C77B;
+    height: calc(100% - 40px);
+}
+
+.btn.extended-info-colored{
+    background-color: #D0B36E;
+}
+
+.extended-job-data-container, .extended-edu-data-container{
+    height: calc(100% - 168px);
+    background-color: #FFFFFF;
+    border-radius: 0.375rem;
+}
+
+.extended-info-container textarea{
+    border-radius: 0.375rem;
+}
+
+.extended-info-container textarea{
+    outline: none;
+    border: none;
+}
+
+.extended-contact-container{
+    border-radius: 0 0.375rem 0.375rem 0.375rem;
+}
+
+.extended-job-container, .extended-edu-container{
+    border-radius: 0.375rem;
+}
+
+.extended-note-container{
+    border-radius: 0.375rem 0 0.375rem 0.375rem;
+}
+
+.close-add-form{
+    position: absolute;
+    right: 0;
+}
+
+.close-add-form:hover{
+    cursor: pointer;
 }
