@@ -1,8 +1,8 @@
 const db = require('../../Models/ConnectDB')
 
-function getFamilyHistoryByCodeId(codeId) {
+function getAlbumPhotoByCodeId(codeId) {
     return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM familyhistory where CodeID  = ${codeId}`
+        let query = `SELECT * FROM albumphoto where CodeID  = ${codeId}`
         db.connection.query(query, (err, result) => {
             if (err) {
                 console.log("Have err : " + err);
@@ -14,9 +14,9 @@ function getFamilyHistoryByCodeId(codeId) {
     })
 }
 
-function getFamilyHistoryById(historyId) {
+function getAlbumPhotoById(albumId) {
     return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM familyhistory where HistoryID  = ${historyId}`
+        let query = `SELECT * FROM albumphoto where AlbumID  = ${albumId}`
         db.connection.query(query, (err, result) => {
             if (err) {
                 console.log("Have err : " + err);
@@ -28,9 +28,22 @@ function getFamilyHistoryById(historyId) {
     })
 }
 
-function getAllFamilyHistory() {
+function getAlbumPhotoByCodeId(codeId) {
     return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM familyhistory`
+        let query = `SELECT * FROM albumphoto where CodeID  = ${codeId}`
+        db.connection.query(query, (err, result) => {
+            if (err) {
+                console.log("Have err : " + err);
+                reject(err)
+            } else {
+                resolve(result)
+            }
+        })
+    })
+}
+function getAlbumPhotoByIdAndCodeId(albumId, codeId) {
+    return new Promise((resolve, reject) => {
+        let query = `SELECT * FROM albumphoto where AlbumID  = ${albumId} and CodeID = ${codeId}`
         db.connection.query(query, (err, result) => {
             if (err) {
                 console.log("Have err : " + err);
@@ -42,12 +55,26 @@ function getAllFamilyHistory() {
     })
 }
 
-function insertFamilyHistory(ObjData) {
+function getAllAlbumPhoto() {
     return new Promise((resolve, reject) => {
-        let query = `INSERT INTO familyhistory (CodeID, Description) VALUES (?, ?);`
+        let query = `SELECT * FROM albumphoto`
+        db.connection.query(query, (err, result) => {
+            if (err) {
+                console.log("Have err : " + err);
+                reject(err)
+            } else {
+                resolve(result)
+            }
+        })
+    })
+}
+
+function insertAlbumPhoto(ObjData) {
+    return new Promise((resolve, reject) => {
+        let query = `INSERT INTO albumphoto (AlbumName, CodeID) VALUES (?, ?);`
         let values = [
-            ObjData.CodeID,
-            ObjData.Description
+            ObjData.AlbumName,
+            ObjData.CodeID
         ]
         db.connection.query(query, values, (err, result) => {
             if (err) {
@@ -61,13 +88,13 @@ function insertFamilyHistory(ObjData) {
 
 }
 
-function updateFamilyHistory(ObjData) {
+function updateAlbumPhoto(ObjData) {
     return new Promise((resolve, reject) => {
-        let query = `UPDATE familyhistory SET CodeID = ?, Description = ? WHERE HistoryID = ?;`
+        let query = `UPDATE albumphoto SET AlbumName = ?, CodeID = ? WHERE AlbumID = ?;`
         let values = [
+            ObjData.AlbumName,
             ObjData.CodeID,
-            ObjData.Description,
-            ObjData.FamilyHistoryID
+            ObjData.AlbumID
         ]
         db.connection.query(query, values, (err, result) => {
             if (err) {
@@ -81,9 +108,9 @@ function updateFamilyHistory(ObjData) {
 
 }
 
-function removeFamilyHistory(historyId) {
+function removeAlbumPhoto(albumId) {
     return new Promise((resolve, reject) => {
-        let query = `DELETE FROM familyhistory WHERE HistoryID = ${historyId};`
+        let query = `DELETE FROM albumphoto WHERE AlbumID = ${albumId};`
         db.connection.query(query, (err, result) => {
             if (err) {
                 console.log("Have err : " + err);
@@ -97,10 +124,12 @@ function removeFamilyHistory(historyId) {
 }
 
 module.exports = {
-    getFamilyHistoryByCodeId,
-    getFamilyHistoryById,
-    getAllFamilyHistory,
-    insertFamilyHistory,
-    updateFamilyHistory,
-    removeFamilyHistory
+    getAlbumPhotoByCodeId,
+    getAlbumPhotoById,
+    getAlbumPhotoByCodeId,
+    getAlbumPhotoByIdAndCodeId,
+    getAllAlbumPhoto,
+    insertAlbumPhoto,
+    updateAlbumPhoto,
+    removeAlbumPhoto
 }
