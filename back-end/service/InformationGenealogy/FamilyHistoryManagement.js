@@ -28,6 +28,19 @@ function getFamilyHistoryById(historyId) {
     })
 }
 
+function getFamilyHistoryByCodeId(codeID) {
+    return new Promise((resolve, reject) => {
+        let query = `SELECT * FROM familyhistory where CodeID  = ${codeID}`
+        db.connection.query(query, (err, result) => {
+            if (err) {
+                console.log("Have err : " + err);
+                reject(err)
+            } else {
+                resolve(result)
+            }
+        })
+    })
+}
 function getFamilyHistoryByIdAndCodeId(historyId, codeId) {
     return new Promise((resolve, reject) => {
         let query = `SELECT * FROM familyhistory where HistoryID  = ${historyId} and CodeID = ${codeId}`
@@ -113,6 +126,7 @@ module.exports = {
     getFamilyHistoryByCodeId,
     getFamilyHistoryById,
     getFamilyHistoryByIdAndCodeId,
+    getFamilyHistoryByCodeId,
     getAllFamilyHistory,
     insertFamilyHistory,
     updateFamilyHistory,

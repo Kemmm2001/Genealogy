@@ -196,6 +196,49 @@ var getFamilyHistoryById = async (req, res) => {
     }
 };
 
+var getFamilyHistoryByCodeId = async (req, res) => {
+    try {
+        // Log ra thông tin trong req.params
+        console.log('Request params: ', req.params);
+        // các trường bắt buộc phải có trong req.params
+        const requiredFields = [
+            'id'
+        ];
+        // Kiểm tra xem có đủ các trường của FamilyHistory không
+        const missingFields = requiredFields.filter(field => !(field in req.params));
+        console.log(missingFields);
+        // trong trường hợp thiếu trường bắt buộc
+        if (missingFields.length) {
+            return res.status(400).json(missingFieldsError(missingFields));
+        }
+
+        console.log("No missing fields");
+        // lấy thông tin FamilyHistory từ database
+        let data = await FamilyHistoryManagementService.getFamilyHistoryByCodeId(req.params.id)
+        if (data == null || data.length == 0) {
+            return noDataFound(res);
+        } else {
+            message = "View one FamilyHistory successfully";
+            console.log(message);
+            response = {
+                success: true,
+                message: message,
+                data: data
+            };
+        }
+        return res.json(response);
+
+
+    } catch (e) {
+        console.log(e);
+        response = {
+            success: false,
+            message: 'Something went wrong'
+        };
+        res.send(response);
+    }
+};
+
 var getAllFamilyHistories = async (req, res) => {
     try {
         // Log ra thông tin trong req.body
@@ -222,4 +265,4 @@ var getAllFamilyHistories = async (req, res) => {
 
 
 
-module.exports = { addFamilyHistory, updateFamilyHistory, deleteFamilyHistory, getFamilyHistoryById,  getAllFamilyHistories };
+module.exports = { addFamilyHistory, updateFamilyHistory, deleteFamilyHistory, getFamilyHistoryById,getFamilyHistoryByCodeId,  getAllFamilyHistories };

@@ -21,8 +21,8 @@ const initWebRouter = (app) => {
     //API tuấn
     // Create a new FamilyHistory
     router.post('/familyhistory', FamilyHistoryController.addFamilyHistory);
-    // Retrieve all FamilyHistories
-    router.get('/familyhistory', FamilyHistoryController.getAllFamilyHistories);
+    // Retrieve all FamilyHistories with CodeID
+    router.get('/familyhistory/code-id/:id', FamilyHistoryController.getFamilyHistoryByCodeId);
     // Retrieve a single FamilyHistory with id
     router.get('/familyhistory/:id', FamilyHistoryController.getFamilyHistoryById);
     // Update a FamilyHistory with id
@@ -35,7 +35,7 @@ const initWebRouter = (app) => {
     // Retrieve all AlbumPhotos with codeId
     router.get('/albumphoto/code-id/:id', AlbumPhotoController.getAlbumPhotoByCodeId);
     // Retrieve a single AlbumPhoto with id
-    router.get('/albumphoto/album-id/:id', AlbumPhotoController.getAlbumPhotoById);
+    router.get('/albumphoto/:id', AlbumPhotoController.getAlbumPhotoById);
     // Update an AlbumPhoto with id
     router.put('/albumphoto', AlbumPhotoController.updateAlbumPhoto);
     // Delete an AlbumPhoto with id
