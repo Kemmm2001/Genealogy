@@ -8,6 +8,7 @@ const ArticleController = require('../Controller/FamilyGenealogy/ArticleControll
 const JobManagementController = require('../Controller/FamilyGenealogy/JobManagementController')
 const ContactManagementController = require('../Controller/FamilyGenealogy/ContactManagementController')
 const EducationManagementController = require('../Controller/FamilyGenealogy/EducationManagementController')
+const CompareMemberController = require('../Controller/FamilyGenealogy/CompareMemberController')
 
 var router = express.Router();
 
@@ -22,7 +23,9 @@ const initWebRouter = (app) => {
     router.get('/memberRole', ManagerFamilyTree.AllMemberRole)
     router.get('/InforMember', ManagerFamilyTree.informationMember)
     router.post('/setRole', ManagerFamilyTree.setRole)
-    router.get('/viewTree', ManagerFamilyTree.AllMemberInGenelogy)    
+    router.get('/viewTree', ManagerFamilyTree.AllMemberInGenelogy)  
+    
+    router.get('/compare',CompareMemberController.compareMember)
 
     router.get('/getJob', JobManagementController.ViewJobMember)
     router.post('/addJob', JobManagementController.InsertJobMember)
