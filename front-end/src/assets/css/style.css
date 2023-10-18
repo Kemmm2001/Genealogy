@@ -37,3 +37,7 @@
     width: 18% !important;
     height: 100vh;
 }
+
+.form-select{
+    background-image: none;
+}

@@ -1,4 +1,589 @@
 <template>
+    <div class="d-flex main-screen align-items-center">
+        <div class="d-flex main-screen align-items-center">
+            <button type="button" class="btn p-0 btn-modal" @click="openChildrenModal">Modal add con</button>
+            <modal name="children-modal">
+                <div class="d-flex flex-row w-100 align-items-center position-relative">
+                    <div class="col-md-12 modal-title d-flex align-items-center  justify-content-center w-100">Thêm con
+                    </div>
+                    <div class="close-add-form" @click="closeChildrenModal">
+                        <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                            <path
+                                d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="d-flex flex-row">
+                    <div class="col-md-6 d-flex flex-row">
+                        <div class="col-md-4 d-flex flex-column mt-1" style="padding-left: 4px;">
+                            <div class="profile-pic"></div>
+                            <button class="btn p-0 colored mt-1 modal-item">Xoá ảnh</button>
+                            <!-- <div class="d-flex align-items-center justify-content-center">                   -->
+                            <button class="btn p-0 colored mt-1 modal-item" style="margin-top: 120px !important;"
+                                @click="dead = !dead" :class="{ alivebuttoncolor: dead }">
+                                <a v-show="!dead">Còn sống</a>
+                                <a v-show="dead">Đã mất</a>
+                            </button>
+                            <!-- </div>  -->
+                        </div>
+                        <div class="d-flex flex-column col-md-8 align-items-center px-1">
+                            <div class="d-flex flex-row align-items-center w-100">
+                                <div class="col-md-12 mt-1">
+                                    <input type="text" class="form-control modal-item" placeholder="Tên thành viên đầy đủ">
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row align-items-center w-100">
+                                <div class="col-md-12 mt-1">
+                                    <input type="text" class="form-control modal-item" placeholder="Tên thường gọi">
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row align-items-center w-100">
+                                <div class="col-md-6 mt-1" style="padding-right: 4px;">
+                                    <select class="form-select modal-item">
+                                        <option selected value="1">Con ruột</option>
+                                        <option value="2">Con riêng</option>
+                                        <option value="3">Con nuôi</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mt-1 position-relative">
+                                    <label for="birthorder" class="add-form-birthorder-label position-absolute">Con
+                                        thứ</label>
+                                    <input id="birthorder" type="number"
+                                        class="form-control flex-grow add-form-birthorder-input modal-item pl-5" value="1"
+                                        min="1">
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row align-items-center justify-content-around w-100">
+                                <div class="col-md-6 mt-1" style="padding-right: 4px;">
+                                    <select class="form-select modal-item">
+                                        <option selected value="1">Giới tính</option>
+                                        <option value="2">Nam</option>
+                                        <option value="3">Nữ</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mt-1 d-flex flex-row">
+                                    <div class="col-md-8 add-form-bloodtype-label modal-item">Nhóm máu</div>
+                                    <div class="col-md-4">
+                                        <select id="bloodtype"
+                                            class=" add-form-bloodtype-select form-select modal-item p-0">
+                                            <option selected value="1">A</option>
+                                            <option value="2">B</option>
+                                            <option value="3">AB</option>
+                                            <option value="4">O</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="d-flex flex-row align-items-center justify-content-center w-100">
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control modal-item mt-1" placeholder="Nguyên quán">
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row w-100">
+                                <div class="col-md-6 mt-1" style="padding-right: 4px;">
+                                    <input type="text" class="form-control modal-item" placeholder="Quốc tịch">
+                                </div>
+                                <div class="col-md-6 mt-1">
+                                    <input type="text" class="form-control modal-item" placeholder="Tôn giáo">
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row align-items-center justify-content-center w-100">
+                                <div class="col-md-6 d-flex flex-wrap">
+                                    <div class="add-form-date-label modal-item">Ngày sinh dương lịch</div>
+                                </div>
+                                <div class="col-md-6 mt-1">
+                                    <input type="date" class="form-control modal-item">
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row align-items-center justify-content-center w-100">
+                                <div class="col-md-6 d-flex flex-wrap">
+                                    <div class="add-form-date-label modal-item">Ngày sinh âm lịch</div>
+                                </div>
+                                <div class="col-md-6 mt-1">
+                                    <input type="date" class="form-control modal-item">
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row w-100">
+                                <div class="col-md-12 mt-1">
+                                    <input type="text" class="form-control modal-item" placeholder="Nơi sinh">
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row align-items-center justify-content-center w-100">
+                                <div class="col-md-6 d-flex flex-wrap">
+                                    <div class="add-form-date-label modal-item">Ngày mất</div>
+                                </div>
+                                <div class="col-md-6 mt-1">
+                                    <input type="date" class="form-control modal-item" v-bind:disabled=!dead>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row w-100">
+                                <div class="col-md-12 mt-1">
+                                    <input type="text" class="form-control modal-item" placeholder="Nơi mất"
+                                        v-bind:disabled=!dead>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row w-100">
+                                <div class="col-md-12 mt-1 mb-1">
+                                    <input type="text" class="form-control modal-item" placeholder="Mộ phần"
+                                        v-bind:disabled=!dead>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mt-1" style="padding-right: 4px">
+                        <div class="d-flex flex-row modal-item align-items-center justify-content-around">
+                            <div class="w-100">
+                                <button
+                                    @click="extendedContact = true; extendedJob = false; extendedEdu = false; extendedNote = false"
+                                    class="btn px-2 pt-1 pb-2 extended-info-tab w-100"
+                                    :class="{ colored: extendedContact }">Liên
+                                    hệ</button>
+                            </div>
+                            <div class="w-100">
+                                <button
+                                    @click="extendedContact = false; extendedJob = true; extendedEdu = false; extendedNote = false"
+                                    class="btn px-2 pt-1 pb-2 extended-info-tab w-100"
+                                    :class="{ colored: extendedJob }">Nghề
+                                    nghiệp</button>
+                            </div>
+                            <div class="w-100">
+                                <button
+                                    @click="extendedContact = false; extendedJob = false; extendedEdu = true; extendedNote = false"
+                                    class="btn px-2 pt-1 pb-2 extended-info-tab w-100"
+                                    :class="{ colored: extendedEdu }">Giáo
+                                    dục</button>
+                            </div>
+                            <div class="w-100">
+                                <button
+                                    @click="extendedContact = false; extendedJob = false; extendedEdu = false; extendedNote = true"
+                                    class="btn px-2 pt-1 pb-2 extended-info-tab w-100"
+                                    :class="{ colored: extendedNote }">Ghi
+                                    chú</button>
+                            </div>
+                        </div>
+                        <div v-if="extendedContact"
+                            class="d-flex flex-column extended-info-container extended-contact-container w-100">
+                            <div class="col-md-12 px-1 mt-1">
+                                <input type="text" class="form-control modal-item" placeholder="Địa chỉ">
+                            </div>
+                            <div class="d-flex flex-row col-md-12 px-1 mt-1">
+                                <div class="col-md-6" style="padding-right: 2px;">
+                                    <input type="text" class="form-control modal-item" placeholder="Điện thoại 1">
+                                </div>
+                                <div class="col-md-6" style="padding-left: 2px">
+                                    <input type="text" class="form-control modal-item" placeholder="Điện thoại 2">
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row col-md-12 px-1 mt-1">
+                                <div class="col-md-6" style="padding-right: 2px;">
+                                    <input type="text" class="form-control modal-item" placeholder="Email 1">
+                                </div>
+                                <div class="col-md-6" style="padding-left: 2px">
+                                    <input type="text" class="form-control modal-item" placeholder="Email 2">
+                                </div>
+                            </div>
+                            <div class="col-md-12 px-1 mt-1">
+                                <input type="text" class="form-control modal-item" placeholder="Facebook">
+                            </div>
+                            <div class="col-md-12 px-1 mt-1 mb-1">
+                                <input type="text" class="form-control modal-item" placeholder="Zalo">
+                            </div>
+                        </div>
+
+                        <div v-if="extendedJob"
+                            class="d-flex flex-column extended-info-container extended-job-container w-100 pb-1">
+                            <div class="d-flex flex-row col-md-12 px-1 mt-1">
+                                <div class="col-md-6" style="padding-right: 2px;">
+                                    <input type="text" class="form-control modal-item" placeholder="Tên cơ quan">
+                                </div>
+                                <div class="col-md-6" style="padding-left: 2px">
+                                    <input type="text" class="form-control modal-item" placeholder="Địa chỉ">
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row col-md-12 px-1 mt-1">
+                                <div class="col-md-6" style="padding-right: 2px;">
+                                    <input type="text" class="form-control modal-item" placeholder="Vị trí công tác">
+                                </div>
+                                <div class="col-md-6" style="padding-left: 2px">
+                                    <input type="text" class="form-control modal-item" placeholder="Nghề nghiệp">
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row col-md-12 px-1 mt-1">
+                                <div class="col-md-6 d-flex flex-row" style="padding-right: 2px;">
+                                    <div class="col-md-3">
+                                        <div class="d-flex w-100 h-100 align-items-center justify-content-center">
+                                            <a>Từ</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input type="date" class="form-control modal-item">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 d-flex flex-row" style="padding-left: 2px">
+                                    <div class="col-md-3">
+                                        <div class="d-flex w-100 h-100 align-items-center justify-content-center">
+                                            <a>Đến</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input type="date" class="form-control modal-item">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row justify-content-around col-md-12 px-1 mt-2">
+                                <button class="btn modal-item extended-info-colored px-2 py-1">Xoá thông tin</button>
+                                <button class="btn modal-item extended-info-colored px-2 py-1">Tạo mới</button>
+                                <button class="btn modal-item extended-info-colored px-2 py-1">Cập nhật</button>
+                                <button class="btn modal-item extended-info-colored px-2 py-1">Xóa</button>
+                            </div>
+                            <div class="extended-job-data-container mx-1 mt-2"></div>
+                        </div>
+
+                        <div v-if="extendedEdu"
+                            class="d-flex flex-column extended-info-container extended-edu-container w-100 pb-1">
+                            <div class="ol-md-12 px-1 mt-1">
+                                <input type="text" class="form-control modal-item" placeholder="Tên trường">
+                            </div>
+                            <div class="col-md-12 px-1 mt-1">
+                                <input type="text" class="form-control modal-item" placeholder="Mô tả">
+                            </div>
+                            <div class="d-flex flex-row col-md-12 px-1 mt-1">
+                                <div class="col-md-6 d-flex flex-row" style="padding-right: 2px;">
+                                    <div class="col-md-3">
+                                        <div class="d-flex w-100 h-100 align-items-center justify-content-center">
+                                            <a>Từ</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input type="date" class="form-control modal-item">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 d-flex flex-row" style="padding-left: 2px">
+                                    <div class="col-md-3">
+                                        <div class="d-flex w-100 h-100 align-items-center justify-content-center">
+                                            <a>Đến</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input type="date" class="form-control modal-item">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row justify-content-around col-md-12 px-1 mt-2">
+                                <button class="btn modal-item extended-info-colored px-2 py-1">Xoá thông tin</button>
+                                <button class="btn modal-item extended-info-colored px-2 py-1">Tạo mới</button>
+                                <button class="btn modal-item extended-info-colored px-2 py-1">Cập nhật</button>
+                                <button class="btn modal-item extended-info-colored px-2 py-1">Xóa</button>
+                            </div>
+                            <div class="extended-edu-data-container mx-1 mt-2"></div>
+                        </div>
+
+                        <div v-if="extendedNote"
+                            class="d-flex flex-column extended-info-container extended-note-container px-1 py-1">
+                            <!-- <div class="extended-note-data-container h-100"> -->
+                            <textarea class="h-100" placeholder="Viết điều gì đó..."></textarea>
+                            <!-- </div> -->
+                        </div>
+                    </div>
+                </div>
+            </modal>
+
+            <button type="button" class="btn p-0 btn-modal" @click="openMemberModal">Modal add member</button>
+            <modal name="member-modal">
+                <div class="d-flex flex-row w-100 align-items-center position-relative">
+                    <div class="col-md-12 modal-title d-flex align-items-center  justify-content-center w-100">Thêm thành viên
+                    </div>
+                    <div class="close-add-form" @click="closeMemberModal">
+                        <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                            <path
+                                d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="d-flex flex-row">
+                    <div class="col-md-6 d-flex flex-row">
+                        <div class="col-md-4 d-flex flex-column mt-1" style="padding-left: 4px;">
+                            <div class="profile-pic"></div>
+                            <button class="btn p-0 colored mt-1 modal-item">Xoá ảnh</button>
+                            <!-- <div class="d-flex align-items-center justify-content-center">                   -->
+                            <button class="btn p-0 colored mt-1 modal-item" style="margin-top: 120px !important;"
+                                @click="dead = !dead" :class="{ alivebuttoncolor: dead }">
+                                <a v-show="!dead">Còn sống</a>
+                                <a v-show="dead">Đã mất</a>
+                            </button>
+                            <!-- </div>  -->
+                        </div>
+                        <div class="d-flex flex-column col-md-8 align-items-center px-1">
+                            <div class="d-flex flex-row align-items-center w-100">
+                                <div class="col-md-12 mt-1">
+                                    <input type="text" class="form-control modal-item" placeholder="Tên thành viên đầy đủ">
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row align-items-center w-100">
+                                <div class="col-md-6 mt-1" style="padding-right: 4px;">
+                                    <input type="text" class="form-control modal-item" placeholder="Tên thường gọi">
+                                </div>
+                                <div class="col-md-6 mt-1 position-relative">
+                                    <label for="birthorder" class="add-form-birthorder-label position-absolute">Con
+                                        thứ</label>
+                                    <input id="birthorder" type="number"
+                                        class="form-control flex-grow add-form-birthorder-input modal-item pl-5" value="1"
+                                        min="1">
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row align-items-center justify-content-around w-100">
+                                <div class="col-md-6 mt-1" style="padding-right: 4px;">
+                                    <select class="form-select modal-item">
+                                        <option selected value="1">Giới tính</option>
+                                        <option value="2">Nam</option>
+                                        <option value="3">Nữ</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mt-1 d-flex flex-row">
+                                    <div class="col-md-8 add-form-bloodtype-label modal-item">Nhóm máu</div>
+                                    <div class="col-md-4">
+                                        <select id="bloodtype"
+                                            class=" add-form-bloodtype-select form-select modal-item p-0">
+                                            <option selected value="1">A</option>
+                                            <option value="2">B</option>
+                                            <option value="3">AB</option>
+                                            <option value="4">O</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="d-flex flex-row align-items-center justify-content-center w-100">
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control modal-item mt-1" placeholder="Nguyên quán">
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row w-100">
+                                <div class="col-md-6 mt-1" style="padding-right: 4px;">
+                                    <input type="text" class="form-control modal-item" placeholder="Quốc tịch">
+                                </div>
+                                <div class="col-md-6 mt-1">
+                                    <input type="text" class="form-control modal-item" placeholder="Tôn giáo">
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row align-items-center justify-content-center w-100">
+                                <div class="col-md-6 d-flex flex-wrap">
+                                    <div class="add-form-date-label modal-item">Ngày sinh dương lịch</div>
+                                </div>
+                                <div class="col-md-6 mt-1">
+                                    <input type="date" class="form-control modal-item">
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row align-items-center justify-content-center w-100">
+                                <div class="col-md-6 d-flex flex-wrap">
+                                    <div class="add-form-date-label modal-item">Ngày sinh âm lịch</div>
+                                </div>
+                                <div class="col-md-6 mt-1">
+                                    <input type="date" class="form-control modal-item">
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row w-100">
+                                <div class="col-md-12 mt-1">
+                                    <input type="text" class="form-control modal-item" placeholder="Nơi sinh">
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row align-items-center justify-content-center w-100">
+                                <div class="col-md-6 d-flex flex-wrap">
+                                    <div class="add-form-date-label modal-item">Ngày mất</div>
+                                </div>
+                                <div class="col-md-6 mt-1">
+                                    <input type="date" class="form-control modal-item" v-bind:disabled=!dead>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row w-100">
+                                <div class="col-md-12 mt-1">
+                                    <input type="text" class="form-control modal-item" placeholder="Nơi mất"
+                                        v-bind:disabled=!dead>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row w-100">
+                                <div class="col-md-12 mt-1 mb-1">
+                                    <input type="text" class="form-control modal-item" placeholder="Mộ phần"
+                                        v-bind:disabled=!dead>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mt-1" style="padding-right: 4px">
+                        <div class="d-flex flex-row modal-item align-items-center justify-content-around">
+                            <div class="w-100">
+                                <button
+                                    @click="extendedContact = true; extendedJob = false; extendedEdu = false; extendedNote = false"
+                                    class="btn px-2 pt-1 pb-2 extended-info-tab w-100"
+                                    :class="{ colored: extendedContact }">Liên
+                                    hệ</button>
+                            </div>
+                            <div class="w-100">
+                                <button
+                                    @click="extendedContact = false; extendedJob = true; extendedEdu = false; extendedNote = false"
+                                    class="btn px-2 pt-1 pb-2 extended-info-tab w-100"
+                                    :class="{ colored: extendedJob }">Nghề
+                                    nghiệp</button>
+                            </div>
+                            <div class="w-100">
+                                <button
+                                    @click="extendedContact = false; extendedJob = false; extendedEdu = true; extendedNote = false"
+                                    class="btn px-2 pt-1 pb-2 extended-info-tab w-100"
+                                    :class="{ colored: extendedEdu }">Giáo
+                                    dục</button>
+                            </div>
+                            <div class="w-100">
+                                <button
+                                    @click="extendedContact = false; extendedJob = false; extendedEdu = false; extendedNote = true"
+                                    class="btn px-2 pt-1 pb-2 extended-info-tab w-100"
+                                    :class="{ colored: extendedNote }">Ghi
+                                    chú</button>
+                            </div>
+                        </div>
+                        <div v-if="extendedContact"
+                            class="d-flex flex-column extended-info-container extended-contact-container w-100">
+                            <div class="col-md-12 px-1 mt-1">
+                                <input type="text" class="form-control modal-item" placeholder="Địa chỉ">
+                            </div>
+                            <div class="d-flex flex-row col-md-12 px-1 mt-1">
+                                <div class="col-md-6" style="padding-right: 2px;">
+                                    <input type="text" class="form-control modal-item" placeholder="Điện thoại 1">
+                                </div>
+                                <div class="col-md-6" style="padding-left: 2px">
+                                    <input type="text" class="form-control modal-item" placeholder="Điện thoại 2">
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row col-md-12 px-1 mt-1">
+                                <div class="col-md-6" style="padding-right: 2px;">
+                                    <input type="text" class="form-control modal-item" placeholder="Email 1">
+                                </div>
+                                <div class="col-md-6" style="padding-left: 2px">
+                                    <input type="text" class="form-control modal-item" placeholder="Email 2">
+                                </div>
+                            </div>
+                            <div class="col-md-12 px-1 mt-1">
+                                <input type="text" class="form-control modal-item" placeholder="Facebook">
+                            </div>
+                            <div class="col-md-12 px-1 mt-1 mb-1">
+                                <input type="text" class="form-control modal-item" placeholder="Zalo">
+                            </div>
+                        </div>
+
+                        <div v-if="extendedJob"
+                            class="d-flex flex-column extended-info-container extended-job-container w-100 pb-1">
+                            <div class="d-flex flex-row col-md-12 px-1 mt-1">
+                                <div class="col-md-6" style="padding-right: 2px;">
+                                    <input type="text" class="form-control modal-item" placeholder="Tên cơ quan">
+                                </div>
+                                <div class="col-md-6" style="padding-left: 2px">
+                                    <input type="text" class="form-control modal-item" placeholder="Địa chỉ">
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row col-md-12 px-1 mt-1">
+                                <div class="col-md-6" style="padding-right: 2px;">
+                                    <input type="text" class="form-control modal-item" placeholder="Vị trí công tác">
+                                </div>
+                                <div class="col-md-6" style="padding-left: 2px">
+                                    <input type="text" class="form-control modal-item" placeholder="Nghề nghiệp">
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row col-md-12 px-1 mt-1">
+                                <div class="col-md-6 d-flex flex-row" style="padding-right: 2px;">
+                                    <div class="col-md-3">
+                                        <div class="d-flex w-100 h-100 align-items-center justify-content-center">
+                                            <a>Từ</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input type="date" class="form-control modal-item">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 d-flex flex-row" style="padding-left: 2px">
+                                    <div class="col-md-3">
+                                        <div class="d-flex w-100 h-100 align-items-center justify-content-center">
+                                            <a>Đến</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input type="date" class="form-control modal-item">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row justify-content-around col-md-12 px-1 mt-2">
+                                <button class="btn modal-item extended-info-colored px-2 py-1">Xoá thông tin</button>
+                                <button class="btn modal-item extended-info-colored px-2 py-1">Tạo mới</button>
+                                <button class="btn modal-item extended-info-colored px-2 py-1">Cập nhật</button>
+                                <button class="btn modal-item extended-info-colored px-2 py-1">Xóa</button>
+                            </div>
+                            <div class="extended-job-data-container mx-1 mt-2"></div>
+                        </div>
+
+                        <div v-if="extendedEdu"
+                            class="d-flex flex-column extended-info-container extended-edu-container w-100 pb-1">
+                            <div class="ol-md-12 px-1 mt-1">
+                                <input type="text" class="form-control modal-item" placeholder="Tên trường">
+                            </div>
+                            <div class="col-md-12 px-1 mt-1">
+                                <input type="text" class="form-control modal-item" placeholder="Mô tả">
+                            </div>
+                            <div class="d-flex flex-row col-md-12 px-1 mt-1">
+                                <div class="col-md-6 d-flex flex-row" style="padding-right: 2px;">
+                                    <div class="col-md-3">
+                                        <div class="d-flex w-100 h-100 align-items-center justify-content-center">
+                                            <a>Từ</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input type="date" class="form-control modal-item">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 d-flex flex-row" style="padding-left: 2px">
+                                    <div class="col-md-3">
+                                        <div class="d-flex w-100 h-100 align-items-center justify-content-center">
+                                            <a>Đến</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input type="date" class="form-control modal-item">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row justify-content-around col-md-12 px-1 mt-2">
+                                <button class="btn modal-item extended-info-colored px-2 py-1">Xoá thông tin</button>
+                                <button class="btn modal-item extended-info-colored px-2 py-1">Tạo mới</button>
+                                <button class="btn modal-item extended-info-colored px-2 py-1">Cập nhật</button>
+                                <button class="btn modal-item extended-info-colored px-2 py-1">Xóa</button>
+                            </div>
+                            <div class="extended-edu-data-container mx-1 mt-2"></div>
+                        </div>
+
+                        <div v-if="extendedNote"
+                            class="d-flex flex-column extended-info-container extended-note-container px-1 py-1">
+                            <!-- <div class="extended-note-data-container h-100"> -->
+                            <textarea class="h-100" placeholder="Viết điều gì đó..."></textarea>
+                            <!-- </div> -->
+                        </div>
+                    </div>
+                </div>
+            </modal>
+
+        </div>
+
+        <div class="config-sidebar">
+            <!--Chọn chủ đề-->
+            <div class="topic config-item">
+                <select class="form-select">
+                    <option selected value="1">Chủ đề 1</option>
+                    <option value="2">Chủ đề 2</option>
+                    <option value="3">Chủ đề 3</option>
+                </select>
+            </div>
+            <!--Config menu-->
+            <div class="d-flex row align-items-center justify-content-around config-menu">
+                <div @click="configmenu = true" class="config-menu-item text-center col-md-6"
+                    :class="{ notchosenconfigmenu: !configmenu }">
+                    <a>Phả đồ</a>
   <div class="d-flex main-screen align-items-center justify-content-center p-0">
     <div class="d-flex main-screen align-items-center justify-content-center p-0">
       <button type="button" class="btn p-0 btn-modal" @click="openModal">Mở Modal</button>
@@ -389,8 +974,14 @@ export default {
       rotated3: false,
       expandconfigitem4: false,
       rotated4: false,
+      
+            configmenu: true,
+            dead: false,
 
-      configmenu: true,
+            extendedContact: true,
+            extendedJob: false,
+            extendedEdu: false,
+            extendedNote: false,
 
       nodes: [
         {
@@ -451,6 +1042,18 @@ export default {
           gender: "female",
           generation: 2,
         },
+        openChildrenModal() {
+            this.$modal.show('children-modal')
+        },
+        closeChildrenModal() {
+            this.$modal.hide('children-modal')
+        },
+        openMemberModal() {
+            this.$modal.show('member-modal')
+        },
+        closeMemberModal() {
+            this.$modal.hide('member-modal')
+        }
       ],
     };
   },
@@ -522,6 +1125,10 @@ svg.tommy .node.choose.female rect {
 svg.tommy .node.male > rect {
   fill: #c69934;
 }
+
+svg.tommy .node.female>rect {
+    fill: pink;
+}</style>
 
 svg.tommy .node.female > rect {
   fill: pink;
