@@ -10,6 +10,7 @@
 
 .main-screen{
     height: 100vh;
+    width: 57%;
     background-color: #E8C77B;
     flex-grow: 1;
 }
@@ -22,7 +23,7 @@
     background-color: #13191C;
     width: 25% !important;
     height: 100vh;
-    transition: 0.4s;
+    transition: 0.3s;
 }
 
 .list{
@@ -33,7 +34,12 @@
 }
 
 .config-sidebar{
-    background-color: #D9D9D9;
-    width: 18% !important;
-    height: 100vh;
+    background-color: #3A4B54;
+    width: 0%;
+    height: 100%;
+    transition: 0.24s;
+}
+
+.form-select{
+    background-image: none;
 }

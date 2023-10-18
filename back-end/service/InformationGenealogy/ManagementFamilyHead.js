@@ -15,6 +15,17 @@ function getAllFamilyHead(CodeID) {
     })
 }
 
+function removeFamilyHead(MemberId) {
+    let query = `DELETE FROM memberrole WHERE MemberID = ${MemberId} and RoleID = 2 `;
+    db.connection.query(query, (err, result) => {
+        if (err) {
+            console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+        } else {
+            console.log("remove succesfully")
+        }
+    })
+}
+
 module.exports = {
-    getAllFamilyHead
+    getAllFamilyHead,removeFamilyHead
 }

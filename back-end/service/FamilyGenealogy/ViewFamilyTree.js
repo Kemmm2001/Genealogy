@@ -359,22 +359,13 @@ function removePaternalAncestor() {
     })
 }
 
-function removeFamilyHead(MemberId) {
-    let query = `DELETE FROM memberrole WHERE MemberID = ${MemberId} and RoleID = 2 `;
-    db.connection.query(query, (err, result) => {
-        if (err) {
-            console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-        } else {
-            console.log("remove succesfully")
-        }
-    })
-}
+
 
 
 
 
 module.exports = {
     getAllReligion, getInforMember, getContactMember, getEducationMember, getJobMember, getEventMember, getAllNationality, getAllMemberRole,
-    getRoleExist, setRoleMember, removePaternalAncestor, removeFamilyHead, turnOnSQL_SAFE_UPDATES, turnOffSQL_SAFE_UPDATES,
+    getRoleExist, setRoleMember, removePaternalAncestor, turnOnSQL_SAFE_UPDATES, turnOffSQL_SAFE_UPDATES,
     setAllGenerationMember, ResetAllGenerationMember, ViewFamilyTree
 }
