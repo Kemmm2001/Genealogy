@@ -76,12 +76,13 @@ async function RemoveEvent(EventID) {
     })
 }
 
-function GetBirthDayInMonth() {
+function GetBirthDayInMonth(CodeID) {
     return new Promise((resolve, reject) => {
         let currentDate = new Date();
         let currentMonth = currentDate.getMonth() + 1;
         let query = `SELECT * FROM familymember
-        WHERE MONTH(dob) = ${currentMonth}`;
+        WHERE MONTH(dob) = ${currentMonth}
+        and CodeID = ${CodeID}`;
         db.connection.query(query, (err, result) => {
             if (err) {
                 console.log(err);
@@ -93,12 +94,13 @@ function GetBirthDayInMonth() {
     })
 }
 
-function GetDeadDayInMonth() {
+function GetDeadDayInMonth(CodeID) {
     return new Promise((resolve, reject) => {
         let currentDate = new Date();
         let currentMonth = currentDate.getMonth() + 1;
         let query = `SELECT * FROM familymember
-        WHERE MONTH(dod) = ${currentMonth}`;
+        WHERE MONTH(dod) = ${currentMonth}
+        and CodeID = ${CodeID}`;
         db.connection.query(query, (err, result) => {
             if (err) {
                 console.log(err);
@@ -113,5 +115,5 @@ function GetDeadDayInMonth() {
 
 
 module.exports = {
-    getAllEvent, InsertNewEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth , GetDeadDayInMonth
+    getAllEvent, InsertNewEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth
 }

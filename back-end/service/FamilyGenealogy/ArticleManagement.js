@@ -81,4 +81,4 @@ function deleteArticle(articleId) {
         });
     });
 }
-module.exports = {getAllArticle, addArticle, updateArticle, deleteArticle};
+module.exports = { getAllArticle, addArticle, updateArticle, deleteArticle };

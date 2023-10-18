@@ -66,7 +66,8 @@ var RemoveEvent = async (req, res) => {
 
 var GetBirthDayInMonth = async (req, res) => {
     try {
-        let data = await EventManagementService.GetBirthDayInMonth();
+        let CodeID = req.query.CodeID;
+        let data = await EventManagementService.GetBirthDayInMonth(CodeID);
         res.send(data);
     } catch (error) {
         console.log(error)
@@ -74,7 +75,8 @@ var GetBirthDayInMonth = async (req, res) => {
 }
 var GetDeadDayInMonth = async (req, res) => {
     try {
-        let data = await EventManagementService.GetDeadDayInMonth();
+        let CodeID = req.query.CodeID;
+        let data = await EventManagementService.GetDeadDayInMonth(CodeID);
         res.send(data);
     } catch (error) {
         console.log(error)
