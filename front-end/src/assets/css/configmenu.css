@@ -4,16 +4,21 @@
 }
 
 .config-menu{
-    background-color: #D9D9D9;
+    background-color: #3A4B54;
+    color: #FFFFFF;
 }
 
 .notchosenconfigmenu{
-    background-color: #FFFFFF;
+    background-color: #D9D9D9;
 }
 
 .config-menu-item{
     height: 32px;
     margin-top: 6px !important;
+}
+
+.config-menu-item:hover{
+    cursor: pointer;
 }
 
 .config-menu-item-expanded{
@@ -57,6 +62,19 @@
     left: 13px;
 }
 
-/* .btn{
-    margin: 6px;
-} */
+.config-topic:hover{
+    cursor: pointer;
+}
+
+.collapsed-config-sidebar{
+    border-radius: 0.375rem;
+    position: absolute;
+    right: 1%;
+    top: 1%;
+    width: 32px;
+    height: 32px;
+}
+
+.expandedConfigSidebar{
+    width: 25%;
+}
