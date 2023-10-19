@@ -51,11 +51,7 @@ var addAlbumPhoto = async (req, res) => {
         return res.json(response);
     } catch (e) {
         console.log(e);
-        response = {
-            success: false,
-            message: 'Something went wrong'
-        };
-        res.send(response);
+        res.send(e);
     }
 };
 
@@ -101,11 +97,7 @@ var updateAlbumPhoto = async (req, res) => {
         return res.json(response);
     } catch (e) {
         console.log(e);
-        response = {
-            success: false,
-            message: 'Something went wrong'
-        };
-        res.send(response);
+        res.send(e);
     }
 };
 
@@ -145,11 +137,7 @@ var deleteAlbumPhoto = async (req, res) => {
         return res.json(response);
     } catch (e) {
         console.log(e);
-        response = {
-            success: false,
-            message: 'Something went wrong'
-        };
-        res.send(response);
+        res.send(e);
     }
 };
 
@@ -189,11 +177,7 @@ var getAlbumPhotoById = async (req, res) => {
 
     } catch (e) {
         console.log(e);
-        response = {
-            success: false,
-            message: 'Something went wrong'
-        };
-        res.send(response);
+        res.send(e);
     }
 };
 
@@ -230,11 +214,7 @@ var getAlbumPhotoByCodeId = async (req, res) => {
         return res.json(response);
     } catch (e) {
         console.log(e);
-        response = {
-            success: false,
-            message: 'Something went wrong'
-        };
-        res.send(response);
+        res.send(e);
     }
 };
 
@@ -255,11 +235,7 @@ var getAllAlbumPhotos = async (req, res) => {
         return res.json(response);
     } catch (e) {
         console.log(e);
-        response = {
-            success: false,
-            message: 'Something went wrong'
-        };
-        res.send(response);
+        res.send(e);
     }
 };
 

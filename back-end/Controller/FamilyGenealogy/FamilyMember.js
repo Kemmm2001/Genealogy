@@ -1,5 +1,23 @@
-const e = require("express");
 const FamilyManagementService = require("../../service/FamilyGenealogy/FamilyManagement");
+
+missingFieldsError = function (missingFields) {
+    console.error(`Missing required fields: ${missingFields.join(', ')}`);
+    return response = {
+        success: false,
+        message: 'Missing required fields',
+        missingFields: missingFields
+    };
+}
+
+noDataFound = function (res) {
+    message = "No data found";
+    console.log(message);
+    response = {
+        success: false,
+        message: message
+    };
+    return res.status(404).json(response);
+}
 
 var addMember = async (req, res) => {
     try {
@@ -8,8 +26,6 @@ var addMember = async (req, res) => {
         let response;
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
-            'parentID',
-            'marriageID',
             'memberName',
             'nickName',
             'hasNickName',
@@ -21,28 +37,18 @@ var addMember = async (req, res) => {
             'lunarDob',
             'birthPlace',
             'isAlive',
-            'dod',
-            'placeOfDeath',
-            'graveSite',
-            'note',
             'generation',
             'codeId',
-            'bloodType'
+            'bloodType',
+            'male'
         ];
         // Kiểm tra xem có đủ các trường của FamilyMember không
         const missingFields = requiredFields.filter(field => !(field in req.body));
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
-            console.error(`Missing required fields: ${missingFields.join(', ')}`);
+            return res.status(400).json(missingFieldsError(missingFields));
 
-            response = {
-                success: false,
-                message: 'Missing required fields',
-                missingFields: missingFields
-            };
-
-            return res.status(400).json(response);
         }
         console.log("No missing fields");
         // thêm member vào database
@@ -71,9 +77,7 @@ var updateMember = async (req, res) => {
         let response;
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
-            'memberId',
-            'parentID',
-            'marriageID',
+            'memberID',
             'memberName',
             'nickName',
             'hasNickName',
@@ -85,27 +89,17 @@ var updateMember = async (req, res) => {
             'lunarDob',
             'birthPlace',
             'isAlive',
-            'dod',
-            'placeOfDeath',
-            'graveSite',
-            'note',
             'generation',
             'codeId',
-            'bloodType'
+            'bloodType',
+            'male'
         ];
         // Kiểm tra xem có đủ các trường của FamilyMember không
         const missingFields = requiredFields.filter(field => !(field in req.body));
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
-            console.error(`Missing required fields: ${missingFields.join(', ')}`);
+            return res.status(400).json(missingFieldsError(missingFields));
 
-            response = {
-                success: false,
-                message: 'Update member failed, missing required fields',
-                missingFields: missingFields
-            };
-
-            return res.status(400).json(response);
         }
         // update member vào database
         let data = await FamilyManagementService.updateMember(req.body);
@@ -113,7 +107,7 @@ var updateMember = async (req, res) => {
             success: true,
             message: 'Update member successfully',
             data: {
-                memberId: req.body.memberId,
+                memberID: req.body.memberID,
                 affectedRows: data.affectedRows,
                 changedRows: data.changedRows
             }
@@ -130,30 +124,18 @@ var deleteMember = async (req, res) => {
         console.log("Request body: ", req.body);
         let response;
         let result = await FamilyManagementService.deleteMember(req.body.memberID);
-        if(result.affectedRows == 0){
-            response = {
-                success: false,
-                message: 'Delete member failed, no member found',
-                data: {
-                    memberId: req.body.memberId,
-                    affectedRows: result.affectedRows,
-                    changedRows: result.changedRows
-                }
-            };
-            return res.json(response);
-        }else{
-            response = {
-                success: true,
-                message: 'Delete member successfully',
-                data: {
-                    memberId: req.body.memberId,
-                    affectedRows: result.affectedRows,
-                    changedRows: result.changedRows
-                }
-            };
-            return res.json(response);
-        }
-       
+
+        response = {
+            success: true,
+            message: 'Delete member successfully',
+            data: {
+                memberID: req.body.memberID,
+                affectedRows: result.affectedRows,
+                changedRows: result.changedRows
+            }
+        };
+        return res.json(response);
+
     } catch (e) {
         res.send(e);
     }
@@ -169,20 +151,20 @@ var searchMember = async (req, res) => {
         res.send(e);
     }
 }
-var filterMember = async function(req, res) {
+var filterMember = async function (req, res) {
     try {
-      const filterOptions = req.body; // Lấy filterOptions từ request body
-      const filteredMembers = await FamilyManagementService.filterMember(filterOptions);
-      
-      res.json({
-          success: true,
-          data: filteredMembers,
-      });
+        const filterOptions = req.body; // Lấy filterOptions từ request body
+        const filteredMembers = await FamilyManagementService.filterMember(filterOptions);
+
+        res.json({
+            success: true,
+            data: filteredMembers,
+        });
     } catch (error) {
-      console.error('Lỗi khi lọc thành viên:', error);
-      res.status(500).json({ success: false, message: 'Lỗi khi lọc thành viên' });
+        console.error('Lỗi khi lọc thành viên:', error);
+        res.status(500).json({ success: false, message: 'Lỗi khi lọc thành viên' });
     }
-  }
+}
 var getAllMember = async (req, res) => {
     try {
         // Gọi hàm từ dịch vụ để lấy tất cả thành viên
@@ -196,4 +178,4 @@ var getAllMember = async (req, res) => {
     }
 }
 
-module.exports = { addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember};
+module.exports = { addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember };
