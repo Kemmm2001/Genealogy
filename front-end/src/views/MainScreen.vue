@@ -1,6 +1,6 @@
 <template>
-  <div class="d-flex main-screen align-items-center">
-    <div class="d-flex main-screen align-items-center">
+  <div class="d-flex align-items-center w-100">
+    <div class="d-flex main-screen align-items-center w-100">
       <button type="button" class="btn p-0 btn-modal" @click="openChildrenModal">Modal add con</button>
       <modal name="children-modal">
         <div class="d-flex flex-row w-100 align-items-center position-relative">
@@ -274,10 +274,13 @@
         </div>
       </modal>
 
-      <button type="button" class="btn p-0 btn-modal" @v-on:click="openMemberModal">Modal add member</button>
+      <button type="button" class="btn p-0 btn-modal" @click="openMemberModal">Modal add member</button>
       <modal name="member-modal">
         <div class="d-flex flex-row w-100 align-items-center position-relative">
-          <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm thành viên</div>
+          <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">
+            Thêm thành
+            viên
+          </div>
           <div class="close-add-form" @click="closeMemberModal">
             <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
               <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -539,9 +542,16 @@
       </modal>
     </div>
 
-    <div class="config-sidebar">
+    <div v-if="!configSidebarHover" @mouseenter="expandConfigSidebar()" class="collapsed-config-sidebar">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <path
+          d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336a80 80 0 1 0 0-160 80 80 0 1 0 0 160z"
+        />
+      </svg>
+    </div>
+    <div @mouseleave="collapseConfigSidebar()" class="config-sidebar" :style="{width : configSidebarWidth + '%'}">
       <!--Chọn chủ đề-->
-      <div class="topic config-item">
+      <div v-if="configSidebarExpansion" class="topic config-item">
         <select class="form-select">
           <option selected value="1">Chủ đề 1</option>
           <option value="2">Chủ đề 2</option>
@@ -549,16 +559,18 @@
         </select>
       </div>
       <!--Config menu-->
-      <div class="d-flex row align-items-center justify-content-around config-menu">
-        <div @click="configmenu = true" class="config-menu-item text-center col-md-6" :class="{ notchosenconfigmenu: !configmenu }">
-          <a>Phả đồ</a>
+      <div v-if="configSidebarExpansion" class="d-flex flex-column config-menu">
+        <div class="d-flex flex-row align-items-center justify-content-center">
+          <div @click="configTree = true; configPrinting = false;" class="config-menu-item config-topic text-center col-md-6" :class="{ notchosenconfigmenu: configPrinting }">
+            <a>Phả đồ</a>
+          </div>
+          <div @click="configTree = false; configPrinting = true" class="config-menu-item config-topic text-center col-md-6" :class="{ notchosenconfigmenu: configTree }">
+            <a>Hỗ trợ in ấn</a>
+          </div>
         </div>
-        <div @click="configmenu = false" class="config-menu-item text-center col-md-6" :class="{ notchosenconfigmenu: configmenu }">
-          <a>Hỗ trợ in ấn</a>
-        </div>
-        <div v-if="configmenu" class="config-menu-board d-flex flex-column">
-          <div class="config-menu-item">
-            <button @click="expandconfigitem1 = !expandconfigitem1" type="button" class="btn p-0" :class="{ rotated1: expandconfigitem1 }">
+        <div v-if="configTree" class="config-menu-board d-flex flex-column">
+          <div @click="expandconfigitem1 = !expandconfigitem1" class="config-menu-item">
+            <button type="button" class="btn p-0" :class="{ rotated1: expandconfigitem1 }">
               <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
                 <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
               </svg>
@@ -576,8 +588,8 @@
               <option>20</option>
             </select>
           </div>
-          <div class="d-flex config-menu-item align-items-center">
-            <button @click="expandconfigitem2 = !expandconfigitem2" type="button" class="btn p-0" :class="{ rotated2: expandconfigitem2 }">
+          <div @click="expandconfigitem2 = !expandconfigitem2" class="d-flex config-menu-item align-items-center">
+            <button type="button" class="btn p-0" :class="{ rotated2: expandconfigitem2 }">
               <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
                 <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
               </svg>
@@ -603,8 +615,8 @@
               </div>
             </div>
           </div>
-          <div class="d-flex config-menu-item align-items-center">
-            <button @click="expandconfigitem3 = !expandconfigitem3" type="button" class="btn p-0" :class="{ rotated3: expandconfigitem3 }">
+          <div @click="expandconfigitem3 = !expandconfigitem3" class="d-flex config-menu-item align-items-center">
+            <button type="button" class="btn p-0" :class="{ rotated3: expandconfigitem3 }">
               <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
                 <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
               </svg>
@@ -633,8 +645,8 @@
               <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
             </div>
           </div>
-          <div class="d-flex config-menu-item align-items-center">
-            <button @click="expandconfigitem4 = !expandconfigitem4" type="button" class="btn p-0" :class="{ rotated4: expandconfigitem4 }">
+          <div @click="expandconfigitem4 = !expandconfigitem4" class="d-flex config-menu-item align-items-center">
+            <button type="button" class="btn p-0" :class="{ rotated4: expandconfigitem4 }">
               <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
                 <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
               </svg>
@@ -677,16 +689,16 @@
             </div>
           </div>
         </div>
-        <div v-if="!configmenu" class="config-menu-board d-flex flex-column">
-          <div class="d-flex config-menu-item align-items-center">
-            <button @click="expandconfigitem1 = !expandconfigitem1" type="button" class="btn p-0" :class="{ rotated1: expandconfigitem1 }">
+        <div v-if="configPrinting" class="config-menu-board d-flex flex-column">
+          <div @click="expandconfigitem5 = !expandconfigitem5" class="d-flex config-menu-item align-items-center">
+            <button type="button" class="btn p-0" :class="{ rotated5: expandconfigitem5 }">
               <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
                 <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
               </svg>
             </button>
             <a>Khung viền</a>
           </div>
-          <div v-show="expandconfigitem1" class="config-menu-item-expanded">
+          <div v-show="expandconfigitem5" class="config-menu-item-expanded">
             <div class="d-flex align-items-center config-menu-item-content">
               <input class="form-check-input config-menu-checkbox-input" type="checkbox" />
               <a>Vẽ khung</a>
@@ -704,15 +716,15 @@
               <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
             </div>
           </div>
-          <div class="d-flex config-menu-item align-items-center">
-            <button @click="expandconfigitem2 = !expandconfigitem2" type="button" class="btn p-0" :class="{ rotated2: expandconfigitem2 }">
+          <div @click="expandconfigitem6 = !expandconfigitem6" class="d-flex config-menu-item align-items-center">
+            <button type="button" class="btn p-0" :class="{ rotated6: expandconfigitem6 }">
               <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
                 <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
               </svg>
             </button>
             <a>Tiêu đề</a>
           </div>
-          <div v-show="expandconfigitem2" class="config-menu-item-expanded">
+          <div v-show="expandconfigitem6" class="config-menu-item-expanded">
             <div class="d-flex align-items-center config-menu-item-content">
               <input class="form-check-input config-menu-checkbox-input" type="checkbox" />
               <a>Vẽ ảnh tiêu đề</a>
@@ -734,15 +746,15 @@
               <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
             </div>
           </div>
-          <div class="d-flex config-menu-item align-items-center">
-            <button @click="expandconfigitem3 = !expandconfigitem3" type="button" class="btn p-0" :class="{ rotated3: expandconfigitem3 }">
+          <div @click="expandconfigitem7 = !expandconfigitem7" class="d-flex config-menu-item align-items-center">
+            <button type="button" class="btn p-0" :class="{ rotated7: expandconfigitem7 }">
               <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
                 <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
               </svg>
             </button>
             <a>Nền</a>
           </div>
-          <div v-show="expandconfigitem3" class="config-menu-item-expanded">
+          <div v-show="expandconfigitem7" class="config-menu-item-expanded">
             <div class="d-flex align-items-center config-menu-item-content">
               <input class="form-check-input config-menu-checkbox-input" type="checkbox" />
               <a>Vẽ màu nền</a>
@@ -789,15 +801,15 @@
               </select>
             </div>
           </div>
-          <div class="d-flex config-menu-item align-items-center">
-            <button @click="expandconfigitem4 = !expandconfigitem4" type="button" class="btn p-0" :class="{ rotated4: expandconfigitem4 }">
+          <div @click="expandconfigitem8 = !expandconfigitem8" class="d-flex config-menu-item align-items-center">
+            <button type="button" class="btn p-0" :class="{ rotated8: expandconfigitem8 }">
               <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
                 <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
               </svg>
             </button>
             <a>Thông tin ngày tạo</a>
           </div>
-          <div v-show="expandconfigitem4" class="config-menu-item-expanded">
+          <div v-show="expandconfigitem8" class="config-menu-item-expanded">
             <div class="d-flex align-items-center config-menu-item-content">
               <input class="form-check-input config-menu-checkbox-input" type="checkbox" />
               <a>Hiện ngày tạo</a>
@@ -851,14 +863,28 @@ export default {
       rotated3: false,
       expandconfigitem4: false,
       rotated4: false,
+      expandconfigitem5: false,
+      rotated5: false,
+      expandconfigitem6: false,
+      rotated6: false,
+      expandconfigitem7: false,
+      rotated7: false,
+      expandconfigitem8: false,
+      rotated8: false,
 
-      configmenu: true,
+      configTree: true,
+      configPrinting: false,
       dead: false,
 
       extendedContact: true,
       extendedJob: false,
       extendedEdu: false,
       extendedNote: false,
+
+      configSidebarHover: false,
+      configSidebarExpansion: false,
+
+      configSidebarWidth: 0,
 
       nodes: [
         {
@@ -952,9 +978,6 @@ export default {
         },
       });
     },
-    test() {
-      console.log("đã vào");
-    },
     openChildrenModal() {
       this.$modal.show("children-modal");
     },
@@ -966,6 +989,18 @@ export default {
     },
     closeMemberModal() {
       this.$modal.hide("member-modal");
+    },
+    expandConfigSidebar() {
+      this.configSidebarHover = true;
+      this.configSidebarWidth = 25;
+      setTimeout(() => {
+        this.configSidebarExpansion = true;
+      }, 300);
+    },
+    collapseConfigSidebar() {
+      this.configSidebarHover = false;
+      this.configSidebarWidth = 0;
+      this.configSidebarExpansion = false;
     },
   },
   // mounted() {
