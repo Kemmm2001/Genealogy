@@ -3,19 +3,21 @@ function addMember(member) {
     return new Promise((resolve, reject) => {
         const query = `
         INSERT INTO familymember 
-        (MemberName, NickName, HasNickName, 
+        (  ParentID, MarriageID, MemberName, NickName, HasNickName, 
             BirthOrder, 
             Origin, 
             NationalityID, 
             ReligionID, 
             Dob, LunarDob, BirthPlace, 
             IsAlive, Dod, PlaceOfDeadth, 
-            GraveSite, Note, Generation, CodeID)
+            GraveSite, Note, Generation, BloodType, CodeID, Male)
         VALUES 
-        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
 
         const values = [
+            member.parentID,
+            member.marriageID,
             member.memberName,
             member.nickName,
             member.hasNickName,
@@ -23,10 +25,18 @@ function addMember(member) {
             member.origin,
             member.nationalityId,
             member.religionId,
-            member.dob, member.lunarDob, member.birthPlace,
-            member.isAlive, member.dod, member.placeOfDeath,
-            member.graveSite, member.note, member.generation, member.codeId
-
+            member.dob, 
+            member.lunarDob, 
+            member.birthPlace,
+            member.isAlive, 
+            member.dod, 
+            member.placeOfDeath,
+            member.graveSite, 
+            member.note, 
+            member.generation, 
+            member.bloodType,
+            member.codeId,
+            member.male
         ];
 
         db.connection.query(query, values, (err, result) => {
@@ -46,29 +56,53 @@ function updateMember(member) {
         const query = `
         UPDATE familymember 
         SET 
-          MemberName = ?, NickName = ?, HasNickName = ?,
+          ParentID = ?,
+          MarriageID = ?,
+          MemberName = ?,
+          NickName = ?,
+          HasNickName = ?,
           BirthOrder = ?,
-          Origin = ?, NationalityID = ?, ReligionID = ?,
-          Dob = ?, LunarDob = ?, BirthPlace = ?,
-          IsAlive = ?, Dod = ?, PlaceOfDeadth = ?,
+          Origin = ?,
+          NationalityID = ?,
+          ReligionID = ?,
+          Dob = ?,
+          LunarDob = ?,
+          BirthPlace = ?,
+          IsAlive = ?,
+          Dod = ?,
+          PlaceOfDeadth = ?,
           GraveSite = ?,
           Note = ?,
           Generation = ?,
-          CodeID = ?
+          BloodType = ?,
+          CodeID = ?,
+          Male = ?
         WHERE MemberID = ?
       `;
 
         const values = [
-            member.memberName, member.nickName, member.hasNickName,
-            member.birthOrder, member.origin,
-            member.nationalityId, member.religionId,
-            member.dob, member.lunarDob, member.birthPlace,
-            member.isAlive, member.dod, member.placeOfDeath,
-            member.graveSite,
-            member.note,
-            member.generation,
+            member.parentID,
+            member.marriageID,
+            member.memberName,
+            member.nickName,
+            member.hasNickName,
+            member.birthOrder,
+            member.origin,
+            member.nationalityId,
+            member.religionId,
+            member.dob, 
+            member.lunarDob, 
+            member.birthPlace,
+            member.isAlive, 
+            member.dod, 
+            member.placeOfDeath,
+            member.graveSite, 
+            member.note, 
+            member.generation, 
+            member.bloodType,
             member.codeId,
-            member.memberId
+            member.male,
+            member.memberID
         ];
 
         db.connection.query(query, values, (err, result) => {
@@ -81,10 +115,7 @@ function updateMember(member) {
         });
     });
 
-
-
 }
-
 function deleteMember(memberId) {
     return new Promise((resolve, reject) => {
         const query = 'DELETE FROM familymember WHERE MemberID = ?';

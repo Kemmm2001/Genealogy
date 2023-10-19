@@ -52,11 +52,7 @@ var addFamilyHistory = async (req, res) => {
         return res.json(response);
     } catch (e) {
         console.log(e);
-        response = {
-            success: false,
-            message: 'Something went wrong'
-        };
-        res.send(response);
+        res.send(e);
     }
 };
 
@@ -100,11 +96,7 @@ var updateFamilyHistory = async (req, res) => {
         return res.json(response);
     } catch (e) {
         console.log(e);
-        response = {
-            success: false,
-            message: 'Something went wrong'
-        };
-        res.send(response);
+        res.send(e);
     }
 };
 
@@ -144,11 +136,7 @@ var deleteFamilyHistory = async (req, res) => {
         return res.json(response);
     } catch (e) {
         console.log(e);
-        response = {
-            success: false,
-            message: 'Something went wrong'
-        };
-        res.send(response);
+        res.send(e);
     }
 };
 
@@ -188,11 +176,7 @@ var getFamilyHistoryById = async (req, res) => {
 
     } catch (e) {
         console.log(e);
-        response = {
-            success: false,
-            message: 'Something went wrong'
-        };
-        res.send(response);
+        res.send(e);
     }
 };
 
@@ -231,11 +215,7 @@ var getFamilyHistoryByCodeId = async (req, res) => {
 
     } catch (e) {
         console.log(e);
-        response = {
-            success: false,
-            message: 'Something went wrong'
-        };
-        res.send(response);
+        res.send(e);
     }
 };
 
@@ -255,11 +235,7 @@ var getAllFamilyHistories = async (req, res) => {
         return res.json(response);
     } catch (e) {
         console.log(e);
-        response = {
-            success: false,
-            message: 'Something went wrong'
-        };
-        res.send(response);
+        res.send(e);
     }
 };
 
