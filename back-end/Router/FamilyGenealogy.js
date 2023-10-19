@@ -48,6 +48,7 @@ const initWebRouter = (app) => {
 
 
     //API Nhật anh
+    router.get('/member', FamilyMemberManagement.getMember);
     router.post('/search-member', FamilyMemberManagement.searchMember);
     router.post('/filter-member', FamilyMemberManagement.filterMember);
     router.post('/export-pdf', PdfController.exportPDF);

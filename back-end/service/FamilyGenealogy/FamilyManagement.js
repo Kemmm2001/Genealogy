@@ -164,51 +164,71 @@ function searchMember(searchTerm) {
     });
 }
 
-function filterMember(filterOptions) {
-    return new Promise((resolve, reject) => {
-      const {
-        name,
-        dob,
-        origin,
-        // Có thể thêm sau
-      } = filterOptions;
+function filterMember(req, res) {
+    try {
+      const filterOptions = req.body; // Lấy filterOptions từ request body
   
-      const conditions = [];
-      const values = [];
+      // Xây dựng câu truy vấn SQL cho bảng familymember
+      let memberQuery = 'SELECT * FROM familymember WHERE 1=1';
   
-      if (name) {
-        conditions.push('MemberName LIKE ?');
-        values.push(`%${name}%`);
+      // Xây dựng điều kiện lọc cho bảng familymember
+      if (filterOptions.male !== undefined) {
+        memberQuery += ` AND male = ${filterOptions.male}`;
+      }
+      if (filterOptions.BloodType) {
+        memberQuery += ` AND BloodType = '${filterOptions.BloodType}'`;
+      }
+      if (filterOptions.IsAlive !== undefined) {
+        memberQuery += ` AND IsAlive = ${filterOptions.IsAlive}`;
       }
   
-      if (dob) {
-        conditions.push('Dob = ?');
-        values.push(dob);
+      // Thực hiện truy vấn SQL cho bảng familymember
+      const memberResults = db.connection.query(memberQuery);
+  
+      // Xây dựng câu truy vấn SQL cho bảng contact
+      let contactQuery = 'SELECT * FROM contact WHERE 1=1';
+  
+      // Xây dựng điều kiện lọc cho bảng contact
+      if (filterOptions.Address) {
+        contactQuery += ` AND Address = '${filterOptions.Address}'`;
       }
   
-      if (origin) {
-        conditions.push('Origin = ?');
-        values.push(origin);
-      }
+      // Thực hiện truy vấn SQL cho bảng contact
+      const contactResults = db.connection.query(contactQuery);
   
+      // Gộp dữ liệu thành viên và thông tin liên hệ
+      const mergedData = mergeData(memberResults, contactResults);
   
-      // Xây dựng câu truy vấn SQL
-      let query = 'SELECT * FROM familymember';
-  
-      if (conditions.length > 0) {
-        query += ` WHERE ${conditions.join(' AND ')}`;
-      }
-  
-      // Thực hiện truy vấn SQL
-      db.connection.query(query, values, (err, result) => {
-        if (err) {
-          console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-          reject(err);
-        } else {
-          resolve(result);
-        }
+      res.json({
+        success: true,
+        data: mergedData,
       });
-    });
+    } catch (error) {
+      console.error('Lỗi khi lọc thành viên:', error);
+      res.status(500).json({ success: false, message: 'Lỗi khi lọc thành viên' });
+    }
+  }
+
+  function mergeData(memberResults, contactResults) {
+    const mergedData = [];
+  
+    // Gộp dữ liệu từ bảng familymember
+    for (const memberRow of memberResults) {
+      // Tạo một đối tượng mới để lưu thông tin thành viên
+      const mergedMember = {
+        MemberID: memberRow.MemberID,
+      };
+  
+      // Tìm thông tin liên hệ của thành viên dựa trên MemberID
+      const relatedContact = contactResults.find(contactRow => contactRow.MemberID === memberRow.MemberID);
+  
+      if (relatedContact) {
+        mergedData.push(mergedMember);
+
+      }
+    }
+  
+    return mergedData;
   }
   
 

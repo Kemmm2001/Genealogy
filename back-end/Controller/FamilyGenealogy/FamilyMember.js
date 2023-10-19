@@ -193,5 +193,18 @@ async function filterMember(req, res) {
         res.status(500).json({ success: false, message: 'Lỗi khi lọc thành viên' });
     }
 }
+var getAllMember = async (req, res) => {
+    try {
+        // Gọi hàm từ dịch vụ để lấy tất cả thành viên
+        const members = await FamilyManagementService.getAllMembers();
 
-module.exports = { addMember, updateMember, deleteMember, searchMember, filterMember};
+        // Trả về danh sách thành viên trong phản hồi
+        res.json({ success: true, data: members });
+    } catch (error) {
+        console.error('Lỗi khi lấy tất cả thành viên:', error);
+        res.status(500).json({ success: false, message: 'Lỗi khi lấy tất cả thành viên' });
+    }
+}
+
+
+module.exports = { addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember};
