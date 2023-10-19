@@ -4,6 +4,8 @@ const GeneralInformation = require('../Controller/InformationGenealogy/GeneralIn
 const FamilyHistoryController = require('../Controller/InformationGenealogy/FamilyHistory');
 const StatisticsController = require('../Controller/InformationGenealogy/StatisticsController')
 const AlbumPhotoController = require('../Controller/InformationGenealogy/AlbumPhoto');
+const ArticleController = require('../Controller/FamilyGenealogy/ArticleController')
+
 var router = express.Router();
 
 
@@ -47,7 +49,10 @@ const initWebRouter = (app) => {
 
     //API Nhật anh
 
-
+    router.get('/article', ArticleController.getAllArticle);
+    router.post('/add-article', ArticleController.addArticle);
+    router.put('/update-article', ArticleController.updateArticle);
+    router.delete('/delete-article', ArticleController.deleteArticle);
     //Tiền tố đứng trước route
     app.use('/api/v1', router);
 }
