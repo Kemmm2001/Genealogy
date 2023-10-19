@@ -2,9 +2,6 @@ const express = require('express');
 const ManagerFamilyTree = require('../Controller/FamilyGenealogy/FamilyTree')
 const FamilyMemberManagement = require('../Controller/FamilyGenealogy/FamilyMember')
 const PdfController = require('../Controller/FamilyGenealogy/pdfController')
-
-const ArticleController = require('../Controller/FamilyGenealogy/ArticleController')
-
 const JobManagementController = require('../Controller/FamilyGenealogy/JobManagementController')
 const ContactManagementController = require('../Controller/FamilyGenealogy/ContactManagementController')
 const EducationManagementController = require('../Controller/FamilyGenealogy/EducationManagementController')
@@ -49,14 +46,10 @@ const initWebRouter = (app) => {
 
    
     //API Nhật anh
+    router.get('/member', FamilyMemberManagement.getAllMember);
     router.post('/search-member', FamilyMemberManagement.searchMember);
     router.post('/filter-member', FamilyMemberManagement.filterMember);
     router.post('/export-pdf', PdfController.exportPDF);
-
-    router.get('/article', ArticleController.getAllArticle);
-    router.post('/add-article', ArticleController.addArticle);
-    router.put('/update-article', ArticleController.updateArticle);
-    router.delete('/delete-article', ArticleController.deleteArticle);
 
     //Tiền tố đứng trước route
     app.use('/api/v1', router);
