@@ -3,19 +3,21 @@ function addMember(member) {
     return new Promise((resolve, reject) => {
         const query = `
         INSERT INTO familymember 
-        (MemberName, NickName, HasNickName, 
+        ( ParentID, MarriageID, MemberName, NickName, HasNickName, 
             BirthOrder, 
             Origin, 
             NationalityID, 
             ReligionID, 
             Dob, LunarDob, BirthPlace, 
             IsAlive, Dod, PlaceOfDeadth, 
-            GraveSite, Note, Generation, CodeID)
+            GraveSite, Note, Generation, CodeID, BloodType)
         VALUES 
-        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
 
         const values = [
+            member.parentId,
+            member.marriageId,
             member.memberName,
             member.nickName,
             member.hasNickName,
@@ -23,10 +25,17 @@ function addMember(member) {
             member.origin,
             member.nationalityId,
             member.religionId,
-            member.dob, member.lunarDob, member.birthPlace,
-            member.isAlive, member.dod, member.placeOfDeath,
-            member.graveSite, member.note, member.generation, member.codeId
-
+            member.dob, 
+            member.lunarDob, 
+            member.birthPlace,
+            member.isAlive, 
+            member.dod, 
+            member.placeOfDeath,
+            member.graveSite, 
+            member.note, 
+            member.generation, 
+            member.codeId,
+            member.bloodType
         ];
 
         db.connection.query(query, values, (err, result) => {
@@ -46,29 +55,51 @@ function updateMember(member) {
         const query = `
         UPDATE familymember 
         SET 
-          MemberName = ?, NickName = ?, HasNickName = ?,
+          ParentID = ?,
+          MarriageID = ?,
+          MemberName = ?,
+          NickName = ?,
+          HasNickName = ?,
           BirthOrder = ?,
-          Origin = ?, NationalityID = ?, ReligionID = ?,
-          Dob = ?, LunarDob = ?, BirthPlace = ?,
-          IsAlive = ?, Dod = ?, PlaceOfDeadth = ?,
+          Origin = ?,
+          NationalityID = ?,
+          ReligionID = ?,
+          Dob = ?,
+          LunarDob = ?,
+          BirthPlace = ?,
+          IsAlive = ?,
+          Dod = ?,
+          PlaceOfDeadth = ?,
           GraveSite = ?,
           Note = ?,
           Generation = ?,
-          CodeID = ?
+          CodeID = ?,
+          BloodType = ?
         WHERE MemberID = ?
       `;
 
         const values = [
-            member.memberName, member.nickName, member.hasNickName,
-            member.birthOrder, member.origin,
-            member.nationalityId, member.religionId,
-            member.dob, member.lunarDob, member.birthPlace,
-            member.isAlive, member.dod, member.placeOfDeath,
-            member.graveSite,
-            member.note,
-            member.generation,
-            member.codeId,
-            member.memberId
+            member.ParentID,
+            member.MarriageID,
+            member.MemberName,
+            member.NickName,
+            member.HasNickName,
+            member.BirthOrder,
+            member.Origin,
+            member.NationalityID,
+            member.ReligionID,
+            member.Dob,
+            member.LunarDob,
+            member.BirthPlace,
+            member.IsAlive,
+            member.Dod,
+            member.PlaceOfDeadth,
+            member.GraveSite,
+            member.Note,
+            member.Generation,
+            member.CodeID,
+            member.BloodType,
+            member.MemberID
         ];
 
         db.connection.query(query, values, (err, result) => {
@@ -80,8 +111,6 @@ function updateMember(member) {
             }
         });
     });
-
-
 
 }
 

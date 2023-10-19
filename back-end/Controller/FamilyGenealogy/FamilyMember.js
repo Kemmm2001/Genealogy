@@ -8,6 +8,8 @@ var addMember = async (req, res) => {
         let response;
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
+            'parentID',
+            'marriageID',
             'memberName',
             'nickName',
             'hasNickName',
@@ -19,11 +21,13 @@ var addMember = async (req, res) => {
             'lunarDob',
             'birthPlace',
             'isAlive',
+            'dod',
             'placeOfDeath',
             'graveSite',
             'note',
             'generation',
-            'codeId'
+            'codeId',
+            'bloodType'
         ];
         // Kiểm tra xem có đủ các trường của FamilyMember không
         const missingFields = requiredFields.filter(field => !(field in req.body));
@@ -68,6 +72,8 @@ var updateMember = async (req, res) => {
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
             'memberId',
+            'parentID',
+            'marriageID',
             'memberName',
             'nickName',
             'hasNickName',
@@ -79,11 +85,13 @@ var updateMember = async (req, res) => {
             'lunarDob',
             'birthPlace',
             'isAlive',
+            'dod',
             'placeOfDeath',
             'graveSite',
             'note',
             'generation',
-            'codeId'
+            'codeId',
+            'bloodType'
         ];
         // Kiểm tra xem có đủ các trường của FamilyMember không
         const missingFields = requiredFields.filter(field => !(field in req.body));
