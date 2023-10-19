@@ -44,24 +44,6 @@ var addMember = async (req, res) => {
         // thêm member vào database
         let data = await FamilyManagementService.addMember(req.body);
         console.log("Add member successfully");
-        let relationShipInReq = req.body.relationship;
-        // nếu có trường relationship thì thêm vào database mối quan hệ giữa 2 người 
-        if (relationShipInReq) {
-            console.log("Relationship: ", relationShipInReq);
-            let relationship = await FamilyManagementService.getRelationship(relationShipInReq.fromRelationship, relationShipInReq.toRelationship);
-           console.log("Relationship: ", relationship);
-            if (relationship == null || relationship.length != 2) {
-                response = {
-                    success: false,
-                    message: 'Mối quan hệ không tồn tại hoặc không phù hợp',
-                };
-                return res.json(response);
-            }
-            let memberTo = await FamilyManagementService.getMember(relationShipInReq.memberId);
-            console.log("Member to: ", memberTo);
-            let relationshipCreated = await FamilyManagementService.createRelationship(data.insertId, memberTo[0].MemberID, relationship[0].RelationshipID, relationship[1].RelationshipID);
-            console.log("Relationship created: ", relationshipCreated);
-        }
 
         response = {
             success: true,

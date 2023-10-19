@@ -83,6 +83,25 @@ var GetDeadDayInMonth = async (req, res) => {
     }
 }
 
+var SendSMS = async (req, res) => {
+    try {
+        require('dotenv').config();
+        var client = require('twilio')(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
+        let objData = {};
+        objData.PhoneNumber = req.body.PhoneNumber;
+        objData.Message = req.body.Message;
+        console.log("Req : " + objData.Message);
+        client.messages.create({
+            body: objData.Message,
+            from: process.env.PHONE_NUMBER,
+            to: objData.PhoneNumber
+        });
+        res.send("Success")
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 module.exports = {
-    getAllEventGenealogy, InsertEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth , GetDeadDayInMonth
+    getAllEventGenealogy, InsertEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth, SendSMS
 }
