@@ -274,7 +274,7 @@
         </div>
       </modal>
 
-      <button type="button" class="btn p-0 btn-modal" @click="openMemberModal">Modal add member</button>
+      <button type="button" class="btn p-0 btn-modal" @v-on:click="openMemberModal">Modal add member</button>
       <modal name="member-modal">
         <div class="d-flex flex-row w-100 align-items-center position-relative">
           <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm thành viên</div>
@@ -951,6 +951,9 @@ export default {
           field_4: "generation",
         },
       });
+    },
+    test() {
+      console.log("đã vào");
     },
     openChildrenModal() {
       this.$modal.show("children-modal");

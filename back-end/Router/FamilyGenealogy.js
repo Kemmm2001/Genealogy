@@ -23,9 +23,9 @@ const initWebRouter = (app) => {
     router.get('/memberRole', ManagerFamilyTree.AllMemberRole)
     router.get('/InforMember', ManagerFamilyTree.informationMember)
     router.post('/setRole', ManagerFamilyTree.setRole)
-    router.get('/viewTree', ManagerFamilyTree.AllMemberInGenelogy)  
-    
-    router.get('/compare',CompareMemberController.compareMember)
+    router.get('/viewTree', ManagerFamilyTree.AllMemberInGenelogy)
+
+    router.get('/compare', CompareMemberController.compareMember)
 
     router.get('/getJob', JobManagementController.ViewJobMember)
     router.post('/addJob', JobManagementController.InsertJobMember)
@@ -47,7 +47,7 @@ const initWebRouter = (app) => {
     router.put('/member', FamilyMemberManagement.updateMember)
     router.delete('/member', FamilyMemberManagement.deleteMember)
 
-   
+
     //API Nhật anh
     router.post('/search-member', FamilyMemberManagement.searchMember);
     router.post('/filter-member', FamilyMemberManagement.filterMember);
