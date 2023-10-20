@@ -4,17 +4,16 @@
 }
 
 .config-menu{
-    background-color: #3A4B54;
     color: #FFFFFF;
 }
 
 .notchosenconfigmenu{
-    background-color: #D9D9D9;
+    background-color: #3A4B54;
 }
 
 .config-menu-item{
     height: 32px;
-    margin-top: 6px !important;
+    margin: 6px !important;
 }
 
 .config-menu-item:hover{
@@ -62,17 +61,22 @@
     left: 13px;
 }
 
+.topic{
+    background-color: #3A4B54;
+    padding: 6px;
+}
+
 .config-topic:hover{
     cursor: pointer;
 }
 
 .collapsed-config-sidebar{
-    border-radius: 0.375rem;
+    background-color: #3A4B54;
     position: absolute;
-    right: 1%;
-    top: 1%;
-    width: 32px;
-    height: 32px;
+    right: 0;
+    top: 0;
+    width: 48px;
+    height: 100%;
 }
 
 .expandedConfigSidebar{

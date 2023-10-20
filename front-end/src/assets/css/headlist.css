@@ -1,0 +1,43 @@
+.headlist-item{
+    height: 42px !important;
+}
+
+.headlist-button-container{
+    justify-content: right;
+}
+
+.headlist-item-button{
+    background-color: #3A4B54;
+    color: #FFFFFF;
+}
+
+.headlist-item-button:hover{
+    background-color: #4D646F;
+    color: #FFFFFF;
+}
+
+.headlist-item-button:active{
+    background-color: #263237 !important;
+    color: #FFFFFF !important;
+}
+
+.headlist-list-th{
+    background-color: #90CAF9 !important;
+} 
+
+.headlist-list-footer{
+    background-color: #FFFFFF;
+}
+
+.headlist-paging-icon{
+    width: 18px;
+    height: 18px;
+}
+
+.headlist-table-item{
+    cursor: pointer;
+}
+
+.headlist-table-item:active{
+    background-color: #007aff !important;
+}

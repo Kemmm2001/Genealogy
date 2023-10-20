@@ -65,28 +65,42 @@
             </div>
         </div>
         <div v-if="!sidebarhover" class="list d-flex flex-column align-items-center">
-            <div class="">
-                <input type="text" class="list-item form-control" placeholder="Địa chỉ">
-            </div>
-            <div class="list-item ">
+            <div class="w-100">
                 <select class="d-flex text-center form-select dropdown p-0">
-                    <option selected>Nhóm máu</option>
-                    <option class="dropdown-item" value="">A</option>
-                    <option class="dropdown-item" value="">B</option>
-                    <option class="dropdown-item" value="">AB</option>
-                    <option class="dropdown-item" value="">O</option>
+                    <option selected>Tỉnh/Thành phố</option>
+                    <option class="dropdown-item" value="">Hà Nội</option>
+                    <option class="dropdown-item" value="">Điện Biên</option>
+                    <option class="dropdown-item" value="">Lào Cai</option>
+                    <option class="dropdown-item" value="">Lai Châu</option>
+                    <option class="dropdown-item" value="">Sơn La</option>
+                    <option class="dropdown-item" value="">Yên Bái</option>
+                    <option class="dropdown-item" value="">Hòa Bình</option>
+                    <option class="dropdown-item" value="">Thái Nguyên</option>
+                    <option class="dropdown-item" value="">Quảng Ninh</option>
+                    <option class="dropdown-item" value="">Bắc Giang</option>
                 </select>
             </div>
-            <div class="list-item ">
-                <select class="d-flex text-center form-select dropdown p-0">
-                    <option selected>Nhóm tuổi</option>
-                    <option class="dropdown-item" value="">0-5</option>
-                    <option class="dropdown-item" value="">6-17</option>
-                    <option class="dropdown-item" value="">18-40</option>
-                    <option class="dropdown-item" value="">41-60</option>
-                    <option class="dropdown-item" value="">Trên 60</option>
-                    <option class="dropdown-item" value="">Không rõ</option>
-                </select>
+            <div class="list-item d-flex flex-row">
+                <div class="col-md-6" style="padding-right: 2px;">
+                    <select class="d-flex text-center form-select dropdown p-0">
+                        <option selected>Nhóm máu</option>
+                        <option class="dropdown-item" value="">A</option>
+                        <option class="dropdown-item" value="">B</option>
+                        <option class="dropdown-item" value="">AB</option>
+                        <option class="dropdown-item" value="">O</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <select class="d-flex text-center form-select dropdown p-0">
+                        <option selected>Nhóm tuổi</option>
+                        <option class="dropdown-item" value="">0-5</option>
+                        <option class="dropdown-item" value="">6-17</option>
+                        <option class="dropdown-item" value="">18-40</option>
+                        <option class="dropdown-item" value="">41-60</option>
+                        <option class="dropdown-item" value="">Trên 60</option>
+                        <option class="dropdown-item" value="">Không rõ</option>
+                    </select>
+                </div>
             </div>
         </div>
     </div>
@@ -140,7 +154,6 @@ export default {
                 if (!this.sidebarhover && this.sidebarexpansion) {
                     this.sidebarexpansion = false;
                 }
-                console.log(this.sidebarexpansion)
             }
         },
         sidebaritem1expansion: {
@@ -148,7 +161,6 @@ export default {
                 if (!this.sidebaritem1hover && this.sidebaritem1expansion) {
                     this.sidebaritem1expansion = false;
                 }
-                console.log(this.sidebarexpansion)
             }
         }
     },

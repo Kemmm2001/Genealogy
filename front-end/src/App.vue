@@ -11,10 +11,23 @@
 
 <script>
 import Sidebar from "./components/SidebarComponent.vue";
+// import { HTTP } from "./assets/js/addressAPI";
+
 export default {
   components: {
     Sidebar,
   },
+  data(){
+    return{
+      abc: 1,
+    }
+  },
+  // mounted(){
+  //   HTTP.get("",).then((response) => {
+  //         this.abc = response.data;
+  //         console.log(this.abc)
+  //       });
+  // }
 };
 </script>
  

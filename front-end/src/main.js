@@ -7,6 +7,8 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import './assets/css/style.css';
 import './assets/css/configmenu.css';
 import './assets/css/modal.css';
+import './assets/css/headlist.css';
+import './assets/css/articlelist.css';
 
 Vue.config.productionTip = false
 
