@@ -3,9 +3,20 @@ const FamilyHeadController = require('../Controller/InformationGenealogy/FamilyH
 const GeneralInformation = require('../Controller/InformationGenealogy/GeneralInformationController')
 const FamilyHistoryController = require('../Controller/InformationGenealogy/FamilyHistory');
 const StatisticsController = require('../Controller/InformationGenealogy/StatisticsController')
-const AlbumPhotoController = require('../Controller/InformationGenealogy/AlbumPhoto');
+const AlbumPhotoController = require('../Controller/InformationGenealogy/AlbumPhotoController');
 const ArticleController = require('../Controller/FamilyGenealogy/ArticleController')
-
+const MemberPhotoController = require('../Controller/InformationGenealogy/MemberPhotoController');
+const multer = require("multer");
+const upload = multer({
+    storage: multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, '/uploads');
+        },
+        filename: function (req, file, cb) {
+            cb(null, file.originalname);
+        }
+    })
+});
 var router = express.Router();
 
 
@@ -45,8 +56,17 @@ const initWebRouter = (app) => {
     // Delete an AlbumPhoto with id
     router.delete('/albumphoto', AlbumPhotoController.deleteAlbumPhoto);
 
-
-
+    // Create a new MemberPhoto
+    router.post('/memberphoto', upload.single('photo'), MemberPhotoController.addMemberPhoto);
+    // Retrieve all MemberPhotos with codeId
+    router.get('/memberphoto/album-id/:id', MemberPhotoController.getMemberPhotoByAlbumId);
+    // Retrieve a single MemberPhoto with id
+    router.get('/memberphoto/:id', MemberPhotoController.getMemberPhotoById);
+    // Update a MemberPhoto with id
+    router.put('/memberphoto',upload.single('photo'), MemberPhotoController.updateMemberPhoto);
+    // Delete a MemberPhoto with id
+    router.delete('/memberphoto', MemberPhotoController.deleteMemberPhoto);
+    // End API tuấn
     //API Nhật anh
 
     router.get('/article', ArticleController.getAllArticle);
