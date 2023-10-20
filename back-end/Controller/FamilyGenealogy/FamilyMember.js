@@ -177,5 +177,40 @@ var getAllMember = async (req, res) => {
         res.status(500).json({ success: false, message: 'Lỗi khi lấy tất cả thành viên' });
     }
 }
+var sortMembers = async (req, res) => {
+    try {
+        const { sortKey, order } = req.body; // Lấy thông tin sắp xếp từ request body
+        // Lấy danh sách thành viên từ cơ sở dữ liệu
+        const members = await FamilyManagementService.getAllMember();
+        // Sắp xếp danh sách thành viên
+        const sortedMembers = sortMembers(members, sortKey, order);
 
-module.exports = { addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember };
+        res.json({
+            success: true,
+            data: sortedMembers,
+        });
+    } catch (error) {
+        console.error('Lỗi khi sắp xếp thành viên:', error);
+        res.status(500).json({ success: false, message: 'Lỗi khi sắp xếp thành viên' });
+    }
+}
+function sortMembers(members, sortKey, order) {
+    // Kiểm tra xem sortKey có hợp lệ hay không
+    const validSortKeys = ['memberName', 'dob'];
+    if (!validSortKeys.includes(sortKey)) {
+      throw new Error('Invalid sort key');
+    }
+  
+    let sortedMembers = [...members];
+    if (order === 'desc') {
+      sortedMembers.sort((a, b) => (b[sortKey] < a[sortKey] ? -1 : 1));
+    } else {
+      sortedMembers.sort((a, b) => (a[sortKey] < b[sortKey] ? -1 : 1));
+    }
+  
+    return sortedMembers;
+  }
+  
+
+
+module.exports = { addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember, sortMembers};
