@@ -49,7 +49,9 @@ const initWebRouter = (app) => {
     router.get('/member', FamilyMemberManagement.getAllMember);
     router.post('/search-member', FamilyMemberManagement.searchMember);
     router.post('/filter-member', FamilyMemberManagement.filterMember);
+    router.post('/sort-member', FamilyMemberManagement.sortMembers);
     router.post('/export-pdf', PdfController.exportPDF);
+
 
     //Tiền tố đứng trước route
     app.use('/api/v1', router);
