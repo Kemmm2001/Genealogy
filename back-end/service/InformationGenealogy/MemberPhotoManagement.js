@@ -1,8 +1,9 @@
 const db = require('../../Models/ConnectDB')
+const fs = require('fs');
 
 function getMemberPhotoByAlbumId(albumId) {
     return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM photo where AlbumID  = ${albumId}`
+        let query = `SELECT * FROM memberphoto where AlbumID  = ${albumId}`
         db.connection.query(query, (err, result) => {
             if (err) {
                 console.log("Have err : " + err);
@@ -16,7 +17,7 @@ function getMemberPhotoByAlbumId(albumId) {
 
 function getMemberPhotoById(photoId) {
     return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM photo where PhotoID  = ${photoId}`
+        let query = `SELECT * FROM memberphoto where PhotoID  = ${photoId}`
         db.connection.query(query, (err, result) => {
             if (err) {
                 console.log("Have err : " + err);
@@ -44,7 +45,7 @@ function getAllMemberPhoto() {
 
 function insertMemberPhoto(ObjData) {
     return new Promise((resolve, reject) => {
-        let query = `INSERT INTO photo (AlbumID, PhotoUrl) VALUES (?, ?);`
+        let query = `INSERT INTO memberphoto (AlbumID, PhotoUrl) VALUES (?, ?);`
         let values = [
             ObjData.AlbumID,
             ObjData.PhotoUrl
@@ -63,7 +64,8 @@ function insertMemberPhoto(ObjData) {
 
 function updateMemberPhoto(ObjData) {
     return new Promise((resolve, reject) => {
-        let query = `UPDATE photo SET AlbumID = ?, PhotoUrl = ? WHERE PhotoID = ?;`
+        removeMemberPhotoUrl(ObjData.PhotoID, reject);
+        let query = `UPDATE memberphoto SET AlbumID = ?, PhotoUrl = ? WHERE PhotoID = ?;`
         let values = [
             ObjData.AlbumID,
             ObjData.PhotoUrl,
@@ -83,7 +85,8 @@ function updateMemberPhoto(ObjData) {
 
 function removeMemberPhoto(photoId) {
     return new Promise((resolve, reject) => {
-        let query = `DELETE FROM photo WHERE PhotoID = ${photoId};`
+        removeMemberPhotoUrl(photoId, reject);
+        let query = `DELETE FROM memberphoto WHERE PhotoID = ${photoId};`
         db.connection.query(query, (err, result) => {
             if (err) {
                 console.log("Have err : " + err);
@@ -94,6 +97,29 @@ function removeMemberPhoto(photoId) {
         })
     });
 
+}
+
+function removeMemberPhotoUrl(photoId, reject) {
+    let querySelect = `SELECT * FROM memberphoto where PhotoID  = ${photoId}`
+    db.connection.query(querySelect, (err, result) => {
+        if (err) {
+            console.log("Have err : " + err);
+            reject(err)
+        } else {
+            console.log("result : " + result);
+            for (let i = 0; i < result.length; i++) {
+                console.log(`result[${i}] : ` + result[i]);
+                console.log(`result[${i}].PhotoUrl : ` + result[i].PhotoUrl);
+                fs.unlink(result[i].PhotoUrl, (err) => {
+                    if (err) {
+                        console.log("Have err : " + err);
+                        reject(err);
+                    }
+                });
+            }
+
+        }
+    })
 }
 
 module.exports = {
