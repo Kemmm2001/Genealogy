@@ -200,7 +200,7 @@ function filterMember(req, res) {
       const filterOptions = req.body; // Lấy filterOptions từ request body
   
       // Xây dựng câu truy vấn SQL cho bảng familymember
-      let memberQuery = 'SELECT * FROM familymember WHERE 1=1';
+      let memberQuery = 'SELECT * FROM familymember WHERE 1 =1';
   
       // Xây dựng điều kiện lọc cho bảng familymember
       if (filterOptions.male !== undefined) {
