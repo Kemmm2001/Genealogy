@@ -6,6 +6,7 @@ const StatisticsController = require('../Controller/InformationGenealogy/Statist
 const AlbumPhotoController = require('../Controller/InformationGenealogy/AlbumPhotoController');
 const ArticleController = require('../Controller/FamilyGenealogy/ArticleController')
 const MemberPhotoController = require('../Controller/InformationGenealogy/MemberPhotoController');
+var router = express.Router();
 const multer = require("multer");
 const upload = multer({
     storage: multer.diskStorage({
@@ -17,7 +18,7 @@ const upload = multer({
         }
     })
 });
-var router = express.Router();
+
 
 
 
@@ -63,7 +64,7 @@ const initWebRouter = (app) => {
     // Retrieve a single MemberPhoto with id
     router.get('/memberphoto/:id', MemberPhotoController.getMemberPhotoById);
     // Update a MemberPhoto with id
-    router.put('/memberphoto',upload.single('photo'), MemberPhotoController.updateMemberPhoto);
+    router.put('/memberphoto', upload.single('photo'), MemberPhotoController.updateMemberPhoto);
     // Delete a MemberPhoto with id
     router.delete('/memberphoto', MemberPhotoController.deleteMemberPhoto);
     // End API tuấn

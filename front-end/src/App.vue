@@ -17,10 +17,10 @@ export default {
   components: {
     Sidebar,
   },
-  data(){
-    return{
+  data() {
+    return {
       abc: 1,
-    }
+    };
   },
   // mounted(){
   //   HTTP.get("",).then((response) => {
