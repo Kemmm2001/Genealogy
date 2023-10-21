@@ -112,10 +112,19 @@ var SendSMS = async (req, res) => {
 
 var SendEmail = async (req, res) => {
     try {
+        if (req.body.text != null && req.body.html != null) {
+            response = {
+                success: false,
+                message: "Just choose one of text or html to send!",
+            };
+            res.json(response);
+        }
+        // sau khi đã qua được phần kiểm tra về text và html thì tiến hành gửi mail
         var mailOptions = {
             from: process.env.EMAIL_ADDRESS,
             subject: req.body.subject,
-            text: req.body.message
+            text: req.body.text,
+            html: req.body.html,
         };
         // Kiểm tra xem có phải mảng hay không
         if (Array.isArray(req.body.to)) {
