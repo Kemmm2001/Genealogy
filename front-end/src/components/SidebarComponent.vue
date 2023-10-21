@@ -73,6 +73,7 @@
 </template>
 
 <script>
+import { EventBus } from "../assets/js/MyEventBus.js";
 export default {
   data() {
     return {
@@ -92,7 +93,7 @@ export default {
       rotated4: false,
     };
   },
-  methods: {
+  methods: {   
     expandSidebar() {
       this.sidebarhover = true;
       setTimeout(() => {
@@ -116,6 +117,11 @@ export default {
     openHeadList() {
       // router.push({ path: 'information/headlist' });
     },
+  },
+  created() {
+    EventBus.$on("custom-event", (data) => {
+      console.log(data);
+    });
   },
   watch: {
     sidebarexpansion: {
