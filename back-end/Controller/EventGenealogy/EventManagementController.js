@@ -1,4 +1,12 @@
 const EventManagementService = require('../../service/EventGenealogy/EventManagement');
+var nodemailer = require('nodemailer');
+var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: "systemgenealogy@gmail.com",
+        pass: "gyin yjnt cezd xsmt",
+    }
+});
 
 var getAllEventGenealogy = async (req, res) => {
     try {
@@ -102,6 +110,47 @@ var SendSMS = async (req, res) => {
     }
 }
 
+var SendEmail = async (req, res) => {
+    try {
+        var mailOptions = {
+            from: process.env.EMAIL_ADDRESS,
+            subject: req.body.subject,
+            text: req.body.message
+        };
+        // Kiểm tra xem có phải mảng hay không
+        if (Array.isArray(req.body.to)) {
+            // Nếu là mảng thì join
+            mailOptions.to = req.body.to.join(',');
+        } else {
+            // Nếu là string thì gán luôn
+            mailOptions.to = req.body.to;
+        }
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+                response = {
+                    success: false,
+                    message: "Email sent failed!",
+
+                };
+                res.json(response);
+            } else {
+                console.log('Email sent: ' + info.response);
+                response = {
+                    success: true,
+                    message: "Email sent successfully!",
+
+                };
+                res.json(response);
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        res.send(error);
+    }
+
+};
+
 module.exports = {
-    getAllEventGenealogy, InsertEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth, SendSMS
+    getAllEventGenealogy, InsertEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth, SendSMS, SendEmail
 }
