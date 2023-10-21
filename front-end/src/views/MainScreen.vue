@@ -337,6 +337,7 @@
                   </div>
                 </div>
               </div>
+              
               <div class="d-flex flex-row align-items-center justify-content-center w-100">
                 <div class="col-md-12">
                   <input type="text" class="form-control modal-item mt-1" placeholder="Nguyên quán" />
