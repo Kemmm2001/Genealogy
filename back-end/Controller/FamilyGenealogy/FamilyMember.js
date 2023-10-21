@@ -118,13 +118,12 @@ var updateMember = async (req, res) => {
         res.send(e);
     }
 }
-
 var deleteMember = async (req, res) => {
+    console.log(2);
     try {
         console.log("Request body: ", req.body);
         let response;
         let result = await FamilyManagementService.deleteMember(req.body.memberID);
-
         response = {
             success: true,
             message: 'Delete member successfully',
