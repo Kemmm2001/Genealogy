@@ -1,5 +1,44 @@
 <template>
     <div class="d-flex align-items-center w-100">
+        <div v-if="!sidebarhover" class="list d-flex flex-column align-items-center">
+            <div class="w-100">
+                <select class="d-flex text-center form-select dropdown p-0">
+                    <option selected>Tỉnh/Thành phố</option>
+                    <option class="dropdown-item" value="">Hà Nội</option>
+                    <option class="dropdown-item" value="">Điện Biên</option>
+                    <option class="dropdown-item" value="">Lào Cai</option>
+                    <option class="dropdown-item" value="">Lai Châu</option>
+                    <option class="dropdown-item" value="">Sơn La</option>
+                    <option class="dropdown-item" value="">Yên Bái</option>
+                    <option class="dropdown-item" value="">Hòa Bình</option>
+                    <option class="dropdown-item" value="">Thái Nguyên</option>
+                    <option class="dropdown-item" value="">Quảng Ninh</option>
+                    <option class="dropdown-item" value="">Bắc Giang</option>
+                </select>
+            </div>
+            <div class="list-item d-flex flex-row">
+                <div class="col-md-6" style="padding-right: 2px;">
+                    <select class="d-flex text-center form-select dropdown p-0">
+                        <option selected>Nhóm máu</option>
+                        <option class="dropdown-item" value="">A</option>
+                        <option class="dropdown-item" value="">B</option>
+                        <option class="dropdown-item" value="">AB</option>
+                        <option class="dropdown-item" value="">O</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <select class="d-flex text-center form-select dropdown p-0">
+                        <option selected>Nhóm tuổi</option>
+                        <option class="dropdown-item" value="">0-5</option>
+                        <option class="dropdown-item" value="">6-17</option>
+                        <option class="dropdown-item" value="">18-40</option>
+                        <option class="dropdown-item" value="">41-60</option>
+                        <option class="dropdown-item" value="">Trên 60</option>
+                        <option class="dropdown-item" value="">Không rõ</option>
+                    </select>
+                </div>
+            </div>
+        </div>
         <div class="d-flex main-screen align-items-center w-100">
             <button type="button" class="btn p-0 btn-modal" @click="openChildrenModal">Modal add con</button>
             <modal name="children-modal">
@@ -291,156 +330,166 @@
 
             <button type="button" class="btn p-0 btn-modal" @click="openMemberModal">Modal add member</button>
             <modal name="member-modal">
-                <div class="d-flex flex-row w-100 align-items-center position-relative">
-                    <div class="col-md-12 modal-title d-flex align-items-center  justify-content-center w-100">Thêm thành
-                        viên
-                    </div>
-                    <div class="close-add-form" @click="closeMemberModal">
-                        <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                            <path
-                                d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-                        </svg>
-                    </div>
-                </div>
-                <div class="d-flex flex-row">
-                    <div class="col-md-6 d-flex flex-row">
-                        <div class="col-md-4 d-flex flex-column mt-1" style="padding-left: 4px;">
-                            <div class="profile-pic"></div>
-                            <button class="btn p-0 colored mt-1 modal-item">Xoá ảnh</button>
-                            <!-- <div class="d-flex align-items-center justify-content-center">                   -->
-                            <button class="btn p-0 colored mt-1 modal-item" style="margin-top: 120px !important;"
-                                @click="dead = !dead" :class="{ alivebuttoncolor: dead }">
-                                <a v-show="!dead">Còn sống</a>
-                                <a v-show="dead">Đã mất</a>
-                            </button>
-                            <!-- </div>  -->
+                <div class="d-flex flex-row w-100">
+                    <div class="d-flex flex-column col-md-1">
+                        <div class="d-flex flex-column h-100">
+                            <div class="d-flex h-100 mb-1" style="justify-content: right; margin-top: 40px;">
+                                <div @click="extendedInfo = true; extendedContact = false; extendedJob = false; extendedEdu = false; extendedNote = false"
+                                    class="d-flex align-items-center justify-content-center col-md-2 member-info-tab h-100"
+                                    :class="{ colored: extendedInfo }">
+                                    Cơ bản</div>
+                            </div>
+                            <div class="d-flex h-100 my-1" style="justify-content: right;">
+                                <div @click="extendedInfo = false; extendedContact = true; extendedJob = false; extendedEdu = false; extendedNote = false"
+                                    class="d-flex align-items-center justify-content-center col-md-2 member-info-tab h-100"
+                                    :class="{ colored: extendedContact }">
+                                    Liên hệ</div>
+                            </div>
+                            <div class="d-flex h-100 my-1" style="justify-content: right;">
+                                <div @click="extendedInfo = false; extendedContact = false; extendedJob = true; extendedEdu = false; extendedNote = false"
+                                    class="d-flex align-items-center justify-content-center col-md-2 member-info-tab h-100"
+                                    :class="{ colored: extendedJob }">
+                                    Nghề nghiệp</div>
+                            </div>
+                            <div class="d-flex h-100 my-1" style="justify-content: right;">
+                                <div @click="extendedInfo = false; extendedContact = false; extendedJob = false; extendedEdu = true; extendedNote = false"
+                                    class="d-flex align-items-center justify-content-center col-md-2 member-info-tab h-100"
+                                    :class="{ colored: extendedEdu }">
+                                    Giáo dục</div>
+                            </div>
+                            <div class="d-flex h-100 mt-1" style="justify-content: right;">
+                                <div @click="extendedInfo = false; extendedContact = false; extendedJob = false; extendedEdu = false; extendedNote = true"
+                                    class="d-flex align-items-center justify-content-center col-md-2 member-info-tab h-100"
+                                    :class="{ colored: extendedNote }">
+                                    Ghi chú</div>
+                            </div>
                         </div>
-                        <div class="d-flex flex-column col-md-8 align-items-center px-1">
-                            <div class="d-flex flex-row align-items-center w-100">
-                                <div class="col-md-12 mt-1">
-                                    <input type="text" class="form-control modal-item" placeholder="Tên thành viên đầy đủ">
-                                </div>
+                    </div>
+                    <div class="d-flex flex-column modal-on-display col-md-11">
+                        <div class="d-flex flex-row align-items-center position-relative">
+                            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm
+                                thành
+                                viên
                             </div>
-                            <div class="d-flex flex-row align-items-center w-100">
-                                <div class="col-md-6 mt-1" style="padding-right: 4px;">
-                                    <input type="text" class="form-control modal-item" placeholder="Tên thường gọi">
-                                </div>
-                                <div class="col-md-6 mt-1 position-relative">
-                                    <label for="birthorder" class="add-form-birthorder-label position-absolute">Con
-                                        thứ</label>
-                                    <input id="birthorder" type="number"
-                                        class="form-control flex-grow add-form-birthorder-input modal-item pl-5" value="1"
-                                        min="1">
-                                </div>
+                            <div class="close-add-form" @click="closeMemberModal">
+                                <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                                    <path
+                                        d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                                </svg>
                             </div>
-                            <div class="d-flex flex-row align-items-center justify-content-around w-100">
-                                <div class="col-md-6 mt-1" style="padding-right: 4px;">
-                                    <select class="form-select modal-item">
-                                        <option selected value="1">Giới tính</option>
-                                        <option value="2">Nam</option>
-                                        <option value="3">Nữ</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mt-1 d-flex flex-row">
-                                    <div class="col-md-8 add-form-bloodtype-label modal-item">Nhóm máu</div>
-                                    <div class="col-md-4">
-                                        <select id="bloodtype"
-                                            class=" add-form-bloodtype-select form-select modal-item p-0">
-                                            <option selected value="1">A</option>
-                                            <option value="2">B</option>
-                                            <option value="3">AB</option>
-                                            <option value="4">O</option>
-                                        </select>
+                        </div>
+                        <div v-if="extendedInfo" class="d-flex flex-row w-100">
+                            <div class="col-md-4 d-flex flex-column mt-1" style="padding-left: 4px;">
+                                <div class="profile-pic"></div>
+                                <button class="btn p-0 colored mt-1 modal-item">Xoá ảnh</button>
+                                <!-- <div class="d-flex align-items-center justify-content-center">                   -->
+                                <button class="btn p-0 colored mt-1 modal-item" style="margin-top: 120px !important;"
+                                    @click="dead = !dead" :class="{ alivebuttoncolor: dead }">
+                                    <a v-show="!dead">Còn sống</a>
+                                    <a v-show="dead">Đã mất</a>
+                                </button>
+                                <!-- </div>  -->
+                            </div>
+                            <div class="d-flex flex-column col-md-8 align-items-center px-1">
+                                <div class="d-flex flex-row align-items-center w-100">
+                                    <div class="col-md-12 mt-1">
+                                        <input type="text" class="form-control modal-item"
+                                            placeholder="Tên thành viên đầy đủ">
                                     </div>
                                 </div>
+                                <div class="d-flex flex-row align-items-center w-100">
+                                    <div class="col-md-6 mt-1" style="padding-right: 4px;">
+                                        <input type="text" class="form-control modal-item" placeholder="Tên thường gọi">
+                                    </div>
+                                    <div class="col-md-6 mt-1 position-relative">
+                                        <label for="birthorder" class="add-form-birthorder-label position-absolute">Con
+                                            thứ</label>
+                                        <input id="birthorder" type="number"
+                                            class="form-control flex-grow add-form-birthorder-input modal-item pl-5"
+                                            value="1" min="1">
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-row align-items-center justify-content-around w-100">
+                                    <div class="col-md-6 mt-1" style="padding-right: 4px;">
+                                        <select class="form-select modal-item">
+                                            <option selected value="1">Giới tính</option>
+                                            <option value="2">Nam</option>
+                                            <option value="3">Nữ</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mt-1 d-flex flex-row">
+                                        <div class="col-md-8 add-form-bloodtype-label modal-item">Nhóm máu</div>
+                                        <div class="col-md-4">
+                                            <select id="bloodtype"
+                                                class=" add-form-bloodtype-select form-select modal-item p-0">
+                                                <option selected value="1">A</option>
+                                                <option value="2">B</option>
+                                                <option value="3">AB</option>
+                                                <option value="4">O</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-row align-items-center justify-content-center w-100">
+                                    <div class="col-md-12">
+                                        <input type="text" class="form-control modal-item mt-1" placeholder="Nguyên quán">
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-row w-100">
+                                    <div class="col-md-6 mt-1" style="padding-right: 4px;">
+                                        <input type="text" class="form-control modal-item" placeholder="Quốc tịch">
+                                    </div>
+                                    <div class="col-md-6 mt-1">
+                                        <input type="text" class="form-control modal-item" placeholder="Tôn giáo">
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-row align-items-center justify-content-center w-100">
+                                    <div class="col-md-6 d-flex flex-wrap">
+                                        <div class="add-form-date-label modal-item">Ngày sinh dương lịch</div>
+                                    </div>
+                                    <div class="col-md-6 mt-1">
+                                        <input type="date" class="form-control modal-item">
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-row align-items-center justify-content-center w-100">
+                                    <div class="col-md-6 d-flex flex-wrap">
+                                        <div class="add-form-date-label modal-item">Ngày sinh âm lịch</div>
+                                    </div>
+                                    <div class="col-md-6 mt-1">
+                                        <input type="date" class="form-control modal-item">
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-row w-100">
+                                    <div class="col-md-12 mt-1">
+                                        <input type="text" class="form-control modal-item" placeholder="Nơi sinh">
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-row align-items-center justify-content-center w-100">
+                                    <div class="col-md-6 d-flex flex-wrap">
+                                        <div class="add-form-date-label modal-item">Ngày mất</div>
+                                    </div>
+                                    <div class="col-md-6 mt-1">
+                                        <input type="date" class="form-control modal-item" v-bind:disabled=!dead>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-row w-100">
+                                    <div class="col-md-12 mt-1">
+                                        <input type="text" class="form-control modal-item" placeholder="Nơi mất"
+                                            v-bind:disabled=!dead>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-row w-100">
+                                    <div class="col-md-12 mt-1 mb-1">
+                                        <input type="text" class="form-control modal-item" placeholder="Mộ phần"
+                                            v-bind:disabled=!dead>
+                                    </div>
+                                </div>
+                                <div class="d-flex w-100" style="justify-content: right;">
+                                    <button class="btn colored modal-item">Lưu</button>
+                                </div>
+                                <!-- </div> -->
+                            </div>
 
-                            </div>
-                            <div class="d-flex flex-row align-items-center justify-content-center w-100">
-                                <div class="col-md-12">
-                                    <input type="text" class="form-control modal-item mt-1" placeholder="Nguyên quán">
-                                </div>
-                            </div>
-                            <div class="d-flex flex-row w-100">
-                                <div class="col-md-6 mt-1" style="padding-right: 4px;">
-                                    <input type="text" class="form-control modal-item" placeholder="Quốc tịch">
-                                </div>
-                                <div class="col-md-6 mt-1">
-                                    <input type="text" class="form-control modal-item" placeholder="Tôn giáo">
-                                </div>
-                            </div>
-                            <div class="d-flex flex-row align-items-center justify-content-center w-100">
-                                <div class="col-md-6 d-flex flex-wrap">
-                                    <div class="add-form-date-label modal-item">Ngày sinh dương lịch</div>
-                                </div>
-                                <div class="col-md-6 mt-1">
-                                    <input type="date" class="form-control modal-item">
-                                </div>
-                            </div>
-                            <div class="d-flex flex-row align-items-center justify-content-center w-100">
-                                <div class="col-md-6 d-flex flex-wrap">
-                                    <div class="add-form-date-label modal-item">Ngày sinh âm lịch</div>
-                                </div>
-                                <div class="col-md-6 mt-1">
-                                    <input type="date" class="form-control modal-item">
-                                </div>
-                            </div>
-                            <div class="d-flex flex-row w-100">
-                                <div class="col-md-12 mt-1">
-                                    <input type="text" class="form-control modal-item" placeholder="Nơi sinh">
-                                </div>
-                            </div>
-                            <div class="d-flex flex-row align-items-center justify-content-center w-100">
-                                <div class="col-md-6 d-flex flex-wrap">
-                                    <div class="add-form-date-label modal-item">Ngày mất</div>
-                                </div>
-                                <div class="col-md-6 mt-1">
-                                    <input type="date" class="form-control modal-item" v-bind:disabled=!dead>
-                                </div>
-                            </div>
-                            <div class="d-flex flex-row w-100">
-                                <div class="col-md-12 mt-1">
-                                    <input type="text" class="form-control modal-item" placeholder="Nơi mất"
-                                        v-bind:disabled=!dead>
-                                </div>
-                            </div>
-                            <div class="d-flex flex-row w-100">
-                                <div class="col-md-12 mt-1 mb-1">
-                                    <input type="text" class="form-control modal-item" placeholder="Mộ phần"
-                                        v-bind:disabled=!dead>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mt-1" style="padding-right: 4px">
-                        <div class="d-flex flex-row modal-item align-items-center justify-content-around">
-                            <div class="w-100">
-                                <button
-                                    @click="extendedContact = true; extendedJob = false; extendedEdu = false; extendedNote = false"
-                                    class="btn px-2 pt-1 pb-2 extended-info-tab w-100"
-                                    :class="{ colored: extendedContact }">Liên
-                                    hệ</button>
-                            </div>
-                            <div class="w-100">
-                                <button
-                                    @click="extendedContact = false; extendedJob = true; extendedEdu = false; extendedNote = false"
-                                    class="btn px-2 pt-1 pb-2 extended-info-tab w-100"
-                                    :class="{ colored: extendedJob }">Nghề
-                                    nghiệp</button>
-                            </div>
-                            <div class="w-100">
-                                <button
-                                    @click="extendedContact = false; extendedJob = false; extendedEdu = true; extendedNote = false"
-                                    class="btn px-2 pt-1 pb-2 extended-info-tab w-100"
-                                    :class="{ colored: extendedEdu }">Giáo
-                                    dục</button>
-                            </div>
-                            <div class="w-100">
-                                <button
-                                    @click="extendedContact = false; extendedJob = false; extendedEdu = false; extendedNote = true"
-                                    class="btn px-2 pt-1 pb-2 extended-info-tab w-100"
-                                    :class="{ colored: extendedNote }">Ghi
-                                    chú</button>
-                            </div>
                         </div>
                         <div v-if="extendedContact"
                             class="d-flex flex-column extended-info-container extended-contact-container w-100">
@@ -468,6 +517,10 @@
                             </div>
                             <div class="col-md-12 px-1 mt-1 mb-1">
                                 <input type="text" class="form-control modal-item" placeholder="Zalo">
+                            </div>
+                            <div class="d-flex" style="flex-grow: 1;"></div>
+                            <div class="d-flex w-100" style="justify-content: right;">
+                                <button class="btn colored modal-item mb-1 mx-1">Lưu</button>
                             </div>
                         </div>
 
@@ -512,12 +565,16 @@
                                 </div>
                             </div>
                             <div class="d-flex flex-row justify-content-around col-md-12 px-1 mt-2">
-                                <button class="btn modal-item extended-info-colored px-2 py-1">Xoá thông tin</button>
+                                <button class="btn modal-item extended-info-colored px-2 py-1">Xoá thông
+                                    tin</button>
                                 <button class="btn modal-item extended-info-colored px-2 py-1">Tạo mới</button>
                                 <button class="btn modal-item extended-info-colored px-2 py-1">Cập nhật</button>
                                 <button class="btn modal-item extended-info-colored px-2 py-1">Xóa</button>
                             </div>
                             <div class="extended-job-data-container mx-1 mt-2"></div>
+                            <div class="d-flex w-100" style="justify-content: right;">
+                                <button class="btn colored modal-item mt-1 mx-1">Lưu</button>
+                            </div>
                         </div>
 
                         <div v-if="extendedEdu"
@@ -551,19 +608,26 @@
                                 </div>
                             </div>
                             <div class="d-flex flex-row justify-content-around col-md-12 px-1 mt-2">
-                                <button class="btn modal-item extended-info-colored px-2 py-1">Xoá thông tin</button>
+                                <button class="btn modal-item extended-info-colored px-2 py-1">Xoá thông
+                                    tin</button>
                                 <button class="btn modal-item extended-info-colored px-2 py-1">Tạo mới</button>
                                 <button class="btn modal-item extended-info-colored px-2 py-1">Cập nhật</button>
                                 <button class="btn modal-item extended-info-colored px-2 py-1">Xóa</button>
                             </div>
                             <div class="extended-edu-data-container mx-1 mt-2"></div>
+
+                            <div class="d-flex w-100" style="justify-content: right;">
+                                <button class="btn colored modal-item mx-1 mt-1">Lưu</button>
+                            </div>
                         </div>
 
                         <div v-if="extendedNote"
                             class="d-flex flex-column extended-info-container extended-note-container px-1 py-1">
-                            <!-- <div class="extended-note-data-container h-100"> -->
                             <textarea class="h-100" placeholder="Viết điều gì đó..."></textarea>
-                            <!-- </div> -->
+
+                            <div class="d-flex w-100" style="justify-content: right;">
+                                <button class="btn colored modal-item mt-1">Lưu</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -572,7 +636,8 @@
             <button type="button" class="btn p-0 btn-modal" @click="openUpdateMemberModal">Modal update member</button>
             <modal name="update-member-modal">
                 <div class="d-flex flex-row w-100 align-items-center position-relative">
-                    <div class="col-md-12 modal-title d-flex align-items-center  justify-content-center w-100">Thay đổi thành
+                    <div class="col-md-12 modal-title d-flex align-items-center  justify-content-center w-100">Thay đổi
+                        thành
                         viên
                     </div>
                     <div class="close-add-form" @click="closeUpdateMemberModal">
@@ -853,12 +918,14 @@
         </div>
 
         <div v-if="!configSidebarHover" class="collapsed-config-sidebar d-flex align-items-center justify-content-center">
-            <svg @mouseenter="expandConfigSidebar()"  class="config-sidebar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+            <svg @mouseenter="expandConfigSidebar()" class="config-sidebar-icon" xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512">
                 <path
                     d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336a80 80 0 1 0 0-160 80 80 0 1 0 0 160z" />
             </svg>
         </div>
-        <div @mouseleave="collapseConfigSidebar()" class="config-sidebar h-100" :style="{ width: configSidebarWidth + '%' }">
+        <div @mouseleave="collapseConfigSidebar()" class="config-sidebar h-100"
+            :style="{ width: configSidebarWidth + '%' }">
             <!--Chọn chủ đề-->
             <div v-if="configSidebarExpansion" class="topic">
                 <select class="form-select py-1">
@@ -876,8 +943,7 @@
                         <a>Phả đồ</a>
                     </div>
                     <div @click="configTree = false; configPrinting = true"
-                        class="config-topic text-center col-md-6 px-1 py-1"
-                        :class="{ notchosenconfigmenu: configTree }">
+                        class="config-topic text-center col-md-6 px-1 py-1" :class="{ notchosenconfigmenu: configTree }">
                         <a>Hỗ trợ in ấn</a>
                     </div>
                 </div>
@@ -1195,6 +1261,7 @@
 
 <script>
 import FamilyTree from "@balkangraph/familytree.js";
+// import { store } from '~/stores';
 export default {
     data() {
         return {
@@ -1219,7 +1286,8 @@ export default {
             configPrinting: false,
             dead: false,
 
-            extendedContact: true,
+            extendedInfo: true,
+            extendedContact: false,
             extendedJob: false,
             extendedEdu: false,
             extendedNote: false,
@@ -1228,6 +1296,8 @@ export default {
             configSidebarExpansion: false,
 
             configSidebarWidth: 0,
+
+            sidebarhover: false,
 
             nodes: [
                 {
@@ -1293,43 +1363,43 @@ export default {
     },
     methods: {
         mytree: function (domEl, x) {
-      FamilyTree.templates.tommy_male.field_0 =
-        '<text class="field_0" style="font-size: 20px;" fill="#ffffff" x="125" y="30" text-anchor="middle">{val}</text>';
-      FamilyTree.templates.tommy_male.field_1 =
-        '<text class="field_1" style="font-size: 14px;" fill="#ffffff" x="125" y="50" text-anchor="middle">{val}</text>';
-      FamilyTree.templates.tommy_male.field_2 =
-        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="125" y="70" text-anchor="middle">{val}</text>';
-      FamilyTree.templates.tommy_male.field_3 =
-        '<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">{val}</text>';
-      FamilyTree.templates.tommy_male.field_4 =
-      '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">{val}</text>';
-      FamilyTree.templates.tommy_female.field_0 =
-        '<text class="field_0" style="font-size: 20px;" fill="#ffffff" x="125" y="30" text-anchor="middle">{val}</text>';
-      FamilyTree.templates.tommy_female.field_1 =
-        '<text class="field_1" style="font-size: 14px;" fill="#ffffff" x="125" y="50" text-anchor="middle">{val}</text>';
-      FamilyTree.templates.tommy_female.field_2 =
-        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="125" y="70" text-anchor="middle">{val}</text>';
-      FamilyTree.templates.tommy_female.field_3 =
-        '<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">{val}</text>';
-      FamilyTree.templates.tommy_female.field_4 =
-        '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">{val}</text>';
-      this.family = new FamilyTree(domEl, {
-        nodes: x,
-        nodeBinding: {
-          field_0: "name",
-          img_0: "img",
-          field_1: "gender",
-          field_2: "dob",
-          field_3: "dod",
-          field_4: "codeId",
+            FamilyTree.templates.tommy_male.field_0 =
+                '<text class="field_0" style="font-size: 20px;" fill="#ffffff" x="125" y="30" text-anchor="middle">{val}</text>';
+            FamilyTree.templates.tommy_male.field_1 =
+                '<text class="field_1" style="font-size: 14px;" fill="#ffffff" x="125" y="50" text-anchor="middle">{val}</text>';
+            FamilyTree.templates.tommy_male.field_2 =
+                '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="125" y="70" text-anchor="middle">{val}</text>';
+            FamilyTree.templates.tommy_male.field_3 =
+                '<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">{val}</text>';
+            FamilyTree.templates.tommy_male.field_4 =
+                '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">{val}</text>';
+            FamilyTree.templates.tommy_female.field_0 =
+                '<text class="field_0" style="font-size: 20px;" fill="#ffffff" x="125" y="30" text-anchor="middle">{val}</text>';
+            FamilyTree.templates.tommy_female.field_1 =
+                '<text class="field_1" style="font-size: 14px;" fill="#ffffff" x="125" y="50" text-anchor="middle">{val}</text>';
+            FamilyTree.templates.tommy_female.field_2 =
+                '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="125" y="70" text-anchor="middle">{val}</text>';
+            FamilyTree.templates.tommy_female.field_3 =
+                '<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">{val}</text>';
+            FamilyTree.templates.tommy_female.field_4 =
+                '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">{val}</text>';
+            this.family = new FamilyTree(domEl, {
+                nodes: x,
+                nodeBinding: {
+                    field_0: "name",
+                    img_0: "img",
+                    field_1: "gender",
+                    field_2: "dob",
+                    field_3: "dod",
+                    field_4: "codeId",
+                },
+                nodeMouseClick: FamilyTree.action.none,
+            });
+
+            this.family.onNodeClick(() => {
+                this.openUpdateMemberModal()
+            });
         },
-        nodeMouseClick: FamilyTree.action.none,
-      });
-      
-        this.family.onNodeClick(() => {
-          this.openUpdateMemberModal() 
-      });
-    },
         openChildrenModal() {
             this.$modal.show('children-modal')
         },
@@ -1362,8 +1432,21 @@ export default {
         },
     },
     mounted() {
+
         this.mytree(this.$refs.tree, this.nodes);
     },
+    // computed: {
+    //     sidebarHover() {
+    //         return this.store.sidebarhoverStore;
+    //     }
+    // },
+    // watch: {
+    //     sidebarHover() {
+    //         handler: function(){
+    //             this.sidebarhover = this.store.sidebarhoverStore;
+    //         }
+    //     }
+    // }
 }
 
 </script>

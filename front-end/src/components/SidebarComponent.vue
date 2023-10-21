@@ -4,13 +4,15 @@
         <div @mouseenter="expandSidebar()" @mouseleave="collapseSidebar()" class="sidebar">
             <!-- Sidebar content-->
             <div class="d-flex flex-column">
-                <div class="d-flex sidebar-item align-items-center justify-content-center">
-                    <svg class="fa fa-fw sidebar-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                        <path
-                            d="M208 80c0-26.5 21.5-48 48-48h64c26.5 0 48 21.5 48 48v64c0 26.5-21.5 48-48 48h-8v40H464c30.9 0 56 25.1 56 56v32h8c26.5 0 48 21.5 48 48v64c0 26.5-21.5 48-48 48H464c-26.5 0-48-21.5-48-48V368c0-26.5 21.5-48 48-48h8V288c0-4.4-3.6-8-8-8H312v40h8c26.5 0 48 21.5 48 48v64c0 26.5-21.5 48-48 48H256c-26.5 0-48-21.5-48-48V368c0-26.5 21.5-48 48-48h8V280H112c-4.4 0-8 3.6-8 8v32h8c26.5 0 48 21.5 48 48v64c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V368c0-26.5 21.5-48 48-48h8V288c0-30.9 25.1-56 56-56H264V192h-8c-26.5 0-48-21.5-48-48V80z" />
-                    </svg>
-                    <div v-if="sidebarexpansion" class="col sidebar-item-content">Phả đồ</div>
-                </div>
+                <router-link to="/">
+                    <div class="d-flex sidebar-item align-items-center justify-content-center">
+                        <svg class="fa fa-fw sidebar-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                            <path
+                                d="M208 80c0-26.5 21.5-48 48-48h64c26.5 0 48 21.5 48 48v64c0 26.5-21.5 48-48 48h-8v40H464c30.9 0 56 25.1 56 56v32h8c26.5 0 48 21.5 48 48v64c0 26.5-21.5 48-48 48H464c-26.5 0-48-21.5-48-48V368c0-26.5 21.5-48 48-48h8V288c0-4.4-3.6-8-8-8H312v40h8c26.5 0 48 21.5 48 48v64c0 26.5-21.5 48-48 48H256c-26.5 0-48-21.5-48-48V368c0-26.5 21.5-48 48-48h8V280H112c-4.4 0-8 3.6-8 8v32h8c26.5 0 48 21.5 48 48v64c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V368c0-26.5 21.5-48 48-48h8V288c0-30.9 25.1-56 56-56H264V192h-8c-26.5 0-48-21.5-48-48V80z" />
+                        </svg>
+                        <div v-if="sidebarexpansion" class="col sidebar-item-content">Phả đồ</div>
+                    </div>
+                </router-link>
                 <div class="w-100" style="height: 1px !important; background-color: #FFFFFF;"></div>
                 <div @mouseenter="expandSidebarItem1()" @mouseleave="collapseSidebarItem1()" class="sidebar-item-1">
                     <div class="d-flex sidebar-item align-items-center justify-content-center">
@@ -22,17 +24,23 @@
                         </div>
                         <div v-if="sidebarexpansion" class="col sidebar-item-content">Thông tin dòng họ</div>
                     </div>
-                    <div v-if="sidebaritem1expansion" class="d-flex sidebar-item-1-expand align-items-center">Danh sách tộc
-                        trưởng
-                    </div>
+
+                    <router-link to="/information/headlist">
+                        <div v-if="sidebaritem1expansion" class="d-flex sidebar-item-1-expand align-items-center">Danh sách
+                            tộc
+                            trưởng
+                        </div>
+                    </router-link>
                     <div v-if="sidebaritem1expansion" class="d-flex sidebar-item-1-expand align-items-center">Lịch sử dòng
                         họ
                     </div>
                     <div v-if="sidebaritem1expansion" class="d-flex sidebar-item-1-expand align-items-center">Album dòng họ
                     </div>
-                    <div v-if="sidebaritem1expansion" class="d-flex sidebar-item-1-expand align-items-center">Tư liệu dòng
-                        họ
-                    </div>
+                    <router-link to="/information/articlelist">
+                        <div v-if="sidebaritem1expansion" class="d-flex sidebar-item-1-expand align-items-center">Tư liệu
+                            dòng họ
+                        </div>
+                    </router-link>
                 </div>
                 <div class="d-flex sidebar-item align-items-center justify-content-center">
                     <div class="d-flex align-items-center justify-content-center">
@@ -61,45 +69,6 @@
                         </svg>
                     </div>
                     <div v-if="sidebarexpansion" class="col sidebar-item-content">Quản lý tài khoản</div>
-                </div>
-            </div>
-        </div>
-        <div v-if="!sidebarhover" class="list d-flex flex-column align-items-center">
-            <div class="w-100">
-                <select class="d-flex text-center form-select dropdown p-0">
-                    <option selected>Tỉnh/Thành phố</option>
-                    <option class="dropdown-item" value="">Hà Nội</option>
-                    <option class="dropdown-item" value="">Điện Biên</option>
-                    <option class="dropdown-item" value="">Lào Cai</option>
-                    <option class="dropdown-item" value="">Lai Châu</option>
-                    <option class="dropdown-item" value="">Sơn La</option>
-                    <option class="dropdown-item" value="">Yên Bái</option>
-                    <option class="dropdown-item" value="">Hòa Bình</option>
-                    <option class="dropdown-item" value="">Thái Nguyên</option>
-                    <option class="dropdown-item" value="">Quảng Ninh</option>
-                    <option class="dropdown-item" value="">Bắc Giang</option>
-                </select>
-            </div>
-            <div class="list-item d-flex flex-row">
-                <div class="col-md-6" style="padding-right: 2px;">
-                    <select class="d-flex text-center form-select dropdown p-0">
-                        <option selected>Nhóm máu</option>
-                        <option class="dropdown-item" value="">A</option>
-                        <option class="dropdown-item" value="">B</option>
-                        <option class="dropdown-item" value="">AB</option>
-                        <option class="dropdown-item" value="">O</option>
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <select class="d-flex text-center form-select dropdown p-0">
-                        <option selected>Nhóm tuổi</option>
-                        <option class="dropdown-item" value="">0-5</option>
-                        <option class="dropdown-item" value="">6-17</option>
-                        <option class="dropdown-item" value="">18-40</option>
-                        <option class="dropdown-item" value="">41-60</option>
-                        <option class="dropdown-item" value="">Trên 60</option>
-                        <option class="dropdown-item" value="">Không rõ</option>
-                    </select>
                 </div>
             </div>
         </div>
@@ -147,6 +116,9 @@ export default {
             this.sidebaritem1hover = false;
             this.sidebaritem1expansion = false;
         },
+        openHeadList() {
+            // router.push({ path: 'information/headlist' });
+        }
     },
     watch: {
         sidebarexpansion: {

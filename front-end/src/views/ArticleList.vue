@@ -6,7 +6,8 @@
                     <input type="text" class="form-control modal-item mx-1" placeholder="Nhập tài liệu...">
                 </div>
                 <div class="d-flex col-md-8 articlelist-button-container">
-                    <button @click="openArticleModal" class="btn articlelist-item articlelist-item-button text-center my-2 mx-1">Thêm tài liệu</button>
+                    <button @click="openArticleModal"
+                        class="btn articlelist-item articlelist-item-button text-center my-2 mx-1">Thêm tài liệu</button>
                     <button class="btn articlelist-item articlelist-item-button text-center my-2 mx-1">Sửa</button>
                     <button class="btn articlelist-item articlelist-item-button text-center my-2 mx-1">Xóa</button>
                     <button class="btn articlelist-item articlelist-item-button text-center my-2 mx-1">Công khai</button>
