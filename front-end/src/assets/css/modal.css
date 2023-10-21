@@ -8,6 +8,14 @@
     right: 10% !important;
     height: auto !important;
     width: auto !important;
+    background: none;
+    box-shadow: none;
+}
+
+.modal-on-display{
+    height: 524px;
+    background-color: #E8C77B;
+    border-radius: 0.375rem 0.375rem 0 0;
 }
 
 .btn-modal{
@@ -27,16 +35,13 @@
     background-color: #E8C77B;
     font-size: 20px;
     font-weight: bold;
+    border-radius: 0.375rem 0.375rem 0 0;
 }
 
 .profile-pic{
     background-color: #D9D9D9;
     height: 200px;
     border-radius: 4px;
-}
-
-.btn.colored{
-    background-color: #E8C77B;
 }
 
 .add-form-birthorder-label{
@@ -110,4 +115,24 @@
 
 .close-add-form:hover{
     cursor: pointer;
+}
+
+.member-info-tab{
+    background-color: #E8C77B;
+    border-radius: 0.375rem 0 0 0.375rem;
+    text-align: center;
+    width: 65%;
+    cursor: pointer;
+}
+
+.member-info-tab{
+    background-color: #FFFFFF;
+}
+
+.member-info-tab.colored{
+    background-color: #E8C77B;
+}
+
+.btn.colored{
+    background-color: #FFFFFF;
 }
