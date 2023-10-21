@@ -12,6 +12,13 @@ var compareMember = async (req, res) => {
 
         if (DefferenceGeneration == 0) {
             await CompareMemberService.GetResultCompare(MemberID1, MemberID2)
+        } else if (DefferenceGeneration < 0) {
+            MemberID1 = await CompareMemberService.getIdToCompare(DefferenceGeneration, MemberID1);            
+            await CompareMemberService.GetResultCompare(MemberID1, MemberID2)
+        } else {       
+            MemberID2 = await CompareMemberService.getIdToCompare(DefferenceGeneration, MemberID2);
+            console.log(MemberID2)
+            await CompareMemberService.GetResultCompare(MemberID1, MemberID2)
         }
     } catch (error) {
 
