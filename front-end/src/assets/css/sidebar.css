@@ -7,6 +7,7 @@
     color: #FFFFFF;
     height: 48px;
     padding: 6px;
+    cursor: pointer;
 }
 
 .sidebar-item:hover, .sidebar-item-1-expand:hover{
