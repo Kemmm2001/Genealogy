@@ -61,7 +61,7 @@
         </div>
       </div>
     </div>
-    <div v-if="!sidebarhover" class="list d-flex flex-column align-items-center">
+    <div v-if="!sidebarhover" class="sidebar">
       <div class="w-100">
         <select class="d-flex text-center form-select dropdown p-0">
           <option selected>Tỉnh/Thành phố</option>
