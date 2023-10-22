@@ -179,10 +179,10 @@ function searchMember(searchTerm) {
     return new Promise((resolve, reject) => {
         const query = `
         SELECT * FROM familymember
-        WHERE MemberName LIKE ? OR Dob = ? OR ...
+        WHERE MemberName LIKE ?
         `;
 
-        const values = [`%${searchTerm}%`, searchTerm, /* ... other criteria */];
+        const values = [`%${searchTerm}%`];
 
         db.connection.query(query, values, (err, result) => {
             if (err) {

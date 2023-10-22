@@ -102,6 +102,31 @@ var SendSMS = async (req, res) => {
     }
 }
 
+var searchEvent = async (req, res) => {
+    try {
+        const { searchTerm } = req.body;
+        // Thực hiện tìm kiếm event trong database dựa trên searchTerm
+        const searchResult = await EventManagementService.searchEvent(searchTerm);
+        res.json(searchResult);
+    } catch (e) {
+        res.send(e);
+    }
+}
+var filterEvent = async function (req, res) {
+    try {
+        const filterOptions = req.body; // Lấy filterOptions từ request body
+        const filteredEvents = await EventManagementService.filterEvent(filterOptions);
+
+        res.json({
+            success: true,
+            data: filteredEvents,
+        });
+    } catch (error) {
+        console.error('Lỗi khi lọc thành viên:', error);
+        res.status(500).json({ success: false, message: 'Lỗi khi lọc thành viên' });
+    }
+}
+
 module.exports = {
-    getAllEventGenealogy, InsertEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth, SendSMS
+    getAllEventGenealogy, InsertEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth, SendSMS, searchEvent, filterEvent
 }

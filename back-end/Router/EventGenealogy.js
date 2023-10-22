@@ -19,7 +19,8 @@ const initWebRouter = (app) => {
 
 
     //API Nhật anh
-
+    router.post('/search-event', EventManagementController.searchEvent);
+    router.post('/filter-event', EventManagementController.filterEvent);
 
     //Tiền tố đứng trước route
     app.use('/api/v1', router);

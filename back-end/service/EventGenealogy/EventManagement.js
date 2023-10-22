@@ -111,9 +111,53 @@ function GetDeadDayInMonth(CodeID) {
         })
     })
 }
+async function searchEvent(searchTerm) {
+    return new Promise((resolve, reject) => {
+        const query = `
+        SELECT * FROM eventfamily
+        WHERE EventName LIKE ?
+        `;
 
+        const values = [`%${searchTerm}%`];
 
+        db.connection.query(query, values, (err, result) => {
+            if (err) {
+                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+}
+
+async function filterEvent(filterOptions) {
+    try {
+        // Xây dựng câu truy vấn SQL cho bảng eventfamily
+        let eventQuery = 'SELECT * FROM eventfamily WHERE 1=1';
+
+        // Xây dựng điều kiện lọc cho bảng eventfamily
+        if (filterOptions.startDate) {
+            eventQuery += ` AND StartDate >= '${filterOptions.startDate}'`;
+        }
+        if (filterOptions.endDate) {
+            eventQuery += ` AND EndDate <= '${filterOptions.endDate}'`;
+        }
+        if (filterOptions.CodeID) {
+            eventQuery += ` AND CodeID = ${filterOptions.CodeID}`;
+        }
+        // Các điều kiện lọc khác tùy theo cần thiết
+
+        // Thực hiện truy vấn SQL cho bảng eventfamily
+        const eventResults = await db.connection.query(eventQuery);
+
+        return eventResults;
+    } catch (error) {
+        console.error('Lỗi khi lọc sự kiện:', error);
+        throw error;
+    }
+}
 
 module.exports = {
-    getAllEvent, InsertNewEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth
+    getAllEvent, InsertNewEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth, searchEvent, filterEvent
 }
