@@ -6,18 +6,24 @@ const StatisticsController = require('../Controller/InformationGenealogy/Statist
 const AlbumPhotoController = require('../Controller/InformationGenealogy/AlbumPhotoController');
 const ArticleController = require('../Controller/FamilyGenealogy/ArticleController')
 const MemberPhotoController = require('../Controller/InformationGenealogy/MemberPhotoController');
+var router = express.Router();
 const multer = require("multer");
+const crypto = require('crypto');
 const upload = multer({
     storage: multer.diskStorage({
         destination: function (req, file, cb) {
             cb(null, '/uploads');
         },
         filename: function (req, file, cb) {
-            cb(null, file.originalname);
+            // Tạo tên file ngẫu nhiên
+            const randomName = crypto.randomBytes(10).toString('hex');
+            // Thêm đuôi file gốc vào 
+            const fileName = `${randomName}.${file.originalname.split('.').pop()}`;
+            cb(null, fileName);
         }
     })
 });
-var router = express.Router();
+
 
 
 
@@ -63,7 +69,7 @@ const initWebRouter = (app) => {
     // Retrieve a single MemberPhoto with id
     router.get('/memberphoto/:id', MemberPhotoController.getMemberPhotoById);
     // Update a MemberPhoto with id
-    router.put('/memberphoto',upload.single('photo'), MemberPhotoController.updateMemberPhoto);
+    router.put('/memberphoto', upload.single('photo'), MemberPhotoController.updateMemberPhoto);
     // Delete a MemberPhoto with id
     router.delete('/memberphoto', MemberPhotoController.deleteMemberPhoto);
     // End API tuấn

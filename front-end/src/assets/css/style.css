@@ -1,45 +1,49 @@
-#app{
+#app {
     font-size: 16px;
     font-family: Arial, Helvetica, sans-serif;
 }
 
-.container-fluid{
+.container-fluid {
     height: 100vh;
     background-color: #E8C77B;
 }
 
-.main-screen{
+.main-screen {
     height: 100vh;
     width: 57%;
     background-color: #E8C77B;
     flex-grow: 1;
 }
 
-.sidebar-list{
+.sidebar-list {
     width: 16% !important;
 }
 
-.sidebar{
+.sidebar {
     background-color: #13191C;
     width: 25% !important;
     height: 100vh;
     transition: 0.3s;
 }
 
-.list{
+.list {
     background-color: #3A4B54;
     width: 75% !important;
     height: 100vh;
     padding: 8px;
 }
 
-.config-sidebar{
-    background-color: #3A4B54;
+.config-sidebar {
+    background-color: #D9D9D9;
     width: 0%;
     height: 100%;
     transition: 0.24s;
 }
 
-.form-select{
+.form-select {
     background-image: none;
+}
+
+a {
+    text-decoration: none;
 }

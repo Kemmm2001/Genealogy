@@ -1,4 +1,4 @@
-.vm--modal{
+.vm--modal {
     /* overflow: auto; */
     display: flex;
     flex-direction: column;
@@ -8,106 +8,206 @@
     right: 10% !important;
     height: auto !important;
     width: auto !important;
+    background: none;
+    box-shadow: none;
 }
 
-.btn-modal{
+.modal-on-display {
+    width: 900px;
+    height: 524px;
+    background-color: #E8C77B;
+    border-radius: 0.375rem 0.375rem 0 0;
+}
+
+.btn-modal {
     background-color: #FFFFFF !important;
 }
 
-.alivebuttoncolor{
+.alivebuttoncolor {
     background-color: #D9D9D9 !important;
 }
 
-.modal-item{
-    height: 36px;
+.modal-item {
+    height: 41px;
+    outline: none;
+    border: 1px solid lightsteelblue;
+    margin-bottom: 14px;
+    margin-right: 10px
 }
 
-.modal-title{
+.modal-title {
     height: 40px;
     background-color: #E8C77B;
     font-size: 20px;
     font-weight: bold;
+    border-radius: 0.375rem 0.375rem 0 0;
 }
 
-.profile-pic{
+.profile-pic {
     background-color: #D9D9D9;
     height: 200px;
     border-radius: 4px;
 }
 
-.btn.colored{
-    background-color: #E8C77B;
-}
-
-.add-form-birthorder-label{
+.add-form-birthorder-label {
     top: 18%;
     left: 10%;
 }
 
-.add-form-birthorder-input{
+.add-form-birthorder-input {
     padding-left: 85px !important;
 }
 
-.add-form-bloodtype-label{
+.add-form-bloodtype-label {
     padding-left: 4px;
     padding-top: 5px;
 }
 
-.add-form-bloodtype-select{
+.add-form-bloodtype-select {
     padding-left: 30% !important;
 }
 
-.add-form-date-label{
+.add-form-date-label {
     padding-left: 4px;
     padding-top: 9px;
 }
 
-.extended-info-tab{
+.extended-info-tab {
     height: 36px;
     border-radius: 0.375rem 0.375rem 0 0;
 }
 
-.extended-info-container{
+.extended-info-container {
     background-color: #E8C77B;
     height: calc(100% - 40px);
 }
 
-.btn.extended-info-colored{
+.btn.extended-info-colored {
     background-color: #D0B36E;
 }
 
-.extended-job-data-container, .extended-edu-data-container{
+.extended-job-data-container,
+.extended-edu-data-container {
     height: calc(100% - 168px);
     background-color: #FFFFFF;
     border-radius: 0.375rem;
 }
 
-.extended-info-container textarea{
+.extended-info-container textarea {
     border-radius: 0.375rem;
 }
 
-.extended-info-container textarea{
+.extended-info-container textarea {
     outline: none;
     border: none;
 }
 
-.extended-contact-container{
+.extended-contact-container {
     border-radius: 0 0.375rem 0.375rem 0.375rem;
 }
 
-.extended-job-container, .extended-edu-container{
+.extended-job-container,
+.extended-edu-container {
     border-radius: 0.375rem;
 }
 
-.extended-note-container{
+.extended-note-container {
     border-radius: 0.375rem 0 0.375rem 0.375rem;
 }
 
-.close-add-form{
+.close-add-form {
     position: absolute;
     right: 0;
 }
 
-.close-add-form:hover{
+.close-add-form:hover {
     cursor: pointer;
+}
+
+.member-info-tab {
+    background-color: #E8C77B;
+    border-radius: 0.375rem 0 0 0.375rem;
+    text-align: center;
+    width: 65%;
+    cursor: pointer;
+}
+
+.member-info-tab {
+    background-color: #FFFFFF;
+}
+
+.member-info-tab.colored {
+    background-color: #E8C77B;
+}
+
+.btn.colored {
+    background-color: #FFFFFF;
+}
+
+.form-label {
+    position: absolute;
+    left: 8px;
+    top: 5px;
+    padding: 0 4px;
+    color: black;
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
+
+label.form-label-number {
+    position: absolute;
+    left: 8px;
+    top: 5px;
+    padding: 0 4px;
+    color: black;
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
+
+select:not(:placeholder-shown)~label {
+    font-size: 11px;
+    top: -4px;
+    transform: translateY(-30%) scale(1.1);
+    background: #fff;
+    color: #212529;
+}
+
+input:not(:placeholder-shown)~label,
+input:focus~label.form-label {
+    font-size: 11px;
+    top: -3px;
+    transform: translateY(-30%) scale(1.1);
+    background: #fff;
+    color: #212529;
+}
+
+input:not(:placeholder-shown)~label,
+input:focus~label.form-label-number {
+    font-size: 11px;
+    top: -3px;
+    transform: translateY(-30%) scale(1.1);
+    background: #fff;
+    color: #212529;
+}
+
+
+
+.custom-info {
+    text-align: center;
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.selected {
+    background-color: #faebd7;
+    color: #a83131 !important;
+    border-radius: 5px;
+
+}
+
+.select-menu {
+    border-right: 1px solid rgba(0, 0, 0, 0.12);
+    padding-right: 0px;
+    padding-top: 50px;
 }

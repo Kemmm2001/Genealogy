@@ -152,7 +152,7 @@ var getMemberPhotoById = async (req, res) => {
         // lấy thông tin MemberPhoto từ database
         let data = await MemberPhotoManagementService.getMemberPhotoById(req.params.id)
 
-        message = "View one MemberPhoto successfully";
+        message = "View MemberPhoto successfully";
         console.log(message);
         response = {
             success: true,
@@ -187,7 +187,7 @@ var getMemberPhotoByAlbumId = async (req, res) => {
         console.log("No missing fields");
         // lấy thông tin MemberPhoto từ database
         let data = await MemberPhotoManagementService.getMemberPhotoByAlbumId(req.params.id)
-        message = "View one MemberPhoto successfully";
+        message = "View MemberPhoto successfully";
         console.log(message);
         response = {
             success: true,

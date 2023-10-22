@@ -15,7 +15,7 @@ const initWebRouter = (app) => {
     router.get('/deadDay', EventManagementController.GetDeadDayInMonth)
     //API tuấn
     router.post('/send-sms', EventManagementController.SendSMS)
-
+    router.post('/send-email', EventManagementController.SendEmail)
 
 
     //API Nhật anh

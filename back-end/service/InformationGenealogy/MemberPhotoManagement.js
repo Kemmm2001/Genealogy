@@ -64,6 +64,7 @@ function insertMemberPhoto(ObjData) {
 
 function updateMemberPhoto(ObjData) {
     return new Promise((resolve, reject) => {
+        // xóa ảnh cũ
         removeMemberPhotoUrl(ObjData.PhotoID, reject);
         let query = `UPDATE memberphoto SET AlbumID = ?, PhotoUrl = ? WHERE PhotoID = ?;`
         let values = [
@@ -99,6 +100,7 @@ function removeMemberPhoto(photoId) {
 
 }
 
+// hàm có chức năng xóa ảnh trong thư mục
 function removeMemberPhotoUrl(photoId, reject) {
     let querySelect = `SELECT * FROM memberphoto where PhotoID  = ${photoId}`
     db.connection.query(querySelect, (err, result) => {
