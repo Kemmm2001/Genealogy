@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex align-items-center w-100">
-    <div v-if="!sidebarhover" class="list d-flex flex-column align-items-center">
+    <div v-if="!displayList" class="list d-flex flex-column align-items-center">
       <div class="w-100">
         <select class="d-flex text-center form-select dropdown p-0">
           <option selected>Tỉnh/Thành phố</option>
@@ -41,13 +41,13 @@
     </div>
     <div class="d-flex main-screen align-items-center w-100">
       <button type="button" class="btn p-0 btn-modal" @click="openChildrenModal">Modal add con</button>
-      <button @click="test()">Test</button>
       <modal name="children-modal">
         <div class="d-flex flex-row w-100 align-items-center position-relative">
           <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm con</div>
           <div class="close-add-form" @click="closeChildrenModal">
             <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-              <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+              <path
+                d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
             </svg>
           </div>
         </div>
@@ -57,7 +57,8 @@
               <div class="profile-pic"></div>
               <button class="btn p-0 colored mt-1 modal-item">Xoá ảnh</button>
               <!-- <div class="d-flex align-items-center justify-content-center">                   -->
-              <button class="btn p-0 colored mt-1 modal-item" style="margin-top: 120px !important;" @click="dead = !dead" :class="{ alivebuttoncolor: dead }">
+              <button class="btn p-0 colored mt-1 modal-item" style="margin-top: 120px !important;" @click="dead = !dead"
+                :class="{ alivebuttoncolor: dead }">
                 <a v-show="!dead">Còn sống</a>
                 <a v-show="dead">Đã mất</a>
               </button>
@@ -87,7 +88,8 @@
                     Con
                     thứ
                   </label>
-                  <input id="birthorder" type="number" class="form-control flex-grow add-form-birthorder-input modal-item pl-5" value="1" min="1" />
+                  <input id="birthorder" type="number"
+                    class="form-control flex-grow add-form-birthorder-input modal-item pl-5" value="1" min="1" />
                 </div>
               </div>
               <div class="d-flex flex-row align-items-center justify-content-around w-100">
@@ -167,31 +169,36 @@
           <div class="col-md-6 mt-1" style="padding-right: 4px">
             <div class="d-flex flex-row modal-item align-items-center justify-content-around">
               <div class="w-100">
-                <button @click="extendedContact = true; extendedJob = false; extendedEdu = false; extendedNote = false" class="btn px-2 pt-1 pb-2 extended-info-tab w-100" :class="{ colored: extendedContact }">
+                <button @click="extendedContact = true; extendedJob = false; extendedEdu = false; extendedNote = false"
+                  class="btn px-2 pt-1 pb-2 extended-info-tab w-100" :class="{ colored: extendedContact }">
                   Liên
                   hệ
                 </button>
               </div>
               <div class="w-100">
-                <button @click="extendedContact = false; extendedJob = true; extendedEdu = false; extendedNote = false" class="btn px-2 pt-1 pb-2 extended-info-tab w-100" :class="{ colored: extendedJob }">
+                <button @click="extendedContact = false; extendedJob = true; extendedEdu = false; extendedNote = false"
+                  class="btn px-2 pt-1 pb-2 extended-info-tab w-100" :class="{ colored: extendedJob }">
                   Nghề
                   nghiệp
                 </button>
               </div>
               <div class="w-100">
-                <button @click="extendedContact = false; extendedJob = false; extendedEdu = true; extendedNote = false" class="btn px-2 pt-1 pb-2 extended-info-tab w-100" :class="{ colored: extendedEdu }">
+                <button @click="extendedContact = false; extendedJob = false; extendedEdu = true; extendedNote = false"
+                  class="btn px-2 pt-1 pb-2 extended-info-tab w-100" :class="{ colored: extendedEdu }">
                   Giáo
                   dục
                 </button>
               </div>
               <div class="w-100">
-                <button @click="extendedContact = false; extendedJob = false; extendedEdu = false; extendedNote = true" class="btn px-2 pt-1 pb-2 extended-info-tab w-100" :class="{ colored: extendedNote }">
+                <button @click="extendedContact = false; extendedJob = false; extendedEdu = false; extendedNote = true"
+                  class="btn px-2 pt-1 pb-2 extended-info-tab w-100" :class="{ colored: extendedNote }">
                   Ghi
                   chú
                 </button>
               </div>
             </div>
-            <div v-if="extendedContact" class="d-flex flex-column extended-info-container extended-contact-container w-100">
+            <div v-if="extendedContact"
+              class="d-flex flex-column extended-info-container extended-contact-container w-100">
               <div class="col-md-12 px-1 mt-1">
                 <input type="text" class="form-control modal-item" placeholder="Địa chỉ" />
               </div>
@@ -319,20 +326,35 @@
         <div class="d-flex flex-row w-100">
           <div class="d-flex flex-column col-md-1">
             <div class="d-flex flex-column h-100">
-              <div class="d-flex h-100 mb-1" style="justify-content: right; margin-top: 40px;">
-                <div @click="extendedInfo = true; extendedContact = false; extendedJob = false; extendedEdu = false; extendedNote = false" class="d-flex align-items-center justify-content-center col-md-2 member-info-tab h-100" :class="{ colored: extendedInfo }">Cơ bản</div>
+              <div class="d-flex h-100" style="justify-content: right;">
+                <div
+                  @click="extendedInfo = true; extendedContact = false; extendedJob = false; extendedEdu = false; extendedNote = false"
+                  class="d-flex align-items-center justify-content-center col-md-2 member-info-tab h-100"
+                  :class="{ colored: extendedInfo }">Cơ bản</div>
               </div>
-              <div class="d-flex h-100 my-1" style="justify-content: right;">
-                <div @click="extendedInfo = false; extendedContact = true; extendedJob = false; extendedEdu = false; extendedNote = false" class="d-flex align-items-center justify-content-center col-md-2 member-info-tab h-100" :class="{ colored: extendedContact }">Liên hệ</div>
+              <div class="d-flex h-100" style="justify-content: right;">
+                <div
+                  @click="extendedInfo = false; extendedContact = true; extendedJob = false; extendedEdu = false; extendedNote = false"
+                  class="d-flex align-items-center justify-content-center col-md-2 member-info-tab h-100"
+                  :class="{ colored: extendedContact }">Liên hệ</div>
               </div>
-              <div class="d-flex h-100 my-1" style="justify-content: right;">
-                <div @click="extendedInfo = false; extendedContact = false; extendedJob = true; extendedEdu = false; extendedNote = false" class="d-flex align-items-center justify-content-center col-md-2 member-info-tab h-100" :class="{ colored: extendedJob }">Nghề nghiệp</div>
+              <div class="d-flex h-100" style="justify-content: right;">
+                <div
+                  @click="extendedInfo = false; extendedContact = false; extendedJob = true; extendedEdu = false; extendedNote = false"
+                  class="d-flex align-items-center justify-content-center col-md-2 member-info-tab h-100"
+                  :class="{ colored: extendedJob }">Nghề nghiệp</div>
               </div>
-              <div class="d-flex h-100 my-1" style="justify-content: right;">
-                <div @click="extendedInfo = false; extendedContact = false; extendedJob = false; extendedEdu = true; extendedNote = false" class="d-flex align-items-center justify-content-center col-md-2 member-info-tab h-100" :class="{ colored: extendedEdu }">Giáo dục</div>
+              <div class="d-flex h-100" style="justify-content: right;">
+                <div
+                  @click="extendedInfo = false; extendedContact = false; extendedJob = false; extendedEdu = true; extendedNote = false"
+                  class="d-flex align-items-center justify-content-center col-md-2 member-info-tab h-100"
+                  :class="{ colored: extendedEdu }">Giáo dục</div>
               </div>
-              <div class="d-flex h-100 mt-1" style="justify-content: right;">
-                <div @click="extendedInfo = false; extendedContact = false; extendedJob = false; extendedEdu = false; extendedNote = true" class="d-flex align-items-center justify-content-center col-md-2 member-info-tab h-100" :class="{ colored: extendedNote }">Ghi chú</div>
+              <div class="d-flex h-100" style="justify-content: right;">
+                <div
+                  @click="extendedInfo = false; extendedContact = false; extendedJob = false; extendedEdu = false; extendedNote = true"
+                  class="d-flex align-items-center justify-content-center col-md-2 member-info-tab h-100"
+                  :class="{ colored: extendedNote }">Ghi chú</div>
               </div>
             </div>
           </div>
@@ -345,7 +367,8 @@
               </div>
               <div class="close-add-form" @click="closeMemberModal">
                 <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                  <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                  <path
+                    d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
                 </svg>
               </div>
             </div>
@@ -354,7 +377,8 @@
                 <div class="profile-pic"></div>
                 <button class="btn p-0 colored mt-1 modal-item">Xoá ảnh</button>
                 <!-- <div class="d-flex align-items-center justify-content-center">                   -->
-                <button class="btn p-0 colored mt-1 modal-item" style="margin-top: 120px !important;" @click="dead = !dead" :class="{ alivebuttoncolor: dead }">
+                <button class="btn p-0 colored mt-1 modal-item" style="margin-top: 120px !important;"
+                  @click="dead = !dead" :class="{ alivebuttoncolor: dead }">
                   <a v-show="!dead">Còn sống</a>
                   <a v-show="dead">Đã mất</a>
                 </button>
@@ -375,7 +399,8 @@
                       Con
                       thứ
                     </label>
-                    <input id="birthorder" type="number" class="form-control flex-grow add-form-birthorder-input modal-item pl-5" value="1" min="1" />
+                    <input id="birthorder" type="number"
+                      class="form-control flex-grow add-form-birthorder-input modal-item pl-5" value="1" min="1" />
                   </div>
                 </div>
                 <div class="d-flex flex-row align-items-center justify-content-around w-100">
@@ -456,7 +481,8 @@
                 <!-- </div> -->
               </div>
             </div>
-            <div v-if="extendedContact" class="d-flex flex-column extended-info-container extended-contact-container w-100">
+            <div v-if="extendedContact"
+              class="d-flex flex-column extended-info-container extended-contact-container w-100">
               <div class="col-md-12 px-1 mt-1">
                 <input type="text" class="form-control modal-item" placeholder="Địa chỉ" />
               </div>
@@ -608,7 +634,8 @@
           </div>
           <div class="close-add-form" @click="closeUpdateMemberModal">
             <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-              <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+              <path
+                d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
             </svg>
           </div>
         </div>
@@ -618,7 +645,8 @@
               <div class="profile-pic"></div>
               <button class="btn p-0 colored mt-1 modal-item">Xoá ảnh</button>
               <!-- <div class="d-flex align-items-center justify-content-center">                   -->
-              <button class="btn p-0 colored mt-1 modal-item" style="margin-top: 120px !important;" @click="dead = !dead" :class="{ alivebuttoncolor: dead }">
+              <button class="btn p-0 colored mt-1 modal-item" style="margin-top: 120px !important;" @click="dead = !dead"
+                :class="{ alivebuttoncolor: dead }">
                 <a v-show="!dead">Còn sống</a>
                 <a v-show="dead">Đã mất</a>
               </button>
@@ -639,7 +667,8 @@
                     Con
                     thứ
                   </label>
-                  <input id="birthorder" type="number" class="form-control flex-grow add-form-birthorder-input modal-item pl-5" value="1" min="1" />
+                  <input id="birthorder" type="number"
+                    class="form-control flex-grow add-form-birthorder-input modal-item pl-5" value="1" min="1" />
                 </div>
               </div>
               <div class="d-flex flex-row align-items-center justify-content-around w-100">
@@ -719,31 +748,36 @@
           <div class="col-md-6 mt-1" style="padding-right: 4px">
             <div class="d-flex flex-row modal-item align-items-center justify-content-around">
               <div class="w-100">
-                <button @click="extendedContact = true; extendedJob = false; extendedEdu = false; extendedNote = false" class="btn px-2 pt-1 pb-2 extended-info-tab w-100" :class="{ colored: extendedContact }">
+                <button @click="extendedContact = true; extendedJob = false; extendedEdu = false; extendedNote = false"
+                  class="btn px-2 pt-1 pb-2 extended-info-tab w-100" :class="{ colored: extendedContact }">
                   Liên
                   hệ
                 </button>
               </div>
               <div class="w-100">
-                <button @click="extendedContact = false; extendedJob = true; extendedEdu = false; extendedNote = false" class="btn px-2 pt-1 pb-2 extended-info-tab w-100" :class="{ colored: extendedJob }">
+                <button @click="extendedContact = false; extendedJob = true; extendedEdu = false; extendedNote = false"
+                  class="btn px-2 pt-1 pb-2 extended-info-tab w-100" :class="{ colored: extendedJob }">
                   Nghề
                   nghiệp
                 </button>
               </div>
               <div class="w-100">
-                <button @click="extendedContact = false; extendedJob = false; extendedEdu = true; extendedNote = false" class="btn px-2 pt-1 pb-2 extended-info-tab w-100" :class="{ colored: extendedEdu }">
+                <button @click="extendedContact = false; extendedJob = false; extendedEdu = true; extendedNote = false"
+                  class="btn px-2 pt-1 pb-2 extended-info-tab w-100" :class="{ colored: extendedEdu }">
                   Giáo
                   dục
                 </button>
               </div>
               <div class="w-100">
-                <button @click="extendedContact = false; extendedJob = false; extendedEdu = false; extendedNote = true" class="btn px-2 pt-1 pb-2 extended-info-tab w-100" :class="{ colored: extendedNote }">
+                <button @click="extendedContact = false; extendedJob = false; extendedEdu = false; extendedNote = true"
+                  class="btn px-2 pt-1 pb-2 extended-info-tab w-100" :class="{ colored: extendedNote }">
                   Ghi
                   chú
                 </button>
               </div>
             </div>
-            <div v-if="extendedContact" class="d-flex flex-column extended-info-container extended-contact-container w-100">
+            <div v-if="extendedContact"
+              class="d-flex flex-column extended-info-container extended-contact-container w-100">
               <div class="col-md-12 px-1 mt-1">
                 <input type="text" class="form-control modal-item" placeholder="Địa chỉ" />
               </div>
@@ -870,10 +904,10 @@
     </div>
 
     <div v-if="!configSidebarHover" class="collapsed-config-sidebar d-flex align-items-center justify-content-center">
-      <svg @mouseenter="expandConfigSidebar()" class="config-sidebar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+      <svg @mouseenter="expandConfigSidebar()" class="config-sidebar-icon" xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 512 512">
         <path
-          d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336a80 80 0 1 0 0-160 80 80 0 1 0 0 160z"
-        />
+          d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336a80 80 0 1 0 0-160 80 80 0 1 0 0 160z" />
       </svg>
     </div>
     <div @mouseleave="collapseConfigSidebar()" class="config-sidebar h-100" :style="{ width: configSidebarWidth + '%' }">
@@ -888,23 +922,26 @@
       <!--Config menu-->
       <div v-if="configSidebarExpansion" class="d-flex flex-column config-menu">
         <div class="d-flex flex-row align-items-center justify-content-center">
-          <div @click="configTree = true; configPrinting = false;" class="config-topic text-center col-md-6 px-1 py-1" :class="{ notchosenconfigmenu: configPrinting }">
+          <div @click="configTree = true; configPrinting = false;" class="config-topic text-center col-md-6 px-1 py-1"
+            :class="{ notchosenconfigmenu: configPrinting }">
             <a>Phả đồ</a>
           </div>
-          <div @click="configTree = false; configPrinting = true" class="config-topic text-center col-md-6 px-1 py-1" :class="{ notchosenconfigmenu: configTree }">
+          <div @click="configTree = false; configPrinting = true" class="config-topic text-center col-md-6 px-1 py-1"
+            :class="{ notchosenconfigmenu: configTree }">
             <a>Hỗ trợ in ấn</a>
           </div>
         </div>
         <div v-if="configTree" class="config-menu-board d-flex flex-column">
-          <div @click="expandconfigitem1 = !expandconfigitem1" class="config-menu-item">
-            <button type="button" class="btn p-0" :class="{ rotated1: expandconfigitem1 }">
+          <div @click="expandthanhvien = !expandthanhvien" class="config-menu-item">
+            <button type="button" class="btn p-0" :class="{ rotated1: expandthanhvien }">
               <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
+                <path
+                  d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
               </svg>
             </button>
             <a>Thành viên</a>
           </div>
-          <div v-show="expandconfigitem1" class="config-menu-item-expanded">
+          <div v-show="expandthanhvien" class="config-menu-item-expanded">
             <a>Thành viên hiển thị</a>
             <select class="form-select">
               <option selected>Tất cả</option>
@@ -915,15 +952,16 @@
               <option>20</option>
             </select>
           </div>
-          <div @click="expandconfigitem2 = !expandconfigitem2" class="d-flex config-menu-item align-items-center">
-            <button type="button" class="btn p-0" :class="{ rotated2: expandconfigitem2 }">
+          <div @click="expandbangve = !expandbangve" class="d-flex config-menu-item align-items-center">
+            <button type="button" class="btn p-0" :class="{ rotated2: expandbangve }">
               <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
+                <path
+                  d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
               </svg>
             </button>
             <a>Bảng vẽ</a>
           </div>
-          <div v-show="expandconfigitem2" class="config-menu-item-expanded">
+          <div v-show="expandbangve" class="config-menu-item-expanded">
             <div class="d-flex align-items-center config-menu-item-content">
               <a>Màu nền bảng vẽ</a>
               <input class="form-control-color config-menu-color-input p-0" type="color" value="#FFFFFF" />
@@ -934,23 +972,26 @@
             <div class="d-flex flex-column align-items-center">
               <div class="d-flex flex-row">
                 <div class="col-md-6 config-menu-item-content">Ngang</div>
-                <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
+                <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number"
+                  value="0" min="0" />
               </div>
               <div class="d-flex flex-row">
                 <div class="col-md-6 config-menu-item-content">Dọc</div>
-                <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
+                <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number"
+                  value="0" min="0" />
               </div>
             </div>
           </div>
-          <div @click="expandconfigitem3 = !expandconfigitem3" class="d-flex config-menu-item align-items-center">
-            <button type="button" class="btn p-0" :class="{ rotated3: expandconfigitem3 }">
+          <div @click="expandkhungthe = !expandkhungthe" class="d-flex config-menu-item align-items-center">
+            <button type="button" class="btn p-0" :class="{ rotated3: expandkhungthe }">
               <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
+                <path
+                  d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
               </svg>
             </button>
             <a>Khung thẻ</a>
           </div>
-          <div v-show="expandconfigitem3" class="config-menu-item-expanded">
+          <div v-show="expandkhungthe" class="config-menu-item-expanded">
             <div class="d-flex align-items-center config-menu-item-content">
               <input class="form-check-input config-menu-checkbox-input" type="checkbox" />
               <a>Khung viền</a>
@@ -961,7 +1002,8 @@
             </div>
             <div class="d-flex flex-row">
               <div class="col-md-6 config-menu-item-content">Độ đậm</div>
-              <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
+              <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number"
+                value="0" min="0" />
             </div>
             <div class="d-flex align-items-center config-menu-item-content">
               <input class="form-check-input config-menu-checkbox-input" type="checkbox" />
@@ -969,29 +1011,34 @@
             </div>
             <div class="d-flex flex-row">
               <div class="col-md-6 config-menu-item-content">Khung thẻ</div>
-              <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
+              <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number"
+                value="0" min="0" />
             </div>
           </div>
-          <div @click="expandconfigitem4 = !expandconfigitem4" class="d-flex config-menu-item align-items-center">
-            <button type="button" class="btn p-0" :class="{ rotated4: expandconfigitem4 }">
+          <div @click="expandthongtinthe = !expandthongtinthe" class="d-flex config-menu-item align-items-center">
+            <button type="button" class="btn p-0" :class="{ rotated4: expandthongtinthe }">
               <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
+                <path
+                  d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
               </svg>
             </button>
             <a>Thông tin thẻ</a>
           </div>
-          <div v-show="expandconfigitem4" class="config-menu-item-expanded">
+          <div v-show="expandthongtinthe" class="config-menu-item-expanded">
             <div class="d-flex flex-row align-items-center">
               <div class="col-md-6 config-menu-item-content">Tỉ lệ cơ bản (%)</div>
-              <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
+              <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number"
+                value="0" min="0" />
             </div>
             <div class="d-flex flex-row">
               <div class="col-md-6 config-menu-item-content align-items-center">Tỉ lệ tổ phụ so với cơ bản (%)</div>
-              <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
+              <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number"
+                value="0" min="0" />
             </div>
             <div class="d-flex flex-row">
               <div class="col-md-6 config-menu-item-content align-items-center">Độ đậm đường kẻ</div>
-              <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
+              <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number"
+                value="0" min="0" />
             </div>
             <div class="d-flex align-items-center config-menu-item-content">
               <a>Màu chữ</a>
@@ -1000,32 +1047,36 @@
             <div class="d-flex align-items-center config-menu-item-content">
               <a>Màu nền</a>
               <div class="d-flex position-relative">
-                <input class="form-control-color config-menu-color-input p-0" type="color" value="#FFFFFF" id="color-for-male" />
+                <input class="form-control-color config-menu-color-input p-0" type="color" value="#FFFFFF"
+                  id="color-for-male" />
                 <label class="label-color-input" for="color-for-male">Nam</label>
               </div>
               <div class="d-flex position-relative">
-                <input class="form-control-color config-menu-color-input p-0" type="color" value="#FFFFFF" id="color-for-male" />
+                <input class="form-control-color config-menu-color-input p-0" type="color" value="#FFFFFF"
+                  id="color-for-male" />
                 <label class="label-color-input" for="color-for-male">Nữ</label>
               </div>
             </div>
             <div class="d-flex align-items-center config-menu-item-content">
               <div class="d-flex position-relative">
-                <input class="form-control-color config-menu-color-genderunknown-input p-0" type="color" value="#FFFFFF" id="color-for-male" />
+                <input class="form-control-color config-menu-color-genderunknown-input p-0" type="color" value="#FFFFFF"
+                  id="color-for-male" />
                 <label class="label-color-input" for="color-for-male">Không rõ GT</label>
               </div>
             </div>
           </div>
         </div>
         <div v-if="configPrinting" class="config-menu-board d-flex flex-column">
-          <div @click="expandconfigitem5 = !expandconfigitem5" class="d-flex config-menu-item align-items-center">
-            <button type="button" class="btn p-0" :class="{ rotated5: expandconfigitem5 }">
+          <div @click="expandkhungvien = !expandkhungvien" class="d-flex config-menu-item align-items-center">
+            <button type="button" class="btn p-0" :class="{ rotated5: expandkhungvien }">
               <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
+                <path
+                  d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
               </svg>
             </button>
             <a>Khung viền</a>
           </div>
-          <div v-show="expandconfigitem5" class="config-menu-item-expanded">
+          <div v-show="expandkhungvien" class="config-menu-item-expanded">
             <div class="d-flex align-items-center config-menu-item-content">
               <input class="form-check-input config-menu-checkbox-input" type="checkbox" />
               <a>Vẽ khung</a>
@@ -1040,18 +1091,20 @@
             </div>
             <div class="d-flex flex-row align-items-center">
               <div class="col-md-6 config-menu-item-content">Tỉ lệ khung ảnh (%)</div>
-              <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
+              <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number"
+                value="0" min="0" />
             </div>
           </div>
-          <div @click="expandconfigitem6 = !expandconfigitem6" class="d-flex config-menu-item align-items-center">
-            <button type="button" class="btn p-0" :class="{ rotated6: expandconfigitem6 }">
+          <div @click="expandtieude = !expandtieude" class="d-flex config-menu-item align-items-center">
+            <button type="button" class="btn p-0" :class="{ rotated6: expandtieude }">
               <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
+                <path
+                  d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
               </svg>
             </button>
             <a>Tiêu đề</a>
           </div>
-          <div v-show="expandconfigitem6" class="config-menu-item-expanded">
+          <div v-show="expandtieude" class="config-menu-item-expanded">
             <div class="d-flex align-items-center config-menu-item-content">
               <input class="form-check-input config-menu-checkbox-input" type="checkbox" />
               <a>Vẽ ảnh tiêu đề</a>
@@ -1070,18 +1123,20 @@
             </div>
             <div class="d-flex flex-row align-items-center">
               <div class="col-md-6 config-menu-item-content">Tỉ lệ ảnh tiêu đề</div>
-              <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
+              <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number"
+                value="0" min="0" />
             </div>
           </div>
-          <div @click="expandconfigitem7 = !expandconfigitem7" class="d-flex config-menu-item align-items-center">
-            <button type="button" class="btn p-0" :class="{ rotated7: expandconfigitem7 }">
+          <div @click="expandnen = !expandnen" class="d-flex config-menu-item align-items-center">
+            <button type="button" class="btn p-0" :class="{ rotated7: expandnen }">
               <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
+                <path
+                  d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
               </svg>
             </button>
             <a>Nền</a>
           </div>
-          <div v-show="expandconfigitem7" class="config-menu-item-expanded">
+          <div v-show="expandnen" class="config-menu-item-expanded">
             <div class="d-flex align-items-center config-menu-item-content">
               <input class="form-check-input config-menu-checkbox-input" type="checkbox" />
               <a>Vẽ màu nền</a>
@@ -1128,15 +1183,16 @@
               </select>
             </div>
           </div>
-          <div @click="expandconfigitem8 = !expandconfigitem8" class="d-flex config-menu-item align-items-center">
-            <button type="button" class="btn p-0" :class="{ rotated8: expandconfigitem8 }">
+          <div @click="expandthongtinngaytao = !expandthongtinngaytao" class="d-flex config-menu-item align-items-center">
+            <button type="button" class="btn p-0" :class="{ rotated8: expandthongtinngaytao }">
               <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
+                <path
+                  d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
               </svg>
             </button>
             <a>Thông tin ngày tạo</a>
           </div>
-          <div v-show="expandconfigitem8" class="config-menu-item-expanded">
+          <div v-show="expandthongtinngaytao" class="config-menu-item-expanded">
             <div class="d-flex align-items-center config-menu-item-content">
               <input class="form-check-input config-menu-checkbox-input" type="checkbox" />
               <a>Hiện ngày tạo</a>
@@ -1151,7 +1207,8 @@
             </div>
             <div class="d-flex flex-row align-items-center">
               <div class="col-md-6 config-menu-item-content">Cỡ chữ</div>
-              <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
+              <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number"
+                value="0" min="0" />
             </div>
             <div class="d-flex flex-row align-items-center">
               <a>Vị trí người tạo</a>
@@ -1184,21 +1241,21 @@ import { HTTP } from "../assets/js/baseAPI.js";
 export default {
   data() {
     return {
-      expandconfigitem1: false,
+      expandthanhvien: false,
       rotated1: false,
-      expandconfigitem2: false,
+      expandbangve: false,
       rotated2: false,
-      expandconfigitem3: false,
+      expandkhungthe: false,
       rotated3: false,
-      expandconfigitem4: false,
+      expandthongtinthe: false,
       rotated4: false,
-      expandconfigitem5: false,
+      expandkhungvien: false,
       rotated5: false,
-      expandconfigitem6: false,
+      expandtieude: false,
       rotated6: false,
-      expandconfigitem7: false,
+      expandnen: false,
       rotated7: false,
-      expandconfigitem8: false,
+      expandthongtinngaytao: false,
       rotated8: false,
 
       configTree: true,
@@ -1216,7 +1273,7 @@ export default {
 
       configSidebarWidth: 0,
 
-      sidebarhover: false,
+      displayList: false,
 
       nodes: [],
     };
@@ -1291,10 +1348,21 @@ export default {
       this.configSidebarWidth = 0;
       this.configSidebarExpansion = false;
     },
-    test() {
-      EventBus.$emit("custom-event", "Dữ liệu sự kiện");
-    },
   },
+  created() {
+    EventBus.$on("displayList", (value) => {
+      this.displayList = value;
+    });
+  },
+
+  watch: {
+    displayList: {
+      handler: function () {
+        console.log(this.displayList);
+      }
+    }
+  },
+
   mounted() {
     HTTP.get("viewTree", {
       params: {
@@ -1309,23 +1377,10 @@ export default {
         console.log(e);
       });
   },
-  // computed: {
-  //     sidebarHover() {
-  //         return this.store.sidebarhoverStore;
-  //     }
-  // },
-  // watch: {
-  //     sidebarHover() {
-  //         handler: function(){
-  //             this.sidebarhover = this.store.sidebarhoverStore;
-  //         }
-  //     }
-  // }
 };
 </script>
  
-<style>
-#tree {
+<style>#tree {
   width: 100%;
   height: 100%;
 }
@@ -1346,11 +1401,10 @@ svg.tommy .node.choose.female rect {
   fill: #edf048;
 }
 
-svg.tommy .node.male > rect {
+svg.tommy .node.male>rect {
   fill: #c69934;
 }
 
-svg.tommy .node.female > rect {
+svg.tommy .node.female>rect {
   fill: pink;
-}
-</style>
+}</style>
