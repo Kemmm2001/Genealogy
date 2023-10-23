@@ -807,13 +807,34 @@ export default {
           console.log(e);
         });
     },
+    getListReligion() {
+      HTTP.get("religion")
+        .then((response) => {
+          this.ListReligion = response.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
   },
   created() {
     EventBus.$on("displayList", (value) => {
       this.displayList = value;
     });
   },
-  
+  created() {
+    EventBus.$on("displayList", (value) => {
+      this.displayList = value;
+    });
+  },
+
+  watch: {
+    displayList: {
+      handler: function () {
+        console.log(this.displayList);
+      },
+    },
+  },
   mounted() {
     this.getListMember();
     this.getListNationality();
