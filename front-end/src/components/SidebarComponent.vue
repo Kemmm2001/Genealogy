@@ -1,8 +1,7 @@
 <template>
   <div class="d-flex flex-row sidebar-list p-0">
-    <!-- Collapsed sidebar (medium 1-->
-    <div @mouseenter="expandSidebar()" @mouseleave="collapseSidebar()" class="sidebar">
-      <!-- Sidebar content-->
+    <div class="sidebar">
+    <!-- <div @mouseenter="expandSidebar()" @mouseleave="collapseSidebar()" class="sidebar"> -->
       <div class="d-flex flex-column">
         <router-link to="/">
           <div class="d-flex sidebar-item align-items-center justify-content-center">

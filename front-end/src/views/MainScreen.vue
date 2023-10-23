@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex align-items-center w-100">
-    <div v-if="!displayList" class="list d-flex flex-column align-items-center">
+    <div class="list d-flex flex-column align-items-center">
       <div class="w-100">
         <select class="d-flex text-center form-select dropdown p-0">
           <option selected>Tỉnh/Thành phố</option>
@@ -16,8 +16,8 @@
           <option class="dropdown-item" value>Bắc Giang</option>
         </select>
       </div>
-      <div class="list-item d-flex flex-row">
-        <div class="col-md-6" style="padding-right: 2px;">
+      <div class="list-item d-flex flex-row w-100">
+        <div class="col-md-6 pt-1" style="padding-right: 4px;">
           <select class="d-flex text-center form-select dropdown p-0">
             <option selected>Nhóm máu</option>
             <option class="dropdown-item" value>A</option>
@@ -26,7 +26,7 @@
             <option class="dropdown-item" value>O</option>
           </select>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 pt-1">
           <select class="d-flex text-center form-select dropdown p-0">
             <option selected>Nhóm tuổi</option>
             <option class="dropdown-item" value>0-5</option>
@@ -807,6 +807,20 @@ export default {
           console.log(e);
         });
     },
+    getListReligion() {
+      HTTP.get("religion")
+        .then((response) => {
+          this.ListReligion = response.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+  },
+  created() {
+    EventBus.$on("displayList", (value) => {
+      this.displayList = value;
+    });
   },
   created() {
     EventBus.$on("displayList", (value) => {
@@ -821,7 +835,6 @@ export default {
       },
     },
   },
-
   mounted() {
     this.getListMember();
     this.getListNationality();
