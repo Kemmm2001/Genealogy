@@ -716,7 +716,7 @@ export default {
       this.extendedJob = false;
       this.extendedNote = false;
     },
-    selectedContact() {     
+    selectedContact() {
       this.extendedInfo = false;
       this.extendedContact = true;
       this.extendedEdu = false;
