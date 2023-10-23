@@ -72,9 +72,9 @@
 
 .collapsed-config-sidebar{
     background-color: #3A4B54;
-    position: absolute;
+    /* position: absolute;
     right: 0;
-    top: 0;
+    top: 0; */
     width: 48px;
     height: 100%;
 }

@@ -2,7 +2,15 @@
     background-color: #FFFFFF;
     width: 32px;
     height: 32px;
-    border-radius: 4px;
+    border-radius: 0.375rem;
+    padding: 2px;
+}
+
+.navbar-icon{
+    background-color: #FFFFFF;
+    width: 40px;
+    height: 40px;
+    border-radius: 0.375rem;
     padding: 2px;
 }
 

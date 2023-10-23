@@ -1,18 +1,25 @@
 <template>
-  <div class="container-fluid p-0">    
-    <div class="d-flex flex-row">
-      <Sidebar />
-      <router-view />
+  <div class="container-fluid p-0">
+    <div class="d-flex flex-column h-100">
+      <div class="w-100">
+        <Header />
+      </div>
+      <div class="d-flex flex-row h-100">
+        <!-- <Sidebar /> -->
+        <router-view />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import Sidebar from "./components/SidebarComponent.vue";
+// import Sidebar from "./components/SidebarComponent.vue";
+import Header from "./components/HeaderComponent.vue";
 
 export default {
   components: {
-    Sidebar,
+    // Sidebar,
+    Header,
   },
   data() {
     return {};
