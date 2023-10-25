@@ -4,10 +4,10 @@
       <div class="w-100">
         <Header />
       </div>
-      <div class="d-flex flex-row h-100">
+      <!-- <div class="d-flex flex-row h-100"> -->
         <!-- <Sidebar /> -->
         <router-view />
-      </div>
+      <!-- </div> -->
     </div>
   </div>
 </template>

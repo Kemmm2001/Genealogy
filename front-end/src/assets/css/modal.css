@@ -190,8 +190,6 @@ input:focus~label.form-label-number {
     color: #212529;
 }
 
-
-
 .custom-info {
     text-align: center;
     padding: 10px;
@@ -212,6 +210,13 @@ input:focus~label.form-label-number {
     padding-top: 50px;
 }
 
+.add-head-modal{
+    background-color: #FFFFFF;
+}
+
+.add-article-modal{
+    background-color: #FFFFFF;
+}
 .Container-select-modal .vm--modal {
     top: 21% !important;
 
