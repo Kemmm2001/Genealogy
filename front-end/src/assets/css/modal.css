@@ -211,3 +211,8 @@ input:focus~label.form-label-number {
     padding-right: 0px;
     padding-top: 50px;
 }
+
+.Container-select-modal .vm--modal {
+    top: 21% !important;
+
+}
