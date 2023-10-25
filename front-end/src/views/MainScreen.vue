@@ -42,11 +42,11 @@
     <div class="d-flex main-screen align-items-center w-100">
       <button type="button" class="btn p-0 btn-modal" @click="openChildrenModal">Modal add con</button>
 
-      <button type="button" class="btn p-0 btn-modal" @click="openMemberModal">Modal add member</button>
+      <button type="button" class="btn p-0 btn-modal" @click="openMemberModal('add')">Modal add member</button>
       <modal name="member-modal">
-        <div class="card">
+        <div class="card" v-if="objMemberInfor">
           <div class="card-header text-center" style="background-color:#E8C77B">
-            <h5>Header</h5>
+            <h5>{{TitleModal}}</h5>
             <div class="close-add-form" @click="closeMemberModal" style="top: 8px;right:5px">
               <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -95,46 +95,47 @@
                   </div>
                   <div class="col-8">
                     <div style="position: relative; margin-right:10px">
-                      <input type="text" class="form-control modal-item" placeholder />
+                      <input v-model="objMemberInfor.MemberName" type="text" class="form-control modal-item" placeholder />
                       <label class="form-label" for="input">Tên thành viên đầy đủ</label>
                     </div>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
-                        <input type="text" class="form-control modal-item" placeholder />
+                        <input v-model="objMemberInfor.NickName" type="text" class="form-control modal-item" placeholder />
                         <label class="form-label" for="input">Tên thường gọi</label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
-                        <input type="number" class="form-control modal-item" placeholder />
+                        <input v-model="objMemberInfor.BirthOrder" type="number" class="form-control modal-item" placeholder />
                         <label class="form-label-number" min="0" for="input">Con Thứ</label>
                       </div>
                     </div>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
-                        <select class="form-select modal-item">
+                        <select v-model="objMemberInfor.Male" class="form-select modal-item">
                           <option value="1">Nam</option>
                           <option value="0">Nữ</option>
                         </select>
                         <label class="form-label" for="select">Giới Tính</label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
-                        <select id="bloodtype" class="form-select modal-item">
-                          <option value="1">A</option>
-                          <option value="2">B</option>
-                          <option value="3">AB</option>
-                          <option value="4">O</option>
+                        <select v-model="objMemberInfor.BloodType" id="bloodtype" class="form-select modal-item">
+                          <option :value="null">Chọn Nhóm Máu</option>
+                          <option value="A">A</option>
+                          <option value="B">B</option>
+                          <option value="AB">AB</option>
+                          <option value="O">O</option>
                         </select>
                         <label class="form-label-number" for="select">Nhóm Máu</label>
                       </div>
                     </div>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
-                        <select class="form-select modal-item">
+                        <select v-model="objMemberInfor.NationalityID" class="form-select modal-item">
                           <option v-for="nation in ListNationality" :key="nation.id" :value="nation.NationalityID">{{nation.NationalityName}}</option>
                         </select>
                         <label class="form-label" for="select">Quốc Tịch</label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
-                        <select id="bloodtype" class="form-select modal-item">
+                        <select v-model="objMemberInfor.ReligionID" class="form-select modal-item">
                           <option v-for="religion in ListReligion" :key="religion.id" :value="religion.ReligionID">{{religion.ReligionName}}</option>
                         </select>
                         <label class="form-label-number" for="select">Tôn Giáo</label>
@@ -144,24 +145,24 @@
                       <h6 style="margin-bottom:20px">Ngày Sinh (*)</h6>
                       <div style="display:flex">
                         <div style="position: relative; width: 50%;margin-right: 10px;">
-                          <input type="date" class="form-control modal-item" placeholder />
+                          <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder />
                           <label class="form-label" for="input">Dương Lịch</label>
                         </div>
                         <div style="position: relative;width: 50%; margin-right: 10px;">
-                          <input type="date" class="form-control modal-item" placeholder />
+                          <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder />
                           <label class="form-label-number" min="0" for="input">Âm lịch</label>
                         </div>
                       </div>
                     </div>
                     <div style="position: relative; margin-right:10px">
-                      <input type="text" class="form-control modal-item" placeholder />
+                      <input v-model="objMemberInfor.BirthPlace" type="text" class="form-control modal-item" placeholder />
                       <label class="form-label" for="input">Nơi sinh</label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input v-model="isDead" type="checkbox" class="form-check-input" id="lostCheckbox" />
+                      <input v-model="objMemberInfor.IsDead" type="checkbox" class="form-check-input" id="lostCheckbox" />
                       <label style="font-size: 14px; margin-top: 7px;" class="form-check-label" for="lostCheckbox">Đã mất</label>
                     </div>
-                    <div class="form-group" v-if="isDead">
+                    <div class="form-group" v-if="objMemberInfor.IsDead == 1">
                       <h6 style="margin-bottom:20px">Ngày Mất (*)</h6>
                       <div style="display:flex">
                         <div style="position: relative; width: 50%;margin-right: 10px;">
@@ -185,38 +186,38 @@
                   </div>
                 </div>
               </div>
-              <div class="col-9" style="padding-top: 15px" v-else-if="extendedContact">
+              <div class="col-9" style="padding-top: 15px" v-else-if="extendedContact ">
                 <div class="row">
                   <div style="position: relative;padding-right: 23px;">
-                    <input type="text" class="form-control modal-item" placeholder />
+                    <input v-model="objMemberContact.Address" type="text" class="form-control modal-item" placeholder />
                     <label style="left: 25px;" class="form-label" for="input">Địa chỉ</label>
                   </div>
                   <div style="display:flex">
                     <div style="position: relative; width: 50%;margin-right: 10px;">
-                      <input type="text" class="form-control modal-item" placeholder />
+                      <input v-model="objMemberContact.Phone1" type="text" class="form-control modal-item" placeholder />
                       <label class="form-label" for="input">Điện Thoại 1</label>
                     </div>
                     <div style="position: relative;width: 50%; margin-right: 10px;">
-                      <input type="text" class="form-control modal-item" placeholder />
+                      <input v-model="objMemberContact.Phone2" type="text" class="form-control modal-item" placeholder />
                       <label class="form-label" min="0" for="input">Điện Thoại 2</label>
                     </div>
                   </div>
                   <div style="display:flex">
                     <div style="position: relative; width: 50%;margin-right: 10px;">
-                      <input type="email" class="form-control modal-item" placeholder />
+                      <input v-model="objMemberContact.Email1" type="email" class="form-control modal-item" placeholder />
                       <label class="form-label" for="input">Email 1</label>
                     </div>
                     <div style="position: relative;width: 50%; margin-right: 10px;">
-                      <input type="email" class="form-control modal-item" placeholder />
+                      <input v-model="objMemberContact.Email2" type="email" class="form-control modal-item" placeholder />
                       <label class="form-label-number" min="0" for="input">Email 2</label>
                     </div>
                   </div>
                   <div style="position: relative; padding-right: 23px;">
-                    <input type="text" class="form-control modal-item" placeholder />
+                    <input v-model="objMemberContact.FacebookUrl" type="text" class="form-control modal-item" placeholder />
                     <label style="left: 25px;" class="form-label" for="input">Facebook</label>
                   </div>
                   <div style="position: relative; padding-right: 23px;">
-                    <input type="text" class="form-control modal-item" placeholder />
+                    <input v-model="objMemberContact.Zalo" type="text" class="form-control modal-item" placeholder />
                     <label style="left: 25px;" class="form-label" for="input">Zalo</label>
                   </div>
                 </div>
@@ -628,13 +629,65 @@ import { HTTP } from "../assets/js/baseAPI.js";
 export default {
   data() {
     return {
-      objAddMember: {},
-      objUpdateMember: {},
+      objMemberInfor: {
+        MemberID: 0,
+        ParentID: null,
+        MarriageID: null,
+        MemberName: null,
+        NickName: null,
+        HasNickName: null,
+        BirthOrder: 0,
+        Origin: null,
+        NationalityID: 1,
+        ReligionID: 1,
+        Dob: null,
+        LunarDob: null,
+        BirthPlace: null,
+        IsDead: 0,
+        Dod: null,
+        PlaceOfDeadth: null,
+        GraveSite: null,
+        Note: null,
+        Generation: 0,
+        BloodType: null,
+        CodeID: null,
+        Male: 1,
+      },
+      objMemberContact: {
+        ContactID: 0,
+        MemberID: 0,
+        Address: null,
+        Phone1: null,
+        Phone2: null,
+        Email1: null,
+        Email2: null,
+        FacebookUrl: null,
+        Zalo: null,
+      },
+      objMemberJob: {
+        JobID: 0,
+        MemberID: 0,
+        Organization: null,
+        OrganizationAddress: null,
+        Role: null,
+        JobName: null,
+        StartDate: null,
+        EndDate: null,
+      },
+      objMemberEducation: {
+        EducationID: 0,
+        MemberID: 0,
+        School: null,
+        Description: null,
+        StartDate: null,
+        EndDate: null,
+      },
+      objMember: {},
+      TitleModal: null,
 
       ListNationality: null,
       ListReligion: null,
       nodes: [],
-      isDead: false,
 
       expandthanhvien: false,
       rotated1: false,
@@ -706,8 +759,14 @@ export default {
 
       this.family.onNodeClick((arg) => {
         this.getInforMember(arg.node.id);
-        // this.openMemberModalUpdate();
       });
+    },
+    formatDate(dateString) {
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0"); // Cần thêm 1 vì tháng bắt đầu từ 0
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
     },
     getInforMember(id) {
       HTTP.get("InforMember", {
@@ -716,8 +775,38 @@ export default {
         },
       })
         .then((response) => {
-          this.objUpdateMember = response.data;
-          console.log(this.objUpdateMember);
+          this.objMember = response.data;
+          if (this.objMember.infor.length > 0) {
+            this.objMemberInfor = this.objMember.infor[0];
+            this.objMemberInfor.Dob = this.formatDate(this.objMemberInfor.Dob);
+            this.objMemberInfor.LunarDob = this.formatDate(
+              this.objMemberInfor.LunarDob
+            );
+            this.objMemberInfor.Dod = this.formatDate(this.objMemberInfor.Dod);
+          }
+          if (this.objMember.contact.length > 0)
+            this.objMemberContact = this.objMember.contact[0];
+
+          if (this.objMember.education.length > 0) {
+            this.objMemberEducation = this.objMember.education;
+            this.objMemberEducation.StartDate = this.formatDate(
+              this.objMemberEducation.StartDate
+            );
+            this.objMemberEducation.EndDate = this.formatDate(
+              this.objMemberEducation.EndDate
+            );
+          }
+          if (this.objMember.job.length > 0) {
+            this.objMemberJob = this.objMember.job;
+            this.objMemberJob.StartDate = this.formatDate(
+              this.objMemberJob.StartDate
+            );
+            this.objMemberJob.EndDate = this.formatDate(
+              this.objMemberJob.EndDate
+            );
+          }
+
+          this.openMemberModal("infor");
         })
         .catch((e) => {
           console.log(e);
@@ -765,7 +854,22 @@ export default {
     closeChildrenModal() {
       this.$modal.hide("children-modal");
     },
-    openMemberModal() {
+    setDefauValueInModal() {
+      this.objMemberContact = {};
+      this.objMemberInfor = {};
+      this.objMemberInfor.Male = 1;
+      this.objMemberInfor.BloodType = null;
+      this.objMemberInfor.NationalityID = 1;
+      this.objMemberInfor.ReligionID = 1;
+    },
+    openMemberModal(action) {
+      if (action == "add") {
+        this.TitleModal = "Thêm Thông Tin";
+        this.setDefauValueInModal();
+      } else if (action == "infor") {
+        this.TitleModal = "Thông Tin của";
+      }
+      this.selectedInfor();
       this.$modal.show("member-modal");
     },
     closeMemberModal() {
