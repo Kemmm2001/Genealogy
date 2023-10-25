@@ -16,7 +16,7 @@
     color: #FFFFFF;
 }
 
-.headlist-item-button:active{
+.headlist-item-button:focus{
     background-color: #263237 !important;
     color: #FFFFFF !important;
 }
@@ -24,10 +24,6 @@
 .headlist-list-th{
     background-color: #90CAF9 !important;
 } 
-
-.headlist-list-footer{
-    background-color: #FFFFFF;
-}
 
 .headlist-paging-icon{
     width: 18px;
@@ -38,6 +34,6 @@
     cursor: pointer;
 }
 
-.headlist-table-item:active{
+.headlist-table-item:focus{
     background-color: #007aff !important;
 }

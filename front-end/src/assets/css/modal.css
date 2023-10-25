@@ -211,3 +211,12 @@ input:focus~label.form-label-number {
     padding-right: 0px;
     padding-top: 50px;
 }
+
+.add-head-modal{
+    background-color: #FFFFFF;
+}
+
+.add-article-modal{
+    background-color: #FFFFFF;
+}
+
