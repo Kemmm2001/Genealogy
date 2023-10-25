@@ -629,6 +629,8 @@ export default {
   data() {
     return {
       objAddMember: {},
+      objUpdateMember: {},
+
       ListNationality: null,
       ListReligion: null,
       nodes: [],
@@ -698,16 +700,28 @@ export default {
           field_1: "gender",
           field_2: "dob",
           field_3: "dod",
-          field_4: "codeId",
         },
         nodeMouseClick: FamilyTree.action.none,
       });
 
       this.family.onNodeClick((arg) => {
-        // this.takeInfor(arg.node.id);
+        this.getInforMember(arg.node.id);
         // this.openMemberModalUpdate();
-        console.log(arg.node.id);
       });
+    },
+    getInforMember(id) {
+      HTTP.get("InforMember", {
+        params: {
+          memberId: id,
+        },
+      })
+        .then((response) => {
+          this.objUpdateMember = response.data;
+          console.log(this.objUpdateMember);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
     selectedInfor() {
       this.extendedInfo = true;
@@ -807,7 +821,6 @@ export default {
           console.log(e);
         });
     },
-    
   },
   created() {
     EventBus.$on("displayList", (value) => {

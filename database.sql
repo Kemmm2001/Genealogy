@@ -112,6 +112,8 @@ CREATE TABLE `article` (
   `ArticleID` int NOT NULL AUTO_INCREMENT,
   `CodeID` int DEFAULT NULL,
   `ArticleUrl` varchar(80) DEFAULT NULL,
+  `ArticleName` varchar(45) DEFAULT NULL,
+  `ArticleDescription` varchar(150) DEFAULT NULL,
   PRIMARY KEY (`ArticleID`),
   KEY `Article_idx` (`CodeID`),
   CONSTRAINT `Article` FOREIGN KEY (`CodeID`) REFERENCES `familytree` (`CodeID`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -720,4 +722,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-25 10:53:35
+-- Dump completed on 2023-10-25 11:12:44
