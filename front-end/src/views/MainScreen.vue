@@ -40,7 +40,7 @@
       </div>
     </div>
     <div class="d-flex main-screen align-items-center w-100">
-      <div id="tree" ref="tree"></div>
+      <div id="tree" ref="tree" @click.right.prevent="onRightClick($event)"></div>
     </div>
 
     <div v-if="!configSidebarHover" class="collapsed-config-sidebar d-flex align-items-center justify-content-center" style="display:none!important">
@@ -361,7 +361,14 @@
             </div>
           </div>
           <div class="card-body" style="padding: 0,height:auto">
-          
+            <ul class="list-group">
+              <li class="list-group-item">Xem mối quan hệ hiện tại</li>
+              <li class="list-group-item">Thông tin thành viên</li>
+              <li class="list-group-item">Thêm mối quan hệ</li>
+              <li class="list-group-item">Set làm tộc trưởng</li>
+              <li class="list-group-item">Set làm tổ cụ</li>
+              <li class="list-group-item">Xóa thành viên</li>
+            </ul>
           </div>
         </div>
       </modal>
@@ -777,6 +784,14 @@ export default {
         this.OnpenModal_SelectOption(arg.node.id);
       });
     },
+    onRightClick(event) {
+      console.log("right click");
+      this.name = "right";
+      let contextMenuTop = event.clientY;
+      let contextMenuLeft = event.clientX;
+      console.log(contextMenuTop);
+      console.log(contextMenuLeft);
+    },
     OnpenModal_SelectOption(id) {
       this.$modal.show("Select-option-Modal");
       console.log(id);
@@ -979,7 +994,14 @@ export default {
       this.displayList = value;
     });
   },
-
+  computed: {
+    modalStyle() {
+      return {
+        top: `${this.top}px`,
+        left: `${this.left}px`,
+      };
+    },
+  },
   watch: {
     displayList: {
       handler: function () {
@@ -1023,5 +1045,25 @@ svg.tommy .node.male > rect {
 
 svg.tommy .node.female > rect {
   fill: pink;
+}
+</style>
+
+<style  >
+.modal {
+  position: absolute;
+  display: none;
+  background-color: rgba(0, 0, 0, 0.7);
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ccc;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
 }
 </style>

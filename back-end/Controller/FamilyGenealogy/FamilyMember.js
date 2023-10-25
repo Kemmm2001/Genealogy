@@ -88,7 +88,7 @@ var updateMember = async (req, res) => {
             'dob',
             'lunarDob',
             'birthPlace',
-            'isAlive',
+            'IsDead',
             'generation',
             'codeId',
             'bloodType',

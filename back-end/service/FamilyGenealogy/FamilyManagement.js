@@ -9,7 +9,7 @@ function addMember(member) {
             NationalityID, 
             ReligionID, 
             Dob, LunarDob, BirthPlace, 
-            IsAlive, Dod, PlaceOfDeadth, 
+            IsDead, Dod, PlaceOfDeadth, 
             GraveSite, Note, Generation, BloodType, CodeID, Male)
         VALUES 
         (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -28,7 +28,7 @@ function addMember(member) {
             member.dob, 
             member.lunarDob, 
             member.birthPlace,
-            member.isAlive, 
+            member.IsDead, 
             member.dod, 
             member.placeOfDeath,
             member.graveSite, 
@@ -68,7 +68,7 @@ function updateMember(member) {
           Dob = ?,
           LunarDob = ?,
           BirthPlace = ?,
-          IsAlive = ?,
+          IsDead = ?,
           Dod = ?,
           PlaceOfDeadth = ?,
           GraveSite = ?,
@@ -93,7 +93,7 @@ function updateMember(member) {
             member.dob, 
             member.lunarDob, 
             member.birthPlace,
-            member.isAlive, 
+            member.IsDead, 
             member.dod, 
             member.placeOfDeath,
             member.graveSite, 
