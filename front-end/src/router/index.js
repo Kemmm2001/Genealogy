@@ -4,11 +4,11 @@ import Router from "vue-router";
 Vue.use(Router);
 
 const routes = [
-  {
-    path: "/",
-    name: "tree",
-    component: () => import("../views/MainScreen.vue"),
-  },
+  // {
+  //   path: "/",
+  //   name: "tree",
+  //   component: () => import("../views/MainScreen.vue"),
+  // },
   {
     path: "/information/headlist",
     name: "headlist",
@@ -22,6 +22,11 @@ const routes = [
   {
     path: "*",
     component: () => import("../views/NotFound.vue"),
+  },
+  {
+    path: "/",
+    name: "tree",
+    component: () => import("../views/MemberList.vue"),
   },
 ];
 
