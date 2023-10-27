@@ -39,8 +39,11 @@
         </div>
       </div>
     </div>
-    <div class="d-flex main-screen align-items-center w-100">
+    <!-- <div class="d-flex main-screen align-items-center w-100">
       <div id="tree" ref="tree" @click.right.prevent="onRightClick($event)"></div>
+    </div>-->
+    <div class="d-flex main-screen align-items-center w-100">
+      <div id="tree" ref="tree"></div>
     </div>
 
     <div v-if="!configSidebarHover" class="collapsed-config-sidebar d-flex align-items-center justify-content-center" style="display:none!important">
@@ -353,7 +356,7 @@
       <modal name="Select-option-Modal">
         <div class="card" style="width: 400px;left:45%">
           <div class="card-header text-center" style="background-color:#E8C77B">
-            <h5>Chọn Lựa chọn</h5>
+            <h5>Thành Viên {{objMemberInfor.MemberName}}</h5>
             <div class="close-add-form" @click="closeSelectModal" style="top: 8px;right:5px">
               <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -363,7 +366,7 @@
           <div class="card-body" style="padding: 0,height:auto">
             <ul class="list-group">
               <li class="list-group-item">Xem mối quan hệ hiện tại</li>
-              <li class="list-group-item">Thông tin thành viên</li>
+              <li class="list-group-item" @click="openMemberModal('infor')">Thông tin thành viên</li>
               <li class="list-group-item">Thêm mối quan hệ</li>
               <li class="list-group-item">Set làm tộc trưởng</li>
               <li class="list-group-item">Set làm tổ cụ</li>
@@ -794,7 +797,7 @@ export default {
     },
     OnpenModal_SelectOption(id) {
       this.$modal.show("Select-option-Modal");
-      console.log(id);
+      this.getInforMember(id);
     },
     closeSelectModal() {
       this.$modal.hide("Select-option-Modal");
@@ -815,7 +818,7 @@ export default {
         .then((response) => {
           this.objMember = response.data;
           if (this.objMember.infor.length > 0) {
-            this.objMemberInfor = this.objMember.infor[0];
+            this.objMemberInfor = this.objMember.infor[0];        
             this.objMemberInfor.Dob = this.formatDate(this.objMemberInfor.Dob);
             this.objMemberInfor.LunarDob = this.formatDate(
               this.objMemberInfor.LunarDob
@@ -843,8 +846,7 @@ export default {
               this.objMemberJob.EndDate
             );
           }
-
-          this.openMemberModal("infor");
+          // this.openMemberModal("infor");
         })
         .catch((e) => {
           console.log(e);
@@ -1018,52 +1020,6 @@ export default {
 </script>
  
 <style>
-#tree {
-  width: 100%;
-  height: 100%;
-}
-
-svg.tommy .node.died.male rect {
-  fill: gray;
-}
-
-svg.tommy .node.died.female rect {
-  fill: gray;
-}
-
-svg.tommy .node.choose.male rect {
-  fill: #edf048;
-}
-
-svg.tommy .node.choose.female rect {
-  fill: #edf048;
-}
-
-svg.tommy .node.male > rect {
-  fill: #c69934;
-}
-
-svg.tommy .node.female > rect {
-  fill: pink;
-}
+@import "../assets/css/familytree.css";
 </style>
 
-<style  >
-.modal {
-  position: absolute;
-  display: none;
-  background-color: rgba(0, 0, 0, 0.7);
-  width: 100%;
-  height: 100%;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background-color: #fff;
-  padding: 20px;
-  border: 1px solid #ccc;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-}
-</style>
