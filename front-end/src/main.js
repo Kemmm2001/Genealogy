@@ -12,6 +12,7 @@ import './assets/css/articlelist.css';
 import './assets/css/navbar.css';
 import "./assets/css/icon.css";
 import "./assets/css/list.css";
+import "./assets/css/login.css";
 
 Vue.config.productionTip = false
 

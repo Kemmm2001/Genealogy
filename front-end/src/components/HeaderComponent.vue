@@ -2,7 +2,13 @@
   <div class="d-flex flex-row w-100 navbar p-0">
     <!-- <img src="../assets/header.jpg" class="w-100"> -->
     <div class="d-flex align-items-center w-100 h-100">
-      <div class="d-flex" style="justify-content: left;">
+      <div class="d-flex col-1" style="height: 64px; justify-content: left; background-color: #FFFFFF;">
+        <router-link to="/" class="w-100">
+          <div class="w-100 h-100">
+          </div>
+        </router-link>
+      </div>
+      <div class="d-flex" style="flex-grow: 1; justify-content: center;">
         <router-link to="/">
           <div class="navbar-item d-flex p-2 mx-2">
             <svg class="navbar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
@@ -12,26 +18,30 @@
             <div class="d-flex align-items-center mx-4" style="color: #FFFFFF;">Phả đồ</div>
           </div>
         </router-link>
-      </div>
-      <div class="d-flex" style="flex-grow: 1; justify-content: center;">
         <div @mouseenter="expandFamilyInfo = true" @mouseleave="expandFamilyInfo = false"
-          class="navbar-item d-flex p-2 mx-2 position-relative">
+          class="navbar-item d-flex p-2 mx-2 position-relative" :class="{ chosen: infovalue }">
           <svg class="navbar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
             <path
               d="M72 88a56 56 0 1 1 112 0A56 56 0 1 1 72 88zM64 245.7C54 256.9 48 271.8 48 288s6 31.1 16 42.3V245.7zm144.4-49.3C178.7 222.7 160 261.2 160 304c0 34.3 12 65.8 32 90.5V416c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V389.2C26.2 371.2 0 332.7 0 288c0-61.9 50.1-112 112-112h32c24 0 46.2 7.5 64.4 20.3zM448 416V394.5c20-24.7 32-56.2 32-90.5c0-42.8-18.7-81.3-48.4-107.7C449.8 183.5 472 176 496 176h32c61.9 0 112 50.1 112 112c0 44.7-26.2 83.2-64 101.2V416c0 17.7-14.3 32-32 32H480c-17.7 0-32-14.3-32-32zm8-328a56 56 0 1 1 112 0A56 56 0 1 1 456 88zM576 245.7v84.7c10-11.3 16-26.1 16-42.3s-6-31.1-16-42.3zM320 32a64 64 0 1 1 0 128 64 64 0 1 1 0-128zM240 304c0 16.2 6 31 16 42.3V261.7c-10 11.3-16 26.1-16 42.3zm144-42.3v84.7c10-11.3 16-26.1 16-42.3s-6-31.1-16-42.3zM448 304c0 44.7-26.2 83.2-64 101.2V448c0 17.7-14.3 32-32 32H288c-17.7 0-32-14.3-32-32V405.2c-37.8-18-64-56.5-64-101.2c0-61.9 50.1-112 112-112h32c61.9 0 112 50.1 112 112z" />
           </svg>
-          <div class="navbar-item-content d-flex align-items-center" :class="{chosen : headlistvalue}">
+          <div class="navbar-item-content d-flex align-items-center">
             <router-link to="/information/headlist">
               <div class="mx-2" style="color: #FFFFFF;">Thông tin dòng họ</div>
             </router-link>
             <div class="navbar-extended d-flex flex-column w-100" :class="{ expandContent: expandFamilyInfo }">
               <router-link to="/information/headlist">
-                <div v-show="expandFamilyInfo" class="navbar-extended-content p-2 m-1">Danh sách tộc trưởng</div>
+                <div :class="{ chosen: headlistvalue }" v-show="expandFamilyInfo"
+                  class="navbar-extended-content p-2 m-1">
+                  Danh sách tộc trưởng</div>
               </router-link>
               <div v-show="expandFamilyInfo" class="navbar-extended-content p-2 m-1">Lịch sử dòng họ</div>
-              <div v-show="expandFamilyInfo" class="navbar-extended-content p-2 m-1">Album dòng họ</div>
+              <router-link to="/information/albumlist">
+                <div :class="{ chosen: albumlistvalue }" v-show="expandFamilyInfo"
+                  class="navbar-extended-content p-2 m-1">Album dòng họ</div>
+              </router-link>
               <router-link to="/information/articlelist">
-                <div v-show="expandFamilyInfo" class="navbar-extended-content p-2 m-1">Tư liệu dòng họ</div>
+                <div :class="{ chosen: articlelistvalue }" v-show="expandFamilyInfo"
+                  class="navbar-extended-content p-2 m-1">Tư liệu dòng họ</div>
               </router-link>
             </div>
           </div>
@@ -58,14 +68,16 @@
           </div>
         </div>
       </div>
+      <div class="d-flex" style="justify-content: center;">
+        <button class="btn p-0">
+          <svg class="day-night-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+            <path
+              d="M144.7 98.7c-21 34.1-33.1 74.3-33.1 117.3c0 98 62.8 181.4 150.4 211.7c-12.4 2.8-25.3 4.3-38.6 4.3C126.6 432 48 353.3 48 256c0-68.9 39.4-128.4 96.8-157.3zm62.1-66C91.1 41.2 0 137.9 0 256C0 379.7 100 480 223.5 480c47.8 0 92-15 128.4-40.6c1.9-1.3 3.7-2.7 5.5-4c4.8-3.6 9.4-7.4 13.9-11.4c2.7-2.4 5.3-4.8 7.9-7.3c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-3.7 .6-7.4 1.2-11.1 1.6c-5 .5-10.1 .9-15.3 1c-1.2 0-2.5 0-3.7 0c-.1 0-.2 0-.3 0c-96.8-.2-175.2-78.9-175.2-176c0-54.8 24.9-103.7 64.1-136c1-.9 2.1-1.7 3.2-2.6c4-3.2 8.2-6.2 12.5-9c3.1-2 6.3-4 9.6-5.8c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-3.6-.3-7.1-.5-10.7-.6c-2.7-.1-5.5-.1-8.2-.1c-3.3 0-6.5 .1-9.8 .2c-2.3 .1-4.6 .2-6.9 .4z" />
+          </svg>
+        </button>
+      </div>
       <div class="d-flex align-items-center" style="justify-content: right;">
-        <div class="navbar-item-content d-flex flex-row">
-          <button class="btn p-0">
-            <svg class="day-night-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-              <path
-                d="M144.7 98.7c-21 34.1-33.1 74.3-33.1 117.3c0 98 62.8 181.4 150.4 211.7c-12.4 2.8-25.3 4.3-38.6 4.3C126.6 432 48 353.3 48 256c0-68.9 39.4-128.4 96.8-157.3zm62.1-66C91.1 41.2 0 137.9 0 256C0 379.7 100 480 223.5 480c47.8 0 92-15 128.4-40.6c1.9-1.3 3.7-2.7 5.5-4c4.8-3.6 9.4-7.4 13.9-11.4c2.7-2.4 5.3-4.8 7.9-7.3c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-3.7 .6-7.4 1.2-11.1 1.6c-5 .5-10.1 .9-15.3 1c-1.2 0-2.5 0-3.7 0c-.1 0-.2 0-.3 0c-96.8-.2-175.2-78.9-175.2-176c0-54.8 24.9-103.7 64.1-136c1-.9 2.1-1.7 3.2-2.6c4-3.2 8.2-6.2 12.5-9c3.1-2 6.3-4 9.6-5.8c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-3.6-.3-7.1-.5-10.7-.6c-2.7-.1-5.5-.1-8.2-.1c-3.3 0-6.5 .1-9.8 .2c-2.3 .1-4.6 .2-6.9 .4z" />
-            </svg>
-          </button>
+        <div class="navbar-item-content d-flex flex-row justify-content-center">
           <div @mouseenter="expandAccountManage = true" @mouseleave="expandAccountManage = false"
             class="navbar-item d-flex flex-row p-2 mx-2 position-relative align-items-center">
             <svg class="user-icon p-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -74,9 +86,12 @@
             </svg>
             <div class="navbar-item-content d-flex align-items-center">
               <div class="d-flex align-items-center justify-content-center p-2">Tên người dùng</div>
-              <div class="user-extended d-flex flex-column position-absolute w-100" :class="{ expandContent: expandAccountManage }">
+              <div class="user-extended d-flex flex-column position-absolute w-100"
+                :class="{ expandContent: expandAccountManage }">
                 <div v-show="expandAccountManage" class="navbar-extended-content p-2 m-1">Quản lý tài khoản</div>
-                <div v-show="expandAccountManage" class="navbar-extended-content p-2 m-1">Đăng xuất</div>
+                <router-link to="/login">
+                  <div v-show="expandAccountManage" class="navbar-extended-content p-2 m-1">Đăng xuất</div>
+                </router-link>
               </div>
             </div>
           </div>
@@ -87,35 +102,44 @@
 </template>
 
 <script>
-import { EventBus } from "../assets/js/MyEventBus.js";
+
+// import { EventBus } from "../assets/js/MyEventBus.js";
 export default {
   data() {
     return {
       expandContent: false,
-
       expandFamilyInfo: false,
       expandMemberList: false,
       expandEventList: false,
       expandAccountManage: false,
-
+      infovalue: false,
       headlistvalue: false,
+      albumlistvalue: false,
       articlelistvalue: false,
-    }
+    };
   },
   watch: {
-    expandFamilyInfo: {
-      handler: function () {
-        console.log(this.expandFamilyInfo);
-      }
-    }
+    // headlistvalue: {
+    //   articlelistvalue: {
+    //   }
+    // }
   },
   created() {
-    EventBus.$on("HeadList", (value) => {
-      this.headlistvalue = value;
-    });
-    EventBus.$on("ArticleList", (value) => {
-      this.articlelistvalue = value;
-    });
+    // EventBus.$on("HeadList", (value) => {
+    //   this.headlistvalue = value;
+    // });
+    // EventBus.$on("AlbumList", (value) => {
+    //   this.albumlistvalue = value;
+    // });
+    // EventBus.$on("ArticleList", (value) => {
+    //   this.articlelistvalue = value;
+    // });
+    // if((this.headlistvalue) || (this.articlelistvalue)){
+    //   this.infovalue = true;
+    // }
+    // window.addEventListener('popstate', () => {
+    //   console.log(window.location.href);
+    // });
   },
 }
 </script>

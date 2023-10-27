@@ -49,3 +49,8 @@
     padding: 2px;
     border-radius: 50%;
 }
+
+.login-form-icon{
+    width: 24px;
+    height: 24px;
+}

@@ -475,7 +475,7 @@
 </template>
 
 <script>
-import { EventBus } from "../assets/js/MyEventBus.js";
+// import { EventBus } from "../assets/js/MyEventBus.js";
 export default {
     data() {
         return {
@@ -541,8 +541,9 @@ export default {
         },
     },
     created(){
-    EventBus.$emit("HeadList", true);
-    EventBus.$emit("ArticleList", false);
+    // EventBus.$emit("HeadList", true);
+    // EventBus.$emit("AlbumList", false);
+    // EventBus.$emit("ArticleList", false);
   },
 }
 </script>
