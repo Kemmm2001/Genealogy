@@ -39,24 +39,21 @@
         </div>
       </div>
     </div>
-    <!-- <div class="d-flex main-screen align-items-center w-100">
-      <div id="tree" ref="tree" @click.right.prevent="onRightClick($event)"></div>
-    </div>-->
     <div class="d-flex main-screen align-items-center w-100">
-      <div id="tree" ref="tree"></div>
+      <div id="tree" ref="tree" @click.right.prevent="onRightClick"></div>
     </div>
 
-    <div v-if="!configSidebarHover" @mouseenter="expandConfigSidebar()" class="collapsed-config-sidebar">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+    <div v-if="!configSidebarHover" class="collapsed-config-sidebar d-flex align-items-center justify-content-center" style="display:none!important">
+      <svg @mouseenter="expandConfigSidebar()" class="config-sidebar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
         <path
           d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336a80 80 0 1 0 0-160 80 80 0 1 0 0 160z"
         />
       </svg>
     </div>
-    <div @mouseleave="collapseConfigSidebar()" class="config-sidebar" :style="{width : configSidebarWidth + '%'}">
+    <div @mouseleave="collapseConfigSidebar()" class="config-sidebar h-100" :style="{ width: configSidebarWidth + '%' }">
       <!--Chọn chủ đề-->
-      <div v-if="configSidebarExpansion" class="topic config-item">
-        <select class="form-select">
+      <div v-if="configSidebarExpansion" class="topic">
+        <select class="form-select py-1">
           <option selected value="1">Chủ đề 1</option>
           <option value="2">Chủ đề 2</option>
           <option value="3">Chủ đề 3</option>
@@ -65,23 +62,23 @@
       <!--Config menu-->
       <div v-if="configSidebarExpansion" class="d-flex flex-column config-menu">
         <div class="d-flex flex-row align-items-center justify-content-center">
-          <div @click="configTree = true; configPrinting = false;" class="config-menu-item config-topic text-center col-md-6" :class="{ notchosenconfigmenu: configPrinting }">
+          <div @click="configTree = true; configPrinting = false;" class="config-topic text-center col-md-6 px-1 py-1" :class="{ notchosenconfigmenu: configPrinting }">
             <a>Phả đồ</a>
           </div>
-          <div @click="configTree = false; configPrinting = true" class="config-menu-item config-topic text-center col-md-6" :class="{ notchosenconfigmenu: configTree }">
+          <div @click="configTree = false; configPrinting = true" class="config-topic text-center col-md-6 px-1 py-1" :class="{ notchosenconfigmenu: configTree }">
             <a>Hỗ trợ in ấn</a>
           </div>
         </div>
         <div v-if="configTree" class="config-menu-board d-flex flex-column">
-          <div @click="expandconfigitem1 = !expandconfigitem1" class="config-menu-item">
-            <button type="button" class="btn p-0" :class="{ rotated1: expandconfigitem1 }">
+          <div @click="expandthanhvien = !expandthanhvien" class="config-menu-item">
+            <button type="button" class="btn p-0" :class="{ rotated1: expandthanhvien }">
               <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
                 <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
               </svg>
             </button>
             <a>Thành viên</a>
           </div>
-          <div v-show="expandconfigitem1" class="config-menu-item-expanded">
+          <div v-show="expandthanhvien" class="config-menu-item-expanded">
             <a>Thành viên hiển thị</a>
             <select class="form-select">
               <option selected>Tất cả</option>
@@ -92,15 +89,15 @@
               <option>20</option>
             </select>
           </div>
-          <div @click="expandconfigitem2 = !expandconfigitem2" class="d-flex config-menu-item align-items-center">
-            <button type="button" class="btn p-0" :class="{ rotated2: expandconfigitem2 }">
+          <div @click="expandbangve = !expandbangve" class="d-flex config-menu-item align-items-center">
+            <button type="button" class="btn p-0" :class="{ rotated2: expandbangve }">
               <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
                 <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
               </svg>
             </button>
             <a>Bảng vẽ</a>
           </div>
-          <div v-show="expandconfigitem2" class="config-menu-item-expanded">
+          <div v-show="expandbangve" class="config-menu-item-expanded">
             <div class="d-flex align-items-center config-menu-item-content">
               <a>Màu nền bảng vẽ</a>
               <input class="form-control-color config-menu-color-input p-0" type="color" value="#FFFFFF" />
@@ -119,15 +116,15 @@
               </div>
             </div>
           </div>
-          <div @click="expandconfigitem3 = !expandconfigitem3" class="d-flex config-menu-item align-items-center">
-            <button type="button" class="btn p-0" :class="{ rotated3: expandconfigitem3 }">
+          <div @click="expandkhungthe = !expandkhungthe" class="d-flex config-menu-item align-items-center">
+            <button type="button" class="btn p-0" :class="{ rotated3: expandkhungthe }">
               <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
                 <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
               </svg>
             </button>
             <a>Khung thẻ</a>
           </div>
-          <div v-show="expandconfigitem3" class="config-menu-item-expanded">
+          <div v-show="expandkhungthe" class="config-menu-item-expanded">
             <div class="d-flex align-items-center config-menu-item-content">
               <input class="form-check-input config-menu-checkbox-input" type="checkbox" />
               <a>Khung viền</a>
@@ -149,15 +146,15 @@
               <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
             </div>
           </div>
-          <div @click="expandconfigitem4 = !expandconfigitem4" class="d-flex config-menu-item align-items-center">
-            <button type="button" class="btn p-0" :class="{ rotated4: expandconfigitem4 }">
+          <div @click="expandthongtinthe = !expandthongtinthe" class="d-flex config-menu-item align-items-center">
+            <button type="button" class="btn p-0" :class="{ rotated4: expandthongtinthe }">
               <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
                 <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
               </svg>
             </button>
             <a>Thông tin thẻ</a>
           </div>
-          <div v-show="expandconfigitem4" class="config-menu-item-expanded">
+          <div v-show="expandthongtinthe" class="config-menu-item-expanded">
             <div class="d-flex flex-row align-items-center">
               <div class="col-md-6 config-menu-item-content">Tỉ lệ cơ bản (%)</div>
               <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
@@ -194,15 +191,15 @@
           </div>
         </div>
         <div v-if="configPrinting" class="config-menu-board d-flex flex-column">
-          <div @click="expandconfigitem5 = !expandconfigitem5" class="d-flex config-menu-item align-items-center">
-            <button type="button" class="btn p-0" :class="{ rotated5: expandconfigitem5 }">
+          <div @click="expandkhungvien = !expandkhungvien" class="d-flex config-menu-item align-items-center">
+            <button type="button" class="btn p-0" :class="{ rotated5: expandkhungvien }">
               <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
                 <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
               </svg>
             </button>
             <a>Khung viền</a>
           </div>
-          <div v-show="expandconfigitem5" class="config-menu-item-expanded">
+          <div v-show="expandkhungvien" class="config-menu-item-expanded">
             <div class="d-flex align-items-center config-menu-item-content">
               <input class="form-check-input config-menu-checkbox-input" type="checkbox" />
               <a>Vẽ khung</a>
@@ -220,15 +217,15 @@
               <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
             </div>
           </div>
-          <div @click="expandconfigitem6 = !expandconfigitem6" class="d-flex config-menu-item align-items-center">
-            <button type="button" class="btn p-0" :class="{ rotated6: expandconfigitem6 }">
+          <div @click="expandtieude = !expandtieude" class="d-flex config-menu-item align-items-center">
+            <button type="button" class="btn p-0" :class="{ rotated6: expandtieude }">
               <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
                 <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
               </svg>
             </button>
             <a>Tiêu đề</a>
           </div>
-          <div v-show="expandconfigitem6" class="config-menu-item-expanded">
+          <div v-show="expandtieude" class="config-menu-item-expanded">
             <div class="d-flex align-items-center config-menu-item-content">
               <input class="form-check-input config-menu-checkbox-input" type="checkbox" />
               <a>Vẽ ảnh tiêu đề</a>
@@ -250,15 +247,15 @@
               <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
             </div>
           </div>
-          <div @click="expandconfigitem7 = !expandconfigitem7" class="d-flex config-menu-item align-items-center">
-            <button type="button" class="btn p-0" :class="{ rotated7: expandconfigitem7 }">
+          <div @click="expandnen = !expandnen" class="d-flex config-menu-item align-items-center">
+            <button type="button" class="btn p-0" :class="{ rotated7: expandnen }">
               <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
                 <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
               </svg>
             </button>
             <a>Nền</a>
           </div>
-          <div v-show="expandconfigitem7" class="config-menu-item-expanded">
+          <div v-show="expandnen" class="config-menu-item-expanded">
             <div class="d-flex align-items-center config-menu-item-content">
               <input class="form-check-input config-menu-checkbox-input" type="checkbox" />
               <a>Vẽ màu nền</a>
@@ -305,15 +302,15 @@
               </select>
             </div>
           </div>
-          <div @click="expandconfigitem8 = !expandconfigitem8" class="d-flex config-menu-item align-items-center">
-            <button type="button" class="btn p-0" :class="{ rotated8: expandconfigitem8 }">
+          <div @click="expandthongtinngaytao = !expandthongtinngaytao" class="d-flex config-menu-item align-items-center">
+            <button type="button" class="btn p-0" :class="{ rotated8: expandthongtinngaytao }">
               <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
                 <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
               </svg>
             </button>
             <a>Thông tin ngày tạo</a>
           </div>
-          <div v-show="expandconfigitem8" class="config-menu-item-expanded">
+          <div v-show="expandthongtinngaytao" class="config-menu-item-expanded">
             <div class="d-flex align-items-center config-menu-item-content">
               <input class="form-check-input config-menu-checkbox-input" type="checkbox" />
               <a>Hiện ngày tạo</a>
@@ -356,7 +353,7 @@
       <modal name="Select-option-Modal">
         <div class="card" style="width: 400px;left:45%">
           <div class="card-header text-center" style="background-color:#E8C77B">
-            <h5>Thành Viên {{objMemberInfor.MemberName}}</h5>
+            <h5>Chọn Lựa chọn</h5>
             <div class="close-add-form" @click="closeSelectModal" style="top: 8px;right:5px">
               <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -366,7 +363,7 @@
           <div class="card-body" style="padding: 0,height:auto">
             <ul class="list-group">
               <li class="list-group-item">Xem mối quan hệ hiện tại</li>
-              <li class="list-group-item" @click="openMemberModal('infor')">Thông tin thành viên</li>
+              <li class="list-group-item">Thông tin thành viên</li>
               <li class="list-group-item">Thêm mối quan hệ</li>
               <li class="list-group-item">Set làm tộc trưởng</li>
               <li class="list-group-item">Set làm tổ cụ</li>
@@ -647,35 +644,96 @@
   </div>
 </template>
 
-
 <script>
-import { HTTP } from "../assets/js/baseAPI.js";
 import FamilyTree from "@balkangraph/familytree.js";
+import { EventBus } from "../assets/js/MyEventBus.js";
+import { HTTP } from "../assets/js/baseAPI.js";
 export default {
   data() {
     return {
-      expandconfigitem1: false,
+      objMemberInfor: {
+        MemberID: 0,
+        ParentID: null,
+        MarriageID: null,
+        MemberName: null,
+        NickName: null,
+        HasNickName: null,
+        BirthOrder: 0,
+        Origin: null,
+        NationalityID: 1,
+        ReligionID: 1,
+        Dob: null,
+        LunarDob: null,
+        BirthPlace: null,
+        IsDead: 0,
+        Dod: null,
+        PlaceOfDeadth: null,
+        GraveSite: null,
+        Note: null,
+        Generation: 0,
+        BloodType: null,
+        CodeID: null,
+        Male: 1,
+      },
+      objMemberContact: {
+        ContactID: 0,
+        MemberID: 0,
+        Address: null,
+        Phone1: null,
+        Phone2: null,
+        Email1: null,
+        Email2: null,
+        FacebookUrl: null,
+        Zalo: null,
+      },
+      objMemberJob: {
+        JobID: 0,
+        MemberID: 0,
+        Organization: null,
+        OrganizationAddress: null,
+        Role: null,
+        JobName: null,
+        StartDate: null,
+        EndDate: null,
+      },
+      objMemberEducation: {
+        EducationID: 0,
+        MemberID: 0,
+        School: null,
+        Description: null,
+        StartDate: null,
+        EndDate: null,
+      },
+      objMember: {},
+      TitleModal: null,
+      isEdit: false,
+      isAddMember: false,
+      ListNationality: null,
+      ListReligion: null,
+      nodes: [],
+
+      expandthanhvien: false,
       rotated1: false,
-      expandconfigitem2: false,
+      expandbangve: false,
       rotated2: false,
-      expandconfigitem3: false,
+      expandkhungthe: false,
       rotated3: false,
-      expandconfigitem4: false,
+      expandthongtinthe: false,
       rotated4: false,
-      expandconfigitem5: false,
+      expandkhungvien: false,
       rotated5: false,
-      expandconfigitem6: false,
+      expandtieude: false,
       rotated6: false,
-      expandconfigitem7: false,
+      expandnen: false,
       rotated7: false,
-      expandconfigitem8: false,
+      expandthongtinngaytao: false,
       rotated8: false,
 
       configTree: true,
       configPrinting: false,
-      dead: false,
 
-      extendedContact: true,
+      extendedInfo: true,
+      extendedContact: false,
       extendedJob: false,
       extendedEdu: false,
       extendedNote: false,
@@ -683,70 +741,9 @@ export default {
       configSidebarHover: false,
       configSidebarExpansion: false,
 
-            configSidebarWidth: 0,
+      configSidebarWidth: 0,
 
-            sidebarhover: false,
-
-      nodes: [
-        {
-          id: 1,
-          pids: [2],
-          name: "Amber McKenzie",
-          gender: "female",
-          img: "https://cdn.balkan.app/shared/2.jpg",
-          dob: new Date(2023, 0, 13),
-          dod: new Date(2023, 0, 13),
-          generation: 1,
-          tags: ["died", "choose"],
-        },
-        {
-          id: 2,
-          pids: [1],
-          name: "Ava Field",
-          gender: "male",
-          img: "https://cdn.balkan.app/shared/2.jpg",
-          dob: new Date(2023, 0, 13),
-          dod: new Date(2023, 0, 13),
-          generation: 1,
-          tags: ["died"],
-        },
-        {
-          id: 3,
-          mid: 1,
-          fid: 2,
-          name: "Peter Stevens",
-          gender: "male",
-          img: "https://cdn.balkan.app/shared/2.jpg",
-          generation: 2,
-        },
-        {
-          id: 4,
-          mid: 1,
-          fid: 2,
-          name: "Peter Stevens",
-          img: "https://cdn.balkan.app/shared/2.jpg",
-          gender: "female",
-          generation: 2,
-        },
-        {
-          id: 5,
-          mid: 1,
-          fid: 2,
-          name: "Peter Stevens",
-          img: "https://cdn.balkan.app/shared/2.jpg",
-          gender: "male",
-          generation: 2,
-        },
-        {
-          id: 6,
-          mid: 1,
-          fid: 2,
-          name: "Peter Stevens",
-          img: "https://cdn.balkan.app/shared/2.jpg",
-          gender: "female",
-          generation: 2,
-        },
-      ],
+      displayList: false,
     };
   },
   methods: {
@@ -759,6 +756,8 @@ export default {
         '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="125" y="70" text-anchor="middle">{val}</text>';
       FamilyTree.templates.tommy_male.field_3 =
         '<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">{val}</text>';
+      FamilyTree.templates.tommy_male.field_4 =
+        '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">{val}</text>';
       FamilyTree.templates.tommy_female.field_0 =
         '<text class="field_0" style="font-size: 20px;" fill="#ffffff" x="125" y="30" text-anchor="middle">{val}</text>';
       FamilyTree.templates.tommy_female.field_1 =
@@ -767,6 +766,8 @@ export default {
         '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="125" y="70" text-anchor="middle">{val}</text>';
       FamilyTree.templates.tommy_female.field_3 =
         '<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">{val}</text>';
+      FamilyTree.templates.tommy_female.field_4 =
+        '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">{val}</text>';
       this.family = new FamilyTree(domEl, {
         nodes: x,
         nodeBinding: {
@@ -775,16 +776,17 @@ export default {
           field_1: "gender",
           field_2: "dob",
           field_3: "dod",
-          field_4: "generation",
         },
+        nodeMouseClick: FamilyTree.action.none,
       });
-    },
-    openChildrenModal() {
-      this.$modal.show("children-modal");
+
+      this.family.onNodeClick((arg) => {
+        this.OnpenModal_SelectOption(arg.node.id);
+      });
     },
     OnpenModal_SelectOption(id) {
       this.$modal.show("Select-option-Modal");
-      this.getInforMember(id);
+      console.log(id);
     },
     closeSelectModal() {
       this.$modal.hide("Select-option-Modal");
@@ -805,7 +807,7 @@ export default {
         .then((response) => {
           this.objMember = response.data;
           if (this.objMember.infor.length > 0) {
-            this.objMemberInfor = this.objMember.infor[0];        
+            this.objMemberInfor = this.objMember.infor[0];
             this.objMemberInfor.Dob = this.formatDate(this.objMemberInfor.Dob);
             this.objMemberInfor.LunarDob = this.formatDate(
               this.objMemberInfor.LunarDob
@@ -833,7 +835,8 @@ export default {
               this.objMemberJob.EndDate
             );
           }
-          // this.openMemberModal("infor");
+
+          this.openMemberModal("infor");
         })
         .catch((e) => {
           console.log(e);
@@ -910,33 +913,129 @@ export default {
       this.configSidebarWidth = 0;
       this.configSidebarExpansion = false;
     },
-  },
-  mounted() {
-    HTTP.get("viewTree", {
+    getListMember() {
+      HTTP.get("viewTree", {
         params: {
-        memberID: 1,
+          memberID: 6,
         },
-    })
+      })
         .then((response) => {
-        this.nodes = response.data;
-        for (let i = 0; i < this.nodes.length; i++) {
-            const node = this.nodes[i];
-            node.tags = [];
-        }
-        // Draw the FamilyTree with the data from the API
-        this.mytree(this.$refs.tree, this.nodes);
+          this.nodes = response.data;
+          this.mytree(this.$refs.tree, this.nodes);
         })
         .catch((e) => {
-        console.log(e);
+          console.log(e);
         });
+    },
+    getListNationality() {
+      HTTP.get("nationality")
+        .then((response) => {
+          this.ListNationality = response.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+    getListReligion() {
+      HTTP.get("religion")
+        .then((response) => {
+          this.ListReligion = response.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+    selectedInfor() {
+      this.extendedInfo = true;
+      this.extendedContact = false;
+      this.extendedEdu = false;
+      this.extendedJob = false;
+      this.extendedNote = false;
+    },
+    selectedContact() {
+      this.extendedInfo = false;
+      this.extendedContact = true;
+      this.extendedEdu = false;
+      this.extendedJob = false;
+      this.extendedNote = false;
+    },
+    selectedEdu() {
+      this.extendedInfo = false;
+      this.extendedContact = false;
+      this.extendedEdu = true;
+      this.extendedJob = false;
+      this.extendedNote = false;
+    },
+    selectedJob() {
+      this.extendedInfo = false;
+      this.extendedContact = false;
+      this.extendedEdu = false;
+      this.extendedJob = true;
+      this.extendedNote = false;
+    },
+    selectedNote() {
+      this.extendedInfo = false;
+      this.extendedContact = false;
+      this.extendedEdu = false;
+      this.extendedJob = false;
+      this.extendedNote = true;
+    },
+  },
+  created() {
+    EventBus.$on("displayList", (value) => {
+      this.displayList = value;
+    });
+  },
+  computed: {
+    modalStyle() {
+      return {
+        top: `${this.top}px`,
+        left: `${this.left}px`,
+      };
+    },
+  },
+  watch: {
+    displayList: {
+      handler: function () {
+        console.log(this.displayList);
+      },
+    },
+  },
+  mounted() {
+    this.getListMember();
+    this.getListNationality();
+    this.getListReligion();
   },
 };
 </script>
  
 <style>
-@import "../assets/css/familytree.css";
-</style>
-<<<<<<< HEAD
+#tree {
+  width: 100%;
+  height: 100%;
+}
 
-=======
->>>>>>> 5cd0ad263321d477b7a28292105f38d59152ff70
+svg.tommy .node.died.male rect {
+  fill: gray;
+}
+
+svg.tommy .node.died.female rect {
+  fill: gray;
+}
+
+svg.tommy .node.choose.male rect {
+  fill: #edf048;
+}
+
+svg.tommy .node.choose.female rect {
+  fill: #edf048;
+}
+
+svg.tommy .node.male > rect {
+  fill: #c69934;
+}
+
+svg.tommy .node.female > rect {
+  fill: pink;
+}
+</style>
