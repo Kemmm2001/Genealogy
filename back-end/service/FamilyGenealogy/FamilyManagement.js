@@ -209,8 +209,8 @@ function filterMember(req, res) {
       if (filterOptions.BloodType) {
         memberQuery += ` AND BloodType = '${filterOptions.BloodType}'`;
       }
-      if (filterOptions.IsAlive !== undefined) {
-        memberQuery += ` AND IsAlive = ${filterOptions.IsAlive}`;
+      if (filterOptions.IsDead !== undefined) {
+        memberQuery += ` AND IsDead = ${filterOptions.IsDead}`;
       }
   
       // Thực hiện truy vấn SQL cho bảng familymember

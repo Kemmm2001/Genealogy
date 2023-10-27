@@ -53,6 +53,7 @@
         />
       </svg>
     </div>
+    
     <div @mouseleave="collapseConfigSidebar()" class="config-sidebar h-100" :style="{ width: configSidebarWidth + '%' }">
       <!--Chọn chủ đề-->
       <div v-if="configSidebarExpansion" class="topic">
@@ -391,7 +392,7 @@
             </svg>
           </div>
         </div>
-        <div class="card-body" style="padding: 0; height: 630px">
+        <div class="card-body" style="padding: 0; height: 675px">
           <div class="row" style="padding: 0;height: 100%;">
             <div class="col-3 select-menu">
               <div class="custom-info" :class="{ selected: extendedInfo }" @click="selectedInfor()">
@@ -479,6 +480,10 @@
                       <label class="form-label-number" for="select">Tôn Giáo</label>
                     </div>
                   </div>
+                  <div style="position: relative; margin-right:10px">
+                    <input v-model="objMemberInfor.Origin" type="text" class="form-control modal-item" placeholder />
+                    <label class="form-label" for="input">Nguyên Quán</label>
+                  </div>
                   <div class="form-group">
                     <h6 style="margin-bottom:20px">Ngày Sinh (*)</h6>
                     <div style="display:flex">
@@ -497,10 +502,10 @@
                     <label class="form-label" for="input">Nơi sinh</label>
                   </div>
                   <div class="form-check form-check-inline">
-                    <input v-model="objMemberInfor.IsDead" type="checkbox" class="form-check-input" id="lostCheckbox" />
+                    <input v-model="IsDead" type="checkbox" class="form-check-input" id="lostCheckbox" />
                     <label style="font-size: 14px; margin-top: 7px;" class="form-check-label" for="lostCheckbox">Đã mất</label>
                   </div>
-                  <div class="form-group" v-if="objMemberInfor.IsDead == 1">
+                  <div class="form-group" v-if="IsDead == 1">
                     <h6 style="margin-bottom:20px">Ngày Mất (*)</h6>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
@@ -660,6 +665,8 @@ export default {
       idMember: null,
       generationMember: null,
       CodeID: null,
+      idPaternalAncestor: null,
+      IsDead: 0,
       objMemberInfor: {
         MemberID: 0,
         ParentID: null,
@@ -807,6 +814,13 @@ export default {
       const day = String(date.getDate()).padStart(2, "0");
       return `${year}-${month}-${day}`;
     },
+    takeDataMember(id) {
+      this.idMember = this.objMemberInfor.MemberID;
+      this.generationMember = this.objMemberInfor.Generation;
+      this.CodeID = this.objMemberInfor.CodeID;
+      this.IsDead = this.objMemberInfor.IsDead;
+      this.idPaternalAncestor = id;
+    },
     getInforMember(id) {
       HTTP.get("InforMember", {
         params: {
@@ -818,10 +832,7 @@ export default {
 
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
-
-            this.idMember = this.objMemberInfor.MemberID;
-            this.generationMember = this.objMemberInfor.Generation
-
+            this.takeDataMember(id);
             this.objMemberInfor.Dob = this.formatDate(this.objMemberInfor.Dob);
             this.objMemberInfor.LunarDob = this.formatDate(
               this.objMemberInfor.LunarDob
@@ -855,8 +866,6 @@ export default {
         });
     },
     addNewChildrenMember() {
-      console.log(this.idMember);
-      console.log(this.objMemberInfor);
       HTTP.post("member", {
         memberName: this.objMemberInfor.MemberName,
         nickName: this.objMemberInfor.NickName,
@@ -870,17 +879,18 @@ export default {
         dob: this.objMemberInfor.Dob,
         lunarDob: this.objMemberInfor.Dob,
         birthPlace: this.objMemberInfor.BirthPlace,
-        IsDead: this.objMemberInfor.IsDead,
+        IsDead: this.IsDead,
         dod: this.objMemberInfor.Dod,
         placeOfDeath: this.objMemberInfor.PlaceOfDeadth,
         graveSite: this.objMemberInfor.GraveSite,
         note: this.objMemberInfor.Note,
-        generation:  this.generationMember,
+        generation: this.generationMember,
         bloodType: this.objMemberInfor.BloodType,
         male: this.objMemberInfor.Male,
-        codeId: this.objMemberInfor.CodeID,
+        codeId: this.CodeID,
       }).then((response) => {
-        console.log(response);
+        console.log(response.data);
+        this.getInforMember(this.idPaternalAncestor);
       });
     },
     addNewMember(choice) {
@@ -897,7 +907,6 @@ export default {
       this.objMemberInfor.ReligionID = 1;
     },
     updateInformation() {
-      console.log(this.objMemberInfor);
       HTTP.put("member", {
         memberID: this.objMemberInfor.MemberID,
         memberName: this.objMemberInfor.MemberName,
@@ -1031,14 +1040,6 @@ export default {
       this.displayList = value;
     });
   },
-  computed: {
-    modalStyle() {
-      return {
-        top: `${this.top}px`,
-        left: `${this.left}px`,
-      };
-    },
-  },
   watch: {
     displayList: {
       handler: function () {
@@ -1055,32 +1056,5 @@ export default {
 </script>
  
 <style>
-#tree {
-  width: 100%;
-  height: 100%;
-}
-
-svg.tommy .node.died.male rect {
-  fill: gray;
-}
-
-svg.tommy .node.died.female rect {
-  fill: gray;
-}
-
-svg.tommy .node.choose.male rect {
-  fill: #edf048;
-}
-
-svg.tommy .node.choose.female rect {
-  fill: #edf048;
-}
-
-svg.tommy .node.male > rect {
-  fill: #c69934;
-}
-
-svg.tommy .node.female > rect {
-  fill: pink;
-}
+@import "../assets/css/familytree.css";
 </style>
