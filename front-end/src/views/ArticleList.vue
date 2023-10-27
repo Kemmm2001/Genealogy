@@ -200,6 +200,7 @@
 </template>
 
 <script>
+// import { EventBus } from "../assets/js/MyEventBus.js";
 export default {
   data() {
     return {
@@ -219,6 +220,11 @@ export default {
     closeEditArticleModal() {
       this.$modal.hide("editArticle-modal");
     },
+  },
+  created(){
+    // EventBus.$emit("HeadList", false);
+    // EventBus.$emit("AlbumList", false);
+    // EventBus.$emit("ArticleList", true);
   },
 };
 </script>
