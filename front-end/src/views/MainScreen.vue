@@ -39,8 +39,11 @@
         </div>
       </div>
     </div>
-    <div class="d-flex main-screen align-items-center w-100">
+    <!-- <div class="d-flex main-screen align-items-center w-100">
       <div id="tree" ref="tree" @click.right.prevent="onRightClick"></div>
+    </div>-->
+    <div class="d-flex main-screen align-items-center w-100">
+      <div id="tree" ref="tree"></div>
     </div>
 
     <div v-if="!configSidebarHover" class="collapsed-config-sidebar d-flex align-items-center justify-content-center" style="display:none!important">
@@ -353,7 +356,7 @@
       <modal name="Select-option-Modal">
         <div class="card" style="width: 400px;left:45%">
           <div class="card-header text-center" style="background-color:#E8C77B">
-            <h5>Chọn Lựa chọn</h5>
+            <h5>Thành Viên {{objMemberInfor.MemberName}}</h5>
             <div class="close-add-form" @click="closeSelectModal" style="top: 8px;right:5px">
               <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -363,8 +366,11 @@
           <div class="card-body" style="padding: 0,height:auto">
             <ul class="list-group">
               <li class="list-group-item">Xem mối quan hệ hiện tại</li>
-              <li class="list-group-item">Thông tin thành viên</li>
-              <li class="list-group-item">Thêm mối quan hệ</li>
+              <li class="list-group-item" @click="openMemberModal('infor')">Thông tin thành viên</li>
+              <li class="list-group-item">Thêm Cha</li>
+              <li class="list-group-item">Thêm Mẹ</li>
+              <li class="list-group-item">Thêm Vợ</li>
+              <li class="list-group-item" @click="addNewMember('children')">Thêm Con</li>
               <li class="list-group-item">Set làm tộc trưởng</li>
               <li class="list-group-item">Set làm tổ cụ</li>
               <li class="list-group-item">Xóa thành viên</li>
@@ -634,7 +640,7 @@
         </div>
         <div class="card-footer" style="background-color:#E8C77B">
           <div class="d-flex justify-content-end">
-            <button v-if="isAddMember" type="button" class="btn btn-primary mr-2">Thêm</button>
+            <button v-if="isAddMember" type="button" class="btn btn-primary mr-2" @click="addNewChildrenMember()">Thêm</button>
             <button v-if="isEdit" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
             <button style="margin-left:10px" type="button" class="btn btn-secondary">Cancel</button>
           </div>
@@ -651,6 +657,9 @@ import { HTTP } from "../assets/js/baseAPI.js";
 export default {
   data() {
     return {
+      idMember: null,
+      generationMember: null,
+      CodeID: null,
       objMemberInfor: {
         MemberID: 0,
         ParentID: null,
@@ -786,7 +795,7 @@ export default {
     },
     OnpenModal_SelectOption(id) {
       this.$modal.show("Select-option-Modal");
-      console.log(id);
+      this.getInforMember(id);
     },
     closeSelectModal() {
       this.$modal.hide("Select-option-Modal");
@@ -806,8 +815,13 @@ export default {
       })
         .then((response) => {
           this.objMember = response.data;
+
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
+
+            this.idMember = this.objMemberInfor.MemberID;
+            this.generationMember = this.objMemberInfor.Generation
+
             this.objMemberInfor.Dob = this.formatDate(this.objMemberInfor.Dob);
             this.objMemberInfor.LunarDob = this.formatDate(
               this.objMemberInfor.LunarDob
@@ -835,14 +849,45 @@ export default {
               this.objMemberJob.EndDate
             );
           }
-
-          this.openMemberModal("infor");
         })
         .catch((e) => {
           console.log(e);
         });
     },
-    addNewMember() {},
+    addNewChildrenMember() {
+      console.log(this.idMember);
+      console.log(this.objMemberInfor);
+      HTTP.post("member", {
+        memberName: this.objMemberInfor.MemberName,
+        nickName: this.objMemberInfor.NickName,
+        parentID: this.idMember,
+        marriageID: null,
+        hasNickName: null,
+        birthOrder: this.objMemberInfor.BirthOrder,
+        origin: this.objMemberInfor.Origin,
+        nationalityId: this.objMemberInfor.NationalityID,
+        religionId: this.objMemberInfor.ReligionID,
+        dob: this.objMemberInfor.Dob,
+        lunarDob: this.objMemberInfor.Dob,
+        birthPlace: this.objMemberInfor.BirthPlace,
+        IsDead: this.objMemberInfor.IsDead,
+        dod: this.objMemberInfor.Dod,
+        placeOfDeath: this.objMemberInfor.PlaceOfDeadth,
+        graveSite: this.objMemberInfor.GraveSite,
+        note: this.objMemberInfor.Note,
+        generation:  this.generationMember,
+        bloodType: this.objMemberInfor.BloodType,
+        male: this.objMemberInfor.Male,
+        codeId: this.objMemberInfor.CodeID,
+      }).then((response) => {
+        console.log(response);
+      });
+    },
+    addNewMember(choice) {
+      if (choice == "children") {
+        this.openMemberModal("add");
+      }
+    },
     setDefauValueInModal() {
       this.objMemberContact = {};
       this.objMemberInfor = {};

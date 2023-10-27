@@ -36,7 +36,7 @@ var addMember = async (req, res) => {
             'dob',
             'lunarDob',
             'birthPlace',
-            'isAlive',
+            'IsDead',
             'generation',
             'codeId',
             'bloodType',
@@ -50,21 +50,7 @@ var addMember = async (req, res) => {
             return res.status(400).json(missingFieldsError(missingFields));
 
         }
-        console.log("No missing fields");
-        // thêm member vào database
-        let data = await FamilyManagementService.addMember(req.body);
-        console.log("Add member successfully");
-
-        response = {
-            success: true,
-            message: 'Add member successfully',
-            data: {
-                memberId: data.insertId,
-                affectedRows: data.affectedRows
-            }
-        };
-        return res.json(response);
-
+        
     } catch (e) {
         res.send(e);
     }
