@@ -36,10 +36,11 @@
 
 .day-night-icon{
     background-color: #FFFFFF;
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     padding: 2px;
     border-radius: 0.375rem;
+    /* fill:  #9d9d9d; */
 }
 
 .user-icon{
@@ -48,6 +49,7 @@
     height: 36px;
     padding: 2px;
     border-radius: 50%;
+    /* fill:  #9d9d9d; */
 }
 
 .login-form-icon{
