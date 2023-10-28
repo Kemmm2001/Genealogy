@@ -370,8 +370,8 @@
               <li class="list-group-item" @click="openMemberModal('infor')">Thông tin thành viên</li>
               <li class="list-group-item">Thêm Cha</li>
               <li class="list-group-item">Thêm Mẹ</li>
-              <li class="list-group-item">Thêm Vợ</li>
-              <li class="list-group-item" @click="addNewMember('children')">Thêm Con</li>
+              <li class="list-group-item" @click="openMemberModal('married')">Thêm Vợ</li>
+              <li class="list-group-item" @click="openMemberModal('children')">Thêm Con</li>
               <li class="list-group-item">Set làm tộc trưởng</li>
               <li class="list-group-item">Set làm tổ cụ</li>
               <li class="list-group-item">Xóa thành viên</li>
@@ -600,8 +600,12 @@
                     </div>
                   </div>
                 </div>
-                <div class="btn-group" role="group">
-                  <button type="button" class="btn btn-primary">Add</button>
+                <div class="d-flex justify-content-end">
+                  <div class="form-group" role="group">
+                    <button type="button" class="btn btn-primary" @click="addNewJobMember()" style="margin-right:10px">Thêm</button>
+                    <button type="button" class="btn btn-info mr-1" @click="editJobMember()" style="margin-right:10px">Sửa</button>
+                    <button type="button" class="btn btn-danger mr-1" @click="deleteJobMember()" style="margin-right:10px">Xóa</button>
+                  </div>
                 </div>
                 <div class="form-group" style="margin-top:13px;padding-right:22px">
                   <table class="table">
@@ -648,6 +652,13 @@
                     </div>
                   </div>
                 </div>
+                <div class="d-flex justify-content-end">
+                  <div class="form-group" role="group">
+                    <button type="button" class="btn btn-primary" @click="addNewEducationMember()" style="margin-right:10px">Thêm</button>
+                    <button type="button" class="btn btn-info mr-1" @click="editJobMember()" style="margin-right:10px">Sửa</button>
+                    <button type="button" class="btn btn-danger mr-1" @click="deleteJobMember()" style="margin-right:10px">Xóa</button>
+                  </div>
+                </div>
                 <div class="form-group" style="margin-top:13px;padding-right:22px">
                   <table class="table">
                     <thead>
@@ -677,7 +688,9 @@
         </div>
         <div class="card-footer" style="background-color:#E8C77B">
           <div class="d-flex justify-content-end">
-            <button v-if="isAddMember" type="button" class="btn btn-primary mr-2" @click="addNewChildrenMember()">Thêm</button>
+            <button v-if="isAddChildren" type="button" class="btn btn-primary mr-2" @click="addNewChildrenMember()">Thêm</button>
+            <button v-else-if="isAddMarried" type="button" class="btn btn-primary mr-2" @click="addNewMarriedMember()">Thêm</button>
+            <button v-else-if="isAddParent" type="button" class="btn btn-primary mr-2" @click="addNewChildrenMember()">Thêm</button>
             <button v-if="isEdit" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
             <button style="margin-left:10px" type="button" class="btn btn-secondary">Cancel</button>
           </div>
@@ -694,8 +707,12 @@ import { HTTP } from "../assets/js/baseAPI.js";
 export default {
   data() {
     return {
+      isAddChildren: false,
+      isAddMarried: false,
+      isAddParent: false,
+
       newIdMember: null,
-      idMember: null,
+      CurrentIdMember: null,
       generationMember: null,
       CodeID: null,
       idPaternalAncestor: null,
@@ -760,7 +777,6 @@ export default {
       objMember: {},
       TitleModal: null,
       isEdit: false,
-      isAddMember: false,
       ListNationality: null,
       ListReligion: null,
       nodes: [],
@@ -846,7 +862,7 @@ export default {
       return `${year}-${month}-${day}`;
     },
     takeDataMember(id) {
-      this.idMember = this.objMemberInfor.MemberID;
+      this.CurrentIdMember = this.objMemberInfor.MemberID;
       this.generationMember = this.objMemberInfor.Generation;
       this.CodeID = this.objMemberInfor.CodeID;
       this.IsDead = this.objMemberInfor.IsDead;
@@ -880,12 +896,72 @@ export default {
           console.log(e);
         });
     },
+    getListJobMember() {
+      HTTP.get("getJob", {
+        params: {
+          MemberId: this.CurrentIdMember,
+        },
+      }).then((response) => {
+        this.ListMemberJob = response.data;
+      });
+    },
+    refreshInputJobAndEducation() {
+      this.objMemberJob = {};
+      this.objMemberEducation = {};
+    },
+    addNewJobMember() {
+      HTTP.post("addJob", {
+        memberId: this.CurrentIdMember,
+        Organization: this.objMemberJob.Organization,
+        OrganizationAddress: this.objMemberJob.OrganizationAddress,
+        Role: this.objMemberJob.Role,
+        JobName: this.objMemberJob.JobName,
+        StartDate: this.objMemberJob.StartDate,
+        EndDate: this.objMemberJob.EndDate,
+      })
+        .then(() => {
+          this.getListJobMember();
+          this.refreshInputJobAndEducation();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    getListEducationMember() {
+      HTTP.get("education", {
+        params: {
+          memberId: this.CurrentIdMember,
+        },
+      })
+        .then((response) => {
+          this.ListMemberEducation = response.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    addNewEducationMember() {
+      HTTP.post("addEducation", {
+        MemberID: this.CurrentIdMember,
+        School: this.objMemberEducation.School,
+        Description: this.objMemberEducation.Description,
+        StartDate: this.objMemberEducation.StartDate,
+        EndDate: this.objMemberEducation.EndDate,
+      })
+        .then(() => {
+          this.getListEducationMember();
+          this.refreshInputJobAndEducation();
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     addNewMarriedMember() {
       HTTP.post("member", {
         memberName: this.objMemberInfor.MemberName,
         nickName: this.objMemberInfor.NickName,
         parentID: null,
-        marriageID: this.idMember,
+        marriageID: this.CurrentIdMember,
         hasNickName: null,
         birthOrder: this.objMemberInfor.BirthOrder,
         origin: this.objMemberInfor.Origin,
@@ -904,16 +980,27 @@ export default {
         male: this.objMemberInfor.Male,
         codeId: this.CodeID,
       }).then((response) => {
-        console.log(response.data);
-        this.getInforMember(this.idPaternalAncestor);
-        this.closeMemberModal();
+        this.newIdMember = response.data.data.memberId;
+        HTTP.post("addContact", {
+          memberId: this.newIdMember,
+          Address: this.objMemberContact.Address,
+          Phone1: this.objMemberContact.Phone1,
+          Phone2: this.objMemberContact.Phone2,
+          Email1: this.objMemberContact.Email1,
+          Email2: this.objMemberContact.Email2,
+          FacebookUrl: this.objMemberContact.FacebookUrl,
+          Zalo: this.objMemberContact.Zalo,
+        }).catch((e) => {
+          console.log(e);
+        });
+        this.getListMember();
       });
     },
     async addNewChildrenMember() {
       await HTTP.post("member", {
         memberName: this.objMemberInfor.MemberName,
         nickName: this.objMemberInfor.NickName,
-        parentID: this.idMember,
+        parentID: this.CurrentIdMember,
         marriageID: null,
         hasNickName: null,
         birthOrder: this.objMemberInfor.BirthOrder,
@@ -949,18 +1036,13 @@ export default {
           });
 
           this.family.load(this.nodes);
-          this.getInforMember();
+          this.getListMember();
         })
         .catch((e) => {
           console.log(e);
         });
 
       this.closeMemberModal();
-    },
-    addNewMember(choice) {
-      if (choice == "children") {
-        this.openMemberModal("add");
-      }
     },
     setDefauValueInModal() {
       this.objMemberContact = {};
@@ -1007,11 +1089,24 @@ export default {
           console.log(e);
         });
     },
-    openMemberModal(action) {
-      if (action == "add") {
-        this.TitleModal = "Thêm Thông Tin";
-        this.isEdit = false;
-        this.isAddMember = true;
+    setDefaultCondition() {
+      this.isAddChildren = false;
+      this.isAddMarried = false;
+      this.isAddParent = false;
+    },
+    async openMemberModal(action) {
+      await this.setDefaultCondition();
+      if (action == "children") {
+        this.TitleModal = "Thêm Con";
+        this.isAddChildren = true;
+        this.setDefauValueInModal();
+      } else if (action == "married") {
+        this.TitleModal = "Thêm Vợ - Chồng";
+        this.isAddMarried = true;
+        this.setDefauValueInModal();
+      } else if (action == "parent") {
+        this.TitleModal = "Thêm Cha - mẹ";
+        this.isAddParent = true;
         this.setDefauValueInModal();
       } else if (action == "infor") {
         this.TitleModal = "Thông Tin của";
@@ -1026,6 +1121,7 @@ export default {
     },
     OnpenModal_SelectOption(id) {
       this.$modal.show("Select-option-Modal");
+      this.newIdMember = id;
       this.getInforMember(id);
     },
     closeSelectModal() {
