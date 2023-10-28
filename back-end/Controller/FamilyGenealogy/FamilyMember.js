@@ -30,12 +30,8 @@ var addMember = async (req, res) => {
             'nickName',
             'hasNickName',
             'birthOrder',
-            'origin',
             'nationalityId',
             'religionId',
-            'dob',
-            'lunarDob',
-            'birthPlace',
             'IsDead',
             'generation',
             'codeId',
@@ -198,19 +194,19 @@ function sortMembers(members, sortKey, order) {
     // Kiểm tra xem sortKey có hợp lệ hay không
     const validSortKeys = ['memberName', 'dob'];
     if (!validSortKeys.includes(sortKey)) {
-      throw new Error('Invalid sort key');
+        throw new Error('Invalid sort key');
     }
-  
+
     let sortedMembers = [...members];
     if (order === 'desc') {
-      sortedMembers.sort((a, b) => (b[sortKey] < a[sortKey] ? -1 : 1));
+        sortedMembers.sort((a, b) => (b[sortKey] < a[sortKey] ? -1 : 1));
     } else {
-      sortedMembers.sort((a, b) => (a[sortKey] < b[sortKey] ? -1 : 1));
+        sortedMembers.sort((a, b) => (a[sortKey] < b[sortKey] ? -1 : 1));
     }
-  
+
     return sortedMembers;
-  }
-  
+}
 
 
-module.exports = { addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember, sortMembers};
+
+module.exports = { addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember, sortMembers };

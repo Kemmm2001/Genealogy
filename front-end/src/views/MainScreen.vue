@@ -53,7 +53,7 @@
         />
       </svg>
     </div>
-    
+
     <div @mouseleave="collapseConfigSidebar()" class="config-sidebar h-100" :style="{ width: configSidebarWidth + '%' }">
       <!--Chọn chủ đề-->
       <div v-if="configSidebarExpansion" class="topic">
@@ -662,6 +662,7 @@ import { HTTP } from "../assets/js/baseAPI.js";
 export default {
   data() {
     return {
+      newIdMember: null,
       idMember: null,
       generationMember: null,
       CodeID: null,
@@ -865,6 +866,35 @@ export default {
           console.log(e);
         });
     },
+    addNewMarriedMember() {
+      HTTP.post("member", {
+        memberName: this.objMemberInfor.MemberName,
+        nickName: this.objMemberInfor.NickName,
+        parentID: null,
+        marriageID: this.idMember,
+        hasNickName: null,
+        birthOrder: this.objMemberInfor.BirthOrder,
+        origin: this.objMemberInfor.Origin,
+        nationalityId: this.objMemberInfor.NationalityID,
+        religionId: this.objMemberInfor.ReligionID,
+        dob: this.objMemberInfor.Dob,
+        lunarDob: this.objMemberInfor.Dob,
+        birthPlace: this.objMemberInfor.BirthPlace,
+        IsDead: this.IsDead,
+        dod: this.objMemberInfor.Dod,
+        placeOfDeath: this.objMemberInfor.PlaceOfDeadth,
+        graveSite: this.objMemberInfor.GraveSite,
+        note: this.objMemberInfor.Note,
+        generation: this.generationMember,
+        bloodType: this.objMemberInfor.BloodType,
+        male: this.objMemberInfor.Male,
+        codeId: this.CodeID,
+      }).then((response) => {
+        console.log(response.data);
+        this.getInforMember(this.idPaternalAncestor);
+        this.closeMemberModal();
+      });
+    },
     addNewChildrenMember() {
       HTTP.post("member", {
         memberName: this.objMemberInfor.MemberName,
@@ -889,9 +919,35 @@ export default {
         male: this.objMemberInfor.Male,
         codeId: this.CodeID,
       }).then((response) => {
-        console.log(response.data);
+        this.newIdMember = response.data.data.memberId;
         this.getInforMember(this.idPaternalAncestor);
+        this.family.load(this.nodes);
+        this.closeMemberModal();
       });
+
+      // HTTP.post("addContact", {
+      //   memberId: this.newIdMember,
+      //   nickName: this.objMemberInfor.NickName,
+      //   parentID: this.idMember,
+      //   marriageID: null,
+      //   hasNickName: null,
+      //   birthOrder: this.objMemberInfor.BirthOrder,
+      //   origin: this.objMemberInfor.Origin,
+      //   nationalityId: this.objMemberInfor.NationalityID,
+      //   religionId: this.objMemberInfor.ReligionID,
+      //   dob: this.objMemberInfor.Dob,
+      //   lunarDob: this.objMemberInfor.Dob,
+      //   birthPlace: this.objMemberInfor.BirthPlace,
+      //   IsDead: this.IsDead,
+      //   dod: this.objMemberInfor.Dod,
+      //   placeOfDeath: this.objMemberInfor.PlaceOfDeadth,
+      //   graveSite: this.objMemberInfor.GraveSite,
+      //   note: this.objMemberInfor.Note,
+      //   generation: this.generationMember,
+      //   bloodType: this.objMemberInfor.BloodType,
+      //   male: this.objMemberInfor.Male,
+      //   codeId: this.CodeID,
+      // });
     },
     addNewMember(choice) {
       if (choice == "children") {
