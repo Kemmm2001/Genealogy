@@ -114,6 +114,17 @@ var updateMember = async (req, res) => {
         res.send(e);
     }
 }
+var InsertMarrieIdToMember = async (req, res) => {
+    try {
+        let memberID = req.body.memberID;
+        let marriageID = req.body.marriageID;
+        await FamilyManagementService.InsertMarriIdToMember(memberID, marriageID);
+        res.send("Insert Successfuly");
+    } catch (e) {
+        console.log(e)
+    }
+}
+
 
 var deleteMember = async (req, res) => {
     try {
@@ -209,4 +220,4 @@ function sortMembers(members, sortKey, order) {
 
 
 
-module.exports = { addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember, sortMembers };
+module.exports = { addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember, sortMembers, InsertMarrieIdToMember };

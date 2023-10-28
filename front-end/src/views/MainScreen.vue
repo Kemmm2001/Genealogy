@@ -707,6 +707,7 @@ import { HTTP } from "../assets/js/baseAPI.js";
 export default {
   data() {
     return {
+      test: false,
       isAddChildren: false,
       isAddMarried: false,
       isAddParent: false,
@@ -957,6 +958,7 @@ export default {
         });
     },
     addNewMarriedMember() {
+      console.log(this.CurrentIdMember);
       HTTP.post("member", {
         memberName: this.objMemberInfor.MemberName,
         nickName: this.objMemberInfor.NickName,
@@ -981,6 +983,13 @@ export default {
         codeId: this.CodeID,
       }).then((response) => {
         this.newIdMember = response.data.data.memberId;
+        HTTP.post("InserMarrie", {
+          memberID: this.CurrentIdMember,
+          marriageID: this.newIdMember,
+        }).catch((e) => {
+          console.log(e);
+        });
+
         HTTP.post("addContact", {
           memberId: this.newIdMember,
           Address: this.objMemberContact.Address,
@@ -1162,7 +1171,7 @@ export default {
         },
       })
         .then((response) => {
-          this.nodes = response.data;
+          this.nodes = response.data;         
           this.mytree(this.$refs.tree, this.nodes);
         })
         .catch((e) => {

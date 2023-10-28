@@ -42,7 +42,7 @@ const initWebRouter = (app) => {
     router.post('/member', FamilyMemberManagement.addMember)
     router.put('/member', FamilyMemberManagement.updateMember)
     router.delete('/member', FamilyMemberManagement.deleteMember)
-
+    router.post('/InserMarrie', FamilyMemberManagement.InsertMarrieIdToMember)
 
     //API Nhật anh
     router.get('/member', FamilyMemberManagement.getAllMember);
