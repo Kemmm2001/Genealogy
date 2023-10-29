@@ -1,0 +1,70 @@
+#app {
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  font-family: Helvetica;
+}
+
+#tree {
+  width: 100%;
+  height: 100%;
+}
+
+svg.tommy .node.died.male rect {
+  fill: gray;
+}
+
+div#tree {
+  background-color: #f2f2f2;
+}
+
+svg.tommy .node {
+  cursor: pointer;
+}
+
+svg.tommy .node.died.female rect {
+  fill: gray;
+}
+
+form.bft-edit-form {
+  display: none;
+}
+
+
+svg.tommy .node.choose.male rect {
+  stroke: #EDF048;
+  stroke-width: 5px;
+}
+
+svg.tommy .node.choose.female rect {
+  stroke: #EDF048;
+  stroke-width: 5px;
+}
+
+svg.tommy .node.notchoose.male rect {
+  opacity: 0.5;
+}
+
+svg.tommy .node.notchoose.female rect {
+  opacity: 0.5;
+}
+
+svg.tommy .node.male>rect {
+  fill: #C69934;
+}
+
+svg.tommy .node.female>rect {
+  fill: rgb(224, 89, 111);
+}

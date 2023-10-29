@@ -50,8 +50,8 @@ var updateContactMember = async (req, res) => {
 
 var removeContactMember = async (req, res) => {
     try {
-        let ContactID = req.query.ContactID;
-        await ContactManagementService.RemoveContactByID(ContactID);
+        let memberID = req.query.memberID;
+        await ContactManagementService.RemoveContactByID(memberID);
         res.send("remove successfully");
     } catch (e) {
         console.log(e)

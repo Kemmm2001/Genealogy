@@ -313,7 +313,7 @@ async function createFamilyData(member) {
             name: member.MemberName,
             gender: member.Male === 1 ? 'male' : 'female',
             dob: formatDOB(member.Dob),
-            dod: member.IsAlive ? '' : formatDOB(member.Dod),
+            dod: member.IsDead ? '' : formatDOB(member.Dod),
             generation: member.Generation
         };
     }

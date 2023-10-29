@@ -25,15 +25,15 @@ function addMember(member) {
             member.origin,
             member.nationalityId,
             member.religionId,
-            member.dob, 
-            member.lunarDob, 
+            member.dob,
+            member.lunarDob,
             member.birthPlace,
-            member.IsDead, 
-            member.dod, 
+            member.IsDead,
+            member.dod,
             member.placeOfDeath,
-            member.graveSite, 
-            member.note, 
-            member.generation, 
+            member.graveSite,
+            member.note,
+            member.generation,
             member.bloodType,
             member.codeId,
             member.male
@@ -90,15 +90,15 @@ function updateMember(member) {
             member.origin,
             member.nationalityId,
             member.religionId,
-            member.dob, 
-            member.lunarDob, 
+            member.dob,
+            member.lunarDob,
             member.birthPlace,
-            member.IsDead, 
-            member.dod, 
+            member.IsDead,
+            member.dod,
             member.placeOfDeath,
-            member.graveSite, 
-            member.note, 
-            member.generation, 
+            member.graveSite,
+            member.note,
+            member.generation,
             member.bloodType,
             member.codeId,
             member.male,
@@ -120,6 +120,23 @@ function deleteMember(memberId) {
     return new Promise((resolve, reject) => {
         const query = 'DELETE FROM familymember WHERE MemberID = ?';
         db.connection.query(query, memberId, (err, result) => {
+            if (err) {
+                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                reject(err);
+            } else {
+                console.log('Result: ', result);
+                resolve(result);
+            }
+        });
+    });
+}
+function InsertMarriIdToMember(memberId, marriageID) {
+    return new Promise((resolve, reject) => {
+        const query = 'UPDATE familymember SET MarriageID = ? WHERE MemberID = ?;';
+        const values = [
+            marriageID,memberId
+        ]
+        db.connection.query(query, values, (err, result) => {
             if (err) {
                 console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
                 reject(err);
@@ -195,7 +212,7 @@ function searchMember(searchTerm) {
     });
 }
 
-async function filterMember(filterOptions, db, res) {
+async function filterMember(filterOptions) {
     try {
       // Xây dựng câu truy vấn SQL cho bảng familymember
       let memberQuery = 'SELECT * FROM familymember WHERE 1 = 1';
@@ -232,13 +249,9 @@ async function filterMember(filterOptions, db, res) {
       // Gộp dữ liệu thành viên và thông tin liên hệ
       const mergedData = mergeData(memberResults, contactResults);
   
-      res.json({
-        success: true,
-        data: mergedData,
-      });
+      return mergedData
     } catch (error) {
       console.error('Lỗi khi lọc thành viên:', error);
-      res.status(500).json({ success: false, message: 'Lỗi khi lọc thành viên' });
     }
   }
   
@@ -265,9 +278,8 @@ async function filterMember(filterOptions, db, res) {
   
     return mergedData;
   }
-  
 
-  function getAllMember() {
+function getAllMember() {
     return new Promise((resolve, reject) => {
         const query = 'SELECT * FROM familymember';
         db.connection.query(query, (err, result) => {
@@ -281,4 +293,4 @@ async function filterMember(filterOptions, db, res) {
     });
 }
 
-module.exports = { addMember, updateMember, deleteMember, getRelationship, getMember, createRelationship, searchMember, filterMember, getAllMember };
+module.exports = { addMember, updateMember, deleteMember, getRelationship, getMember, createRelationship, searchMember, filterMember, getAllMember, InsertMarriIdToMember };
