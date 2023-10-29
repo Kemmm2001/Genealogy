@@ -35,8 +35,7 @@ var UpdateJobMember = async (req, res) => {
         ObjData.Role = req.body.Role;
         ObjData.JobName = req.body.JobName;
         ObjData.StartDate = req.body.StartDate;
-        ObjData.EndDate = req.body.EndDate;
-        console.log(ObjData)
+        ObjData.EndDate = req.body.EndDate;       
         await JobManagementService.UpdateJobByID(ObjData);
         res.send("Update successfully")
     } catch (e) {

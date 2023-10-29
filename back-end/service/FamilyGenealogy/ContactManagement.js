@@ -39,7 +39,7 @@ async function InsertContactMember(objData) {
 async function UpdateContactByID(ObjData) {
     const query = `UPDATE contact 
                    SET  Address = ?, Phone1 = ?, Phone2 = ?, Email1 = ?,Email2 = ? , FacebookUrl = ? ,  Zalo = ?
-                   WHERE ContactID = ?`;
+                   WHERE MemberID = ?`;
     const values = [
         ObjData.Address,
         ObjData.Phone1,
@@ -48,7 +48,7 @@ async function UpdateContactByID(ObjData) {
         ObjData.Email2,
         ObjData.FacebookUrl,
         ObjData.Zalo,
-        ObjData.ContactID
+        ObjData.MemberID
     ];
 
     db.connection.query(query, values, (err, result) => {

@@ -20,20 +20,20 @@
         <div class="col-md-6 pt-1" style="padding-right: 4px;">
           <select class="d-flex text-center form-select dropdown p-0" @change="GetListMemberByBloodType()">
             <option selected>Nhóm máu</option>
-            <option class="dropdown-item" value>A</option>
-            <option class="dropdown-item" value>B</option>
-            <option class="dropdown-item" value>AB</option>
-            <option class="dropdown-item" value>O</option>
+            <option class="dropdown-item" value>Nhóm máu A</option>
+            <option class="dropdown-item" value>Nhóm máu B</option>
+            <option class="dropdown-item" value>Nhóm máu AB</option>
+            <option class="dropdown-item" value>Nhóm máu O</option>
           </select>
         </div>
         <div class="col-md-6 pt-1">
           <select class="d-flex text-center form-select dropdown p-0" v-model="selectAge" @change="FilterByAge()">
             <option value="0">Nhóm tuổi</option>
-            <option class="dropdown-item" value="0_5">0 - 5</option>
-            <option class="dropdown-item" value="6_17">6 - 17</option>
-            <option class="dropdown-item" value="18_40">18 - 40</option>
-            <option class="dropdown-item" value="41_60">41 - 60</option>
-            <option class="dropdown-item" value="61_200">Trên 60</option>
+            <option class="dropdown-item" value="0_5">0 - 5 Tuổi</option>
+            <option class="dropdown-item" value="6_17">6 - 17 Tuổi</option>
+            <option class="dropdown-item" value="18_40">18 - 40 Tuổi</option>
+            <option class="dropdown-item" value="41_60">41 - 60 Tuổi</option>
+            <option class="dropdown-item" value="61_200">Trên 60 Tuổi</option>
             <option class="dropdown-item" value>Không rõ</option>
           </select>
         </div>
@@ -373,7 +373,7 @@
               <li class="list-group-item" @click="openMemberModal('married')">Thêm Vợ</li>
               <li class="list-group-item" @click="openMemberModal('children')">Thêm Con</li>
               <li class="list-group-item">Set làm tộc trưởng</li>
-              <li class="list-group-item">Set làm tổ cụ</li>
+              <li class="list-group-item" @click="setPaternalAncestor()">Set làm tổ cụ</li>
               <li class="list-group-item" @click="removeMember()">Xóa thành viên</li>
             </ul>
           </div>
@@ -603,8 +603,8 @@
                 <div class="d-flex justify-content-end">
                   <div class="form-group" role="group">
                     <button type="button" class="btn btn-primary" @click="addNewJobMember()" style="margin-right:10px">Thêm</button>
-                    <button type="button" class="btn btn-info mr-1" @click="editJobMember()" style="margin-right:10px">Sửa</button>
-                    <button type="button" class="btn btn-danger mr-1" @click="deleteJobMember()" style="margin-right:10px">Xóa</button>
+                    <button type="button" class="btn btn-info mr-1" @click="updateJobMember()" style="margin-right:10px">Sửa</button>
+                    <button type="button" class="btn btn-danger mr-1" @click="removeJobMember()" style="margin-right:10px">Xóa</button>
                   </div>
                 </div>
                 <div class="form-group" style="margin-top:13px;padding-right:22px">
@@ -655,7 +655,7 @@
                 <div class="d-flex justify-content-end">
                   <div class="form-group" role="group">
                     <button type="button" class="btn btn-primary" @click="addNewEducationMember()" style="margin-right:10px">Thêm</button>
-                    <button type="button" class="btn btn-info mr-1" @click="editJobMember()" style="margin-right:10px">Sửa</button>
+                    <button type="button" class="btn btn-info mr-1" @click="updateEducationMember()" style="margin-right:10px">Sửa</button>
                     <button type="button" class="btn btn-danger mr-1" @click="deleteJobMember()" style="margin-right:10px">Xóa</button>
                   </div>
                 </div>
@@ -708,6 +708,9 @@ import { HTTP } from "../assets/js/baseAPI.js";
 export default {
   data() {
     return {
+      JobIDToUpdate: null,
+      EducationIdToUpdate: null,
+
       listFilterByAge: null,
       selectAge: 0,
       isAddChildren: false,
@@ -857,20 +860,30 @@ export default {
         this.OnpenModal_SelectOption(arg.node.id);
       });
     },
-    MeNotificationsDelete(messagee) {
+    setPaternalAncestor() {
+      HTTP.post("setRole", {
+        memberId: this.CurrentIdMember,
+        roleId: 1,
+        CodeId: 123456,
+      }).then(() => {
+        this.getListMembe1r(this.CurrentIdMember);
+        this.NotificationsScuccess("Set tổ phụ thành công")
+      });
+    },
+    NotificationsDelete(messagee) {
       new Snackbar(messagee, {
         position: "bottom-right",
         theme: "light",
         style: {
           container: [
-            ["background-color", "rgb(81, 83, 101)"],
+            ["background-color", "#ff4d4d"],
             ["border-radius", "5px"],
           ],
           message: [["color", "#fff"]],
         },
       });
     },
-    MeNotificationsScuccess(messagee) {
+    NotificationsScuccess(messagee) {
       new Snackbar(messagee, {
         position: "bottom-right",
         theme: "light",
@@ -949,13 +962,28 @@ export default {
       this.objMemberJob = {};
       this.objMemberEducation = {};
     },
+    removeJobMember() {
+      HTTP.delete("removeJob", {
+        params: {
+          JobID: this.JobIDToUpdate,
+        },
+      })
+        .then(() => {
+          this.getListJobMember();
+          this.NotificationsDelete("Xóa thông tin nghề nghiệp thành công");
+          this.refreshInputJobAndEducation();
+        })
+        .catch(() => {
+          this.NotificationsDelete("Đã sảy ra lỗi, không thể xóa");
+        });
+    },
     removeMember() {
       HTTP.delete("deleteContact", {
         params: {
           memberID: this.CurrentIdMember,
         },
-      }).catch((e) => {
-        console.log(e);
+      }).catch(() => {
+        this.NotificationsDelete("Đã sảy ra lỗi, không thể xóa");
       });
 
       HTTP.delete("RemoveListJob", {
@@ -980,7 +1008,8 @@ export default {
           memberID: this.CurrentIdMember,
         },
       }).then(() => {
-        this.MeNotificationsDelete("remove success fully");
+        this.NotificationsDelete("remove success fully");
+        this.getListMember();
       });
     },
     addNewJobMember() {
@@ -995,6 +1024,7 @@ export default {
       })
         .then(() => {
           this.getListJobMember();
+          this.NotificationsScuccess("Thêm thông tin nghề nghiệp thành công");
           this.refreshInputJobAndEducation();
         })
         .catch((err) => {
@@ -1024,6 +1054,7 @@ export default {
       })
         .then(() => {
           this.getListEducationMember();
+          this.NotificationsScuccess("Thêm thông tin giáo dục thành công");
           this.refreshInputJobAndEducation();
         })
         .catch((e) => {
@@ -1072,9 +1103,13 @@ export default {
           Email2: this.objMemberContact.Email2,
           FacebookUrl: this.objMemberContact.FacebookUrl,
           Zalo: this.objMemberContact.Zalo,
-        }).catch((e) => {
-          console.log(e);
-        });
+        })
+          .then(() => {
+            this.NotificationsScuccess("Thêm thành công");
+          })
+          .catch((e) => {
+            console.log(e);
+          });
         this.getListMember();
       });
     },
@@ -1113,10 +1148,13 @@ export default {
             Email2: this.objMemberContact.Email2,
             FacebookUrl: this.objMemberContact.FacebookUrl,
             Zalo: this.objMemberContact.Zalo,
-          }).catch((e) => {
-            console.log(e);
-          });
-
+          })
+            .then(() => {
+              this.NotificationsScuccess("Thêm thành công");
+            })
+            .catch((e) => {
+              console.log(e);
+            });
           this.family.load(this.nodes);
           this.getListMember();
         })
@@ -1139,9 +1177,37 @@ export default {
       this.ListMemberEducation = null;
       this.objMemberEducation = {};
     },
+    updateEducationMember() {
+      HTTP.put("updateEducation", {
+        School: this.objMemberEducation.School,
+        Description: this.objMemberEducation.Description,
+        StartDate: this.objMemberEducation.StartDate,
+        EndDate: this.objMemberEducation.EndDate,
+        EducationID: this.EducationIdToUpdate,
+      }).then(() => {
+        this.getListEducationMember();
+        this.NotificationsScuccess("Sửa thông tin giáo dục thành công");
+        this.refreshInputJobAndEducation();
+      });
+    },
+    updateJobMember() {
+      HTTP.put("updateJob", {
+        JobID: this.JobIDToUpdate,
+        Organization: this.objMemberJob.Organization,
+        OrganizationAddress: this.objMemberJob.OrganizationAddress,
+        Role: this.objMemberJob.Role,
+        JobName: this.objMemberJob.JobName,
+        StartDate: this.objMemberJob.StartDate,
+        EndDate: this.objMemberJob.EndDate,
+      }).then(() => {
+        this.getListJobMember();
+        this.NotificationsScuccess("Sửa thông tin nghề nghiệp thành công");
+        this.refreshInputJobAndEducation();
+      });
+    },
     updateInformation() {
       HTTP.put("member", {
-        memberID: this.objMemberInfor.MemberID,
+        memberID: this.CurrentIdMember,
         memberName: this.objMemberInfor.MemberName,
         nickName: this.objMemberInfor.NickName,
         parentID: this.objMemberInfor.ParentID,
@@ -1165,11 +1231,24 @@ export default {
         codeId: this.objMemberInfor.CodeID,
       })
         .then(() => {
-          console.log("Update success fully");
+          this.NotificationsScuccess("Sửa thông tin thành viên thành công");
         })
         .catch((e) => {
           console.log(e);
         });
+      HTTP.put("updateContact", {
+        MemberID: this.CurrentIdMember,
+        Address: this.objMemberContact.Address,
+        Phone1: this.objMemberContact.Phone1,
+        Phone2: this.objMemberContact.Phone2,
+        Email1: this.objMemberContact.Email1,
+        Email2: this.objMemberContact.Email2,
+        FacebookUrl: this.objMemberContact.FacebookUrl,
+        Zalo: this.objMemberContact.Zalo,
+      }).then(() => {
+        this.NotificationsScuccess("Sửa thông tin thành công");
+        this.closeMemberModal();
+      });
     },
     setDefaultCondition() {
       this.isAddChildren = false;
@@ -1178,7 +1257,6 @@ export default {
       this.isEdit = false;
     },
     async openMemberModal(action) {
-      console.log(this.isEdit);
       await this.setDefaultCondition();
       if (action == "children") {
         this.TitleModal = "Thêm Con";
@@ -1214,6 +1292,7 @@ export default {
       this.$modal.hide("Select-option-Modal");
     },
     selectRowJob(job) {
+      this.JobIDToUpdate = job.JobID;
       this.objMemberJob = job;
       this.objMemberJob.StartDate = this.formatDate(
         this.objMemberJob.StartDate
@@ -1221,6 +1300,7 @@ export default {
       this.objMemberJob.EndDate = this.formatDate(this.objMemberJob.EndDate);
     },
     selectRowEducation(education) {
+      this.EducationIdToUpdate = education.EducationID;
       this.objMemberEducation = education;
       this.objMemberEducation.StartDate = this.formatDate(
         this.objMemberEducation.StartDate
@@ -1275,16 +1355,36 @@ export default {
     highLightNode() {
       for (let i = 0; i < this.nodes.length; i++) {
         this.nodes[i].tags = this.nodes[i].tags.filter(
-          (tag) => tag !== "choose"
+          (tag) => tag !== "choose" && tag !== "notchoose"
         );
       }
       let memberIds = this.listFilterByAge.map((item) => item.MemberID);
       this.nodes.forEach((node) => {
         if (memberIds.includes(node.id)) {
           node.tags.push("choose");
+        } else {
+          node.tags.push("notchoose");
         }
       });
       this.family.load(this.nodes);
+    },
+    getListMembe1r(id) {
+      HTTP.get("viewTree", {
+        params: {
+          memberID: id,
+        },
+      })
+        .then((response) => {
+          this.nodes = response.data;
+          for (let i = 0; i < this.nodes.length; i++) {
+            this.nodes[i].tags = [];
+          }
+
+          this.mytree(this.$refs.tree, this.nodes);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
     getListMember() {
       HTTP.get("viewTree", {

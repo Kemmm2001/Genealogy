@@ -33,7 +33,7 @@ var InsertContactMember = async (req, res) => {
 var updateContactMember = async (req, res) => {
     try {
         let objData = {};
-        objData.ContactID = req.body.ContactID;
+        objData.MemberID = req.body.MemberID;
         objData.Address = req.body.Address;
         objData.Phone1 = req.body.Phone1;
         objData.Phone2 = req.body.Phone2;

@@ -231,7 +231,7 @@ async function filterMember(filterOptions) {
         memberQuery += ' AND IsAlive = ?';
         queryParams.push(filterOptions.IsAlive);
       }
-  
+      console.log(memberQuery)
       // Thực hiện truy vấn SQL cho bảng familymember
       const [memberResults] = await db.connection.query(memberQuery, queryParams);
   
