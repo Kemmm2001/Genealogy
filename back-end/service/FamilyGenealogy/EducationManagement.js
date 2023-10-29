@@ -60,7 +60,18 @@ async function RemoveEducation(EducationID) {
     })
 }
 
+async function RemoveListEducation(memberID) {
+    let query = `DELETE FROM education WHERE MemberID = ${memberID};`
+    db.connection.query(query, (err, result) => {
+        if (err) {
+            console.log(err)
+        } else {
+            console.log("remove successfully");
+        }
+    })
+}
+
 
 module.exports = {
-    getEducationByMemberId, InsertEducation, UpdateEducation,RemoveEducation
+    getEducationByMemberId, InsertEducation, UpdateEducation, RemoveEducation,RemoveListEducation
 }

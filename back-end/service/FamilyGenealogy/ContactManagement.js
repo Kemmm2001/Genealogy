@@ -62,8 +62,8 @@ async function UpdateContactByID(ObjData) {
     });
 }
 
-async function RemoveContactByID(ContactID) {
-    let query = `DELETE FROM contact WHERE ContactID = ${ContactID};`
+async function RemoveContactByID(memberID) {
+    let query = `DELETE FROM contact WHERE MemberID = ${memberID};`
     db.connection.query(query, (err, result) => {
         if (err) {
             console.error(err);

@@ -48,8 +48,17 @@ var RemoveEducationMember = async (req, res) => {
     }
 }
 
+var RemoveListEducationMember = async (req, res) => {
+    try {
+        let memberID = req.query.memberID;
+        await EducationManagementService.RemoveListEducation(memberID);
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 
 
 module.exports = {
-    ViewEducation, InsertEducationMember, UpdateEducationMember, RemoveEducationMember
+    ViewEducation, InsertEducationMember, UpdateEducationMember, RemoveEducationMember,RemoveListEducationMember
 }

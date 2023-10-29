@@ -374,7 +374,7 @@
               <li class="list-group-item" @click="openMemberModal('children')">Thêm Con</li>
               <li class="list-group-item">Set làm tộc trưởng</li>
               <li class="list-group-item">Set làm tổ cụ</li>
-              <li class="list-group-item">Xóa thành viên</li>
+              <li class="list-group-item" @click="removeMember()">Xóa thành viên</li>
             </ul>
           </div>
         </div>
@@ -701,6 +701,7 @@
 </template>
 
 <script>
+import Snackbar from "awesome-snackbar";
 import FamilyTree from "@balkangraph/familytree.js";
 import { EventBus } from "../assets/js/MyEventBus.js";
 import { HTTP } from "../assets/js/baseAPI.js";
@@ -856,6 +857,32 @@ export default {
         this.OnpenModal_SelectOption(arg.node.id);
       });
     },
+    MeNotificationsDelete(messagee) {
+      new Snackbar(messagee, {
+        position: "bottom-right",
+        theme: "light",
+        style: {
+          container: [
+            ["background-color", "rgb(81, 83, 101)"],
+            ["border-radius", "5px"],
+          ],
+          message: [["color", "#fff"]],
+        },
+      });
+    },
+    MeNotificationsScuccess(messagee) {
+      new Snackbar(messagee, {
+        position: "bottom-right",
+        theme: "light",
+        style: {
+          container: [
+            ["background-color", "#1abc9c"],
+            ["border-radius", "5px"],
+          ],
+          message: [["color", "#fff"]],
+        },
+      });
+    },
     GetListMemberByBloodType() {
       HTTP.post("filter-member", {
         BloodType: "A",
@@ -921,6 +948,40 @@ export default {
     refreshInputJobAndEducation() {
       this.objMemberJob = {};
       this.objMemberEducation = {};
+    },
+    removeMember() {
+      HTTP.delete("deleteContact", {
+        params: {
+          memberID: this.CurrentIdMember,
+        },
+      }).catch((e) => {
+        console.log(e);
+      });
+
+      HTTP.delete("RemoveListJob", {
+        params: {
+          memberID: this.CurrentIdMember,
+        },
+      }).catch((e) => {
+        console.log(e);
+      });
+
+      HTTP.delete("deleteListEducation", {
+        params: {
+          memberID: this.CurrentIdMember,
+        },
+      }).catch((e) => {
+        console.log(e);
+      });
+
+      console.log(this.CurrentIdMember);
+      HTTP.delete("member", {
+        params: {
+          memberID: this.CurrentIdMember,
+        },
+      }).then(() => {
+        this.MeNotificationsDelete("remove success fully");
+      });
     },
     addNewJobMember() {
       HTTP.post("addJob", {

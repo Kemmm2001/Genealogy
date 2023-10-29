@@ -114,6 +114,7 @@ var updateMember = async (req, res) => {
         res.send(e);
     }
 }
+
 var InsertMarrieIdToMember = async (req, res) => {
     try {
         let memberID = req.body.memberID;
@@ -128,15 +129,16 @@ var InsertMarrieIdToMember = async (req, res) => {
 
 var deleteMember = async (req, res) => {
     try {
-        console.log("Request body: ", req.body);
+        console.log("Request body: ", req.query);
         let response;
-        let result = await FamilyManagementService.deleteMember(req.body.memberID);
+        console.log(req.query.memberID)
+        let result = await FamilyManagementService.deleteMember(req.query.memberID);
 
         response = {
             success: true,
             message: 'Delete member successfully',
             data: {
-                memberID: req.body.memberID,
+                memberID: req.query.memberID,
                 affectedRows: result.affectedRows,
                 changedRows: result.changedRows
             }

@@ -54,7 +54,16 @@ var RemoveJobMember = async (req, res) => {
     }
 }
 
+var RemoveListJobMember = async (req, res) => {
+    try {
+        let memberID = req.query.memberID;
+        await JobManagementService.DeleteListJobByID(memberID)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 
 module.exports = {
-    ViewJobMember, InsertJobMember, UpdateJobMember, RemoveJobMember
+    ViewJobMember, InsertJobMember, UpdateJobMember, RemoveJobMember,RemoveListJobMember
 }
