@@ -214,7 +214,7 @@ function searchMember(searchTerm) {
 
 function filterMember(req, res) {
     try {
-        const filterOptions = req.body; // Lấy filterOptions từ request body
+        const filterOptions = req.body; // Lấy filterOptions từ request body       
 
         // Xây dựng câu truy vấn SQL cho bảng familymember
         let memberQuery = 'SELECT * FROM familymember WHERE 1 =1';
@@ -225,6 +225,7 @@ function filterMember(req, res) {
         }
         if (filterOptions.BloodType) {
             memberQuery += ` AND BloodType = '${filterOptions.BloodType}'`;
+            console.log("chạy vào đây")
         }
         if (filterOptions.IsDead !== undefined) {
             memberQuery += ` AND IsDead = ${filterOptions.IsDead}`;

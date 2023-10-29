@@ -17,6 +17,18 @@ var Statistics = async (req, res) => {
     }
 }
 
+var FilterMemberByAge = async (req, res) => {
+    try {
+        let CodeID = req.query.CodeID;
+        let startAge = req.query.startAge;
+        let endAge = req.query.endAge;      
+        let data = await StatisticsGenealogyService.getMemberByAge(startAge, endAge, CodeID);
+        res.send(data);
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 var filterMemberByMonth = async (req, res) => {
     try {
         let CodeID = req.query.CodeID;
@@ -33,5 +45,5 @@ var filterMemberByMonth = async (req, res) => {
 
 
 module.exports = {
-    Statistics, filterMemberByMonth
+    Statistics, filterMemberByMonth, FilterMemberByAge
 }

@@ -37,7 +37,7 @@ const initWebRouter = (app) => {
 
     router.get('/statistics', StatisticsController.Statistics)
     router.get('/filterMonth', StatisticsController.filterMemberByMonth)
-
+    router.get('/filterByAge',StatisticsController.FilterMemberByAge)
 
     //API tuấn
     // Create a new FamilyHistory
