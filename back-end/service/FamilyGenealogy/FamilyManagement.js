@@ -212,73 +212,72 @@ function searchMember(searchTerm) {
     });
 }
 
-function filterMember(req, res) {
+async function filterMember(filterOptions) {
     try {
-        const filterOptions = req.body; // Lấy filterOptions từ request body       
-
-        // Xây dựng câu truy vấn SQL cho bảng familymember
-        let memberQuery = 'SELECT * FROM familymember WHERE 1 =1';
-
-        // Xây dựng điều kiện lọc cho bảng familymember
-        if (filterOptions.male !== undefined) {
-            memberQuery += ` AND male = ${filterOptions.male}`;
-        }
-        if (filterOptions.BloodType) {
-            memberQuery += ` AND BloodType = '${filterOptions.BloodType}'`;
-            console.log("chạy vào đây")
-        }
-        if (filterOptions.IsDead !== undefined) {
-            memberQuery += ` AND IsDead = ${filterOptions.IsDead}`;
-        }
-
-        // Thực hiện truy vấn SQL cho bảng familymember
-        const memberResults = db.connection.query(memberQuery);
-
-        // Xây dựng câu truy vấn SQL cho bảng contact
-        let contactQuery = 'SELECT * FROM contact WHERE 1=1';
-
-        // Xây dựng điều kiện lọc cho bảng contact
-        if (filterOptions.Address) {
-            contactQuery += ` AND Address = '${filterOptions.Address}'`;
-        }
-
-        // Thực hiện truy vấn SQL cho bảng contact
-        const contactResults = db.connection.query(contactQuery);
-
-        // Gộp dữ liệu thành viên và thông tin liên hệ
-        const mergedData = mergeData(memberResults, contactResults);
-
-        res.json({
-            success: true,
-            data: mergedData,
-        });
+      // Xây dựng câu truy vấn SQL cho bảng familymember
+      let memberQuery = 'SELECT * FROM familymember WHERE 1 = 1';
+      const queryParams = [];
+  
+      // Xây dựng điều kiện lọc cho bảng familymember
+      if (filterOptions.male !== undefined) {
+        memberQuery += ' AND male = ?';
+        queryParams.push(filterOptions.male);
+      }
+      if (filterOptions.BloodType) {
+        memberQuery += ' AND BloodType = ?';
+        queryParams.push(filterOptions.BloodType);
+      }
+      if (filterOptions.IsAlive !== undefined) {
+        memberQuery += ' AND IsAlive = ?';
+        queryParams.push(filterOptions.IsAlive);
+      }
+  
+      // Thực hiện truy vấn SQL cho bảng familymember
+      const [memberResults] = await db.connection.query(memberQuery, queryParams);
+  
+      // Xây dựng câu truy vấn SQL cho bảng contact
+      let contactQuery = 'SELECT * FROM contact WHERE 1 = 1';
+  
+      // Xây dựng điều kiện lọc cho bảng contact
+      if (filterOptions.Address) {
+        contactQuery += ' AND Address = ?';
+      }
+  
+      // Thực hiện truy vấn SQL cho bảng contact
+      const [contactResults] = await db.connection.query(contactQuery, [filterOptions.Address]);
+  
+      // Gộp dữ liệu thành viên và thông tin liên hệ
+      const mergedData = mergeData(memberResults, contactResults);
+  
+      return mergedData
     } catch (error) {
-        console.error('Lỗi khi lọc thành viên:', error);
-        res.status(500).json({ success: false, message: 'Lỗi khi lọc thành viên' });
+      console.error('Lỗi khi lọc thành viên:', error);
     }
-}
-
-function mergeData(memberResults, contactResults) {
+  }
+  
+  function mergeData(memberResults, contactResults) {
     const mergedData = [];
-
-    // Gộp dữ liệu từ bảng familymember
+  
+    // Gộp dữ liệu từ bảng familymember và contact dựa trên MemberID
     for (const memberRow of memberResults) {
-        // Tạo một đối tượng mới để lưu thông tin thành viên
-        const mergedMember = {
-            MemberID: memberRow.MemberID,
-        };
-
-        // Tìm thông tin liên hệ của thành viên dựa trên MemberID
-        const relatedContact = contactResults.find(contactRow => contactRow.MemberID === memberRow.MemberID);
-
-        if (relatedContact) {
-            mergedData.push(mergedMember);
-
-        }
+      // Tạo một đối tượng mới để lưu thông tin thành viên
+      const mergedMember = {
+        MemberID: memberRow.MemberID,
+      };
+  
+      // Tìm thông tin liên hệ của thành viên dựa trên MemberID
+      const relatedContact = contactResults.find(contactRow => contactRow.MemberID === memberRow.MemberID);
+  
+      if (relatedContact) {
+        // Thêm thông tin liên hệ vào đối tượng thành viên
+        mergedMember.ContactInfo = relatedContact;
+      }
+  
+      mergedData.push(mergedMember);
     }
-
+  
     return mergedData;
-}
+  }
 
 function getAllMember() {
     return new Promise((resolve, reject) => {
