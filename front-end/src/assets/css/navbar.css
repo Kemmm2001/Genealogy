@@ -31,7 +31,7 @@
 }
 
 .navbar-extended.expandContent{
-    height: 200px;
+    height: 450%;
 }
 
 .user-extended{
@@ -46,11 +46,11 @@
 }
 
 .user-extended.expandContent{
-    height: 90px;
+    height: 170%;
 }
 
 .navbar-extended-content{
-    color: #9d9d9d;
+    color: #35495e;
 }
 
 .navbar-extended-content:hover{
