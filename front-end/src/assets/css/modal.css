@@ -226,6 +226,10 @@ input:focus~label.form-label-number {
     background-color: #FFFFFF;
 }
 
+.add-album-modal{
+    background-color: #FFFFFF;
+}
+
 .Container-select-modal .vm--modal {
     top: 21% !important;
 

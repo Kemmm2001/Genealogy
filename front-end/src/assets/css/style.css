@@ -5,7 +5,8 @@
 }
 
 .container-fluid {
-    height: 100vh;
+    min-height: 100vh;
+    height: 100%;
     background-color: #E8C77B;
 }
 
@@ -29,7 +30,6 @@
 .list {
     background-color: #3A4B54;
     width: 25% !important;
-    height: 100%;
     padding: 8px;
 }
 
