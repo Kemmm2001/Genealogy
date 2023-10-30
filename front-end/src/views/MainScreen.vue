@@ -39,9 +39,6 @@
         </div>
       </div>
     </div>
-    <!-- <div class="d-flex main-screen align-items-center w-100">
-      <div id="tree" ref="tree" @click.right.prevent="onRightClick"></div>
-    </div>-->
     <div class="d-flex main-screen align-items-center w-100">
       <div id="tree" ref="tree"></div>
     </div>
@@ -367,7 +364,6 @@
           <div class="card-body" style="padding: 0,height:auto">
             <ul class="list-group">
               <li class="list-group-item">Xem mối quan hệ hiện tại</li>
-              <li class="list-group-item" @click="openMemberModal('infor')">Thông tin thành viên</li>
               <li class="list-group-item">Thêm Cha</li>
               <li class="list-group-item">Thêm Mẹ</li>
               <li class="list-group-item" @click="openMemberModal('married')">Thêm Vợ</li>
@@ -852,13 +848,43 @@ export default {
           field_2: "dob",
           field_3: "dod",
         },
+
         nodeMouseClick: FamilyTree.action.none,
         enableSearch: false,
       });
-
-      this.family.onNodeClick((arg) => {
-        this.OnpenModal_SelectOption(arg.node.id);
+      //Get tọa độ ban đầu
+      let CoordinatesNode = this.getViewBox();
+      this.family.onRedraw(() => {
+        if (CoordinatesNode != null) {
+          this.family.setViewBox(CoordinatesNode);
+        }
       });
+      // right click
+      const self = this;
+      this.family.onInit(function () {
+        this.element.addEventListener(
+          "contextmenu",
+          function (ev) {
+            let nodeElement = ev.target;
+            if (nodeElement.hasAttribute("data-n-id") == false) {
+              nodeElement = nodeElement.parentNode;
+            }
+            if (nodeElement && nodeElement.hasAttribute("data-n-id")) {
+              let id = nodeElement.getAttribute("data-n-id");
+              console.log(id);
+              self.OnpenModal_SelectOption(id);
+            }
+          },
+          false
+        );
+      });
+      this.family.onNodeClick((arg) => {
+        // this.OnpenModal_SelectOption(arg.node.id);
+        this.getInforMember(arg.node.id);
+      });
+    },
+    getViewBox() {
+      return this.family.getViewBox();
     },
     setPaternalAncestor() {
       HTTP.post("setRole", {
@@ -867,7 +893,7 @@ export default {
         CodeId: 123456,
       }).then(() => {
         this.getListMembe1r(this.CurrentIdMember);
-        this.NotificationsScuccess("Set tổ phụ thành công")
+        this.NotificationsScuccess("Set tổ phụ thành công");
       });
     },
     NotificationsDelete(messagee) {
@@ -921,10 +947,10 @@ export default {
       this.IsDead = this.objMemberInfor.IsDead;
       this.idPaternalAncestor = id;
     },
-    getInforMember() {
+    getInforMember(id) {
       HTTP.get("InforMember", {
         params: {
-          memberId: this.CurrentIdMember,
+          memberId: id,
         },
       })
         .then((response) => {
@@ -944,10 +970,16 @@ export default {
           }
           this.ListMemberEducation = this.objMember.education;
           this.ListMemberJob = this.objMember.job;
+          this.TitleModal = "Thông Tin của " + this.objMemberInfor.MemberName;
         })
         .catch((e) => {
           console.log(e);
         });
+  
+      this.$modal.show("member-modal");
+      this.isEdit = true;
+      this.selectedInfor();
+      this.setDefauValueInModal();
     },
     getListJobMember() {
       HTTP.get("getJob", {
@@ -1270,11 +1302,6 @@ export default {
         this.TitleModal = "Thêm Cha - mẹ";
         this.isAddParent = true;
         this.setDefauValueInModal();
-      } else if (action == "infor") {
-        this.TitleModal = "Thông Tin của";
-        this.isEdit = true;
-        this.setDefauValueInModal();
-        this.getInforMember();
       }
       this.selectedInfor();
       this.$modal.show("member-modal");
@@ -1284,9 +1311,7 @@ export default {
     },
     OnpenModal_SelectOption(id) {
       this.$modal.show("Select-option-Modal");
-      // this.newIdMember = id;
       this.CurrentIdMember = id;
-      // this.getInforMember();
     },
     closeSelectModal() {
       this.$modal.hide("Select-option-Modal");

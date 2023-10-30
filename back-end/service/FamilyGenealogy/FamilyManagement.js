@@ -216,7 +216,7 @@ function searchMember(searchTerm) {
 
 async function filterMember(filterOptions) {
     try {
-    const dbb = await mysql.createConnection({ host: 'localhost', user: 'root', password: '12345678', database: 'genealogy' });
+    const dbb = await mysql.createConnection({ host: 'localhost', user: 'root', password: '123456', database: 'genealogy' });
 
       // Xây dựng câu truy vấn SQL cho bảng familymember
       let memberQuery = 'SELECT * FROM familymember WHERE 1 = 1';
