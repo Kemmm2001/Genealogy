@@ -30,13 +30,9 @@ var addMember = async (req, res) => {
             'nickName',
             'hasNickName',
             'birthOrder',
-            'origin',
             'nationalityId',
             'religionId',
-            'dob',
-            'lunarDob',
-            'birthPlace',
-            'isAlive',
+            'IsDead',
             'generation',
             'codeId',
             'bloodType',
@@ -88,7 +84,7 @@ var updateMember = async (req, res) => {
             'dob',
             'lunarDob',
             'birthPlace',
-            'isAlive',
+            'IsDead',
             'generation',
             'codeId',
             'bloodType',
@@ -119,17 +115,30 @@ var updateMember = async (req, res) => {
     }
 }
 
+var InsertMarrieIdToMember = async (req, res) => {
+    try {
+        let memberID = req.body.memberID;
+        let marriageID = req.body.marriageID;
+        await FamilyManagementService.InsertMarriIdToMember(memberID, marriageID);
+        res.send("Insert Successfuly");
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+
 var deleteMember = async (req, res) => {
     try {
-        console.log("Request body: ", req.body);
+        console.log("Request body: ", req.query);
         let response;
-        let result = await FamilyManagementService.deleteMember(req.body.memberID);
+        console.log(req.query.memberID)
+        let result = await FamilyManagementService.deleteMember(req.query.memberID);
 
         response = {
             success: true,
             message: 'Delete member successfully',
             data: {
-                memberID: req.body.memberID,
+                memberID: req.query.memberID,
                 affectedRows: result.affectedRows,
                 changedRows: result.changedRows
             }
@@ -155,16 +164,14 @@ var filterMember = async function (req, res) {
     try {
         const filterOptions = req.body; // Lấy filterOptions từ request body
         const filteredMembers = await FamilyManagementService.filterMember(filterOptions);
-
-        res.json({
-            success: true,
-            data: filteredMembers,
-        });
+        
+        res.json({ success: true, data: filteredMembers });
     } catch (error) {
         console.error('Lỗi khi lọc thành viên:', error);
         res.status(500).json({ success: false, message: 'Lỗi khi lọc thành viên' });
     }
 }
+
 var getAllMember = async (req, res) => {
     try {
         // Gọi hàm từ dịch vụ để lấy tất cả thành viên
@@ -198,19 +205,19 @@ function sortMembers(members, sortKey, order) {
     // Kiểm tra xem sortKey có hợp lệ hay không
     const validSortKeys = ['memberName', 'dob'];
     if (!validSortKeys.includes(sortKey)) {
-      throw new Error('Invalid sort key');
+        throw new Error('Invalid sort key');
     }
-  
+
     let sortedMembers = [...members];
     if (order === 'desc') {
-      sortedMembers.sort((a, b) => (b[sortKey] < a[sortKey] ? -1 : 1));
+        sortedMembers.sort((a, b) => (b[sortKey] < a[sortKey] ? -1 : 1));
     } else {
-      sortedMembers.sort((a, b) => (a[sortKey] < b[sortKey] ? -1 : 1));
+        sortedMembers.sort((a, b) => (a[sortKey] < b[sortKey] ? -1 : 1));
     }
-  
+
     return sortedMembers;
-  }
-  
+}
 
 
-module.exports = { addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember, sortMembers};
+
+module.exports = { addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember, sortMembers, InsertMarrieIdToMember };

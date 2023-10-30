@@ -75,7 +75,20 @@ async function DeleteJobByID(JobID) {
     });
 }
 
+async function DeleteListJobByID(memberId) {
+    let query = `DELETE FROM job WHERE MemberID = ${memberId}`
+    db.connection.query(query, (err, result) => {
+        if (err) {
+            console.error(err);
+
+            return;
+        } else {
+            console.log('Delete Successfully');
+        }
+    });
+}
+
 
 module.exports = {
-    GetAllJobByMemberID, AddJobByMemberID, UpdateJobByID, DeleteJobByID
+    GetAllJobByMemberID, AddJobByMemberID, UpdateJobByID, DeleteJobByID,DeleteListJobByID
 }

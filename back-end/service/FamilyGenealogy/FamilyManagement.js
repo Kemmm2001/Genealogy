@@ -1,4 +1,5 @@
 const db = require("../../Models/ConnectDB")
+
 function addMember(member) {
     return new Promise((resolve, reject) => {
         const query = `
@@ -9,7 +10,7 @@ function addMember(member) {
             NationalityID, 
             ReligionID, 
             Dob, LunarDob, BirthPlace, 
-            IsAlive, Dod, PlaceOfDeadth, 
+            IsDead, Dod, PlaceOfDeadth, 
             GraveSite, Note, Generation, BloodType, CodeID, Male)
         VALUES 
         (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -25,15 +26,15 @@ function addMember(member) {
             member.origin,
             member.nationalityId,
             member.religionId,
-            member.dob, 
-            member.lunarDob, 
+            member.dob,
+            member.lunarDob,
             member.birthPlace,
-            member.isAlive, 
-            member.dod, 
+            member.IsDead,
+            member.dod,
             member.placeOfDeath,
-            member.graveSite, 
-            member.note, 
-            member.generation, 
+            member.graveSite,
+            member.note,
+            member.generation,
             member.bloodType,
             member.codeId,
             member.male
@@ -68,7 +69,7 @@ function updateMember(member) {
           Dob = ?,
           LunarDob = ?,
           BirthPlace = ?,
-          IsAlive = ?,
+          IsDead = ?,
           Dod = ?,
           PlaceOfDeadth = ?,
           GraveSite = ?,
@@ -90,15 +91,15 @@ function updateMember(member) {
             member.origin,
             member.nationalityId,
             member.religionId,
-            member.dob, 
-            member.lunarDob, 
+            member.dob,
+            member.lunarDob,
             member.birthPlace,
-            member.isAlive, 
-            member.dod, 
+            member.IsDead,
+            member.dod,
             member.placeOfDeath,
-            member.graveSite, 
-            member.note, 
-            member.generation, 
+            member.graveSite,
+            member.note,
+            member.generation,
             member.bloodType,
             member.codeId,
             member.male,
@@ -120,6 +121,23 @@ function deleteMember(memberId) {
     return new Promise((resolve, reject) => {
         const query = 'DELETE FROM familymember WHERE MemberID = ?';
         db.connection.query(query, memberId, (err, result) => {
+            if (err) {
+                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                reject(err);
+            } else {
+                console.log('Result: ', result);
+                resolve(result);
+            }
+        });
+    });
+}
+function InsertMarriIdToMember(memberId, marriageID) {
+    return new Promise((resolve, reject) => {
+        const query = 'UPDATE familymember SET MarriageID = ? WHERE MemberID = ?;';
+        const values = [
+            marriageID,memberId
+        ]
+        db.connection.query(query, values, (err, result) => {
             if (err) {
                 console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
                 reject(err);
@@ -195,74 +213,84 @@ function searchMember(searchTerm) {
     });
 }
 
-function filterMember(req, res) {
-    try {
-      const filterOptions = req.body; // Lấy filterOptions từ request body
-  
-      // Xây dựng câu truy vấn SQL cho bảng familymember
-      let memberQuery = 'SELECT * FROM familymember WHERE 1 =1';
-  
-      // Xây dựng điều kiện lọc cho bảng familymember
-      if (filterOptions.male !== undefined) {
-        memberQuery += ` AND male = ${filterOptions.male}`;
-      }
-      if (filterOptions.BloodType) {
-        memberQuery += ` AND BloodType = '${filterOptions.BloodType}'`;
-      }
-      if (filterOptions.IsAlive !== undefined) {
-        memberQuery += ` AND IsAlive = ${filterOptions.IsAlive}`;
-      }
-  
-      // Thực hiện truy vấn SQL cho bảng familymember
-      const memberResults = db.connection.query(memberQuery);
-  
-      // Xây dựng câu truy vấn SQL cho bảng contact
-      let contactQuery = 'SELECT * FROM contact WHERE 1=1';
-  
-      // Xây dựng điều kiện lọc cho bảng contact
-      if (filterOptions.Address) {
-        contactQuery += ` AND Address = '${filterOptions.Address}'`;
-      }
-  
-      // Thực hiện truy vấn SQL cho bảng contact
-      const contactResults = db.connection.query(contactQuery);
-  
-      // Gộp dữ liệu thành viên và thông tin liên hệ
-      const mergedData = mergeData(memberResults, contactResults);
-  
-      res.json({
-        success: true,
-        data: mergedData,
-      });
-    } catch (error) {
-      console.error('Lỗi khi lọc thành viên:', error);
-      res.status(500).json({ success: false, message: 'Lỗi khi lọc thành viên' });
+function queryFamilyMembers(filterOptions) {
+    return new Promise((resolve, reject) => {
+        let memberQuery = 'SELECT DISTINCT MemberID FROM genealogy.familymember WHERE 1 = 1';
+        const queryParams = [];
+
+        if (filterOptions.BloodType) {
+            memberQuery += ' AND BloodType = ?';
+            queryParams.push(filterOptions.BloodType);
+        }
+
+        if (filterOptions.male !== undefined) {
+            memberQuery += ' AND male = ?';
+            queryParams.push(filterOptions.male);
+        }
+
+        if (filterOptions.IsAlive !== undefined) {
+            memberQuery += ' AND IsAlive = ?';
+            queryParams.push(filterOptions.IsAlive);
+        }
+
+        db.connection.query(memberQuery, queryParams, (err, result) => {
+            if (err) {
+                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                reject(err);
+            } else {
+                console.log('Result success from familymember:', result);
+                resolve(result);
+            }
+        });
+    });
+}
+
+function queryContactMembers(filterOptions) {
+    return new Promise((resolve, reject) => {
+        let contactQuery = 'SELECT DISTINCT MemberID FROM genealogy.contact WHERE 1 = 1';
+
+        if (filterOptions.Address) {
+            contactQuery += ' AND Address = ?';
+        }
+
+        db.connection.query(contactQuery, [filterOptions.Address], (err, result) => {
+            if (err) {
+                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                reject(err);
+            } else {
+                console.log('Result success from contact:', result);
+                resolve(result);
+            }
+        });
+    });
+}
+function filterMember(filterOptions) {
+    if (
+        (filterOptions.BloodType || filterOptions.male !== undefined || filterOptions.IsAlive !== undefined) &&
+        filterOptions.Address
+    ) {
+        // Trường hợp nhập cả 4 thuộc tính
+        return Promise.all([queryFamilyMembers(filterOptions), queryContactMembers(filterOptions)])
+            .then(([familyMemberResults, contactResults]) => {
+                const memberIDSet1 = new Set(familyMemberResults.map(result => result.MemberID));
+                const memberIDSet2 = new Set(contactResults.map(result => result.MemberID));
+                const intersection = [...memberIDSet1].filter(memberID => memberIDSet2.has(memberID));
+                const mergedResults = intersection.map(memberID => ({ MemberID: memberID }));
+                return mergedResults;
+            });
+    } else if (filterOptions.BloodType || filterOptions.male !== undefined || filterOptions.IsAlive !== undefined) {
+        // Trường hợp nhập ít nhất một thuộc tính của family member
+        return queryFamilyMembers(filterOptions);
+    } else if (filterOptions.Address) {
+        // Trường hợp nhập chỉ Address
+        return queryContactMembers(filterOptions);
+    } else {
+        // Trường hợp không nhập bất kỳ thuộc tính nào
+        return Promise.resolve([]);
     }
-  }
+}
 
-  function mergeData(memberResults, contactResults) {
-    const mergedData = [];
-  
-    // Gộp dữ liệu từ bảng familymember
-    for (const memberRow of memberResults) {
-      // Tạo một đối tượng mới để lưu thông tin thành viên
-      const mergedMember = {
-        MemberID: memberRow.MemberID,
-      };
-  
-      // Tìm thông tin liên hệ của thành viên dựa trên MemberID
-      const relatedContact = contactResults.find(contactRow => contactRow.MemberID === memberRow.MemberID);
-  
-      if (relatedContact) {
-        mergedData.push(mergedMember);
-
-      }
-    }
-  
-    return mergedData;
-  }
-
-  function getAllMember() {
+function getAllMember() {
     return new Promise((resolve, reject) => {
         const query = 'SELECT * FROM familymember';
         db.connection.query(query, (err, result) => {
@@ -276,4 +304,4 @@ function filterMember(req, res) {
     });
 }
 
-module.exports = { addMember, updateMember, deleteMember, getRelationship, getMember, createRelationship, searchMember, filterMember, getAllMember };
+module.exports = { addMember, updateMember, deleteMember, getRelationship, getMember, createRelationship, searchMember, filterMember, getAllMember, InsertMarriIdToMember };
