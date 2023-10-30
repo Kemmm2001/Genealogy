@@ -41,313 +41,7 @@
     </div>
     <div class="d-flex main-screen align-items-center w-100">
       <div id="tree" ref="tree"></div>
-    </div>
-
-    <div v-if="!configSidebarHover" class="collapsed-config-sidebar d-flex align-items-center justify-content-center" style="display:none!important">
-      <svg @mouseenter="expandConfigSidebar()" class="config-sidebar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-        <path
-          d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336a80 80 0 1 0 0-160 80 80 0 1 0 0 160z"
-        />
-      </svg>
-    </div>
-    <div @mouseleave="collapseConfigSidebar()" class="config-sidebar" :style="{ width: configSidebarWidth + '%' }">
-      <!--Chọn chủ đề-->
-      <div v-if="configSidebarExpansion" class="topic">
-        <select class="form-select py-1">
-          <option selected value="1">Chủ đề 1</option>
-          <option value="2">Chủ đề 2</option>
-          <option value="3">Chủ đề 3</option>
-        </select>
-      </div>
-      <!--Config menu-->
-      <div v-if="configSidebarExpansion" class="d-flex flex-column config-menu">
-        <div class="d-flex flex-row align-items-center justify-content-center">
-          <div @click="configTree = true; configPrinting = false;" class="config-topic text-center col-md-6 px-1 py-1" :class="{ notchosenconfigmenu: configPrinting }">
-            <a>Phả đồ</a>
-          </div>
-          <div @click="configTree = false; configPrinting = true" class="config-topic text-center col-md-6 px-1 py-1" :class="{ notchosenconfigmenu: configTree }">
-            <a>Hỗ trợ in ấn</a>
-          </div>
-        </div>
-        <div v-if="configTree" class="config-menu-board d-flex flex-column">
-          <div @click="expandthanhvien = !expandthanhvien" class="config-menu-item">
-            <button type="button" class="btn p-0" :class="{ rotated1: expandthanhvien }">
-              <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
-              </svg>
-            </button>
-            <a>Thành viên</a>
-          </div>
-          <div v-show="expandthanhvien" class="config-menu-item-expanded">
-            <a>Thành viên hiển thị</a>
-            <select class="form-select">
-              <option selected>Tất cả</option>
-            </select>
-            <a>Số đời hiển thị</a>
-            <select class="form-select">
-              <option selected>Tất cả</option>
-              <option>20</option>
-            </select>
-          </div>
-          <div @click="expandbangve = !expandbangve" class="d-flex config-menu-item align-items-center">
-            <button type="button" class="btn p-0" :class="{ rotated2: expandbangve }">
-              <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
-              </svg>
-            </button>
-            <a>Bảng vẽ</a>
-          </div>
-          <div v-show="expandbangve" class="config-menu-item-expanded">
-            <div class="d-flex align-items-center config-menu-item-content">
-              <a>Màu nền bảng vẽ</a>
-              <input class="form-control-color config-menu-color-input p-0" type="color" value="#FFFFFF" />
-            </div>
-            <div class="config-menu-item-content">
-              <a>Khoảng cách 2 thẻ</a>
-            </div>
-            <div class="d-flex flex-column align-items-center">
-              <div class="d-flex flex-row">
-                <div class="col-md-6 config-menu-item-content">Ngang</div>
-                <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
-              </div>
-              <div class="d-flex flex-row">
-                <div class="col-md-6 config-menu-item-content">Dọc</div>
-                <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
-              </div>
-            </div>
-          </div>
-          <div @click="expandkhungthe = !expandkhungthe" class="d-flex config-menu-item align-items-center">
-            <button type="button" class="btn p-0" :class="{ rotated3: expandkhungthe }">
-              <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
-              </svg>
-            </button>
-            <a>Khung thẻ</a>
-          </div>
-          <div v-show="expandkhungthe" class="config-menu-item-expanded">
-            <div class="d-flex align-items-center config-menu-item-content">
-              <input class="form-check-input config-menu-checkbox-input" type="checkbox" />
-              <a>Khung viền</a>
-            </div>
-            <div class="d-flex align-items-center config-menu-item-content">
-              <a>Màu viền</a>
-              <input class="form-control-color config-menu-color-input p-0" type="color" value="#FFFFFF" />
-            </div>
-            <div class="d-flex flex-row">
-              <div class="col-md-6 config-menu-item-content">Độ đậm</div>
-              <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
-            </div>
-            <div class="d-flex align-items-center config-menu-item-content">
-              <input class="form-check-input config-menu-checkbox-input" type="checkbox" />
-              <a>Khung ảnh</a>
-            </div>
-            <div class="d-flex flex-row">
-              <div class="col-md-6 config-menu-item-content">Khung thẻ</div>
-              <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
-            </div>
-          </div>
-          <div @click="expandthongtinthe = !expandthongtinthe" class="d-flex config-menu-item align-items-center">
-            <button type="button" class="btn p-0" :class="{ rotated4: expandthongtinthe }">
-              <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
-              </svg>
-            </button>
-            <a>Thông tin thẻ</a>
-          </div>
-          <div v-show="expandthongtinthe" class="config-menu-item-expanded">
-            <div class="d-flex flex-row align-items-center">
-              <div class="col-md-6 config-menu-item-content">Tỉ lệ cơ bản (%)</div>
-              <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
-            </div>
-            <div class="d-flex flex-row">
-              <div class="col-md-6 config-menu-item-content align-items-center">Tỉ lệ tổ phụ so với cơ bản (%)</div>
-              <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
-            </div>
-            <div class="d-flex flex-row">
-              <div class="col-md-6 config-menu-item-content align-items-center">Độ đậm đường kẻ</div>
-              <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
-            </div>
-            <div class="d-flex align-items-center config-menu-item-content">
-              <a>Màu chữ</a>
-              <input class="form-control-color config-menu-color-input p-0" type="color" value="#FFFFFF" />
-            </div>
-            <div class="d-flex align-items-center config-menu-item-content">
-              <a>Màu nền</a>
-              <div class="d-flex position-relative">
-                <input class="form-control-color config-menu-color-input p-0" type="color" value="#FFFFFF" id="color-for-male" />
-                <label class="label-color-input" for="color-for-male">Nam</label>
-              </div>
-              <div class="d-flex position-relative">
-                <input class="form-control-color config-menu-color-input p-0" type="color" value="#FFFFFF" id="color-for-male" />
-                <label class="label-color-input" for="color-for-male">Nữ</label>
-              </div>
-            </div>
-            <div class="d-flex align-items-center config-menu-item-content">
-              <div class="d-flex position-relative">
-                <input class="form-control-color config-menu-color-genderunknown-input p-0" type="color" value="#FFFFFF" id="color-for-male" />
-                <label class="label-color-input" for="color-for-male">Không rõ GT</label>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div v-if="configPrinting" class="config-menu-board d-flex flex-column">
-          <div @click="expandkhungvien = !expandkhungvien" class="d-flex config-menu-item align-items-center">
-            <button type="button" class="btn p-0" :class="{ rotated5: expandkhungvien }">
-              <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
-              </svg>
-            </button>
-            <a>Khung viền</a>
-          </div>
-          <div v-show="expandkhungvien" class="config-menu-item-expanded">
-            <div class="d-flex align-items-center config-menu-item-content">
-              <input class="form-check-input config-menu-checkbox-input" type="checkbox" />
-              <a>Vẽ khung</a>
-            </div>
-            <div class="d-flex align-items-center config-menu-item-content">
-              <a>Đường viền</a>
-              <select class="form-select">
-                <option selected value="1">Mặc định 1</option>
-                <option value="2">Mặc định 2</option>
-                <option value="3">Mặc định 3</option>
-              </select>
-            </div>
-            <div class="d-flex flex-row align-items-center">
-              <div class="col-md-6 config-menu-item-content">Tỉ lệ khung ảnh (%)</div>
-              <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
-            </div>
-          </div>
-          <div @click="expandtieude = !expandtieude" class="d-flex config-menu-item align-items-center">
-            <button type="button" class="btn p-0" :class="{ rotated6: expandtieude }">
-              <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
-              </svg>
-            </button>
-            <a>Tiêu đề</a>
-          </div>
-          <div v-show="expandtieude" class="config-menu-item-expanded">
-            <div class="d-flex align-items-center config-menu-item-content">
-              <input class="form-check-input config-menu-checkbox-input" type="checkbox" />
-              <a>Vẽ ảnh tiêu đề</a>
-            </div>
-            <div class="d-flex align-items-center config-menu-item-content">
-              <select class="form-select">
-                <option selected value="1">Hoàng phi 1</option>
-                <option value="2">Hoàng phi 2</option>
-                <option value="3">Hoàng phi 3</option>
-              </select>
-            </div>
-            <div class="d-flex align-items-center config-menu-item-content">
-              <button type="button" class="btn btn-light m-6">Thêm</button>
-              <button type="button" class="btn btn-light m-6">Sửa</button>
-              <button type="button" class="btn btn-light m-6">Xóa</button>
-            </div>
-            <div class="d-flex flex-row align-items-center">
-              <div class="col-md-6 config-menu-item-content">Tỉ lệ ảnh tiêu đề</div>
-              <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
-            </div>
-          </div>
-          <div @click="expandnen = !expandnen" class="d-flex config-menu-item align-items-center">
-            <button type="button" class="btn p-0" :class="{ rotated7: expandnen }">
-              <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
-              </svg>
-            </button>
-            <a>Nền</a>
-          </div>
-          <div v-show="expandnen" class="config-menu-item-expanded">
-            <div class="d-flex align-items-center config-menu-item-content">
-              <input class="form-check-input config-menu-checkbox-input" type="checkbox" />
-              <a>Vẽ màu nền</a>
-              <input class="form-control-color config-menu-color-input p-0" type="color" value="#FFFFFF" />
-            </div>
-            <div class="d-flex align-items-center config-menu-item-content">
-              <input class="form-check-input config-menu-checkbox-input" type="checkbox" />
-              <a>Vẽ ảnh nền</a>
-            </div>
-            <div class="d-flex align-items-center config-menu-item-content">
-              <select class="form-select">
-                <option selected value="1">Nền cam</option>
-                <option value="2">Nền đỏ</option>
-                <option value="3">Nền vàng</option>
-              </select>
-            </div>
-            <div class="d-flex align-items-center config-menu-item-content">
-              <button type="button" class="btn btn-light">Chọn ảnh</button>
-              <button type="button" class="btn btn-light">Xóa ảnh</button>
-            </div>
-            <div class="d-flex align-items-center config-menu-item-content">
-              <select class="form-select">
-                <option selected value="1">Giãn ảnh</option>
-                <option value="2">Lặp lại</option>
-              </select>
-            </div>
-            <div class="d-flex align-items-center config-menu-item-content">
-              <input class="form-check-input config-menu-checkbox-input" type="checkbox" />
-              <a>Vẽ họa tiết</a>
-              <button type="button" class="btn btn-light"></button>
-              <button type="button" class="btn btn-light"></button>
-            </div>
-            <div class="d-flex align-items-center config-menu-item-content">
-              <select class="form-select">
-                <option selected value="1">Song đồng</option>
-                <option value="2">Trống đồng</option>
-              </select>
-            </div>
-            <div class="d-flex align-items-center config-menu-item-content">
-              <select class="form-select">
-                <option selected value="1">Tự động</option>
-                <option value="2">Giãn ảnh</option>
-                <option value="3">Lặp lại</option>
-              </select>
-            </div>
-          </div>
-          <div @click="expandthongtinngaytao = !expandthongtinngaytao" class="d-flex config-menu-item align-items-center">
-            <button type="button" class="btn p-0" :class="{ rotated8: expandthongtinngaytao }">
-              <svg class="fa fa-fw config-menu-icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
-              </svg>
-            </button>
-            <a>Thông tin ngày tạo</a>
-          </div>
-          <div v-show="expandthongtinngaytao" class="config-menu-item-expanded">
-            <div class="d-flex align-items-center config-menu-item-content">
-              <input class="form-check-input config-menu-checkbox-input" type="checkbox" />
-              <a>Hiện ngày tạo</a>
-            </div>
-            <div class="d-flex align-items-center config-menu-item-content">
-              <input class="form-check-input config-menu-checkbox-input" type="checkbox" />
-              <a>Hiện người tạo</a>
-            </div>
-            <div class="d-flex align-items-center config-menu-item-content">
-              <a>Màu chữ</a>
-              <input class="form-control-color config-menu-color-input p-0" type="color" value="#FFFFFF" />
-            </div>
-            <div class="d-flex flex-row align-items-center">
-              <div class="col-md-6 config-menu-item-content">Cỡ chữ</div>
-              <input class="col-md-6 form-control config-menu-number-input config-menu-item-content" type="number" value="0" min="0" />
-            </div>
-            <div class="d-flex flex-row align-items-center">
-              <a>Vị trí người tạo</a>
-            </div>
-            <div class="d-flex flex-row align-items-center">
-              <select class="form-select">
-                <option selected>Trên - Trái</option>
-                <option>Trên - Phải</option>
-                <option>Dưới - Trái</option>
-                <option>Dưới - Phải</option>
-              </select>
-            </div>
-            <div class="d-flex flex-row align-items-center">
-              <a>Tên người tạo</a>
-            </div>
-            <div class="d-flex flex-row align-items-center">
-              <input class="form-control config-menu-item-content" type="text" readonly />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    </div>  
 
     <div class="Container-select-modal">
       <modal name="Select-option-Modal">
@@ -1378,7 +1072,7 @@ export default {
 
       HTTP.get("filterByAge", {
         params: {
-          CodeID: 123456,
+          CodeID: 123456,         
           startAge: startDate,
           endAge: endDate,
         },
@@ -1393,18 +1087,30 @@ export default {
           (tag) => tag !== "choose" && tag !== "notchoose"
         );
       }
-      let memberIds = this.listFilterByAge.map((item) => item.MemberID);
-      // let memberIdsByBloodType = this.listFilterByBloodType.map(
-      //   (item) => item.MemberID
-      // );
+    
+      let memberIds = [];
+      let memberIdsByBloodType = [];
+
+      if (this.listFilterByAge) {
+        memberIds = this.listFilterByAge.map((item) => item.MemberID);
+      }
+      if (this.listFilterByBloodType) {
+        memberIdsByBloodType = this.listFilterByBloodType.map(
+          (item) => item.MemberID
+        );
+      }
 
       this.nodes.forEach((node) => {
-        if (memberIds.includes(node.id)) {
+        if (
+          memberIds.includes(node.id) ||
+          memberIdsByBloodType.includes(node.id)
+        ) {
           node.tags.push("choose");
         } else {
           node.tags.push("notchoose");
         }
       });
+
       this.family.load(this.nodes);
     },
     getListAfterSetPaternalAncestor(id) {
