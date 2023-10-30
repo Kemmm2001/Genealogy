@@ -1,4 +1,6 @@
 const db = require("../../Models/ConnectDB")
+const mysql = require('mysql2/promise');
+
 function addMember(member) {
     return new Promise((resolve, reject) => {
         const query = `
@@ -214,6 +216,8 @@ function searchMember(searchTerm) {
 
 async function filterMember(filterOptions) {
     try {
+    const dbb = await mysql.createConnection({ host: 'localhost', user: 'root', password: '12345678', database: 'genealogy' });
+
       // Xây dựng câu truy vấn SQL cho bảng familymember
       let memberQuery = 'SELECT * FROM familymember WHERE 1 = 1';
       const queryParams = [];
@@ -233,7 +237,7 @@ async function filterMember(filterOptions) {
       }
   
       // Thực hiện truy vấn SQL cho bảng familymember
-      const [memberResults] = await db.connection.query(memberQuery, queryParams);
+      const [memberResults] = await dbb.connection.query(memberQuery, queryParams);
   
       // Xây dựng câu truy vấn SQL cho bảng contact
       let contactQuery = 'SELECT * FROM contact WHERE 1 = 1';
@@ -244,11 +248,12 @@ async function filterMember(filterOptions) {
       }
   
       // Thực hiện truy vấn SQL cho bảng contact
-      const [contactResults] = await db.connection.query(contactQuery, [filterOptions.Address]);
+      const [contactResults] = await dbb.connection.query(contactQuery, [filterOptions.Address]);
   
       // Gộp dữ liệu thành viên và thông tin liên hệ
       const mergedData = mergeData(memberResults, contactResults);
   
+      await dbb.end();
       return mergedData
     } catch (error) {
       console.error('Lỗi khi lọc thành viên:', error);
