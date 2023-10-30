@@ -160,10 +160,10 @@ var searchMember = async (req, res) => {
         res.send(e);
     }
 }
-var filterMember = async function (req, res) {
+var filterMember = function (req, res) {
     try {
-        const filterOptions = req.body; // Lấy filterOptions từ request body      
-        const filteredMembers = await FamilyManagementService.filterMember(filterOptions);
+        const filterOptions = req.body; // Lấy filterOptions từ request body
+        const filteredMembers = FamilyManagementService.filterMember(filterOptions);
 
         res.json({
             success: true,

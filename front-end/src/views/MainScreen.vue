@@ -484,7 +484,7 @@
                     <h6 style="margin-bottom:20px">Ngày Sinh (*)</h6>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
-                        <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder />
+                        <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertDuongLichToAmLich()" />
                         <label class="form-label" for="input">Dương Lịch</label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
@@ -697,6 +697,7 @@
 </template>
 
 <script>
+import { convertSolar2Lunar } from "lunardate";
 import Snackbar from "awesome-snackbar";
 import FamilyTree from "@balkangraph/familytree.js";
 import { EventBus } from "../assets/js/MyEventBus.js";
@@ -848,7 +849,7 @@ export default {
           field_2: "dob",
           field_3: "dod",
         },
-
+        lazyLoading: false,
         nodeMouseClick: FamilyTree.action.none,
         enableSearch: false,
       });
@@ -871,7 +872,6 @@ export default {
             }
             if (nodeElement && nodeElement.hasAttribute("data-n-id")) {
               let id = nodeElement.getAttribute("data-n-id");
-              console.log(id);
               self.OnpenModal_SelectOption(id);
             }
           },
@@ -879,7 +879,6 @@ export default {
         );
       });
       this.family.onNodeClick((arg) => {
-        // this.OnpenModal_SelectOption(arg.node.id);
         this.getInforMember(arg.node.id);
       });
     },
@@ -947,6 +946,12 @@ export default {
       this.IsDead = this.objMemberInfor.IsDead;
       this.idPaternalAncestor = id;
     },
+    convertDuongLichToAmLich() {
+      console.log(this.objMemberInfor.Dob);
+      const lunarDate = convertSolar2Lunar(30, 10, 2023);
+
+      console.log(lunarDate);
+    },
     getInforMember(id) {
       HTTP.get("InforMember", {
         params: {
@@ -970,12 +975,14 @@ export default {
           }
           this.ListMemberEducation = this.objMember.education;
           this.ListMemberJob = this.objMember.job;
-          this.TitleModal = "Thông Tin của " + this.objMemberInfor.MemberName;
+          this.TitleModal =
+            "Thông tin chi tiết của thành viên " +
+            this.objMemberInfor.MemberName;
         })
         .catch((e) => {
           console.log(e);
         });
-  
+
       this.$modal.show("member-modal");
       this.isEdit = true;
       this.selectedInfor();
