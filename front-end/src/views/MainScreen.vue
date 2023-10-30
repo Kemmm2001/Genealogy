@@ -18,12 +18,12 @@
       </div>
       <div class="list-item d-flex flex-row w-100">
         <div class="col-md-6 pt-1" style="padding-right: 4px;">
-          <select class="d-flex text-center form-select dropdown p-0" @change="GetListMemberByBloodType()">
-            <option selected>Nhóm máu</option>
-            <option class="dropdown-item" value>Nhóm máu A</option>
-            <option class="dropdown-item" value>Nhóm máu B</option>
-            <option class="dropdown-item" value>Nhóm máu AB</option>
-            <option class="dropdown-item" value>Nhóm máu O</option>
+          <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0" @change="GetListMemberByBloodType()">
+            <option selected value="null">Nhóm máu</option>
+            <option class="dropdown-item" value="A">Nhóm máu A</option>
+            <option class="dropdown-item" value="B">Nhóm máu B</option>
+            <option class="dropdown-item" value="AB">Nhóm máu AB</option>
+            <option class="dropdown-item" value="O">Nhóm máu O</option>
           </select>
         </div>
         <div class="col-md-6 pt-1">
@@ -697,7 +697,6 @@
 </template>
 
 <script>
-import { convertSolar2Lunar } from "lunardate";
 import Snackbar from "awesome-snackbar";
 import FamilyTree from "@balkangraph/familytree.js";
 import { EventBus } from "../assets/js/MyEventBus.js";
@@ -708,6 +707,8 @@ export default {
       JobIDToUpdate: null,
       EducationIdToUpdate: null,
 
+      selectBloodType: "null",
+      listFilterByBloodType: null,
       listFilterByAge: null,
       selectAge: 0,
       isAddChildren: false,
@@ -891,7 +892,7 @@ export default {
         roleId: 1,
         CodeId: 123456,
       }).then(() => {
-        this.getListMembe1r(this.CurrentIdMember);
+        this.getListAfterSetPaternalAncestor(this.CurrentIdMember);
         this.NotificationsScuccess("Set tổ phụ thành công");
       });
     },
@@ -921,17 +922,6 @@ export default {
         },
       });
     },
-    GetListMemberByBloodType() {
-      HTTP.post("filter-member", {
-        BloodType: "A",
-      })
-        .then((response) => {
-          console.log(response.data);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
     formatDate(dateString) {
       const date = new Date(dateString);
       const year = date.getFullYear();
@@ -948,9 +938,6 @@ export default {
     },
     convertDuongLichToAmLich() {
       console.log(this.objMemberInfor.Dob);
-      const lunarDate = convertSolar2Lunar(30, 10, 2023);
-
-      console.log(lunarDate);
     },
     getInforMember(id) {
       HTTP.get("InforMember", {
@@ -1353,6 +1340,23 @@ export default {
       this.configSidebarWidth = 0;
       this.configSidebarExpansion = false;
     },
+    GetListMemberByBloodType() {
+      console.log(this.selectBloodType);
+      if (this.selectBloodType == "null") {
+        this.getListJobMember();
+      } else {
+        HTTP.post("filter-member", {
+          BloodType: this.selectBloodType,
+        })
+          .then((response) => {
+            this.listFilterByBloodType = response.data.data;
+            this.highLightNode();
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
+    },
     FilterByAge() {
       let startDate = 0;
       let endDate = 0;
@@ -1391,6 +1395,10 @@ export default {
         );
       }
       let memberIds = this.listFilterByAge.map((item) => item.MemberID);
+      // let memberIdsByBloodType = this.listFilterByBloodType.map(
+      //   (item) => item.MemberID
+      // );
+
       this.nodes.forEach((node) => {
         if (memberIds.includes(node.id)) {
           node.tags.push("choose");
@@ -1400,7 +1408,7 @@ export default {
       });
       this.family.load(this.nodes);
     },
-    getListMembe1r(id) {
+    getListAfterSetPaternalAncestor(id) {
       HTTP.get("viewTree", {
         params: {
           memberID: id,

@@ -163,6 +163,7 @@ var searchMember = async (req, res) => {
 var filterMember = async function (req, res) {
     try {
         const filterOptions = req.body; // Lấy filterOptions từ request body
+        console.log(req.body)
         const filteredMembers = await FamilyManagementService.filterMember(filterOptions);
         
         res.json({ success: true, data: filteredMembers });

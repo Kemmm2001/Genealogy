@@ -237,8 +237,7 @@ function queryFamilyMembers(filterOptions) {
             if (err) {
                 console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
                 reject(err);
-            } else {
-                console.log('Result success from familymember:', result);
+            } else {               
                 resolve(result);
             }
         });
