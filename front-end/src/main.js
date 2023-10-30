@@ -9,6 +9,7 @@ import './assets/css/configmenu.css';
 import './assets/css/modal.css';
 import './assets/css/headlist.css';
 import './assets/css/articlelist.css';
+import './assets/css/albumlist.css';
 import './assets/css/navbar.css';
 import "./assets/css/icon.css";
 import "./assets/css/list.css";

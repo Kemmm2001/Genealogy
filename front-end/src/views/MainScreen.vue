@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex align-items-center w-100">
+  <div class="d-flex h-100 w-100">
     <div class="list d-flex flex-column align-items-center">
       <div class="w-100">
         <select class="d-flex text-center form-select dropdown p-0">
@@ -320,7 +320,7 @@
         />
       </svg>
     </div>
-    <div @mouseleave="collapseConfigSidebar()" class="config-sidebar h-100" :style="{ width: configSidebarWidth + '%' }">
+    <div @mouseleave="collapseConfigSidebar()" class="config-sidebar" :style="{ width: configSidebarWidth + '%' }">
       <!--Chọn chủ đề-->
       <div v-if="configSidebarExpansion" class="topic">
         <select class="form-select py-1">
