@@ -1,5 +1,5 @@
 <template>
-    <div class="w-100 h-100 position-relative starry-background">
+    <div class="w-100 h-100 position-relative starry-background" style="min-height: inherit;">
         <div class="position-absolute login-form-container" style="opacity: 93%;">
             <div class="d-flex flex-row w-100 h-100 position-relative">
                 <div :class="{ rightPos: right, leftPos: !right, enlarged: enlarge }"
