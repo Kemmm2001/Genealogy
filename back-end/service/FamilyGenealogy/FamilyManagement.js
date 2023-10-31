@@ -135,7 +135,7 @@ function InsertMarriIdToMember(memberId, marriageID) {
     return new Promise((resolve, reject) => {
         const query = 'UPDATE familymember SET MarriageID = ? WHERE MemberID = ?;';
         const values = [
-            marriageID,memberId
+            marriageID, memberId
         ]
         db.connection.query(query, values, (err, result) => {
             if (err) {
@@ -215,34 +215,34 @@ function searchMember(searchTerm) {
 
 function queryFamilyMembers(filterOptions) {
     return new Promise((resolve, reject) => {
-        let memberQuery = 'SELECT DISTINCT MemberID FROM genealogy.familymember WHERE 1 = 1';
+        let memberQuery = 'SELECT DISTINCT MemberID FROM genealogy.familymember Where 1 = 1';
         const queryParams = [];
 
         if (filterOptions.BloodType) {
             memberQuery += ' AND BloodType = ?';
             queryParams.push(filterOptions.BloodType);
         }
-
-        if (filterOptions.male !== undefined) {
-            memberQuery += ' AND male = ?';
-            queryParams.push(filterOptions.male);
+        if (filterOptions.selectAge) {
+            memberQuery += ` AND dob >= DATE_SUB(CURDATE(), INTERVAL ? YEAR) AND dob <= DATE_SUB(CURDATE(), INTERVAL ? YEAR) `;
+            queryParams.push(filterOptions.EndAge);
+            queryParams.push(filterOptions.startAge);
         }
-
-        if (filterOptions.IsAlive !== undefined) {
-            memberQuery += ' AND IsAlive = ?';
-            queryParams.push(filterOptions.IsAlive);
+        if (filterOptions.CodeID) {
+            memberQuery += ' and CodeID = ?';
+            queryParams.push(filterOptions.CodeID);
         }
 
         db.connection.query(memberQuery, queryParams, (err, result) => {
             if (err) {
                 console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
                 reject(err);
-            } else {               
+            } else {
                 resolve(result);
             }
         });
     });
 }
+
 
 function queryContactMembers(filterOptions) {
     return new Promise((resolve, reject) => {
@@ -263,31 +263,31 @@ function queryContactMembers(filterOptions) {
         });
     });
 }
-function filterMember(filterOptions) {
-    if (
-        (filterOptions.BloodType || filterOptions.male !== undefined || filterOptions.IsAlive !== undefined) &&
-        filterOptions.Address
-    ) {
-        // Trường hợp nhập cả 4 thuộc tính
-        return Promise.all([queryFamilyMembers(filterOptions), queryContactMembers(filterOptions)])
-            .then(([familyMemberResults, contactResults]) => {
-                const memberIDSet1 = new Set(familyMemberResults.map(result => result.MemberID));
-                const memberIDSet2 = new Set(contactResults.map(result => result.MemberID));
-                const intersection = [...memberIDSet1].filter(memberID => memberIDSet2.has(memberID));
-                const mergedResults = intersection.map(memberID => ({ MemberID: memberID }));
-                return mergedResults;
-            });
-    } else if (filterOptions.BloodType || filterOptions.male !== undefined || filterOptions.IsAlive !== undefined) {
-        // Trường hợp nhập ít nhất một thuộc tính của family member
-        return queryFamilyMembers(filterOptions);
-    } else if (filterOptions.Address) {
-        // Trường hợp nhập chỉ Address
-        return queryContactMembers(filterOptions);
-    } else {
-        // Trường hợp không nhập bất kỳ thuộc tính nào
-        return Promise.resolve([]);
-    }
-}
+// function filterMember(filterOptions) {
+//     if (
+//         (filterOptions.BloodType || filterOptions.male !== undefined || filterOptions.IsAlive !== undefined) &&
+//         filterOptions.Address
+//     ) {
+//         // Trường hợp nhập cả 4 thuộc tính
+//         return Promise.all([queryFamilyMembers(filterOptions), queryContactMembers(filterOptions)])
+//             .then(([familyMemberResults, contactResults]) => {
+//                 const memberIDSet1 = new Set(familyMemberResults.map(result => result.MemberID));
+//                 const memberIDSet2 = new Set(contactResults.map(result => result.MemberID));
+//                 const intersection = [...memberIDSet1].filter(memberID => memberIDSet2.has(memberID));
+//                 const mergedResults = intersection.map(memberID => ({ MemberID: memberID }));
+//                 return mergedResults;
+//             });
+//     } else if (filterOptions.BloodType || filterOptions.male !== undefined || filterOptions.IsAlive !== undefined) {
+//         // Trường hợp nhập ít nhất một thuộc tính của family member
+//         return queryFamilyMembers(filterOptions);
+//     } else if (filterOptions.Address) {
+//         // Trường hợp nhập chỉ Address
+//         return queryContactMembers(filterOptions);
+//     } else {
+//         // Trường hợp không nhập bất kỳ thuộc tính nào
+//         return Promise.resolve([]);
+//     }
+// }
 
 function getAllMember() {
     return new Promise((resolve, reject) => {
@@ -303,4 +303,4 @@ function getAllMember() {
     });
 }
 
-module.exports = { addMember, updateMember, deleteMember, getRelationship, getMember, createRelationship, searchMember, filterMember, getAllMember, InsertMarriIdToMember };
+module.exports = { addMember, updateMember, deleteMember, getRelationship, getMember, createRelationship, searchMember, getAllMember, InsertMarriIdToMember, queryFamilyMembers };

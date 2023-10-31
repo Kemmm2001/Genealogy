@@ -18,30 +18,20 @@
       </div>
       <div class="list-item d-flex flex-row w-100">
         <div class="col-md-6 pt-1" style="padding-right: 4px;">
-          <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0" @change="GetListMemberByBloodType()">
-            <option selected value="null">Nhóm máu</option>
-            <option class="dropdown-item" value="A">Nhóm máu A</option>
-            <option class="dropdown-item" value="B">Nhóm máu B</option>
-            <option class="dropdown-item" value="AB">Nhóm máu AB</option>
-            <option class="dropdown-item" value="O">Nhóm máu O</option>
+          <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
+            <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">{{blood.BloodTyoe}}</option>
           </select>
         </div>
         <div class="col-md-6 pt-1">
-          <select class="d-flex text-center form-select dropdown p-0" v-model="selectAge" @change="FilterByAge()">
-            <option value="0">Nhóm tuổi</option>
-            <option class="dropdown-item" value="0_5">0 - 5 Tuổi</option>
-            <option class="dropdown-item" value="6_17">6 - 17 Tuổi</option>
-            <option class="dropdown-item" value="18_40">18 - 40 Tuổi</option>
-            <option class="dropdown-item" value="41_60">41 - 60 Tuổi</option>
-            <option class="dropdown-item" value="61_200">Trên 60 Tuổi</option>
-            <option class="dropdown-item" value>Không rõ</option>
+          <select class="d-flex text-center form-select dropdown p-0" v-model="selectAge" @change="GetListFilterMember()">
+            <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{age.Age}}</option>
           </select>
         </div>
       </div>
     </div>
     <div class="d-flex main-screen align-items-center w-100">
       <div id="tree" ref="tree"></div>
-    </div>  
+    </div>
 
     <div class="Container-select-modal">
       <modal name="Select-option-Modal">
@@ -399,11 +389,14 @@ export default {
     return {
       JobIDToUpdate: null,
       EducationIdToUpdate: null,
+      ListAgeGroup: null,
+      ListBloodTypeGroup: null,
 
-      selectBloodType: "null",
-      listFilterByBloodType: null,
-      listFilterByAge: null,
-      selectAge: 0,
+      selectAge: null,
+      selectBloodType: null,
+
+      listFilterMember: null,
+
       isAddChildren: false,
       isAddMarried: false,
       isAddParent: false,
@@ -1033,78 +1026,32 @@ export default {
       this.configSidebarWidth = 0;
       this.configSidebarExpansion = false;
     },
-    GetListMemberByBloodType() {
-      console.log(this.selectBloodType);
-      if (this.selectBloodType == "null") {
-        this.getListJobMember();
-      } else {
-        HTTP.post("filter-member", {
-          BloodType: this.selectBloodType,
+    GetListFilterMember() {
+      HTTP.post("filter-member", {
+        CodeID: 123456,
+        BloodType: this.selectBloodType,
+        selectAge: this.selectAge,
+      })
+        .then((response) => {
+          this.listFilterMember = response.data.data;
+          this.highLightNode();
         })
-          .then((response) => {
-            this.listFilterByBloodType = response.data.data;
-            this.highLightNode();
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-      }
+        .catch((e) => {
+          console.log(e);
+        });
     },
-    FilterByAge() {
-      let startDate = 0;
-      let endDate = 0;
-      if (this.selectAge === "0_5") {
-        startDate = 0;
-        endDate = 5;
-      } else if (this.selectAge === "6_17") {
-        startDate = 6;
-        endDate = 17;
-      } else if (this.selectAge === "18_40") {
-        startDate = 18;
-        endDate = 40;
-      } else if (this.selectAge === "41_60") {
-        startDate = 41;
-        endDate = 60;
-      } else if (this.selectAge === "61_200") {
-        startDate = 61;
-        endDate = 200;
-      }
 
-      HTTP.get("filterByAge", {
-        params: {
-          CodeID: 123456,         
-          startAge: startDate,
-          endAge: endDate,
-        },
-      }).then((response) => {
-        this.listFilterByAge = response.data;
-        this.highLightNode();
-      });
-    },
     highLightNode() {
       for (let i = 0; i < this.nodes.length; i++) {
         this.nodes[i].tags = this.nodes[i].tags.filter(
           (tag) => tag !== "choose" && tag !== "notchoose"
         );
       }
-    
-      let memberIds = [];
-      let memberIdsByBloodType = [];
 
-      if (this.listFilterByAge) {
-        memberIds = this.listFilterByAge.map((item) => item.MemberID);
-      }
-      if (this.listFilterByBloodType) {
-        memberIdsByBloodType = this.listFilterByBloodType.map(
-          (item) => item.MemberID
-        );
-      }
+      let memberIds = this.listFilterMember.map((item) => item.MemberID);
 
       this.nodes.forEach((node) => {
-        if (
-          memberIds.includes(node.id) ||
-          memberIdsByBloodType.includes(node.id)
-        ) {
+        if (memberIds.includes(node.id)) {
           node.tags.push("choose");
         } else {
           node.tags.push("notchoose");
@@ -1147,6 +1094,24 @@ export default {
         })
         .catch((e) => {
           console.log(e);
+        });
+    },
+    getListAgeGroup() {
+      HTTP.get("agegroup")
+        .then((response) => {
+          this.ListAgeGroup = response.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    getListBloodTypeGroup() {
+      HTTP.get("bloodtype")
+        .then((response) => {
+          this.ListBloodTypeGroup = response.data;
+        })
+        .catch((err) => {
+          console.log(err);
         });
     },
     getListNationality() {
@@ -1221,6 +1186,8 @@ export default {
     this.getListMember();
     this.getListNationality();
     this.getListReligion();
+    this.getListAgeGroup();
+    this.getListBloodTypeGroup();
   },
 };
 </script>

@@ -20,9 +20,24 @@ var Statistics = async (req, res) => {
 var FilterMemberByAge = async (req, res) => {
     try {
         let CodeID = req.query.CodeID;
-        let startAge = req.query.startAge;
-        let endAge = req.query.endAge;      
-        let data = await StatisticsGenealogyService.getMemberByAge(startAge, endAge, CodeID);
+        let data;
+        let selectAge = parseInt(req.query.selectAge, 10);
+        selectAge = selectAge.toString().trim();
+        console.log(selectAge)
+        if (selectAge == 1) {
+            data = await StatisticsGenealogyService.getMemberByAge(0, 5, CodeID);
+        } else if (selectAge == 2) {
+            data = await StatisticsGenealogyService.getMemberByAge(6, 17, CodeID);
+        }
+        else if (selectAge == 3) {
+            data = await StatisticsGenealogyService.getMemberByAge(18, 40, CodeID);
+        }
+        else if (selectAge == 4) {
+            data = await StatisticsGenealogyService.getMemberByAge(41, 60, CodeID);
+        }
+        else if (selectAge == 5) {
+            data = await StatisticsGenealogyService.getMemberByAge(61, 200, CodeID);
+        }
         res.send(data);
     } catch (error) {
         console.log(error)

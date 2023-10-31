@@ -28,7 +28,7 @@ CREATE TABLE `account` (
   `AccountID` int NOT NULL AUTO_INCREMENT,
   `Username` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   `Password` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
-  `email` varchar(150) DEFAULT NULL,
+  `Email` varchar(150) DEFAULT NULL,
   `CodeID` int DEFAULT NULL,
   `RoleID` int DEFAULT NULL,
   `TotalMoney` double DEFAULT NULL,
@@ -725,4 +725,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-31  0:26:46
+-- Dump completed on 2023-10-31 15:01:40

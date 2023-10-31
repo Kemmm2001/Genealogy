@@ -1,5 +1,57 @@
 const FamilyManagementService = require("../../service/FamilyGenealogy/FamilyManagement");
 
+const ListAgeGroup = [
+    {
+        Age: "Nhóm Tuổi",
+        id: null,
+    },
+    {
+        Age: "0 - 5 Tuổi",
+        id: 1,
+    },
+    {
+        Age: "6 - 17 Tuổi",
+        id: 2,
+    },
+    {
+        Age: "18 - 40 Tuổi",
+        id: 3,
+    },
+    {
+        Age: "41 - 60 Tuổi",
+        id: 4,
+    },
+    {
+        Age: "Trên 60 Tuổi",
+        id: 5,
+    },
+]
+
+const ListBloodTypeGroup = [
+    {
+        BloodTyoe: "Nhóm máu",
+        id: null
+    },
+    {
+        BloodTyoe: "Nhóm máu A",
+        id: "A"
+    },
+    {
+        BloodTyoe: "Nhóm máu B",
+        id: "B"
+    },
+    {
+        BloodTyoe: "Nhóm máu AB",
+        id: "AB"
+    },
+    {
+        BloodTyoe: "Nhóm máu O",
+        id: "O"
+    }
+]
+
+
+
 missingFieldsError = function (missingFields) {
     console.error(`Missing required fields: ${missingFields.join(', ')}`);
     return response = {
@@ -19,9 +71,15 @@ noDataFound = function (res) {
     return res.status(404).json(response);
 }
 
+var getListAgeGroup = async (req, res) => {
+    res.send(ListAgeGroup)
+}
+var getListBloodTypeGroup = async (req, res) => {
+    res.send(ListBloodTypeGroup)
+}
+
 var addMember = async (req, res) => {
     try {
-        // Log ra thông tin trong req.body
         console.log('Request body: ', req.body);
         let response;
         // các trường bắt buộc phải có trong req.body
@@ -162,10 +220,26 @@ var searchMember = async (req, res) => {
 }
 var filterMember = async function (req, res) {
     try {
-        const filterOptions = req.body; // Lấy filterOptions từ request body
+        const filterOptions = req.body;
         console.log(req.body)
-        const filteredMembers = await FamilyManagementService.filterMember(filterOptions);
-        
+        if (req.body.selectAge == 1) {
+            filterOptions.EndAge = 5;
+            filterOptions.startAge = 0;
+        } else if (req.body.selectAge == 2) {
+            filterOptions.EndAge = 17;
+            filterOptions.startAge = 6;
+        } else if (req.body.selectAge == 3) {
+            filterOptions.EndAge = 40;
+            filterOptions.startAge = 18;
+        } else if (req.body.selectAge == 4) {
+            filterOptions.EndAge = 60;
+            filterOptions.startAge = 41;
+        } else if (req.body.selectAge == 5) {
+            filterOptions.EndAge = 200;
+            filterOptions.startAge = 61;
+        }
+        const filteredMembers = await FamilyManagementService.queryFamilyMembers(filterOptions);
+
         res.json({ success: true, data: filteredMembers });
     } catch (error) {
         console.error('Lỗi khi lọc thành viên:', error);
@@ -221,4 +295,7 @@ function sortMembers(members, sortKey, order) {
 
 
 
-module.exports = { addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember, sortMembers, InsertMarrieIdToMember };
+module.exports = {
+    addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember, sortMembers, InsertMarrieIdToMember,
+    getListAgeGroup, getListBloodTypeGroup
+};
