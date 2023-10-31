@@ -93,7 +93,8 @@
             <div class="col-9" style="padding-top: 15px" v-if="extendedInfo">
               <div class="row">
                 <div class="col-4">
-                  <svg fill="#000000" height="300px" width="300px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
+                  <img style="height:316px;width:360px;margin-bottom:30px" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" />
+                  <svg v-else style="margin-bottom:46px" fill="#000000" height="300px" width="300px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
                     <g>
                       <g>
                         <circle cx="256" cy="114.526" r="114.526" />
@@ -108,7 +109,7 @@
                   </svg>
                   <div class="form-group">
                     <label for="imageUpload">Tải ảnh lên</label>
-                    <input type="file" class="form-control input-file" id="imageUpload" accept="image/*" />
+                    <input type="file" class="form-control input-file" id="imageUpload" accept="image/*" @change="updateAvatar($event)" />
                   </div>
                 </div>
                 <div class="col-8">
@@ -164,14 +165,14 @@
                     <label class="form-label" for="input" :class="{ 'active': objMemberInfor.Origin }">Nguyên Quán</label>
                   </div>
                   <div class="form-group">
-                    <h6 style="margin-bottom:20px">Ngày Sinh (*)</h6>
+                    <h6 style="margin-bottom:20px">Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược lại)</h6>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
-                        <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertDuongLichToAmLich()" />
+                        <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar()" />
                         <label class="form-label" for="input">Dương Lịch</label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
-                        <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder />
+                        <input v-model="objMemberInfor.LunarDob" type="date" class="form-control modal-item" placeholder @change="convertLunarToSolar()" />
                         <label class="form-label-number" min="0" for="input">Âm lịch</label>
                       </div>
                     </div>
@@ -384,9 +385,11 @@ import Snackbar from "awesome-snackbar";
 import FamilyTree from "@balkangraph/familytree.js";
 import { EventBus } from "../assets/js/MyEventBus.js";
 import { HTTP } from "../assets/js/baseAPI.js";
+import { LunarDate, SolarDate } from "vietnamese-lunar-calendar";
 export default {
   data() {
     return {
+      avatarSrc: null,
       JobIDToUpdate: null,
       EducationIdToUpdate: null,
       ListAgeGroup: null,
@@ -623,7 +626,30 @@ export default {
       this.IsDead = this.objMemberInfor.IsDead;
       this.idPaternalAncestor = id;
     },
-    convertDuongLichToAmLich() {
+    updateAvatar(event) {
+      const file = event.target.files[0];
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.avatarSrc = e.target.result; // Cập nhật ảnh avatar bằng ảnh tải lên
+        };
+        reader.readAsDataURL(file);
+      } else {
+        // Xử lý khi không có tệp tải lên
+        this.avatarSrc = null; // Có thể thay thế b
+      }
+    },
+    convertLunarToSolar() {
+      let LunarDob = new Date(this.objMemberInfor.LunarDob);
+      this.objMemberInfor.Dob = new SolarDate(LunarDob).toString();
+      console.log(this.objMemberInfor.LunarDob);
+      console.log(this.objMemberInfor.Dob);
+    },
+    convertSolarToLunar() {
+      let Dob = new Date(this.objMemberInfor.Dob);
+      this.objMemberInfor.LunarDob = new LunarDate(Dob).toString();
+      console.log(this.objMemberInfor.LunarDob);
       console.log(this.objMemberInfor.Dob);
     },
     getInforMember(id) {
