@@ -223,13 +223,21 @@ function queryFamilyMembers(filterOptions) {
             queryParams.push(filterOptions.BloodType);
         }
         if (filterOptions.selectAge) {
-            memberQuery += ` AND dob >= DATE_SUB(CURDATE(), INTERVAL ? YEAR) AND dob <= DATE_SUB(CURDATE(), INTERVAL ? YEAR) `;
+            memberQuery += ' AND dob >= DATE_SUB(CURDATE(), INTERVAL ? YEAR) AND dob <= DATE_SUB(CURDATE(), INTERVAL ? YEAR)';
             queryParams.push(filterOptions.EndAge);
             queryParams.push(filterOptions.startAge);
         }
         if (filterOptions.CodeID) {
-            memberQuery += ' and CodeID = ?';
+            memberQuery += ' AND CodeID = ?';
             queryParams.push(filterOptions.CodeID);
+        }
+        if (filterOptions.Address) {
+            memberQuery += ` AND MemberID IN (
+                SELECT fm.MemberID
+                FROM genealogy.familymember AS fm
+                INNER JOIN contact AS c ON fm.MemberID = c.MemberID
+                WHERE c.Address LIKE ?)`;
+            queryParams.push(`%${filterOptions.Address}%`);
         }
 
         db.connection.query(memberQuery, queryParams, (err, result) => {
@@ -242,6 +250,7 @@ function queryFamilyMembers(filterOptions) {
         });
     });
 }
+
 
 
 function queryContactMembers(filterOptions) {

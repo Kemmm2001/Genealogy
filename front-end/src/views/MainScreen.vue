@@ -2,18 +2,18 @@
   <div class="d-flex h-100 w-100">
     <div class="list d-flex flex-column align-items-center">
       <div class="w-100">
-        <select class="d-flex text-center form-select dropdown p-0">
-          <option selected>Tỉnh/Thành phố</option>
-          <option class="dropdown-item" value>Hà Nội</option>
-          <option class="dropdown-item" value>Điện Biên</option>
-          <option class="dropdown-item" value>Lào Cai</option>
-          <option class="dropdown-item" value>Lai Châu</option>
-          <option class="dropdown-item" value>Sơn La</option>
-          <option class="dropdown-item" value>Yên Bái</option>
-          <option class="dropdown-item" value>Hòa Bình</option>
-          <option class="dropdown-item" value>Thái Nguyên</option>
-          <option class="dropdown-item" value>Quảng Ninh</option>
-          <option class="dropdown-item" value>Bắc Giang</option>
+        <select v-model="selectAdress" class="d-flex text-center form-select dropdown p-0">
+          <option :value="null" selected>Tỉnh/Thành phố</option>
+          <option class="dropdown-item" value="Hà Nội">Hà Nội</option>
+          <option class="dropdown-item" value="Điện Biên">Điện Biên</option>
+          <option class="dropdown-item" value="Lào Cai">Lào Cai</option>
+          <option class="dropdown-item" value="Lai Châu">Lai Châu</option>
+          <option class="dropdown-item" value="Sơn La">Sơn La</option>
+          <option class="dropdown-item" value="Yên Bái">Yên Bái</option>
+          <option class="dropdown-item" value="Hòa Bình">Hòa Bình</option>
+          <option class="dropdown-item" value="Thái Nguyên">Thái Nguyên</option>
+          <option class="dropdown-item" value="Quảng Ninh">Quảng Ninh</option>
+          <option class="dropdown-item" value="Bắc Giang">Bắc Giang</option>
         </select>
       </div>
       <div class="list-item d-flex flex-row w-100">
@@ -394,6 +394,7 @@ export default {
 
       selectAge: null,
       selectBloodType: null,
+      selectAdress: null,
 
       listFilterMember: null,
 
@@ -1031,9 +1032,11 @@ export default {
         CodeID: 123456,
         BloodType: this.selectBloodType,
         selectAge: this.selectAge,
+        // Address: "hòa bình"
       })
         .then((response) => {
           this.listFilterMember = response.data.data;
+          console.log(this.listFilterMember);
           this.highLightNode();
         })
         .catch((e) => {
@@ -1049,14 +1052,14 @@ export default {
       }
 
       let memberIds = this.listFilterMember.map((item) => item.MemberID);
-
-      this.nodes.forEach((node) => {
-        if (memberIds.includes(node.id)) {
-          node.tags.push("choose");
-        } else {
-          node.tags.push("notchoose");
-        }
-      });
+      if (this.selectBloodType != null || this.selectAge != null)
+        this.nodes.forEach((node) => {
+          if (memberIds.includes(node.id)) {
+            node.tags.push("choose");
+          } else {
+            node.tags.push("notchoose");
+          }
+        });
 
       this.family.load(this.nodes);
     },

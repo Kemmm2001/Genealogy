@@ -220,8 +220,7 @@ var searchMember = async (req, res) => {
 }
 var filterMember = async function (req, res) {
     try {
-        const filterOptions = req.body;
-        console.log(req.body)
+        const filterOptions = req.body;      
         if (req.body.selectAge == 1) {
             filterOptions.EndAge = 5;
             filterOptions.startAge = 0;
