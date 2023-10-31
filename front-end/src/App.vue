@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid p-0">
-    <div class="d-flex flex-column h-100">
+    <div class="d-flex flex-column h-100" style="min-height: inherit;">
       <div class="w-100" v-if="!isLoginRoute">
         <Header/>
       </div>
