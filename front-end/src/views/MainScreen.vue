@@ -37,7 +37,7 @@
       <modal name="Select-option-Modal">
         <div class="card" style="width: 400px;left:45%">
           <div class="card-header text-center" style="background-color:#E8C77B">
-            <h5>Thành Viên {{objMemberInfor.MemberName}}</h5>
+            <h5>Thành Viên {{ objMemberInfor.MemberName }}</h5>
             <div class="close-add-form" @click="closeSelectModal" style="top: 8px;right:5px">
               <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -45,16 +45,19 @@
             </div>
           </div>
           <div class="card-body" style="padding: 0,height:auto">
-            <ul class="list-group">
-              <li class="list-group-item">Xem mối quan hệ hiện tại</li>
-              <li class="list-group-item">Thêm Cha</li>
-              <li class="list-group-item">Thêm Mẹ</li>
-              <li class="list-group-item" @click="openMemberModal('married')">Thêm Vợ</li>
-              <li class="list-group-item" @click="openMemberModal('children')">Thêm Con</li>
-              <li class="list-group-item">Set làm tộc trưởng</li>
-              <li class="list-group-item" @click="setPaternalAncestor()">Set làm tổ cụ</li>
-              <li class="list-group-item" @click="removeMember()">Xóa thành viên</li>
-            </ul>
+            <div class="list-group">
+              <div class="list-group-item">Xem mối quan hệ hiện tại</div>
+              <div @click="expandAddRelaionship = !expandAddRelaionship" class="list-group-item">Thêm quan hệ</div>
+              <div class="collapsedAddRelationship" :class="{ expandedAddRelationship: expandAddRelaionship }">
+                <div v-show="expandAddRelaionship" class="list-group-item">Thêm Cha</div>
+                <div v-show="expandAddRelaionship" class="list-group-item">Thêm Mẹ</div>
+                <div v-show="expandAddRelaionship" class="list-group-item" @click="openMemberModal('married')">Thêm Vợ</div>
+                <div v-show="expandAddRelaionship" class="list-group-item" @click="openMemberModal('children')">Thêm Con</div>
+              </div>
+              <div class="list-group-item">Set làm tộc trưởng</div>
+              <div class="list-group-item" @click="setPaternalAncestor()">Set làm tổ cụ</div>
+              <div class="list-group-item" @click="removeMember()">Xóa thành viên</div>
+            </div>
           </div>
         </div>
       </modal>
@@ -507,6 +510,7 @@ export default {
       configSidebarWidth: 0,
 
       displayList: false,
+      expandAddRelaionship: false,
     };
   },
   methods: {
@@ -516,9 +520,9 @@ export default {
       FamilyTree.templates.tommy_male.field_1 =
         '<text class="field_1" style="font-size: 14px;" fill="#ffffff" x="125" y="50" text-anchor="middle">{val}</text>';
       FamilyTree.templates.tommy_male.field_2 =
-        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="125" y="70" text-anchor="middle">{val}</text>';
+        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="125" y="70" text-anchor="middle">Ngày Sinh: {val}</text>';
       FamilyTree.templates.tommy_male.field_3 =
-        '<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">{val}</text>';
+        '<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">Ngày Mất: {val}</text>';
       FamilyTree.templates.tommy_male.field_4 =
         '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">{val}</text>';
       FamilyTree.templates.tommy_female.field_0 =
@@ -1115,6 +1119,7 @@ export default {
       })
         .then((response) => {
           this.nodes = response.data;
+          console.log(this.nodes)
           for (let i = 0; i < this.nodes.length; i++) {
             this.nodes[i].tags = [];
           }
