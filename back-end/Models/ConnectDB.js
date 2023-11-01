@@ -4,11 +4,11 @@ const Sequelize = require('sequelize');
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '123456',
+  password: 'Baolan0598.',
   database: 'genealogy'
 });
 
-const sequelize = new Sequelize('genealogy', 'root', '12345678', {
+const sequelize = new Sequelize('genealogy', 'root', 'Baolan0598.', {
   host: 'localhost',
   dialect: 'mysql',
 });

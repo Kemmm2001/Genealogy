@@ -2,14 +2,14 @@
   <div class="d-flex flex-row w-100 navbar p-0">
     <!-- <img src="../assets/header.jpg" class="w-100"> -->
     <div class="d-flex align-items-center w-100 h-100">
-      <div class="d-flex col-4" style="height: 64px; justify-content: left;">
+      <div class="d-flex col-3" style="height: 64px; justify-content: left;">
         <router-link to="/" class="w-100">
           <div class="d-flex align-items-center w-100 h-100" style="justify-content: left; ">
             <img class="px-4" src="../assets/logo.svg" />
           </div>
         </router-link>
       </div>
-      <div class="d-flex col-6" style="justify-content: center;">
+      <div class="d-flex col-7" style="margin-left: 50px; justify-content: left;">
         <router-link to="/">
           <div class="navbar-item d-flex py-2">
             <svg class="navbar-icon-sm" style="margin-left: 8px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
