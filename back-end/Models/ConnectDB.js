@@ -1,16 +1,10 @@
 const mysql = require('mysql2');
-const Sequelize = require('sequelize');
 
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '123456',
+  password: '12345678',
   database: 'genealogy'
-});
-
-const sequelize = new Sequelize('genealogy', 'root', '12345678', {
-  host: 'localhost',
-  dialect: 'mysql',
 });
 
 // Kết nối vào cơ sở dữ liệu
@@ -23,4 +17,4 @@ connection.connect(function (err) {
 });
 
 
-module.exports = { connection, sequelize };
+module.exports = { connection };
