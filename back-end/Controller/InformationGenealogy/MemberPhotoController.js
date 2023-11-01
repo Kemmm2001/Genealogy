@@ -98,14 +98,12 @@ var updateMemberPhoto = async (req, res) => {
 
 var deleteMemberPhoto = async (req, res) => {
     try {
-        // Log ra thông tin trong req.body
-        console.log('Request body: ', req.body);
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
             'PhotoID'
         ];
         // Kiểm tra xem có đủ các trường của MemberPhoto không
-        const missingFields = requiredFields.filter(field => !(field in req.body));
+        const missingFields = requiredFields.filter(field => !(field in req.query));
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
@@ -113,7 +111,7 @@ var deleteMemberPhoto = async (req, res) => {
         }
         console.log("No missing fields");
         // xóa MemberPhoto khỏi database
-        let dataDelete = await MemberPhotoManagementService.removeMemberPhoto(req.body.PhotoID)
+        let dataDelete = await MemberPhotoManagementService.removeMemberPhoto(req.query.PhotoID)
 
         message = "Delete MemberPhoto successfully";
         console.log(message);

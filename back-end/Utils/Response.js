@@ -26,17 +26,17 @@ let internalServerErrorResponse = (message) => {
     return coreResponse(false, 500, message);
 }
 
+let errorResponse = (message) => {
+    if (message == null) message = "Error";
+    return coreResponse(false, 500, message);
+}
+
 let missingFieldsErrorResponse = (missingFields) => {
     data = {
         message: "Missing required fields",
         missing_fields: missingFields
     }
     return badRequestResponse(data);
-}
-
-let errorResponse = (message) => {
-    if (message == null) message = "Error";
-    return coreResponse(false, 500, message);
 }
 
 module.exports = {
