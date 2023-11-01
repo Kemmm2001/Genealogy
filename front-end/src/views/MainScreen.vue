@@ -2,52 +2,84 @@
   <div class="d-flex h-100 w-100">
     <div class="list d-flex flex-column align-items-center">
       <div class="w-100">
-        <select class="d-flex text-center form-select dropdown p-0">
-          <option selected>Tỉnh/Thành phố</option>
-          <option class="dropdown-item" value>Hà Nội</option>
-          <option class="dropdown-item" value>Điện Biên</option>
-          <option class="dropdown-item" value>Lào Cai</option>
-          <option class="dropdown-item" value>Lai Châu</option>
-          <option class="dropdown-item" value>Sơn La</option>
-          <option class="dropdown-item" value>Yên Bái</option>
-          <option class="dropdown-item" value>Hòa Bình</option>
-          <option class="dropdown-item" value>Thái Nguyên</option>
-          <option class="dropdown-item" value>Quảng Ninh</option>
-          <option class="dropdown-item" value>Bắc Giang</option>
+        <select v-model="selectAdress" class="d-flex text-center form-select dropdown p-0">
+          <option :value="null" selected>Tỉnh/Thành phố</option>
+          <option class="dropdown-item" value="Hà Nội">Hà Nội</option>
+          <option class="dropdown-item" value="Điện Biên">Điện Biên</option>
+          <option class="dropdown-item" value="Lào Cai">Lào Cai</option>
+          <option class="dropdown-item" value="Lai Châu">Lai Châu</option>
+          <option class="dropdown-item" value="Sơn La">Sơn La</option>
+          <option class="dropdown-item" value="Yên Bái">Yên Bái</option>
+          <option class="dropdown-item" value="Hòa Bình">Hòa Bình</option>
+          <option class="dropdown-item" value="Thái Nguyên">Thái Nguyên</option>
+          <option class="dropdown-item" value="Quảng Ninh">Quảng Ninh</option>
+          <option class="dropdown-item" value="Bắc Giang">Bắc Giang</option>
         </select>
       </div>
-      <div class="list-item d-flex flex-row w-100">
+      <div class="d-flex flex-row w-100" style="height: 32px; margin-bottom: 8px;">
         <div class="col-md-6 pt-1" style="padding-right: 4px;">
-          <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0" @change="GetListMemberByBloodType()">
-            <option selected value="null">Nhóm máu</option>
-            <option class="dropdown-item" value="A">Nhóm máu A</option>
-            <option class="dropdown-item" value="B">Nhóm máu B</option>
-            <option class="dropdown-item" value="AB">Nhóm máu AB</option>
-            <option class="dropdown-item" value="O">Nhóm máu O</option>
+          <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
+            <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">{{blood.BloodType}}</option>
           </select>
         </div>
         <div class="col-md-6 pt-1">
-          <select class="d-flex text-center form-select dropdown p-0" v-model="selectAge" @change="FilterByAge()">
-            <option value="0">Nhóm tuổi</option>
-            <option class="dropdown-item" value="0_5">0 - 5 Tuổi</option>
-            <option class="dropdown-item" value="6_17">6 - 17 Tuổi</option>
-            <option class="dropdown-item" value="18_40">18 - 40 Tuổi</option>
-            <option class="dropdown-item" value="41_60">41 - 60 Tuổi</option>
-            <option class="dropdown-item" value="61_200">Trên 60 Tuổi</option>
-            <option class="dropdown-item" value>Không rõ</option>
+          <select class="d-flex text-center form-select dropdown p-0" v-model="selectAge" @change="GetListFilterMember()">
+            <option class="dropdown-item" :value="null">Nhóm Tuổi</option>
+            <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{age.From}} - {{age.End}} Tuổi</option>
           </select>
+        </div>
+      </div>
+      <div class="h-100 w-100 d-flex flex-column">
+        <div class="existing-members d-flex flex-column w-100">
+          <div class="list-item" style="background-color: #AED6F1; text-align: center;">Đã có trên phả đồ</div>
+          <div class="d-flex flex-column w-100" style="overflow-y: auto;">
+            <div class="list-item">Thành viên C</div>
+            <div class="list-item ancestor-member">Tổ phụ</div>
+            <div class="list-item head-member">Thành viên A</div>
+            <div class="list-item head-member">Thành viên B</div>
+            <div class="list-item">Thành viên C</div>
+            <div class="list-item">Thành viên D</div>
+            <div class="list-item">Thành viên E</div>
+            <div class="list-item">Thành viên F</div>
+            <div class="list-item">Thành viên G</div>
+            <div class="list-item">Thành viên H</div>
+            <div class="list-item">Thành viên I</div>
+            <div class="list-item">Thành viên J</div>
+            <div class="list-item">Thành viên K</div>
+            <div class="list-item">Thành viên L</div>
+            <div class="list-item">Thành viên M</div>
+          </div>
+        </div>
+        <div class="nonexisting-members d-flex flex-column w-100">
+          <div class="list-item" style="background-color: #AED6F1; text-align: center;">Chưa có trên phả đồ</div>
+          <div class="d-flex flex-column w-100" style="overflow-y: auto;">
+            <div class="list-item">Thành viên C</div>
+            <div class="list-item">Thành viên D</div>
+            <div class="list-item">Thành viên E</div>
+            <div class="list-item">Thành viên F</div>
+            <div class="list-item">Thành viên G</div>
+            <div class="list-item">Thành viên H</div>
+            <div class="list-item">Thành viên I</div>
+            <div class="list-item">Thành viên J</div>
+            <div class="list-item">Thành viên K</div>
+            <div class="list-item">Thành viên L</div>
+            <div class="list-item">Thành viên M</div>
+            <div class="list-item">Thành viên K</div>
+            <div class="list-item">Thành viên L</div>
+            <div class="list-item">Thành viên M</div>
+          </div>
         </div>
       </div>
     </div>
     <div class="d-flex main-screen align-items-center w-100">
       <div id="tree" ref="tree"></div>
-    </div>  
+    </div>
 
     <div class="Container-select-modal">
       <modal name="Select-option-Modal">
         <div class="card" style="width: 400px;left:45%">
           <div class="card-header text-center" style="background-color:#E8C77B">
-            <h5>Thành Viên {{objMemberInfor.MemberName}}</h5>
+            <h5>Thành Viên {{ objMemberInfor.MemberName }}</h5>
             <div class="close-add-form" @click="closeSelectModal" style="top: 8px;right:5px">
               <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -55,16 +87,19 @@
             </div>
           </div>
           <div class="card-body" style="padding: 0,height:auto">
-            <ul class="list-group">
-              <li class="list-group-item">Xem mối quan hệ hiện tại</li>
-              <li class="list-group-item">Thêm Cha</li>
-              <li class="list-group-item">Thêm Mẹ</li>
-              <li class="list-group-item" @click="openMemberModal('married')">Thêm Vợ</li>
-              <li class="list-group-item" @click="openMemberModal('children')">Thêm Con</li>
-              <li class="list-group-item">Set làm tộc trưởng</li>
-              <li class="list-group-item" @click="setPaternalAncestor()">Set làm tổ cụ</li>
-              <li class="list-group-item" @click="removeMember()">Xóa thành viên</li>
-            </ul>
+            <div class="list-group">
+              <div class="list-group-item">Xem mối quan hệ hiện tại</div>
+              <div @click="expandAddRelaionship = !expandAddRelaionship" class="list-group-item">Thêm quan hệ</div>
+              <div class="collapsedAddRelationship" :class="{ expandedAddRelationship: expandAddRelaionship }">
+                <div v-show="expandAddRelaionship" class="list-group-item">Thêm Cha</div>
+                <div v-show="expandAddRelaionship" class="list-group-item">Thêm Mẹ</div>
+                <div v-show="expandAddRelaionship" class="list-group-item" @click="openMemberModal('married')">Thêm Vợ</div>
+                <div v-show="expandAddRelaionship" class="list-group-item" @click="openMemberModal('children')">Thêm Con</div>
+              </div>
+              <div class="list-group-item">Set làm tộc trưởng</div>
+              <div class="list-group-item" @click="setPaternalAncestor()">Set làm tổ cụ</div>
+              <div class="list-group-item" @click="removeMember()">Xóa thành viên</div>
+            </div>
           </div>
         </div>
       </modal>
@@ -103,7 +138,8 @@
             <div class="col-9" style="padding-top: 15px" v-if="extendedInfo">
               <div class="row">
                 <div class="col-4">
-                  <svg fill="#000000" height="300px" width="300px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
+                  <img style="height:316px;width:360px;margin-bottom:30px" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" />
+                  <svg v-else style="margin-bottom:46px" fill="#000000" height="300px" width="300px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
                     <g>
                       <g>
                         <circle cx="256" cy="114.526" r="114.526" />
@@ -118,7 +154,7 @@
                   </svg>
                   <div class="form-group">
                     <label for="imageUpload">Tải ảnh lên</label>
-                    <input type="file" class="form-control input-file" id="imageUpload" accept="image/*" />
+                    <input type="file" class="form-control input-file" id="imageUpload" accept="image/*" @change="updateAvatar($event)" />
                   </div>
                 </div>
                 <div class="col-8">
@@ -174,14 +210,14 @@
                     <label class="form-label" for="input" :class="{ 'active': objMemberInfor.Origin }">Nguyên Quán</label>
                   </div>
                   <div class="form-group">
-                    <h6 style="margin-bottom:20px">Ngày Sinh (*)</h6>
+                    <h6 style="margin-bottom:20px">Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược lại)</h6>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
-                        <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertDuongLichToAmLich()" />
+                        <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar()" />
                         <label class="form-label" for="input">Dương Lịch</label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
-                        <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder />
+                        <input v-model="objMemberInfor.LunarDob" type="date" class="form-control modal-item" placeholder @change="convertLunarToSolar()" />
                         <label class="form-label-number" min="0" for="input">Âm lịch</label>
                       </div>
                     </div>
@@ -394,16 +430,22 @@ import Snackbar from "awesome-snackbar";
 import FamilyTree from "@balkangraph/familytree.js";
 import { EventBus } from "../assets/js/MyEventBus.js";
 import { HTTP } from "../assets/js/baseAPI.js";
+import { LunarDate, SolarDate } from "vietnamese-lunar-calendar";
 export default {
   data() {
     return {
+      avatarSrc: null,
       JobIDToUpdate: null,
       EducationIdToUpdate: null,
+      ListAgeGroup: null,
+      ListBloodTypeGroup: null,
 
-      selectBloodType: "null",
-      listFilterByBloodType: null,
-      listFilterByAge: null,
-      selectAge: 0,
+      selectAge: null,
+      selectBloodType: null,
+      selectAdress: null,
+
+      listFilterMember: null,
+
       isAddChildren: false,
       isAddMarried: false,
       isAddParent: false,
@@ -510,6 +552,8 @@ export default {
       configSidebarWidth: 0,
 
       displayList: false,
+
+      expandAddRelaionship: false,
     };
   },
   methods: {
@@ -519,9 +563,9 @@ export default {
       FamilyTree.templates.tommy_male.field_1 =
         '<text class="field_1" style="font-size: 14px;" fill="#ffffff" x="125" y="50" text-anchor="middle">{val}</text>';
       FamilyTree.templates.tommy_male.field_2 =
-        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="125" y="70" text-anchor="middle">{val}</text>';
+        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="125" y="70" text-anchor="middle">Ngày Sinh: {val}</text>';
       FamilyTree.templates.tommy_male.field_3 =
-        '<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">{val}</text>';
+        '<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">Ngày Mất: {val}</text>';
       FamilyTree.templates.tommy_male.field_4 =
         '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">{val}</text>';
       FamilyTree.templates.tommy_female.field_0 =
@@ -629,7 +673,30 @@ export default {
       this.IsDead = this.objMemberInfor.IsDead;
       this.idPaternalAncestor = id;
     },
-    convertDuongLichToAmLich() {
+    updateAvatar(event) {
+      const file = event.target.files[0];
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.avatarSrc = e.target.result; // Cập nhật ảnh avatar bằng ảnh tải lên
+        };
+        reader.readAsDataURL(file);
+      } else {
+        // Xử lý khi không có tệp tải lên
+        this.avatarSrc = null; // Có thể thay thế b
+      }
+    },
+    convertLunarToSolar() {
+      let LunarDob = new Date(this.objMemberInfor.LunarDob);
+      this.objMemberInfor.Dob = new SolarDate(LunarDob).toString();
+      console.log(this.objMemberInfor.LunarDob);
+      console.log(this.objMemberInfor.Dob);
+    },
+    convertSolarToLunar() {
+      let Dob = new Date(this.objMemberInfor.Dob);
+      this.objMemberInfor.LunarDob = new LunarDate(Dob).toString();
+      console.log(this.objMemberInfor.LunarDob);
       console.log(this.objMemberInfor.Dob);
     },
     getInforMember(id) {
@@ -1033,83 +1100,39 @@ export default {
       this.configSidebarWidth = 0;
       this.configSidebarExpansion = false;
     },
-    GetListMemberByBloodType() {
-      console.log(this.selectBloodType);
-      if (this.selectBloodType == "null") {
-        this.getListJobMember();
-      } else {
-        HTTP.post("filter-member", {
-          BloodType: this.selectBloodType,
+    GetListFilterMember() {
+      HTTP.post("filter-member", {
+        CodeID: 123456,
+        BloodType: this.selectBloodType,
+        selectAge: this.selectAge,
+        // Address: "hòa bình"
+      })
+        .then((response) => {
+          this.listFilterMember = response.data.data;
+          console.log(this.listFilterMember);
+          this.highLightNode();
         })
-          .then((response) => {
-            this.listFilterByBloodType = response.data.data;
-            this.highLightNode();
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-      }
+        .catch((e) => {
+          console.log(e);
+        });
     },
-    FilterByAge() {
-      let startDate = 0;
-      let endDate = 0;
-      if (this.selectAge === "0_5") {
-        startDate = 0;
-        endDate = 5;
-      } else if (this.selectAge === "6_17") {
-        startDate = 6;
-        endDate = 17;
-      } else if (this.selectAge === "18_40") {
-        startDate = 18;
-        endDate = 40;
-      } else if (this.selectAge === "41_60") {
-        startDate = 41;
-        endDate = 60;
-      } else if (this.selectAge === "61_200") {
-        startDate = 61;
-        endDate = 200;
-      }
 
-      HTTP.get("filterByAge", {
-        params: {
-          CodeID: 123456,         
-          startAge: startDate,
-          endAge: endDate,
-        },
-      }).then((response) => {
-        this.listFilterByAge = response.data;
-        this.highLightNode();
-      });
-    },
     highLightNode() {
       for (let i = 0; i < this.nodes.length; i++) {
         this.nodes[i].tags = this.nodes[i].tags.filter(
           (tag) => tag !== "choose" && tag !== "notchoose"
         );
       }
-    
-      let memberIds = [];
-      let memberIdsByBloodType = [];
 
-      if (this.listFilterByAge) {
-        memberIds = this.listFilterByAge.map((item) => item.MemberID);
-      }
-      if (this.listFilterByBloodType) {
-        memberIdsByBloodType = this.listFilterByBloodType.map(
-          (item) => item.MemberID
-        );
-      }
-
-      this.nodes.forEach((node) => {
-        if (
-          memberIds.includes(node.id) ||
-          memberIdsByBloodType.includes(node.id)
-        ) {
-          node.tags.push("choose");
-        } else {
-          node.tags.push("notchoose");
-        }
-      });
+      let memberIds = this.listFilterMember.map((item) => item.MemberID);
+      if (this.selectBloodType != null || this.selectAge != null)
+        this.nodes.forEach((node) => {
+          if (memberIds.includes(node.id)) {
+            node.tags.push("choose");
+          } else {
+            node.tags.push("notchoose");
+          }
+        });
 
       this.family.load(this.nodes);
     },
@@ -1139,6 +1162,7 @@ export default {
       })
         .then((response) => {
           this.nodes = response.data;
+          console.log(this.nodes);
           for (let i = 0; i < this.nodes.length; i++) {
             this.nodes[i].tags = [];
           }
@@ -1147,6 +1171,24 @@ export default {
         })
         .catch((e) => {
           console.log(e);
+        });
+    },
+    getListAgeGroup() {
+      HTTP.get("agegroup")
+        .then((response) => {
+          this.ListAgeGroup = response.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    getListBloodTypeGroup() {
+      HTTP.get("bloodtype")
+        .then((response) => {
+          this.ListBloodTypeGroup = response.data;
+        })
+        .catch((err) => {
+          console.log(err);
         });
     },
     getListNationality() {
@@ -1221,6 +1263,8 @@ export default {
     this.getListMember();
     this.getListNationality();
     this.getListReligion();
+    this.getListAgeGroup();
+    this.getListBloodTypeGroup();
   },
 };
 </script>

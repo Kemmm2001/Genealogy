@@ -15,6 +15,7 @@
     "bootstrap-icons": "^1.11.1",
     "bootstrap-vue": "^2.23.1",
     "core-js": "^3.8.3",
+    "vietnamese-lunar-calendar": "^0.0.6",
     "vue": "^2.6.14",
     "vue-js-modal": "^2.0.1",
     "vue-lunar-calendar": "^1.7.0",
