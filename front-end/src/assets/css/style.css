@@ -1,7 +1,7 @@
 #app {
     font-size: 16px !important;
     font-family: Arial, Helvetica, sans-serif;
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
 .container-fluid {
@@ -30,7 +30,7 @@
 .list {
     background-color: #3A4B54;
     width: 25% !important;
-    padding: 8px;
+    padding: 4px;
 }
 
 .config-sidebar {
