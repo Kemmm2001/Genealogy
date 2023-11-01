@@ -1,17 +1,22 @@
 const express = require('express')
 const UserController = require('../Controller/Authencation/UserController'); // Import controller
 var router = express.Router()
+const { verifyAccessToken } = require('../helper/jwt_helper')
 
 
 const initWebRouter = (app) => {
 
-    router.post('/register', UserController.registerUser);
-    // router.post('/login', UserController.loginUser);
-    // router.post('/refresh-token', UserController.refresh);
-    // router.delete('/logout', UserController.logout);
+  router.get('/protected-route', verifyAccessToken, (req, res) => {
+    // Xử lý tuyến đường bảo vệ
+    res.send('Protected route');
+  });
+  router.post('/register', UserController.registerUser);
+  router.post('/login', UserController.loginUser);
+  router.post('/refresh-token', UserController.refreshToken);
+  // router.delete('/logout', UserController.logout);
 
-    //Tiền tố đứng trước route
-    app.use('/auth', router);
+  //Tiền tố đứng trước route
+  app.use('/auth', router);
 }
 
 module.exports = initWebRouter;
