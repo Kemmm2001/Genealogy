@@ -1,9 +1,43 @@
 .list-item{
-    height: 32px;
-    margin-bottom: 8px;
+    height: 32px !important;
+    padding-bottom: 8px;
+    padding-left: 8px;
+}
+
+.list-item.ancestor-member{
+    background-color: #E6E6FA;
+}
+
+
+.list-item.head-member{
+    background-color: #FAFAD2;
 }
 
 .dropdown{
     height: 32px;
     background-image: none !important;
+}
+
+.existing-members{
+    background-color: #FFFFFF;
+    height: 45%;
+    margin-bottom: 4px;
+}
+
+.nonexisting-members{
+    background-color: #FFFFFF;
+    height: 45%;
+}
+
+.list-group-item{
+    cursor: pointer;
+}
+
+.collapsedAddRelationship{
+    height: 0;
+    transition: 0.5s;
+}
+
+.collapsedAddRelationship.expandedAddRelationship{
+    height: 165px;
 }
