@@ -59,4 +59,19 @@ function getUser(email) {
     });
   });
 }
-module.exports = {checkMail, create, getUser}
+
+function refreshFreeEmail(usesTime){
+  return new Promise((resolve, reject) => {
+    const query = 'UPDATE genealogy.account SET FreeEmail = ?';
+    const values = [usesTime];
+    db.connection.query(query, values, (err, result) => {
+      if (err) {
+        console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+}
+module.exports = {checkMail, create, getUser, refreshFreeEmail}
