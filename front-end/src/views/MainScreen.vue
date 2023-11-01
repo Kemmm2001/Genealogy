@@ -16,7 +16,7 @@
           <option class="dropdown-item" value="Bắc Giang">Bắc Giang</option>
         </select>
       </div>
-      <div class="list-item d-flex flex-row w-100">
+      <div class="d-flex flex-row w-100" style="height: 32px; margin-bottom: 8px;">
         <div class="col-md-6 pt-1" style="padding-right: 4px;">
           <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
             <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">{{blood.BloodTyoe}}</option>
@@ -28,12 +28,81 @@
           </select>
         </div>
       </div>
+      <div class="h-100 w-100 d-flex flex-column">
+        <div class="existing-members d-flex flex-column w-100">
+          <div class="list-item" style="background-color: #AED6F1; text-align: center;">Đã có trên phả đồ</div>
+          <div class="d-flex flex-column w-100" style="overflow-y: auto;">
+            <div class="list-item ancestor-member">Tổ phụ</div>
+            <div class="list-item head-member">Thành viên A</div>
+            <div class="list-item head-member">Thành viên B</div>
+            <div class="list-item">Thành viên C</div>
+            <div class="list-item">Thành viên D</div>
+            <div class="list-item">Thành viên E</div>
+            <div class="list-item">Thành viên F</div>
+            <div class="list-item">Thành viên G</div>
+            <div class="list-item">Thành viên H</div>
+            <div class="list-item">Thành viên I</div>
+            <div class="list-item">Thành viên J</div>
+            <div class="list-item">Thành viên K</div>
+            <div class="list-item">Thành viên L</div>
+            <div class="list-item">Thành viên M</div>
+          </div>
+        </div>
+        <div class="nonexisting-members d-flex flex-column w-100">
+          <div class="list-item" style="background-color: #AED6F1; text-align: center;">Chưa có trên phả đồ</div>
+          <div class="d-flex flex-column w-100" style="overflow-y: auto;">
+            <div class="list-item">Thành viên C</div>
+            <div class="list-item">Thành viên D</div>
+            <div class="list-item">Thành viên E</div>
+            <div class="list-item">Thành viên F</div>
+            <div class="list-item">Thành viên G</div>
+            <div class="list-item">Thành viên H</div>
+            <div class="list-item">Thành viên I</div>
+            <div class="list-item">Thành viên J</div>
+            <div class="list-item">Thành viên K</div>
+            <div class="list-item">Thành viên L</div>
+            <div class="list-item">Thành viên M</div>
+            <div class="list-item">Thành viên K</div>
+            <div class="list-item">Thành viên L</div>
+            <div class="list-item">Thành viên M</div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="d-flex main-screen align-items-center w-100">
       <div id="tree" ref="tree"></div>
     </div>
 
     <div class="Container-select-modal">
+      <!-- <modal name="Select-option-Modal">
+        <div class="card" style="width: 400px;left:45%">
+          <div class="card-header text-center" style="background-color:#E8C77B">
+            <h5>Thành Viên {{ objMemberInfor.MemberName }}</h5>
+            <div class="close-add-form" @click="closeSelectModal" style="top: 8px;right:5px">
+              <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                <path
+                  d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+              </svg>
+            </div>
+          </div>
+          <div class="card-body" style="padding: 0,height:auto">
+            <ul class="list-group">
+              <li class="list-group-item">Xem mối quan hệ hiện tại</li>
+              <li @click="expandAddRelaionship = !expandAddRelaionship" class="list-group-item">Thêm quan hệ</li>
+              <div class="collapsedAddRelationship" :class="{expandedAddRelationship : expandAddRelaionship}">
+                <li v-show="expandAddRelaionship" class="list-group-item">Thêm Cha</li>
+                <li v-show="expandAddRelaionship" class="list-group-item">Thêm Mẹ</li>
+                <li v-show="expandAddRelaionship" class="list-group-item" @click="openMemberModal('married')">Thêm Vợ</li>
+                <li v-show="expandAddRelaionship" class="list-group-item" @click="openMemberModal('children')">Thêm Con</li>
+              </div>
+              <li class="list-group-item">Set làm tộc trưởng</li>
+              <li class="list-group-item" @click="setPaternalAncestor()">Set làm tổ cụ</li>
+              <li class="list-group-item" @click="removeMember()">Xóa thành viên</li>
+            </ul>
+          </div>
+        </div>
+      </modal>-->
+
       <modal name="Select-option-Modal">
         <div class="card" style="width: 400px;left:45%">
           <div class="card-header text-center" style="background-color:#E8C77B">
@@ -510,6 +579,7 @@ export default {
       configSidebarWidth: 0,
 
       displayList: false,
+
       expandAddRelaionship: false,
     };
   },
@@ -1119,7 +1189,7 @@ export default {
       })
         .then((response) => {
           this.nodes = response.data;
-          console.log(this.nodes)
+          console.log(this.nodes);
           for (let i = 0; i < this.nodes.length; i++) {
             this.nodes[i].tags = [];
           }
