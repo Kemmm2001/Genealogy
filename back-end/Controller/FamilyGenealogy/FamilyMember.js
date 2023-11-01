@@ -1,5 +1,5 @@
 const FamilyManagementService = require("../../service/FamilyGenealogy/FamilyManagement");
-
+const Response = require("../../Utils/Response");
 const ListAgeGroup = [
     {
         From: 0,
@@ -51,27 +51,6 @@ const ListBloodTypeGroup = [
     }
 ]
 
-
-
-missingFieldsError = function (missingFields) {
-    console.error(`Missing required fields: ${missingFields.join(', ')}`);
-    return response = {
-        success: false,
-        message: 'Missing required fields',
-        missingFields: missingFields
-    };
-}
-
-noDataFound = function (res) {
-    message = "No data found";
-    console.log(message);
-    response = {
-        success: false,
-        message: message
-    };
-    return res.status(404).json(response);
-}
-
 var getListAgeGroup = async (req, res) => {
     res.send(ListAgeGroup)
 }
@@ -82,7 +61,6 @@ var getListBloodTypeGroup = async (req, res) => {
 var addMember = async (req, res) => {
     try {
         console.log('Request body: ', req.body);
-        let response;
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
             'memberName',
@@ -102,26 +80,20 @@ var addMember = async (req, res) => {
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
-            return res.status(400).json(missingFieldsError(missingFields));
-
+            res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
         // thêm member vào database
         let data = await FamilyManagementService.addMember(req.body);
-        console.log("Add member successfully");
-
-        response = {
-            success: true,
+        dataRes = {
             message: 'Add member successfully',
-            data: {
-                memberId: data.insertId,
-                affectedRows: data.affectedRows
-            }
+            memberId: data.insertId,
+            affectedRows: data.affectedRows
         };
-        return res.json(response);
-
+        res.send(Response.successResponse(dataRes));
     } catch (e) {
-        res.send(e);
+        console.log("Error: " + e);
+        res.send(Response.internalServerErrorResponse(e));
     }
 };
 
@@ -137,12 +109,8 @@ var updateMember = async (req, res) => {
             'nickName',
             'hasNickName',
             'birthOrder',
-            'origin',
             'nationalityId',
             'religionId',
-            'dob',
-            'lunarDob',
-            'birthPlace',
             'IsDead',
             'generation',
             'codeId',
@@ -153,26 +121,40 @@ var updateMember = async (req, res) => {
         const missingFields = requiredFields.filter(field => !(field in req.body));
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
-            return res.status(400).json(missingFieldsError(missingFields));
-
+            res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         // update member vào database
         let data = await FamilyManagementService.updateMember(req.body);
-        response = {
-            success: true,
+        dataRes = {
             message: 'Update member successfully',
-            data: {
-                memberID: req.body.memberID,
-                affectedRows: data.affectedRows,
-                changedRows: data.changedRows
-            }
-        };
-        return res.json(response);
-
+            memberID: req.body.memberID,
+            affectedRows: data.affectedRows,
+            changedRows: data.changedRows
+        }
+        res.send(Response.successResponse(dataRes));
     } catch (e) {
-        res.send(e);
+        console.log("Error: " + e);
+        res.send(Response.internalServerErrorResponse(e));
     }
 }
+
+var deleteMember = async (req, res) => {
+    try {
+        console.log("Request body: ", req.query);
+        let result = await FamilyManagementService.deleteMember(req.query.memberID);
+        dataRes = {
+            message: 'Delete member successfully',
+            memberID: req.query.memberID,
+            affectedRows: result.affectedRows,
+            changedRows: result.changedRows
+        }
+        res.send(Response.successResponse(dataRes));
+    } catch (e) {
+        console.log("Error: " + e);
+        res.send(Response.internalServerErrorResponse(e));
+    }
+}
+
 
 var InsertMarrieIdToMember = async (req, res) => {
     try {
@@ -186,28 +168,7 @@ var InsertMarrieIdToMember = async (req, res) => {
 }
 
 
-var deleteMember = async (req, res) => {
-    try {
-        console.log("Request body: ", req.query);
-        let response;
-        console.log(req.query.memberID)
-        let result = await FamilyManagementService.deleteMember(req.query.memberID);
 
-        response = {
-            success: true,
-            message: 'Delete member successfully',
-            data: {
-                memberID: req.query.memberID,
-                affectedRows: result.affectedRows,
-                changedRows: result.changedRows
-            }
-        };
-        return res.json(response);
-
-    } catch (e) {
-        res.send(e);
-    }
-}
 
 var searchMember = async (req, res) => {
     try {
@@ -222,6 +183,7 @@ var searchMember = async (req, res) => {
 var filterMember = async function (req, res) {
     try {
         const filterOptions = req.body;
+
         if (req.body.selectAge != null) {
             filterOptions.EndAge = ListAgeGroup[req.body.selectAge].End;
             filterOptions.startAge = ListAgeGroup[req.body.selectAge].From;
