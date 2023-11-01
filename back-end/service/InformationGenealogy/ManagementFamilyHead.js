@@ -2,8 +2,11 @@ const db = require('../../Models/ConnectDB')
 
 function getAllFamilyHead(CodeID) {
     return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM genealogy.memberrole
-        where RoleID = 2 and CodeId = ${CodeID}`;
+
+        let query = `SELECT fm.MemberID,fm.MemberName,fm.Male, fm.Dob,fm.Generation FROM genealogy.memberrole as mr
+        inner join familymember as fm
+        where mr.MemberID = fm.MemberID and 
+        mr.CodeId = 2 and mr.CodeId = ${CodeID}`;
         db.connection.query(query, (err, result) => {
             if (err) {
                 console.log(err)
@@ -27,5 +30,5 @@ function removeFamilyHead(MemberId) {
 }
 
 module.exports = {
-    getAllFamilyHead,removeFamilyHead
+    getAllFamilyHead, removeFamilyHead
 }
