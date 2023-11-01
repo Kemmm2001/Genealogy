@@ -19,12 +19,13 @@
       <div class="d-flex flex-row w-100" style="height: 32px; margin-bottom: 8px;">
         <div class="col-md-6 pt-1" style="padding-right: 4px;">
           <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
-            <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">{{blood.BloodTyoe}}</option>
+            <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">{{blood.BloodType}}</option>
           </select>
         </div>
         <div class="col-md-6 pt-1">
           <select class="d-flex text-center form-select dropdown p-0" v-model="selectAge" @change="GetListFilterMember()">
-            <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{age.Age}}</option>
+            <option class="dropdown-item" :value="null">Nhóm Tuổi</option>
+            <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{age.From}} - {{age.End}} Tuổi</option>
           </select>
         </div>
       </div>
@@ -32,6 +33,7 @@
         <div class="existing-members d-flex flex-column w-100">
           <div class="list-item" style="background-color: #AED6F1; text-align: center;">Đã có trên phả đồ</div>
           <div class="d-flex flex-column w-100" style="overflow-y: auto;">
+            <div class="list-item">Thành viên C</div>
             <div class="list-item ancestor-member">Tổ phụ</div>
             <div class="list-item head-member">Thành viên A</div>
             <div class="list-item head-member">Thành viên B</div>
@@ -74,35 +76,6 @@
     </div>
 
     <div class="Container-select-modal">
-      <!-- <modal name="Select-option-Modal">
-        <div class="card" style="width: 400px;left:45%">
-          <div class="card-header text-center" style="background-color:#E8C77B">
-            <h5>Thành Viên {{ objMemberInfor.MemberName }}</h5>
-            <div class="close-add-form" @click="closeSelectModal" style="top: 8px;right:5px">
-              <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                <path
-                  d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-              </svg>
-            </div>
-          </div>
-          <div class="card-body" style="padding: 0,height:auto">
-            <ul class="list-group">
-              <li class="list-group-item">Xem mối quan hệ hiện tại</li>
-              <li @click="expandAddRelaionship = !expandAddRelaionship" class="list-group-item">Thêm quan hệ</li>
-              <div class="collapsedAddRelationship" :class="{expandedAddRelationship : expandAddRelaionship}">
-                <li v-show="expandAddRelaionship" class="list-group-item">Thêm Cha</li>
-                <li v-show="expandAddRelaionship" class="list-group-item">Thêm Mẹ</li>
-                <li v-show="expandAddRelaionship" class="list-group-item" @click="openMemberModal('married')">Thêm Vợ</li>
-                <li v-show="expandAddRelaionship" class="list-group-item" @click="openMemberModal('children')">Thêm Con</li>
-              </div>
-              <li class="list-group-item">Set làm tộc trưởng</li>
-              <li class="list-group-item" @click="setPaternalAncestor()">Set làm tổ cụ</li>
-              <li class="list-group-item" @click="removeMember()">Xóa thành viên</li>
-            </ul>
-          </div>
-        </div>
-      </modal>-->
-
       <modal name="Select-option-Modal">
         <div class="card" style="width: 400px;left:45%">
           <div class="card-header text-center" style="background-color:#E8C77B">

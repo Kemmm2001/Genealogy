@@ -222,7 +222,7 @@ function queryFamilyMembers(filterOptions) {
             memberQuery += ' AND BloodType = ?';
             queryParams.push(filterOptions.BloodType);
         }
-        if (filterOptions.selectAge) {
+        if (filterOptions.selectAge || filterOptions.selectAge == 0) {
             memberQuery += ' AND dob >= DATE_SUB(CURDATE(), INTERVAL ? YEAR) AND dob <= DATE_SUB(CURDATE(), INTERVAL ? YEAR)';
             queryParams.push(filterOptions.EndAge);
             queryParams.push(filterOptions.startAge);
@@ -272,31 +272,46 @@ function queryContactMembers(filterOptions) {
         });
     });
 }
-// function filterMember(filterOptions) {
-//     if (
-//         (filterOptions.BloodType || filterOptions.male !== undefined || filterOptions.IsAlive !== undefined) &&
-//         filterOptions.Address
-//     ) {
-//         // Trường hợp nhập cả 4 thuộc tính
-//         return Promise.all([queryFamilyMembers(filterOptions), queryContactMembers(filterOptions)])
-//             .then(([familyMemberResults, contactResults]) => {
-//                 const memberIDSet1 = new Set(familyMemberResults.map(result => result.MemberID));
-//                 const memberIDSet2 = new Set(contactResults.map(result => result.MemberID));
-//                 const intersection = [...memberIDSet1].filter(memberID => memberIDSet2.has(memberID));
-//                 const mergedResults = intersection.map(memberID => ({ MemberID: memberID }));
-//                 return mergedResults;
-//             });
-//     } else if (filterOptions.BloodType || filterOptions.male !== undefined || filterOptions.IsAlive !== undefined) {
-//         // Trường hợp nhập ít nhất một thuộc tính của family member
-//         return queryFamilyMembers(filterOptions);
-//     } else if (filterOptions.Address) {
-//         // Trường hợp nhập chỉ Address
-//         return queryContactMembers(filterOptions);
-//     } else {
-//         // Trường hợp không nhập bất kỳ thuộc tính nào
-//         return Promise.resolve([]);
-//     }
-// }
+
+function getAllMemberInMemberRole() {
+    return new Promise((resolve, reject) => {
+        let query = `
+        SELECT fm.* FROM familymember as fm
+        INNER JOIN memberrole as mr
+        on fm.MemberID = mr.MemberID
+        ORDER BY
+          CASE
+            WHEN mr.RoleID = 1 THEN 1
+            WHEN mr.RoleID = 2 THEN 2
+            WHEN mr.RoleID = 3 THEN 3 
+        END`;
+        db.connection.query(query, (err, result) => {
+            if (err) {
+                reject(err);
+                console.log(err)
+            } else {
+                resolve(result)
+            }
+        })
+    })
+}
+function getAllMemberNotInMemberRole() {
+    return new Promise((resolve, reject) => {
+        let query = `SELECT fm.*
+        FROM familymember fm
+        LEFT JOIN memberrole mr ON fm.MemberID = mr.MemberID
+        WHERE mr.MemberID IS NULL;`;
+        db.connection.query(query, (err, result) => {
+            if (err) {
+                console.log(err);
+                reject(err)
+            } else {
+                resolve(result)
+            }
+        })
+    })
+}
+
 
 function getAllMember() {
     return new Promise((resolve, reject) => {
@@ -312,4 +327,7 @@ function getAllMember() {
     });
 }
 
-module.exports = { addMember, updateMember, deleteMember, getRelationship, getMember, createRelationship, searchMember, getAllMember, InsertMarriIdToMember, queryFamilyMembers };
+module.exports = {
+    addMember, updateMember, deleteMember, getRelationship, getMember, createRelationship, searchMember,
+    getAllMember, InsertMarriIdToMember, queryFamilyMembers, getAllMemberInMemberRole, getAllMemberNotInMemberRole
+};
