@@ -76,6 +76,7 @@ const initWebRouter = (app) => {
     //API Nhật anh
 
     router.get('/article', ArticleController.getAllArticle);
+    router.post('/article', ArticleController.getArticle);
     router.post('/add-article', ArticleController.addArticle);
     router.put('/update-article', ArticleController.updateArticle);
     router.delete('/delete-article', ArticleController.deleteArticle);

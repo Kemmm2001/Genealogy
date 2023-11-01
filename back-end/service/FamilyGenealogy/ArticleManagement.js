@@ -15,16 +15,41 @@ function getAllArticle() {
     });
 
 }
+
+function getArticle(articleId, codeId) {
+    return new Promise((resolve, reject) => {
+        const query = 'SELECT * FROM article WHERE ArticleID = ? AND CodeID = ?';
+        const values = [articleId, codeId];
+
+        db.connection.query(query, values, (err, results) => {
+            if (err) {
+                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                reject(err);
+            } else {
+                if (results.length === 0) {
+                    // Không tìm thấy bài viết với ArticleID và CodeID cụ thể
+                    reject('Không tìm thấy bài viết');
+                } else {
+                    resolve(results[0]);
+                }
+            }
+        });
+    });
+}
+
+
 function addArticle(article) {
     return new Promise((resolve, reject) => {
         const query = `
-            INSERT INTO article (CodeID, ArticleUrl)
-            VALUES (?, ?)
+            INSERT INTO article (CodeID, ArticleUrl, ArticleName, ArticleDescription)
+            VALUES (?, ?, ?, ?)
         `;
 
         const values = [
             article.CodeID,
-            article.ArticleUrl
+            article.ArticleUrl,
+            article.ArticleName,
+            article.ArticleDescription
         ];
 
         db.connection.query(query, values, (err, result) => {
@@ -38,19 +63,22 @@ function addArticle(article) {
     });
 }
 
-function updateArticle(articleId, updatedData) {
+function updateArticle(articleId,codeId, updatedData) {
     return new Promise((resolve, reject) => {
         const query = `
             UPDATE article
-            SET CodeID = ?,
-                ArticleUrl = ?
-            WHERE ArticleID = ?
+            SET ArticleUrl = ?,
+                ArticleName = ?,
+                ArticleDescription = ?
+            WHERE ArticleID = ? AND CodeID = ?
         `;
 
         const values = [
-            updatedData.CodeID,
             updatedData.ArticleUrl,
-            articleId
+            updatedData.ArticleName,
+            updatedData.ArticleDescription,
+            articleId,
+            codeId
         ];
 
         db.connection.query(query, values, (err, result) => {
@@ -81,4 +109,4 @@ function deleteArticle(articleId) {
         });
     });
 }
-module.exports = { getAllArticle, addArticle, updateArticle, deleteArticle };
+module.exports = { getAllArticle, getArticle, addArticle, updateArticle, deleteArticle };
