@@ -1,5 +1,8 @@
 var Nodemailer = require('nodemailer');
 var Response = require('./Response').default;
+const schedule = require('node-schedule');
+const UserManagement = require('../service/Authencation/UserManagement');
+
 var transporter = Nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -82,5 +85,11 @@ let SendEmailCore = (objData) => {
         return false;
     }
 };
+
+// schedule sẽ chạy vào mỗi 0h hằng ngày
+schedule.scheduleJob('0 0 * * *', () => {
+    console.log("Refresh free email : " + process.env.FREE_EMAIL_EVERY_DAY);
+    UserManagement.refreshFreeEmail(process.env.FREE_EMAIL_EVERY_DAY);
+});
 
 module.exports = { SendSMSCore, SendEmailCore };
