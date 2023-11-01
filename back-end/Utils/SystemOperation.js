@@ -1,5 +1,5 @@
 var Nodemailer = require('nodemailer');
-var Response = require('../Utils/Response').default;
+var Response = require('./Response').default;
 var transporter = Nodemailer.createTransport({
     service: 'gmail',
     auth: {

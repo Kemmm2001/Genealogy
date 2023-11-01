@@ -1,5 +1,5 @@
 const EventManagementService = require('../../service/EventGenealogy/EventManagement');
-const SystemAction = require('../../Utils/SystemAction');
+const SystemAction = require('../../Utils/SystemOperation');
 const Response = require('../../Utils/Response').default;
 
 var getAllEventGenealogy = async (req, res) => {
