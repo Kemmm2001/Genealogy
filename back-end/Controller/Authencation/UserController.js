@@ -31,7 +31,7 @@ var loginUser = async (req, res) => {
     let user = await UserService.checkMail(result.email);
     let data = await UserService.getUser(result.email)
     if (!user) throw createError.Conflict(`${result.email} không tìm thấy`)
-    console.log(user.hashedPassword)
+    
     const isPasswordMatch = await bcrypt.compare(result.password, data.password);
 
     if (!isPasswordMatch) {
