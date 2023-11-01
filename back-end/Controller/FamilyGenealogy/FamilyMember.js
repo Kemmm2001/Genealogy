@@ -80,7 +80,7 @@ var addMember = async (req, res) => {
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
-            res.send(Response.missingFieldsErrorResponse(missingFields));
+            return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
         // thêm member vào database
@@ -90,10 +90,10 @@ var addMember = async (req, res) => {
             memberId: data.insertId,
             affectedRows: data.affectedRows
         };
-        res.send(Response.successResponse(dataRes));
+        return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
-        res.send(Response.internalServerErrorResponse(e));
+        return res.send(Response.internalServerErrorResponse(e));
     }
 };
 
@@ -121,7 +121,7 @@ var updateMember = async (req, res) => {
         const missingFields = requiredFields.filter(field => !(field in req.body));
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
-            res.send(Response.missingFieldsErrorResponse(missingFields));
+            return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         // update member vào database
         let data = await FamilyManagementService.updateMember(req.body);
@@ -131,10 +131,10 @@ var updateMember = async (req, res) => {
             affectedRows: data.affectedRows,
             changedRows: data.changedRows
         }
-        res.send(Response.successResponse(dataRes));
+        return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
-        res.send(Response.internalServerErrorResponse(e));
+        return res.send(Response.internalServerErrorResponse(e));
     }
 }
 
@@ -148,10 +148,10 @@ var deleteMember = async (req, res) => {
             affectedRows: result.affectedRows,
             changedRows: result.changedRows
         }
-        res.send(Response.successResponse(dataRes));
+        return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
-        res.send(Response.internalServerErrorResponse(e));
+        return res.send(Response.internalServerErrorResponse(e));
     }
 }
 
