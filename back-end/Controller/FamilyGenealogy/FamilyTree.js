@@ -22,6 +22,12 @@ var AllMemberInGenelogy = async (req, res) => {
     try {
         let memberID = req.query.memberID;
         let data = await FamilyTreeService.ViewFamilyTree(memberID);
+        data.forEach((item) => {
+            if (item.dod === '1-1-1970') {
+                item.dod = null;
+            }
+        });
+        console.log(data)
         res.send(data);
     } catch (e) {
         console.log(e);
@@ -50,7 +56,7 @@ var setRole = async (req, res) => {
             if (existingFamilyHead.length > 0) {
                 res.send("thành viên đã là tộc trưởng");
             } else {
-                await FamilyTreeService.setRoleMember(memberId, roleId);
+                await FamilyTreeService.setRoleMember(memberId, roleId, CodeId);
                 res.send("set success");
             }
         } else if (roleId == 1) {
@@ -59,7 +65,7 @@ var setRole = async (req, res) => {
                 res.send("thành viên đã là tổ phụ");
             } else {
                 await FamilyTreeService.removePaternalAncestor();
-                await FamilyTreeService.setRoleMember(memberId, roleId);
+                await FamilyTreeService.setRoleMember(memberId, roleId, CodeId);
                 await FamilyTreeService.turnOffSQL_SAFE_UPDATES();
                 await FamilyTreeService.ResetAllGenerationMember(CodeId);
                 await FamilyTreeService.turnOnSQL_SAFE_UPDATES();

@@ -249,7 +249,6 @@ async function ViewFamilyTree(memberId, ListFamily = []) {
         let getMemberQuery = `SELECT * FROM familymember WHERE MemberID = ${memberId}`;
         db.connection.query(getMemberQuery, async (err, memberResult) => {
             if (err) return reject(err);
-
             let member = memberResult[0];
             let familyData = await createFamilyData(member);
             ListFamily.push(familyData);
@@ -331,9 +330,9 @@ function formatDOB(dateString) {
     return formattedDOB;
 }
 
-async function setRoleMember(MemberId, roleId) {
+async function setRoleMember(MemberId, roleId, CodeId) {
     try {
-        let query = `INSERT INTO memberrole (MemberID, RoleID) VALUES ('${MemberId}', '${roleId}')`;
+        let query = `INSERT INTO memberrole (MemberID, RoleID,CodeId) VALUES ('${MemberId}', '${roleId}','${CodeId})`;
         db.connection.query(query, (err, result) => {
             if (err) {
                 console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
