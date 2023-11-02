@@ -152,22 +152,6 @@ function turnOnSQL_SAFE_UPDATES() {
     })
 }
 
-//Có thể xóa
-// function setGenerationPaternalAncestor(CodeID) {
-//     let query = `update familymember as f inner join memberrole as m
-//     on  f.MemberID = m.MemberID
-//     set f.generation  = 1
-//     where m.RoleID = 1
-//     and f.CodeID = ${CodeID}`;
-//     db.connection.query(query, (err, result) => {
-//         if (err) {
-//             console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-//         } else {
-//             console.log("remove succesfully")
-//         }
-//     })
-// }
-
 function ResetAllGenerationMember(CodeID) {
     let query = `UPDATE familymember
     SET Generation = 0
@@ -213,21 +197,37 @@ function setAllGenerationMember(memberId, generation) {
     });
 }
 
-function getPaternalAncestor(CodeID) {
+function getListUnspecifiedMembers(CodeID) {
     return new Promise((resolve, reject) => {
         let query = `SELECT * FROM genealogy.familymember
-        where CodeID = ${CodeID}`;
+        where Generation = 0 and CodeID = ${CodeID}`;
         db.connection.query(query, (err, result) => {
             if (err) {
-                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-                reject(err);
+                console.log(err);
+                reject(err)
             } else {
-                console.log(result)
-                resolve(result);
+                resolve(result)
             }
-        });
-    });
+        })
+    })
 }
+
+function GetIdPaternalAncestor(CodeID) {
+    return new Promise((resolve, reject) => {
+        let query = `select MemberID from memberrole
+        where CodeId = ${CodeID}`;
+        db.connection.query(query, (err, result) => {
+            if (err) {
+                console.log(err)
+                reject(err)
+            } else {                
+                resolve(result[0])
+            }
+        })
+    })
+}
+
+
 
 async function getParentID(MemberId) {
     return new Promise((resolve, reject) => {
@@ -249,7 +249,6 @@ async function ViewFamilyTree(memberId, ListFamily = []) {
         let getMemberQuery = `SELECT * FROM familymember WHERE MemberID = ${memberId}`;
         db.connection.query(getMemberQuery, async (err, memberResult) => {
             if (err) return reject(err);
-
             let member = memberResult[0];
             let familyData = await createFamilyData(member);
             ListFamily.push(familyData);
@@ -313,7 +312,7 @@ async function createFamilyData(member) {
             name: member.MemberName,
             gender: member.Male === 1 ? 'male' : 'female',
             dob: formatDOB(member.Dob),
-            dod: member.IsAlive ? '' : formatDOB(member.Dod),
+            dod: member.IsDead ? '' : formatDOB(member.Dod),
             generation: member.Generation
         };
     }
@@ -331,9 +330,9 @@ function formatDOB(dateString) {
     return formattedDOB;
 }
 
-async function setRoleMember(MemberId, roleId) {
+async function setRoleMember(MemberId, roleId, CodeId) {
     try {
-        let query = `INSERT INTO memberrole (MemberID, RoleID) VALUES ('${MemberId}', '${roleId}')`;
+        let query = `INSERT INTO memberrole (MemberID, RoleID,CodeId) VALUES ('${MemberId}', '${roleId}','${CodeId}')`;
         db.connection.query(query, (err, result) => {
             if (err) {
                 console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
@@ -367,5 +366,5 @@ function removePaternalAncestor() {
 module.exports = {
     getAllReligion, getInforMember, getContactMember, getEducationMember, getJobMember, getEventMember, getAllNationality, getAllMemberRole,
     getRoleExist, setRoleMember, removePaternalAncestor, turnOnSQL_SAFE_UPDATES, turnOffSQL_SAFE_UPDATES,
-    setAllGenerationMember, ResetAllGenerationMember, ViewFamilyTree
+    setAllGenerationMember, ResetAllGenerationMember, ViewFamilyTree, getListUnspecifiedMembers, GetIdPaternalAncestor
 }

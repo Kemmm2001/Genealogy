@@ -33,6 +33,11 @@ const routes = [
     path: "*",
     component: () => import("../views/NotFound.vue"),
   },
+  {
+    path: "/memberList",
+    name: "member",
+    component: () => import("../views/MemberList.vue"),
+  },
 ];
 
 const router = new Router({

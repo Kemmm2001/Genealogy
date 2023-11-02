@@ -28,8 +28,12 @@ CREATE TABLE `account` (
   `AccountID` int NOT NULL AUTO_INCREMENT,
   `Username` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   `Password` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `Email` varchar(150) DEFAULT NULL,
   `CodeID` int DEFAULT NULL,
   `RoleID` int DEFAULT NULL,
+  `TotalMoney` double DEFAULT NULL,
+  `FreeSMS` int DEFAULT NULL,
+  `FreeGmail` int DEFAULT NULL,
   PRIMARY KEY (`AccountID`),
   KEY `account_idx` (`CodeID`),
   KEY `RoleAccount_idx` (`RoleID`),
@@ -48,30 +52,29 @@ LOCK TABLES `account` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `accountaccess`
+-- Table structure for table `account access`
 --
 
-DROP TABLE IF EXISTS `accountaccess`;
+DROP TABLE IF EXISTS `account access`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `accountaccess` (
+CREATE TABLE `account access` (
   `AccountID` int NOT NULL,
-  `CodeID` int NOT NULL,
-  `Amount` int DEFAULT NULL,
-  `IsAdmin` tinyint DEFAULT NULL,
-  `AccountAccesscol` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`AccountID`,`CodeID`),
-  CONSTRAINT `AccountAccess` FOREIGN KEY (`AccountID`) REFERENCES `account` (`AccountID`) ON DELETE CASCADE ON UPDATE CASCADE
+  `Token` varchar(200) DEFAULT NULL,
+  `Refesh - Token` varchar(200) DEFAULT NULL,
+  `ExpireTime` int DEFAULT NULL,
+  KEY `accountaccess_idx` (`AccountID`),
+  CONSTRAINT `accountaccess` FOREIGN KEY (`AccountID`) REFERENCES `account` (`AccountID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `accountaccess`
+-- Dumping data for table `account access`
 --
 
-LOCK TABLES `accountaccess` WRITE;
-/*!40000 ALTER TABLE `accountaccess` DISABLE KEYS */;
-/*!40000 ALTER TABLE `accountaccess` ENABLE KEYS */;
+LOCK TABLES `account access` WRITE;
+/*!40000 ALTER TABLE `account access` DISABLE KEYS */;
+/*!40000 ALTER TABLE `account access` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -111,6 +114,8 @@ CREATE TABLE `article` (
   `ArticleID` int NOT NULL AUTO_INCREMENT,
   `CodeID` int DEFAULT NULL,
   `ArticleUrl` varchar(80) DEFAULT NULL,
+  `ArticleName` varchar(45) DEFAULT NULL,
+  `ArticleDescription` varchar(150) DEFAULT NULL,
   PRIMARY KEY (`ArticleID`),
   KEY `Article_idx` (`CodeID`),
   CONSTRAINT `Article` FOREIGN KEY (`CodeID`) REFERENCES `familytree` (`CodeID`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -124,6 +129,29 @@ CREATE TABLE `article` (
 LOCK TABLES `article` WRITE;
 /*!40000 ALTER TABLE `article` DISABLE KEYS */;
 /*!40000 ALTER TABLE `article` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `city`
+--
+
+DROP TABLE IF EXISTS `city`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `city` (
+  `CityId` int NOT NULL AUTO_INCREMENT,
+  `CittName` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`CityId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `city`
+--
+
+LOCK TABLES `city` WRITE;
+/*!40000 ALTER TABLE `city` DISABLE KEYS */;
+/*!40000 ALTER TABLE `city` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -146,7 +174,7 @@ CREATE TABLE `contact` (
   PRIMARY KEY (`ContactID`),
   KEY `contact_idx` (`MemberID`),
   CONSTRAINT `contact` FOREIGN KEY (`MemberID`) REFERENCES `familymember` (`MemberID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -155,8 +183,34 @@ CREATE TABLE `contact` (
 
 LOCK TABLES `contact` WRITE;
 /*!40000 ALTER TABLE `contact` DISABLE KEYS */;
-INSERT INTO `contact` VALUES (1,1,'Yên thủy-hòa bình','0123456789','0123456788','gmai.com','gmai1l.com','123','123');
+INSERT INTO `contact` VALUES (1,1,'Yên thủy-hòa bình','0123456789','0123456788','gmai.com','gmai1l.com','123','123'),(2,6,'Yên thủy-hòa bình','0123456789','0123456788','gmai.com','gmai1l.com','123','123'),(11,39,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(14,42,'Địa chỉ 1','Điện thoại 1','Điện Thoại 2',NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `contact` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `district`
+--
+
+DROP TABLE IF EXISTS `district`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `district` (
+  `DistrictId` int NOT NULL AUTO_INCREMENT,
+  `DistrictName` varchar(200) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `CityId` int DEFAULT NULL,
+  PRIMARY KEY (`DistrictId`),
+  KEY `City_idx` (`CityId`),
+  CONSTRAINT `City` FOREIGN KEY (`CityId`) REFERENCES `city` (`CityId`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `district`
+--
+
+LOCK TABLES `district` WRITE;
+/*!40000 ALTER TABLE `district` DISABLE KEYS */;
+/*!40000 ALTER TABLE `district` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -176,7 +230,7 @@ CREATE TABLE `education` (
   PRIMARY KEY (`EducationID`),
   KEY `education_idx` (`MemberID`),
   CONSTRAINT `education` FOREIGN KEY (`MemberID`) REFERENCES `familymember` (`MemberID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -185,7 +239,7 @@ CREATE TABLE `education` (
 
 LOCK TABLES `education` WRITE;
 /*!40000 ALTER TABLE `education` DISABLE KEYS */;
-INSERT INTO `education` VALUES (1,1,'hùng1','hùng đã học ở đây','2001-02-26 00:00:00','2001-02-26 00:00:00');
+INSERT INTO `education` VALUES (1,1,'hùng1','hùng đã học ở đây','2001-02-26 00:00:00','2001-02-26 00:00:00'),(2,6,'Yên Thủy A','hùng đã học ở đây','2001-02-26 00:00:00','2001-02-26 00:00:00'),(6,42,'Trường ấp 2','Đây là trường cấp 1','2023-10-17 00:00:00','2023-11-02 00:00:00');
 /*!40000 ALTER TABLE `education` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -215,7 +269,7 @@ CREATE TABLE `eventfamily` (
   KEY `Repeat_idx` (`RepeatID`),
   CONSTRAINT `Eventfamily` FOREIGN KEY (`CodeID`) REFERENCES `familytree` (`CodeID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `Repeat` FOREIGN KEY (`RepeatID`) REFERENCES `eventrepetition` (`RepeatID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -224,6 +278,7 @@ CREATE TABLE `eventfamily` (
 
 LOCK TABLES `eventfamily` WRITE;
 /*!40000 ALTER TABLE `eventfamily` DISABLE KEYS */;
+INSERT INTO `eventfamily` VALUES (1,'Event1',123,1,'2023-02-02 00:00:00','2023-03-03 00:00:00','Description1',1,'Note1','Place1',1,1,'1');
 /*!40000 ALTER TABLE `eventfamily` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -269,7 +324,7 @@ CREATE TABLE `eventrepetition` (
   `RepeatID` int NOT NULL AUTO_INCREMENT,
   `RepeatName` varchar(80) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   PRIMARY KEY (`RepeatID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -278,6 +333,7 @@ CREATE TABLE `eventrepetition` (
 
 LOCK TABLES `eventrepetition` WRITE;
 /*!40000 ALTER TABLE `eventrepetition` DISABLE KEYS */;
+INSERT INTO `eventrepetition` VALUES (1,'Year'),(2,'Month'),(3,'No Repeat');
 /*!40000 ALTER TABLE `eventrepetition` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -328,15 +384,16 @@ CREATE TABLE `familymember` (
   `Dob` datetime DEFAULT NULL,
   `LunarDob` datetime DEFAULT NULL,
   `BirthPlace` text,
-  `IsAlive` tinyint NOT NULL,
+  `IsDead` tinyint NOT NULL,
   `Dod` datetime DEFAULT NULL,
   `PlaceOfDeadth` text,
   `GraveSite` text,
   `Note` longtext,
   `Generation` int DEFAULT NULL,
   `BloodType` varchar(3) DEFAULT NULL,
-  `CodeID` int DEFAULT NULL,
   `Male` tinyint NOT NULL,
+  `CodeID` int DEFAULT NULL,
+  `Image` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`MemberID`),
   KEY `religion_idx` (`ReligionID`),
   KEY `Nationality_idx` (`NationalityID`),
@@ -344,7 +401,7 @@ CREATE TABLE `familymember` (
   CONSTRAINT `FamilyTree` FOREIGN KEY (`CodeID`) REFERENCES `familytree` (`CodeID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `Nationality` FOREIGN KEY (`NationalityID`) REFERENCES `nationality` (`NationalityID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `religion` FOREIGN KEY (`ReligionID`) REFERENCES `religion` (`ReligionID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -353,7 +410,7 @@ CREATE TABLE `familymember` (
 
 LOCK TABLES `familymember` WRITE;
 /*!40000 ALTER TABLE `familymember` DISABLE KEYS */;
-INSERT INTO `familymember` VALUES (1,NULL,2,'Test1','NichName1',1,1,'Hòa Bình',1,1,'2001-02-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',1,NULL,NULL,NULL,'Note1',1,NULL,123,1),(2,NULL,1,'test2','NichName2',1,1,'Hòa Bình',1,1,'2001-02-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',1,NULL,NULL,NULL,'Note2',1,NULL,123,0),(3,1,4,'Test3','NichName3',1,1,'Hòa Bình',1,1,'2001-02-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',1,NULL,NULL,NULL,'Note3',2,NULL,123,1),(4,NULL,3,'test4','NichName4',1,1,'Hòa Bình',1,1,'2001-02-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',1,NULL,NULL,NULL,'Note4',2,NULL,123,0),(5,3,NULL,'test5','NichName5',1,1,'Hòa Bình',1,1,'2001-02-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',1,NULL,NULL,NULL,'Note5',3,NULL,123,1);
+INSERT INTO `familymember` VALUES (1,NULL,2,'Test1','NichName1',1,1,'Hòa Bình',1,1,'2001-10-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note1',1,NULL,1,123,NULL),(2,NULL,1,'test2','NichName2',1,1,'Hòa Bình',1,1,'2001-10-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note2',1,NULL,0,123,NULL),(3,1,4,'Test3','NichName3',1,1,'Hòa Bình',1,1,'2001-02-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note3',2,NULL,1,123,NULL),(4,1,3,'test4','NichName4',1,1,'Hòa Bình',1,1,'2001-05-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note4',2,NULL,0,123,NULL),(5,3,NULL,'test5','NichName5',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note5',3,NULL,1,123,NULL),(6,NULL,7,'A','Tên thường gọi là A',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',0,'1970-01-01 00:00:00',NULL,NULL,'Note',0,'A',1,123456,NULL),(7,NULL,6,'A\'','NichName1',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',0,'A',0,123456,NULL),(8,6,NULL,'B','NichName1',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',1,'B',1,123456,NULL),(10,8,NULL,'C','C',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',2,'A',1,123456,NULL),(11,8,NULL,'D','D',1,2,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',2,'AB',1,123456,NULL),(12,10,NULL,'E','E',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',3,'A',1,123456,NULL),(13,11,NULL,'M','M',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',3,'A',1,123456,NULL),(14,13,NULL,'N','N',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',4,'A',0,123456,NULL),(15,12,NULL,'F','F',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',4,'B',1,123456,NULL),(16,12,NULL,'H','H',1,2,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',4,'B',0,123456,NULL),(17,12,NULL,'L','L',1,3,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',4,'A',1,123456,NULL),(18,15,NULL,'G','G',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',5,'B',1,123456,NULL),(19,15,39,'Z','Z',1,2,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,'1970-01-01 00:00:00',NULL,NULL,'Note',5,'B',0,123456,NULL),(20,17,NULL,'X','X',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',5,'A',0,123456,NULL),(21,18,NULL,'J','J',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',6,'A',0,123456,NULL),(23,17,NULL,'Test1','test',NULL,1,'Hòa Bình',1,1,'2023-10-09 00:00:00','2023-10-09 00:00:00','Hòa Bình',0,NULL,NULL,NULL,NULL,5,'A',1,123456,NULL),(39,NULL,19,'Vợ của Z','z',NULL,1,'Hà Nội',1,2,'2023-10-28 00:00:00','2023-10-28 00:00:00','Hà Nội',0,NULL,NULL,NULL,NULL,5,'A',1,123456,NULL),(42,19,NULL,'Tên con là Z\'','Tên thường gọi là Z',NULL,1,'Hà nội',1,1,'2023-10-09 00:00:00','2023-10-09 00:00:00','Hà bình',0,'1970-01-01 00:00:00',NULL,NULL,NULL,6,'A',1,NULL,NULL);
 /*!40000 ALTER TABLE `familymember` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -380,7 +437,7 @@ CREATE TABLE `familytree` (
 
 LOCK TABLES `familytree` WRITE;
 /*!40000 ALTER TABLE `familytree` DISABLE KEYS */;
-INSERT INTO `familytree` VALUES (123,'Lê','Kinh','1890-02-23 00:00:00',4),(199,'HUNG1','',NULL,NULL);
+INSERT INTO `familytree` VALUES (123,'Lê','Kinh','1890-02-23 00:00:00',4),(199,'HUNG1','',NULL,NULL),(123456,'Nguyễn','Mường','1890-02-23 00:00:00',6);
 /*!40000 ALTER TABLE `familytree` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -447,7 +504,7 @@ CREATE TABLE `job` (
   PRIMARY KEY (`JobID`),
   KEY `JobID_idx` (`MemberID`),
   CONSTRAINT `Job` FOREIGN KEY (`MemberID`) REFERENCES `familymember` (`MemberID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -456,7 +513,7 @@ CREATE TABLE `job` (
 
 LOCK TABLES `job` WRITE;
 /*!40000 ALTER TABLE `job` DISABLE KEYS */;
-INSERT INTO `job` VALUES (1,1,'123','123','1','Test1','2001-02-26 00:00:00','2001-02-26 00:00:00'),(2,1,'Job2','Job2Adress','123','Test2','2001-02-26 00:00:00','2001-02-26 00:00:00'),(4,1,'Test3',NULL,'Role3','JobName3','2022-08-11 00:00:00','2022-09-13 00:00:00');
+INSERT INTO `job` VALUES (1,1,'123','123','1','Test1','2001-02-26 00:00:00','2001-02-26 00:00:00'),(2,1,'Job2','Job2Adress','123','Test2','2001-02-26 00:00:00','2001-02-26 00:00:00'),(4,1,'Test3',NULL,'Role3','JobName3','2022-08-11 00:00:00','2022-09-13 00:00:00'),(5,6,'Job','Job2Adress','Rol1','JobName3','2022-08-11 00:00:00','2022-09-13 00:00:00');
 /*!40000 ALTER TABLE `job` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -510,8 +567,35 @@ CREATE TABLE `memberrole` (
 
 LOCK TABLES `memberrole` WRITE;
 /*!40000 ALTER TABLE `memberrole` DISABLE KEYS */;
-INSERT INTO `memberrole` VALUES (1,1,123),(1,2,123),(2,2,123),(3,2,123),(NULL,NULL,123);
+INSERT INTO `memberrole` VALUES (1,2,123),(2,2,123),(3,2,123),(NULL,NULL,123),(8,1,123456);
 /*!40000 ALTER TABLE `memberrole` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `money`
+--
+
+DROP TABLE IF EXISTS `money`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `money` (
+  `MoneyID` int NOT NULL AUTO_INCREMENT,
+  `AccountID` int DEFAULT NULL,
+  `TransactionAmount` double DEFAULT NULL,
+  `DayTrading` datetime DEFAULT NULL,
+  PRIMARY KEY (`MoneyID`),
+  KEY `moneyu_idx` (`AccountID`),
+  CONSTRAINT `moneyu` FOREIGN KEY (`AccountID`) REFERENCES `account` (`AccountID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `money`
+--
+
+LOCK TABLES `money` WRITE;
+/*!40000 ALTER TABLE `money` DISABLE KEYS */;
+/*!40000 ALTER TABLE `money` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -690,4 +774,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-17 12:47:41
+-- Dump completed on 2023-11-02 22:16:47

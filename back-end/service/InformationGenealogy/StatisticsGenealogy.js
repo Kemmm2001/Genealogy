@@ -42,8 +42,8 @@ function getMemberByAge(startAge, EndAge, CodeID) {
     })
 }
 
-function filtetMemberByMonth(month,CodeID) {
-    return new Promise((resolve, reject) => {      
+function filtetMemberByMonth(month, CodeID) {
+    return new Promise((resolve, reject) => {
         let query = `SELECT * FROM familymember
         WHERE MONTH(dob) = ${month}
         and CodeID = ${CodeID}`;
@@ -62,7 +62,7 @@ function filtetMemberByMonth(month,CodeID) {
 
 
 module.exports = {
-    GetListMember, getGenerationNumber, getMemberByAge,filtetMemberByMonth
+    GetListMember, getGenerationNumber, getMemberByAge, filtetMemberByMonth
 }
 
 

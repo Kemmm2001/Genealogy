@@ -17,11 +17,38 @@ var AllNationality = async (req, res) => {
         res.send(e);
     }
 }
+var GetIdPaternalAncestor = async (req, res) => {
+    try {
+        let CodeId = req.query.CodeId;
+        let data = await FamilyTreeService.GetIdPaternalAncestor(CodeId);
+        res.send(data)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+var getAllUnspecifiedMembers = async (req, res) => {
+    try {
+        let CodeID = req.query.CodeID;
+        let data = await FamilyTreeService.getListUnspecifiedMembers(CodeID);
+        res.send(data)
+    } catch (err) {
+        res.send(err);
+    }
+}
 
 var AllMemberInGenelogy = async (req, res) => {
     try {
         let memberID = req.query.memberID;
         let data = await FamilyTreeService.ViewFamilyTree(memberID);
+        data.forEach((item) => {
+            if (item.dod === '1-1-1970') {
+                item.dod = null;
+            }
+            if (item.dob === '1-1-1970') {
+                item.dob = null;
+            }
+        });
         res.send(data);
     } catch (e) {
         console.log(e);
@@ -50,7 +77,7 @@ var setRole = async (req, res) => {
             if (existingFamilyHead.length > 0) {
                 res.send("thành viên đã là tộc trưởng");
             } else {
-                await FamilyTreeService.setRoleMember(memberId, roleId);
+                await FamilyTreeService.setRoleMember(memberId, roleId, CodeId);
                 res.send("set success");
             }
         } else if (roleId == 1) {
@@ -59,7 +86,7 @@ var setRole = async (req, res) => {
                 res.send("thành viên đã là tổ phụ");
             } else {
                 await FamilyTreeService.removePaternalAncestor();
-                await FamilyTreeService.setRoleMember(memberId, roleId);
+                await FamilyTreeService.setRoleMember(memberId, roleId, CodeId);
                 await FamilyTreeService.turnOffSQL_SAFE_UPDATES();
                 await FamilyTreeService.ResetAllGenerationMember(CodeId);
                 await FamilyTreeService.turnOnSQL_SAFE_UPDATES();
@@ -90,5 +117,5 @@ var informationMember = async (req, res) => {
 }
 
 module.exports = {
-    AllReligion, informationMember, AllNationality, AllMemberRole, setRole, AllMemberInGenelogy
+    AllReligion, informationMember, AllNationality, AllMemberRole, setRole, AllMemberInGenelogy, getAllUnspecifiedMembers, GetIdPaternalAncestor
 };

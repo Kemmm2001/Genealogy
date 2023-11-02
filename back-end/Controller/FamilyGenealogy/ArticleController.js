@@ -12,12 +12,34 @@ var getAllArticle = async (req, res) => {
     }
 };
 
+var getArticle = async (req, res) => {
+    try {
+        const articleId = req.params.articleId; // Lấy ArticleID từ đường dẫn URL
+        const codeId = req.params.codeId; // Lấy CodeID từ đường dẫn URL
+
+        // Gọi hàm service để lấy bài viết dựa trên ArticleID và CodeID
+        const article = await ArticleManagementService.getArticle(articleId, codeId);
+
+        // Kiểm tra xem bài viết có tồn tại hay không
+        if (!article) {
+            console.error('Không tìm thấy bài viết');
+            return res.status(404).json({ success: false, message: 'Không tìm thấy bài viết' });
+        }
+
+        // Trả về thông tin bài viết
+        res.json({ success: true, message: 'Lấy bài viết thành công', data: article });
+    } catch (e) {
+        console.error('Lỗi:', e);
+        res.status(500).json({ success: false, message: 'Lỗi khi lấy bài viết' });
+    }
+};
+
 var addArticle = async (req, res) => {
     try {
         // Log ra thông tin trong req.body
         console.log('Request body: ', req.body);
         let response;       
-        const requiredFields = ['CodeID', 'ArticleUrl'];
+        const requiredFields = ['CodeID', 'ArticleUrl', 'ArticleName', 'ArticleDescription'];
         const missingFields = requiredFields.filter(field => !(field in req.body));
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
@@ -55,7 +77,7 @@ var updateArticle = async (req, res) => {
         let response;
 
         // Update the article in the database
-        const updatedArticle = await ArticleManagementService.updateArticle(req.params.articleId, req.body);
+        const updatedArticle = await ArticleManagementService.updateArticle(req.params.articleId,req.params.codeId,req.body);
         
         // Check if the article was successfully updated
         if (!updatedArticle) {
@@ -112,4 +134,4 @@ var deleteArticle = async (req, res) => {
     }
 }
 
-module.exports = {getAllArticle, addArticle, updateArticle, deleteArticle};
+module.exports = {getAllArticle, getArticle, addArticle, updateArticle, deleteArticle};
