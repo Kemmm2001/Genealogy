@@ -4,6 +4,7 @@
     flex-direction: column;
     position: absolute !important;
     top: 5% !important;
+    bottom: 5% !important;
     left: 10% !important;
     right: 10% !important;
     height: auto !important;
@@ -222,4 +223,21 @@ input:focus~label.form-label-number {
 
 .add-album-modal{
     background-color: #FFFFFF;
+}
+
+.noti-modal-member{
+    height: 56px;
+    cursor: pointer;
+}
+
+.noti-modal-member:hover{
+    background-color: #ebebeb;
+}
+
+.noti-modal-member:focus{
+    background-color: #f2f2f2;
+}
+
+.noti-modal-member.chosen{
+    background-color: #f2f2f2;
 }
