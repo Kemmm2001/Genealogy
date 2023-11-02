@@ -74,4 +74,38 @@ function refreshFreeEmail(usesTime){
     });
   });
 }
-module.exports = {checkMail, create, getUser, refreshFreeEmail}
+
+function createGenealogy(accountID, codeID) {
+  return new Promise((resolve, reject) => {
+    const query = 'UPDATE genealogy.account SET CodeID = ?, RoleID = 1 WHERE AccountID = ?';
+    const values = [codeID, accountID];
+
+    db.connection.query(query, values, (err, results) => {
+      if (err) {
+        console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+        reject(err);
+      } else {
+        console.log('Dữ liệu đã được cập nhật thành công.');
+        resolve(results);
+      }
+    });
+  });
+}
+
+function getGenealogy(request) {
+  return new Promise((resolve, reject) => {
+    const query = 'UPDATE genealogy.account SET CodeID = ?, RoleID = 3 WHERE AccountID = ?';
+    const values = [request.codeID, request.accountID];
+
+    db.connection.query(query, values, (err, results) => {
+      if (err) {
+        console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+        reject(err);
+      } else {
+        console.log('Dữ liệu đã được cập nhật thành công.');
+        resolve(results);
+      }
+    });
+  });
+}
+module.exports = {checkMail, create, getUser, refreshFreeEmail, createGenealogy, getGenealogy}
