@@ -1,6 +1,6 @@
 const JWT = require('jsonwebtoken')
 const createError = require('http-errors')
-const { refreshToken } = require('../Controller/Authencation/UserController')
+const client = require('./init_redis')
 
 module.exports = {
   signAccessToken: (insertId) => {
@@ -59,6 +59,15 @@ module.exports = {
           console.log(err.message)
           reject(createError.InternalServerError())
         }
+
+        client.SET(insertId, token, (err, reply) => {
+          if(err) {
+            console.log(err.message)
+            reject(createError.InternalServerError())
+            return
+          }
+        })
+
         resolve(token)
       })
     })

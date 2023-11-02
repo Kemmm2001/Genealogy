@@ -15,6 +15,9 @@ const initWebRouter = (app) => {
   router.post('/refresh-token', UserController.refreshToken);
   // router.delete('/logout', UserController.logout);
 
+  router.post('/register-genealogy', UserController.registerGenealogy)
+  router.post('/get-genealogy', UserController.getGenealogy)
+  
   //Tiền tố đứng trước route
   app.use('/auth', router);
 }
