@@ -10,7 +10,7 @@ module.exports = {
       }
       const secret = process.env.ACCESS_TOKEN_SECRET
       const options = {
-        expiresIn: "15s",
+        expiresIn: "1d",
         issuer: "pickurpage.com",
         audience: insertId.toString()
       }
@@ -50,7 +50,7 @@ module.exports = {
       }
       const secret = process.env.REFRESH_TOKEN_SECRET
       const options = {
-        expiresIn: "1y",
+        expiresIn: "60s",
         issuer: "pickurpage.com",
         audience: insertId.toString()
       }
@@ -60,13 +60,14 @@ module.exports = {
           reject(createError.InternalServerError())
         }
 
-        client.SET(insertId, token, (err, reply) => {
-          if(err) {
-            console.log(err.message)
-            reject(createError.InternalServerError())
-            return
-          }
-        })
+         client.SET(insertId.toString(), token, 'EX', 60 ,(err, reply) => {
+           if (err) {
+             console.log(err.message);
+             reject(createError.InternalServerError());
+             return;
+        }
+         });
+
 
         resolve(token)
       })
@@ -76,9 +77,17 @@ module.exports = {
   verifyRefreshToken: (refreshToken => {
     return new Promise((resolve, reject) => {
       JWT.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, payload) => {
-        if(err) return reject(createError.Unauthorized())
-        const accountID =  parseInt(payload.adu, 10);
-        
+        if (err) return reject(createError.Unauthorized())
+        const accountID = parseInt(payload.adu, 10);
+        // client.GET(accountID, (err, result) => {
+        //   if(err) {
+        //     console.log(err.message)
+        //     reject(createError.InternalServerError())
+        //     return
+        //   }
+        //   if(refreshToken === result) return resolve(accountID)
+        //   reject(createError.Unauthorized())
+        // })
         resolve(accountID)
       })
     })
