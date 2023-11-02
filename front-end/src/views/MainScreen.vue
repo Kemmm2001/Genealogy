@@ -33,21 +33,10 @@
         <div class="existing-members d-flex flex-column w-100">
           <div class="list-item" style="background-color: #AED6F1; text-align: center;">Đã có trên phả đồ</div>
           <div class="d-flex flex-column w-100" style="overflow-y: auto;">
-            <div class="list-item">Thành viên C</div>
-            <div class="list-item ancestor-member">Tổ phụ</div>
-            <div class="list-item head-member">Thành viên A</div>
-            <div class="list-item head-member">Thành viên B</div>
-            <div class="list-item">Thành viên C</div>
-            <div class="list-item">Thành viên D</div>
-            <div class="list-item">Thành viên E</div>
-            <div class="list-item">Thành viên F</div>
-            <div class="list-item">Thành viên G</div>
-            <div class="list-item">Thành viên H</div>
-            <div class="list-item">Thành viên I</div>
-            <div class="list-item">Thành viên J</div>
-            <div class="list-item">Thành viên K</div>
-            <div class="list-item">Thành viên L</div>
-            <div class="list-item">Thành viên M</div>
+            <div v-for="(n,index) in nodes" :key="n.id">
+              <div v-if="index == 0" class="list-item ancestor-member">Thành Viên {{n.name}}</div>
+              <div v-else class="list-item">Thành Viên {{n.name}}</div>
+            </div>
           </div>
         </div>
         <div class="nonexisting-members d-flex flex-column w-100">
@@ -561,23 +550,23 @@ export default {
       FamilyTree.templates.tommy_male.field_0 =
         '<text class="field_0" style="font-size: 20px;" fill="#ffffff" x="125" y="30" text-anchor="middle">{val}</text>';
       FamilyTree.templates.tommy_male.field_1 =
-        '<text class="field_1" style="font-size: 14px;" fill="#ffffff" x="125" y="50" text-anchor="middle">{val}</text>';
+        '<text class="field_1" style="font-size: 14px;" fill="#ffffff" x="125" y="50" text-anchor="middle">Giới Tính: Nam</text>';
       FamilyTree.templates.tommy_male.field_2 =
         '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="125" y="70" text-anchor="middle">Ngày Sinh: {val}</text>';
       FamilyTree.templates.tommy_male.field_3 =
         '<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">Ngày Mất: {val}</text>';
       FamilyTree.templates.tommy_male.field_4 =
-        '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">{val}</text>';
+        '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">Đời: {val}</text>';
       FamilyTree.templates.tommy_female.field_0 =
         '<text class="field_0" style="font-size: 20px;" fill="#ffffff" x="125" y="30" text-anchor="middle">{val}</text>';
       FamilyTree.templates.tommy_female.field_1 =
-        '<text class="field_1" style="font-size: 14px;" fill="#ffffff" x="125" y="50" text-anchor="middle">{val}</text>';
+        '<text class="field_1" style="font-size: 14px;" fill="#ffffff" x="125" y="50" text-anchor="middle">Giới Tính: Nữ</text>';
       FamilyTree.templates.tommy_female.field_2 =
         '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="125" y="70" text-anchor="middle">{val}</text>';
       FamilyTree.templates.tommy_female.field_3 =
         '<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">{val}</text>';
       FamilyTree.templates.tommy_female.field_4 =
-        '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">{val}</text>';
+        '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">Đời: {val}</text>';
       this.family = new FamilyTree(domEl, {
         nodes: x,
         nodeBinding: {
@@ -586,6 +575,7 @@ export default {
           field_1: "gender",
           field_2: "dob",
           field_3: "dod",
+          field_4: "generation",
         },
         lazyLoading: false,
         nodeMouseClick: FamilyTree.action.none,

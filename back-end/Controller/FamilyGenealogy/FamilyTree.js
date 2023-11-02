@@ -18,6 +18,14 @@ var AllNationality = async (req, res) => {
     }
 }
 
+var getAllUnspecifiedMembers = async (req, res) => {
+    try {
+
+    } catch (err) {
+        res.send(e);
+    }
+}
+
 var AllMemberInGenelogy = async (req, res) => {
     try {
         let memberID = req.query.memberID;
@@ -25,6 +33,9 @@ var AllMemberInGenelogy = async (req, res) => {
         data.forEach((item) => {
             if (item.dod === '1-1-1970') {
                 item.dod = null;
+            }
+            if (item.dob === '1-1-1970') {
+                item.dob = null;
             }
         });
         console.log(data)
@@ -96,5 +107,5 @@ var informationMember = async (req, res) => {
 }
 
 module.exports = {
-    AllReligion, informationMember, AllNationality, AllMemberRole, setRole, AllMemberInGenelogy
+    AllReligion, informationMember, AllNationality, AllMemberRole, setRole, AllMemberInGenelogy, getAllUnspecifiedMembers
 };
