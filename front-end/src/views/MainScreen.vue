@@ -41,21 +41,8 @@
         </div>
         <div class="nonexisting-members d-flex flex-column w-100">
           <div class="list-item" style="background-color: #AED6F1; text-align: center;">Chưa có trên phả đồ</div>
-          <div class="d-flex flex-column w-100" style="overflow-y: auto;">
-            <div class="list-item">Thành viên C</div>
-            <div class="list-item">Thành viên D</div>
-            <div class="list-item">Thành viên E</div>
-            <div class="list-item">Thành viên F</div>
-            <div class="list-item">Thành viên G</div>
-            <div class="list-item">Thành viên H</div>
-            <div class="list-item">Thành viên I</div>
-            <div class="list-item">Thành viên J</div>
-            <div class="list-item">Thành viên K</div>
-            <div class="list-item">Thành viên L</div>
-            <div class="list-item">Thành viên M</div>
-            <div class="list-item">Thành viên K</div>
-            <div class="list-item">Thành viên L</div>
-            <div class="list-item">Thành viên M</div>
+          <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto;">
+            <div v-for="list in ListUnspecifiedMembers" :key="list.id" class="list-item">{{list.MemberName}}</div>
           </div>
         </div>
       </div>
@@ -428,6 +415,7 @@ export default {
       EducationIdToUpdate: null,
       ListAgeGroup: null,
       ListBloodTypeGroup: null,
+      ListUnspecifiedMembers: null,
 
       selectAge: null,
       selectBloodType: null,
@@ -442,7 +430,7 @@ export default {
       newIdMember: null,
       CurrentIdMember: null,
       generationMember: null,
-      CodeID: null,
+      CodeID: 123456,
       idPaternalAncestor: null,
       IsDead: 0,
 
@@ -562,9 +550,9 @@ export default {
       FamilyTree.templates.tommy_female.field_1 =
         '<text class="field_1" style="font-size: 14px;" fill="#ffffff" x="125" y="50" text-anchor="middle">Giới Tính: Nữ</text>';
       FamilyTree.templates.tommy_female.field_2 =
-        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="125" y="70" text-anchor="middle">{val}</text>';
+        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="125" y="70" text-anchor="middle">Ngày Sinh: {val}</text>';
       FamilyTree.templates.tommy_female.field_3 =
-        '<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">{val}</text>';
+        '<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">Ngày Mất: {val}</text>';
       FamilyTree.templates.tommy_female.field_4 =
         '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">Đời: {val}</text>';
       this.family = new FamilyTree(domEl, {
@@ -577,9 +565,13 @@ export default {
           field_3: "dod",
           field_4: "generation",
         },
+
         lazyLoading: false,
         nodeMouseClick: FamilyTree.action.none,
         enableSearch: false,
+      });
+      this.family.onInit(() => {
+        this.family.setViewBox("-30,-30,1939,1638");
       });
       //Get tọa độ ban đầu
       let CoordinatesNode = this.getViewBox();
@@ -617,9 +609,10 @@ export default {
       HTTP.post("setRole", {
         memberId: this.CurrentIdMember,
         roleId: 1,
-        CodeId: 123456,
+        CodeId: this.CodeID,
       }).then(() => {
         this.getListAfterSetPaternalAncestor(this.CurrentIdMember);
+        this.getListUnspecifiedMembers();
         this.NotificationsScuccess("Set tổ phụ thành công");
       });
     },
@@ -656,12 +649,10 @@ export default {
       const day = String(date.getDate()).padStart(2, "0");
       return `${year}-${month}-${day}`;
     },
-    takeDataMember(id) {
+    takeDataMember() {
       this.CurrentIdMember = this.objMemberInfor.MemberID;
       this.generationMember = this.objMemberInfor.Generation;
-      this.CodeID = this.objMemberInfor.CodeID;
       this.IsDead = this.objMemberInfor.IsDead;
-      this.idPaternalAncestor = id;
     },
     updateAvatar(event) {
       const file = event.target.files[0];
@@ -1092,7 +1083,7 @@ export default {
     },
     GetListFilterMember() {
       HTTP.post("filter-member", {
-        CodeID: 123456,
+        CodeID: this.CodeID,
         BloodType: this.selectBloodType,
         selectAge: this.selectAge,
         // Address: "hòa bình"
@@ -1144,10 +1135,57 @@ export default {
           console.log(e);
         });
     },
-    getListMember() {
+    GetIdPaternalAncestor() {
+      console.log(this.CodeID);
+      HTTP.get("idPaternal", {
+        params: {
+          CodeId: this.CodeID,
+        },
+      }).then((response) => {
+        this.idPaternalAncestor = response.data.MemberID;
+        console.log(this.idPaternalAncestor);
+      });
+    },
+    async getListUnspecifiedMembers() {
+      HTTP.get("unspecified-members", {
+        params: {
+          CodeID: this.CodeID,
+        },
+      })
+        .then((response) => {
+          this.ListUnspecifiedMembers = response.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+    async test() {
       HTTP.get("viewTree", {
         params: {
-          memberID: 6,
+          memberID: this.idPaternalAncestor,
+        },
+      })
+        .then((response) => {
+          this.nodes = response.data;
+          console.log(this.nodes);
+          for (let i = 0; i < this.nodes.length; i++) {
+            this.nodes[i].tags = [];
+          }
+
+          this.mytree(this.$refs.tree, this.nodes);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+    async getListMember() {
+      if (this.idPaternalAncestor == null) {
+        console.log("vào");
+        await this.GetIdPaternalAncestor();
+      }
+      await HTTP.get("viewTree", {
+        params: {
+          memberID: 8,
         },
       })
         .then((response) => {
@@ -1255,6 +1293,7 @@ export default {
     this.getListReligion();
     this.getListAgeGroup();
     this.getListBloodTypeGroup();
+    this.getListUnspecifiedMembers();
   },
 };
 </script>

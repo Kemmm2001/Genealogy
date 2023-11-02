@@ -17,12 +17,23 @@ var AllNationality = async (req, res) => {
         res.send(e);
     }
 }
+var GetIdPaternalAncestor = async (req, res) => {
+    try {
+        let CodeId = req.query.CodeId;
+        let data = await FamilyTreeService.GetIdPaternalAncestor(CodeId);
+        res.send(data)
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 var getAllUnspecifiedMembers = async (req, res) => {
     try {
-
+        let CodeID = req.query.CodeID;
+        let data = await FamilyTreeService.getListUnspecifiedMembers(CodeID);
+        res.send(data)
     } catch (err) {
-        res.send(e);
+        res.send(err);
     }
 }
 
@@ -38,7 +49,6 @@ var AllMemberInGenelogy = async (req, res) => {
                 item.dob = null;
             }
         });
-        console.log(data)
         res.send(data);
     } catch (e) {
         console.log(e);
@@ -107,5 +117,5 @@ var informationMember = async (req, res) => {
 }
 
 module.exports = {
-    AllReligion, informationMember, AllNationality, AllMemberRole, setRole, AllMemberInGenelogy, getAllUnspecifiedMembers
+    AllReligion, informationMember, AllNationality, AllMemberRole, setRole, AllMemberInGenelogy, getAllUnspecifiedMembers, GetIdPaternalAncestor
 };

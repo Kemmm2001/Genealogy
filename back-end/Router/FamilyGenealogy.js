@@ -23,6 +23,7 @@ const initWebRouter = (app) => {
     router.get('/InforMember', ManagerFamilyTree.informationMember)
     router.post('/setRole', ManagerFamilyTree.setRole)
     router.get('/viewTree', ManagerFamilyTree.AllMemberInGenelogy)
+    router.get('/idPaternal',ManagerFamilyTree.GetIdPaternalAncestor)
     router.get('/unspecified-members',ManagerFamilyTree.getAllUnspecifiedMembers)
 
     router.get('/compare', CompareMemberController.compareMember)
