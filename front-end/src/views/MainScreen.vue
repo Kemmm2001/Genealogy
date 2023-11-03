@@ -37,8 +37,8 @@
           <div class="list-item" style="background-color: #AED6F1; text-align: center;">Đã có trên phả đồ</div>
           <div class="d-flex flex-column w-100" style="overflow-y: auto;">
             <div v-for="(n,index) in nodes" :key="n.id">
-              <div v-if="index == 0" class="list-item ancestor-member">Thành Viên {{n.name}}</div>
-              <div v-else class="list-item">Thành Viên {{n.name}}</div>
+              <div @click="moveViewBox(n.id)" v-if="index == 0" class="list-item ancestor-member">Thành Viên {{n.name}}</div>
+              <div  @click="moveViewBox(n.id)" v-else class="list-item">Thành Viên {{n.name}}</div>
             </div>
           </div>
         </div>
@@ -53,7 +53,6 @@
     <div class="d-flex main-screen align-items-center w-100">
       <div id="tree" ref="tree"></div>
     </div>
-
     <div class="Container-select-modal">
       <modal name="Select-option-Modal">
         <div class="card" style="width: 400px;left:45%">
@@ -505,6 +504,8 @@ export default {
 
       listFilterMember: null,
 
+      memberClick:null,
+
       isAddChildren: false,
       isAddMarried: false,
       isAddParent: false,
@@ -648,7 +649,9 @@ export default {
           field_3: "dod",
           field_4: "generation",
         },
-
+        // keyNavigation:{
+        //   focusId: this.memberClick
+        // },
         lazyLoading: false,
         nodeMouseClick: FamilyTree.action.none,
         enableSearch: false,
@@ -685,6 +688,10 @@ export default {
       this.family.onNodeClick((arg) => {
         this.getInforMember(arg.node.id);
       });
+    },
+    moveViewBox(id){
+      this.memberClick = id;
+      console.log(this.memberClick);
     },
     getViewBox() {
       return this.family.getViewBox();
