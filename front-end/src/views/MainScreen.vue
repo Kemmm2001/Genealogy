@@ -1,7 +1,20 @@
 <template>
   <div class="d-flex h-100 w-100">
     <div class="list d-flex flex-column align-items-center">
-      <div class="w-100">      
+      <div class="w-100">
+        <!-- <select v-model="selectAdress" class="d-flex text-center form-select dropdown p-0">
+          <option :value="null" selected>Tỉnh/Thành phố</option>
+          <option class="dropdown-item" value="Hà Nội">Hà Nội</option>
+          <option class="dropdown-item" value="Điện Biên">Điện Biên</option>
+          <option class="dropdown-item" value="Lào Cai">Lào Cai</option>
+          <option class="dropdown-item" value="Lai Châu">Lai Châu</option>
+          <option class="dropdown-item" value="Sơn La">Sơn La</option>
+          <option class="dropdown-item" value="Yên Bái">Yên Bái</option>
+          <option class="dropdown-item" value="Hòa Bình">Hòa Bình</option>
+          <option class="dropdown-item" value="Thái Nguyên">Thái Nguyên</option>
+          <option class="dropdown-item" value="Quảng Ninh">Quảng Ninh</option>
+          <option class="dropdown-item" value="Bắc Giang">Bắc Giang</option>
+        </select> -->
         <div class="px-2" style="height: 32px;">
           <input type="text" class="form-control h-100 mt-2" placeholder="Tỉnh/Thành phố" />
         </div>
@@ -51,7 +64,7 @@
       </div>
     </div>
     <div class="d-flex main-screen align-items-center w-100">
-      <!-- <div id="tree" ref="tree"></div> -->
+      <div id="tree" ref="tree"></div>
     </div>
     <div class="Container-select-modal">
       <modal name="Select-option-Modal">
