@@ -49,6 +49,8 @@ const initWebRouter = (app) => {
     router.post('/member', FamilyMemberManagement.addMember)
     router.put('/member', FamilyMemberManagement.updateMember)
     router.delete('/member', FamilyMemberManagement.deleteMember)
+    router.get('/getparent',FamilyMemberManagement.GetCurrentParentMember)
+    router.post('/InsertParentID',FamilyMemberManagement.insertParentIdToMember)
     router.post('/InserMarrie', FamilyMemberManagement.InsertMarrieIdToMember)
 
     //API Nhật anh

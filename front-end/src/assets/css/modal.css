@@ -227,6 +227,7 @@ input:focus~label.form-label-number {
     background-color: #FFFFFF;
 }
 
+
 .add-album-modal{
     background-color: #FFFFFF;
 }
@@ -245,7 +246,7 @@ input:focus~label.form-label-number {
 }
 
 .noti-modal-member.chosen{
-    background-color: #f2f2f2;
+    background-color: #3393FF;
 }
 .Container-select-modal .vm--modal {
     top: 21% !important;

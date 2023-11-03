@@ -149,6 +149,32 @@ function InsertMarriIdToMember(memberId, marriageID) {
     });
 }
 
+function GetCurrentParentMember(memberID) {
+    return new Promise((resolve, reject) => {
+        let query = `select * from familymember
+        where MemberID = ${memberID} and ParentID is not null`;
+        db.connection.query(query, (err, result) => {
+            if (err) {
+                console.log(err);
+                reject(err)
+            } else {
+                resolve(result)
+            }
+        })
+    })
+}
+
+function insertParentIdToMember(parentID, memberID) {
+    let query = `UPDATE familymember SET ParentID = ${parentID} WHERE MemberID = ${memberID});`
+    db.connection.query(query, (err, result) => {
+        if (err) {
+            console.log(err)
+        } else {
+            console.log("insert success");
+        }
+    })
+}
+
 function getRelationship(relationshipFrom, relationshipTo) {
     let relationshipName = [relationshipFrom, relationshipTo];
     return new Promise((resolve, reject) => {
@@ -329,5 +355,5 @@ function getAllMember() {
 
 module.exports = {
     addMember, updateMember, deleteMember, getRelationship, getMember, createRelationship, searchMember,
-    getAllMember, InsertMarriIdToMember, queryFamilyMembers, getAllMemberInMemberRole, getAllMemberNotInMemberRole
+    getAllMember, InsertMarriIdToMember, queryFamilyMembers, getAllMemberInMemberRole, getAllMemberNotInMemberRole, GetCurrentParentMember,insertParentIdToMember
 };

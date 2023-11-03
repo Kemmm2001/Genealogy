@@ -45,7 +45,7 @@
         <div class="nonexisting-members d-flex flex-column w-100">
           <div class="list-item" style="background-color: #AED6F1; text-align: center;">Chưa có trên phả đồ</div>
           <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto;">
-            <div v-for="list in ListUnspecifiedMembers" :key="list.id" class="list-item">{{list.MemberName}}</div>
+            <div v-for="list in ListUnspecifiedMembers" :key="list.id" class="list-item">Thành Viên {{list.MemberName}}</div>
           </div>
         </div>
       </div>
@@ -70,7 +70,7 @@
               <div class="list-group-item">Xem mối quan hệ hiện tại</div>
               <div @click="expandAddRelaionship = !expandAddRelaionship" class="list-group-item">Thêm quan hệ</div>
               <div class="collapsedAddRelationship" :class="{ expandedAddRelationship: expandAddRelaionship }">
-                <div v-show="expandAddRelaionship" class="list-group-item">Thêm Cha</div>
+                <div v-show="expandAddRelaionship" class="list-group-item" @click="openMemberModal('parent')">Thêm Cha</div>
                 <div v-show="expandAddRelaionship" class="list-group-item">Thêm Mẹ</div>
                 <div v-show="expandAddRelaionship" class="list-group-item" @click="openMemberModal('married')">Thêm Vợ</div>
                 <div v-show="expandAddRelaionship" class="list-group-item" @click="openMemberModal('children')">Thêm Con</div>
@@ -473,7 +473,7 @@
           <div class="d-flex justify-content-end">
             <button v-if="isAddChildren" type="button" class="btn btn-primary mr-2" @click="addNewChildrenMember()">Thêm</button>
             <button v-else-if="isAddMarried" type="button" class="btn btn-primary mr-2" @click="addNewMarriedMember()">Thêm</button>
-            <button v-else-if="isAddParent" type="button" class="btn btn-primary mr-2" @click="addNewChildrenMember()">Thêm</button>
+            <button v-else-if="isAddParent" type="button" class="btn btn-primary mr-2" @click="getCurrentParentMember()">Thêm</button>
             <button v-if="isEdit" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
             <button style="margin-left:10px" type="button" class="btn btn-secondary" @click="closeSelectModal()">Cancel</button>
           </div>
@@ -656,6 +656,7 @@ export default {
       this.family.onInit(() => {
         this.family.setViewBox("-30,-30,1939,1638");
       });
+
       //Get tọa độ ban đầu
       let CoordinatesNode = this.getViewBox();
       this.family.onRedraw(() => {
@@ -911,8 +912,78 @@ export default {
           console.log(e);
         });
     },
+    addNewParentMember() {
+      HTTP.post("member", {
+        memberName: this.objMemberInfor.MemberName,
+        nickName: this.objMemberInfor.NickName,
+        parentID: null,
+        marriageID: null,
+        hasNickName: null,
+        birthOrder: this.objMemberInfor.BirthOrder,
+        origin: this.objMemberInfor.Origin,
+        nationalityId: this.objMemberInfor.NationalityID,
+        religionId: this.objMemberInfor.ReligionID,
+        dob: this.objMemberInfor.Dob,
+        lunarDob: this.objMemberInfor.Dob,
+        birthPlace: this.objMemberInfor.BirthPlace,
+        IsDead: this.IsDead,
+        dod: this.objMemberInfor.Dod,
+        placeOfDeath: this.objMemberInfor.PlaceOfDeadth,
+        graveSite: this.objMemberInfor.GraveSite,
+        note: this.objMemberInfor.Note,
+        generation: this.generationMember,
+        bloodType: this.objMemberInfor.BloodType,
+        male: this.objMemberInfor.Male,
+        codeId: this.CodeID,
+      }).then((response) => {
+        this.newIdMember = response.data.data.memberId;
+        HTTP.post("addContact", {
+          memberId: this.newIdMember,
+          Address: this.objMemberContact.Address,
+          Phone1: this.objMemberContact.Phone1,
+          Phone2: this.objMemberContact.Phone2,
+          Email1: this.objMemberContact.Email1,
+          Email2: this.objMemberContact.Email2,
+          FacebookUrl: this.objMemberContact.FacebookUrl,
+          Zalo: this.objMemberContact.Zalo,
+        })
+          .then(() => {
+            this.NotificationsScuccess("Thêm thành công");
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+        this.insetParentIdToMember(this.newIdMember);
+        this.family.load(this.nodes);
+        this.getListMember();
+      });
+    },
+    insetParentIdToMember(id) {
+      HTTP.post("InsertParentID", {
+        ParentID: id,
+        memberID: this.CurrentIdMember,
+      }).catch((e) => {
+        console.log(e);
+      });
+    },
+    getCurrentParentMember() {
+      HTTP.get("getparent", {
+        params: {
+          memberID: this.CurrentIdMember,
+        },
+      }).then((response) => {
+        let data = response.data;
+        console.log(data);
+        if (data.length > 0) {
+          this.NotificationsDelete(
+            "Thành viên này đã có cha mẹ. Không thể thêm mới"
+          );
+        } else {
+          this.addNewParentMember();
+        }
+      });
+    },
     addNewMarriedMember() {
-      console.log(this.CurrentIdMember);
       HTTP.post("member", {
         memberName: this.objMemberInfor.MemberName,
         nickName: this.objMemberInfor.NickName,
@@ -1128,6 +1199,7 @@ export default {
       this.$modal.hide("member-modal");
     },
     OnpenModal_SelectOption(id) {
+      this.highLightSelectNode(id);
       this.$modal.show("Select-option-Modal");
       this.CurrentIdMember = id;
     },
@@ -1180,7 +1252,25 @@ export default {
           console.log(e);
         });
     },
+    highLightSelectNode(SelectNode) {
+      // Xóa tất cả các tag "choose" và "notchoose" trên tất cả các nút
+      for (let i = 0; i < this.nodes.length; i++) {
+        this.nodes[i].tags = this.nodes[i].tags.filter(
+          (tag) => tag !== "choose" && tag !== "notchoose"
+        );
+      }
 
+      // Tìm nút được chọn và gán tag "choose" hoặc "notchoose" tương ứng
+      const selectedNode = this.nodes.find((node) => node.id == SelectNode);
+      if (selectedNode) {
+        selectedNode.tags.push("choose");
+      } else {
+        console.error("Nút không tồn tại:", SelectNode);
+      }
+
+      // Cập nhật giao diện
+      this.family.load(this.nodes);
+    },
     highLightNode() {
       for (let i = 0; i < this.nodes.length; i++) {
         this.nodes[i].tags = this.nodes[i].tags.filter(
@@ -1219,14 +1309,12 @@ export default {
         });
     },
     GetIdPaternalAncestor() {
-      console.log(this.CodeID);
       HTTP.get("idPaternal", {
         params: {
           CodeId: this.CodeID,
         },
       }).then((response) => {
-        this.idPaternalAncestor = response.data.MemberID;
-        console.log(this.idPaternalAncestor);
+        this.getListMember(response.data.MemberID);
       });
     },
     async getListUnspecifiedMembers() {
@@ -1242,7 +1330,16 @@ export default {
           console.log(e);
         });
     },
-    async test() {
+    openNotiModal() {
+      this.$modal.show("noti-modal");
+    },
+    closeNotiModal() {
+      this.$modal.hide("noti-modal");
+    },
+    getListMember(idPaternalAncestor) {
+      if (idPaternalAncestor != null) {
+        this.idPaternalAncestor = idPaternalAncestor;
+      }
       HTTP.get("viewTree", {
         params: {
           memberID: this.idPaternalAncestor,
@@ -1254,36 +1351,7 @@ export default {
           for (let i = 0; i < this.nodes.length; i++) {
             this.nodes[i].tags = [];
           }
-
-          this.mytree(this.$refs.tree, this.nodes);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
-    openNotiModal() {
-      this.$modal.show("noti-modal");
-    },
-    closeNotiModal() {
-      this.$modal.hide("noti-modal");
-    },
-    async getListMember() {
-      if (this.idPaternalAncestor == null) {
-        console.log("vào");
-        await this.GetIdPaternalAncestor();
-      }
-      await HTTP.get("viewTree", {
-        params: {
-          memberID: 8,
-        },
-      })
-        .then((response) => {
-          this.nodes = response.data;
-          console.log(this.nodes);
-          for (let i = 0; i < this.nodes.length; i++) {
-            this.nodes[i].tags = [];
-          }
-
+          this.nodes[0].tags.push("great-grandfather");
           this.mytree(this.$refs.tree, this.nodes);
         })
         .catch((e) => {
@@ -1377,7 +1445,7 @@ export default {
     },
   },
   mounted() {
-    this.getListMember();
+    this.GetIdPaternalAncestor();
     this.getListNationality();
     this.getListReligion();
     this.getListAgeGroup();

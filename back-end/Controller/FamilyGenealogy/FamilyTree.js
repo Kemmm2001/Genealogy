@@ -39,7 +39,7 @@ var getAllUnspecifiedMembers = async (req, res) => {
 
 var AllMemberInGenelogy = async (req, res) => {
     try {
-        let memberID = req.query.memberID;
+        let memberID = req.query.memberID;        
         let data = await FamilyTreeService.ViewFamilyTree(memberID);
         data.forEach((item) => {
             if (item.dod === '1-1-1970') {
