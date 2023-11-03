@@ -1,5 +1,5 @@
 var Nodemailer = require('nodemailer');
-var Response = require('./Response').default;
+var Response = require('./Response');
 const schedule = require('node-schedule');
 const UserManagement = require('../service/Authencation/UserManagement');
 
