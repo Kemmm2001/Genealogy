@@ -540,13 +540,7 @@ export default {
         },
         closeEditHeadModal() {
             this.$modal.hide('editHead-modal')
-        },
-        openNotiModal() {
-            this.$modal.show('noti-modal')
-        },
-        closeNotiModal() {
-            this.$modal.hide('noti-modal')
-        },
+        },        
     },
     created() {
         // EventBus.$emit("HeadList", true);
