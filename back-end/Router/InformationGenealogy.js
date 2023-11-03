@@ -7,6 +7,7 @@ const AlbumPhotoController = require('../Controller/InformationGenealogy/AlbumPh
 const ArticleController = require('../Controller/FamilyGenealogy/ArticleController')
 const MemberPhotoController = require('../Controller/InformationGenealogy/MemberPhotoController');
 const AddressController = require('../Controller/InformationGenealogy/AddressController');
+const fs = require('fs');
 
 var router = express.Router();
 const multer = require("multer");
@@ -14,18 +15,32 @@ const crypto = require('crypto');
 const upload = multer({
     storage: multer.diskStorage({
         destination: function (req, file, cb) {
-            cb(null, '/uploads');
+            cb(null, '/uploads/images/member-photo');
         },
-        filename: function (req, file, cb) {
+        filename: (req, file, cb) => {
             // Tạo tên file ngẫu nhiên
-            const randomName = crypto.randomBytes(10).toString('hex');
-            // Thêm đuôi file gốc vào 
-            const fileName = `${randomName}.${file.originalname.split('.').pop()}`;
+            let fileName = generateRandomFileName(file);
+
+            // Kiểm tra tồn tại
+            const destPath = `uploads/images/member-photo/${fileName}`;
+            while (fs.existsSync(destPath)) {
+                // Nếu tồn tại, tạo tên mới
+                fileName = generateRandomFileName(file);
+            }
+
+            // Tên chưa tồn tại, lưu file
             cb(null, fileName);
         }
     })
 });
 
+function generateRandomFileName(file) {
+    // Tạo tên file ngẫu nhiên
+    const randomName = crypto.randomBytes(15).toString('hex');
+    // Thêm đuôi file gốc vào 
+    const fileName = `${randomName}.${file.originalname.split('.').pop()}`;
+    return fileName;
+}
 
 
 
@@ -39,7 +54,7 @@ const initWebRouter = (app) => {
 
     router.get('/statistics', StatisticsController.Statistics)
     router.get('/filterMonth', StatisticsController.filterMemberByMonth)
-    router.get('/filterByAge',StatisticsController.FilterMemberByAge)
+    router.get('/filterByAge', StatisticsController.FilterMemberByAge)
 
     //API tuấn
     // Create a new FamilyHistory
