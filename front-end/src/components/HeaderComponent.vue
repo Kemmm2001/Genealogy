@@ -9,7 +9,7 @@
           </div>
         </router-link>
       </div>
-      <div class="d-flex col-7" style="margin-left: 50px; justify-content: left;">
+      <div class="d-flex col-7" style="padding-left: 50px; justify-content: left;">
         <router-link to="/">
           <div class="navbar-item d-flex py-2">
             <svg class="navbar-icon-sm" style="margin-left: 8px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
