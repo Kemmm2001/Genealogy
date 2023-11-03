@@ -13,16 +13,15 @@ var transporter = Nodemailer.createTransport({
 
 let SendSMSCore = (objData) => {
     try {
-        console.log("objData : " + objData);
         require('dotenv').config();
         let client = require('twilio')(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
         let requiredFields = ['ToPhoneNumber', 'Message'];
         // Kiểm tra xem có đủ các trường của FamilyMember không
-        const missingFields = requiredFields.filter(field => !(field in req.body));
+        const missingFields = requiredFields.filter(field => !(field in objData));
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
-            return Response.missingFieldsErrorResponse(missingFields);
+            return false;
         }
         client.messages.create({
             body: objData.Message,

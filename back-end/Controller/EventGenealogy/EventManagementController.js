@@ -1,6 +1,6 @@
 const EventManagementService = require('../../service/EventGenealogy/EventManagement');
 const SystemAction = require('../../Utils/SystemOperation');
-const Response = require('../../Utils/Response').default;
+const Response = require('../../Utils/Response');
 
 var getAllEventGenealogy = async (req, res) => {
     try {
@@ -90,6 +90,7 @@ var SendSMS = async (req, res) => {
         let objData = {};
         objData.ToPhoneNumber = req.body.ToPhoneNumber;
         objData.Message = req.body.Message;
+        console.log(objData);
         let result = SystemAction.SendSMSCore(objData);
         if (result == true) {
             res.send(Response.successResponse("Send SMS successfully!"));
