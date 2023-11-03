@@ -321,7 +321,7 @@
                 <div style="display:flex">
                   <div style="position: relative; width: 50%;margin-right: 10px;">
                     <input v-model="objMemberContact.Phone1" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberContact.Phone1 }">Điện Thoại 1</label>
+                    <label class="form-label" for="input" :class="{ 'active': objMemberContact.Phone1 }">Điện Thoại 1 (*)</label>
                   </div>
                   <div style="position: relative;width: 50%; margin-right: 10px;">
                     <input v-model="objMemberContact.Phone2" type="text" class="form-control modal-item" placeholder />
