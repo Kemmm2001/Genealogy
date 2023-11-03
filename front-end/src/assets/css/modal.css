@@ -252,3 +252,10 @@ input:focus~label.form-label-number {
     top: 21% !important;
 
 }
+
+.compare-modal-container{
+    width: 100vh;
+    position: absolute;
+    inset: 0;
+    margin: auto;
+}
