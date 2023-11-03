@@ -52,9 +52,9 @@ var refreshToken = async(req, res) => {
   try {
     const {refreshToken} = req.body
     if (!refreshToken) throw createError.BadRequest()
-    const accountID = await verifyRefreshToken(refreshToken)
+    const {insertId} = await verifyRefreshToken(refreshToken)
 
-    const accessToken = await signAccessToken(accountID)
+    const accessToken = await signAccessToken(insertId)
 
     res.send({accessToken: accessToken})
   } catch (error) {

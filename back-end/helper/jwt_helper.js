@@ -6,13 +6,11 @@ module.exports = {
   signAccessToken: (insertId) => {
     return new Promise((resolve, reject) => {
       const payload = {
-
+        insertId
       }
       const secret = process.env.ACCESS_TOKEN_SECRET
       const options = {
         expiresIn: "1d",
-        issuer: "pickurpage.com",
-        audience: insertId.toString()
       }
       JWT.sign(payload, secret, options, (err, token) => {
         if (err) {
@@ -46,13 +44,11 @@ module.exports = {
   signRefreshToken: (insertId) => {
     return new Promise((resolve, reject) => {
       const payload = {
-
+        insertId
       }
       const secret = process.env.REFRESH_TOKEN_SECRET
       const options = {
         expiresIn: "60s",
-        issuer: "pickurpage.com",
-        audience: insertId.toString()
       }
       JWT.sign(payload, secret, options, (err, token) => {
         if (err) {
@@ -60,13 +56,13 @@ module.exports = {
           reject(createError.InternalServerError())
         }
 
-         client.SET(insertId.toString(), token, 'EX', 60 ,(err, reply) => {
-           if (err) {
-             console.log(err.message);
-             reject(createError.InternalServerError());
-             return;
-        }
-         });
+        client.SETEX(insertId.toString(), 60, token, (err, reply) => {
+          if (err) {
+            console.log(err.message);
+            reject(createError.InternalServerError());
+            return;
+          }
+        });
 
 
         resolve(token)
@@ -78,18 +74,18 @@ module.exports = {
     return new Promise((resolve, reject) => {
       JWT.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, payload) => {
         if (err) return reject(createError.Unauthorized())
-        const accountID = parseInt(payload.adu, 10);
-        // client.GET(accountID, (err, result) => {
-        //   if(err) {
-        //     console.log(err.message)
-        //     reject(createError.InternalServerError())
-        //     return
-        //   }
-        //   if(refreshToken === result) return resolve(accountID)
-        //   reject(createError.Unauthorized())
-        // })
-        resolve(accountID)
+        
+         client.GET(payload.insertId, (err, result) => {
+           if(err) {
+             console.log(err.message)
+             reject(createError.InternalServerError())
+             return
+           }
+           if(refreshToken === result) return resolve(payload)
+           reject(createError.Unauthorized())
+         })
       })
     })
   })
+  
 }
