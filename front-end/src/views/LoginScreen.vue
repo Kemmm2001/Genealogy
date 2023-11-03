@@ -107,15 +107,52 @@
 </template>
 
 <script>
+import { HTTP } from "../assets/js/baseAPI.js";
 export default {
     data() {
         return {
             right: false,
             enlarge: false,
             loggingin: true,
+
+            accountLogin:{
+                username: null,
+                password: null,
+            },
+            accountRegister:{
+                username: null,
+                password: null,
+                rePassword: null,
+            },
+
+
         }
     },
     methods: {
+        register(){
+            if(this.accountRegister.password == this.accountRegister.rePassword){
+                HTTP.post("register", {
+                email: this.accountRegister.username,
+                password: this.accountRegister.password,
+            })
+            .then(() => {
+            })
+            .catch((e) => {
+            console.log(e);
+            });
+            }
+        },
+        login(){
+             HTTP.post("login", {
+                email: this.accountLogin.username,
+                password: this.accountLogin.password,
+            })
+            .then(() => {
+            })
+            .catch((e) => {
+            console.log(e);
+            });
+        },
         enlargeBackground() {
             this.enlarge = true;
             setTimeout(() => {

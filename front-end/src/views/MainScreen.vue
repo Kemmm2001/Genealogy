@@ -66,7 +66,6 @@
     <div class="d-flex main-screen align-items-center w-100">
       <!-- <div id="tree" ref="tree"></div> -->
     </div>
-
     <div class="Container-select-modal">
       <modal name="Select-option-Modal">
         <div class="card" style="width: 400px;left:45%">
@@ -579,6 +578,8 @@ export default {
 
       listFilterMember: null,
 
+      memberClick:null,
+
       isAddChildren: false,
       isAddMarried: false,
       isAddParent: false,
@@ -722,7 +723,9 @@ export default {
           field_3: "dod",
           field_4: "generation",
         },
-
+        // keyNavigation:{
+        //   focusId: this.memberClick
+        // },
         lazyLoading: false,
         nodeMouseClick: FamilyTree.action.none,
         enableSearch: false,
@@ -759,6 +762,10 @@ export default {
       this.family.onNodeClick((arg) => {
         this.getInforMember(arg.node.id);
       });
+    },
+    moveViewBox(id){
+      this.memberClick = id;
+      console.log(this.memberClick);
     },
     getViewBox() {
       return this.family.getViewBox();
