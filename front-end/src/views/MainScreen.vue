@@ -29,6 +29,9 @@
           </select>
         </div>
       </div>
+      <div class="w-100" style="margin-bottom: 4px">
+        <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary">Tạo thông báo</button>
+      </div>
       <div class="h-100 w-100 d-flex flex-column">
         <div class="existing-members d-flex flex-column w-100">
           <div class="list-item" style="background-color: #AED6F1; text-align: center;">Đã có trên phả đồ</div>
@@ -80,7 +83,86 @@
         </div>
       </modal>
     </div>
-
+    <!-- Đât là modal thông báo -->
+    <modal name="noti-modal">
+      <div class="h-100 d-flex flex-column" style="background-color: white;">
+        <div class="modal-title d-flex flex-row align-items-center justify-content-center" style="height: 60px;border-radius:0px">
+          <div class="col-3 d-flex flex-row align-items-center h-100 p-3" style="background-color: rgb(235, 235, 235);">
+            <div>
+              <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
+              </svg>
+            </div>
+            <div class="d-flex justify-content-center" style="flex-grow: 1;">User</div>
+          </div>
+          <div class="col-9 d-flex align-items-center justify-content-center">Thông báo tới thành viên</div>
+        </div>
+        <div class="d-flex flex-row" style="height: calc(100% - 60px)">
+          <div class="col-3 h-100 d-flex flex-column" style="overflow-y: auto;background-color: rgb(235, 235, 235);">
+            <div class="position-relative d-flex" style="height: 48px;">
+              <label for="text-search" style="position: absolute; inset: 12px;">
+                <svg class="text-search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                  <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
+                </svg>
+              </label>
+              <div class="w-100" style="height: 48px; padding: 8px;">
+                <input class="form-control px-5 py-0 w-100 h-100" id="text-search" type="text" />
+              </div>
+            </div>
+            <div class="position-relative d-flex" style="height: 48px;">
+              <div class="d-flex flex-row align-items-center p-2">
+                <input v-model="checkAll" type="checkbox" class="form-check-input" />
+                <div style="padding-left: 8px">Chọn tất cả mọi người</div>
+              </div>
+            </div>
+            <div>
+              <div tabindex="1" class="noti-modal-member d-flex flex-row align-items-center px-2" :class="{ chosen: checkAll }">
+                <div>
+                  <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                    <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
+                  </svg>
+                </div>
+                <div class="d-flex justify-content-center" style="flex-grow: 1;">Thành viên A</div>
+              </div>
+              <div tabindex="2" class="noti-modal-member d-flex flex-row align-items-center px-2" :class="{ chosen: checkAll }">
+                <div>
+                  <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                    <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
+                  </svg>
+                </div>
+                <div class="d-flex justify-content-center" style="flex-grow: 1;">Thành viên A</div>
+              </div>
+              <div tabindex="3" class="noti-modal-member d-flex flex-row align-items-center px-2" :class="{ chosen: checkAll }">
+                <div>
+                  <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                    <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
+                  </svg>
+                </div>
+                <div class="d-flex justify-content-center" style="flex-grow: 1;">Thành viên A</div>
+              </div>
+              <div tabindex="4" class="noti-modal-member d-flex flex-row align-items-center px-2" :class="{ chosen: checkAll }">
+                <div>
+                  <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                    <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
+                  </svg>
+                </div>
+                <div class="d-flex justify-content-center" style="flex-grow: 1;">Thành viên A</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-9 h-100 position-relative">
+            <div class="position-absolute w-100 px-2 d-flex flex-row" style="bottom: 8px">
+              <input type="text" class="form-control" placeholder="..." />
+              <div class="d-flex align-items-center" style="padding-left: 8px; cursor: pointer;">
+                <svg class="noti-send-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                  <path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </modal>
     <!-- Đây là modal member-->
     <modal name="member-modal">
       <div class="card" v-if="objMemberInfor">
@@ -426,6 +508,7 @@ export default {
       isAddChildren: false,
       isAddMarried: false,
       isAddParent: false,
+      checkAll: false,
 
       newIdMember: null,
       CurrentIdMember: null,
@@ -1177,6 +1260,12 @@ export default {
         .catch((e) => {
           console.log(e);
         });
+    },
+    openNotiModal() {
+      this.$modal.show("noti-modal");
+    },
+    closeNotiModal() {
+      this.$modal.hide("noti-modal");
     },
     async getListMember() {
       if (this.idPaternalAncestor == null) {

@@ -466,11 +466,14 @@
                 <div class="card-footer" style="background-color:#E8C77B">
                     <div class="d-flex justify-content-end">
                         <button type="button" class="btn btn-primary mr-2">Thay đổi</button>
-                        <button style="margin-left:10px" type="button" class="btn btn-secondary">Xóa khỏi danh sách tộc trưởng</button>
+                        <button style="margin-left:10px" type="button" class="btn btn-secondary">Xóa khỏi danh sách tộc
+                            trưởng</button>
                     </div>
                 </div>
             </div>
         </modal>
+
+
     </div>
 </template>
 
@@ -487,6 +490,7 @@ export default {
             isDead: false,
             ListNationality: null,
             ListReligion: null,
+
         }
     },
     methods: {
@@ -533,17 +537,15 @@ export default {
         },
         openEditHeadModal() {
             this.$modal.show('editHead-modal')
-            console.log("Chay vao edit")
         },
         closeEditHeadModal() {
             this.$modal.hide('editHead-modal')
-            console.log("Chay ra khoi edit")
-        },
+        },        
     },
-    created(){
-    // EventBus.$emit("HeadList", true);
-    // EventBus.$emit("AlbumList", false);
-    // EventBus.$emit("ArticleList", false);
-  },
+    created() {
+        // EventBus.$emit("HeadList", true);
+        // EventBus.$emit("AlbumList", false);
+        // EventBus.$emit("ArticleList", false);
+    },
 }
 </script>

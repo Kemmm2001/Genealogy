@@ -62,3 +62,20 @@
     width: 24px;
     height: 24px;
 }
+
+.noti-modal-member-ava{
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+}
+
+.noti-send-icon{
+    width: 24px;
+    height: 24px;
+}
+
+.text-search-icon{
+    width: 20px;
+    height: 20px;
+    fill: #9d9d9d;
+}

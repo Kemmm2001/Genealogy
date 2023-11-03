@@ -62,6 +62,46 @@ var refreshToken = async(req, res) => {
   }
 }
 
+var registerGenealogy = async (req, res) => {
+  try {
+    const accountID = req.body
+    const codeID = generateRandomString ;
+    let data = await UserService.createGenealogy(accountID, codeID);
+  
+
+    return res.json({ data })
+  } catch (error) {
+    if (error.isJoi === true) {
+      error.status = 422;
+    }
+    res.status(error.status || 500).json({ error: error.message });
+
+  }
+}
+
+var getGenealogy = async (req, res) => {
+  try {
+    const request = req.body;
+    let data = await UserService.createGenealogy(request);
+    return res.json({ data })
+  } catch (error) {
+    if (error.isJoi === true) {
+      error.status = 422;
+    }
+    res.status(error.status || 500).json({ error: error.message });
+
+  }
+}
+
+function generateRandomString() {
+  const randomNumbers = Array.from({ length: 12 }, () => Math.floor(Math.random() * 10));
+
+  // Định dạng chuỗi bằng cách cắt thành các phần và nối chúng bằng dấu "-"
+  const formattedString = `${randomNumbers.slice(0, 3).join('')}-${randomNumbers.slice(3, 6).join('')}-${randomNumbers.slice(6, 9).join('')}`;
+
+  return formattedString;
+}
+
 module.exports = {
-  registerUser, loginUser, refreshToken
+  registerUser, loginUser, refreshToken, registerGenealogy, getGenealogy
 };
