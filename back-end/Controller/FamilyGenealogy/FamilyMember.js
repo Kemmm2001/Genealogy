@@ -1,42 +1,75 @@
 const FamilyManagementService = require("../../service/FamilyGenealogy/FamilyManagement");
+const Response = require("../../Utils/Response");
+const ListAgeGroup = [
+    {
+        From: 0,
+        End: 5,
+        id: 0,
+    },
+    {
+        From: 6,
+        End: 17,
+        id: 1,
+    },
+    {
+        From: 18,
+        End: 40,
+        id: 2,
+    },
+    {
+        From: 41,
+        End: 60,
+        id: 3,
+    },
+    {
+        From: 61,
+        End: 200,
+        id: 4,
+    },
+]
 
-missingFieldsError = function (missingFields) {
-    console.error(`Missing required fields: ${missingFields.join(', ')}`);
-    return response = {
-        success: false,
-        message: 'Missing required fields',
-        missingFields: missingFields
-    };
+const ListBloodTypeGroup = [
+    {
+        BloodType: "Nhóm máu",
+        id: null
+    },
+    {
+        BloodType: "Nhóm máu A",
+        id: "A"
+    },
+    {
+        BloodType: "Nhóm máu B",
+        id: "B"
+    },
+    {
+        BloodType: "Nhóm máu AB",
+        id: "AB"
+    },
+    {
+        BloodType: "Nhóm máu O",
+        id: "O"
+    }
+]
+
+var getListAgeGroup = async (req, res) => {
+    res.send(ListAgeGroup)
 }
-
-noDataFound = function (res) {
-    message = "No data found";
-    console.log(message);
-    response = {
-        success: false,
-        message: message
-    };
-    return res.status(404).json(response);
+var getListBloodTypeGroup = async (req, res) => {
+    res.send(ListBloodTypeGroup)
 }
 
 var addMember = async (req, res) => {
     try {
-        // Log ra thông tin trong req.body
         console.log('Request body: ', req.body);
-        let response;
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
             'memberName',
             'nickName',
             'hasNickName',
             'birthOrder',
-            'origin',
             'nationalityId',
             'religionId',
-            'dob',
-            'lunarDob',
-            'birthPlace',
-            'isAlive',
+            'IsDead',
             'generation',
             'codeId',
             'bloodType',
@@ -47,26 +80,20 @@ var addMember = async (req, res) => {
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
-            return res.status(400).json(missingFieldsError(missingFields));
-
+            return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
         // thêm member vào database
         let data = await FamilyManagementService.addMember(req.body);
-        console.log("Add member successfully");
-
-        response = {
-            success: true,
+        dataRes = {
             message: 'Add member successfully',
-            data: {
-                memberId: data.insertId,
-                affectedRows: data.affectedRows
-            }
+            memberId: data.insertId,
+            affectedRows: data.affectedRows
         };
-        return res.json(response);
-
+        return res.send(Response.successResponse(dataRes));
     } catch (e) {
-        res.send(e);
+        console.log("Error: " + e);
+        return res.send(Response.internalServerErrorResponse(e));
     }
 };
 
@@ -82,13 +109,9 @@ var updateMember = async (req, res) => {
             'nickName',
             'hasNickName',
             'birthOrder',
-            'origin',
             'nationalityId',
             'religionId',
-            'dob',
-            'lunarDob',
-            'birthPlace',
-            'isAlive',
+            'IsDead',
             'generation',
             'codeId',
             'bloodType',
@@ -98,48 +121,54 @@ var updateMember = async (req, res) => {
         const missingFields = requiredFields.filter(field => !(field in req.body));
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
-            return res.status(400).json(missingFieldsError(missingFields));
-
+            return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         // update member vào database
         let data = await FamilyManagementService.updateMember(req.body);
-        response = {
-            success: true,
+        dataRes = {
             message: 'Update member successfully',
-            data: {
-                memberID: req.body.memberID,
-                affectedRows: data.affectedRows,
-                changedRows: data.changedRows
-            }
-        };
-        return res.json(response);
-
+            memberID: req.body.memberID,
+            affectedRows: data.affectedRows,
+            changedRows: data.changedRows
+        }
+        return res.send(Response.successResponse(dataRes));
     } catch (e) {
-        res.send(e);
+        console.log("Error: " + e);
+        return res.send(Response.internalServerErrorResponse(e));
     }
 }
 
 var deleteMember = async (req, res) => {
     try {
-        console.log("Request body: ", req.body);
-        let response;
-        let result = await FamilyManagementService.deleteMember(req.body.memberID);
-
-        response = {
-            success: true,
+        console.log("Request body: ", req.query);
+        let result = await FamilyManagementService.deleteMember(req.query.memberID);
+        dataRes = {
             message: 'Delete member successfully',
-            data: {
-                memberID: req.body.memberID,
-                affectedRows: result.affectedRows,
-                changedRows: result.changedRows
-            }
-        };
-        return res.json(response);
-
+            memberID: req.query.memberID,
+            affectedRows: result.affectedRows,
+            changedRows: result.changedRows
+        }
+        return res.send(Response.successResponse(dataRes));
     } catch (e) {
-        res.send(e);
+        console.log("Error: " + e);
+        return res.send(Response.internalServerErrorResponse(e));
     }
 }
+
+
+var InsertMarrieIdToMember = async (req, res) => {
+    try {
+        let memberID = req.body.memberID;
+        let marriageID = req.body.marriageID;
+        await FamilyManagementService.InsertMarriIdToMember(memberID, marriageID);
+        res.send("Insert Successfuly");
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+
+
 
 var searchMember = async (req, res) => {
     try {
@@ -153,18 +182,32 @@ var searchMember = async (req, res) => {
 }
 var filterMember = async function (req, res) {
     try {
-        const filterOptions = req.body; // Lấy filterOptions từ request body
-        const filteredMembers = await FamilyManagementService.filterMember(filterOptions);
+        const filterOptions = req.body;
 
-        res.json({
-            success: true,
-            data: filteredMembers,
-        });
+        if (req.body.selectAge != null) {
+            filterOptions.EndAge = ListAgeGroup[req.body.selectAge].End;
+            filterOptions.startAge = ListAgeGroup[req.body.selectAge].From;
+        }
+        const filteredMembers = await FamilyManagementService.queryFamilyMembers(filterOptions);
+
+        res.json({ success: true, data: filteredMembers });
     } catch (error) {
         console.error('Lỗi khi lọc thành viên:', error);
         res.status(500).json({ success: false, message: 'Lỗi khi lọc thành viên' });
     }
 }
+var getAllMemberSortByRole = async (req, res) => {
+    try {
+        let listMemberInMemberRole = await FamilyManagementService.getAllMemberInMemberRole();
+        let listMemberNotInMemberRole = await FamilyManagementService.getAllMemberNotInMemberRole();
+        let data = listMemberInMemberRole + listMemberNotInMemberRole;
+        res.send(data)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
 var getAllMember = async (req, res) => {
     try {
         // Gọi hàm từ dịch vụ để lấy tất cả thành viên
@@ -198,19 +241,22 @@ function sortMembers(members, sortKey, order) {
     // Kiểm tra xem sortKey có hợp lệ hay không
     const validSortKeys = ['memberName', 'dob'];
     if (!validSortKeys.includes(sortKey)) {
-      throw new Error('Invalid sort key');
+        throw new Error('Invalid sort key');
     }
-  
+
     let sortedMembers = [...members];
     if (order === 'desc') {
-      sortedMembers.sort((a, b) => (b[sortKey] < a[sortKey] ? -1 : 1));
+        sortedMembers.sort((a, b) => (b[sortKey] < a[sortKey] ? -1 : 1));
     } else {
-      sortedMembers.sort((a, b) => (a[sortKey] < b[sortKey] ? -1 : 1));
+        sortedMembers.sort((a, b) => (a[sortKey] < b[sortKey] ? -1 : 1));
     }
-  
+
     return sortedMembers;
-  }
-  
+}
 
 
-module.exports = { addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember, sortMembers};
+
+module.exports = {
+    addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember, sortMembers, InsertMarrieIdToMember,
+    getListAgeGroup, getListBloodTypeGroup, getAllMemberSortByRole
+};

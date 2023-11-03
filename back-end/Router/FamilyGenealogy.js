@@ -15,11 +15,16 @@ const initWebRouter = (app) => {
     //Get Nationality and Religion
     router.get('/nationality', ManagerFamilyTree.AllNationality)
     router.get('/religion', ManagerFamilyTree.AllReligion)
+    router.get('/agegroup', FamilyMemberManagement.getListAgeGroup)
+    router.get('/bloodtype', FamilyMemberManagement.getListBloodTypeGroup)
+
     // router.get('/', ManagerFamilyTree.AllReligion)
     router.get('/memberRole', ManagerFamilyTree.AllMemberRole)
     router.get('/InforMember', ManagerFamilyTree.informationMember)
     router.post('/setRole', ManagerFamilyTree.setRole)
     router.get('/viewTree', ManagerFamilyTree.AllMemberInGenelogy)
+    router.get('/idPaternal',ManagerFamilyTree.GetIdPaternalAncestor)
+    router.get('/unspecified-members',ManagerFamilyTree.getAllUnspecifiedMembers)
 
     router.get('/compare', CompareMemberController.compareMember)
 
@@ -27,6 +32,7 @@ const initWebRouter = (app) => {
     router.post('/addJob', JobManagementController.InsertJobMember)
     router.put('/updateJob', JobManagementController.UpdateJobMember)
     router.delete('/removeJob', JobManagementController.RemoveJobMember)
+    router.delete('/RemoveListJob', JobManagementController.RemoveListJobMember)
 
     router.get('/contact', ContactManagementController.ViewContactMember)
     router.post('/addContact', ContactManagementController.InsertContactMember)
@@ -37,12 +43,13 @@ const initWebRouter = (app) => {
     router.post('/addEducation', EducationManagementController.InsertEducationMember)
     router.put('/updateEducation', EducationManagementController.UpdateEducationMember)
     router.delete('/deleteEducation', EducationManagementController.RemoveEducationMember)
+    router.delete('/deleteListEducation', EducationManagementController.RemoveListEducationMember)
 
     //API tuấn
     router.post('/member', FamilyMemberManagement.addMember)
     router.put('/member', FamilyMemberManagement.updateMember)
     router.delete('/member', FamilyMemberManagement.deleteMember)
-
+    router.post('/InserMarrie', FamilyMemberManagement.InsertMarrieIdToMember)
 
     //API Nhật anh
     router.get('/member', FamilyMemberManagement.getAllMember);

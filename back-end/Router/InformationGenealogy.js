@@ -6,6 +6,8 @@ const StatisticsController = require('../Controller/InformationGenealogy/Statist
 const AlbumPhotoController = require('../Controller/InformationGenealogy/AlbumPhotoController');
 const ArticleController = require('../Controller/FamilyGenealogy/ArticleController')
 const MemberPhotoController = require('../Controller/InformationGenealogy/MemberPhotoController');
+const AddressController = require('../Controller/InformationGenealogy/AddressController');
+
 var router = express.Router();
 const multer = require("multer");
 const crypto = require('crypto');
@@ -37,7 +39,7 @@ const initWebRouter = (app) => {
 
     router.get('/statistics', StatisticsController.Statistics)
     router.get('/filterMonth', StatisticsController.filterMemberByMonth)
-
+    router.get('/filterByAge',StatisticsController.FilterMemberByAge)
 
     //API tuấn
     // Create a new FamilyHistory
@@ -76,9 +78,13 @@ const initWebRouter = (app) => {
     //API Nhật anh
 
     router.get('/article', ArticleController.getAllArticle);
+    router.post('/article', ArticleController.getArticle);
     router.post('/add-article', ArticleController.addArticle);
     router.put('/update-article', ArticleController.updateArticle);
     router.delete('/delete-article', ArticleController.deleteArticle);
+
+    router.get('/province', AddressController.getProvince);
+    router.get('district/:id', AddressController.getDistrict);
     //Tiền tố đứng trước route
     app.use('/api/v1', router);
 }

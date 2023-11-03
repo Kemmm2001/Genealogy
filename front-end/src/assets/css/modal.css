@@ -182,6 +182,14 @@ input:focus~label.form-label {
     color: #212529;
 }
 
+.active {
+    font-size: 11px;
+    top: -3px;
+    transform: translateY(-30%) scale(1.1);
+    background: #fff;
+    color: #212529;
+}
+
 input:not(:placeholder-shown)~label,
 input:focus~label.form-label-number {
     font-size: 11px;
@@ -190,8 +198,6 @@ input:focus~label.form-label-number {
     background: #fff;
     color: #212529;
 }
-
-
 
 .custom-info {
     text-align: center;
@@ -213,11 +219,11 @@ input:focus~label.form-label-number {
     padding-top: 50px;
 }
 
-.add-head-modal{
+.add-head-modal {
     background-color: #FFFFFF;
 }
 
-.add-article-modal{
+.add-article-modal {
     background-color: #FFFFFF;
 }
 
@@ -240,4 +246,8 @@ input:focus~label.form-label-number {
 
 .noti-modal-member.chosen{
     background-color: #f2f2f2;
+}
+.Container-select-modal .vm--modal {
+    top: 21% !important;
+
 }

@@ -35,8 +35,7 @@ var UpdateJobMember = async (req, res) => {
         ObjData.Role = req.body.Role;
         ObjData.JobName = req.body.JobName;
         ObjData.StartDate = req.body.StartDate;
-        ObjData.EndDate = req.body.EndDate;
-        console.log(ObjData)
+        ObjData.EndDate = req.body.EndDate;       
         await JobManagementService.UpdateJobByID(ObjData);
         res.send("Update successfully")
     } catch (e) {
@@ -54,7 +53,16 @@ var RemoveJobMember = async (req, res) => {
     }
 }
 
+var RemoveListJobMember = async (req, res) => {
+    try {
+        let memberID = req.query.memberID;
+        await JobManagementService.DeleteListJobByID(memberID)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 
 module.exports = {
-    ViewJobMember, InsertJobMember, UpdateJobMember, RemoveJobMember
+    ViewJobMember, InsertJobMember, UpdateJobMember, RemoveJobMember,RemoveListJobMember
 }

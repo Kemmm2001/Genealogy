@@ -1,12 +1,6 @@
 const EventManagementService = require('../../service/EventGenealogy/EventManagement');
-var nodemailer = require('nodemailer');
-var transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: "systemgenealogy@gmail.com",
-        pass: "gyin yjnt cezd xsmt",
-    }
-});
+const SystemAction = require('../../Utils/SystemOperation');
+const Response = require('../../Utils/Response').default;
 
 var getAllEventGenealogy = async (req, res) => {
     try {
@@ -93,20 +87,18 @@ var GetDeadDayInMonth = async (req, res) => {
 
 var SendSMS = async (req, res) => {
     try {
-        require('dotenv').config();
-        var client = require('twilio')(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
         let objData = {};
-        objData.PhoneNumber = req.body.PhoneNumber;
+        objData.ToPhoneNumber = req.body.ToPhoneNumber;
         objData.Message = req.body.Message;
-        console.log("Req : " + objData.Message);
-        client.messages.create({
-            body: objData.Message,
-            from: process.env.PHONE_NUMBER,
-            to: objData.PhoneNumber
-        });
-        res.send("Success")
+        let result = SystemAction.SendSMSCore(objData);
+        if (result == true) {
+            res.send(Response.successResponse("Send SMS successfully!"));
+        } else {
+            res.send(Response.errorResponse("Send SMS failed!"));
+        }
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        res.send(Response.internalServerErrorResponse(error));
     }
 }
 
@@ -138,55 +130,25 @@ var filterEvent = async function (req, res) {
 
 var SendEmail = async (req, res) => {
     try {
-        if (req.body.text != null && req.body.html != null) {
-            response = {
-                success: false,
-                message: "Just choose one of text or html to send!",
-            };
-            res.json(response);
-        }
-        // sau khi đã qua được phần kiểm tra về text và html thì tiến hành gửi mail
-        var mailOptions = {
-            from: process.env.EMAIL_ADDRESS,
-            subject: req.body.subject,
-            text: req.body.text,
-            html: req.body.html,
-        };
-        // Kiểm tra xem có phải mảng hay không
-        if (Array.isArray(req.body.to)) {
-            // Nếu là mảng thì join
-            mailOptions.to = req.body.to.join(',');
+        let objData = {};
+        objData.to = req.body.to;
+        objData.subject = req.body.subject;
+        objData.text = req.body.text;
+        objData.html = req.body.html;
+        let result = SystemAction.SendEmailCore(objData);
+        if (result == true) {
+            res.send(Response.successResponse("Send Email successfully!"));
         } else {
-            // Nếu là string thì gán luôn
-            mailOptions.to = req.body.to;
+            res.send(Response.errorResponse("Send Email failed!"));
         }
-        transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-                console.log(error);
-                response = {
-                    success: false,
-                    message: "Email sent failed!",
-
-                };
-                res.json(response);
-            } else {
-                console.log('Email sent: ' + info.response);
-                response = {
-                    success: true,
-                    message: "Email sent successfully!",
-
-                };
-                res.json(response);
-            }
-        });
     } catch (error) {
         console.log(error);
-        res.send(error);
+        res.send(Response.internalServerErrorResponse(error));
     }
-
 };
 
 module.exports = {
-    getAllEventGenealogy, InsertEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth, SendSMS, SendEmail, searchEvent, filterEvent
+    getAllEventGenealogy, InsertEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth,
+     SendSMS, SendEmail, searchEvent, filterEvent
 
 }
