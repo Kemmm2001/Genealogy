@@ -259,3 +259,10 @@ input:focus~label.form-label-number {
     inset: 0;
     margin: auto;
 }
+
+.login-options-container .vm--modal {
+    inset: 0 !important;
+    margin: auto;
+    width: 550px !important;
+    height: 136px !important;
+}

@@ -63,8 +63,19 @@
                                 </svg>
                             </div>
                         </div>
+                        <div class="d-flex mb-2" style="position: relative;">
+                            <input id="email" type="text" class="form-control py-2 px-5 position-relative"
+                                placeholder="Email" />
+                            <div class="position-absolute d-flex align-items-center justify-content-center h-100"
+                                style="left: 0; width: 3rem;">
+                                <svg class="login-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                    <path style="fill: gray;"
+                                        d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z" />
+                                </svg>
+                            </div>
+                        </div>
                         <div class="d-flex justify-content-center align-items-center" style="height: auto; width: auto;">
-                            <button class="btn register-button">Đăng kí</button>
+                            <button @click="showLoginOptions()" class="btn register-button">Đăng kí</button>
                         </div>
                     </div>
                 </div>
@@ -96,10 +107,40 @@
                                 </svg>
                             </div>
                         </div>
+                        <div class="d-flex mb-2" style="position: relative;">
+                            <input id="familycode" type="password" class="form-control py-2 px-5 position-relative"
+                                placeholder="Code gia tộc (nếu có)" />
+                        </div>
                         <div class="d-flex justify-content-center align-items-center" style="height: auto; width: auto;">
                             <button class="btn login-button">Đăng nhập</button>
                         </div>
                     </div>
+                </div>
+                <div class="login-options-container">
+                    <modal name="login-options">
+                        <div class="login-options-modal-container position-relative" style="height: 100vh">
+                            <div
+                                class="login-options-modal position-absolute h-100 d-flex flex-column align-items-center justify-content-center">
+                                <div class="login-options-content d-flex flex-row align-items-center justify-content-center py-3"
+                                    style="margin-bottom: 8px;">
+                                    <div class="d-flex align-items-center justify-content-center col-4">Nhập
+                                        code gia tộc</div>
+                                    <div class="position-relative" style="flex-grow: 1; height: 64px;">
+                                        <input class="position-absolute code-input p-2" type="text" />
+                                    </div>
+                                    <div class="col-2 d-flex justify-content-center align-items-center"
+                                        style="height: auto; width: auto;">
+                                        <button class="btn submit-code-button">Đăng nhập</button>
+                                    </div>
+                                </div>
+                                <router-link to="/familycode" class="w-100">
+                                    <div class="login-options-content code-register d-flex align-items-center justify-content-center p-3"
+                                        style="margin-bottom: 8px;">
+                                        Chưa có code gia tộc? Tạo mới ngay</div>
+                                </router-link>
+                            </div>
+                        </div>
+                    </modal>
                 </div>
             </div>
         </div>
@@ -115,11 +156,11 @@ export default {
             enlarge: false,
             loggingin: true,
 
-            accountLogin:{
+            accountLogin: {
                 username: null,
                 password: null,
             },
-            accountRegister:{
+            accountRegister: {
                 username: null,
                 password: null,
                 rePassword: null,
@@ -129,29 +170,29 @@ export default {
         }
     },
     methods: {
-        register(){
-            if(this.accountRegister.password == this.accountRegister.rePassword){
+        register() {
+            if (this.accountRegister.password == this.accountRegister.rePassword) {
                 HTTP.post("register", {
-                email: this.accountRegister.username,
-                password: this.accountRegister.password,
-            })
-            .then(() => {
-            })
-            .catch((e) => {
-            console.log(e);
-            });
+                    email: this.accountRegister.username,
+                    password: this.accountRegister.password,
+                })
+                    .then(() => {
+                    })
+                    .catch((e) => {
+                        console.log(e);
+                    });
             }
         },
-        login(){
-             HTTP.post("login", {
+        login() {
+            HTTP.post("login", {
                 email: this.accountLogin.username,
                 password: this.accountLogin.password,
             })
-            .then(() => {
-            })
-            .catch((e) => {
-            console.log(e);
-            });
+                .then(() => {
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
         },
         enlargeBackground() {
             this.enlarge = true;
@@ -172,6 +213,10 @@ export default {
             setTimeout(() => {
                 this.right = false;
             }, 300);
+        },
+
+        showLoginOptions() {
+            this.$modal.show("login-options");
         }
     },
 }
