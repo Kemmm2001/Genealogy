@@ -30,6 +30,11 @@ const routes = [
     component: () => import("../views/LoginScreen.vue"),
   },
   {
+    path: "/familycode",
+    name: "familycode",
+    component: () => import("../views/FamilyCodeRegister.vue"),
+  },
+  {
     path: "*",
     component: () => import("../views/NotFound.vue"),
   },
