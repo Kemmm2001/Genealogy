@@ -7,7 +7,7 @@ var getAllEastAsiaCountries = async (req, res) => {
 
         fs.readFile(jsonFile, 'utf8', (err, data) => {
           if (err) {
-            return res.send(Response.internalServerErrorResponse(e));
+            return res.send(Response.internalServerErrorResponse(err));
           }
           
           const jsonData = JSON.parse(data);
