@@ -70,9 +70,8 @@ var refreshToken = async(req, res) => {
 
 var registerGenealogy = async (req, res) => {
   try {
-    const accountID = req.body
-    const codeID = generateRandomString ;
-
+    const accountID = req.body;
+    let codeID;
     let doesExist = true;
 
     while (doesExist) {
@@ -81,17 +80,16 @@ var registerGenealogy = async (req, res) => {
     }
 
     let data = await UserService.createGenealogy(accountID, codeID);
-  
 
-    return res.json({ data })
+    return res.json({ data });
   } catch (error) {
     if (error.isJoi === true) {
       error.status = 422;
     }
     res.status(error.status || 500).json({ error: error.message });
-
   }
 }
+
 
 var getGenealogy = async (req, res) => {
   try {
@@ -107,7 +105,7 @@ var getGenealogy = async (req, res) => {
   }
 }
 
-function  generateRandomString() {
+function generateRandomString() {
   const randomNumbers = Array.from({ length: 12 }, () => Math.floor(Math.random() * 10));
 
   // Định dạng chuỗi bằng cách cắt thành các phần và nối chúng bằng dấu "-"
