@@ -75,7 +75,7 @@ module.exports = {
       JWT.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, payload) => {
         if (err) return reject(createError.Unauthorized())
         
-         client.GET(payload.insertId, (err, result) => {
+         client.GET(payload.insertId.toString(), (err, result) => {
            if(err) {
              console.log(err.message)
              reject(createError.InternalServerError())
