@@ -1,6 +1,6 @@
 const FamilyHistoryManagementService = require("../../service/InformationGenealogy/FamilyHistoryManagement");
 const Response = require("../../Utils/Response");
-
+const CoreFunction = require("../../Utils/CoreFunction");
 
 
 var addFamilyHistory = async (req, res) => {
@@ -13,7 +13,7 @@ var addFamilyHistory = async (req, res) => {
             'Description'
         ];
         // Kiểm tra xem có đủ các trường của FamilyHistory không
-        const missingFields = requiredFields.filter(field => !(field in req.body));
+        const missingFields = CoreFunction.missingFields(requiredFields, req.body);
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
@@ -23,7 +23,6 @@ var addFamilyHistory = async (req, res) => {
         // thêm FamilyHistory vào database
         let data = await FamilyHistoryManagementService.insertFamilyHistory(req.body)
         dataRes = {
-            message: "Add FamilyHistory successfully",
             familyHistoryId: data.insertId,
             affectedRows: data.affectedRows
         }
@@ -45,7 +44,7 @@ var updateFamilyHistory = async (req, res) => {
             'Description'
         ];
         // Kiểm tra xem có đủ các trường của FamilyHistory không
-        const missingFields = requiredFields.filter(field => !(field in req.body));
+        const missingFields = CoreFunction.missingFields(requiredFields, req.body);
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
@@ -60,7 +59,6 @@ var updateFamilyHistory = async (req, res) => {
         // cập nhật FamilyHistory vào database
         let dataUpdate = await FamilyHistoryManagementService.updateFamilyHistory(req.body)
         dataRes = {
-            message: "Update FamilyHistory successfully",
             affectedRows: dataUpdate.affectedRows,
         }
         return res.send(Response.successResponse(dataRes));
@@ -72,14 +70,14 @@ var updateFamilyHistory = async (req, res) => {
 
 var deleteFamilyHistory = async (req, res) => {
     try {
-        // Log ra thông tin trong req.params
-        console.log('Request params: ', req.params);
-        // các trường bắt buộc phải có trong req.params
+        // Log ra thông tin trong req.query
+        console.log('Request query: ', req.query);
+        // các trường bắt buộc phải có trong req.query
         const requiredFields = [
             'FamilyHistoryID'
         ];
         // Kiểm tra xem có đủ các trường của FamilyHistory không
-        const missingFields = requiredFields.filter(field => !(field in req.params));
+        const missingFields = CoreFunction.missingFields(requiredFields, req.query);
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
@@ -87,14 +85,13 @@ var deleteFamilyHistory = async (req, res) => {
         }
         console.log("No missing fields");
         // lấy thông tin FamilyHistory từ database
-        let data = await FamilyHistoryManagementService.getFamilyHistoryById(req.params.FamilyHistoryID)
+        let data = await FamilyHistoryManagementService.getFamilyHistoryById(req.query.FamilyHistoryID)
         if (data == null || data.length == 0) {
             return res.send(Response.dataNotFoundResponse());
         }
         // xóa FamilyHistory khỏi database
-        let dataDelete = await FamilyHistoryManagementService.removeFamilyHistory(req.params.FamilyHistoryID)
+        let dataDelete = await FamilyHistoryManagementService.removeFamilyHistory(req.query.FamilyHistoryID)
         dataRes = {
-            message: "Delete FamilyHistory successfully",
             affectedRows: dataDelete.affectedRows
         }
         return res.send(Response.successResponse(dataRes));
@@ -105,33 +102,27 @@ var deleteFamilyHistory = async (req, res) => {
 };
 
 
-var getFamilyHistoryById = async (req, res) => {
+var getFamilyHistory = async (req, res) => {
     try {
-        // Log ra thông tin trong req.params
-        console.log('Request params: ', req.params);
-        // các trường bắt buộc phải có trong req.params
-        const requiredFields = [
-            'id'
-        ];
-        // Kiểm tra xem có đủ các trường của FamilyHistory không
-        const missingFields = requiredFields.filter(field => !(field in req.params));
-        console.log(missingFields);
-        // trong trường hợp thiếu trường bắt buộc
-        if (missingFields.length) {
-            return res.send(Response.missingFieldsErrorResponse(missingFields));
-        }
-
-        console.log("No missing fields");
+        let reqData = req.query;
+        // Log ra thông tin trong req.query
+        console.log('Request query: ', reqData);
         // lấy thông tin FamilyHistory từ database
-        let data = await FamilyHistoryManagementService.getFamilyHistoryById(req.params.id)
+        // những thông tin có thể lấy được: FamilyHistoryID, CodeID
+        let data;
+        if (reqData.FamilyHistoryID != null && reqData.FamilyHistoryID != undefined && reqData.FamilyHistoryID !== "") {
+            console.log(`Get FamilyHistory by FamilyHistoryID : ${reqData.FamilyHistoryID}`);
+            data = await FamilyHistoryManagementService.getFamilyHistoryById(req.query.FamilyHistoryID)
+
+        } else if (reqData.CodeID != null && reqData.CodeID != undefined && reqData.CodeID !== "") {
+            console.log(`Get FamilyHistory by CodeID : ${reqData.CodeID}`);
+            data = await FamilyHistoryManagementService.getFamilyHistoryByCodeId(req.query.CodeID)
+        }
+        console.log("data: " + data);
         if (data == null || data.length == 0) {
             return res.send(Response.dataNotFoundResponse());
         } else {
-            dataRes = {
-                message: "View one FamilyHistory successfully",
-                data: data
-            }
-            return res.send(Response.successResponse(dataRes));
+            return res.send(Response.successResponse(data));
         }
     } catch (e) {
         console.log("Error: " + e);
@@ -139,51 +130,12 @@ var getFamilyHistoryById = async (req, res) => {
     }
 };
 
-var getFamilyHistoryByCodeId = async (req, res) => {
-    try {
-        // Log ra thông tin trong req.params
-        console.log('Request params: ', req.params);
-        // các trường bắt buộc phải có trong req.params
-        const requiredFields = [
-            'id'
-        ];
-        // Kiểm tra xem có đủ các trường của FamilyHistory không
-        const missingFields = requiredFields.filter(field => !(field in req.params));
-        console.log(missingFields);
-        // trong trường hợp thiếu trường bắt buộc
-        if (missingFields.length) {
-            return res.send(Response.missingFieldsErrorResponse(missingFields));
-        }
-
-        console.log("No missing fields");
-        // lấy thông tin FamilyHistory từ database
-        let data = await FamilyHistoryManagementService.getFamilyHistoryByCodeId(req.params.id)
-        if (data == null || data.length == 0) {
-            return res.send(Response.dataNotFoundResponse());
-        } else {
-            dataRes = {
-                message: "View one FamilyHistory successfully",
-                data: data
-            }
-            return res.send(Response.successResponse(dataRes));
-        }
-    } catch (e) {
-        console.log("Error: " + e);
-        return res.send(Response.internalServerErrorResponse(e));
-    }
-};
 
 var getAllFamilyHistories = async (req, res) => {
     try {
-        // Log ra thông tin trong req.body
-        console.log('Request body: ', req.body);
         // lấy thông tin tất cả FamilyHistory từ database
         let data = await FamilyHistoryManagementService.getAllFamilyHistory();
-        dataRes = {
-            message: "View all FamilyHistory successfully",
-            data: data
-        }
-        return res.send(Response.successResponse(dataRes));
+        return res.send(Response.successResponse(data));
     } catch (e) {
         console.log("Error: " + e);
         return res.send(Response.internalServerErrorResponse(e));
@@ -192,4 +144,4 @@ var getAllFamilyHistories = async (req, res) => {
 
 
 
-module.exports = { addFamilyHistory, updateFamilyHistory, deleteFamilyHistory, getFamilyHistoryById, getFamilyHistoryByCodeId, getAllFamilyHistories };
+module.exports = { addFamilyHistory, updateFamilyHistory, deleteFamilyHistory, getFamilyHistory, getAllFamilyHistories };
