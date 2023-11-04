@@ -1,36 +1,47 @@
 <template>
   <div class="d-flex h-100 w-100">
     <div class="list d-flex flex-column align-items-center">
-      <div class="w-100">
-        <!-- <select v-model="selectAdress" class="d-flex text-center form-select dropdown p-0">
-          <option :value="null" selected>Tỉnh/Thành phố</option>
-          <option class="dropdown-item" value="Hà Nội">Hà Nội</option>
-          <option class="dropdown-item" value="Điện Biên">Điện Biên</option>
-          <option class="dropdown-item" value="Lào Cai">Lào Cai</option>
-          <option class="dropdown-item" value="Lai Châu">Lai Châu</option>
-          <option class="dropdown-item" value="Sơn La">Sơn La</option>
-          <option class="dropdown-item" value="Yên Bái">Yên Bái</option>
-          <option class="dropdown-item" value="Hòa Bình">Hòa Bình</option>
-          <option class="dropdown-item" value="Thái Nguyên">Thái Nguyên</option>
-          <option class="dropdown-item" value="Quảng Ninh">Quảng Ninh</option>
-          <option class="dropdown-item" value="Bắc Giang">Bắc Giang</option>
-        </select> -->
-        <div class="px-2" style="height: 32px;">
-          <input type="text" class="form-control h-100 mt-2" placeholder="Tỉnh/Thành phố" />
+      <div class="w-100 d-flex flex-row">
+        <div class="col-6" style="padding-top: 12px; padding-left: 12px; padding-right: 6px;">
+          <select v-model="selectAdress" class="d-flex text-center form-select dropdown p-0">
+            <option :value="null" selected>Tỉnh/Thành phố</option>
+            <option class="dropdown-item" value="Hà Nội">Hà Nội</option>
+            <option class="dropdown-item" value="Điện Biên">Điện Biên</option>
+            <option class="dropdown-item" value="Lào Cai">Lào Cai</option>
+            <option class="dropdown-item" value="Lai Châu">Lai Châu</option>
+            <option class="dropdown-item" value="Sơn La">Sơn La</option>
+            <option class="dropdown-item" value="Yên Bái">Yên Bái</option>
+            <option class="dropdown-item" value="Hòa Bình">Hòa Bình</option>
+            <option class="dropdown-item" value="Thái Nguyên">Thái Nguyên</option>
+            <option class="dropdown-item" value="Quảng Ninh">Quảng Ninh</option>
+            <option class="dropdown-item" value="Bắc Giang">Bắc Giang</option>
+          </select>
         </div>
-        <div class="px-2" style="height: 32px;">
-          <input type="text" class="form-control h-100" style="margin-top: 12px;" placeholder="Quận/Huyện" />
+        <div class="col-6" style="padding-top: 12px; padding-left: 6px; padding-right: 12px;">
+          <select v-model="selectAdress" class="d-flex text-center form-select dropdown p-0">
+            <option :value="null" selected>Quận/Huyện</option>
+            <option class="dropdown-item" value="Ba Đình">Ba Đình</option>
+            <option class="dropdown-item" value="Hoàn Kiếm">Hoàn Kiếm</option>
+            <option class="dropdown-item" value="Tây Hồ">Tây Hồ</option>
+            <option class="dropdown-item" value="Long Biên">Long Biên</option>
+            <option class="dropdown-item" value="Cầu Giấy">Cầu Giấy</option>
+            <option class="dropdown-item" value="Đống Đa">Đống Đa</option>
+            <option class="dropdown-item" value="Hai Bà Trưng">Hai Bà Trưng</option>
+            <option class="dropdown-item" value="Hoàng Mai">Hoàng Mai</option>
+            <option class="dropdown-item" value="Thanh Xuân">Thanh Xuân</option>
+            <option class="dropdown-item" value="Sóc Sơn">Sóc Sơn</option>
+          </select>
         </div>
       </div>
-      <div class="d-flex flex-row w-100" style="height: 32px; margin-bottom: 12px;">
-        <div class="col-md-6" style="height: 32px; margin-top: 12px; padding: 0px 4px 0px 8px">
+      <div class="d-flex flex-row w-100">
+        <div class="col-md-6" style="padding: 12px 6px 0px 12px">
           <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0"
             @change="GetListFilterMember()">
             <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">
               {{ blood.BloodType }}</option>
           </select>
         </div>
-        <div class="col-md-6" style="height: 32px; margin-top: 12px; padding: 0px 8px 0px 4px">
+        <div class="col-md-6" style="padding: 12px 12px 0px 6px">
           <select class="d-flex text-center form-select dropdown p-0" v-model="selectAge" @change="GetListFilterMember()">
             <option class="dropdown-item" :value="null">Nhóm Tuổi</option>
             <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{ age.From }} -
@@ -38,13 +49,21 @@
           </select>
         </div>
       </div>
-      <div class="w-100 px-2" style="margin-top: 12px">
-        <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary">Tạo thông báo</button>
+      <div class="w-100 d-flex flex-row">
+        <div class="col-6">
+          <div class="w-100" style="padding: 12px 6px 0px 12px">
+            <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary">Tạo thông
+              báo</button>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="w-100" style="padding: 12px 12px 0px 6px">
+            <button @click="openCompareModal()" style="width:100%" type="button" class="btn btn-secondary">So
+              sánh</button>
+          </div>
+        </div>
       </div>
-      <div class="w-100 px-2" style="margin-top: 12px">
-        <button @click="openCompareModal()" style="width:100%" type="button" class="btn btn-secondary">So sánh</button>
-      </div>
-      <div class="h-100 w-100 d-flex flex-column" style="margin-top: 12px">
+      <div class="h-100 w-100 d-flex flex-column" style="padding-top: 12px">
         <div class="existing-members d-flex flex-column w-100">
           <div class="list-item" style="background-color: #AED6F1; text-align: center;">Đã có trên phả đồ</div>
           <div class="d-flex flex-column w-100" style="overflow-y: auto;">
@@ -193,94 +212,84 @@
     </modal>
 
     <!-- Đât là modal so sánh -->
-    <modal name="compare-modal-1">
-      <div class="h-100 d-flex flex-column" style="background-color: white;">
+    <modal name="compare-modal">
+      <div class="h-100 d-flex flex-column position-relative" style="background-color: #C69934;">
         <div class="modal-title d-flex flex-row align-items-center justify-content-center"
-          style="height: 60px;border-radius:0px">
-          <div class="col-3 d-flex flex-row align-items-center h-100 p-3" style="background-color: rgb(235, 235, 235);">
-            <div>
-              <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                <path
-                  d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
-              </svg>
-            </div>
-            <div class="d-flex justify-content-center" style="flex-grow: 1;">User</div>
-          </div>
-          <div class="col-9 d-flex align-items-center justify-content-center">Thông báo tới thành viên</div>
+          style="background-color: #C69934 !important">
+          <div class="col-12 d-flex align-items-center justify-content-center">So sánh 2 thành viên</div>
         </div>
-        <div class="d-flex flex-row" style="height: calc(100% - 60px)">
-          <div class="col-3 h-100 d-flex flex-column" style="overflow-y: auto;background-color: rgb(235, 235, 235);">
-            <div class="position-relative d-flex" style="height: 48px;">
-              <label for="text-search" style="position: absolute; inset: 12px;">
-                <svg class="text-search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                  <path
-                    d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
-                </svg>
-              </label>
-              <div class="w-100" style="height: 48px; padding: 8px;">
-                <input class="form-control px-5 py-0 w-100 h-100" id="text-search" type="text" />
-              </div>
-            </div>
-            <div class="position-relative d-flex" style="height: 48px;">
-              <div class="d-flex flex-row align-items-center p-2">
-                <input v-model="checkAll" type="checkbox" class="form-check-input" />
-                <div style="padding-left: 8px">Chọn tất cả mọi người</div>
-              </div>
-            </div>
-            <div>
-              <div tabindex="1" class="noti-modal-member d-flex flex-row align-items-center px-2"
-                :class="{ chosen: checkAll }">
-                <div>
-                  <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                    <path
-                      d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
-                  </svg>
+        <div class="d-flex flex-row" style="flex-grow: 1">
+          <div class="col-6" style="padding: 0px 4px 48px 8px;">
+            <div class="h-100 d-flex flex-column p-2" style="background-color: #FFFFFF; border-radius: 0.375rem;">
+              <div class="d-flex flex-row pb-2" style="height: 220px">
+                <div class="h-100 col-4" style="background-color: gray; border-radius: 0.375rem;">
+                  Ảnh
                 </div>
-                <div class="d-flex justify-content-center" style="flex-grow: 1;">Thành viên A</div>
-              </div>
-              <div tabindex="2" class="noti-modal-member d-flex flex-row align-items-center px-2"
-                :class="{ chosen: checkAll }">
-                <div>
-                  <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                    <path
-                      d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
-                  </svg>
+                <div class="d-flex flex-column" style="flex-grow: 1; padding-left: 8px;">
+                  <input type="text" class="compare-modal-item form-control" value="Nguyễn Văn A" disabled />
+                  <div class="d-flex flex-row pt-2">
+                    <div class="col-6" style="padding-right: 4px">
+                      <input type="text" class="compare-modal-item form-control" value="Giới tính" disabled />
+                    </div>
+                    <div class="col-6" style="padding-left: 4px">
+                      <input type="text" class="compare-modal-item form-control" value="Đời" disabled />
+                    </div>
+                  </div>
+                  <div class="pt-2">
+                    <input type="text" class="compare-modal-item form-control" value="Ngày sinh" disabled />
+                  </div>
+                  <div class="pt-2">
+                    <input type="text" class="compare-modal-item form-control" value="Ngày mất (Nếu có)" disabled />
+                  </div>
                 </div>
-                <div class="d-flex justify-content-center" style="flex-grow: 1;">Thành viên A</div>
               </div>
-              <div tabindex="3" class="noti-modal-member d-flex flex-row align-items-center px-2"
-                :class="{ chosen: checkAll }">
-                <div>
-                  <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                    <path
-                      d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
-                  </svg>
+              <div class="d-flex flex-column" style="flex-grow: 1; background-color: #f2f2f2;">
+                <div class="compare-modal-item mx-2 mt-2">
+                  <input type="text" class="w-100 h-100 form-control" value="Nguyễn Văn B (Bố)" disabled />
                 </div>
-                <div class="d-flex justify-content-center" style="flex-grow: 1;">Thành viên A</div>
-              </div>
-              <div tabindex="4" class="noti-modal-member d-flex flex-row align-items-center px-2"
-                :class="{ chosen: checkAll }">
-                <div>
-                  <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                    <path
-                      d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
-                  </svg>
+                <div class="compare-modal-item mx-2 mt-2">
+                  <input type="text" class="w-100 h-100 form-control" value="Nguyễn Thị C (Mẹ)" disabled />
                 </div>
-                <div class="d-flex justify-content-center" style="flex-grow: 1;">Thành viên A</div>
               </div>
             </div>
           </div>
-          <div class="col-9 h-100 position-relative">
-            <div class="position-absolute w-100 px-2 d-flex flex-row" style="bottom: 8px">
-              <input type="text" class="form-control" placeholder="..." />
-              <div class="d-flex align-items-center" style="padding-left: 8px; cursor: pointer;">
-                <svg class="noti-send-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                  <path
-                    d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z" />
-                </svg>
+          <div class="col-6" style="padding: 0px 8px 48px 4px;">
+            <div class="h-100 d-flex flex-column p-2" style="background-color: #FFFFFF; border-radius: 0.375rem;">
+              <div class="d-flex flex-row pb-2" style="height: 220px">
+                <div class="h-100 col-4" style="background-color: gray; border-radius: 0.375rem;">
+                  Ảnh
+                </div>
+                <div class="d-flex flex-column" style="flex-grow: 1; padding-left: 8px;">
+                  <input type="text" class="compare-modal-item form-control" value="Nguyễn Văn A" disabled />
+                  <div class="d-flex flex-row pt-2">
+                    <div class="col-6" style="padding-right: 4px">
+                      <input type="text" class="compare-modal-item form-control" value="Giới tính" disabled />
+                    </div>
+                    <div class="col-6" style="padding-left: 4px">
+                      <input type="text" class="compare-modal-item form-control" value="Đời" disabled />
+                    </div>
+                  </div>
+                  <div class="pt-2">
+                    <input type="text" class="compare-modal-item form-control" value="Ngày sinh" disabled />
+                  </div>
+                  <div class="pt-2">
+                    <input type="text" class="compare-modal-item form-control" value="Ngày mất (Nếu có)" disabled />
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex flex-column" style="flex-grow: 1; background-color: #f2f2f2;">
+                <div class="compare-modal-item mx-2 mt-2">
+                  <input type="text" class="w-100 h-100 form-control" value="Nguyễn Văn B (Bố)" disabled />
+                </div>
+                <div class="compare-modal-item mx-2 mt-2">
+                  <input type="text" class="w-100 h-100 form-control" value="Nguyễn Thị C (Mẹ)" disabled />
+                </div>
               </div>
             </div>
           </div>
+        </div>
+        <div>
+          <div class="compare-modal-btn btn position-absolute"> Đổi vị trí trên phả đồ</div>
         </div>
       </div>
     </modal>
@@ -461,7 +470,8 @@
                 <div style="display:flex">
                   <div style="position: relative; width: 50%;margin-right: 10px;">
                     <input v-model="objMemberContact.Phone1" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberContact.Phone1 }">Điện Thoại 1 (*)</label>
+                    <label class="form-label" for="input" :class="{ 'active': objMemberContact.Phone1 }">Điện Thoại 1
+                      (*)</label>
                   </div>
                   <div style="position: relative;width: 50%; margin-right: 10px;">
                     <input v-model="objMemberContact.Phone2" type="text" class="form-control modal-item" placeholder />
@@ -671,7 +681,7 @@ export default {
 
       listFilterMember: null,
 
-      memberClick:null,
+      memberClick: null,
 
       isAddChildren: false,
       isAddMarried: false,
@@ -856,7 +866,7 @@ export default {
         this.getInforMember(arg.node.id);
       });
     },
-    moveViewBox(id){
+    moveViewBox(id) {
       this.memberClick = id;
       console.log(this.memberClick);
     },
@@ -1511,12 +1521,10 @@ export default {
       this.$modal.hide("noti-modal");
     },
     openCompareModal() {
-      this.$modal.show("compare-modal-1");
-      this.$modal.show("compare-modal-2");
+      this.$modal.show("compare-modal");
     },
     closeCompareModal() {
-      this.$modal.hide("compare-modal-1");
-      this.$modal.hide("compare-modal-2");
+      this.$modal.hide("compare-modal");
     },
     getListMember(idPaternalAncestor) {
       if (idPaternalAncestor != null) {
@@ -1637,8 +1645,10 @@ export default {
 };
 </script>
  
-<style>@import "../assets/css/familytree.css";
+<style>
+@import "../assets/css/familytree.css";
 
 .row-selected {
   --bs-table-bg: #f0f0f0;
-}</style>
+}
+</style>
