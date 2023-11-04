@@ -93,7 +93,7 @@ var getGenealogy = async (req, res) => {
   }
 }
 
-function generateRandomString() {
+function  generateRandomString() {
   const randomNumbers = Array.from({ length: 12 }, () => Math.floor(Math.random() * 10));
 
   // Định dạng chuỗi bằng cách cắt thành các phần và nối chúng bằng dấu "-"

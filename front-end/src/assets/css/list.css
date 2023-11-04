@@ -13,6 +13,9 @@
 .list-item.head-member{
     background-color: #FAFAD2;
 }
+.list-item:hover{
+    background-color: lightblue;
+}
 
 .dropdown{
     height: 32px;
