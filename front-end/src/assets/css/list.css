@@ -41,7 +41,6 @@
 .list-group-item {
     cursor: pointer;
 }
-
 .list-group-item:hover {
     background-color: lightblue;
 }

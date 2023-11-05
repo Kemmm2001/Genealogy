@@ -282,3 +282,15 @@ input:focus~label.form-label-number {
 .compare-modal-item{
     height: 48px;
 }
+
+.odd-table-row{
+    height: 40px;
+    align-items: center;
+    background-color: #cdcdd9;
+}
+
+.even-table-row{
+    height: 40px;
+    align-items: center;
+    background-color: #e9e8ed;
+}
