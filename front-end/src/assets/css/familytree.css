@@ -72,3 +72,20 @@ svg.tommy .node.male>rect {
 svg.tommy .node.female>rect {
   fill: rgb(224, 89, 111);
 }
+
+.list-group-item.right-click-member{
+  background-color: #c9e6ff;
+}
+
+.collapsedAddRelationship{
+  height: 0;
+  transition: 0.3s;
+}
+
+.collapsedAddRelationship.expandedAddRelationship{
+  height: 165px;
+}
+
+.collapsedAddRelationship.expandedRelationship{
+  height: 290px;
+}

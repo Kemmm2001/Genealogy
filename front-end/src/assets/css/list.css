@@ -35,12 +35,3 @@
 .list-group-item{
     cursor: pointer;
 }
-
-.collapsedAddRelationship{
-    height: 0;
-    transition: 0.5s;
-}
-
-.collapsedAddRelationship.expandedAddRelationship{
-    height: 165px;
-}
