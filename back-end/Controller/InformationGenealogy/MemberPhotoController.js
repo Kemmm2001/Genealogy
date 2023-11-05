@@ -1,28 +1,31 @@
 const MemberPhotoManagementService = require("../../service/InformationGenealogy/MemberPhotoManagement");
 const Response = require("../../Utils/Response");
+const CoreFunction = require("../../Utils/CoreFunction");
 
 var addMemberPhoto = async (req, res) => {
     try {
+        let reqData = {
+            PhotoUrl: req.file.path,
+            AlbumID: req.body.AlbumID
+        };
         // Log ra thông tin trong req.body
-        console.log('Request body: ', req.body);
-        console.log('Request file: ', req.file);
-        // các trường bắt buộc phải có trong req.body
+        console.log('Request body: ', reqData);
+        // các trường bắt buộc phải có trong reqData
         const requiredFields = [
+            'PhotoUrl',
             'AlbumID'
         ];
         // Kiểm tra xem có đủ các trường của MemberPhoto không
-        const missingFields = requiredFields.filter(field => !(field in req.body));
+        const missingFields = CoreFunction.missingFields(requiredFields, reqData);
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
-        req.body.PhotoUrl = req.file.path;
         // Thêm thông tin vào bảng memberphoto
-        let data = await MemberPhotoManagementService.insertMemberPhoto(req.body);
+        let data = await MemberPhotoManagementService.insertMemberPhoto(reqData);
         dataRes = {
-            message: "Add memberphoto successfully",
             PhotoID: data.insertId,
             affectedRows: data.affectedRows
         }
@@ -37,26 +40,38 @@ var addMemberPhoto = async (req, res) => {
 
 var updateMemberPhoto = async (req, res) => {
     try {
+        let reqData = {
+            PhotoUrl: req.file.path,
+            AlbumID: req.body.AlbumID,
+            PhotoID: req.body.PhotoID
+        };
         // Log ra thông tin trong req.body
-        console.log('Request body: ', req.body);
-        // các trường bắt buộc phải có trong req.body
+        console.log('Request body: ', reqData);
+        // các trường bắt buộc phải có trong reqData
         const requiredFields = [
+            'PhotoUrl',
             'PhotoID',
             'AlbumID'
         ];
         // Kiểm tra xem có đủ các trường của MemberPhoto không
-        const missingFields = requiredFields.filter(field => !(field in req.body));
+        const missingFields = CoreFunction.missingFields(requiredFields, reqData);
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
-        req.body.PhotoUrl = req.file.path;
+        let dataPhotoID = await MemberPhotoManagementService.getMemberPhotoById(reqData.PhotoID);
+        if (dataPhotoID == null || dataPhotoID.length == 0) {
+            return res.send(Response.dataNotFoundResponse(null, "PhotoID not found"));
+        }
+        let dataAlbumID = await MemberPhotoManagementService.getMemberPhotoByAlbumId(reqData.AlbumID);
+        if (dataAlbumID == null || dataAlbumID.length == 0) {
+            return res.send(Response.dataNotFoundResponse(null, "AlbumID not found"));
+        }
         // cập nhật MemberPhoto vào database
-        let dataUpdate = await MemberPhotoManagementService.updateMemberPhoto(req.body)
+        let dataUpdate = await MemberPhotoManagementService.updateMemberPhoto(reqData)
         dataRes = {
-            message: "Update MemberPhoto successfully",
             affectedRows: dataUpdate.affectedRows,
         }
         return res.send(Response.successResponse(dataRes));
@@ -73,7 +88,7 @@ var deleteMemberPhoto = async (req, res) => {
             'PhotoID'
         ];
         // Kiểm tra xem có đủ các trường của MemberPhoto không
-        const missingFields = requiredFields.filter(field => !(field in req.query));
+        const missingFields = CoreFunction.missingFields(requiredFields, req.query);
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
@@ -83,7 +98,6 @@ var deleteMemberPhoto = async (req, res) => {
         // xóa MemberPhoto khỏi database
         let dataDelete = await MemberPhotoManagementService.removeMemberPhoto(req.query.PhotoID)
         dataRes = {
-            message: "Delete MemberPhoto successfully",
             affectedRows: dataDelete.affectedRows
         }
         return res.send(Response.successResponse(dataRes));
@@ -94,32 +108,26 @@ var deleteMemberPhoto = async (req, res) => {
 };
 
 
-var getMemberPhotoById = async (req, res) => {
+var getMemberPhoto = async (req, res) => {
     try {
-        // Log ra thông tin trong req.params
-        console.log('Request params: ', req.params);
-        // các trường bắt buộc phải có trong req.params
-        const requiredFields = [
-            'id'
-        ];
-        // Kiểm tra xem có đủ các trường của MemberPhoto không
-        const missingFields = requiredFields.filter(field => !(field in req.params));
-        console.log(missingFields);
-        // trong trường hợp thiếu trường bắt buộc
-        if (missingFields.length) {
-            return res.send(Response.missingFieldsErrorResponse(missingFields));
-        }
-        console.log("No missing fields");
+        let reqData = req.query;
+        // Log ra thông tin trong req.query
+        console.log('Request query: ', reqData);
         // lấy thông tin MemberPhoto từ database
-        let data = await MemberPhotoManagementService.getMemberPhotoById(req.params.id)
+        // những thông tin có thể lấy được: PhotoID, AlbumID
+        let data;
+        if (reqData.PhotoID != null && reqData.PhotoID != undefined && reqData.PhotoID !== "") {
+            console.log(`Get MemberPhoto by PhotoID : ${reqData.PhotoID}`);
+            data = await MemberPhotoManagementService.getMemberPhotoById(reqData.PhotoID);
+        } else if (reqData.AlbumID != null && reqData.AlbumID != undefined && reqData.AlbumID !== "") {
+            console.log(`Get MemberPhoto by AlbumID : ${reqData.AlbumID}`);
+            data = await MemberPhotoManagementService.getMemberPhotoByAlbumId(reqData.AlbumID);
+        }
+        console.log("data: " + data);
         if (data == null || data.length == 0) {
             return res.send(Response.dataNotFoundResponse());
         } else {
-            dataRes = {
-                message: "View one MemberPhoto successfully",
-                data: data
-            }
-            return res.send(Response.successResponse(dataRes));
+            return res.send(Response.successResponse(data));
         }
 
     } catch (e) {
@@ -127,52 +135,12 @@ var getMemberPhotoById = async (req, res) => {
         return res.send(Response.internalServerErrorResponse(e));
     }
 };
-
-var getMemberPhotoByAlbumId = async (req, res) => {
-    try {
-        // Log ra thông tin trong req.params
-        console.log('Request params: ', req.params);
-        // các trường bắt buộc phải có trong req.params
-        const requiredFields = [
-            'id'
-        ];
-        // Kiểm tra xem có đủ các trường của MemberPhoto không
-        const missingFields = requiredFields.filter(field => !(field in req.params));
-        console.log(missingFields);
-        // trong trường hợp thiếu trường bắt buộc
-        if (missingFields.length) {
-            return res.send(Response.missingFieldsErrorResponse(missingFields));
-        }
-        console.log("No missing fields");
-        // lấy thông tin MemberPhoto từ database
-        let data = await MemberPhotoManagementService.getMemberPhotoByAlbumId(req.params.id)
-        if (data == null || data.length == 0) {
-            return res.send(Response.dataNotFoundResponse());
-        } else {
-            dataRes = {
-                message: "View one MemberPhoto successfully",
-                data: data
-            }
-            return res.send(Response.successResponse(dataRes));
-        }
-    } catch (e) {
-        console.log("Error: " + e);
-        return res.send(Response.internalServerErrorResponse(e));
-    }
-};
-
 
 var getAllMemberPhotos = async (req, res) => {
     try {
-        // Log ra thông tin trong req.body
-        console.log('Request body: ', req.body);
         // lấy thông tin tất cả MemberPhoto từ database
         let data = await MemberPhotoManagementService.getAllMemberPhoto();
-        dataRes = {
-            message: "View all MemberPhoto successfully",
-            data: data
-        }
-        return res.send(Response.successResponse(dataRes));
+        return res.send(Response.successResponse(data));
     } catch (e) {
         console.log("Error: " + e);
         return res.send(Response.internalServerErrorResponse(e));
@@ -181,4 +149,4 @@ var getAllMemberPhotos = async (req, res) => {
 
 
 
-module.exports = { addMemberPhoto, updateMemberPhoto, deleteMemberPhoto, getMemberPhotoById, getMemberPhotoByAlbumId, getAllMemberPhotos };
+module.exports = { addMemberPhoto, updateMemberPhoto, deleteMemberPhoto, getMemberPhoto, getAllMemberPhotos };

@@ -79,3 +79,14 @@
     height: 20px;
     fill: #9d9d9d;
 }
+
+.collapsed-relationship-icon{
+    width: 20px;
+    height: 20px;
+    transform: rotate(90deg);
+    transition: 0.3s;
+}
+
+.collapsed-relationship-icon.expanded{
+    transform: rotate(-90deg);
+}

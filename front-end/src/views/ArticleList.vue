@@ -1,5 +1,7 @@
 <template>
-  <div class="d-flex w-100">
+  <div class="container-fluid" style="padding-left: 200px; padding-right: 200px">
+    <div class="d-flex w-100">
+  </div>
     <div class="d-flex flex-column h-100 w-100">
       <div class="d-flex flex-row">
         <div class="col-md-6 d-flex align-items-center" style="justify-content: left;">
@@ -30,35 +32,15 @@
               <th class="articlelist-list-th" scope="col">#</th>
               <th class="articlelist-list-th" scope="col">Tên tài liệu</th>
               <th class="articlelist-list-th" scope="col">Mô tả tài liệu</th>
-              <th class="articlelist-list-th" scope="col">Công khai</th>
-              <th class="articlelist-list-th" scope="col">Người tạo</th>
-              <th class="articlelist-list-th" scope="col">Cập nhật lần cuối</th>
+              <th class="articlelist-list-th" scope="col">Url</th>
             </tr>
           </thead>
           <tbody>
-            <tr class="articlelist-item articlelist-table-item">
-              <th @click="openEditArticleModal()" scope="row">1</th>
-              <td @click="openEditArticleModal()" class="articlelist-table-td">Mark</td>
-              <td @click="openEditArticleModal()" class="articlelist-table-td">Otto</td>
-              <td @click="openEditArticleModal()" class="articlelist-table-td">@mdo</td>
-              <td @click="openEditArticleModal()" class="articlelist-table-td"></td>
-              <td @click="openEditArticleModal()" class="articlelist-table-td"></td>
-            </tr>
-            <tr class="articlelist-item articlelist-table-item">
-              <th @click="openEditArticleModal()" scope="row">2</th>
-              <td @click="openEditArticleModal()">Jacob</td>
-              <td @click="openEditArticleModal()">Thornton</td>
-              <td @click="openEditArticleModal()">@fat</td>
-              <td @click="openEditArticleModal()"></td>
-              <td @click="openEditArticleModal()"></td>
-            </tr>
-            <tr class="articlelist-item articlelist-table-item">
-              <th @click="openEditArticleModal()" scope="row">3</th>
-              <td @click="openEditArticleModal()">Larry the Bird</td>
-              <td @click="openEditArticleModal()">Larry the Bird</td>
-              <td @click="openEditArticleModal()">@twitter</td>
-              <td @click="openEditArticleModal()"></td>
-              <td @click="openEditArticleModal()"></td>
+            <tr class="articlelist-item articlelist-table-item" v-for="(article,index) in  this.articleFilter" :key="article.ArticleID">
+              <th @click="openEditArticleModal()" scope="row">{{index+1}}</th>
+              <td @click="openEditArticleModal()" class="articlelist-table-td">{{ article.ArticleName }}</td>
+              <td @click="openEditArticleModal()" class="articlelist-table-td">{{ article.ArticleDescription }}</td>
+              <td @click="openEditArticleModal()" class="articlelist-table-td">{{ article.ArticleUrl }}</td>
             </tr>
           </tbody>
         </table>
@@ -110,32 +92,32 @@
               <label class="col-3 d-flex justify-content-center" for="off-url" style="cursor: pointer;">Đường dẫn tài liệu
                 offline</label>
               <div class="mx-2 w-100">
-                <input id="off-url" type="file" class="form-control input-file" />
+                <input  id="off-url" type="file" class="form-control input-file" />
               </div>
             </div>
             <div class="d-flex flex-row my-1 align-items-center">
               <label class="col-3 d-flex justify-content-center" for="on-url" style="cursor: pointer;">Đường dẫn tài liệu
                 online</label>
               <div class="mx-2 w-100">
-                <input id="on-url" type="text" class="form-control" />
+                <input v-model="objArticleInfor.ArticleUrl" id="on-url" type="text" class="form-control" />
               </div>
             </div>
             <div class="d-flex flex-row my-1 align-items-center">
               <label class="col-3 d-flex justify-content-center" for="article-name" style="cursor: pointer;">Tên tài
                 liệu</label>
               <div class="mx-2 w-100">
-                <input id="article-name" type="text" class="form-control" />
+                <input v-model="objArticleInfor.ArticleName" id="article-name" type="text" class="form-control" />
               </div>
             </div>
             <div class="d-flex flex-row my-1 align-items-center">
               <label class="col-3 d-flex justify-content-center" for="article-des" style="cursor: pointer;">Mô tả</label>
               <div class="mx-2 w-100">
-                <input id="article-des" type="text" class="form-control" />
+                <input v-model="objArticleInfor.ArticleDescription" id="article-des" type="text" class="form-control" />
               </div>
             </div>
             <div class="d-flex flex-row m-3 align-items-center articlelist-button-container">
               <div class="">
-                <button class="articlelist-item-button form-control">Thêm</button>
+                <button @click="addArticle()" class="articlelist-item-button form-control">Thêm</button>
               </div>
             </div>
           </div>
@@ -168,20 +150,20 @@
               <label class="col-3 d-flex justify-content-center" for="on-url" style="cursor: pointer;">Đường dẫn tài liệu
                 online</label>
               <div class="mx-2 w-100">
-                <input id="on-url" type="text" class="form-control" />
+                <input v-model="objArticleInfor.ArticleUrl" id="on-url" type="text" class="form-control" />
               </div>
             </div>
             <div class="d-flex flex-row my-1 align-items-center">
               <label class="col-3 d-flex justify-content-center" for="article-name" style="cursor: pointer;">Tên tài
                 liệu</label>
               <div class="mx-2 w-100">
-                <input id="article-name" type="text" class="form-control" />
+                <input v-model="objArticleInfor.ArticleName" id="article-name" type="text" class="form-control" />
               </div>
             </div>
             <div class="d-flex flex-row my-1 align-items-center">
               <label class="col-3 d-flex justify-content-center" for="article-des" style="cursor: pointer;">Mô tả</label>
               <div class="mx-2 w-100">
-                <input id="article-des" type="text" class="form-control" />
+                <input v-model="objArticleInfor.ArticleDescription" id="article-des" type="text" class="form-control" />
               </div>
             </div>
             <div class="d-flex flex-row my-3 align-items-center articlelist-button-container">
@@ -201,10 +183,21 @@
 
 <script>
 // import { EventBus } from "../assets/js/MyEventBus.js";
+import Snackbar from "awesome-snackbar";
+import { HTTP } from "../assets/js/baseAPI.js";
 export default {
   data() {
     return {
       trClicked: false,
+      articleList:[],
+      articleFilter:[],
+      objArticleInfor:{
+        ArticalID : null,
+        CodeID : null, 
+        ArticleUrl : null,
+        ArticleName : null,
+        ArticleDescription : null,
+      },
     };
   },
   methods: {
@@ -220,11 +213,75 @@ export default {
     closeEditArticleModal() {
       this.$modal.hide("editArticle-modal");
     },
+    addArticle(){
+      HTTP.post('add-article',{
+        CodeID : 123456, 
+        ArticleUrl : this.objArticleInfor.ArticleUrl,
+        ArticleName : this.objArticleInfor.ArticleName,
+        ArticleDescription : this.objArticleInfor.ArticleDescription,
+      }).then(() =>{
+        this.NotificationsScuccess("Thêm thành công");
+      }).catch((e) =>{
+        console.log(e);
+      })
+    },
+    getArticleInfor(){
+      HTTP.post('',{
+        CodeID : 123456, 
+        ArticleUrl : this.objArticleInfor.ArticleUrl,
+        ArticleName : this.objArticleInfor.ArticleName,
+        ArticleDescription : this.objArticleInfor.ArticleDescription,
+      }).then(() =>{
+        this.NotificationsScuccess("Thêm thành công");
+      }).catch((e) =>{
+        console.log(e);
+      })
+    },
+    NotificationsDelete(messagee) {
+      new Snackbar(messagee, {
+        position: "bottom-right",
+        theme: "light",
+        style: {
+          container: [
+            ["background-color", "#ff4d4d"],
+            ["border-radius", "5px"],
+          ],
+          message: [["color", "#fff"]],
+        },
+      });
+    },
+    NotificationsScuccess(messagee) {
+      new Snackbar(messagee, {
+        position: "bottom-right",
+        theme: "light",
+        style: {
+          container: [
+            ["background-color", "#1abc9c"],
+            ["border-radius", "5px"],
+          ],
+          message: [["color", "#fff"]],
+        },
+      });
+    },
   },
   created(){
     // EventBus.$emit("HeadList", false);
     // EventBus.$emit("AlbumList", false);
     // EventBus.$emit("ArticleList", true);
   },
+  mounted(){
+    HTTP.get("article", {
+        params: {
+          CodeID: 123456,
+        },
+    }).then((response) => {
+      this.articleList = response.data.data;
+      this.articleFilter = this.articleList;
+      console.log(this.articleList)
+      })
+      .catch((e) => {
+      console.log(e);
+      });
+  }
 };
 </script>

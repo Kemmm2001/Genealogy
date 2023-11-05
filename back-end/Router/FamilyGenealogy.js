@@ -23,6 +23,7 @@ const initWebRouter = (app) => {
     router.get('/InforMember', ManagerFamilyTree.informationMember)
     router.post('/setRole', ManagerFamilyTree.setRole)
     router.get('/viewTree', ManagerFamilyTree.AllMemberInGenelogy)
+    router.get('/relationship',ManagerFamilyTree.getRelationShipMember)
     router.get('/idPaternal',ManagerFamilyTree.GetIdPaternalAncestor)
     router.get('/unspecified-members',ManagerFamilyTree.getAllUnspecifiedMembers)
 
@@ -49,6 +50,8 @@ const initWebRouter = (app) => {
     router.post('/member', FamilyMemberManagement.addMember)
     router.put('/member', FamilyMemberManagement.updateMember)
     router.delete('/member', FamilyMemberManagement.deleteMember)
+    router.get('/getparent',FamilyMemberManagement.GetCurrentParentMember)
+    router.post('/InsertParentID',FamilyMemberManagement.insertParentIdToMember)
     router.post('/InserMarrie', FamilyMemberManagement.InsertMarrieIdToMember)
 
     //API Nhật anh

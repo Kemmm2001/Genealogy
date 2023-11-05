@@ -167,7 +167,25 @@ var InsertMarrieIdToMember = async (req, res) => {
     }
 }
 
+var GetCurrentParentMember = async (req, res) => {
+    try {
+        let memberID = req.query.memberID;
+        let data = await FamilyManagementService.GetCurrentParentMember(memberID);
+        res.send(data);
+    } catch (err) {
+        console.log(err)
+    }
+}
 
+var insertParentIdToMember = async (req, res) => {
+    try {
+        let ParentID = req.body.ParentID;
+        let memberID = req.body.memberID
+        await FamilyManagementService.insertParentIdToMember(ParentID, memberID);
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 
 var searchMember = async (req, res) => {
@@ -258,5 +276,5 @@ function sortMembers(members, sortKey, order) {
 
 module.exports = {
     addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember, sortMembers, InsertMarrieIdToMember,
-    getListAgeGroup, getListBloodTypeGroup, getAllMemberSortByRole
+    getListAgeGroup, getListBloodTypeGroup, getAllMemberSortByRole, GetCurrentParentMember, insertParentIdToMember
 };

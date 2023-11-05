@@ -36,7 +36,15 @@ var getAllUnspecifiedMembers = async (req, res) => {
         res.send(err);
     }
 }
-
+var getRelationShipMember = async (req, res) => {
+    try {
+        let memberID = req.query.memberID;
+        let data = await FamilyTreeService.RelationShipMember(memberID);
+        res.send(data)
+    } catch (error) {
+        console.log(error)
+    }
+}
 var AllMemberInGenelogy = async (req, res) => {
     try {
         let memberID = req.query.memberID;
@@ -117,5 +125,5 @@ var informationMember = async (req, res) => {
 }
 
 module.exports = {
-    AllReligion, informationMember, AllNationality, AllMemberRole, setRole, AllMemberInGenelogy, getAllUnspecifiedMembers, GetIdPaternalAncestor
+    AllReligion, informationMember, AllNationality, AllMemberRole, setRole, AllMemberInGenelogy, getAllUnspecifiedMembers, GetIdPaternalAncestor,getRelationShipMember
 };

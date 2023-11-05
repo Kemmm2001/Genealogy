@@ -76,7 +76,7 @@ let SendEmailCore = (objData) => {
                 throw error;
             } else {
                 console.log('Email sent: ' + info.response);
-                return truel
+                return true;
             }
         });
     } catch (error) {
@@ -87,8 +87,13 @@ let SendEmailCore = (objData) => {
 
 // schedule sẽ chạy vào mỗi 0h hằng ngày
 schedule.scheduleJob('0 0 * * *', () => {
-    console.log("Refresh free email : " + process.env.FREE_EMAIL_EVERY_DAY);
-    UserManagement.refreshFreeEmail(process.env.FREE_EMAIL_EVERY_DAY);
+    try{
+        console.log("Refresh free email : " + process.env.FREE_EMAIL_EVERY_DAY);
+        UserManagement.refreshFreeEmail(process.env.FREE_EMAIL_EVERY_DAY);
+    }catch(error){
+        console.log("error : " + error);
+    }
+
 });
 
 module.exports = { SendSMSCore, SendEmailCore };

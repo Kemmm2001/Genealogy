@@ -220,7 +220,7 @@ function GetIdPaternalAncestor(CodeID) {
             if (err) {
                 console.log(err)
                 reject(err)
-            } else {                
+            } else {
                 resolve(result[0])
             }
         })
@@ -238,6 +238,73 @@ async function getParentID(MemberId) {
                 reject(err);
             } else {
                 resolve(result[0]);
+            }
+        });
+    });
+}
+
+async function RelationShipMember(memberId) {
+    return new Promise((resolve, reject) => {
+        let objRelationship = {};
+
+        // Lấy thông tin từ bảng familymember
+        let getMemberQuery = `SELECT * FROM familymember WHERE MemberID = ${memberId}`;
+        db.connection.query(getMemberQuery, async (err, memberResult) => {
+            if (err) return reject(err);
+            let member = memberResult[0];
+            
+            // Lấy thông tin cha mẹ
+            if (member.ParentID) {
+                let parentQuery = `SELECT * FROM familymember WHERE MemberID = ${member.ParentID}`;
+                db.connection.query(parentQuery, async (err, parentResult) => {
+                    if (!err && parentResult.length > 0) {
+                        let parentMember = parentResult[0];
+                        let parentData = await createFamilyData(parentMember);
+
+                        if (parentMember.Male == 1) {
+                            objRelationship.Father = parentData;
+                        } else {
+                            objRelationship.Mother = parentData;
+                        }
+                        
+                        // Kiểm tra thông tin vợ/chồng
+                        if (parentMember.MarriageID) {
+                            let spouseQuery = `SELECT * FROM familymember WHERE MemberID = ${parentMember.MarriageID}`;
+                            db.connection.query(spouseQuery, async (err, spouseResult) => {
+                                if (!err && spouseResult.length > 0) {
+                                    let spouseMember = spouseResult[0];
+                                    let spouseData = await createFamilyData(spouseMember);
+
+                                    if (spouseMember.Male == 1) {
+                                        objRelationship.Husband = spouseData;
+                                    } else {
+                                        objRelationship.Wife = spouseData;
+                                    }
+                                }
+                                
+                                // Lấy thông tin về con cái
+                                let childQuery = `SELECT * FROM familymember WHERE ParentID = ${memberId}`;
+                                db.connection.query(childQuery, (err, result) => {
+                                    if (!err && result.length > 0) {
+                                        objRelationship.child = result;
+                                    }
+                                    resolve(objRelationship);
+                                });
+                            });
+                        } else {
+                            resolve(objRelationship);
+                        }
+                    }
+                });
+            } else {
+                // Lấy thông tin về con cái
+                let childQuery = `SELECT * FROM familymember WHERE ParentID = ${memberId}`;
+                db.connection.query(childQuery, (err, result) => {
+                    if (!err && result.length > 0) {                        
+                        objRelationship.child = result;
+                    }
+                    resolve(objRelationship);
+                });
             }
         });
     });
@@ -366,5 +433,5 @@ function removePaternalAncestor() {
 module.exports = {
     getAllReligion, getInforMember, getContactMember, getEducationMember, getJobMember, getEventMember, getAllNationality, getAllMemberRole,
     getRoleExist, setRoleMember, removePaternalAncestor, turnOnSQL_SAFE_UPDATES, turnOffSQL_SAFE_UPDATES,
-    setAllGenerationMember, ResetAllGenerationMember, ViewFamilyTree, getListUnspecifiedMembers, GetIdPaternalAncestor
+    setAllGenerationMember, ResetAllGenerationMember, ViewFamilyTree, getListUnspecifiedMembers, GetIdPaternalAncestor, RelationShipMember
 }

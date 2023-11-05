@@ -7,22 +7,28 @@ const { signAccessToken, signRefreshToken, verifyRefreshToken } = require('../..
 var registerUser = async (req, res) => {
   try {
     // Xử lý yêu cầu đăng ký ở đây
-    const result = await authSchema.validateAsync(req.body)
+    const result = await authSchema.validateAsync(req.body);
+
+    if (result.password !== result.repassword) {
+      throw new Error("Mật khẩu nhập lại không khớp với mật khẩu");
+    }
+
     let doesExist = await UserService.checkMail(result.email);
-    if (doesExist) throw createError.Conflict(`${result.email} đã được đăng kí`)
+
+    if (doesExist) throw createError.Conflict(`${result.email} đã được đăng kí`);
+
     const hashedPassword = await bcrypt.hash(result.password, 10);
     let newUser = await UserService.create(result.username, result.email, hashedPassword);
-  
 
-    return res.json({ newUser })
+    return res.json({ newUser });
   } catch (error) {
     if (error.isJoi === true) {
       error.status = 422;
     }
     res.status(error.status || 500).json({ error: error.message });
-
   }
 }
+
 
 var loginUser = async (req, res) => {
   try {
@@ -52,9 +58,9 @@ var refreshToken = async(req, res) => {
   try {
     const {refreshToken} = req.body
     if (!refreshToken) throw createError.BadRequest()
-    const accountID = await verifyRefreshToken(refreshToken)
+    const {insertId} = await verifyRefreshToken(refreshToken)
 
-    const accessToken = await signAccessToken(accountID)
+    const accessToken = await signAccessToken(insertId)
 
     res.send({accessToken: accessToken})
   } catch (error) {
@@ -64,20 +70,26 @@ var refreshToken = async(req, res) => {
 
 var registerGenealogy = async (req, res) => {
   try {
-    const accountID = req.body
-    const codeID = generateRandomString ;
-    let data = await UserService.createGenealogy(accountID, codeID);
-  
+    const accountID = req.body;
+    let codeID;
+    let doesExist = true;
 
-    return res.json({ data })
+    while (doesExist) {
+      codeID = generateRandomString(); // Gọi generateRandomString() để tạo mã ngẫu nhiên mới
+      doesExist = await UserService.checkCodeID(codeID);
+    }
+
+    let data = await UserService.createGenealogy(accountID, codeID);
+
+    return res.json({ data });
   } catch (error) {
     if (error.isJoi === true) {
       error.status = 422;
     }
     res.status(error.status || 500).json({ error: error.message });
-
   }
 }
+
 
 var getGenealogy = async (req, res) => {
   try {

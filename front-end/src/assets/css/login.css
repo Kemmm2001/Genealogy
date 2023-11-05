@@ -74,4 +74,33 @@
     color: #FFFFFF;
 }
 
+.login-options-content{
+    background-color: RGB(132, 192, 233);
+    color: #FFFFFF;
+    font-size: 18px;
+    height: 64px;
+    width: 550px;
+    border-radius: 1.375rem;
+}
+
+.code-input{
+    inset: 0;
+    border: none;
+    outline: none;
+}
+
+.submit-code-button, .submit-code-button:hover{
+    background-color: #f2f2f2;
+    color: #000;
+    height: 64px;
+    border-radius: 0 1.375rem 1.375rem 0;
+    outline: none;
+    border: none;
+}
+
+.code-register:hover{
+    background-color: RGB(162, 212, 253);
+    cursor: pointer;
+}
+
 

@@ -33,7 +33,7 @@ CREATE TABLE `account` (
   `RoleID` int DEFAULT NULL,
   `TotalMoney` double DEFAULT NULL,
   `FreeSMS` int DEFAULT NULL,
-  `FreeEmail` int DEFAULT NULL,
+  `FreeGmail` int DEFAULT NULL,
   PRIMARY KEY (`AccountID`),
   KEY `RoleAccount_idx` (`RoleID`),
   KEY `account_idx` (`CodeID`),
@@ -774,4 +774,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-05 10:38:04
+-- Dump completed on 2023-11-04 23:23:58

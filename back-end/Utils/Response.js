@@ -1,45 +1,48 @@
-let coreResponse = (success, status_code, data) => {
-    response = {
+let coreResponse = (success, status_code, message, data) => {
+    return {
         success: success,
         status_code: status_code,
+        message: message,
         data: data
     };
-    return response;
 }
 
-let badRequestResponse = (message) => {
+let badRequestResponse = (data, message) => {
     if (message == null) message = "Bad request";
-    return coreResponse(false, 400, message);
+    if (data == null) return coreResponse(false, 400, message);
+    console.error(`${message} : ${data}`);
+    return coreResponse(false, 400, message, data);
 }
 
-let dataNotFoundResponse = (message) => {
+let dataNotFoundResponse = (data, message) => {
     if (message == null) message = "Data not found";
-    return coreResponse(false, 404, message);
+    if (data == null) return coreResponse(false, 404, message);
+    console.error(`${message} : ${data}`);
+    return coreResponse(false, 404, message, data);
 }
-let successResponse = (message) => {
+let successResponse = (data, message) => {
     if (message == null) message = "Success";
-    return coreResponse(true, 200, message);
+    if (data == null) return coreResponse(true, 200, message);
+    console.error(`${message} : ${data}`);
+    return coreResponse(true, 200, message, data);
 }
 
-let internalServerErrorResponse = (message) => {
+let internalServerErrorResponse = (data, message) => {
     if (message == null) message = "Internal server error";
-    return coreResponse(false, 500, message);
-}
-
-let errorResponse = (message) => {
-    if (message == null) message = "Error";
-    return coreResponse(false, 500, message);
+    if (data == null) return coreResponse(false, 500, message);
+    console.error(`${message} : ${data}`);
+    return coreResponse(false, 500, message, data);
 }
 
 let missingFieldsErrorResponse = (missingFields) => {
+    message = "Missing required fields";
     data = {
-        message: "Missing required fields",
         missing_fields: missingFields
     }
-    return badRequestResponse(data);
+    return badRequestResponse(message, data);
 }
 
 module.exports = {
     missingFieldsErrorResponse, badRequestResponse, dataNotFoundResponse, successResponse,
-    internalServerErrorResponse, coreResponse, errorResponse
+    internalServerErrorResponse, coreResponse
 };
