@@ -71,17 +71,15 @@
       </div>
       <div class="h-100 w-100 d-flex flex-column" style="padding-top: 12px">
         <div class="existing-members d-flex flex-column w-100">
-          <div class="list-item" style="background-color: #AED6F1; text-align: center;">Đã có trên phả đồ</div>
+          <div class="list-item" style="background-color: #AED6F1; text-align: center;">Danh sách thành viên có trên phả đồ</div>
           <div class="d-flex flex-column w-100" style="overflow-y: auto;cursor: pointer">
             <div v-for="(n, index) in nodes" :key="n.id">
-              <div @click="handleLeftClick(n.id)" :class="{ 'list-item': true, 'ancestor-member': index === 0 }">Thành
-                Viên
-                {{ n.name }}</div>
+              <div @click="handleLeftClick(n.id)" :class="{'list-item': true, 'ancestor-member': index === 0}">Thành Viên {{ n.name }}</div>
             </div>
           </div>
         </div>
         <div class="nonexisting-members d-flex flex-column w-100">
-          <div class="list-item" style="background-color: #AED6F1; text-align: center;">Chưa có trên phả đồ</div>
+          <div class="list-item" style="background-color: #AED6F1; text-align: center;">Danh sách thành viên không có trên phả đồ</div>
           <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto;">
             <div v-for="list in ListUnspecifiedMembers" :key="list.id" class="list-item">Thành Viên {{ list.MemberName }}
             </div>
@@ -694,7 +692,11 @@ import Snackbar from "awesome-snackbar";
 import FamilyTree from "@balkangraph/familytree.js";
 import { EventBus } from "../assets/js/MyEventBus.js";
 import { HTTP } from "../assets/js/baseAPI.js";
-import { LunarDate, SolarDate } from "vietnamese-lunar-calendar";
+import {
+  convertLunar2Solar,
+  convertSolar2Lunar,
+} from "vietnamese-lunar-calendar/build/solar-lunar";
+import { getLocalTimezone } from "vietnamese-lunar-calendar/build/solar-lunar/utils";
 export default {
   data() {
     return {
@@ -965,15 +967,42 @@ export default {
     },
     convertLunarToSolar() {
       let LunarDob = new Date(this.objMemberInfor.LunarDob);
-      this.objMemberInfor.Dob = new SolarDate(LunarDob).toString();
-      console.log(this.objMemberInfor.LunarDob);
-      console.log(this.objMemberInfor.Dob);
+      let timezone = (0, getLocalTimezone)();
+      const dob = convertLunar2Solar(
+        LunarDob.getDate(),
+        LunarDob.getMonth() + 1,
+        LunarDob.getFullYear(),
+        false,
+        timezone
+      );
+      this.objMemberInfor.Dob =
+        "" +
+        dob.getFullYear() +
+        "-" +
+        (dob.getMonth() + 1) +
+        "-" +
+        dob.getDate();
+
+      console.log("dob" + this.objMemberInfor.Dob);
     },
     convertSolarToLunar() {
       let Dob = new Date(this.objMemberInfor.Dob);
-      this.objMemberInfor.LunarDob = new LunarDate(Dob).toString();
-      console.log(this.objMemberInfor.LunarDob);
-      console.log(this.objMemberInfor.Dob);
+      let timezone = (0, getLocalTimezone)();
+      const dob = convertSolar2Lunar(
+        Dob.getDate(),
+        Dob.getMonth() + 1,
+        Dob.getFullYear(),
+        false,
+        timezone
+      );
+      this.objMemberInfor.LunarDob =
+        "" +
+        dob.getFullYear() +
+        "-" +
+        (dob.getMonth() + 1) +
+        "-" +
+        dob.getDate();
+      console.log("LunarDob: " + this.objMemberInfor.LunarDob);
     },
     getInforMember(id) {
       HTTP.get("InforMember", {
