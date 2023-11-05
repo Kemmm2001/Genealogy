@@ -4,7 +4,7 @@ const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: 'AXeTFQW7pC3cxSFg9a7Q8JfwtXkMmy3PSbnG2NgLXASbWhps6x9dBLG',
-  database: 'genealogy'
+  database: 'genealogyTest'
 });
 
 // Kết nối vào cơ sở dữ liệu
