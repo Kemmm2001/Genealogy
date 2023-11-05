@@ -35,8 +35,10 @@
       </div>
       <div class="d-flex flex-row w-100">
         <div class="col-md-6" style="padding: 12px 6px 0px 12px">
-          <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
-            <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">{{ blood.BloodType }}</option>
+          <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0"
+            @change="GetListFilterMember()">
+            <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">{{
+              blood.BloodType }}</option>
           </select>
         </div>
         <div class="col-md-6" style="padding: 12px 12px 0px 6px">
@@ -79,7 +81,8 @@
         <div class="nonexisting-members d-flex flex-column w-100">
           <div class="list-item" style="background-color: #AED6F1; text-align: center;">Danh sách thành viên không có trên phả đồ</div>
           <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto;">
-            <div v-for="list in ListUnspecifiedMembers" :key="list.id" class="list-item">Thành Viên {{ list.MemberName }}</div>
+            <div v-for="list in ListUnspecifiedMembers" :key="list.id" class="list-item">Thành Viên {{ list.MemberName }}
+            </div>
           </div>
         </div>
       </div>
@@ -94,21 +97,33 @@
             <h5>Thành Viên {{ objMemberInfor.MemberName }}</h5>
             <div class="close-add-form" @click="closeSelectModal" style="top: 8px;right:5px">
               <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                <path
+                  d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
               </svg>
             </div>
           </div>
           <div class="card-body" style="padding: 0,height:auto">
             <div class="list-group">
               <div class="list-group-item">Xem mối quan hệ hiện tại</div>
-              <div @click="expandAddRelaionship = !expandAddRelaionship" class="list-group-item">Thêm quan hệ</div>
-              <div class="collapsedAddRelationship" :class="{ expandedAddRelationship: expandAddRelaionship }">
-                <div v-show="expandAddRelaionship" class="list-group-item" @click="openMemberModal('parent')">Thêm Cha</div>
-                <div v-show="expandAddRelaionship" class="list-group-item">Thêm Mẹ</div>
-                <div v-show="expandAddRelaionship" class="list-group-item" @click="openMemberModal('married')">Thêm Vợ</div>
-                <div v-show="expandAddRelaionship" class="list-group-item" @click="openMemberModal('children')">Thêm Con</div>
+              <div @click="expandAddRelaionship = !expandAddRelaionship" class="list-group-item position-relative">
+                <div>Thêm quan hệ</div>
+                <div class="d-flex h-100 align-items-center position-absolute" style="right: 0px; width: 25px; top: 0;">
+                  <svg class="collapsed-relationship-icon" :class="{ expanded : expandAddRelaionship }" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                    <path
+                      d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" />
+                  </svg>
+                </div>
               </div>
-              <div class="list-group-item">Set làm tộc trưởng</div>
+              <div class="collapsedAddRelationship" :class="{ expandedAddRelationship: expandAddRelaionship }">
+                <div v-show="expandAddRelaionship" style="border-top: none;" class="list-group-item"
+                  @click="openMemberModal('parent')">Thêm Cha</div>
+                <div v-show="expandAddRelaionship" class="list-group-item">Thêm Mẹ</div>
+                <div v-show="expandAddRelaionship" class="list-group-item" @click="openMemberModal('married')">Thêm Vợ
+                </div>
+                <div v-show="expandAddRelaionship" class="list-group-item" @click="openMemberModal('children')">Thêm Con
+                </div>
+              </div>
+              <div class="list-group-item" style="border-top: none;">Set làm tộc trưởng</div>
               <div class="list-group-item" @click="setPaternalAncestor()">Set làm tổ cụ</div>
               <div class="list-group-item" @click="removeMember()">Xóa thành viên</div>
             </div>
@@ -119,11 +134,13 @@
     <!-- Đât là modal thông báo -->
     <modal name="noti-modal">
       <div class="h-100 d-flex flex-column" style="background-color: white;">
-        <div class="modal-title d-flex flex-row align-items-center justify-content-center" style="height: 60px;border-radius:0px">
+        <div class="modal-title d-flex flex-row align-items-center justify-content-center"
+          style="height: 60px;border-radius:0px">
           <div class="col-3 d-flex flex-row align-items-center h-100 p-3" style="background-color: rgb(235, 235, 235);">
             <div>
               <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
+                <path
+                  d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
               </svg>
             </div>
             <div class="d-flex justify-content-center" style="flex-grow: 1;">User</div>
@@ -135,7 +152,8 @@
             <div class="position-relative d-flex" style="height: 48px;">
               <label for="text-search" style="position: absolute; inset: 12px;">
                 <svg class="text-search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                  <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
+                  <path
+                    d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
                 </svg>
               </label>
               <div class="w-100" style="height: 48px; padding: 8px;">
@@ -149,34 +167,42 @@
               </div>
             </div>
             <div>
-              <div tabindex="1" class="noti-modal-member d-flex flex-row align-items-center px-2" :class="{ chosen: checkAll }">
+              <div tabindex="1" class="noti-modal-member d-flex flex-row align-items-center px-2"
+                :class="{ chosen: checkAll }">
                 <div>
                   <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                    <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
+                    <path
+                      d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
                   </svg>
                 </div>
                 <div class="d-flex justify-content-center" style="flex-grow: 1;">Thành viên A</div>
               </div>
-              <div tabindex="2" class="noti-modal-member d-flex flex-row align-items-center px-2" :class="{ chosen: checkAll }">
+              <div tabindex="2" class="noti-modal-member d-flex flex-row align-items-center px-2"
+                :class="{ chosen: checkAll }">
                 <div>
                   <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                    <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
+                    <path
+                      d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
                   </svg>
                 </div>
                 <div class="d-flex justify-content-center" style="flex-grow: 1;">Thành viên A</div>
               </div>
-              <div tabindex="3" class="noti-modal-member d-flex flex-row align-items-center px-2" :class="{ chosen: checkAll }">
+              <div tabindex="3" class="noti-modal-member d-flex flex-row align-items-center px-2"
+                :class="{ chosen: checkAll }">
                 <div>
                   <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                    <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
+                    <path
+                      d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
                   </svg>
                 </div>
                 <div class="d-flex justify-content-center" style="flex-grow: 1;">Thành viên A</div>
               </div>
-              <div tabindex="4" class="noti-modal-member d-flex flex-row align-items-center px-2" :class="{ chosen: checkAll }">
+              <div tabindex="4" class="noti-modal-member d-flex flex-row align-items-center px-2"
+                :class="{ chosen: checkAll }">
                 <div>
                   <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                    <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
+                    <path
+                      d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
                   </svg>
                 </div>
                 <div class="d-flex justify-content-center" style="flex-grow: 1;">Thành viên A</div>
@@ -188,7 +214,8 @@
               <input type="text" class="form-control" placeholder="..." />
               <div class="d-flex align-items-center" style="padding-left: 8px; cursor: pointer;">
                 <svg class="noti-send-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                  <path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z" />
+                  <path
+                    d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z" />
                 </svg>
               </div>
             </div>
@@ -200,7 +227,8 @@
     <!-- Đât là modal so sánh -->
     <modal name="compare-modal">
       <div class="h-100 d-flex flex-column position-relative" style="background-color: #C69934;">
-        <div class="modal-title d-flex flex-row align-items-center justify-content-center" style="background-color: #C69934 !important">
+        <div class="modal-title d-flex flex-row align-items-center justify-content-center"
+          style="background-color: #C69934 !important">
           <div class="col-12 d-flex align-items-center justify-content-center">So sánh 2 thành viên</div>
         </div>
         <div class="d-flex flex-row" style="flex-grow: 1">
@@ -282,7 +310,8 @@
           <h5>{{ TitleModal }}</h5>
           <div class="close-add-form" @click="closeMemberModal" style="top: 8px;right:5px">
             <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-              <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+              <path
+                d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
             </svg>
           </div>
         </div>
@@ -308,8 +337,11 @@
             <div class="col-9" style="padding-top: 15px" v-if="extendedInfo">
               <div class="row">
                 <div class="col-4">
-                  <img style="height:316px;width:360px;margin-bottom:30px" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" />
-                  <svg v-else style="margin-bottom:46px" fill="#000000" height="300px" width="300px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
+                  <img style="height:316px;width:360px;margin-bottom:30px" v-if="avatarSrc" :src="avatarSrc"
+                    alt="Avatar" />
+                  <svg v-else style="margin-bottom:46px" fill="#000000" height="300px" width="300px" version="1.1"
+                    id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                    viewBox="0 0 512 512" xml:space="preserve">
                     <g>
                       <g>
                         <circle cx="256" cy="114.526" r="114.526" />
@@ -324,7 +356,8 @@
                   </svg>
                   <div class="form-group">
                     <label for="imageUpload">Tải ảnh lên</label>
-                    <input type="file" class="form-control input-file" id="imageUpload" accept="image/*" @change="updateAvatar($event)" />
+                    <input type="file" class="form-control input-file" id="imageUpload" accept="image/*"
+                      @change="updateAvatar($event)" />
                   </div>
                 </div>
                 <div class="col-8">
@@ -344,7 +377,8 @@
                       </label>
                     </div>
                     <div style="position: relative;width: 50%; margin-right: 10px;">
-                      <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item" placeholder />
+                      <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item"
+                        placeholder />
                       <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">
                         Con
                         Thứ
@@ -373,13 +407,15 @@
                   <div style="display:flex">
                     <div style="position: relative; width: 50%;margin-right: 10px;">
                       <select v-model="objMemberInfor.NationalityID" class="form-select modal-item">
-                        <option v-for="nation in ListNationality" :key="nation.id" :value="nation.NationalityID">{{ nation.NationalityName }}</option>
+                        <option v-for="nation in ListNationality" :key="nation.id" :value="nation.NationalityID">{{
+                          nation.NationalityName }}</option>
                       </select>
                       <label class="form-label" for="select">Quốc Tịch</label>
                     </div>
                     <div style="position: relative;width: 50%; margin-right: 10px;">
                       <select v-model="objMemberInfor.ReligionID" class="form-select modal-item">
-                        <option v-for="religion in ListReligion" :key="religion.id" :value="religion.ReligionID">{{ religion.ReligionName }}</option>
+                        <option v-for="religion in ListReligion" :key="religion.id" :value="religion.ReligionID">{{
+                          religion.ReligionName }}</option>
                       </select>
                       <label class="form-label-number" for="select">Tôn Giáo</label>
                     </div>
@@ -395,11 +431,13 @@
                     </h6>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
-                        <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar()" />
+                        <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder
+                          @change="convertSolarToLunar()" />
                         <label class="form-label" for="input">Dương Lịch</label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
-                        <input v-model="objMemberInfor.LunarDob" type="date" class="form-control modal-item" placeholder @change="convertLunarToSolar()" />
+                        <input v-model="objMemberInfor.LunarDob" type="date" class="form-control modal-item" placeholder
+                          @change="convertLunarToSolar()" />
                         <label class="form-label-number" min="0" for="input">Âm lịch</label>
                       </div>
                     </div>
@@ -446,7 +484,8 @@
               <div class="row">
                 <div style="position: relative;padding-right: 23px;">
                   <input v-model="objMemberContact.Address" type="text" class="form-control modal-item" placeholder />
-                  <label style="left: 25px;" class="form-label" for="input" :class="{ 'active': objMemberContact.Address }">Địa chỉ</label>
+                  <label style="left: 25px;" class="form-label" for="input"
+                    :class="{ 'active': objMemberContact.Address }">Địa chỉ</label>
                 </div>
                 <div style="display:flex">
                   <div style="position: relative; width: 50%;margin-right: 10px;">
@@ -471,16 +510,19 @@
                   </div>
                   <div style="position: relative;width: 50%; margin-right: 10px;">
                     <input v-model="objMemberContact.Email2" type="email" class="form-control modal-item" placeholder />
-                    <label class="form-label-number" min="0" for="input" :class="{ 'active': objMemberContact.Email2 }">Email 2</label>
+                    <label class="form-label-number" min="0" for="input"
+                      :class="{ 'active': objMemberContact.Email2 }">Email 2</label>
                   </div>
                 </div>
                 <div style="position: relative; padding-right: 23px;">
                   <input v-model="objMemberContact.FacebookUrl" type="text" class="form-control modal-item" placeholder />
-                  <label style="left: 25px;" class="form-label" for="input" :class="{ 'active': objMemberContact.FacebookUrl }">Facebook</label>
+                  <label style="left: 25px;" class="form-label" for="input"
+                    :class="{ 'active': objMemberContact.FacebookUrl }">Facebook</label>
                 </div>
                 <div style="position: relative; padding-right: 23px;">
                   <input v-model="objMemberContact.Zalo" type="text" class="form-control modal-item" placeholder />
-                  <label style="left: 25px;" class="form-label" for="input" :class="{ 'active': objMemberContact.Zalo }">Zalo</label>
+                  <label style="left: 25px;" class="form-label" for="input"
+                    :class="{ 'active': objMemberContact.Zalo }">Zalo</label>
                 </div>
               </div>
             </div>
@@ -495,8 +537,10 @@
                     </label>
                   </div>
                   <div style="position: relative;width: 50%; margin-right: 10px;">
-                    <input v-model="objMemberJob.OrganizationAddress" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" min="0" for="input" :class="{ 'active': objMemberJob.OrganizationAddress }">Địa Chỉ</label>
+                    <input v-model="objMemberJob.OrganizationAddress" type="text" class="form-control modal-item"
+                      placeholder />
+                    <label class="form-label" min="0" for="input"
+                      :class="{ 'active': objMemberJob.OrganizationAddress }">Địa Chỉ</label>
                   </div>
                 </div>
                 <div style="display:flex">
@@ -527,9 +571,12 @@
                 </div>
                 <div class="d-flex justify-content-end">
                   <div class="form-group" role="group">
-                    <button type="button" class="btn btn-primary" @click="addNewJobMember()" style="margin-right:10px">Thêm</button>
-                    <button type="button" class="btn btn-info mr-1" @click="updateJobMember()" style="margin-right:10px">Sửa</button>
-                    <button type="button" class="btn btn-danger mr-1" @click="removeJobMember()" style="margin-right:10px">Xóa</button>
+                    <button type="button" class="btn btn-primary" @click="addNewJobMember()"
+                      style="margin-right:10px">Thêm</button>
+                    <button type="button" class="btn btn-info mr-1" @click="updateJobMember()"
+                      style="margin-right:10px">Sửa</button>
+                    <button type="button" class="btn btn-danger mr-1" @click="removeJobMember()"
+                      style="margin-right:10px">Xóa</button>
                   </div>
                 </div>
                 <div class="form-group" style="margin-top:13px;padding-right:22px">
@@ -543,7 +590,8 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="job in ListMemberJob" :key="job.id" @click="selectRowJob(job)" :class="{ 'row-selected': job === objMemberJob }">
+                      <tr v-for="job in ListMemberJob" :key="job.id" @click="selectRowJob(job)"
+                        :class="{ 'row-selected': job === objMemberJob }">
                         <td>{{ job.Organization }}</td>
                         <td>{{ job.Role }}</td>
                         <td>{{ formatDate(job.StartDate) }}</td>
@@ -558,30 +606,38 @@
               <div class="row">
                 <div style="position: relative;padding-right: 20px;">
                   <input v-model="objMemberEducation.School" type="text" class="form-control modal-item" placeholder />
-                  <label style="left: 20px;" class="form-label" for="input" :class="{ 'active': objMemberEducation.School }">Tên trường</label>
+                  <label style="left: 20px;" class="form-label" for="input"
+                    :class="{ 'active': objMemberEducation.School }">Tên trường</label>
                 </div>
                 <div style="position: relative;padding-right: 20px;">
-                  <input v-model="objMemberEducation.Description" type="text" class="form-control modal-item" placeholder />
-                  <label style="left: 20px;" class="form-label" for="input" :class="{ 'active': objMemberEducation.Description }">Mô tả</label>
+                  <input v-model="objMemberEducation.Description" type="text" class="form-control modal-item"
+                    placeholder />
+                  <label style="left: 20px;" class="form-label" for="input"
+                    :class="{ 'active': objMemberEducation.Description }">Mô tả</label>
                 </div>
                 <div class="form-group">
                   <h6 style="margin-bottom:20px">Thời gian học tập</h6>
                   <div style="display:flex">
                     <div style="position: relative; width: 50%;margin-right: 10px;">
-                      <input v-model="objMemberEducation.StartDate" type="date" class="form-control modal-item" placeholder />
+                      <input v-model="objMemberEducation.StartDate" type="date" class="form-control modal-item"
+                        placeholder />
                       <label class="form-label" for="input">Từ ngày</label>
                     </div>
                     <div style="position: relative;width: 50%; margin-right: 10px;">
-                      <input v-model="objMemberEducation.EndDate" type="date" class="form-control modal-item" placeholder />
+                      <input v-model="objMemberEducation.EndDate" type="date" class="form-control modal-item"
+                        placeholder />
                       <label class="form-label-number" min="0" for="input">Đến ngày</label>
                     </div>
                   </div>
                 </div>
                 <div class="d-flex justify-content-end">
                   <div class="form-group" role="group">
-                    <button type="button" class="btn btn-primary" @click="addNewEducationMember()" style="margin-right:10px">Thêm</button>
-                    <button type="button" class="btn btn-info mr-1" @click="updateEducationMember()" style="margin-right:10px">Sửa</button>
-                    <button type="button" class="btn btn-danger mr-1" @click="deleteJobMember()" style="margin-right:10px">Xóa</button>
+                    <button type="button" class="btn btn-primary" @click="addNewEducationMember()"
+                      style="margin-right:10px">Thêm</button>
+                    <button type="button" class="btn btn-info mr-1" @click="updateEducationMember()"
+                      style="margin-right:10px">Sửa</button>
+                    <button type="button" class="btn btn-danger mr-1" @click="deleteJobMember()"
+                      style="margin-right:10px">Xóa</button>
                   </div>
                 </div>
                 <div class="form-group" style="margin-top:13px;padding-right:22px">
@@ -594,7 +650,8 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="edu in ListMemberEducation" :key="edu.id" @click="selectRowEducation(edu)" :class="{ 'row-selected': edu === objMemberEducation }">
+                      <tr v-for="edu in ListMemberEducation" :key="edu.id" @click="selectRowEducation(edu)"
+                        :class="{ 'row-selected': edu === objMemberEducation }">
                         <td>{{ edu.School }}</td>
                         <td>{{ formatDate(edu.StartDate) }}</td>
                         <td>{{ formatDate(edu.EndDate) }}</td>
@@ -606,18 +663,23 @@
             </div>
             <div class="col-9" style="padding-top: 15px" v-else>
               <div class="form-group" style="margin-top:13px;padding-right:22px">
-                <textarea v-model="objMemberInfor.Note" style="height:300px" class="form-control modal-item" id="lichSuCongTac" rows="5" placeholder="Ghi Chú"></textarea>
+                <textarea v-model="objMemberInfor.Note" style="height:300px" class="form-control modal-item"
+                  id="lichSuCongTac" rows="5" placeholder="Ghi Chú"></textarea>
               </div>
             </div>
           </div>
         </div>
         <div class="card-footer" style="background-color:#E8C77B">
           <div class="d-flex justify-content-end">
-            <button v-if="isAddChildren" type="button" class="btn btn-primary mr-2" @click="addNewChildrenMember()">Thêm</button>
-            <button v-else-if="isAddMarried" type="button" class="btn btn-primary mr-2" @click="addNewMarriedMember()">Thêm</button>
-            <button v-else-if="isAddParent" type="button" class="btn btn-primary mr-2" @click="getCurrentParentMember()">Thêm</button>
+            <button v-if="isAddChildren" type="button" class="btn btn-primary mr-2"
+              @click="addNewChildrenMember()">Thêm</button>
+            <button v-else-if="isAddMarried" type="button" class="btn btn-primary mr-2"
+              @click="addNewMarriedMember()">Thêm</button>
+            <button v-else-if="isAddParent" type="button" class="btn btn-primary mr-2"
+              @click="getCurrentParentMember()">Thêm</button>
             <button v-if="isEdit" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
-            <button style="margin-left:10px" type="button" class="btn btn-secondary" @click="closeSelectModal()">Cancel</button>
+            <button style="margin-left:10px" type="button" class="btn btn-secondary"
+              @click="closeSelectModal()">Cancel</button>
           </div>
         </div>
       </div>
