@@ -3,4 +3,5 @@ function missingFields(requiredFields, data) {
         (typeof data[field] === 'string' ? data[field].trim() !== '' : true)));
 }
 
+
 module.exports = { missingFields };
