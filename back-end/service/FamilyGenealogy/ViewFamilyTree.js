@@ -251,9 +251,8 @@ async function RelationShipMember(memberId) {
         let getMemberQuery = `SELECT * FROM familymember WHERE MemberID = ${memberId}`;
         db.connection.query(getMemberQuery, async (err, memberResult) => {
             if (err) return reject(err);
-
             let member = memberResult[0];
-
+            
             // Lấy thông tin cha mẹ
             if (member.ParentID) {
                 let parentQuery = `SELECT * FROM familymember WHERE MemberID = ${member.ParentID}`;
@@ -267,10 +266,10 @@ async function RelationShipMember(memberId) {
                         } else {
                             objRelationship.Mother = parentData;
                         }
-
+                        
                         // Kiểm tra thông tin vợ/chồng
                         if (parentMember.MarriageID) {
-                            let spouseQuery = `SELECT * FROM familymember WHERE MarriageID = ${parentMember.MarriageID}`;
+                            let spouseQuery = `SELECT * FROM familymember WHERE MemberID = ${parentMember.MarriageID}`;
                             db.connection.query(spouseQuery, async (err, spouseResult) => {
                                 if (!err && spouseResult.length > 0) {
                                     let spouseMember = spouseResult[0];
@@ -282,7 +281,15 @@ async function RelationShipMember(memberId) {
                                         objRelationship.Wife = spouseData;
                                     }
                                 }
-                                resolve(objRelationship);
+                                
+                                // Lấy thông tin về con cái
+                                let childQuery = `SELECT * FROM familymember WHERE ParentID = ${memberId}`;
+                                db.connection.query(childQuery, (err, result) => {
+                                    if (!err && result.length > 0) {
+                                        objRelationship.child = result;
+                                    }
+                                    resolve(objRelationship);
+                                });
                             });
                         } else {
                             resolve(objRelationship);
@@ -290,12 +297,18 @@ async function RelationShipMember(memberId) {
                     }
                 });
             } else {
-                resolve(objRelationship);
+                // Lấy thông tin về con cái
+                let childQuery = `SELECT * FROM familymember WHERE ParentID = ${memberId}`;
+                db.connection.query(childQuery, (err, result) => {
+                    if (!err && result.length > 0) {                        
+                        objRelationship.child = result;
+                    }
+                    resolve(objRelationship);
+                });
             }
         });
     });
 }
-
 
 async function ViewFamilyTree(memberId, ListFamily = []) {
     return new Promise((resolve, reject) => {
