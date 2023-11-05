@@ -18,6 +18,7 @@ const initWebRouter = (app) => {
     router.post('/send-email', EventManagementController.SendEmail)
 
 
+
     //API Nhật anh
     router.post('/search-event', EventManagementController.searchEvent);
     router.post('/filter-event', EventManagementController.filterEvent);

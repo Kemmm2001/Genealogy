@@ -8,6 +8,7 @@ const initWebInformation = require("./Router/InformationGenealogy")
 const initWebEvent = require("./Router/EventGenealogy")
 const initWebConfig = require('./Router/Config')
 const initWebAuthen = require('./Router/Auth')
+const initWebOthers = require('./Router/Others')
 
 const bodyParser = require('body-parser');
 
@@ -22,5 +23,5 @@ initWebInformation(app);
 initWebEvent(app);
 initWebConfig(app);
 initWebAuthen(app);
-
+initWebOthers(app)
 console.log('Server started at http://localhost:' + port);
