@@ -1,13 +1,13 @@
 const UserService = require('../../service/Authencation/UserManagement');
 const createError = require('http-errors')
-const { authSchema } = require('../../helper/validation_schema')
+const { registerSchema, loginSchema } = require('../../helper/validation_schema')
 const bcrypt = require('bcrypt');
 const { signAccessToken, signRefreshToken, verifyRefreshToken } = require('../../helper/jwt_helper')
 
 var registerUser = async (req, res) => {
   try {
     // Xử lý yêu cầu đăng ký ở đây
-    const result = await authSchema.validateAsync(req.body);
+    const result = await registerSchema.validateAsync(req.body);
 
     if (result.password !== result.repassword) {
       throw new Error("Mật khẩu nhập lại không khớp với mật khẩu");
@@ -32,12 +32,12 @@ var registerUser = async (req, res) => {
 
 var loginUser = async (req, res) => {
   try {
-    const result = await authSchema.validateAsync(req.body)
+    const result = await loginSchema.validateAsync(req.body)
 
     let user = await UserService.checkMail(result.email);
     let data = await UserService.getUser(result.email)
     if (!user) throw createError.Conflict(`${result.email} không tìm thấy`)
-    
+
     const isPasswordMatch = await bcrypt.compare(result.password, data.password);
 
     if (!isPasswordMatch) {
@@ -45,7 +45,7 @@ var loginUser = async (req, res) => {
     }
     const accessToken = await signAccessToken(data.accountID)
     const refreshToken = await signRefreshToken(data.accountID)
-    return res.send({accessToken, refreshToken})
+    return res.send({ accessToken, refreshToken })
   } catch (error) {
     if (error.isJoi === true) {
       error.status = 422;
@@ -54,17 +54,17 @@ var loginUser = async (req, res) => {
   }
 }
 
-var refreshToken = async(req, res) => {
+var refreshToken = async (req, res) => {
   try {
-    const {refreshToken} = req.body
+    const { refreshToken } = req.body
     if (!refreshToken) throw createError.BadRequest()
-    const {insertId} = await verifyRefreshToken(refreshToken)
+    const { insertId } = await verifyRefreshToken(refreshToken)
 
     const accessToken = await signAccessToken(insertId)
 
-    res.send({accessToken: accessToken})
+    res.send({ accessToken: accessToken })
   } catch (error) {
-    
+
   }
 }
 
@@ -105,6 +105,25 @@ var getGenealogy = async (req, res) => {
   }
 }
 
+var setRole = async (req, res) => {
+  try {
+
+    const data = req.body;
+
+    let doesExist = await UserService.checkAccountID(data.accountID);
+
+    if (doesExist) throw createError.Conflict('Không có người dùng');
+
+    let dataUpdate = await UserService.updateRoleID(data)
+    let dataRes = {
+      affectedRows: dataUpdate.affectedRows,
+    }
+    return res.send(dataRes)
+  } catch (error) {
+    res.status(error.status || 500).json({ error: error.message });
+  }
+}
+
 function generateRandomString() {
   const randomNumbers = Array.from({ length: 12 }, () => Math.floor(Math.random() * 10));
 
@@ -114,6 +133,4 @@ function generateRandomString() {
   return formattedString;
 }
 
-module.exports = {
-  registerUser, loginUser, refreshToken, registerGenealogy, getGenealogy
-};
+module.exports = { registerUser, loginUser, refreshToken, registerGenealogy, getGenealogy, setRole };
