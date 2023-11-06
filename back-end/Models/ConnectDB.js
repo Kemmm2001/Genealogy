@@ -3,8 +3,8 @@ const mysql = require('mysql2');
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'AXeTFQW7pC3cxSFg9a7Q8JfwtXkMmy3PSbnG2NgLXASbWhps6x9dBLG',
-  database: 'genealogyTest'
+  password: '123456',
+  database: 'genealogy'
 });
 
 // Kết nối vào cơ sở dữ liệu

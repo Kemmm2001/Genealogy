@@ -16,10 +16,8 @@ var InsertContactMember = async (req, res) => {
         let objData = {};
         objData.memberId = req.body.memberId;
         objData.Address = req.body.Address;
-        objData.Phone1 = req.body.Phone1;
-        objData.Phone2 = req.body.Phone2;
-        objData.Email1 = req.body.Email1;
-        objData.Email2 = req.body.Email2;
+        objData.Phone = req.body.Phone;    
+        objData.Email = req.body.Email;    
         objData.FacebookUrl = req.body.FacebookUrl;
         objData.Zalo = req.body.Zalo;
         await ContactManagementService.InsertContactMember(objData);
@@ -35,10 +33,8 @@ var updateContactMember = async (req, res) => {
         let objData = {};
         objData.MemberID = req.body.MemberID;
         objData.Address = req.body.Address;
-        objData.Phone1 = req.body.Phone1;
-        objData.Phone2 = req.body.Phone2;
-        objData.Email1 = req.body.Email1;
-        objData.Email2 = req.body.Email2;
+        objData.Phone = req.body.Phone;    
+        objData.Email = req.body.Email;      
         objData.FacebookUrl = req.body.FacebookUrl;
         objData.Zalo = req.body.Zalo;
         await ContactManagementService.UpdateContactByID(objData);

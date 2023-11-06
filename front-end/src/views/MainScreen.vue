@@ -497,31 +497,11 @@
                 </div>
                 <div style="display:flex">
                   <div style="position: relative; width: 50%;margin-right: 10px;">
-                    <input v-model="objMemberContact.Phone1" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberContact.Phone1 }">
-                      Điện Thoại 1
-                      (*)
-                    </label>
+                    <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" :disabled="isDisabled" :default-country="defaultCountry" :inputClass="inputClass" :validations="validations"></VuePhoneNumberInput>
                   </div>
                   <div style="position: relative;width: 50%; margin-right: 10px;">
-                    <input v-model="objMemberContact.Phone2" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" min="0" for="input" :class="{ 'active': objMemberContact.Phone2 }">
-                      Điện
-                      Thoại 2
-                    </label>
-                  </div>
-                </div>
-                <div style="display:flex">
-                  <div style="position: relative; width: 50%;margin-right: 10px;">
-                    <input v-model="objMemberContact.Email1" type="email" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberContact.Email1 }">
-                      Email
-                      1
-                    </label>
-                  </div>
-                  <div style="position: relative;width: 50%; margin-right: 10px;">
-                    <input v-model="objMemberContact.Email2" type="email" class="form-control modal-item" placeholder />
-                    <label class="form-label-number" min="0" for="input" :class="{ 'active': objMemberContact.Email2 }">Email 2</label>
+                    <input v-model="objMemberContact.Email" type="email" class="form-control modal-item" placeholder />
+                    <label class="form-label" for="input" :class="{ 'active': objMemberContact.Email }">Email</label>
                   </div>
                 </div>
                 <div style="position: relative; padding-right: 23px;">
@@ -686,30 +666,41 @@ import { HTTP } from "../assets/js/baseAPI.js";
 import { LunarDate } from "vietnamese-lunar-calendar";
 import { convertLunar2Solar } from "vietnamese-lunar-calendar/build/solar-lunar";
 import { getLocalTimezone } from "vietnamese-lunar-calendar/build/solar-lunar/utils";
+import VuePhoneNumberInput from "vue-phone-number-input";
+import "vue-phone-number-input/dist/vue-phone-number-input.css";
 
 export default {
+  components: {
+    VuePhoneNumberInput,
+  },
   data() {
     return {
+      phoneNumber: "",
+      isDisabled: false,
+      defaultCountry: "VN",
+      inputClass: "modal-item",
+      validations: {
+        required: true,
+      },
+
       avatarSrc: null,
       JobIDToUpdate: null,
       EducationIdToUpdate: null,
       ListAgeGroup: null,
       ListBloodTypeGroup: null,
       ListUnspecifiedMembers: null,
+      ListEastAsiaCountries: null,
 
       selectAge: null,
       selectBloodType: null,
       selectAdress: null,
-
       listFilterMember: null,
-
       memberClick: null,
 
       isAddChildren: false,
       isAddMarried: false,
       isAddParent: false,
       checkAll: false,
-
       setOptionMember: null,
       newIdMember: null,
       CurrentIdMember: null,
@@ -717,7 +708,6 @@ export default {
       CodeID: 123456,
       idPaternalAncestor: null,
       IsDead: 0,
-
       ListMemberJob: null,
       ListMemberEducation: null,
 
@@ -749,10 +739,8 @@ export default {
         ContactID: 0,
         MemberID: 0,
         Address: null,
-        Phone1: null,
-        Phone2: null,
-        Email1: null,
-        Email2: null,
+        Phone: null,
+        Email: null,
         FacebookUrl: null,
         Zalo: null,
       },
@@ -806,14 +794,10 @@ export default {
       extendedJob: false,
       extendedEdu: false,
       extendedNote: false,
-
       configSidebarHover: false,
       configSidebarExpansion: false,
-
       configSidebarWidth: 0,
-
       displayList: false,
-
       expandAddRelationship: false,
     };
   },
@@ -885,6 +869,12 @@ export default {
       this.family.onNodeClick((arg) => {
         this.getInforMember(arg.node.id);
       });
+    },
+    ConnectPhoneNumber() {
+      let phoneNumberInput =
+        this.$refs.phoneNumberInput.results.countryCallingCode;
+      this.objMemberContact.Phone =
+        phoneNumberInput + this.objMemberContact.Phone;
     },
     moveViewBox(id) {
       this.memberClick = id;
@@ -1159,13 +1149,12 @@ export default {
         codeId: this.CodeID,
       }).then((response) => {
         this.newIdMember = response.data.data.memberId;
+        this.ConnectPhoneNumber();
         HTTP.post("addContact", {
           memberId: this.newIdMember,
           Address: this.objMemberContact.Address,
-          Phone1: this.objMemberContact.Phone1,
-          Phone2: this.objMemberContact.Phone2,
-          Email1: this.objMemberContact.Email1,
-          Email2: this.objMemberContact.Email2,
+          Phone: this.objMemberContact.Phone,
+          Email: this.objMemberContact.Email,
           FacebookUrl: this.objMemberContact.FacebookUrl,
           Zalo: this.objMemberContact.Zalo,
         })
@@ -1236,14 +1225,12 @@ export default {
         }).catch((e) => {
           console.log(e);
         });
-
+        this.ConnectPhoneNumber();
         HTTP.post("addContact", {
           memberId: this.newIdMember,
           Address: this.objMemberContact.Address,
-          Phone1: this.objMemberContact.Phone1,
-          Phone2: this.objMemberContact.Phone2,
-          Email1: this.objMemberContact.Email1,
-          Email2: this.objMemberContact.Email2,
+          Phone: this.objMemberContact.Phone,
+          Email: this.objMemberContact.Email,
           FacebookUrl: this.objMemberContact.FacebookUrl,
           Zalo: this.objMemberContact.Zalo,
         })
@@ -1282,13 +1269,12 @@ export default {
       })
         .then((response) => {
           this.newIdMember = response.data.data.memberId;
+          this.ConnectPhoneNumber();
           HTTP.post("addContact", {
             memberId: this.newIdMember,
             Address: this.objMemberContact.Address,
-            Phone1: this.objMemberContact.Phone1,
-            Phone2: this.objMemberContact.Phone2,
-            Email1: this.objMemberContact.Email1,
-            Email2: this.objMemberContact.Email2,
+            Phone: this.objMemberContact.Phone,
+            Email: this.objMemberContact.Email,
             FacebookUrl: this.objMemberContact.FacebookUrl,
             Zalo: this.objMemberContact.Zalo,
           })
@@ -1352,6 +1338,7 @@ export default {
       this.setOptionMember = option;
     },
     updateInformation() {
+      this.ConnectPhoneNumber();
       HTTP.put("member", {
         memberID: this.CurrentIdMember,
         memberName: this.objMemberInfor.MemberName,
@@ -1377,24 +1364,22 @@ export default {
         codeId: this.objMemberInfor.CodeID,
       })
         .then(() => {
-          this.NotificationsScuccess("Sửa thông tin thành viên thành công");
+          console.log(this.objMemberContact.Phone);
+          HTTP.put("updateContact", {
+            MemberID: this.CurrentIdMember,
+            Address: this.objMemberContact.Address,
+            Phone: this.objMemberContact.Phone,
+            Email: this.objMemberContact.Email,
+            FacebookUrl: this.objMemberContact.FacebookUrl,
+            Zalo: this.objMemberContact.Zalo,
+          }).then(() => {
+            this.NotificationsScuccess("Sửa thông tin thành công");
+            this.closeMemberModal();
+          });
         })
         .catch((e) => {
           console.log(e);
         });
-      HTTP.put("updateContact", {
-        MemberID: this.CurrentIdMember,
-        Address: this.objMemberContact.Address,
-        Phone1: this.objMemberContact.Phone1,
-        Phone2: this.objMemberContact.Phone2,
-        Email1: this.objMemberContact.Email1,
-        Email2: this.objMemberContact.Email2,
-        FacebookUrl: this.objMemberContact.FacebookUrl,
-        Zalo: this.objMemberContact.Zalo,
-      }).then(() => {
-        this.NotificationsScuccess("Sửa thông tin thành công");
-        this.closeMemberModal();
-      });
     },
     setDefaultCondition() {
       this.isAddChildren = false;
@@ -1637,6 +1622,11 @@ export default {
         .catch((e) => {
           console.log(e);
         });
+    },
+    getEastAsiaCountries() {
+      HTTP.get("east-asia-countries").then((response) => {
+        this.ListEastAsiaCountries = response.data.data;
+      });
     },
     selectedInfor() {
       this.extendedInfo = true;
