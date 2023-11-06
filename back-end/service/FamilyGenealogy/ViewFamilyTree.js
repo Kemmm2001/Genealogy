@@ -212,6 +212,8 @@ function getListUnspecifiedMembers(CodeID) {
     })
 }
 
+
+
 function GetIdPaternalAncestor(CodeID) {
     return new Promise((resolve, reject) => {
         let query = `select MemberID from memberrole

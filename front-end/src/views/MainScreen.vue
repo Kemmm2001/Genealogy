@@ -72,19 +72,25 @@
       </div>
       <div class="h-100 w-100 d-flex flex-column" style="padding-top: 12px">
         <div class="existing-members d-flex flex-column w-100">
-          <div class="list-item" style="background-color: #AED6F1; text-align: center;">Danh sách thành viên có trên phả
-            đồ</div>
+          <div class="list-item" style="background-color: #AED6F1; text-align: center;">
+            Danh sách thành viên có trên phả
+            đồ
+          </div>
           <div class="d-flex flex-column w-100" style="overflow-y: auto;cursor: pointer">
             <div v-for="(n, index) in nodes" :key="n.id">
-              <div @click="handleLeftClick(n.id)" :class="{ 'list-item': true, 'ancestor-member': index === 0 }">Thành
+              <div @click="handleLeftClick(n.id)" :class="{ 'list-item': true, 'ancestor-member': index === 0 }">
+                Thành
                 Viên
-                {{ n.name }}</div>
+                {{ n.name }}
+              </div>
             </div>
           </div>
         </div>
         <div class="nonexisting-members d-flex flex-column w-100">
-          <div class="list-item" style="background-color: #AED6F1; text-align: center;">Danh sách thành viên không có trên
-            phả đồ</div>
+          <div class="list-item" style="background-color: #AED6F1; text-align: center;">
+            Danh sách thành viên không có trên
+            phả đồ
+          </div>
           <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto;">
             <div v-for="list in ListUnspecifiedMembers" :key="list.id" class="list-item">Thành Viên {{ list.MemberName }}</div>
           </div>
@@ -107,32 +113,20 @@
           </div>
           <div class="card-body" style="padding: 0,height:auto">
             <div class="list-group">
-              <div @click="openRelationModal(); setOption('relationship')"
-                :class="{ 'selected-option': setOptionMember == 'relationship' }"
-                class="list-group-item right-click-member">
-                Xem mối quan hệ hiện tại
-              </div>
-              <div @click="expandAddRelationship = !expandAddRelationship; setOption('addRelation')"
-                :class="{ 'selected-option': setOptionMember == 'addRelation' }"
-                class="list-group-item right-click-member position-relative">
+              <div @click="openRelationModal(); setOption('relationship')" :class="{ 'selected-option': setOptionMember == 'relationship' }" class="list-group-item right-click-member">Xem mối quan hệ hiện tại</div>
+              <div @click="expandAddRelationship = !expandAddRelationship; setOption('addRelation')" :class="{ 'selected-option': setOptionMember == 'addRelation' }" class="list-group-item right-click-member position-relative">
                 <div>Thêm quan hệ</div>
                 <div class="d-flex h-100 align-items-center position-absolute" style="right: 0px; width: 25px; top: 0;">
-                  <svg class="collapsed-relationship-icon" :class="{ expanded: expandAddRelationship }"
-                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                    <path
-                      d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" />
+                  <svg class="collapsed-relationship-icon" :class="{ expanded: expandAddRelationship }" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                    <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" />
                   </svg>
                 </div>
               </div>
               <div class="collapsedAddRelationship" :class="{ expandedAddRelationship: expandAddRelationship }">
-                <div v-show="expandAddRelationship" style="border-top: none;" class="list-group-item"
-                  @click="openMemberModal('parent')">Thêm Cha</div>
+                <div v-show="expandAddRelationship" style="border-top: none;" class="list-group-item" @click="openMemberModal('parent')">Thêm Cha</div>
                 <div v-show="expandAddRelationship" class="list-group-item">Thêm Mẹ</div>
-                <div v-show="expandAddRelationship" class="list-group-item" @click="openMemberModal('married')">Thêm Vợ
-                </div>
-                <div v-show="expandAddRelationship" class="list-group-item" @click="openMemberModal('children')">Thêm Con
-                </div>
-
+                <div v-show="expandAddRelationship" class="list-group-item" @click="openMemberModal('married')">Thêm Vợ</div>
+                <div v-show="expandAddRelationship" class="list-group-item" @click="openMemberModal('children')">Thêm Con</div>
               </div>
               <div class="list-group-item right-click-member" style="border-top: none;">Set làm tộc trưởng</div>
               <div class="list-group-item right-click-member" @click="setPaternalAncestor()">Set làm tổ phụ</div>
@@ -436,8 +430,10 @@
                   </div>
                   <div style="position: relative; margin-right:10px">
                     <input v-model="objMemberInfor.Origin" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberInfor.Origin }">Nguyên
-                      Quán</label>
+                    <label class="form-label" for="input" :class="{ 'active': objMemberInfor.Origin }">
+                      Nguyên
+                      Quán
+                    </label>
                   </div>
                   <div class="form-group">
                     <h6 style="margin-bottom:20px">
@@ -518,8 +514,10 @@
                 <div style="display:flex">
                   <div style="position: relative; width: 50%;margin-right: 10px;">
                     <input v-model="objMemberContact.Email1" type="email" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberContact.Email1 }">Email
-                      1</label>
+                    <label class="form-label" for="input" :class="{ 'active': objMemberContact.Email1 }">
+                      Email
+                      1
+                    </label>
                   </div>
                   <div style="position: relative;width: 50%; margin-right: 10px;">
                     <input v-model="objMemberContact.Email2" type="email" class="form-control modal-item" placeholder />
@@ -554,8 +552,10 @@
                 <div style="display:flex">
                   <div style="position: relative; width: 50%;margin-right: 10px;">
                     <input v-model="objMemberJob.Role" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberJob.Role }">Vị trí công
-                      tác</label>
+                    <label class="form-label" for="input" :class="{ 'active': objMemberJob.Role }">
+                      Vị trí công
+                      tác
+                    </label>
                   </div>
                   <div style="position: relative;width: 50%; margin-right: 10px;">
                     <input v-model="objMemberJob.JobName" type="text" class="form-control modal-item" placeholder />
