@@ -18,6 +18,8 @@ const initWebRouter = (app) => {
   router.post('/register-genealogy', UserController.registerGenealogy)
   router.post('/get-genealogy', UserController.getGenealogy)
   
+  router.post('/set-role', UserController.setRole)
+  
   //Tiền tố đứng trước route
   app.use('/api/v1', router);
 }
