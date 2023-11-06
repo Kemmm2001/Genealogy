@@ -31,6 +31,21 @@ function checkCodeID(codeID) {
   });
 }
 
+function checkAccountID(accountID) {
+  return new Promise((resolve, reject) => {
+    const query = 'SELECT COUNT(*) AS count FROM genealogy.account WHERE AccountID = ?';
+    db.connection.query(query, [accountID], (err, results) => {
+      if (err) {
+        console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+        reject(err);
+      } else {
+        const count = results[0].count;
+        resolve(count > 0);
+      }
+    });
+  });
+}
+
 function create(username, email, password) {
   return new Promise((resolve, reject) => {
     const query = 'INSERT INTO genealogy.account (Username, Email, Password) VALUES (?, ?, ?)';
@@ -122,4 +137,22 @@ function getGenealogy(request) {
     });
   });
 }
-module.exports = {checkMail, create, getUser, refreshFreeEmail, createGenealogy, getGenealogy, checkCodeID}
+
+function updateRoleID(data) {
+  return new Promise((resolve, reject) => {
+    const query = 'UPDATE genealogy.account SET RoleID = ? WHERE AccountID = ?';
+    const values = [data.roleID, data.accountID];
+
+    db.connection.query(query, values, (err, results) => {
+      if (err) {
+        console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+        reject(err);
+      } else {
+        console.log('Dữ liệu đã được cập nhật thành công.');
+        resolve(results);
+      }
+    });
+  });
+}
+
+module.exports = {checkMail, create, getUser, refreshFreeEmail, createGenealogy, getGenealogy, checkCodeID, checkAccountID, updateRoleID}
