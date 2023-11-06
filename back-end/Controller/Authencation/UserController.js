@@ -3,6 +3,11 @@ const createError = require('http-errors')
 const { registerSchema, loginSchema } = require('../../helper/validation_schema')
 const bcrypt = require('bcrypt');
 const { signAccessToken, signRefreshToken, verifyRefreshToken } = require('../../helper/jwt_helper')
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const app = express();
+app.use(cookieParser());
+
 
 var registerUser = async (req, res) => {
   try {
@@ -44,8 +49,18 @@ var loginUser = async (req, res) => {
       throw createError.Unauthorized('Mật khẩu không khớp');
     }
     const accessToken = await signAccessToken(data.accountID)
+    console.log(accessToken)
     const refreshToken = await signRefreshToken(data.accountID)
+    console.log(refreshToken)
+
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true, // Không thể truy cập bằng JavaScript trong trình duyệt
+      secure: true, // Chỉ hoạt động trên kết nối HTTPS (sử dụng khi triển khai thật)
+      maxAge: 3600000, // 1 giờ
+    });
+
     return res.send({accessToken, refreshToken})
+    
   } catch (error) {
     if (error.isJoi === true) {
       error.status = 422;
