@@ -44,7 +44,7 @@ async function UpdateContactByID(ObjData) {
         ObjData.Email,
         ObjData.FacebookUrl,
         ObjData.Zalo,
-        ObjData.MemberID
+        ObjData.memberId
     ];
 
     db.connection.query(query, values, (err, result) => {

@@ -183,7 +183,7 @@
           </div>
           <div class="col-9 h-100 position-relative" style="background: rgb(235, 235, 235);">
             <div class="position-absolute w-100 px-2 d-flex flex-row" style="bottom: 8px">
-              <input type="text" class="form-control" placeholder="..." />
+              <input type="text" class="form-control" placeholder="..." v-model="contentMessage" />
               <div class="d-flex align-items-center" style="padding-left: 8px; cursor: pointer;" @click="sendMessageToMember()">
                 <svg class="noti-send-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                   <path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z" />
@@ -457,7 +457,7 @@
                 </div>
                 <div style="display:flex">
                   <div style="position: relative; width: 50%;margin-right: 10px;">
-                    <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" :disabled="isDisabled" :default-country="defaultCountry" :inputClass="inputClass" :validations="validations"></VuePhoneNumberInput>
+                    <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" :disabled="isDisabled" :default-country="defaultCountry" :validations="validations"></VuePhoneNumberInput>
                   </div>
                   <div style="position: relative;width: 50%; margin-right: 10px;">
                     <input v-model="objMemberContact.Email" type="email" class="form-control modal-item" placeholder />
@@ -632,10 +632,10 @@ export default {
   },
   data() {
     return {
+      contentMessage: null,
       phoneNumber: "",
       isDisabled: false,
       defaultCountry: "VN",
-      inputClass: "modal-item",
       validations: {
         required: true,
       },
@@ -828,12 +828,6 @@ export default {
         this.getInforMember(arg.node.id);
       });
     },
-    ConnectPhoneNumber() {
-      let phoneNumberInput =
-        this.$refs.phoneNumberInput.results.countryCallingCode;
-      this.objMemberContact.Phone =
-        phoneNumberInput + this.objMemberContact.Phone;
-    },
     moveViewBox(id) {
       this.memberClick = id;
       console.log(this.memberClick);
@@ -905,7 +899,21 @@ export default {
       }
     },
     sendMessageToMember() {
-      console.log(this.ListPhoneToSendMessage);
+      if (this.contentMessage != null) {
+        HTTP.post("send-sms", {
+          ListMemberID: this.ListPhoneToSendMessage,
+          contentMessage: this.contentMessage,
+        })
+          .then(() => {
+            this.closeNotiModal();
+            this.NotificationsScuccess("Gửi thông báo thành công");
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } else {
+        this.NotificationsDelete("Không có thông báo gì để gửi ");
+      }
     },
     toggleSelection(id) {
       let index = this.ListPhoneToSendMessage.indexOf(id);
@@ -1033,8 +1041,6 @@ export default {
       }).catch((e) => {
         console.log(e);
       });
-
-      console.log(this.CurrentIdMember);
       HTTP.delete("member", {
         params: {
           memberID: this.CurrentIdMember,
@@ -1118,7 +1124,10 @@ export default {
         codeId: this.CodeID,
       }).then((response) => {
         this.newIdMember = response.data.data.memberId;
-        this.ConnectPhoneNumber();
+        let phoneNumberInput =
+          this.$refs.phoneNumberInput.results.countryCallingCode;
+        this.objMemberContact.Phone =
+          "+" + phoneNumberInput + this.objMemberContact.Phone;
         HTTP.post("addContact", {
           memberId: this.newIdMember,
           Address: this.objMemberContact.Address,
@@ -1194,7 +1203,10 @@ export default {
         }).catch((e) => {
           console.log(e);
         });
-        this.ConnectPhoneNumber();
+        let phoneNumberInput =
+          this.$refs.phoneNumberInput.results.countryCallingCode;
+        this.objMemberContact.Phone =
+          "+" + phoneNumberInput + this.objMemberContact.Phone;
         HTTP.post("addContact", {
           memberId: this.newIdMember,
           Address: this.objMemberContact.Address,
@@ -1238,7 +1250,10 @@ export default {
       })
         .then((response) => {
           this.newIdMember = response.data.data.memberId;
-          this.ConnectPhoneNumber();
+          let phoneNumberInput =
+            this.$refs.phoneNumberInput.results.countryCallingCode;
+          this.objMemberContact.Phone =
+            "+" + phoneNumberInput + this.objMemberContact.Phone;
           HTTP.post("addContact", {
             memberId: this.newIdMember,
             Address: this.objMemberContact.Address,
@@ -1307,7 +1322,7 @@ export default {
       this.setOptionMember = option;
     },
     updateInformation() {
-      this.ConnectPhoneNumber();
+      console.log(this.CurrentIdMember);
       HTTP.put("member", {
         memberID: this.CurrentIdMember,
         memberName: this.objMemberInfor.MemberName,
@@ -1333,7 +1348,12 @@ export default {
         codeId: this.objMemberInfor.CodeID,
       })
         .then(() => {
-          console.log(this.objMemberContact.Phone);
+          if (this.objMemberContact.Phone != null) {
+            let phoneNumberInput =
+              this.$refs.phoneNumberInput.results.countryCallingCode;
+            this.objMemberContact.Phone =
+              "+" + phoneNumberInput + this.objMemberContact.Phone;
+          }
           HTTP.put("updateContact", {
             MemberID: this.CurrentIdMember,
             Address: this.objMemberContact.Address,
@@ -1517,6 +1537,8 @@ export default {
         });
     },
     openNotiModal() {
+      this.ListPhoneToSendMessage = [];
+      this.contentMessage = null;
       this.$modal.show("noti-modal");
     },
     closeNotiModal() {

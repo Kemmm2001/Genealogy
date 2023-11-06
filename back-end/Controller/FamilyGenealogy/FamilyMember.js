@@ -100,7 +100,7 @@ var addMember = async (req, res) => {
 var updateMember = async (req, res) => {
     try {
         // Log ra thông tin trong req.body
-        console.log('Request body: ', req.body);
+        // console.log('Request body: ', req.body);
         let response;
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
