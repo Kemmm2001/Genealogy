@@ -1,30 +1,42 @@
-const db = require('../../Models/ConnectDB')
+const fs = require('fs');
 
-function getProvince() {
-    return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM genealogy.city`
-        db.connection.query(query, (err, result) => {
-            if (err) {
-                console.log("Have err : " + err);
-                reject(err)
-            } else {
-                resolve(result)
-            }
-        })
-    })
+function getProvinceFromJSON() {
+  return new Promise((resolve, reject) => {
+    fs.readFile('city.json', 'utf8', (err, data) => {
+      if (err) {
+        console.log("Have err : " + err);
+        reject(err);
+      } else {
+        try {
+          const result = JSON.parse(data);
+          resolve(result);
+        } catch (parseError) {
+          console.log("JSON parse error: " + parseError);
+          reject(parseError);
+        }
+      }
+    });
+  });
 }
 
-function getDistrict(CityId) {
+
+function getDistrictFromJSON(CityId) {
     return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM genealogy.district where CityId  = ${CityId}`
-        db.connection.query(query, (err, result) => {
+        fs.readFile('district.json', 'utf8', (err, data) => {
             if (err) {
                 console.log("Have err : " + err);
-                reject(err)
+                reject(err);
             } else {
-                resolve(result)
+                try {
+                    const districtData = JSON.parse(data);
+                    const filteredDistricts = districtData.filter(district => district.CityId === CityId);
+                    resolve(filteredDistricts);
+                } catch (parseError) {
+                    console.log("JSON parse error: " + parseError);
+                    reject(parseError);
+                }
             }
-        })
-    })
+        });
+    });
 }
-module.exports = {getProvince, getDistrict}
+module.exports = {getDistrictFromJSON, getProvinceFromJSON}
