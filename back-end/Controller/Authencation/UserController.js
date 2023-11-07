@@ -90,20 +90,29 @@ var registerGenealogy = async (req, res) => {
     let doesExist = true;
 
     while (doesExist) {
-      codeID = generateRandomString(); // Gọi generateRandomString() để tạo mã ngẫu nhiên mới
+      codeID = generateRandomNumber();
       doesExist = await UserService.checkCodeID(codeID);
     }
 
-    let data = await UserService.createGenealogy(accountID, codeID);
+    let data1 = await UserService.insertIntoFamily(codeID);
 
-    return res.json({ data });
-  } catch (error) {
-    if (error.isJoi === true) {
-      error.status = 422;
+    if (data1) {
+      try {
+        let data = await UserService.insertAccount(accountID, codeID);
+        return res.json({ codeID });
+      } catch (error) {
+        // Xử lý khi `UserService.insertAccount` không thành công
+        res.status(500).json({ error: 'Lỗi khi thực hiện insertAccount' });
+      }
+    } else {
+      // Xử lý khi `data1` không thành công
+      res.status(500).json({ error: 'Lỗi khi thực hiện insertIntoFamily' });
     }
-    res.status(error.status || 500).json({ error: error.message });
+  } catch (error) {
+      res.status(500).json({ error: 'Lỗi nội bộ' });
   }
 }
+
 
 
 var getGenealogy = async (req, res) => {
@@ -139,13 +148,14 @@ var setRole = async (req, res) => {
   }
 }
 
-function generateRandomString() {
-  const randomNumbers = Array.from({ length: 12 }, () => Math.floor(Math.random() * 10));
+function generateRandomNumber() {
+  // Tạo 9 chữ số ngẫu nhiên
+  const randomNumber = Math.floor(100000000 + Math.random() * 900000000).toString();
 
-  // Định dạng chuỗi bằng cách cắt thành các phần và nối chúng bằng dấu "-"
-  const formattedString = `${randomNumbers.slice(0, 3).join('')}-${randomNumbers.slice(3, 6).join('')}-${randomNumbers.slice(6, 9).join('')}`;
+  // Sử dụng slicing để chia thành các phần 3 chữ số và nối chúng với dấu "-"
+  const formattedNumber = randomNumber.slice(0, 3) + '-' + randomNumber.slice(3, 6) + '-' + randomNumber.slice(6);
 
-  return formattedString;
+  return formattedNumber;
 }
 
 module.exports = {

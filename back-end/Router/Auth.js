@@ -7,9 +7,12 @@ const { verifyAccessToken } = require('../helper/jwt_helper')
 const initWebRouter = (app) => {
 
   router.get('/protected-route', verifyAccessToken, (req, res) => {
-    // Xử lý tuyến đường bảo vệ
-    res.send('Protected route');
+    
+    const accountID = req.payload.insertId;
+    res.json({ accountID });
   });
+
+
   router.post('/register', UserController.registerUser);
   router.post('/login', UserController.loginUser);
   router.post('/refresh-token', UserController.refreshToken);

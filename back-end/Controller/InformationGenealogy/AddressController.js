@@ -18,7 +18,7 @@ var getProvince = async (req, res) => {
 var getDistrict = async (req, res) => {
     try {
 
-        let data = await AddressService.getDistrictFromJSON(req.params.id)
+        let data = await AddressService.getDistrictFromJSON(req.params.cityId)
         if (data == null || data.length == 0) {
             return res.send(Response.dataNotFoundResponse());
         } else {
