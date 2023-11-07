@@ -18,7 +18,7 @@ function checkMail(email) {
 }
 function checkCodeID(codeID) {
   return new Promise((resolve, reject) => {
-    const query = 'SELECT COUNT(*) AS count FROM genealogy.account WHERE CodeID = ?';
+    const query = 'SELECT COUNT(*) AS count FROM genealogy.familytree WHERE CodeID = ?';
     db.connection.query(query, [codeID], (err, results) => {
       if (err) {
         console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
@@ -104,10 +104,27 @@ function refreshFreeEmail(usesTime){
   });
 }
 
-function createGenealogy(accountID, codeID) {
+function insertAccount(accountID, codeID) {
   return new Promise((resolve, reject) => {
     const query = 'UPDATE genealogy.account SET CodeID = ?, RoleID = 1 WHERE AccountID = ?';
     const values = [codeID, accountID];
+
+    db.connection.query(query, values, (err, results) => {
+      if (err) {
+        console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+        reject(err);
+      } else {
+        console.log('Dữ liệu đã được cập nhật thành công.');
+        resolve(results);
+      }
+    });
+  });
+}
+
+function insertIntoFamily(codeID) {
+  return new Promise((resolve, reject) => {
+    const query = 'INSERT INTO genealogy.familytree (CodeID) VALUES (?)';
+    const values = [codeID];
 
     db.connection.query(query, values, (err, results) => {
       if (err) {
@@ -155,4 +172,4 @@ function updateRoleID(data) {
   });
 }
 
-module.exports = {checkMail, create, getUser, refreshFreeEmail, createGenealogy, getGenealogy, checkCodeID, checkAccountID, updateRoleID}
+module.exports = {checkMail, create, getUser, refreshFreeEmail, insertAccount, getGenealogy, checkCodeID, checkAccountID, updateRoleID, insertIntoFamily}
