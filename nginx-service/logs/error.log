@@ -1,0 +1,24 @@
+2023/11/07 20:37:03 [emerg] 23548#22892: unexpected "}" in D:\Study\Đồ án tốt nghiệp\Genealogy\nginx-service/conf/nginx.conf:84
+2023/11/07 20:37:18 [emerg] 2408#13724: unexpected "}" in D:\Study\Đồ án tốt nghiệp\Genealogy\nginx-service/conf/nginx.conf:84
+2023/11/07 20:37:35 [emerg] 10352#9052: unexpected "}" in D:\Study\Đồ án tốt nghiệp\Genealogy\nginx-service/conf/nginx.conf:84
+2023/11/07 20:38:19 [notice] 17324#21164: signal process started
+2023/11/07 20:38:19 [error] 17324#21164: CreateFile() "D:\Study\Đồ án tốt nghiệp\Genealogy\nginx-service/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2023/11/07 20:38:41 [notice] 12556#11740: signal process started
+2023/11/07 20:38:41 [error] 12556#11740: CreateFile() "D:\Study\Đồ án tốt nghiệp\Genealogy\nginx-service/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2023/11/07 20:38:50 [crit] 13112#22472: CreateProcess("nginx") failed (123: The filename, directory name, or volume label syntax is incorrect)
+2023/11/07 20:39:19 [notice] 23436#17708: signal process started
+2023/11/07 20:39:19 [error] 23436#17708: OpenEvent("Global\ngx_reload_13112") failed (2: The system cannot find the file specified)
+2023/11/07 20:39:30 [crit] 21832#2016: CreateProcess("nginx") failed (123: The filename, directory name, or volume label syntax is incorrect)
+2023/11/07 20:40:37 [crit] 19652#13440: CreateProcess("nginx") failed (123: The filename, directory name, or volume label syntax is incorrect)
+2023/11/07 20:42:53 [notice] 4352#13368: signal process started
+2023/11/07 20:42:56 [notice] 13136#9756: signal process started
+2023/11/07 20:42:56 [error] 13136#9756: CreateFile() "D:\Study\Capstone Project\Genealogy\nginx-service/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2023/11/07 20:42:57 [notice] 904#19504: signal process started
+2023/11/07 20:42:57 [error] 904#19504: CreateFile() "D:\Study\Capstone Project\Genealogy\nginx-service/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2023/11/07 20:49:41 [notice] 22688#19628: signal process started
+2023/11/07 20:49:46 [notice] 7760#14128: signal process started
+2023/11/07 20:49:51 [notice] 5232#21800: signal process started
+2023/11/07 20:49:51 [error] 5232#21800: CreateFile() "D:\Study\Capstone Project\Genealogy\nginx-service/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2023/11/07 20:49:58 [notice] 8940#996: signal process started
+2023/11/07 20:57:57 [notice] 2492#16028: signal process started
+2023/11/07 20:58:07 [notice] 1132#19736: signal process started
