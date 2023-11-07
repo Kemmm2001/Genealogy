@@ -1,3 +1,4 @@
+const { promises } = require('nodemailer/lib/xoauth2');
 const db = require('../../Models/ConnectDB')
 
 function getAllEvent(CodeID) {
@@ -12,6 +13,26 @@ function getAllEvent(CodeID) {
             }
         })
     })
+}
+
+async function getListPhone(ListMemberID) {
+    let ListPhone = [];
+    return new Promise((resolve, reject) => {
+        let count = 0; // Biến đếm để theo dõi số truy vấn đã hoàn thành
+        for (let i = 0; i < ListMemberID.length; i++) {
+            let query = `SELECT Phone FROM genealogy.contact
+            where MemberID = ${ListMemberID[i]}`;
+            db.connection.query(query, (err, result) => {
+                if (!err && result.length > 0 && result[0].Phone != null) {
+                    ListPhone.push(result[0].Phone);
+                }
+                count++;
+                if (count === ListMemberID.length) {                   
+                    resolve(ListPhone);
+                }
+            });
+        }
+    });
 }
 
 async function InsertNewEvent(objData) {
@@ -159,5 +180,5 @@ async function filterEvent(filterOptions) {
 }
 
 module.exports = {
-    getAllEvent, InsertNewEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth, searchEvent, filterEvent
+    getAllEvent, InsertNewEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth, searchEvent, filterEvent, getListPhone
 }

@@ -75,7 +75,7 @@
                             </div>
                         </div>
                         <div class="d-flex justify-content-center align-items-center" style="height: auto; width: auto;">
-                            <button @click="showLoginOptions()" class="btn register-button">Đăng kí</button>
+                            <button @click="showRegisterOptions()" class="btn register-button">Đăng kí</button>
                         </div>
                     </div>
                 </div>
@@ -107,17 +107,13 @@
                                 </svg>
                             </div>
                         </div>
-                        <div class="d-flex mb-2" style="position: relative;">
-                            <input  v-model="accountLogin.codeId" id="familycode" type="password" class="form-control py-2 px-5 position-relative"
-                                placeholder="Code gia tộc (nếu có)" />
-                        </div>
                         <div class="d-flex justify-content-center align-items-center" style="height: auto; width: auto;">
-                            <button @click="login()" class="btn login-button">Đăng nhập</button>
+                            <button @click="login(); showLoginOptions()" class="btn login-button">Đăng nhập</button>
                         </div>
                     </div>
                 </div>
                 <div class="login-options-container">
-                    <modal name="login-options">
+                    <modal name="register-options">
                         <div class="login-options-modal-container position-relative" style="height: 100vh">
                             <div
                                 class="login-options-modal position-absolute h-100 d-flex flex-column align-items-center justify-content-center">
@@ -141,6 +137,27 @@
                             </div>
                         </div>
                     </modal>
+                    <div class="login-options-container">
+                    <modal name="login-options">
+                        <div class="login-options-modal-container position-relative" style="height: 100vh">
+                            <div
+                                class="login-options-modal position-absolute h-100 d-flex flex-column align-items-center justify-content-center">
+                                <div class="login-options-content d-flex flex-row align-items-center justify-content-center py-3"
+                                    style="margin-bottom: 8px;">
+                                    <div class="d-flex align-items-center justify-content-center col-4">Nhập
+                                        code gia tộc</div>
+                                    <div class="position-relative" style="flex-grow: 1; height: 64px;">
+                                        <input class="position-absolute code-input p-2" type="text" />
+                                    </div>
+                                    <div class="col-2 d-flex justify-content-center align-items-center"
+                                        style="height: auto; width: auto;">
+                                        <button class="btn submit-code-button">Đăng nhập</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </modal>
+                </div>
                 </div>
             </div>
         </div>
@@ -247,6 +264,9 @@ export default {
 
         showLoginOptions() {
             this.$modal.show("login-options");
+        },
+        showRegisterOptions(){
+            this.$modal.show("register-options");
         }
     },
 }

@@ -1,6 +1,6 @@
 const JWT = require('jsonwebtoken')
 const createError = require('http-errors')
-const client = require('./init_redis')
+
 
 module.exports = {
   signAccessToken: (insertId) => {
@@ -10,7 +10,7 @@ module.exports = {
       }
       const secret = process.env.ACCESS_TOKEN_SECRET
       const options = {
-        expiresIn: "1d",
+        expiresIn: "1h",
       }
       JWT.sign(payload, secret, options, (err, token) => {
         if (err) {
@@ -48,23 +48,13 @@ module.exports = {
       }
       const secret = process.env.REFRESH_TOKEN_SECRET
       const options = {
-        expiresIn: "60s",
+        expiresIn: "1m",
       }
       JWT.sign(payload, secret, options, (err, token) => {
         if (err) {
           console.log(err.message)
           reject(createError.InternalServerError())
         }
-
-        client.SETEX(insertId.toString(), 60, token, (err, reply) => {
-          if (err) {
-            console.log(err.message);
-            reject(createError.InternalServerError());
-            return;
-          }
-        });
-
-
         resolve(token)
       })
     })
@@ -75,15 +65,7 @@ module.exports = {
       JWT.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, payload) => {
         if (err) return reject(createError.Unauthorized())
         
-         client.GET(payload.insertId.toString(), (err, result) => {
-           if(err) {
-             console.log(err.message)
-             reject(createError.InternalServerError())
-             return
-           }
-           if(refreshToken === result) return resolve(payload)
-           reject(createError.Unauthorized())
-         })
+  
       })
     })
   })

@@ -55,42 +55,26 @@
       <div class="w-100 d-flex flex-row">
         <div class="col-6">
           <div class="w-100" style="padding: 12px 6px 0px 12px">
-            <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary">
-              Tạo thông
-              báo
-            </button>
+            <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary">Tạo thông báo</button>
           </div>
         </div>
         <div class="col-6">
           <div class="w-100" style="padding: 12px 12px 0px 6px">
-            <button @click="openCompareModal()" style="width:100%" type="button" class="btn btn-secondary">
-              So
-              sánh
-            </button>
+            <button @click="openCompareModal()" style="width:100%" type="button" class="btn btn-secondary">So sánh</button>
           </div>
         </div>
       </div>
       <div class="h-100 w-100 d-flex flex-column" style="padding-top: 12px">
         <div class="existing-members d-flex flex-column w-100">
-          <div class="list-item" style="background-color: #AED6F1; text-align: center;">
-            Danh sách thành viên có trên phả
-            đồ
-          </div>
+          <div class="list-item" style="background-color: #AED6F1; text-align: center;">Danh sách thành viên có trên phả đồ</div>
           <div class="d-flex flex-column w-100" style="overflow-y: auto;cursor: pointer">
             <div v-for="(n, index) in nodes" :key="n.id">
-              <div @click="handleLeftClick(n.id)" :class="{ 'list-item': true, 'ancestor-member': index === 0 }">
-                Thành
-                Viên
-                {{ n.name }}
-              </div>
+              <div @click="handleLeftClick(n.id)" :class="{ 'list-item': true, 'ancestor-member': index === 0 }">Thành Viên {{ n.name }}</div>
             </div>
           </div>
         </div>
         <div class="nonexisting-members d-flex flex-column w-100">
-          <div class="list-item" style="background-color: #AED6F1; text-align: center;">
-            Danh sách thành viên không có trên
-            phả đồ
-          </div>
+          <div class="list-item" style="background-color: #AED6F1; text-align: center;">Danh sách thành viên không có trên phả đồ</div>
           <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto;">
             <div v-for="list in ListUnspecifiedMembers" :key="list.id" class="list-item">Thành Viên {{ list.MemberName }}</div>
           </div>
@@ -158,7 +142,7 @@
     <modal name="noti-modal">
       <div class="h-100 d-flex flex-column" style="background-color: white;">
         <div class="modal-title d-flex flex-row align-items-center justify-content-center" style="height: 60px;border-radius:0px">
-          <div class="col-3 d-flex flex-row align-items-center h-100 p-3" style="background-color: rgb(235, 235, 235);">
+          <div class="col-3 d-flex flex-row align-items-center h-100 p-3" style="background-color:white">
             <div>
               <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                 <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
@@ -169,7 +153,7 @@
           <div class="col-9 d-flex align-items-center justify-content-center">Thông báo tới thành viên</div>
         </div>
         <div class="d-flex flex-row" style="height: calc(100% - 60px)">
-          <div class="col-3 h-100 d-flex flex-column" style="overflow-y: auto;background-color: rgb(235, 235, 235);">
+          <div class="col-3 h-100 d-flex flex-column" style="overflow-y: auto">
             <div class="position-relative d-flex" style="height: 48px;">
               <label for="text-search" style="position: absolute; inset: 12px;">
                 <svg class="text-search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -187,44 +171,20 @@
               </div>
             </div>
             <div>
-              <div tabindex="1" class="noti-modal-member d-flex flex-row align-items-center px-2" :class="{ chosen: checkAll }">
+              <div v-for="(n,index) in nodes" :key="n.id" :tabindex="index" class="noti-modal-member d-flex flex-row align-items-center px-2" :class="{ chosen: ListPhoneToSendMessage.includes(n.id) }" @click="toggleSelection(n.id)">
                 <div>
                   <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                     <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
                   </svg>
                 </div>
-                <div class="d-flex justify-content-center" style="flex-grow: 1;">Thành viên A</div>
-              </div>
-              <div tabindex="2" class="noti-modal-member d-flex flex-row align-items-center px-2" :class="{ chosen: checkAll }">
-                <div>
-                  <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                    <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
-                  </svg>
-                </div>
-                <div class="d-flex justify-content-center" style="flex-grow: 1;">Thành viên A</div>
-              </div>
-              <div tabindex="3" class="noti-modal-member d-flex flex-row align-items-center px-2" :class="{ chosen: checkAll }">
-                <div>
-                  <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                    <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
-                  </svg>
-                </div>
-                <div class="d-flex justify-content-center" style="flex-grow: 1;">Thành viên A</div>
-              </div>
-              <div tabindex="4" class="noti-modal-member d-flex flex-row align-items-center px-2" :class="{ chosen: checkAll }">
-                <div>
-                  <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                    <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
-                  </svg>
-                </div>
-                <div class="d-flex justify-content-center" style="flex-grow: 1;">Thành viên A</div>
+                <div class="d-flex justify-content-center" style="flex-grow: 1;">Thành viên {{n.name}}</div>
               </div>
             </div>
           </div>
-          <div class="col-9 h-100 position-relative">
+          <div class="col-9 h-100 position-relative" style="background: rgb(235, 235, 235);">
             <div class="position-absolute w-100 px-2 d-flex flex-row" style="bottom: 8px">
-              <input type="text" class="form-control" placeholder="..." />
-              <div class="d-flex align-items-center" style="padding-left: 8px; cursor: pointer;">
+              <input type="text" class="form-control" placeholder="..." v-model="contentMessage" />
+              <div class="d-flex align-items-center" style="padding-left: 8px; cursor: pointer;" @click="sendMessageToMember()">
                 <svg class="noti-send-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                   <path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z" />
                 </svg>
@@ -497,31 +457,11 @@
                 </div>
                 <div style="display:flex">
                   <div style="position: relative; width: 50%;margin-right: 10px;">
-                    <input v-model="objMemberContact.Phone1" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberContact.Phone1 }">
-                      Điện Thoại 1
-                      (*)
-                    </label>
+                    <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" :disabled="isDisabled" :default-country="defaultCountry" :validations="validations"></VuePhoneNumberInput>
                   </div>
                   <div style="position: relative;width: 50%; margin-right: 10px;">
-                    <input v-model="objMemberContact.Phone2" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" min="0" for="input" :class="{ 'active': objMemberContact.Phone2 }">
-                      Điện
-                      Thoại 2
-                    </label>
-                  </div>
-                </div>
-                <div style="display:flex">
-                  <div style="position: relative; width: 50%;margin-right: 10px;">
-                    <input v-model="objMemberContact.Email1" type="email" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberContact.Email1 }">
-                      Email
-                      1
-                    </label>
-                  </div>
-                  <div style="position: relative;width: 50%; margin-right: 10px;">
-                    <input v-model="objMemberContact.Email2" type="email" class="form-control modal-item" placeholder />
-                    <label class="form-label-number" min="0" for="input" :class="{ 'active': objMemberContact.Email2 }">Email 2</label>
+                    <input v-model="objMemberContact.Email" type="email" class="form-control modal-item" placeholder />
+                    <label class="form-label" for="input" :class="{ 'active': objMemberContact.Email }">Email</label>
                   </div>
                 </div>
                 <div style="position: relative; padding-right: 23px;">
@@ -552,10 +492,7 @@
                 <div style="display:flex">
                   <div style="position: relative; width: 50%;margin-right: 10px;">
                     <input v-model="objMemberJob.Role" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberJob.Role }">
-                      Vị trí công
-                      tác
-                    </label>
+                    <label class="form-label" for="input" :class="{ 'active': objMemberJob.Role }">Vị trí công tác</label>
                   </div>
                   <div style="position: relative;width: 50%; margin-right: 10px;">
                     <input v-model="objMemberJob.JobName" type="text" class="form-control modal-item" placeholder />
@@ -686,30 +623,42 @@ import { HTTP } from "../assets/js/baseAPI.js";
 import { LunarDate } from "vietnamese-lunar-calendar";
 import { convertLunar2Solar } from "vietnamese-lunar-calendar/build/solar-lunar";
 import { getLocalTimezone } from "vietnamese-lunar-calendar/build/solar-lunar/utils";
+import VuePhoneNumberInput from "vue-phone-number-input";
+import "vue-phone-number-input/dist/vue-phone-number-input.css";
 
 export default {
+  components: {
+    VuePhoneNumberInput,
+  },
   data() {
     return {
+      contentMessage: null,
+      phoneNumber: "",
+      isDisabled: false,
+      defaultCountry: "VN",
+      validations: {
+        required: true,
+      },
+      ListPhoneToSendMessage: [],
+
       avatarSrc: null,
       JobIDToUpdate: null,
       EducationIdToUpdate: null,
       ListAgeGroup: null,
       ListBloodTypeGroup: null,
       ListUnspecifiedMembers: null,
+      ListEastAsiaCountries: null,
 
       selectAge: null,
       selectBloodType: null,
       selectAdress: null,
-
       listFilterMember: null,
-
       memberClick: null,
 
       isAddChildren: false,
       isAddMarried: false,
       isAddParent: false,
       checkAll: false,
-
       setOptionMember: null,
       newIdMember: null,
       CurrentIdMember: null,
@@ -717,7 +666,6 @@ export default {
       CodeID: 123456,
       idPaternalAncestor: null,
       IsDead: 0,
-
       ListMemberJob: null,
       ListMemberEducation: null,
 
@@ -749,10 +697,8 @@ export default {
         ContactID: 0,
         MemberID: 0,
         Address: null,
-        Phone1: null,
-        Phone2: null,
-        Email1: null,
-        Email2: null,
+        Phone: null,
+        Email: null,
         FacebookUrl: null,
         Zalo: null,
       },
@@ -806,14 +752,10 @@ export default {
       extendedJob: false,
       extendedEdu: false,
       extendedNote: false,
-
       configSidebarHover: false,
       configSidebarExpansion: false,
-
       configSidebarWidth: 0,
-
       displayList: false,
-
       expandAddRelationship: false,
     };
   },
@@ -956,6 +898,31 @@ export default {
         this.avatarSrc = null; // Có thể thay thế b
       }
     },
+    sendMessageToMember() {
+      if (this.contentMessage != null) {
+        HTTP.post("send-sms", {
+          ListMemberID: this.ListPhoneToSendMessage,
+          contentMessage: this.contentMessage,
+        })
+          .then(() => {
+            this.closeNotiModal();
+            this.NotificationsScuccess("Gửi thông báo thành công");
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } else {
+        this.NotificationsDelete("Không có thông báo gì để gửi ");
+      }
+    },
+    toggleSelection(id) {
+      let index = this.ListPhoneToSendMessage.indexOf(id);
+      if (index !== -1) {
+        this.ListPhoneToSendMessage.splice(index, 1);
+      } else {
+        this.ListPhoneToSendMessage.push(id);
+      }
+    },
     convertLunarToSolar() {
       let LunarDob = new Date(this.objMemberInfor.LunarDob);
       let timezone = (0, getLocalTimezone)();
@@ -1074,8 +1041,6 @@ export default {
       }).catch((e) => {
         console.log(e);
       });
-
-      console.log(this.CurrentIdMember);
       HTTP.delete("member", {
         params: {
           memberID: this.CurrentIdMember,
@@ -1159,13 +1124,15 @@ export default {
         codeId: this.CodeID,
       }).then((response) => {
         this.newIdMember = response.data.data.memberId;
+        let phoneNumberInput =
+          this.$refs.phoneNumberInput.results.countryCallingCode;
+        this.objMemberContact.Phone =
+          "+" + phoneNumberInput + this.objMemberContact.Phone;
         HTTP.post("addContact", {
           memberId: this.newIdMember,
           Address: this.objMemberContact.Address,
-          Phone1: this.objMemberContact.Phone1,
-          Phone2: this.objMemberContact.Phone2,
-          Email1: this.objMemberContact.Email1,
-          Email2: this.objMemberContact.Email2,
+          Phone: this.objMemberContact.Phone,
+          Email: this.objMemberContact.Email,
           FacebookUrl: this.objMemberContact.FacebookUrl,
           Zalo: this.objMemberContact.Zalo,
         })
@@ -1236,14 +1203,15 @@ export default {
         }).catch((e) => {
           console.log(e);
         });
-
+        let phoneNumberInput =
+          this.$refs.phoneNumberInput.results.countryCallingCode;
+        this.objMemberContact.Phone =
+          "+" + phoneNumberInput + this.objMemberContact.Phone;
         HTTP.post("addContact", {
           memberId: this.newIdMember,
           Address: this.objMemberContact.Address,
-          Phone1: this.objMemberContact.Phone1,
-          Phone2: this.objMemberContact.Phone2,
-          Email1: this.objMemberContact.Email1,
-          Email2: this.objMemberContact.Email2,
+          Phone: this.objMemberContact.Phone,
+          Email: this.objMemberContact.Email,
           FacebookUrl: this.objMemberContact.FacebookUrl,
           Zalo: this.objMemberContact.Zalo,
         })
@@ -1282,13 +1250,15 @@ export default {
       })
         .then((response) => {
           this.newIdMember = response.data.data.memberId;
+          let phoneNumberInput =
+            this.$refs.phoneNumberInput.results.countryCallingCode;
+          this.objMemberContact.Phone =
+            "+" + phoneNumberInput + this.objMemberContact.Phone;
           HTTP.post("addContact", {
             memberId: this.newIdMember,
             Address: this.objMemberContact.Address,
-            Phone1: this.objMemberContact.Phone1,
-            Phone2: this.objMemberContact.Phone2,
-            Email1: this.objMemberContact.Email1,
-            Email2: this.objMemberContact.Email2,
+            Phone: this.objMemberContact.Phone,
+            Email: this.objMemberContact.Email,
             FacebookUrl: this.objMemberContact.FacebookUrl,
             Zalo: this.objMemberContact.Zalo,
           })
@@ -1352,6 +1322,7 @@ export default {
       this.setOptionMember = option;
     },
     updateInformation() {
+      console.log(this.CurrentIdMember);
       HTTP.put("member", {
         memberID: this.CurrentIdMember,
         memberName: this.objMemberInfor.MemberName,
@@ -1377,24 +1348,27 @@ export default {
         codeId: this.objMemberInfor.CodeID,
       })
         .then(() => {
-          this.NotificationsScuccess("Sửa thông tin thành viên thành công");
+          if (this.objMemberContact.Phone != null) {
+            let phoneNumberInput =
+              this.$refs.phoneNumberInput.results.countryCallingCode;
+            this.objMemberContact.Phone =
+              "+" + phoneNumberInput + this.objMemberContact.Phone;
+          }
+          HTTP.put("updateContact", {
+            MemberID: this.CurrentIdMember,
+            Address: this.objMemberContact.Address,
+            Phone: this.objMemberContact.Phone,
+            Email: this.objMemberContact.Email,
+            FacebookUrl: this.objMemberContact.FacebookUrl,
+            Zalo: this.objMemberContact.Zalo,
+          }).then(() => {
+            this.NotificationsScuccess("Sửa thông tin thành công");
+            this.closeMemberModal();
+          });
         })
         .catch((e) => {
           console.log(e);
         });
-      HTTP.put("updateContact", {
-        MemberID: this.CurrentIdMember,
-        Address: this.objMemberContact.Address,
-        Phone1: this.objMemberContact.Phone1,
-        Phone2: this.objMemberContact.Phone2,
-        Email1: this.objMemberContact.Email1,
-        Email2: this.objMemberContact.Email2,
-        FacebookUrl: this.objMemberContact.FacebookUrl,
-        Zalo: this.objMemberContact.Zalo,
-      }).then(() => {
-        this.NotificationsScuccess("Sửa thông tin thành công");
-        this.closeMemberModal();
-      });
     },
     setDefaultCondition() {
       this.isAddChildren = false;
@@ -1563,6 +1537,8 @@ export default {
         });
     },
     openNotiModal() {
+      this.ListPhoneToSendMessage = [];
+      this.contentMessage = null;
       this.$modal.show("noti-modal");
     },
     closeNotiModal() {
@@ -1637,6 +1613,11 @@ export default {
         .catch((e) => {
           console.log(e);
         });
+    },
+    getEastAsiaCountries() {
+      HTTP.get("east-asia-countries").then((response) => {
+        this.ListEastAsiaCountries = response.data.data;
+      });
     },
     selectedInfor() {
       this.extendedInfo = true;

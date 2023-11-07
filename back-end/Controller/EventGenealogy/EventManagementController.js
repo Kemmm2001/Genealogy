@@ -104,6 +104,39 @@ var SendSMS = async (req, res) => {
 }
 
 
+var SendSMSToMember = async (req, res) => {
+    try {
+        let id = req.body.ListMemberID;
+        let contentMessage = req.body.contentMessage;
+        console.log(contentMessage)
+        let data = await EventManagementService.getListPhone(id);
+        for (let i = 0; i < data.length; i++) {
+            ExecuteSendSNS(data[i],contentMessage)
+        }
+        console.log(data)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+function ExecuteSendSNS(ToPhoneNumber, Message) {
+    try {
+        let objData = {};
+        objData.ToPhoneNumber = ToPhoneNumber;
+        objData.Message = Message;
+        let result = SystemAction.SendSMSCore(objData);
+        if (result == true) {
+            console.log("Send SMS successfully!");
+        } else {
+            console.log("Send SMS failed!");
+        }
+    } catch (error) {
+        console.log(error);
+
+    }
+}
+
+
 var searchEvent = async (req, res) => {
     try {
         const { searchTerm } = req.body;
@@ -150,6 +183,6 @@ var SendEmail = async (req, res) => {
 
 module.exports = {
     getAllEventGenealogy, InsertEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth,
-     SendSMS, SendEmail, searchEvent, filterEvent
+    SendSMS, SendEmail, searchEvent, filterEvent, SendSMSToMember
 
 }

@@ -14,15 +14,13 @@ async function GetContactByMemberID(memberId) {
 }
 
 async function InsertContactMember(objData) {
-    let query = `INSERT INTO contact (MemberID, Address, Phone1, Phone2, Email1,Email2, FacebookUrl, Zalo) 
-    VALUES (?,?,?,?,?,?,?,?)`
+    let query = `INSERT INTO contact (MemberID, Address, Phone, Email, FacebookUrl, Zalo) 
+    VALUES (?,?,?,?,?,?)`
     let values = [
         objData.memberId,
         objData.Address,
-        objData.Phone1,
-        objData.Phone2,
-        objData.Email1,
-        objData.Email2,
+        objData.Phone,
+        objData.Email,
         objData.FacebookUrl,
         objData.Zalo
     ];
@@ -38,17 +36,15 @@ async function InsertContactMember(objData) {
 }
 async function UpdateContactByID(ObjData) {
     const query = `UPDATE contact 
-                   SET  Address = ?, Phone1 = ?, Phone2 = ?, Email1 = ?,Email2 = ? , FacebookUrl = ? ,  Zalo = ?
+                   SET  Address = ?, Phone = ?, Email = ? , FacebookUrl = ? ,  Zalo = ?
                    WHERE MemberID = ?`;
     const values = [
         ObjData.Address,
-        ObjData.Phone1,
-        ObjData.Phone2,
-        ObjData.Email1,
-        ObjData.Email2,
+        ObjData.Phone,
+        ObjData.Email,
         ObjData.FacebookUrl,
         ObjData.Zalo,
-        ObjData.MemberID
+        ObjData.memberId
     ];
 
     db.connection.query(query, values, (err, result) => {
@@ -78,5 +74,5 @@ async function RemoveContactByID(memberID) {
 
 
 module.exports = {
-    GetContactByMemberID, InsertContactMember, UpdateContactByID,RemoveContactByID
+    GetContactByMemberID, InsertContactMember, UpdateContactByID, RemoveContactByID
 }

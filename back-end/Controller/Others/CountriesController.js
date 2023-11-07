@@ -12,8 +12,7 @@ var getAllEastAsiaCountries = async (req, res) => {
           
           const jsonData = JSON.parse(data);
           
-          // làm gì đó với dữ liệu json
-          console.log("jsonData : " +jsonData);
+          // làm gì đó với dữ liệu json        
           return res.send(Response.successResponse(jsonData)); 
         });
     } catch (e) {
