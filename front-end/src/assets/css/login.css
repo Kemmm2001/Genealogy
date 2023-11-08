@@ -3,6 +3,11 @@
     background-position: bottom;
 }
 
+.familycode-background{
+    background-image: url(../sky.jpg);
+    background-position: bottom;
+}
+
 .login-form-container{
     top: 0;
     bottom: 0;
@@ -25,6 +30,15 @@
     left: 0;
     transition: 0.3s;
 }
+
+.codelogin-background{
+    background-image: url(../familycodeloginform.jpg);
+    background-repeat: no-repeat;
+    width: 25%;
+    left: 0;
+    transition: 0.3s;
+}
+
 .enlarged{
     width: 100%;
 }

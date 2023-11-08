@@ -23,7 +23,7 @@ export default {
   },
   computed: {
     isExcludeRoute() {
-      const excludedRoutes = ['/login', '/familycode/login', '/familycode/register'];
+      const excludedRoutes = ['/login', '/familycode', '*'];
       return excludedRoutes.includes(this.$route.path);
     }
   }
