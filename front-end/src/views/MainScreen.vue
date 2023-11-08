@@ -723,27 +723,36 @@ export default {
   },
   methods: {
     mytree: function (domEl, x) {
+      let imgTemplate =
+        '<clipPath id="ulaImg">' +
+        '<rect  height="100" width="100" stroke-width="1" fill="#FF46A3" stroke="#aeaeae" ></rect>' +
+        "</clipPath>" +
+        '<image preserveAspectRatio="xMidYMid slice" clip-path="url(#ulaImg)" xlink:href="{val}" x="12" y="10" width="90" height="90"></image>';
+
+      FamilyTree.templates.tommy_male.img_0 = imgTemplate;
+      FamilyTree.templates.tommy_female.img_0 = imgTemplate;
+
       FamilyTree.templates.tommy_male.field_0 =
-        '<text class="field_0" style="font-size: 20px;" fill="#ffffff" x="125" y="30" text-anchor="middle">{val}</text>';
+        '<text class="field_0" style="font-size: 20px;" fill="#ffffff" x="125" y="30">{val}</text>';
       FamilyTree.templates.tommy_male.field_1 =
-        '<text class="field_1" style="font-size: 14px;" fill="#ffffff" x="125" y="50" text-anchor="middle">Giới Tính: Nam</text>';
+        '<text class="field_1" style="font-size: 14px;" fill="#ffffff" x="125" y="50">Giới Tính: Nam</text>';
       FamilyTree.templates.tommy_male.field_2 =
-        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="125" y="70" text-anchor="middle">Ngày Sinh: {val}</text>';
+        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="125" y="70">Ngày Sinh: {val}</text>';
       FamilyTree.templates.tommy_male.field_3 =
-        '<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">Ngày Mất: {val}</text>';
+        '<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="125" y="90">Ngày Mất: {val}</text>';
       FamilyTree.templates.tommy_male.field_4 =
-        '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">Đời: {val}</text>';
+        '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="125" y="90">Đời: {val}</text>';
 
       FamilyTree.templates.tommy_female.field_0 =
-        '<text class="field_0" style="font-size: 20px;" fill="#ffffff" x="125" y="30" text-anchor="middle">{val}</text>';
+        '<text class="field_0" style="font-size: 20px;" fill="#ffffff" x="125" y="30">{val}</text>';
       FamilyTree.templates.tommy_female.field_1 =
-        '<text class="field_1" style="font-size: 14px;" fill="#ffffff" x="125" y="50" text-anchor="middle">Giới Tính: Nữ</text>';
+        '<text class="field_1" style="font-size: 14px;" fill="#ffffff" x="125" y="50">Giới Tính: Nữ</text>';
       FamilyTree.templates.tommy_female.field_2 =
-        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="125" y="70" text-anchor="middle">Ngày Sinh: {val}</text>';
+        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="125" y="70">Ngày Sinh: {val}</text>';
       FamilyTree.templates.tommy_female.field_3 =
-        '<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">Ngày Mất: {val}</text>';
+        '<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="125" y="90">Ngày Mất: {val}</text>';
       FamilyTree.templates.tommy_female.field_4 =
-        '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">Đời: {val}</text>';
+        '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="125" y="90">Đời: {val}</text>';
       this.family = new FamilyTree(domEl, {
         nodes: x,
         nodeBinding: {
@@ -918,13 +927,16 @@ export default {
     },
     convertSolarToLunar() {
       let Dob = new Date(this.objMemberInfor.Dob);
+      let month = new LunarDate(Dob).getMonth();
+      let date = new LunarDate(Dob).getDate();
+      if (new LunarDate(Dob).getMonth() < 10) {
+        month = "0" + new LunarDate(Dob).getMonth();
+      }
+      if (new LunarDate(Dob).getDate() < 10) {
+        date = "0" + new LunarDate(Dob).getDate();
+      }
       this.objMemberInfor.LunarDob =
-        "" +
-        new LunarDate(Dob).getYear() +
-        "-" +
-        (new LunarDate(Dob).getMonth() + 1) +
-        "-" +
-        new LunarDate(Dob).getDate();
+        "" + new LunarDate(Dob).getYear() + "-" + month + "-" + date;
       console.log(this.objMemberInfor.LunarDob);
     },
     getInforMember(id) {
@@ -1098,10 +1110,9 @@ export default {
         codeId: this.CodeID,
       }).then((response) => {
         this.newIdMember = response.data.data.memberId;
-        let phoneNumberInput =
-          this.$refs.phoneNumberInput.results.countryCallingCode;
-        this.objMemberContact.Phone =
-          "+" + phoneNumberInput + this.objMemberContact.Phone;
+        if (this.objMemberContact.Phone != null) {
+          this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
+        }
         HTTP.post("addContact", {
           memberId: this.newIdMember,
           Address: this.objMemberContact.Address,
@@ -1177,10 +1188,9 @@ export default {
         }).catch((e) => {
           console.log(e);
         });
-        let phoneNumberInput =
-          this.$refs.phoneNumberInput.results.countryCallingCode;
-        this.objMemberContact.Phone =
-          "+" + phoneNumberInput + this.objMemberContact.Phone;
+        if (this.objMemberContact.Phone != null) {
+          this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
+        }
         HTTP.post("addContact", {
           memberId: this.newIdMember,
           Address: this.objMemberContact.Address,
@@ -1224,10 +1234,9 @@ export default {
       })
         .then((response) => {
           this.newIdMember = response.data.data.memberId;
-          let phoneNumberInput =
-            this.$refs.phoneNumberInput.results.countryCallingCode;
-          this.objMemberContact.Phone =
-            "+" + phoneNumberInput + this.objMemberContact.Phone;
+          if (this.objMemberContact.Phone != null) {
+            this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
+          }
           HTTP.post("addContact", {
             memberId: this.newIdMember,
             Address: this.objMemberContact.Address,
@@ -1319,18 +1328,10 @@ export default {
         codeId: this.objMemberInfor.CodeID,
       })
         .then(() => {
-          console.log(
-            "SĐT: "
-          );
-          // if (this.objMemberContact.Phone != null) {
-          //   console.log("đã vào");
-          //   let phoneNumberInput =
-          //     this.$refs.phoneNumberInput.results.countryCallingCode;
-
-          //   this.objMemberContact.Phone =
-          //     "+" + phoneNumberInput + this.objMemberContact.Phone;
-
-          // }
+          if (this.objMemberContact.Phone != null) {
+            this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
+          }
+          console.log("Trong: " + this.objMemberContact.Phone);
           HTTP.put("updateContact", {
             MemberID: this.CurrentIdMember,
             Address: this.objMemberContact.Address,
@@ -1547,6 +1548,15 @@ export default {
           console.log(this.nodes);
           for (let i = 0; i < this.nodes.length; i++) {
             this.nodes[i].tags = [];
+            if (this.nodes[i].img == null) {
+              if (this.nodes[i].gender == "male") {
+                this.nodes[i].img =
+                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsEC-AcpMSEBeqwQdUVhjb5fciR-GG2-cuwQ&usqp=CAU";
+              } else if (this.nodes[i].gender == "female") {
+                this.nodes[i].img =
+                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsEC-AcpMSEBeqwQdUVhjb5fciR-GG2-cuwQ&usqp=CAU";
+              }
+            }
           }
           this.nodes[0].tags.push("great-grandfather");
           this.mytree(this.$refs.tree, this.nodes);
