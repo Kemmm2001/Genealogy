@@ -7,7 +7,7 @@
                     <div v-if="loggingin" class="d-flex flex-column align-items-center justify-content-center h-100 w-100">
                         <div class="my-3"
                             style="font-size: 20px !important; font-weight: bold; color: #FFFFFF; text-align: center;">Bạn
-                            đã sử dụng App rồi?</div>
+                            đã sử dụng Gia phả người Việt rồi?</div>
                         <button @click="moveToRight(); enlargeBackground()" class="btn my-3 change-form-button"
                             :class="{ changeToLoginBtn: loggingin }">Đăng
                             nhập</button>
@@ -103,33 +103,13 @@
                                 </svg>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-center align-items-center" style="height: auto; width: auto;">
-                            <button @click="login(); showLoginOptions()" class="btn login-button">Đăng nhập</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="login-options-container">
-                    <modal name="login-options">
-                        <div class="login-options-modal-container position-relative" style="height: 100%;">
-                            <div
-                                class="login-options-modal position-absolute h-100 d-flex flex-column align-items-center justify-content-center">
-                                <router-link to="/familycode/login" class="">
-                                    <div class="d-flex flex-column mx-2 mt-2 code-container position-relative">
-                                        <div @click="codeLoginInputLoginPage = !codeLoginInputLoginPage"
-                                            class="login-options-content code-login d-flex flex-row align-items-center justify-content-center position-absolute">
-                                            Đã có code gia tộc
-                                        </div>
-                                    </div>
-                                </router-link>
-                                <router-link to="/familycode/register" class="">
-                                    <div class="login-options-content code-register d-flex align-items-center justify-content-center m-2"
-                                        style="">
-                                        Chưa có code gia tộc? Tạo mới ngay</div>
-                                </router-link>
+                        <router-link to="/familycode">
+                            <div class="d-flex justify-content-center align-items-center"
+                                style="height: auto; width: auto;">
+                                <button @click="login(); showLoginOptions()" class="btn login-button">Đăng nhập</button>
                             </div>
-                        </div>
-                    </modal>
+                        </router-link>
+                    </div>
                 </div>
             </div>
         </div>
@@ -144,8 +124,6 @@ export default {
             right: false,
             enlarge: false,
             loggingin: true,
-            codeLoginInputLoginPage: false,
-            codeLoginInputRegisterPage: false,
 
             accountLogin: {
                 email: null,
