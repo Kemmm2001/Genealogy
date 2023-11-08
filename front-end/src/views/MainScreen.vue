@@ -89,7 +89,7 @@
         <div class="card" style="width: 400px;left:45%">
           <div class="card-header text-center" style="background-color:#E8C77B">
             <h5>Thành Viên {{ objMemberInfor.MemberName }}</h5>
-            <div class="close-add-form" @click="closeSelectModal" style="top: 8px;right:5px">
+            <div class="close-add-form" @click="closeSelectModal()" style="top: 8px;right:5px">
               <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
               </svg>
@@ -148,7 +148,7 @@
                 <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
               </svg>
             </div>
-            <div class="d-flex justify-content-center" style="flex-grow: 1;">User</div>
+            <div class="d-flex justify-content-center" style="flex-grow: 1;">Thành Viên</div>
           </div>
           <div class="col-9 d-flex align-items-center justify-content-center">Thông báo tới thành viên</div>
         </div>
@@ -161,12 +161,12 @@
                 </svg>
               </label>
               <div class="w-100" style="height: 48px; padding: 8px;">
-                <input class="form-control px-5 py-0 w-100 h-100" id="text-search" type="text" />
+                <input v-model="searchKeyword" class="form-control px-5 py-0 w-100 h-100" id="text-search" type="text" @change="searchMember()" />
               </div>
             </div>
             <div class="position-relative d-flex" style="height: 48px;">
               <div class="d-flex flex-row align-items-center p-2">
-                <input v-model="checkAll" type="checkbox" class="form-check-input" />
+                <input v-model="checkAll" type="checkbox" class="form-check-input" @change="toggleSelectAll()" />
                 <div style="padding-left: 8px">Chọn tất cả mọi người</div>
               </div>
             </div>
@@ -641,6 +641,8 @@ export default {
       },
       ListPhoneToSendMessage: [],
 
+      searchKeyword: null,
+
       avatarSrc: null,
       JobIDToUpdate: null,
       EducationIdToUpdate: null,
@@ -914,6 +916,17 @@ export default {
       } else {
         this.NotificationsDelete("Không có thông báo gì để gửi ");
       }
+    },
+    searchMember() {
+      this.ListPhoneToSendMessage = this.nodes.filter((node) =>
+        node.name.toLowerCase().includes(this.searchKeyword.toLowerCase())
+      );
+      console.log(this.searchKeyword);
+    },
+    toggleSelectAll() {
+      this.ListPhoneToSendMessage = this.checkAll
+        ? this.nodes.map((node) => node.id)
+        : [];
     },
     toggleSelection(id) {
       let index = this.ListPhoneToSendMessage.indexOf(id);
@@ -1403,6 +1416,7 @@ export default {
       this.CurrentIdMember = id;
     },
     closeSelectModal() {
+      this.RemoveHightLight();
       this.$modal.hide("Select-option-Modal");
     },
     selectRowJob(job) {
@@ -1451,16 +1465,17 @@ export default {
           console.log(e);
         });
     },
-    highLightSelectNode(SelectNode) {
-      // Xóa tất cả các tag "choose" và "notchoose" trên tất cả các nút
+    RemoveHightLight() {
       for (let i = 0; i < this.nodes.length; i++) {
         this.nodes[i].tags = this.nodes[i].tags.filter(
           (tag) => tag !== "choose" && tag !== "notchoose"
         );
       }
-
+    },
+    highLightSelectNode(SelectNode) {
+      this.RemoveHightLight();
       // Tìm nút được chọn và gán tag "choose" hoặc "notchoose" tương ứng
-      const selectedNode = this.nodes.find((node) => node.id == SelectNode);
+      let selectedNode = this.nodes.find((node) => node.id == SelectNode);
       if (selectedNode) {
         selectedNode.tags.push("choose");
       } else {
@@ -1478,12 +1493,7 @@ export default {
       this.family.center(id);
     },
     highLightNode() {
-      for (let i = 0; i < this.nodes.length; i++) {
-        this.nodes[i].tags = this.nodes[i].tags.filter(
-          (tag) => tag !== "choose" && tag !== "notchoose"
-        );
-      }
-
+      this.RemoveHightLight();
       let memberIds = this.listFilterMember.map((item) => item.MemberID);
       if (this.selectBloodType != null || this.selectAge != null)
         this.nodes.forEach((node) => {
@@ -1539,6 +1549,7 @@ export default {
     openNotiModal() {
       this.ListPhoneToSendMessage = [];
       this.contentMessage = null;
+      this.checkAll = false;
       this.$modal.show("noti-modal");
     },
     closeNotiModal() {

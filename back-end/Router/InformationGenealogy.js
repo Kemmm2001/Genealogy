@@ -49,7 +49,7 @@ const initWebRouter = (app) => {
     //API Hùng
     router.get('/familyhead', FamilyHeadController.ListFamilyHead)
     router.delete('/removeFamilyHead', FamilyHeadController.removeRoleFamilyHead)
-    router.post('newGeneral', GeneralInformation.InsertNewGeneralInformation)
+    router.post('/newGeneral', GeneralInformation.InsertNewGeneralInformation)
 
     router.get('/generalInfor', GeneralInformation.GetGeneralInformation)
     router.put('/updateInfor', GeneralInformation.UpdateGeneralInformation)
