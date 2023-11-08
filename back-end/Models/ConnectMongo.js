@@ -1,15 +1,14 @@
   // // ConnectMongo.js
   // const mongoose = require('mongoose');
 
-async function connectToMongo() {
-  try {
-    await mongoose.connect('mongodb://localhost:27017/Capstone', {
-      useNewUrlParser: true,
-    });
-    console.log('Connected to MongoDB');
-  } catch (error) {
-    console.error('Error connecting to MongoDB:', error);
-  }
-}
-
-module.exports = connectToMongo;
+mongoose.connect('mongodb://localhost:27017', {
+    dbName: 'Capstone',
+    useNewUrlParser : true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true,
+})
+.then(() => {
+    console.log('mongodb connected')
+})
+.catch((err) => console.log(err.message))
