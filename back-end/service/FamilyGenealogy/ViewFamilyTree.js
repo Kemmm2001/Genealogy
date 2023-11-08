@@ -254,7 +254,7 @@ async function RelationShipMember(memberId) {
         db.connection.query(getMemberQuery, async (err, memberResult) => {
             if (err) return reject(err);
             let member = memberResult[0];
-            
+
             // Lấy thông tin cha mẹ
             if (member.ParentID) {
                 let parentQuery = `SELECT * FROM familymember WHERE MemberID = ${member.ParentID}`;
@@ -268,7 +268,7 @@ async function RelationShipMember(memberId) {
                         } else {
                             objRelationship.Mother = parentData;
                         }
-                        
+
                         // Kiểm tra thông tin vợ/chồng
                         if (parentMember.MarriageID) {
                             let spouseQuery = `SELECT * FROM familymember WHERE MemberID = ${parentMember.MarriageID}`;
@@ -283,7 +283,6 @@ async function RelationShipMember(memberId) {
                                         objRelationship.Wife = spouseData;
                                     }
                                 }
-                                
                                 // Lấy thông tin về con cái
                                 let childQuery = `SELECT * FROM familymember WHERE ParentID = ${memberId}`;
                                 db.connection.query(childQuery, (err, result) => {
@@ -294,7 +293,13 @@ async function RelationShipMember(memberId) {
                                 });
                             });
                         } else {
-                            resolve(objRelationship);
+                            let childQuery = `SELECT * FROM familymember WHERE ParentID = ${memberId}`;
+                            db.connection.query(childQuery, (err, result) => {
+                                if (!err && result.length > 0) {
+                                    objRelationship.child = result;
+                                }
+                                resolve(objRelationship);
+                            });
                         }
                     }
                 });
@@ -302,7 +307,8 @@ async function RelationShipMember(memberId) {
                 // Lấy thông tin về con cái
                 let childQuery = `SELECT * FROM familymember WHERE ParentID = ${memberId}`;
                 db.connection.query(childQuery, (err, result) => {
-                    if (!err && result.length > 0) {                        
+                    console.log("result" + result)
+                    if (!err && result.length > 0) {
                         objRelationship.child = result;
                     }
                     resolve(objRelationship);

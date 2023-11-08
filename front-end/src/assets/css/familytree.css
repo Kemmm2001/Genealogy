@@ -73,19 +73,25 @@ svg.tommy .node.female>rect {
   fill: rgb(224, 89, 111);
 }
 
-.list-group-item.right-click-member{
-  background-color: #c9e6ff;
+.feature-overview {
+  background-color: #A9A9A9;
+  color: #fff;
 }
 
-.collapsedAddRelationship{
+.feature-overview:hover {
+  background-color: #A9A9A9 !important;
+  color: #fff !important;
+}
+
+.collapsedAddRelationship {
   height: 0;
   transition: 0.3s;
 }
 
-.collapsedAddRelationship.expandedAddRelationship{
+.collapsedAddRelationship.expandedAddRelationship {
   height: 165px;
 }
 
-.collapsedAddRelationship.expandedRelationship{
+.collapsedAddRelationship.expandedRelationship {
   height: 290px;
 }
