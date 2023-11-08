@@ -71,7 +71,7 @@
                             </div>
                         </div>
                         <div class="d-flex justify-content-center align-items-center" style="height: auto; width: auto;">
-                            <button @click="showRegisterOptions()" class="btn register-button">Đăng kí</button>
+                            <button @click="moveToRight(); enlargeBackground()" class="btn register-button">Đăng kí</button>
                         </div>
                     </div>
                 </div>
@@ -108,61 +108,21 @@
                         </div>
                     </div>
                 </div>
-                <div class="login-options-container">
-                    <modal name="register-options">
-                        <div class="login-options-modal-container position-relative" style="height: 100%;">
-                            <div
-                                class="login-options-modal position-absolute h-100 d-flex flex-column align-items-center justify-content-center">
-                                <div class="d-flex flex-column mx-2 mt-2 code-container position-relative"
-                                    :class="{ codeInput: codeLoginInputRegisterPage }" style="">
-                                    <div @click="codeLoginInputRegisterPage = !codeLoginInputRegisterPage"
-                                        class="login-options-content code-login d-flex flex-row align-items-center justify-content-center position-absolute">
-                                        Đã có code gia tộc
-                                    </div>
-                                    <div v-if="codeLoginInputRegisterPage"
-                                        class="d-flex flex-column align-items-center justify-content-center position-absolute w-100"
-                                        style="bottom: 0;">
-                                        <div class="code-login-input">
-                                            <input type="text" class="form-control h-100 w-100 p-0"
-                                                placeholder="Code gia tộc..." />
-                                        </div>
-                                        <div class="btn my-1" style="background-color: RGB(132, 192, 233); color: #FFFFFF;">
-                                            Đăng nhập</div>
-                                    </div>
-                                </div>
-                                <router-link to="/familycode" class="">
-                                    <div class="login-options-content code-register d-flex align-items-center justify-content-center m-2"
-                                        style="">
-                                        Chưa có code gia tộc? Tạo mới ngay</div>
-                                </router-link>
-                            </div>
-                        </div>
-                    </modal>
-                </div>
+
                 <div class="login-options-container">
                     <modal name="login-options">
                         <div class="login-options-modal-container position-relative" style="height: 100%;">
                             <div
                                 class="login-options-modal position-absolute h-100 d-flex flex-column align-items-center justify-content-center">
-                                <div class="d-flex flex-column mx-2 mt-2 code-container position-relative"
-                                    :class="{ codeInput: codeLoginInputLoginPage }" style="">
-                                    <div @click="codeLoginInputLoginPage = !codeLoginInputLoginPage"
-                                        class="login-options-content code-login d-flex flex-row align-items-center justify-content-center position-absolute">
-                                        Đã có code gia tộc
-                                    </div>
-                                    <div v-if="codeLoginInputLoginPage"
-                                        class="d-flex flex-column align-items-center justify-content-center position-absolute w-100"
-                                        style="bottom: 0;">
-                                        <div class="code-login-input">
-                                            <input type="text" class="form-control h-100 w-100 p-0"
-                                                placeholder="Code gia tộc..." />
-                                        </div>
-                                        <div class="btn my-1" style="background-color: RGB(132, 192, 233); color: #FFFFFF;">
-                                            Đăng nhập
+                                <router-link to="/familycode/login" class="">
+                                    <div class="d-flex flex-column mx-2 mt-2 code-container position-relative">
+                                        <div @click="codeLoginInputLoginPage = !codeLoginInputLoginPage"
+                                            class="login-options-content code-login d-flex flex-row align-items-center justify-content-center position-absolute">
+                                            Đã có code gia tộc
                                         </div>
                                     </div>
-                                </div>
-                                <router-link to="/familycode" class="">
+                                </router-link>
+                                <router-link to="/familycode/register" class="">
                                     <div class="login-options-content code-register d-flex align-items-center justify-content-center m-2"
                                         style="">
                                         Chưa có code gia tộc? Tạo mới ngay</div>
