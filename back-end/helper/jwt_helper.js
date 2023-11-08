@@ -1,22 +1,5 @@
 const JWT = require('jsonwebtoken')
 const createError = require('http-errors')
-const mongoose = require('mongoose');
-
-// Kết nối đến MongoDB
-const uri = 'mongodb+srv://<username>:<password>@cluster0.mongodb.net/<dbname>';
-
-// Kết nối đến MongoDB Atlas
-mongoose.connect(uri, { useNewUrlParser: true });
-
-// Định nghĩa một schema cho token
-const tokenSchema = new mongoose.Schema({
-  token: String,
-  expiresAt: Date,
-});
-
-// Tạo model từ schema
-const Token = mongoose.model('Token', tokenSchema);
-
 
 module.exports = {
   signAccessToken: (insertId) => {
