@@ -6,22 +6,18 @@
                     class="h-100 position-absolute login-background" style="z-index: 1;">
                     <div v-if="loggingin" class="d-flex flex-column align-items-center justify-content-center h-100 w-100">
                         <div class="my-3"
-                            style="font-size: 22px !important; font-weight: bold; color: #FFFFFF; text-align: center;">Bạn
+                            style="font-size: 20px !important; font-weight: bold; color: #FFFFFF; text-align: center;">Bạn
                             đã sử dụng App rồi?</div>
-                        <div class="my-3"
-                            style="font-size: 22px !important; font-weight: bold; color: #FFFFFF; text-align: center;">Tiếp
-                            tục cuộc hành trình</div>
-                        <button @click="moveToRight(); enlargeBackground()" class="btn my-3 change-form-button">Đăng
+                        <button @click="moveToRight(); enlargeBackground()" class="btn my-3 change-form-button"
+                            :class="{ changeToLoginBtn: loggingin }">Đăng
                             nhập</button>
                     </div>
                     <div v-if="!loggingin" class="d-flex flex-column align-items-center justify-content-center h-100 w-100">
                         <div class="my-3"
-                            style="font-size: 22px !important; font-weight: bold; color: #FFFFFF; text-align: center;">Bạn
+                            style="font-size: 20px !important; font-weight: bold; color: #FFFFFF; text-align: center;">Bạn
                             là người dùng mới?</div>
-                        <div class="my-3"
-                            style="font-size: 22px !important; font-weight: bold; color: #FFFFFF; text-align: center;">Bắt
-                            đầu cuộc hành trình với chúng tôi</div>
-                        <button @click="moveToLeft(); enlargeBackground()" class="btn my-3 change-form-button">Đăng
+                        <button @click="moveToLeft(); enlargeBackground()" class="btn my-3 change-form-button"
+                            :class="{ changeToRegisterBtn: !loggingin }">Đăng
                             kí</button>
                     </div>
                 </div>
@@ -31,8 +27,8 @@
                         style="font-size: 36px; font-weight: bold; color: #84e9c0;">Đăng kí tài khoản</div>
                     <div class="d-flex flex-column" style="width: 420px;">
                         <div class="d-flex mb-2" style="position: relative;">
-                            <input v-model="accountRegister.username" id="username" type="text" class="form-control py-2 px-5 position-relative"
-                                placeholder="Tên tài khoản" />
+                            <input v-model="accountRegister.username" id="username" type="text"
+                                class="form-control py-2 px-5 position-relative" placeholder="Tên tài khoản" />
                             <div class="position-absolute d-flex align-items-center justify-content-center h-100"
                                 style="left: 0; width: 3rem;">
                                 <svg class="login-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -42,8 +38,8 @@
                             </div>
                         </div>
                         <div class="d-flex mb-2" style="position: relative;">
-                            <input  v-model="accountRegister.password" id="password" type="password" class="form-control py-2 px-5 position-relative"
-                                placeholder="Mật khẩu" />
+                            <input v-model="accountRegister.password" id="password" type="password"
+                                class="form-control py-2 px-5 position-relative" placeholder="Mật khẩu" />
                             <div class="position-absolute d-flex align-items-center justify-content-center h-100"
                                 style="left: 0; width: 3rem;">
                                 <svg class="login-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -53,8 +49,8 @@
                             </div>
                         </div>
                         <div class="d-flex mb-2" style="position: relative;">
-                            <input v-model="accountRegister.rePassword" id="password2" type="password" class="form-control py-2 px-5 position-relative"
-                                placeholder="Nhập lại mật khẩu" />
+                            <input v-model="accountRegister.rePassword" id="password2" type="password"
+                                class="form-control py-2 px-5 position-relative" placeholder="Nhập lại mật khẩu" />
                             <div class="position-absolute d-flex align-items-center justify-content-center h-100"
                                 style="left: 0; width: 3rem;">
                                 <svg class="login-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -64,8 +60,8 @@
                             </div>
                         </div>
                         <div class="d-flex mb-2" style="position: relative;">
-                            <input v-model="accountRegister.email" id="email" type="text" class="form-control py-2 px-5 position-relative"
-                                placeholder="Email" />
+                            <input v-model="accountRegister.email" id="email" type="text"
+                                class="form-control py-2 px-5 position-relative" placeholder="Email" />
                             <div class="position-absolute d-flex align-items-center justify-content-center h-100"
                                 style="left: 0; width: 3rem;">
                                 <svg class="login-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -86,8 +82,8 @@
                         style="font-size: 36px; font-weight: bold; color: #fea94e;">Đăng nhập</div>
                     <div class="d-flex flex-column" style="width: 420px;">
                         <div class="d-flex mb-2" style="position: relative;">
-                            <input v-model="accountLogin.email"  id="username" type="text" class="form-control py-2 px-5 position-relative"
-                                placeholder="Tên tài khoản" />
+                            <input v-model="accountLogin.email" id="username" type="text"
+                                class="form-control py-2 px-5 position-relative" placeholder="Tên tài khoản" />
                             <div class="position-absolute d-flex align-items-center justify-content-center h-100"
                                 style="left: 0; width: 3rem;">
                                 <svg class="login-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -97,8 +93,8 @@
                             </div>
                         </div>
                         <div class="d-flex mb-2" style="position: relative;">
-                            <input v-model="accountLogin.password" id="password" type="password" class="form-control py-2 px-5 position-relative"
-                                placeholder="Mật khẩu" />
+                            <input v-model="accountLogin.password" id="password" type="password"
+                                class="form-control py-2 px-5 position-relative" placeholder="Mật khẩu" />
                             <div class="position-absolute d-flex align-items-center justify-content-center h-100"
                                 style="left: 0; width: 3rem;">
                                 <svg class="login-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -114,50 +110,66 @@
                 </div>
                 <div class="login-options-container">
                     <modal name="register-options">
-                        <div class="login-options-modal-container position-relative" style="height: 100vh">
+                        <div class="login-options-modal-container position-relative" style="height: 100%;">
                             <div
                                 class="login-options-modal position-absolute h-100 d-flex flex-column align-items-center justify-content-center">
-                                <div class="login-options-content d-flex flex-row align-items-center justify-content-center py-3"
-                                    style="margin-bottom: 8px;">
-                                    <div class="d-flex align-items-center justify-content-center col-4">Nhập
-                                        code gia tộc</div>
-                                    <div class="position-relative" style="flex-grow: 1; height: 64px;">
-                                        <input class="position-absolute code-input p-2" type="text" />
+                                <div class="d-flex flex-column mx-2 mt-2 code-container position-relative"
+                                    :class="{ codeInput: codeLoginInputRegisterPage }" style="">
+                                    <div @click="codeLoginInputRegisterPage = !codeLoginInputRegisterPage"
+                                        class="login-options-content code-login d-flex flex-row align-items-center justify-content-center position-absolute">
+                                        Đã có code gia tộc
                                     </div>
-                                    <div class="col-2 d-flex justify-content-center align-items-center"
-                                        style="height: auto; width: auto;">
-                                        <button class="btn submit-code-button">Đăng nhập</button>
+                                    <div v-if="codeLoginInputRegisterPage"
+                                        class="d-flex flex-column align-items-center justify-content-center position-absolute w-100"
+                                        style="bottom: 0;">
+                                        <div class="code-login-input">
+                                            <input type="text" class="form-control h-100 w-100 p-0"
+                                                placeholder="Code gia tộc..." />
+                                        </div>
+                                        <div class="btn my-1" style="background-color: RGB(132, 192, 233); color: #FFFFFF;">
+                                            Đăng nhập</div>
                                     </div>
                                 </div>
-                                <router-link to="/familycode" class="w-100">
-                                    <div class="login-options-content code-register d-flex align-items-center justify-content-center p-3"
-                                        style="margin-bottom: 8px;">
+                                <router-link to="/familycode" class="">
+                                    <div class="login-options-content code-register d-flex align-items-center justify-content-center m-2"
+                                        style="">
                                         Chưa có code gia tộc? Tạo mới ngay</div>
                                 </router-link>
                             </div>
                         </div>
                     </modal>
-                    <div class="login-options-container">
+                </div>
+                <div class="login-options-container">
                     <modal name="login-options">
-                        <div class="login-options-modal-container position-relative" style="height: 100vh">
+                        <div class="login-options-modal-container position-relative" style="height: 100%;">
                             <div
                                 class="login-options-modal position-absolute h-100 d-flex flex-column align-items-center justify-content-center">
-                                <div class="login-options-content d-flex flex-row align-items-center justify-content-center py-3"
-                                    style="margin-bottom: 8px;">
-                                    <div class="d-flex align-items-center justify-content-center col-4">Nhập
-                                        code gia tộc</div>
-                                    <div class="position-relative" style="flex-grow: 1; height: 64px;">
-                                        <input class="position-absolute code-input p-2" type="text" />
+                                <div class="d-flex flex-column mx-2 mt-2 code-container position-relative"
+                                    :class="{ codeInput: codeLoginInputLoginPage }" style="">
+                                    <div @click="codeLoginInputLoginPage = !codeLoginInputLoginPage"
+                                        class="login-options-content code-login d-flex flex-row align-items-center justify-content-center position-absolute">
+                                        Đã có code gia tộc
                                     </div>
-                                    <div class="col-2 d-flex justify-content-center align-items-center"
-                                        style="height: auto; width: auto;">
-                                        <button class="btn submit-code-button">Đăng nhập</button>
+                                    <div v-if="codeLoginInputLoginPage"
+                                        class="d-flex flex-column align-items-center justify-content-center position-absolute w-100"
+                                        style="bottom: 0;">
+                                        <div class="code-login-input">
+                                            <input type="text" class="form-control h-100 w-100 p-0"
+                                                placeholder="Code gia tộc..." />
+                                        </div>
+                                        <div class="btn my-1" style="background-color: RGB(132, 192, 233); color: #FFFFFF;">
+                                            Đăng nhập
+                                        </div>
                                     </div>
                                 </div>
+                                <router-link to="/familycode" class="">
+                                    <div class="login-options-content code-register d-flex align-items-center justify-content-center m-2"
+                                        style="">
+                                        Chưa có code gia tộc? Tạo mới ngay</div>
+                                </router-link>
                             </div>
                         </div>
                     </modal>
-                </div>
                 </div>
             </div>
         </div>
@@ -172,6 +184,8 @@ export default {
             right: false,
             enlarge: false,
             loggingin: true,
+            codeLoginInputLoginPage: false,
+            codeLoginInputRegisterPage: false,
 
             accountLogin: {
                 email: null,
@@ -204,8 +218,8 @@ export default {
                     });
             }
         },
-        saveInfoSession(){
-            localStorage.setItem('CodeID', this.accountLogin.codeId);  
+        saveInfoSession() {
+            localStorage.setItem('CodeID', this.accountLogin.codeId);
             console.log(localStorage.getItem('CodeID'))
         },
         login() {
@@ -215,31 +229,31 @@ export default {
                 email: this.accountLogin.email,
                 password: this.accountLogin.password,
             }).then(() => {
-                if(this.firstMemberId != null){
+                if (this.firstMemberId != null) {
                     this.saveInfoSession();
                     console.log(3)
                     this.$router.push('/');
                 }
             })
-            .catch((e) => {
-                console.log(e);
-            });
+                .catch((e) => {
+                    console.log(e);
+                });
         },
-        getFirstMemberIdByCodeId(id){
+        getFirstMemberIdByCodeId(id) {
             HTTP.get("generalInfor", {
                 params: {
                     CodeID: id,
                 },
             }).then((response) => {
-                if(response.data[0] != null){
+                if (response.data[0] != null) {
                     this.firstMemberId = response.data[0].MemberId;
-                }else{
+                } else {
                     this.firstMemberId = null;
                 }
             })
-            .catch((e) => {
-                console.log(e);
-            });
+                .catch((e) => {
+                    console.log(e);
+                });
         },
         enlargeBackground() {
             this.enlarge = true;
@@ -265,7 +279,7 @@ export default {
         showLoginOptions() {
             this.$modal.show("login-options");
         },
-        showRegisterOptions(){
+        showRegisterOptions() {
             this.$modal.show("register-options");
         }
     },
