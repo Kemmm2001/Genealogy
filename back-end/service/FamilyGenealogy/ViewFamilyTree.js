@@ -361,7 +361,7 @@ async function ViewFamilyTree(memberId, ListFamily = []) {
 }
 
 // Hàm tạo đối tượng familyData từ dữ liệu thành viên
-async function createFamilyData(member) {
+async function createFamilyData(member) {  
     if (member !== undefined) {
         let fid = 0;
         let mid = 0;
@@ -388,7 +388,8 @@ async function createFamilyData(member) {
             gender: member.Male === 1 ? 'male' : 'female',
             dob: formatDOB(member.Dob),
             dod: member.IsDead ? '' : formatDOB(member.Dod),
-            generation: member.Generation
+            generation: member.Generation,
+            img: member.Image
         };
     }
 }

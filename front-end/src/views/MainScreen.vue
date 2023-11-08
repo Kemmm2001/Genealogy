@@ -247,7 +247,8 @@
         </div>
       </div>
     </modal>
-
+    <!-- Đây là modal mối quan hệ -->
+    <div></div>
     <!-- Đây là modal member-->
     <modal name="member-modal">
       <div class="card" v-if="objMemberInfor">
@@ -732,6 +733,7 @@ export default {
         '<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">Ngày Mất: {val}</text>';
       FamilyTree.templates.tommy_male.field_4 =
         '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">Đời: {val}</text>';
+
       FamilyTree.templates.tommy_female.field_0 =
         '<text class="field_0" style="font-size: 20px;" fill="#ffffff" x="125" y="30" text-anchor="middle">{val}</text>';
       FamilyTree.templates.tommy_female.field_1 =
@@ -1292,7 +1294,6 @@ export default {
     },
 
     updateInformation() {
-      console.log(this.CurrentIdMember);
       HTTP.put("member", {
         memberID: this.CurrentIdMember,
         memberName: this.objMemberInfor.MemberName,
@@ -1318,12 +1319,18 @@ export default {
         codeId: this.objMemberInfor.CodeID,
       })
         .then(() => {
-          if (this.objMemberContact.Phone != null) {
-            let phoneNumberInput =
-              this.$refs.phoneNumberInput.results.countryCallingCode;
-            this.objMemberContact.Phone =
-              "+" + phoneNumberInput + this.objMemberContact.Phone;
-          }
+          console.log(
+            "SĐT: "
+          );
+          // if (this.objMemberContact.Phone != null) {
+          //   console.log("đã vào");
+          //   let phoneNumberInput =
+          //     this.$refs.phoneNumberInput.results.countryCallingCode;
+
+          //   this.objMemberContact.Phone =
+          //     "+" + phoneNumberInput + this.objMemberContact.Phone;
+
+          // }
           HTTP.put("updateContact", {
             MemberID: this.CurrentIdMember,
             Address: this.objMemberContact.Address,
@@ -1334,6 +1341,8 @@ export default {
           }).then(() => {
             this.NotificationsScuccess("Sửa thông tin thành công");
             this.closeMemberModal();
+            this.family.load(this.nodes);
+            this.getListMember();
           });
         })
         .catch((e) => {
@@ -1433,7 +1442,7 @@ export default {
       this.OnpenModal_SelectOption(id);
     },
     handleLeftClick(id) {
-      this.getInforMember(id);
+      this.family.center(id);
     },
     highLightNode() {
       this.RemoveHightLight();
