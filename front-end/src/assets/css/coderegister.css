@@ -4,7 +4,16 @@
     border-radius: 0.375rem;
     border: 1px solid #000;
     width: 500px;
-    height: 450px;
+    height: 325px;
+}
+
+.code-login-container{
+    inset: 0;
+    margin: auto;
+    border-radius: 0.375rem;
+    border: 1px solid #000;
+    width: 500px;
+    height: 185px;
 }
 
 .code-register-form-title{

@@ -1,13 +1,10 @@
 <template>
   <div class="container-fluid p-0">
     <div class="d-flex flex-column h-100" style="min-height: inherit;">
-      <div class="w-100" v-if="!isLoginRoute">
-        <Header/>
+      <div class="w-100" v-if="!isExcludeRoute">
+        <Header />
       </div>
-      <!-- <div class="d-flex flex-row h-100"> -->
-        <!-- <Sidebar /> -->
-        <router-view />
-      <!-- </div> -->
+      <router-view />
     </div>
   </div>
 </template>
@@ -25,8 +22,9 @@ export default {
     return {};
   },
   computed: {
-    isLoginRoute() {
-      return this.$route.path === '/login';
+    isExcludeRoute() {
+      const excludedRoutes = ['/login', '/familycode/login', '/familycode/register'];
+      return excludedRoutes.includes(this.$route.path);
     }
   }
 };
