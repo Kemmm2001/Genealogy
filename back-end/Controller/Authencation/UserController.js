@@ -85,7 +85,7 @@ var refreshToken = async(req, res) => {
 
 var registerGenealogy = async (req, res) => {
   try {
-    const accountID = req.body;
+    const value = req.body;
     let codeID;
     let doesExist = true;
 
@@ -94,11 +94,11 @@ var registerGenealogy = async (req, res) => {
       doesExist = await UserService.checkCodeID(codeID);
     }
 
-    let data1 = await UserService.insertIntoFamily(codeID);
+    let data1 = await UserService.insertIntoFamily(value);
 
     if (data1) {
       try {
-        let data = await UserService.insertAccount(accountID, codeID);
+        let data = await UserService.insertAccount(value.accountID, codeID);
         return res.json({ codeID });
       } catch (error) {
         // Xử lý khi `UserService.insertAccount` không thành công
