@@ -287,3 +287,15 @@ input:focus~label.form-label-number {
     align-items: center;
     background-color: #e9e8ed;
 }
+
+.notiSelected{
+    background-color: #ebebeb;
+}
+
+.sent-sms{
+    border-radius: 0.375rem;
+    background-color: #E8C77B;
+    max-width: 450px;
+    padding: 8px 12px;
+    margin: 6px 12px;
+}
