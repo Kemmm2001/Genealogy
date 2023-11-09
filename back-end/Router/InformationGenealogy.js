@@ -95,7 +95,7 @@ const initWebRouter = (app) => {
     router.delete('/delete-article', ArticleController.deleteArticle);
 
     router.get('/province', AddressController.getProvince);
-    router.get('district/:id', AddressController.getDistrict);
+    router.get('/district', AddressController.getDistrict);
     //Tiền tố đứng trước route
     app.use('/api/v1', router);
 }

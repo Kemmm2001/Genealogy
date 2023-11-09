@@ -67,10 +67,12 @@ svg.tommy .node.notchoose.female rect {
 
 svg.tommy .node.male>rect {
   fill: #C69934;
+  width: 280px;
 }
 
 svg.tommy .node.female>rect {
   fill: rgb(224, 89, 111);
+  width: 280px;
 }
 
 .feature-overview {

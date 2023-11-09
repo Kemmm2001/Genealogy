@@ -3,33 +3,14 @@
     <div class="list d-flex flex-column align-items-center">
       <div class="w-100 d-flex flex-row">
         <div class="col-6" style="padding-top: 12px; padding-left: 12px; padding-right: 6px;">
-          <select v-model="selectAdress" class="d-flex text-center form-select dropdown p-0">
+          <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict()">
             <option :value="null" selected>Tỉnh/Thành phố</option>
-            <option class="dropdown-item" value="Hà Nội">Hà Nội</option>
-            <option class="dropdown-item" value="Điện Biên">Điện Biên</option>
-            <option class="dropdown-item" value="Lào Cai">Lào Cai</option>
-            <option class="dropdown-item" value="Lai Châu">Lai Châu</option>
-            <option class="dropdown-item" value="Sơn La">Sơn La</option>
-            <option class="dropdown-item" value="Yên Bái">Yên Bái</option>
-            <option class="dropdown-item" value="Hòa Bình">Hòa Bình</option>
-            <option class="dropdown-item" value="Thái Nguyên">Thái Nguyên</option>
-            <option class="dropdown-item" value="Quảng Ninh">Quảng Ninh</option>
-            <option class="dropdown-item" value="Bắc Giang">Bắc Giang</option>
+            <option v-for="city in ListCity" :key="city.id" :value="city.id">{{city.name}}</option>
           </select>
         </div>
         <div class="col-6" style="padding-top: 12px; padding-left: 6px; padding-right: 12px;">
-          <select v-model="selectAdress" class="d-flex text-center form-select dropdown p-0">
+          <select v-model="selectDistrict" class="d-flex text-center form-select dropdown p-0">
             <option :value="null" selected>Quận/Huyện</option>
-            <option class="dropdown-item" value="Ba Đình">Ba Đình</option>
-            <option class="dropdown-item" value="Hoàn Kiếm">Hoàn Kiếm</option>
-            <option class="dropdown-item" value="Tây Hồ">Tây Hồ</option>
-            <option class="dropdown-item" value="Long Biên">Long Biên</option>
-            <option class="dropdown-item" value="Cầu Giấy">Cầu Giấy</option>
-            <option class="dropdown-item" value="Đống Đa">Đống Đa</option>
-            <option class="dropdown-item" value="Hai Bà Trưng">Hai Bà Trưng</option>
-            <option class="dropdown-item" value="Hoàng Mai">Hoàng Mai</option>
-            <option class="dropdown-item" value="Thanh Xuân">Thanh Xuân</option>
-            <option class="dropdown-item" value="Sóc Sơn">Sóc Sơn</option>
           </select>
         </div>
       </div>
@@ -675,26 +656,21 @@ export default {
       validations: {
         required: true,
       },
+      ListCity: null,
       ListPhoneToSendMessage: [],
-
       searchKeyword: null,
-
-      relationMember: {
-        Father: null,
-      },
       avatarSrc: null,
       JobIDToUpdate: null,
       EducationIdToUpdate: null,
       ListAgeGroup: null,
       ListBloodTypeGroup: null,
       ListUnspecifiedMembers: null,
-      ListEastAsiaCountries: null,
 
       selectAge: null,
       selectBloodType: null,
-      selectAdress: null,
+      selectCity: null,
+      selectDistrict: null,
       listFilterMember: null,
-      memberClick: null,
 
       isAddChildren: false,
       isAddMarried: false,
@@ -767,34 +743,12 @@ export default {
       ListReligion: null,
       nodes: [],
 
-      expandthanhvien: false,
-      rotated1: false,
-      expandbangve: false,
-      rotated2: false,
-      expandkhungthe: false,
-      rotated3: false,
-      expandthongtinthe: false,
-      rotated4: false,
-      expandkhungvien: false,
-      rotated5: false,
-      expandtieude: false,
-      rotated6: false,
-      expandnen: false,
-      rotated7: false,
-      expandthongtinngaytao: false,
-      rotated8: false,
-
-      configTree: true,
-      configPrinting: false,
-
       extendedInfo: true,
       extendedContact: false,
       extendedJob: false,
       extendedEdu: false,
       extendedNote: false,
-      configSidebarHover: false,
-      configSidebarExpansion: false,
-      configSidebarWidth: 0,
+
       displayList: false,
       expandAddRelationship: false,
 
@@ -804,27 +758,36 @@ export default {
   },
   methods: {
     mytree: function (domEl, x) {
+      let imgTemplate =
+        '<clipPath id="ulaImg">' +
+        '<rect  height="100" width="100" stroke-width="1" fill="#FF46A3" stroke="#aeaeae" ></rect>' +
+        "</clipPath>" +
+        '<image preserveAspectRatio="xMidYMid slice" clip-path="url(#ulaImg)" xlink:href="{val}" x="12" y="10" width="90" height="90"></image>';
+
+      FamilyTree.templates.tommy_male.img_0 = imgTemplate;
+      FamilyTree.templates.tommy_female.img_0 = imgTemplate;
+
       FamilyTree.templates.tommy_male.field_0 =
-        '<text class="field_0" style="font-size: 20px;" fill="#ffffff" x="125" y="30" text-anchor="middle">{val}</text>';
+        '<text class="field_0" style="font-size: 20px;" fill="#ffffff" x="125" y="30">{val}</text>';
       FamilyTree.templates.tommy_male.field_1 =
-        '<text class="field_1" style="font-size: 14px;" fill="#ffffff" x="125" y="50" text-anchor="middle">Giới Tính: Nam</text>';
+        '<text class="field_1" style="font-size: 14px;" fill="#ffffff" x="125" y="50">Giới Tính: Nam</text>';
       FamilyTree.templates.tommy_male.field_2 =
-        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="125" y="70" text-anchor="middle">Ngày Sinh: {val}</text>';
+        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="125" y="70">Ngày Sinh: {val}</text>';
       FamilyTree.templates.tommy_male.field_3 =
-        '<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">Ngày Mất: {val}</text>';
+        '<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="125" y="90">Ngày Mất: {val}</text>';
       FamilyTree.templates.tommy_male.field_4 =
-        '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">Đời: {val}</text>';
+        '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="125" y="90">Đời: {val}</text>';
 
       FamilyTree.templates.tommy_female.field_0 =
-        '<text class="field_0" style="font-size: 20px;" fill="#ffffff" x="125" y="30" text-anchor="middle">{val}</text>';
+        '<text class="field_0" style="font-size: 20px;" fill="#ffffff" x="125" y="30">{val}</text>';
       FamilyTree.templates.tommy_female.field_1 =
-        '<text class="field_1" style="font-size: 14px;" fill="#ffffff" x="125" y="50" text-anchor="middle">Giới Tính: Nữ</text>';
+        '<text class="field_1" style="font-size: 14px;" fill="#ffffff" x="125" y="50">Giới Tính: Nữ</text>';
       FamilyTree.templates.tommy_female.field_2 =
-        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="125" y="70" text-anchor="middle">Ngày Sinh: {val}</text>';
+        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="125" y="70">Ngày Sinh: {val}</text>';
       FamilyTree.templates.tommy_female.field_3 =
-        '<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">Ngày Mất: {val}</text>';
+        '<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="125" y="90">Ngày Mất: {val}</text>';
       FamilyTree.templates.tommy_female.field_4 =
-        '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="125" y="90" text-anchor="middle">Đời: {val}</text>';
+        '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="125" y="90">Đời: {val}</text>';
       this.family = new FamilyTree(domEl, {
         nodes: x,
         nodeBinding: {
@@ -871,10 +834,6 @@ export default {
       this.family.onNodeClick((arg) => {
         this.getInforMember(arg.node.id);
       });
-    },
-    moveViewBox(id) {
-      this.memberClick = id;
-      console.log(this.memberClick);
     },
     getViewBox() {
       return this.family.getViewBox();
@@ -999,13 +958,16 @@ export default {
     },
     convertSolarToLunar() {
       let Dob = new Date(this.objMemberInfor.Dob);
+      let month = new LunarDate(Dob).getMonth();
+      let date = new LunarDate(Dob).getDate();
+      if (new LunarDate(Dob).getMonth() < 10) {
+        month = "0" + new LunarDate(Dob).getMonth();
+      }
+      if (new LunarDate(Dob).getDate() < 10) {
+        date = "0" + new LunarDate(Dob).getDate();
+      }
       this.objMemberInfor.LunarDob =
-        "" +
-        new LunarDate(Dob).getYear() +
-        "-" +
-        (new LunarDate(Dob).getMonth() + 1) +
-        "-" +
-        new LunarDate(Dob).getDate();
+        "" + new LunarDate(Dob).getYear() + "-" + month + "-" + date;
       console.log(this.objMemberInfor.LunarDob);
     },
     getInforMember(id) {
@@ -1179,10 +1141,9 @@ export default {
         codeId: this.CodeID,
       }).then((response) => {
         this.newIdMember = response.data.data.memberId;
-        let phoneNumberInput =
-          this.$refs.phoneNumberInput.results.countryCallingCode;
-        this.objMemberContact.Phone =
-          "+" + phoneNumberInput + this.objMemberContact.Phone;
+        if (this.objMemberContact.Phone != null) {
+          this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
+        }
         HTTP.post("addContact", {
           memberId: this.newIdMember,
           Address: this.objMemberContact.Address,
@@ -1258,10 +1219,9 @@ export default {
         }).catch((e) => {
           console.log(e);
         });
-        let phoneNumberInput =
-          this.$refs.phoneNumberInput.results.countryCallingCode;
-        this.objMemberContact.Phone =
-          "+" + phoneNumberInput + this.objMemberContact.Phone;
+        if (this.objMemberContact.Phone != null) {
+          this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
+        }
         HTTP.post("addContact", {
           memberId: this.newIdMember,
           Address: this.objMemberContact.Address,
@@ -1305,10 +1265,9 @@ export default {
       })
         .then((response) => {
           this.newIdMember = response.data.data.memberId;
-          let phoneNumberInput =
-            this.$refs.phoneNumberInput.results.countryCallingCode;
-          this.objMemberContact.Phone =
-            "+" + phoneNumberInput + this.objMemberContact.Phone;
+          if (this.objMemberContact.Phone != null) {
+            this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
+          }
           HTTP.post("addContact", {
             memberId: this.newIdMember,
             Address: this.objMemberContact.Address,
@@ -1400,18 +1359,10 @@ export default {
         codeId: this.objMemberInfor.CodeID,
       })
         .then(() => {
-          console.log(
-            "SĐT: "
-          );
-          // if (this.objMemberContact.Phone != null) {
-          //   console.log("đã vào");
-          //   let phoneNumberInput =
-          //     this.$refs.phoneNumberInput.results.countryCallingCode;
-
-          //   this.objMemberContact.Phone =
-          //     "+" + phoneNumberInput + this.objMemberContact.Phone;
-
-          // }
+          if (this.objMemberContact.Phone != null) {
+            this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
+          }
+          console.log("Trong: " + this.objMemberContact.Phone);
           HTTP.put("updateContact", {
             MemberID: this.CurrentIdMember,
             Address: this.objMemberContact.Address,
@@ -1471,18 +1422,6 @@ export default {
       this.objMemberEducation.EndDate = this.formatDate(
         this.objMemberEducation.EndDate
       );
-    },
-    expandConfigSidebar() {
-      this.configSidebarHover = true;
-      this.configSidebarWidth = 25;
-      setTimeout(() => {
-        this.configSidebarExpansion = true;
-      }, 300);
-    },
-    collapseConfigSidebar() {
-      this.configSidebarHover = false;
-      this.configSidebarWidth = 0;
-      this.configSidebarExpansion = false;
     },
     GetListFilterMember() {
       HTTP.post("filter-member", {
@@ -1601,7 +1540,6 @@ export default {
 
     OnpenModal_SelectOption(id) {
       this.highLightSelectNode(id);
-      this.expandAddRelationship = false;
       this.$modal.show("Select-option-Modal");
       this.CurrentIdMember = id;
     },
@@ -1628,6 +1566,15 @@ export default {
           console.log(this.nodes);
           for (let i = 0; i < this.nodes.length; i++) {
             this.nodes[i].tags = [];
+            if (this.nodes[i].img == null) {
+              if (this.nodes[i].gender == "male") {
+                this.nodes[i].img =
+                  "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBw8HBhUQBw4SFRUQFhAQFhUTDRgVFRUYFRYWFhUWGxcZHSggGholHRcXITEiJSkrMC4uGB8zODMtNygtLisBCgoKDg0OFxAQFSslHx0rKy0tKy0rNy0tLS0tLS8tLSstLS0tLi0rLS0rKy0tLS8rLTArLSstKy0tLS0tKzcrK//AABEIALIBGwMBIgACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAAAQUDBAYCB//EADMQAQABAgQDBAkDBQAAAAAAAAABAgMEBRExEiFRQWFxsRMzcoGRocHR4SIyNBRCU4Lw/8QAGAEBAQEBAQAAAAAAAAAAAAAAAAIDAQT/xAAcEQEBAQEBAAMBAAAAAAAAAAAAAQIRMQMhURL/2gAMAwEAAhEDEQA/APogD0MgB0AAAAAAAAAAAABNFE3KtKImfCNW3ayu7c3iI9qfs5bI7xpi3t5N/lrn3R9zE4GxhbWtyau6OLnPyT/cOVUALcAAAAAAAAAAAAExshMbOCAHQAAAAAAAAAAB6tW5u3IpojnPIC3bm7XpbjWZ7FvhcoimNcROs9I2/LbwWEpwtvSned56/hssdb74uZeaLdNunSiIiO6NHoEKGrjsHGLo5zpMa6T49zaCXg5fEYerD16XI8J7J8GJ1N+xTft8NyNY8u9zuMw04W7pVt2T1htnXUWcYAFpAAAAAAAAAAExshMbAgAAAAAAAAAAABaZHa4rlVU9mkR791Wuch9VV4x5I347n1aAMWgAAAA1MzsRewk9aYmqPc22PERrYq8KvJ2DlhCXoZAAAAAAAAAACY2QmNgQAAAAAAAAAAAAush9RV7X0hSrvIv41XtfSEb8Vn1ZAMVgAAADxe9TV4T5Pbxe9TV4T5A5RKEvSyAAAAAAAAAAExshMbAgAAAAAAAAAAAB0GVYerD2Ji7GkzOu/dDnnWW6uK3E9YiWfyVWXoBksAAAAeLsa2piO2JewHKXLc2q+G5GkxpyeW3ms64+r/WPlDUeieM6AOuAAAAAAAACY2QmNgQAAAAAAAAAAAA6TL7npMHTPdEfDk5tZZJemm9NEzymNY8Y/CNzsVldgMVgAAACJ2S0s1vzYws8G9X6fju7J0UmLr9JiqpjtmWIG7IAdAAAAAAAABMbITGwIAAAAAAAAAAAAZ8Bc9Fi6Znrp8eX1YByjrRoZVjPT2+Gv91Pzjq32FnGoA4AAClzy7xXopj+2NZ8Z/75rXEXosWZqq7HM3bk3bk1V7zzXiffU6ryA2QAAAAAAAAAAJjZCY2BAAAAAAAAAAAAAALLIqdb9U9I0+M/hdqzJbFVqKpu0zGvDprHis2G/Wk8AEugANTNv4FXu84c66PM6JuYKqLcazPDy98OcmNJ0nsa/H4jQA0SAAAAAAAAAAJjZCY2BAAAAAAAAAAAADZyy36TG06xtPF8Pzow2rNV6rS1TM+ELrK8FOGiZu6azpHKdoTq8jsiwAYNAAAABz+b2+DGzOn7oifpLoGlmeEnFW49HprT16dseSs3lcs+nPjJesV2J0u0zHl8WNuzAAAAAAAAAAExshMbAgAAAAAAAAbeGy65f5zHDHWfpC1w2W27HPTinrP2TdyOyKfD4K5iP2U8us8o/K0w+U0W+d6eKfhCxGd3auZeaKIop0oiIjpEaPQIdAAAAAAAARNMVRpVDRxGVW7vq/0z3bfBvjstg53EZbcsbRxR1p+zUda18Tg6MR6ynn1jlK58n6m5c0LHE5TXb52Z4o6bT+VfVTNNWlUaTHWGksvieIAdcAAAAExshMbAgAAAACmOKdI7eQMmHw9WIucNqPtC8wmXUYfnV+qrrP0hlweGjDWeGn3z1lsMdb6uQAQoAAAAAAAAAAAAAAAAYcRhqMRTpdjXv7Y97MA53H4CcLOsc6Z7eni1HV3KIuUTFcaxPJzOLsf0+ImmezbvjsbY11FjEAtIAAmNkJjYABwAAGXC/wAqj2qPOAKOnAedqAAAAAAAAAAAAAAAAAAAAKPO/wCXHsx5yC8eua8V4DVmAAJAH//Z";
+              } else if (this.nodes[i].gender == "female") {
+                this.nodes[i].img =
+                  "data:image/jpeg;base64,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";
+              }
+            }
           }
           this.nodes[0].tags.push("great-grandfather");
           this.mytree(this.$refs.tree, this.nodes);
@@ -1663,6 +1610,18 @@ export default {
           console.log(e);
         });
     },
+    getListDistrict(){
+
+    },
+    getListCity() {
+      HTTP.get("province")
+        .then((response) => {
+          this.ListCity = response.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     getListReligion() {
       HTTP.get("religion")
         .then((response) => {
@@ -1671,11 +1630,6 @@ export default {
         .catch((e) => {
           console.log(e);
         });
-    },
-    getEastAsiaCountries() {
-      HTTP.get("east-asia-countries").then((response) => {
-        this.ListEastAsiaCountries = response.data.data;
-      });
     },
     selectedInfor() {
       this.extendedInfo = true;
@@ -1736,6 +1690,7 @@ export default {
     },
   },
   mounted() {
+    this.getListCity();
     this.GetIdPaternalAncestor();
     this.getListNationality();
     this.getListReligion();
