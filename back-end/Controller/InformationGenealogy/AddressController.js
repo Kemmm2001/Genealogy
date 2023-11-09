@@ -10,11 +10,7 @@ var getProvince = async (req, res) => {
             }
 
             const jsonData = JSON.parse(data);
-            // Extract the 'name' properties from the JSON data
-            const names = jsonData.map((province) => province.name);
-            
-            // Send only the list of names as a response
-            return res.send(names);
+            return res.send(jsonData);
         });
     } catch (e) {
         return res.send(Response.internalServerErrorResponse(e));
@@ -34,7 +30,6 @@ var getDistrict = (req, res) => {
                 // Lọc và chỉ trả về các name của quận có CityId tương ứng
                 const filteredDistricts = jsonData
                     .filter(district => district.CityId == cityId)
-                    .map(district => district.name);
 
                 // Kiểm tra xem có danh sách quận nào không
                 if (filteredDistricts.length > 0) {

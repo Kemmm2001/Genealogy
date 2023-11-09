@@ -1,14 +1,13 @@
   // // ConnectMongo.js
-  // const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost:27017', {
-    dbName: 'Capstone',
-    useNewUrlParser : true,
+mongoose.connect('mongodb+srv://nhatanh:dyHYbATHsEVlwFg4@cluster0.wdrnvdj.mongodb.net/?retryWrites=true&w=majority', {
+    useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
     useCreateIndex: true,
 })
 .then(() => {
-    console.log('mongodb connected')
+    console.log('MongoDB connected');
 })
-.catch((err) => console.log(err.message))
+.catch((err) => console.log(err.message));
