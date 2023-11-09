@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid p-0">
     <div class="d-flex flex-column h-100" style="min-height: inherit;">
-      <div class="w-100" v-if="!isExcludeRoute">
+      <div class="w-100" v-if="isIncludeRoute">
         <Header />
       </div>
       <router-view />
@@ -22,8 +22,8 @@ export default {
     return {};
   },
   computed: {
-    isExcludeRoute() {
-      const excludedRoutes = ['/login', '/familycode', '*'];
+    isIncludeRoute() {
+      const excludedRoutes = ['/', '/information/headlist', '/information/articlelist', 'information/albumlist', 'memberList'];
       return excludedRoutes.includes(this.$route.path);
     }
   }
