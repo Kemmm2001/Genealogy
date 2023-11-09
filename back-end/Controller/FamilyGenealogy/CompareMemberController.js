@@ -7,6 +7,8 @@ var compareMember = async (req, res) => {
 
         let Generation1 = await CompareMemberService.getGenerationByID(MemberID1);
         let Generation2 = await CompareMemberService.getGenerationByID(MemberID2);
+        console.log("Đời 1: " + Generation1);
+        console.log("Đời 2: " + Generation2);
 
         let DefferenceGeneration = Generation2[0].Generation - Generation1[0].Generation;
 
@@ -20,7 +22,7 @@ var compareMember = async (req, res) => {
             await CompareMemberService.GetResultCompare(MemberID1, MemberID2, DefferenceGeneration)
         }
     } catch (error) {
-
+        console.log(error)
     }
 }
 

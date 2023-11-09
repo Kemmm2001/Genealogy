@@ -299,10 +299,7 @@
                 <div class="col-8">
                   <div style="position: relative; margin-right:10px">
                     <input v-model="objMemberInfor.MemberName" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberInfor.MemberName }">
-                      Tên thành viên
-                      đầy đủ
-                    </label>
+                    <label class="form-label" for="input" :class="{ 'active': objMemberInfor.MemberName }">Tên thành viên đầy đủ</label>
                   </div>
                   <div style="display:flex">
                     <div style="position: relative; width: 50%;margin-right: 10px;">
@@ -367,10 +364,7 @@
                     </label>
                   </div>
                   <div class="form-group">
-                    <h6 style="margin-bottom:20px">
-                      Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược
-                      lại)
-                    </h6>
+                    <h6 style="margin-bottom:20px">Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược lại)</h6>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
                         <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar()" />
@@ -422,9 +416,21 @@
             </div>
             <div class="col-9" style="padding-top: 15px" v-else-if="extendedContact">
               <div class="row">
-                <div style="position: relative;padding-right: 23px;">
-                  <input v-model="objMemberContact.Address" type="text" class="form-control modal-item" placeholder />
-                  <label style="left: 25px;" class="form-label" for="input" :class="{ 'active': objMemberContact.Address }">Địa chỉ</label>
+                <!-- <span style="margin-bottom:20px">Hệ thống sẽ lấy thông tin của Quận/huyện</span> -->
+                <div style="display:flex">
+                  <div style="position: relative; width: 50%;margin-right: 10px;">
+                    <select v-model="selectCityMember" class="form-select modal-item" @change="getListDistrict()">
+                      <option :value="null" selected>Thành Phố/Tỉnh</option>
+                      <option v-for="city in ListCity" :key="city.id" :value="city.id">{{city.name}}</option>
+                    </select>
+                    <label class="form-label" for="select">Địa Chỉ (Thành Phố/Tỉnh)</label>
+                  </div>
+                  <div style="position: relative;width: 50%; margin-right: 10px;">
+                    <select class="form-select modal-item">
+                      <option :value="null" selected>Quận/Huyện</option>
+                    </select>
+                    <label class="form-label" for="select">Địa Chỉ (Quận/Huyện)</label>
+                  </div>
                 </div>
                 <div style="display:flex">
                   <div style="position: relative; width: 50%;margin-right: 10px;">
@@ -623,6 +629,7 @@ export default {
       selectAge: null,
       selectBloodType: null,
       selectCity: null,
+      selectCityMember: null,
       selectDistrict: null,
       listFilterMember: null,
 

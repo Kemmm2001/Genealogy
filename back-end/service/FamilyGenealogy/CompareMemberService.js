@@ -62,25 +62,24 @@ function getBirthOrderByID(MemberId) {
 }
 
 async function getResultCompareToMember(DefferenceGeneration, Generation1, Generation2) {
-    console.log(Generation1)
-    console.log(Generation2)
     console.log(DefferenceGeneration)
-    if (DefferenceGeneration === 0) {
-        if (Generation1 > Generation2) {
-            return "anh - em";
-        } else {
-            return "em - anh";
-        }
-    } else if (DefferenceGeneration < 0) {
-        if (DefferenceGeneration == 1 || DefferenceGeneration == -1) {
-            if (Generation1 > Generation2) {
-                return "cháu - bác";
-            } else if (Generation1 < Generation2) {
-                return "cháu - chú";
-            }
-        }
-    }
-    return "Không xác định"; // Trả về một giá trị mặc định nếu không thoả mãn điều kiện nào
+    // let objResult = {}
+    // if (DefferenceGeneration === 0) {
+    //     if (Generation1 > Generation2) {
+    //         return "anh - em";
+    //     } else {
+    //         return "em - anh";
+    //     }
+    // } else if (DefferenceGeneration < 0) {
+    //     if (DefferenceGeneration == 1 || DefferenceGeneration == -1) {
+    //         if (Generation1 > Generation2) {
+    //             return "cháu - bác";
+    //         } else if (Generation1 < Generation2) {
+    //             return "cháu - chú";
+    //         }
+    //     }
+    // }
+    return "Không xác định";
 }
 
 async function GetResultCompare(MemberId1, MemberId2, DefferenceGeneration) {
