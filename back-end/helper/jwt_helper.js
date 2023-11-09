@@ -49,11 +49,12 @@ module.exports = {
       const options = {
         expiresIn: "1m",
       }
-      JWT.sign(payload, secret, options, (err, token) => {
+      JWT.sign(payload, secret, options, async (err, token) => {
         if (err) {
           console.log(err.message)
           reject(createError.InternalServerError())
         }
+      
         resolve(token)
       })
     })
