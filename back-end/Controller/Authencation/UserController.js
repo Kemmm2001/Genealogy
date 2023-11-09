@@ -4,7 +4,6 @@ const { registerSchema, loginSchema } = require('../../helper/validation_schema'
 const bcrypt = require('bcrypt');
 const { signAccessToken, signRefreshToken, verifyRefreshToken } = require('../../helper/jwt_helper')
 const express = require('express');
-const cookieParser = require('cookie-parser');
 const app = express();
 app.use(cookieParser());
 
@@ -52,12 +51,6 @@ var loginUser = async (req, res) => {
     console.log(accessToken)
     const refreshToken = await signRefreshToken(data.accountID)
     console.log(refreshToken)
-
-    res.cookie('accessToken', accessToken, {
-      httpOnly: true, // Không thể truy cập bằng JavaScript trong trình duyệt
-      secure: true, // Chỉ hoạt động trên kết nối HTTPS (sử dụng khi triển khai thật)
-      maxAge: 3600000, // 1 giờ
-    });
 
     return res.send({accessToken, refreshToken})
     
