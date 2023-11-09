@@ -125,6 +125,15 @@
     cursor: pointer;
 }
 
+.close-noti-form {
+    position: absolute;
+    right: 0;
+}
+
+.close-noti-form:hover {
+    cursor: pointer;
+}
+
 .member-info-tab {
     background-color: #E8C77B;
     border-radius: 0.375rem 0 0 0.375rem;
@@ -302,6 +311,6 @@ input:focus~label.form-label-number {
 
 .sent-time{
     top: 9px;
-    left: 36px;
+    left: 24px;
     font-size: 12px;
 }
