@@ -71,7 +71,7 @@
                             </div>
                         </div>
                         <div class="d-flex justify-content-center align-items-center" style="height: auto; width: auto;">
-                            <button @click="moveToRight(); enlargeBackground()" class="btn register-button">Đăng kí</button>
+                            <button @click="register()" class="btn register-button">Đăng kí</button>
                         </div>
                     </div>
                 </div>
@@ -103,12 +103,12 @@
                                 </svg>
                             </div>
                         </div>
-                        <router-link to="/familycode">
+                        <!-- <router-link to="/familycode"> -->
                             <div class="d-flex justify-content-center align-items-center"
                                 style="height: auto; width: auto;">
-                                <button @click="login(); showLoginOptions()" class="btn login-button">Đăng nhập</button>
+                                <button @click="login()" class="btn login-button">Đăng nhập</button>
                             </div>
-                        </router-link>
+                        <!-- </router-link> -->
                     </div>
                 </div>
             </div>
@@ -118,6 +118,9 @@
 
 <script>
 import { HTTP } from "../assets/js/baseAPI.js";
+import Vue from 'vue';
+import VueCookies from 'vue-cookies';
+Vue.use(VueCookies)
 export default {
     data() {
         return {
@@ -136,63 +139,49 @@ export default {
                 rePassword: null,
                 email: null,
             },
-
-            firstMemberId: null,
+            accountIdToken: null,
 
         }
     },
     methods: {
+        //
         register() {
-            if (this.accountRegister.password == this.accountRegister.rePassword) {
-                HTTP.post("register", {
-                    email: this.accountRegister.email,
-                    username: this.accountRegister.username,
-                    password: this.accountRegister.password,
+            HTTP.post("register", {
+                email: this.accountRegister.email,
+                username: this.accountRegister.username,
+                password: this.accountRegister.password,
+                repassword: this.accountRegister.rePassword
+            })
+                .then(() => {
+                    console.log("dang ky")
+                    this.moveToRight()
+                    this.enlargeBackground()
+                    this.accountRegister = []
                 })
-                    .then(() => {
-                    })
-                    .catch((e) => {
-                        console.log(e);
-                    });
-            }
+                .catch((e) => {
+                    console.log(e);
+                });
         },
-        saveInfoSession() {
-            localStorage.setItem('CodeID', this.accountLogin.codeId);
-            console.log(localStorage.getItem('CodeID'))
+        saveInfoSession(){
+            localStorage.setItem('CodeID', this.accountLogin.codeId); 
         },
         login() {
+            VueCookies.remove('accessToken');
             localStorage.removeItem('CodeID');
-            this.getFirstMemberIdByCodeId(this.accountLogin.codeId);
             HTTP.post("login", {
                 email: this.accountLogin.email,
                 password: this.accountLogin.password,
-            }).then(() => {
-                if (this.firstMemberId != null) {
-                    this.saveInfoSession();
-                    console.log(3)
-                    this.$router.push('/');
-                }
-            })
-                .catch((e) => {
-                    console.log(e);
-                });
-        },
-        getFirstMemberIdByCodeId(id) {
-            HTTP.get("generalInfor", {
-                params: {
-                    CodeID: id,
-                },
             }).then((response) => {
-                if (response.data[0] != null) {
-                    this.firstMemberId = response.data[0].MemberId;
-                } else {
-                    this.firstMemberId = null;
-                }
+                this.accountIdToken = response.data.accessToken
+                VueCookies.set('accessToken', this.accountIdToken, 3600);
+                this.accountLogin = [];
+                this.$router.push('/familycode');
             })
-                .catch((e) => {
-                    console.log(e);
-                });
+            .catch((e) => {
+                console.log(e);
+            });
         },
+        
         enlargeBackground() {
             this.enlarge = true;
             setTimeout(() => {

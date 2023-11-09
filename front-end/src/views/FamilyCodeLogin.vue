@@ -30,24 +30,24 @@
                             <div class="d-flex flex-row mb-2">
                                 <div class="d-flex align-items-center" style="padding-right: 30.79px;">Gia tộc họ</div>
                                 <div class="h-100" style="flex-grow: 1;">
-                                    <input type="text" class="form-control" placeholder="Nguyễn" />
+                                    <input v-model="familyTree.treeName" type="text" class="form-control" placeholder="Nguyễn" />
                                 </div>
                             </div>
                             <div class="d-flex flex-row mb-2">
                                 <div class="d-flex align-items-center" style="padding-right: 48.15px;">Dân tộc</div>
                                 <div class="h-100" style="flex-grow: 1;">
-                                    <input type="text" class="form-control" placeholder="Kinh" />
+                                    <input v-model="familyTree.ethnicity" type="text" class="form-control" placeholder="Kinh" />
                                 </div>
                             </div>
                             <div class="d-flex flex-row mb-3">
                                 <div class="d-flex align-items-center" style="padding-right: 16px;">Ngày giỗ họ</div>
                                 <div class="h-100" style="flex-grow: 1;">
-                                    <input type="date" class="form-control" />
+                                    <input v-model="familyTree.deathAnniersary" type="date" class="form-control" />
                                 </div>
                             </div>
                             <div class="d-flex justify-content-center align-items-center"
                                 style="height: auto; width: auto;">
-                                <button @click="moveToRight(); enlargeBackground()" class="btn register-button">Đăng
+                                <button @click="registerFamilyTree()" class="btn register-button">Đăng
                                     kí</button>
                             </div>
                         </div>
@@ -62,28 +62,28 @@
                             <div class="d-flex flex-row mb-3">
                                 <div class="col-4 h-100 d-flex flex-row">
                                     <div>
-                                        <input type="text" class="form-control" placeholder="ABC" />
+                                        <input v-model="code1" type="text" class="form-control" placeholder="ABC" />
                                     </div>
                                     <div class="d-flex align-items-center p-1"> - </div>
                                 </div>
                                 <div class="col-4 h-100 d-flex flex-row">
                                     <div>
-                                        <input type="text" class="form-control" placeholder="ABC" />
+                                        <input v-model="code2" type="text" class="form-control" placeholder="ABC" />
                                     </div>
                                     <div class="d-flex align-items-center p-1"> - </div>
                                 </div>
                                 <div class="col-4 h-100 d-flex flex-row">
                                     <div>
-                                        <input type="text" class="form-control" placeholder="ABC" />
+                                        <input v-model="code3" type="text" class="form-control" placeholder="ABC" />
                                     </div>
                                 </div>
                             </div>
-                            <router-link to="/familycode/login">
+                            <!-- <router-link to="/familycode/login"> -->
                                 <div class="d-flex justify-content-center align-items-center"
                                     style="height: auto; width: auto;">
-                                    <button @click="login(); showLoginOptions()" class="btn login-button">Đăng nhập</button>
+                                    <button @click="loginWithCode()" class="btn login-button">Đăng nhập</button>
                                 </div>
-                            </router-link>
+                            <!-- </router-link> -->
                         </div>
                     </div>
                 </div>
@@ -94,6 +94,10 @@
 
 <script>
 import { HTTP } from "../assets/js/baseAPI.js";
+import Vue from 'vue';
+import VueCookies from 'vue-cookies';
+Vue.use(VueCookies)
+
 export default {
     data() {
         return {
@@ -101,73 +105,75 @@ export default {
             enlarge: false,
             loggingin: true,
 
-            accountLogin: {
-                email: null,
-                password: null,
+            familyTree:{
+                memberId: null,
+                treeName: null,
+                ethnicity:null,
+                deathAnniersary: null,
                 codeId: null,
             },
-            accountRegister: {
-                username: null,
-                password: null,
-                rePassword: null,
-                email: null,
-            },
-
-            firstMemberId: null,
-
+            code1: null,
+            code2: null,
+            code3: null,
+            codeId: null,
+            accountID: null,
         }
     },
     methods: {
-        register() {
-            if (this.accountRegister.password == this.accountRegister.rePassword) {
-                HTTP.post("register", {
-                    email: this.accountRegister.email,
-                    username: this.accountRegister.username,
-                    password: this.accountRegister.password,
+        takeAccountId(){
+            HTTP.get("protected-route", {
+                headers: {
+                'Authorization': 'Bearer '+VueCookies.get('accessToken'),
+                },
+            }).then((response) => {
+                this.accountID = response.accountID
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+        },
+        registerFamilyTree(){
+            HTTP.post("register-genealogy", {
+                accountID: this.accountID,
+                treeName: this.familyTree.treeName,
+                ethnicity:this.familyTree.ethnicity,
+            })
+                .then((response) => {
+                    this.codeId = response.data[0].codeId
                 })
-                    .then(() => {
-                    })
-                    .catch((e) => {
-                        console.log(e);
-                    });
-            }
+                .catch((e) => {
+                    console.log(e);
+                });
+            HTTP.post("newGeneral", {
+                TreeName: this.familyTree.treeName,
+                DeathAnniversary: this.familyTree.deathAnniersary,
+                Ethnicity: this.familyTree.ethnicity,
+                CodeID:222111222,
+            })
+                .then((response) => {
+                    this.moveToRight()
+                    this.enlargeBackground()
+                    localStorage.setItem('MemberID', response.data[0].insertId);  
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
         },
-        saveInfoSession() {
-            localStorage.setItem('CodeID', this.accountLogin.codeId);
-            console.log(localStorage.getItem('CodeID'))
-        },
-        login() {
-            localStorage.removeItem('CodeID');
-            this.getFirstMemberIdByCodeId(this.accountLogin.codeId);
-            HTTP.post("login", {
-                email: this.accountLogin.email,
-                password: this.accountLogin.password,
-            }).then(() => {
-                if (this.firstMemberId != null) {
-                    this.saveInfoSession();
-                    console.log(3)
+        loginWithCode(){
+            this.codeId = this.code1+this.code2+this.code3;
+            HTTP.get("generalInfor", {
+                params:{
+                    CodeID: this.codeId,
+                }
+            }).then((response) => {
+                if(response.data[0] != null){
                     this.$router.push('/');
                 }
             })
-                .catch((e) => {
-                    console.log(e);
-                });
-        },
-        getFirstMemberIdByCodeId(id) {
-            HTTP.get("generalInfor", {
-                params: {
-                    CodeID: id,
-                },
-            }).then((response) => {
-                if (response.data[0] != null) {
-                    this.firstMemberId = response.data[0].MemberId;
-                } else {
-                    this.firstMemberId = null;
-                }
-            })
-                .catch((e) => {
-                    console.log(e);
-                });
+            .catch((e) => {
+                console.log(e);
+            });
+            
         },
         enlargeBackground() {
             this.enlarge = true;
@@ -189,13 +195,9 @@ export default {
                 this.right = false;
             }, 300);
         },
-
-        showLoginOptions() {
-            this.$modal.show("login-options");
-        },
-        showRegisterOptions() {
-            this.$modal.show("register-options");
-        }
     },
+    mounted(){
+        this.takeAccountId();
+    }
 }
 </script>
