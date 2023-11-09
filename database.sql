@@ -172,7 +172,7 @@ CREATE TABLE `contact` (
   PRIMARY KEY (`ContactID`),
   KEY `contact_idx` (`MemberID`),
   CONSTRAINT `contact` FOREIGN KEY (`MemberID`) REFERENCES `familymember` (`MemberID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -181,7 +181,7 @@ CREATE TABLE `contact` (
 
 LOCK TABLES `contact` WRITE;
 /*!40000 ALTER TABLE `contact` DISABLE KEYS */;
-INSERT INTO `contact` VALUES (1,1,'Yên thủy-hòa bình','0123456789','gmai.com','123','123'),(2,6,'Yên thủy-hòa bình','0123456789','gmai.com','123','123'),(11,39,NULL,NULL,NULL,NULL,NULL),(14,42,'Địa chỉ 1','841232 323',NULL,NULL,NULL);
+INSERT INTO `contact` VALUES (1,1,'Yên thủy-hòa bình','0123456789','gmai.com','123','123'),(2,6,'Yên thủy-hòa bình','0123456789','gmai.com','123','123'),(11,39,NULL,'866 978 616',NULL,NULL,NULL),(14,42,'Địa chỉ 1','+84353 612 090',NULL,NULL,NULL),(17,19,NULL,'+84383 802 676',NULL,NULL,NULL),(18,15,NULL,'+84369 984 848',NULL,NULL,NULL),(19,16,NULL,'+84813 701 669',NULL,NULL,NULL),(20,21,NULL,NULL,NULL,NULL,NULL),(21,12,NULL,'213 4132 131',NULL,NULL,NULL);
 /*!40000 ALTER TABLE `contact` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -408,7 +408,7 @@ CREATE TABLE `familymember` (
 
 LOCK TABLES `familymember` WRITE;
 /*!40000 ALTER TABLE `familymember` DISABLE KEYS */;
-INSERT INTO `familymember` VALUES (1,NULL,2,'Test1','NichName1',1,1,'Hòa Bình',1,1,'2001-10-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note1',1,NULL,1,'123',NULL),(2,NULL,1,'test2','NichName2',1,1,'Hòa Bình',1,1,'2001-10-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note2',1,NULL,0,'123',NULL),(3,1,4,'Test3','NichName3',1,1,'Hòa Bình',1,1,'2001-02-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note3',2,NULL,1,'123',NULL),(4,1,3,'test4','NichName4',1,1,'Hòa Bình',1,1,'2001-05-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note4',2,NULL,0,'123',NULL),(5,3,NULL,'test5','NichName5',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note5',3,NULL,1,'123',NULL),(6,NULL,7,'A','Tên thường gọi là A',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',0,'1970-01-01 00:00:00',NULL,NULL,'Note',0,'A',1,'123456',NULL),(7,NULL,6,'A\'','NichName1',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',0,'A',0,'123456',NULL),(8,6,NULL,'B','NichName1',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',1,'B',1,'123456',NULL),(10,8,NULL,'C','C',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,'1970-01-01 00:00:00',NULL,NULL,'Note',2,'A',1,'123456',NULL),(11,8,NULL,'D','D',1,2,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',2,'AB',1,'123456',NULL),(12,10,NULL,'E','E',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',3,'A',1,'123456',NULL),(13,11,NULL,'M','M',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',3,'A',1,'123456',NULL),(14,13,NULL,'N','N',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',4,'A',0,'123456',NULL),(15,12,NULL,'F','F',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',4,'B',1,'123456',NULL),(16,12,NULL,'H','H',1,2,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',4,'B',0,'123456',NULL),(17,12,NULL,'L','L',1,3,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',4,'A',1,'123456',NULL),(18,15,NULL,'G','G',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',5,'B',1,'123456',NULL),(19,15,39,'Z','Z',1,2,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,'1970-01-01 00:00:00',NULL,NULL,'Note',5,'B',0,'123456',NULL),(20,17,NULL,'X','X',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',5,'A',0,'123456',NULL),(21,18,NULL,'J','J',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',6,'A',0,'123456',NULL),(23,17,NULL,'Test1','test',NULL,1,'Hòa Bình',1,1,'2023-10-09 00:00:00','2023-10-09 00:00:00','Hòa Bình',0,NULL,NULL,NULL,NULL,5,'A',1,'123456',NULL),(39,NULL,19,'Vợ của Z','z',NULL,1,'Hà Nội',1,2,'2023-10-28 00:00:00','2023-10-28 00:00:00','Hà Nội',0,NULL,NULL,NULL,NULL,5,'A',1,'123456',NULL),(42,19,NULL,'Tên con là Z\'','Tên thường gọi là Z',NULL,1,'Hà nội',1,1,'2023-10-09 00:00:00','2023-10-09 00:00:00','Hà bình',0,'1970-01-01 00:00:00',NULL,NULL,NULL,6,'A',1,NULL,NULL);
+INSERT INTO `familymember` VALUES (1,NULL,2,'Test1','NichName1',1,1,'Hòa Bình',1,1,'2001-10-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note1',1,NULL,1,'123',NULL),(2,NULL,1,'test2','NichName2',1,1,'Hòa Bình',1,1,'2001-10-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note2',1,NULL,0,'123',NULL),(3,1,4,'Test3','NichName3',1,1,'Hòa Bình',1,1,'2001-02-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note3',2,NULL,1,'123',NULL),(4,1,3,'test4','NichName4',1,1,'Hòa Bình',1,1,'2001-05-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note4',2,NULL,0,'123',NULL),(5,3,NULL,'test5','NichName5',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note5',3,NULL,1,'123',NULL),(6,NULL,7,'A','Tên thường gọi là A',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',0,'1970-01-01 00:00:00',NULL,NULL,'Note',0,'A',1,'123456',NULL),(7,NULL,6,'A\'','NichName1',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',0,'A',0,'123456',NULL),(8,6,NULL,'B','NichName1',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-02-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',1,'B',1,'123456',NULL),(10,8,NULL,'C','C',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,'1970-01-01 00:00:00',NULL,NULL,'Note',2,'A',1,'123456',NULL),(11,8,NULL,'D','D',1,2,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',2,'AB',1,'123456',NULL),(12,10,NULL,'E','E',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,'1970-01-01 00:00:00',NULL,NULL,'Note',3,'A',1,'123456',NULL),(13,11,NULL,'M','M',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',3,'A',1,'123456',NULL),(14,13,NULL,'N','N',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',4,'A',0,'123456',NULL),(15,12,NULL,'F','F',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,'1970-01-01 00:00:00',NULL,NULL,'Note',4,'B',1,'123456',NULL),(16,12,NULL,'H','H',1,2,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,'1970-01-01 00:00:00',NULL,NULL,'Note',4,'B',0,'123456',NULL),(17,12,NULL,'L','L',1,3,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',4,'A',1,'123456',NULL),(18,15,NULL,'G','G',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',5,'B',1,'123456',NULL),(19,15,39,'Z','Z',1,2,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,'1970-01-01 00:00:00',NULL,NULL,'Note',5,'B',0,'123456',NULL),(20,17,NULL,'X','X',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,NULL,NULL,NULL,'Note',5,'A',0,'123456',NULL),(21,18,NULL,'J9','J',1,1,'Hòa Bình',1,1,'2001-03-26 00:00:00','2001-03-26 00:00:00','Hòa Bình',0,'1970-01-01 00:00:00',NULL,NULL,'Note',6,'A',0,'123456',NULL),(23,17,NULL,'Test1','test',NULL,1,'Hòa Bình',1,1,'2023-10-09 00:00:00','2023-10-09 00:00:00','Hòa Bình',0,NULL,NULL,NULL,NULL,5,'A',1,'123456',NULL),(39,NULL,19,'Vợ của Z','z',NULL,1,'Hà Nội',1,2,'2023-10-28 00:00:00','2023-10-28 00:00:00','Hà Nội',0,'1970-01-01 00:00:00',NULL,NULL,NULL,5,'A',1,'123456',NULL),(42,19,NULL,'Tên con là Z\'','Tên thường gọi là Z',NULL,1,'Hà nội',1,1,'2023-10-09 00:00:00','2023-10-09 00:00:00','Hà bình',0,'1970-01-01 00:00:00',NULL,NULL,NULL,6,'A',1,NULL,'');
 /*!40000 ALTER TABLE `familymember` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -621,6 +621,33 @@ INSERT INTO `nationality` VALUES (1,'Việt Nam'),(2,'Ba Lan'),(3,'Ba Tư'),(4,'
 UNLOCK TABLES;
 
 --
+-- Table structure for table `notificationhistory`
+--
+
+DROP TABLE IF EXISTS `notificationhistory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `notificationhistory` (
+  `NotificationHistoryId` int NOT NULL AUTO_INCREMENT,
+  `NotificationContent` varchar(5000) DEFAULT NULL,
+  `NotificationDate` datetime DEFAULT NULL,
+  `CodeID` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`NotificationHistoryId`),
+  KEY `Notification_idx` (`CodeID`),
+  CONSTRAINT `Notification` FOREIGN KEY (`CodeID`) REFERENCES `familytree` (`CodeID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `notificationhistory`
+--
+
+LOCK TABLES `notificationhistory` WRITE;
+/*!40000 ALTER TABLE `notificationhistory` DISABLE KEYS */;
+/*!40000 ALTER TABLE `notificationhistory` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `printingconfig`
 --
 
@@ -772,4 +799,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-06 18:03:23
+-- Dump completed on 2023-11-09 14:30:50

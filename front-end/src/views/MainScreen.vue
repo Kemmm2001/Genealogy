@@ -3,33 +3,14 @@
     <div class="list d-flex flex-column align-items-center">
       <div class="w-100 d-flex flex-row">
         <div class="col-6" style="padding-top: 12px; padding-left: 12px; padding-right: 6px;">
-          <select v-model="selectAdress" class="d-flex text-center form-select dropdown p-0">
+          <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict()">
             <option :value="null" selected>Tỉnh/Thành phố</option>
-            <option class="dropdown-item" value="Hà Nội">Hà Nội</option>
-            <option class="dropdown-item" value="Điện Biên">Điện Biên</option>
-            <option class="dropdown-item" value="Lào Cai">Lào Cai</option>
-            <option class="dropdown-item" value="Lai Châu">Lai Châu</option>
-            <option class="dropdown-item" value="Sơn La">Sơn La</option>
-            <option class="dropdown-item" value="Yên Bái">Yên Bái</option>
-            <option class="dropdown-item" value="Hòa Bình">Hòa Bình</option>
-            <option class="dropdown-item" value="Thái Nguyên">Thái Nguyên</option>
-            <option class="dropdown-item" value="Quảng Ninh">Quảng Ninh</option>
-            <option class="dropdown-item" value="Bắc Giang">Bắc Giang</option>
+            <option v-for="city in ListCity" :key="city.id" :value="city.id">{{city.name}}</option>
           </select>
         </div>
         <div class="col-6" style="padding-top: 12px; padding-left: 6px; padding-right: 12px;">
-          <select v-model="selectAdress" class="d-flex text-center form-select dropdown p-0">
+          <select v-model="selectDistrict" class="d-flex text-center form-select dropdown p-0">
             <option :value="null" selected>Quận/Huyện</option>
-            <option class="dropdown-item" value="Ba Đình">Ba Đình</option>
-            <option class="dropdown-item" value="Hoàn Kiếm">Hoàn Kiếm</option>
-            <option class="dropdown-item" value="Tây Hồ">Tây Hồ</option>
-            <option class="dropdown-item" value="Long Biên">Long Biên</option>
-            <option class="dropdown-item" value="Cầu Giấy">Cầu Giấy</option>
-            <option class="dropdown-item" value="Đống Đa">Đống Đa</option>
-            <option class="dropdown-item" value="Hai Bà Trưng">Hai Bà Trưng</option>
-            <option class="dropdown-item" value="Hoàng Mai">Hoàng Mai</option>
-            <option class="dropdown-item" value="Thanh Xuân">Thanh Xuân</option>
-            <option class="dropdown-item" value="Sóc Sơn">Sóc Sơn</option>
           </select>
         </div>
       </div>
@@ -597,6 +578,7 @@ export default {
       validations: {
         required: true,
       },
+      ListCity: null,
       ListPhoneToSendMessage: [],
       searchKeyword: null,
       avatarSrc: null,
@@ -608,7 +590,8 @@ export default {
 
       selectAge: null,
       selectBloodType: null,
-      selectAdress: null,
+      selectCity: null,
+      selectDistrict: null,
       listFilterMember: null,
 
       isAddChildren: false,
@@ -1545,6 +1528,18 @@ export default {
           console.log(e);
         });
     },
+    getListDistrict(){
+
+    },
+    getListCity() {
+      HTTP.get("province")
+        .then((response) => {
+          this.ListCity = response.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     getListReligion() {
       HTTP.get("religion")
         .then((response) => {
@@ -1605,6 +1600,7 @@ export default {
     },
   },
   mounted() {
+    this.getListCity();
     this.GetIdPaternalAncestor();
     this.getListNationality();
     this.getListReligion();
