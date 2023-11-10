@@ -95,3 +95,9 @@
 .collapsed-relationship-icon.expanded{
     transform: rotate(-90deg);
 }
+
+.create-mail-close-icon{
+    width: 24px;
+    height: 24px;
+    top: 0
+}

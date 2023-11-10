@@ -1,0 +1,39 @@
+.create-mail{
+    height: 0;
+    bottom: 0;
+    right: 0;
+    width: calc(100% - 8px);
+    transition: 0.4s;
+}
+
+.create-mail.expanded{
+    height: calc(100% - 56px);
+    border-radius: 0.375rem 0 0 0;
+    background-color: #FFFFFF;
+}
+
+.create-mail-title{
+    height: 42px;
+    background-color: #f2f6fc;
+}
+
+.create-mail-close{
+    right: 5px;
+    height: 24px;
+    width: 24px;
+    cursor: pointer;
+}
+
+.create-mail-topic{
+    height: 42px;
+}
+
+.mail-topic{
+    outline: none;
+    border: none;
+    border-bottom: 1px solid lightgray;
+}
+
+.create-mail-content{
+    height: calc(100% - 84px);
+}
