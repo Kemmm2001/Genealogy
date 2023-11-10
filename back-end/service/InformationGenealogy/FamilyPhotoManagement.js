@@ -1,9 +1,9 @@
 const db = require('../../Models/ConnectDB')
 const fs = require('fs');
 
-function getMemberPhotoByAlbumId(albumId) {
+function getFamilyPhotoByAlbumId(albumId) {
     return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM memberphoto where AlbumID  = ${albumId}`
+        let query = `SELECT * FROM familyphoto where AlbumID  = ${albumId}`
         db.connection.query(query, (err, result) => {
             if (err) {
                 console.log("Have err : " + err);
@@ -15,9 +15,9 @@ function getMemberPhotoByAlbumId(albumId) {
     })
 }
 
-function getMemberPhotoById(photoId) {
+function getFamilyPhotoById(photoId) {
     return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM memberphoto where PhotoID  = ${photoId}`
+        let query = `SELECT * FROM familyphoto where PhotoID  = ${photoId}`
         db.connection.query(query, (err, result) => {
             if (err) {
                 console.log("Have err : " + err);
@@ -29,9 +29,9 @@ function getMemberPhotoById(photoId) {
     })
 }
 
-function getAllMemberPhoto() {
+function getAllFamilyPhoto() {
     return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM photo`
+        let query = `SELECT * FROM familyphoto`
         db.connection.query(query, (err, result) => {
             if (err) {
                 console.log("Have err : " + err);
@@ -43,9 +43,9 @@ function getAllMemberPhoto() {
     })
 }
 
-function insertMemberPhoto(ObjData) {
+function insertFamilyPhoto(ObjData) {
     return new Promise((resolve, reject) => {
-        let query = `INSERT INTO memberphoto (AlbumID, PhotoUrl) VALUES (?, ?);`
+        let query = `INSERT INTO familyphoto (AlbumID, PhotoUrl) VALUES (?, ?);`
         let values = [
             ObjData.AlbumID,
             ObjData.PhotoUrl
@@ -62,11 +62,11 @@ function insertMemberPhoto(ObjData) {
 
 }
 
-function updateMemberPhoto(ObjData) {
+function updateFamilyPhoto(ObjData) {
     return new Promise((resolve, reject) => {
         // xóa ảnh cũ
-        removeMemberPhotoUrl(ObjData.PhotoID, reject);
-        let query = `UPDATE memberphoto SET AlbumID = ?, PhotoUrl = ? WHERE PhotoID = ?;`
+        removeFamilyPhotoUrl(ObjData.PhotoID, reject);
+        let query = `UPDATE familyphoto SET AlbumID = ?, PhotoUrl = ? WHERE PhotoID = ?;`
         let values = [
             ObjData.AlbumID,
             ObjData.PhotoUrl,
@@ -84,10 +84,10 @@ function updateMemberPhoto(ObjData) {
 
 }
 
-function removeMemberPhoto(photoId) {
+function removeFamilyPhoto(photoId) {
     return new Promise((resolve, reject) => {
-        removeMemberPhotoUrl(photoId, reject);
-        let query = `DELETE FROM memberphoto WHERE PhotoID = ${photoId};`
+        removeFamilyPhotoUrl(photoId, reject);
+        let query = `DELETE FROM familyphoto WHERE PhotoID = ${photoId};`
         db.connection.query(query, (err, result) => {
             if (err) {
                 console.log("Have err : " + err);
@@ -101,8 +101,8 @@ function removeMemberPhoto(photoId) {
 }
 
 // hàm có chức năng xóa ảnh trong thư mục
-function removeMemberPhotoUrl(photoId, reject) {
-    let querySelect = `SELECT * FROM memberphoto where PhotoID  = ${photoId}`
+function removeFamilyPhotoUrl(photoId, reject) {
+    let querySelect = `SELECT * FROM familyphoto where PhotoID  = ${photoId}`
     db.connection.query(querySelect, (err, result) => {
         if (err) {
             console.log("Have err : " + err);
@@ -125,10 +125,10 @@ function removeMemberPhotoUrl(photoId, reject) {
 }
 
 module.exports = {
-    getMemberPhotoByAlbumId,
-    getMemberPhotoById,
-    getAllMemberPhoto,
-    insertMemberPhoto,
-    updateMemberPhoto,
-    removeMemberPhoto
+    getFamilyPhotoByAlbumId,
+    getFamilyPhotoById,
+    getAllFamilyPhoto,
+    insertFamilyPhoto,
+    updateFamilyPhoto,
+    removeFamilyPhoto
 }
