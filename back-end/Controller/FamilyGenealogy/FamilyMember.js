@@ -1,6 +1,7 @@
 const FamilyManagementService = require("../../service/FamilyGenealogy/FamilyManagement");
 const Response = require("../../Utils/Response");
 const CoreFunction = require("../../Utils/CoreFunction");
+const db = require('../../Models/ConnectDB');
 const ListAgeGroup = [
     {
         From: 0,
@@ -85,16 +86,60 @@ var addMember = async (req, res) => {
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
-        // thêm member vào database
+        db.connection.beginTransaction();
+        let dataRes = {};
+        // kiểm tra xem req.body.Action có tồn tại và là 1 trong 3 trường hợp AddParent, AddChild, AddMarriage không
         let data = await FamilyManagementService.addMember(req.body);
-        dataRes = {
-            message: 'Add member successfully',
-            memberId: data.insertId,
-            affectedRows: data.affectedRows
-        };
+        if (req.body.Action != null) {
+            const action = ['AddChild', 'AddMarriage'];
+            if (action.filter(field => field === req.body.Action).length == 0) {
+                db.connection.rollback();
+                return res.send(Response.badRequestResponse(null, "Action is not valid"));
+            }
+            if (req.body.CurrentMemberID == null) {
+                db.connection.rollback();
+                return res.send(Response.badRequestResponse(null, "Missing CurrentMemberID"));
+            }
+            // thêm member vào database
+            let parent;
+            if(req.body.parentID != null){
+                parent = await FamilyManagementService.getMemberByMemberID(req.body.ParentID);
+                if(parent == null || parent.length == 0){
+                    db.connection.rollback();
+                    return res.send(Response.dataNotFoundResponse(null, "ParentID not found"));
+                }
+                /* nếu mà đã cưới, đồng thời không có phụ huynh, thì tức là member này là vợ/chồng 
+                của người trong gia phả, thì sẽ không được thêm ai cả */
+                if ((parent[0].MarriageID !== -1 || parent[0].MarriageID != null)
+                 && (parent[0].ParentID === -1) || parent[0].ParentID == null) {
+                    db.connection.rollback();
+                    return res.send(Response.badRequestResponse(null, "This member is married by some one in family tree, so you can't add parent"));
+                }
+            }
+          
+            if (req.body.Action === 'AddParent') {
+                let currentMember = await FamilyManagementService.getMemberByMemberID(req.body.CurrentMemberID);
+                if (currentMember == null || currentMember.length == 0) {
+                    db.connection.rollback();
+                    return res.send(Response.dataNotFoundResponse(null, "CurrentMemberID not found"));
+                }
+                await FamilyManagementService.insertParentIdToMember(data.insertId,req.body.CurrentMemberID);
+            }
+            else if (req.body.Action === 'AddMarriage') {
+                let currentMarriageMember = await FamilyManagementService.getMemberByMemberID(req.body.MarriageID);
+                await FamilyManagementService.InsertMarriIdToMember(data.insertId, currentMarriageMember.MemberID);
+            }
+            // kết thúc phần thêm member theo mối quan hệ cha mẹ, con cái, vợ chồng
+
+        }
+        db.connection.commit();
+        dataRes.MemberID = data.insertId;
+        dataRes.affectedRows = data.affectedRows;
+        console.log("ds" + dataRes);
         return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
+        db.connection.rollback();
         return res.send(Response.internalServerErrorResponse(e));
     }
 };
@@ -103,7 +148,7 @@ var updateMember = async (req, res) => {
     try {
         console.log('Request req.body: ', req.body);
         let dataMember = await FamilyManagementService.getMemberByMemberID(req.body.MemberID);
-        if (dataMember == null  || dataMember.length == 0) {
+        if (dataMember == null || dataMember.length == 0) {
             return res.send(Response.dataNotFoundResponse());
         }
         // các trường bắt buộc phải có trong req.body
@@ -131,7 +176,6 @@ var updateMember = async (req, res) => {
         req.body.Image = req.file.path;
         let data = await FamilyManagementService.updateMember(req.body);
         dataRes = {
-            message: 'Update member successfully',
             memberID: req.body.memberID,
             affectedRows: data.affectedRows,
             changedRows: data.changedRows
@@ -163,7 +207,6 @@ var deleteMember = async (req, res) => {
         console.log("No missing fields");
         let result = await FamilyManagementService.deleteMember(req.query.MemberID);
         dataRes = {
-            message: 'Delete member successfully',
             MemberID: req.query.MemberID,
             affectedRows: result.affectedRows,
             changedRows: result.changedRows
@@ -297,7 +340,7 @@ var getMember = async (req, res) => {
         // Log ra thông tin trong req.body
         let dataMember = await FamilyManagementService.getMemberByMemberID(req.query.MemberID);
         console.log(dataMember)
-        if (dataMember == null  || dataMember.length == 0) {
+        if (dataMember == null || dataMember.length == 0) {
             return res.send(Response.dataNotFoundResponse());
         }
         return res.send(Response.successResponse(dataMember));
