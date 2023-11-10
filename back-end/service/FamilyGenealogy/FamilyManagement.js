@@ -1,43 +1,42 @@
 const db = require("../../Models/ConnectDB")
-
+const CoreFunction = require("../../Utils/CoreFunction");
 function addMember(member) {
     return new Promise((resolve, reject) => {
         const query = `
         INSERT INTO familymember 
         (  ParentID, MarriageID, MemberName, NickName, HasNickName, 
-            BirthOrder, 
-            Origin, 
-            NationalityID, 
-            ReligionID, 
+            BirthOrder, Origin, 
+            NationalityID, ReligionID, 
             Dob, LunarDob, BirthPlace, 
             IsDead, Dod, PlaceOfDeadth, 
-            GraveSite, Note, Generation, BloodType, CodeID, Male)
+            GraveSite, Note, Generation, BloodType, CodeID, Male, Image)
         VALUES 
-        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
 
         const values = [
-            member.parentID,
-            member.marriageID,
-            member.memberName,
-            member.nickName,
-            member.hasNickName,
-            member.birthOrder,
-            member.origin,
-            member.nationalityId,
-            member.religionId,
-            member.dob,
-            member.lunarDob,
-            member.birthPlace,
+            member.ParentID,
+            member.MarriageID,
+            member.MemberName,
+            member.NickName,
+            member.HasNickName,
+            member.BirthOrder,
+            member.Origin,
+            member.NationalityId,
+            member.ReligionId,
+            member.Dob,
+            member.LunarDob,
+            member.BirthPlace,
             member.IsDead,
-            member.dod,
-            member.placeOfDeath,
-            member.graveSite,
-            member.note,
-            member.generation,
-            member.bloodType,
-            member.codeId,
-            member.male
+            member.Dod,
+            member.PlaceOfDeath,
+            member.GraveSite,
+            member.Note,
+            member.Generation,
+            member.BloodType,
+            member.CodeId,
+            member.Male,
+            member.Image
         ];
 
         db.connection.query(query, values, (err, result) => {
@@ -54,6 +53,11 @@ function addMember(member) {
 
 function updateMember(member) {
     return new Promise((resolve, reject) => {
+        const isDeleted = removeMemberPhoto(member.MemberID);
+        console.log(`isDeleted: ${isDeleted}`);
+        if (isDeleted == false) {
+            reject("Error when delete image");
+        }
         const query = `
         UPDATE familymember 
         SET 
@@ -77,33 +81,35 @@ function updateMember(member) {
           Generation = ?,
           BloodType = ?,
           CodeID = ?,
-          Male = ?
+          Male = ?,
+            Image = ?
         WHERE MemberID = ?
       `;
 
         const values = [
-            member.parentID,
-            member.marriageID,
-            member.memberName,
-            member.nickName,
-            member.hasNickName,
-            member.birthOrder,
-            member.origin,
-            member.nationalityId,
-            member.religionId,
-            member.dob,
-            member.lunarDob,
-            member.birthPlace,
+            member.ParentID,
+            member.MarriageID,
+            member.MemberName,
+            member.NickName,
+            member.HasNickName,
+            member.BirthOrder,
+            member.Origin,
+            member.NationalityId,
+            member.ReligionId,
+            member.Dob,
+            member.LunarDob,
+            member.BirthPlace,
             member.IsDead,
-            member.dod,
-            member.placeOfDeath,
-            member.graveSite,
-            member.note,
-            member.generation,
-            member.bloodType,
-            member.codeId,
-            member.male,
-            member.memberID
+            member.Dod,
+            member.PlaceOfDeath,
+            member.GraveSite,
+            member.Note,
+            member.Generation,
+            member.BloodType,
+            member.CodeId,
+            member.Male,
+            member.Image,
+            member.MemberID
         ];
 
         db.connection.query(query, values, (err, result) => {
@@ -112,13 +118,50 @@ function updateMember(member) {
                 reject(err);
             } else {
                 resolve(result);
+
             }
         });
     });
 
 }
+
+// hàm có chức năng xóa ảnh trong thư mục
+const removeMemberPhoto = (MemberID)=> {
+    try {
+        let querySelect = `SELECT * FROM familymember where MemberID = ?`;
+        let value = [MemberID];
+        return deleteImageBySelectQuery(querySelect, value);
+    } catch (err) {
+        console.error("Error : " + err);
+        return false; // Trả về false nếu có lỗi
+    }
+}
+const deleteImageBySelectQuery = (query, values) => {
+    console.log("query: " + query);
+    console.log("values: " + values);
+    db.connection.query(query, values, async (err, result) => {
+        if (err) {
+            console.error("Error in query: " + err);
+            return false; // Trả về false nếu có lỗi
+        } else {
+            console.log("Result: ", result);
+            if (result[0].Image == null || result[0].Image == "") return true;
+            // Gọi hàm deleteImage để xóa ảnh
+            const isDeleted = await CoreFunction.deleteImage(result[0].Image);
+            console.log(`isDeleted: ${isDeleted}`);
+            return isDeleted;
+        }
+    });
+}
+
 function deleteMember(memberId) {
     return new Promise((resolve, reject) => {
+        console.log("memberId: " + memberId);
+        const isDeleted = removeMemberPhoto(memberId);
+        console.log(`isDeleted: ${isDeleted}`);
+        if (isDeleted == false) {
+            reject("Error when delete image");
+        }
         const query = 'DELETE FROM familymember WHERE MemberID = ?';
         db.connection.query(query, memberId, (err, result) => {
             if (err) {
@@ -353,7 +396,21 @@ function getAllMember() {
     });
 }
 
+function getMemberByMemberID (memberID)  {
+    return new Promise((resolve, reject) => {
+        const query = `SELECT * FROM familymember WHERE MemberID = ?`;
+        db.connection.query(query, memberID, (err, result) => {
+            if (err) {
+                console.log(err);
+                reject(err)
+            } else {
+                resolve(result)
+            }
+        })
+    })
+}
+
 module.exports = {
-    addMember, updateMember, deleteMember, getRelationship, getMember, createRelationship, searchMember,
-    getAllMember, InsertMarriIdToMember, queryFamilyMembers, getAllMemberInMemberRole, getAllMemberNotInMemberRole, GetCurrentParentMember,insertParentIdToMember
+    addMember, updateMember, deleteMember, getRelationship, getMember, createRelationship, searchMember, getMemberByMemberID,
+    getAllMember, InsertMarriIdToMember, queryFamilyMembers, getAllMemberInMemberRole, getAllMemberNotInMemberRole, GetCurrentParentMember, insertParentIdToMember
 };

@@ -1,5 +1,5 @@
 const db = require('../../Models/ConnectDB')
-const fs = require('fs');
+const CoreFunction = require("../../Utils/CoreFunction");
 
 function getFamilyPhotoByAlbumId(albumId) {
     return new Promise((resolve, reject) => {
@@ -65,7 +65,11 @@ function insertFamilyPhoto(ObjData) {
 function updateFamilyPhoto(ObjData) {
     return new Promise((resolve, reject) => {
         // xóa ảnh cũ
-        removeFamilyPhotoUrl(ObjData.PhotoID, reject);
+        const isDeleted = removeFamilyPhotoUrl(ObjData.PhotoID);
+        console.log(`isDeleted: ${isDeleted}`);
+        if (isDeleted == false) {
+            reject("Error when delete image");
+        }
         let query = `UPDATE familyphoto SET AlbumID = ?, PhotoUrl = ? WHERE PhotoID = ?;`
         let values = [
             ObjData.AlbumID,
@@ -86,7 +90,11 @@ function updateFamilyPhoto(ObjData) {
 
 function removeFamilyPhoto(photoId) {
     return new Promise((resolve, reject) => {
-        removeFamilyPhotoUrl(photoId, reject);
+        const isDeleted = removeFamilyPhotoUrl(photoId);
+        console.log(`isDeleted: ${isDeleted}`);
+        if (isDeleted == false) {
+            reject("Error when delete image");
+        }
         let query = `DELETE FROM familyphoto WHERE PhotoID = ${photoId};`
         db.connection.query(query, (err, result) => {
             if (err) {
@@ -101,28 +109,35 @@ function removeFamilyPhoto(photoId) {
 }
 
 // hàm có chức năng xóa ảnh trong thư mục
-function removeFamilyPhotoUrl(photoId, reject) {
-    let querySelect = `SELECT * FROM familyphoto where PhotoID  = ${photoId}`
-    db.connection.query(querySelect, (err, result) => {
-        if (err) {
-            console.log("Have err : " + err);
-            reject(err)
-        } else {
-            console.log("result : " + result);
-            for (let i = 0; i < result.length; i++) {
-                console.log(`result[${i}] : ` + result[i]);
-                console.log(`result[${i}].PhotoUrl : ` + result[i].PhotoUrl);
-                fs.unlink(result[i].PhotoUrl, (err) => {
-                    if (err) {
-                        console.log("Have err : " + err);
-                        reject(err);
-                    }
-                });
-            }
-
-        }
-    })
+function removeFamilyPhotoUrl(photoId) {
+    try {
+        let querySelect = `SELECT * FROM familyphoto where PhotoID = ?`;
+        let value = [photoId];
+        return deleteImageBySelectQuery(querySelect, value);
+    } catch (err) {
+        console.error("Error : " + err);
+        return false; // Trả về false nếu có lỗi
+    }
 }
+
+const deleteImageBySelectQuery = (query, values) => {
+    console.log("query: " + query);
+    console.log("values: " + values);
+    db.connection.query(query, values, async (err, result) => {
+        if (err) {
+            console.error("Error in query: " + err);
+            return false; // Trả về false nếu có lỗi
+        } else {
+            console.log("Result: ", result);
+            if (result[0].PhotoUrl == null || result[0].PhotoUrl == "") return true;
+            // Gọi hàm deleteImage để xóa ảnh
+            const isDeleted = await CoreFunction.deleteImage(result[0].PhotoUrl);
+            console.log(`isDeleted: ${isDeleted}`);
+            return isDeleted;
+        }
+    });
+}
+
 
 module.exports = {
     getFamilyPhotoByAlbumId,

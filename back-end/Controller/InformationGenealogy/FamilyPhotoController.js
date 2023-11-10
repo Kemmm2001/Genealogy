@@ -4,19 +4,16 @@ const CoreFunction = require("../../Utils/CoreFunction");
 
 var addFamilyPhoto = async (req, res) => {
     try {
-        let reqData = {
-            PhotoUrl: req.file.path,
-            AlbumID: req.body.AlbumID
-        };
+        req.body.PhotoUrl = req.file.path;
         // Log ra thông tin trong req.body
-        console.log('Request body: ', reqData);
-        // các trường bắt buộc phải có trong reqData
+        console.log('Request body: ', req.body);
+        // các trường bắt buộc phải có trong req.body
         const requiredFields = [
             'PhotoUrl',
             'AlbumID'
         ];
         // Kiểm tra xem có đủ các trường của FamilyPhoto không
-        const missingFields = CoreFunction.missingFields(requiredFields, reqData);
+        const missingFields = CoreFunction.missingFields(requiredFields, req.body);
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
@@ -24,11 +21,11 @@ var addFamilyPhoto = async (req, res) => {
         }
         console.log("No missing fields");
         // Thêm thông tin vào bảng Familyphoto
-        let data = await FamilyPhotoManagementService.insertFamilyPhoto(reqData);
+        let data = await FamilyPhotoManagementService.insertFamilyPhoto(req.body);
         dataRes = {
             PhotoID: data.insertId,
             affectedRows: data.affectedRows,
-            PhotoUrl : reqData.PhotoUrl
+            PhotoUrl : req.body.PhotoUrl
         }
         return res.send(Response.successResponse(dataRes));
     } catch (e) {
@@ -41,39 +38,36 @@ var addFamilyPhoto = async (req, res) => {
 
 var updateFamilyPhoto = async (req, res) => {
     try {
-        let reqData = {
-            PhotoUrl: req.file.path,
-            AlbumID: req.body.AlbumID,
-            PhotoID: req.body.PhotoID
-        };
+        req.body.PhotoUrl = req.file.path;
         // Log ra thông tin trong req.body
-        console.log('Request body: ', reqData);
-        // các trường bắt buộc phải có trong reqData
+        console.log('Request body: ', req.body);
+        // các trường bắt buộc phải có trong req.body
         const requiredFields = [
             'PhotoUrl',
             'PhotoID',
             'AlbumID'
         ];
         // Kiểm tra xem có đủ các trường của FamilyPhoto không
-        const missingFields = CoreFunction.missingFields(requiredFields, reqData);
+        const missingFields = CoreFunction.missingFields(requiredFields, req.body);
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
-        let dataPhotoID = await FamilyPhotoManagementService.getFamilyPhotoById(reqData.PhotoID);
+        let dataPhotoID = await FamilyPhotoManagementService.getFamilyPhotoById(req.body.PhotoID);
         if (dataPhotoID == null || dataPhotoID.length == 0) {
             return res.send(Response.dataNotFoundResponse(null, "PhotoID not found"));
         }
-        let dataAlbumID = await FamilyPhotoManagementService.getFamilyPhotoByAlbumId(reqData.AlbumID);
+        let dataAlbumID = await FamilyPhotoManagementService.getFamilyPhotoByAlbumId(req.body.AlbumID);
         if (dataAlbumID == null || dataAlbumID.length == 0) {
             return res.send(Response.dataNotFoundResponse(null, "AlbumID not found"));
         }
         // cập nhật FamilyPhoto vào database
-        let dataUpdate = await FamilyPhotoManagementService.updateFamilyPhoto(reqData)
+        let dataUpdate = await FamilyPhotoManagementService.updateFamilyPhoto(req.body)
         dataRes = {
             affectedRows: dataUpdate.affectedRows,
+            PhotoUrl : req.body.PhotoUrl
         }
         return res.send(Response.successResponse(dataRes));
     } catch (e) {
@@ -96,6 +90,10 @@ var deleteFamilyPhoto = async (req, res) => {
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
+        let dataPhotoID = await FamilyPhotoManagementService.getFamilyPhotoById(req.query.PhotoID);
+        if (dataPhotoID == null || dataPhotoID.length == 0) {
+            return res.send(Response.dataNotFoundResponse(null, "PhotoID not found"));
+        }
         // xóa FamilyPhoto khỏi database
         let dataDelete = await FamilyPhotoManagementService.removeFamilyPhoto(req.query.PhotoID)
         if(dataDelete.affectedRows == 0){
@@ -114,18 +112,17 @@ var deleteFamilyPhoto = async (req, res) => {
 
 var getFamilyPhoto = async (req, res) => {
     try {
-        let reqData = req.query;
         // Log ra thông tin trong req.query
-        console.log('Request query: ', reqData);
+        console.log('Request query: ', req.query);
         // lấy thông tin FamilyPhoto từ database
         // những thông tin có thể lấy được: PhotoID, AlbumID
         let data;
-        if (reqData.PhotoID != null && reqData.PhotoID != undefined && reqData.PhotoID !== "") {
-            console.log(`Get FamilyPhoto by PhotoID : ${reqData.PhotoID}`);
-            data = await FamilyPhotoManagementService.getFamilyPhotoById(reqData.PhotoID);
-        } else if (reqData.AlbumID != null && reqData.AlbumID != undefined && reqData.AlbumID !== "") {
-            console.log(`Get FamilyPhoto by AlbumID : ${reqData.AlbumID}`);
-            data = await FamilyPhotoManagementService.getFamilyPhotoByAlbumId(reqData.AlbumID);
+        if (req.query.PhotoID != null && req.query.PhotoID != undefined && req.query.PhotoID !== "") {
+            console.log(`Get FamilyPhoto by PhotoID : ${req.query.PhotoID}`);
+            data = await FamilyPhotoManagementService.getFamilyPhotoById(req.query.PhotoID);
+        } else if (req.query.AlbumID != null && req.query.AlbumID != undefined && req.query.AlbumID !== "") {
+            console.log(`Get FamilyPhoto by AlbumID : ${req.query.AlbumID}`);
+            data = await FamilyPhotoManagementService.getFamilyPhotoByAlbumId(req.query.AlbumID);
         }
         console.log("data: " + data);
         if (data == null || data.length == 0) {
