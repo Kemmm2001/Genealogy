@@ -19,8 +19,7 @@ var router = express.Router();
 const initWebRouter = (app) => {
     //API Hùng
     router.get('/familyhead', FamilyHeadController.ListFamilyHead)
-    router.delete('/removeFamilyHead', FamilyHeadController.removeRoleFamilyHead)
-    router.post('/newGeneral', GeneralInformation.InsertNewGeneralInformation)
+    router.delete('/removeFamilyHead', FamilyHeadController.removeRoleFamilyHead)   
 
     router.get('/generalInfor', GeneralInformation.GetGeneralInformation)
     router.put('/updateInfor', GeneralInformation.UpdateGeneralInformation)

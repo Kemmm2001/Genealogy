@@ -92,14 +92,15 @@
             <div class="list-group">
               <div class="list-group-item feature-overview">Các chức năng chính</div>
               <div class="list-group-item" @click="getInforMember(CurrentIdMember)">Thông tin chi tiết</div>
-              <div class="list-group-item" @click="openMemberModal('parent')">Thêm Cha</div>
-              <div class="list-group-item">Thêm Mẹ</div>
-              <div class="list-group-item" @click="openMemberModal('married')">Thêm Vợ</div>
-              <div class="list-group-item" @click="openMemberModal('children')">Thêm Con</div>
+              <div class="list-group-item" @click="addMember('AddParent')">Thêm Cha</div>
+              <div class="list-group-item" @click="addMember('AddParent')">Thêm Mẹ</div>
+              <div class="list-group-item" @click="addMember('AddMarriage')">Thêm Chồng</div>
+              <div class="list-group-item" @click="addMember('AddMarriage')">Thêm Vợ</div>
+              <div class="list-group-item" @click="addMember('AddChild')">Thêm Con</div>
               <div class="list-group-item" @click="removeMember()">Xóa thành viên (*)</div>
               <div class="list-group-item feature-overview">Các chức năng Khác</div>
-              <div class="list-group-item" style="border-top: none;">Set làm tộc trưởng</div>
-              <div class="list-group-item" @click="setPaternalAncestor()">Set làm tổ phụ</div>
+              <div class="list-group-item" style="border-top: none;" @click="setPaternalAncestor(2)">Set làm tộc trưởng</div>
+              <div class="list-group-item" @click="setPaternalAncestor(1)">Set làm tổ phụ</div>
             </div>
           </div>
         </div>
@@ -785,9 +786,7 @@
         </div>
         <div class="card-footer" style="background-color:#E8C77B">
           <div class="d-flex justify-content-end">
-            <button v-if="isAddChildren" type="button" class="btn btn-primary mr-2" @click="addNewChildrenMember()">Thêm</button>
-            <button v-else-if="isAddMarried" type="button" class="btn btn-primary mr-2" @click="addNewMarriedMember()">Thêm</button>
-            <button v-else-if="isAddParent" type="button" class="btn btn-primary mr-2" @click="getCurrentParentMember()">Thêm</button>
+            <button type="button" class="btn btn-primary mr-2" @click="addMember()">Thêm</button>
             <button v-if="isEdit" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
             <button style="margin-left:10px" type="button" class="btn btn-secondary" @click="closeSelectModal()">Cancel</button>
           </div>
@@ -926,36 +925,32 @@ export default {
   },
   methods: {
     mytree: function (domEl, x) {
-      let imgTemplate =
-        '<clipPath id="ulaImg">' +
-        '<rect  height="100" width="100" stroke-width="1" fill="#FF46A3" stroke="#aeaeae" ></rect>' +
-        "</clipPath>" +
-        '<image preserveAspectRatio="xMidYMid slice" clip-path="url(#ulaImg)" xlink:href="{val}" x="12" y="10" width="90" height="90"></image>';
-
-      FamilyTree.templates.tommy_male.img_0 = imgTemplate;
-      FamilyTree.templates.tommy_female.img_0 = imgTemplate;
+      FamilyTree.templates.tommy_male.img_0 =
+        '<image preserveAspectRatio="xMidYMid slice" xlink:href="{val}" x="10" y="20" width="70" height="70"></image>';
+      FamilyTree.templates.tommy_female.img_0 =
+        '<image preserveAspectRatio="xMidYMid slice" clip-path="url(#ulaImg)" xlink:href="{val}" x="10" y="20" width="70" height="70"></image>';
 
       FamilyTree.templates.tommy_male.field_0 =
-        '<text class="field_0" style="font-size: 20px;" fill="#ffffff" x="125" y="30">{val}</text>';
+        '<text class="field_0" style="font-size: 16px;" fill="#ffffff" x="90" y="30">{val}</text>';
       FamilyTree.templates.tommy_male.field_1 =
-        '<text class="field_1" style="font-size: 14px;" fill="#ffffff" x="125" y="50">Giới Tính: Nam</text>';
+        '<text class="field_1" style="font-size: 12px;" fill="#ffffff" x="90" y="50">Giới Tính: Nam</text>';
       FamilyTree.templates.tommy_male.field_2 =
-        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="125" y="70">Ngày Sinh: {val}</text>';
+        '<text class="field_2" style="font-size: 12px;" fill="#ffffff" x="90" y="70">Ngày Sinh: {val}</text>';
       FamilyTree.templates.tommy_male.field_3 =
-        '<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="125" y="90">Ngày Mất: {val}</text>';
+        '<text class="field_3" style="font-size: 12px;" fill="#ffffff" x="90"  y="90">Ngày Mất: {val}</text>';
       FamilyTree.templates.tommy_male.field_4 =
-        '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="125" y="90">Đời: {val}</text>';
+        '<text class="field_4" style="font-size: 12px;" fill="#ffffff" x="90" y="110">Đời: {val}</text>';
 
       FamilyTree.templates.tommy_female.field_0 =
-        '<text class="field_0" style="font-size: 20px;" fill="#ffffff" x="125" y="30">{val}</text>';
+        '<text class="field_0" style="font-size: 16px;" fill="#ffffff" x="90" y="30">{val}</text>';
       FamilyTree.templates.tommy_female.field_1 =
-        '<text class="field_1" style="font-size: 14px;" fill="#ffffff" x="125" y="50">Giới Tính: Nữ</text>';
+        '<text class="field_1" style="font-size: 12px;" fill="#ffffff" x="90" y="50">Giới Tính: Nữ</text>';
       FamilyTree.templates.tommy_female.field_2 =
-        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="125" y="70">Ngày Sinh: {val}</text>';
+        '<text class="field_2" style="font-size: 12px;" fill="#ffffff" x="90" y="70">Ngày Sinh: {val}</text>';
       FamilyTree.templates.tommy_female.field_3 =
-        '<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="125" y="90">Ngày Mất: {val}</text>';
+        '<text class="field_3" style="font-size: 12px;" fill="#ffffff" x="90" y="90">Ngày Mất: {val}</text>';
       FamilyTree.templates.tommy_female.field_4 =
-        '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="125" y="90">Đời: {val}</text>';
+        '<text class="field_4" style="font-size: 12px;" fill="#ffffff" x="90" y="110">Đời: {val}</text>';
       this.family = new FamilyTree(domEl, {
         nodes: x,
         nodeBinding: {
@@ -1006,10 +1001,10 @@ export default {
     getViewBox() {
       return this.family.getViewBox();
     },
-    setPaternalAncestor() {
+    setPaternalAncestor(roleId) {
       HTTP.post("setRole", {
         memberId: this.CurrentIdMember,
-        roleId: 1,
+        roleId: roleId,
         CodeId: this.CodeID,
       }).then(() => {
         this.getListAfterSetPaternalAncestor(this.CurrentIdMember);
@@ -1284,155 +1279,35 @@ export default {
           console.log(e);
         });
     },
-
-    addNewParentMember() {
-      HTTP.post("member", {
-        memberName: this.objMemberInfor.MemberName,
-        nickName: this.objMemberInfor.NickName,
-        parentID: null,
-        marriageID: null,
-        hasNickName: null,
-        birthOrder: this.objMemberInfor.BirthOrder,
-        origin: this.objMemberInfor.Origin,
-        nationalityId: this.objMemberInfor.NationalityID,
-        religionId: this.objMemberInfor.ReligionID,
-        dob: this.objMemberInfor.Dob,
-        lunarDob: this.objMemberInfor.Dob,
-        birthPlace: this.objMemberInfor.BirthPlace,
-        IsDead: this.IsDead,
-        dod: this.objMemberInfor.Dod,
-        placeOfDeath: this.objMemberInfor.PlaceOfDeadth,
-        graveSite: this.objMemberInfor.GraveSite,
-        note: this.objMemberInfor.Note,
-        generation: this.generationMember,
-        bloodType: this.objMemberInfor.BloodType,
-        male: this.objMemberInfor.Male,
-        codeId: this.CodeID,
-      }).then((response) => {
-        this.newIdMember = response.data.data.memberId;
-        if (this.objMemberContact.Phone != null) {
-          this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
-        }
-        HTTP.post("addContact", {
-          memberId: this.newIdMember,
-          Address: this.objMemberContact.Address,
-          Phone: this.objMemberContact.Phone,
-          Email: this.objMemberContact.Email,
-          FacebookUrl: this.objMemberContact.FacebookUrl,
-          Zalo: this.objMemberContact.Zalo,
-        })
-          .then(() => {
-            this.NotificationsScuccess("Thêm thành công");
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-        this.insetParentIdToMember(this.newIdMember);
-        this.family.load(this.nodes);
-        this.getListMember();
-      });
-    },
-    insetParentIdToMember(id) {
-      HTTP.post("InsertParentID", {
-        ParentID: id,
-        memberID: this.CurrentIdMember,
-      }).catch((e) => {
-        console.log(e);
-      });
-    },
-    getCurrentParentMember() {
-      HTTP.get("getparent", {
-        params: {
-          memberID: this.CurrentIdMember,
-        },
-      }).then((response) => {
-        let data = response.data;
-        console.log(data);
-        if (data.length > 0) {
-          this.NotificationsDelete(
-            "Thành viên này đã có cha mẹ. Không thể thêm mới"
-          );
-        } else {
-          this.addNewParentMember();
-        }
-      });
-    },
-    addNewMarriedMember() {
-      HTTP.post("member", {
-        memberName: this.objMemberInfor.MemberName,
-        nickName: this.objMemberInfor.NickName,
-        parentID: null,
-        marriageID: this.CurrentIdMember,
-        hasNickName: null,
-        birthOrder: this.objMemberInfor.BirthOrder,
-        origin: this.objMemberInfor.Origin,
-        nationalityId: this.objMemberInfor.NationalityID,
-        religionId: this.objMemberInfor.ReligionID,
-        dob: this.objMemberInfor.Dob,
-        lunarDob: this.objMemberInfor.Dob,
-        birthPlace: this.objMemberInfor.BirthPlace,
-        IsDead: this.IsDead,
-        dod: this.objMemberInfor.Dod,
-        placeOfDeath: this.objMemberInfor.PlaceOfDeadth,
-        graveSite: this.objMemberInfor.GraveSite,
-        note: this.objMemberInfor.Note,
-        generation: this.generationMember,
-        bloodType: this.objMemberInfor.BloodType,
-        male: this.objMemberInfor.Male,
-        codeId: this.CodeID,
-      }).then((response) => {
-        this.newIdMember = response.data.data.memberId;
-        HTTP.post("InserMarrie", {
-          memberID: this.CurrentIdMember,
-          marriageID: this.newIdMember,
-        }).catch((e) => {
-          console.log(e);
-        });
-        if (this.objMemberContact.Phone != null) {
-          this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
-        }
-        HTTP.post("addContact", {
-          memberId: this.newIdMember,
-          Address: this.objMemberContact.Address,
-          Phone: this.objMemberContact.Phone,
-          Email: this.objMemberContact.Email,
-          FacebookUrl: this.objMemberContact.FacebookUrl,
-          Zalo: this.objMemberContact.Zalo,
-        })
-          .then(() => {
-            this.NotificationsScuccess("Thêm thành công");
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-        this.getListMember();
-      });
-    },
-    async addNewChildrenMember() {
+    async addMember(action) {
       await HTTP.post("member", {
-        memberName: this.objMemberInfor.MemberName,
-        nickName: this.objMemberInfor.NickName,
-        parentID: this.CurrentIdMember,
-        marriageID: null,
-        hasNickName: null,
-        birthOrder: this.objMemberInfor.BirthOrder,
-        origin: this.objMemberInfor.Origin,
-        nationalityId: this.objMemberInfor.NationalityID,
-        religionId: this.objMemberInfor.ReligionID,
-        dob: this.objMemberInfor.Dob,
-        lunarDob: this.objMemberInfor.Dob,
-        birthPlace: this.objMemberInfor.BirthPlace,
+        MemberName: this.objMemberInfor.MemberName,
+        NickName: this.objMemberInfor.NickName,
+        CurrentMemberID: this.CurrentIdMember,
+        BirthOrder: this.objMemberInfor.BirthOrder,
+        Origin: this.objMemberInfor.Origin,
+        NationalityId: this.objMemberInfor.NationalityID,
+        ReligionId: this.objMemberInfor.ReligionID,
+        Dob: this.objMemberInfor.Dob,
+        LunarDob: this.objMemberInfor.Dob,
+        bnirthPlace: this.objMemberInfor.BirthPlace,
         IsDead: this.IsDead,
-        dod: this.objMemberInfor.Dod,
-        placeOfDeath: this.objMemberInfor.PlaceOfDeadth,
-        graveSite: this.objMemberInfor.GraveSite,
-        note: this.objMemberInfor.Note,
-        generation: this.generationMember + 1,
-        bloodType: this.objMemberInfor.BloodType,
-        male: this.objMemberInfor.Male,
-        codeId: this.CodeID,
+        Dod: this.objMemberInfor.Dod,
+        PlaceOfDeath: this.objMemberInfor.PlaceOfDeadth,
+        GraveSite: this.objMemberInfor.GraveSite,
+        Note: this.objMemberInfor.Note,
+        CurrentGeneration: this.generationMember,
+        BloodType: this.objMemberInfor.BloodType,
+        Male: this.objMemberInfor.Male,
+        CodeId: this.CodeID,
+        Action: action,
       })
         .then((response) => {
+          if (response.data.success == true) {
+            this.NotificationsScuccess(response.data.message);
+          } else {
+            this.NotificationsDelete(response.data.message);
+          }
           this.newIdMember = response.data.data.memberId;
           if (this.objMemberContact.Phone != null) {
             this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
@@ -1444,22 +1319,17 @@ export default {
             Email: this.objMemberContact.Email,
             FacebookUrl: this.objMemberContact.FacebookUrl,
             Zalo: this.objMemberContact.Zalo,
-          })
-            .then(() => {
-              this.NotificationsScuccess("Thêm thành công");
-            })
-            .catch((e) => {
-              console.log(e);
-            });
+          }).catch((e) => {
+            console.log(e);
+          });
           this.family.load(this.nodes);
           this.getListMember();
         })
         .catch((e) => {
           console.log(e);
         });
-
-      this.closeMemberModal();
     },
+
     setDefauValueInModal() {
       this.objMemberContact = {};
       this.objMemberInfor = {};

@@ -14,23 +14,6 @@ function GeneralInformation(CodeId) {
     })
 }
 
-async function InsertNewGeneral(objData) {
-    let query = `INSERT INTO familytree (CodeID, TreeName, Ethnicity,DeathAnniversary)
-    VALUES (?,?,?,?)`;
-    let values = [
-        objData.CodeID,
-        objData.TreeName,
-        objData.Ethnicity,
-        objData.DeathAnniversary
-    ]
-    db.connection.query(query, values, (err, result) => {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log("Insert General successfully")
-        }
-    })
-}
 
 
 function GetInformationMember(MemberID) {
@@ -69,5 +52,5 @@ async function UpdateGeneralInformation(objData) {
 
 
 module.exports = {
-    GeneralInformation, GetInformationMember, UpdateGeneralInformation, InsertNewGeneral
+    GeneralInformation, GetInformationMember, UpdateGeneralInformation, 
 }

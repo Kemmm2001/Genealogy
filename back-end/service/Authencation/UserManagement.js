@@ -1,20 +1,20 @@
 const db = require("../../Models/ConnectDB")
- 
+
 function checkMail(email) {
- return new Promise((resolve, reject) => {
-     const query = `SELECT COUNT(*) AS count FROM genealogy.account WHERE Email = ?`;
-     db.connection.query(query, [email] ,(err, results) => {
-         if (err) {
-           console.log(err)
-             reject(err);
-            
-         } else {
-       
-             const count = results[0].count;
-             resolve(count > 0);
-         }
-     });
- });
+  return new Promise((resolve, reject) => {
+    const query = `SELECT COUNT(*) AS count FROM genealogy.account WHERE Email = ?`;
+    db.connection.query(query, [email], (err, results) => {
+      if (err) {
+        console.log(err)
+        reject(err);
+
+      } else {
+
+        const count = results[0].count;
+        resolve(count > 0);
+      }
+    });
+  });
 }
 function checkCodeID(codeID) {
   return new Promise((resolve, reject) => {
@@ -89,7 +89,7 @@ function getUser(email) {
   });
 }
 
-function refreshFreeEmail(usesTime){
+function refreshFreeEmail(usesTime) {
   return new Promise((resolve, reject) => {
     const query = 'UPDATE genealogy.account SET FreeEmail = ?';
     const values = [usesTime];
@@ -123,8 +123,8 @@ function insertAccount(accountID, codeID) {
 
 function insertIntoFamily(value, codeID) {
   return new Promise((resolve, reject) => {
-    const query = 'INSERT INTO genealogy.familytree (CodeID, TreeName, Ethnicity) VALUES (?, ?, ?)';
-    const values = [codeID, value.treeName, value.ethnicity];
+    const query = 'INSERT INTO genealogy.familytree (CodeID, TreeName, ,DeathAnniversary,AccountID) VALUES (?, ?, ?,?,?)';
+    const values = [codeID, value.treeName, value.ethnicity, value.DeathAnniversary, value.AccountID];
 
     db.connection.query(query, values, (err, results) => {
       if (err) {
@@ -172,4 +172,4 @@ function updateRoleID(data) {
   });
 }
 
-module.exports = {checkMail, create, getUser, refreshFreeEmail, insertAccount, getGenealogy, checkCodeID, checkAccountID, updateRoleID, insertIntoFamily}
+module.exports = { checkMail, create, getUser, refreshFreeEmail, insertAccount, getGenealogy, checkCodeID, checkAccountID, updateRoleID, insertIntoFamily }

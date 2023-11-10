@@ -11,19 +11,7 @@ var GetGeneralInformation = async (req, res) => {
     }
 }
 
-var InsertNewGeneralInformation = async (req, res) => {
-    try {
-        let objData = {}
-        objData.CodeID = req.body.CodeID;
-        objData.TreeName = req.body.TreeName;
-        objData.Ethnicity = req.body.Ethnicity;
-        objData.DeathAnniversary = req.body.DeathAnniversary;
-        await GeneralInformationService.InsertNewGeneral(objData);
-        res.send("sucess")
-    } catch (error) {
-        console.log(error)
-    }
-}
+
 
 var UpdateGeneralInformation = async (req, res) => {
     try {
@@ -40,5 +28,5 @@ var UpdateGeneralInformation = async (req, res) => {
 }
 
 module.exports = {
-    GetGeneralInformation, UpdateGeneralInformation, InsertNewGeneralInformation
+    GetGeneralInformation, UpdateGeneralInformation
 }
