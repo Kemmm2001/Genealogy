@@ -7,8 +7,8 @@ var compareMember = async (req, res) => {
         let isInLaw2;
         let Flag1 = false;
         let Flag2 = false;
-        let Generation1;
-        let Generation2;
+        let inforMember1;
+        let inforMember2;
         let MemberID1 = req.query.MemberID1;
         let MemberID2 = req.query.MemberID2;
 
@@ -22,21 +22,21 @@ var compareMember = async (req, res) => {
             MemberID2 = isInLaw2.MarriageID
             Flag2 = true;
         }
-        Generation1 = await CompareMemberService.getGenerationByID(MemberID1);
-        Generation2 = await CompareMemberService.getGenerationByID(MemberID2);
+        inforMember1 = await CompareMemberService.getGenerationByID(MemberID1);
+        inforMember2 = await CompareMemberService.getGenerationByID(MemberID2);
 
-        let DefferenceGeneration = Generation2[0].Generation - Generation1[0].Generation;
+        let DefferenceGeneration = inforMember2[0].Generation - inforMember1[0].Generation;
 
         if (DefferenceGeneration == 0) {
-            data = await CompareMemberService.GetResultCompare(MemberID1, MemberID2, DefferenceGeneration, Flag1, Flag2)
+            data = await CompareMemberService.GetResultCompare(MemberID1, MemberID2, DefferenceGeneration, Flag1, Flag2, inforMember1[0].Male, inforMember2[0].Male)
             res.send(data)
         } else if (DefferenceGeneration < 0) {
             MemberID1 = await CompareMemberService.getIdToCompare(DefferenceGeneration, MemberID1);
-            data = await CompareMemberService.GetResultCompare(MemberID1, MemberID2, DefferenceGeneration, Flag1, Flag2)
+            data = await CompareMemberService.GetResultCompare(MemberID1, MemberID2, DefferenceGeneration, Flag1, Flag2, inforMember1[0].Male, inforMember2[0].Male)
             res.send(data)
         } else {
             MemberID2 = await CompareMemberService.getIdToCompare(DefferenceGeneration, MemberID2);
-            data = await CompareMemberService.GetResultCompare(MemberID1, MemberID2, DefferenceGeneration, Flag1, Flag2)
+            data = await CompareMemberService.GetResultCompare(MemberID1, MemberID2, DefferenceGeneration, Flag1, Flag2, inforMember1[0].Male, inforMember2[0].Male)
             res.send(data)
         }
     } catch (error) {
