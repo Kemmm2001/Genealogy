@@ -121,10 +121,10 @@ function insertAccount(accountID, codeID) {
   });
 }
 
-function insertIntoFamily(value) {
+function insertIntoFamily(value, codeID) {
   return new Promise((resolve, reject) => {
     const query = 'INSERT INTO genealogy.familytree (CodeID, TreeName, Ethnicity) VALUES (?, ?, ?)';
-    const values = [value.codeID, value.treeName, value.ethnicity];
+    const values = [codeID, value.treeName, value.ethnicity];
 
     db.connection.query(query, values, (err, results) => {
       if (err) {
