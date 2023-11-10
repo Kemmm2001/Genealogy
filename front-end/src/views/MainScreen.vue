@@ -53,23 +53,17 @@
       </div>
       <div class="h-100 w-100 d-flex flex-column" style="padding-top: 12px">
         <div class="existing-members d-flex flex-column w-100">
-          <div class="list-item" style="background-color: #AED6F1; text-align: center;">
-            Danh sách thành viên có trên phả
-            đồ
-          </div>
+          <div class="list-item" style="background-color: #AED6F1; text-align: center;">Danh sách thành viên có trên phả đồ</div>
           <div class="d-flex flex-column w-100" style="overflow-y: auto;cursor: pointer">
             <div v-for="(n, index) in nodes" :key="n.id">
-              <div @click="handleLeftClick(n.id)" @contextmenu.prevent="handleRightClick(n.id)" :class="{ 'list-item': true, 'selected-list': n.id == CurrentIdMember, 'ancestor-member': index === 0 }">Thành Viên {{ n.name }}</div>
+              <div @click="handleLeftClick(n.id)" @contextmenu.prevent="handleRightClick(n.id)" :class="{ 'list-item': true, 'selected-list': n.id == CurrentIdMember, 'ancestor-member': index === 0 }">{{ n.name }}</div>
             </div>
           </div>
         </div>
         <div class="nonexisting-members d-flex flex-column w-100">
-          <div class="list-item" style="background-color: #AED6F1; text-align: center;">
-            Danh sách thành viên không có trên
-            phả đồ
-          </div>
+          <div class="list-item" style="background-color: #AED6F1; text-align: center;">Danh sách thành viên không có trên phả đồ</div>
           <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto;auto;cursor: pointer">
-            <div v-for="list in ListUnspecifiedMembers" :key="list.id" @click="handleLeftClick(list.MemberID)" @contextmenu.prevent="handleRightClick(list.MemberID)" class="list-item">Thành Viên {{ list.MemberName }}</div>
+            <div v-for="list in ListUnspecifiedMembers" :key="list.id" @click="handleLeftClick(list.MemberID)" @contextmenu.prevent="handleRightClick(list.MemberID)" class="list-item">{{ list.MemberName }}</div>
           </div>
         </div>
       </div>
@@ -92,11 +86,11 @@
             <div class="list-group">
               <div class="list-group-item feature-overview">Các chức năng chính</div>
               <div class="list-group-item" @click="getInforMember(CurrentIdMember)">Thông tin chi tiết</div>
-              <div class="list-group-item" @click="addMember('AddParent')">Thêm Cha</div>
-              <div class="list-group-item" @click="addMember('AddParent')">Thêm Mẹ</div>
-              <div class="list-group-item" @click="addMember('AddMarriage')">Thêm Chồng</div>
-              <div class="list-group-item" @click="addMember('AddMarriage')">Thêm Vợ</div>
-              <div class="list-group-item" @click="addMember('AddChild')">Thêm Con</div>
+              <div class="list-group-item" @click="openMemberModal('AddParent','Cha')">Thêm Cha</div>
+              <div class="list-group-item" @click="openMemberModal('AddParent','Mẹ')">Thêm Mẹ</div>
+              <div class="list-group-item" @click="openMemberModal('AddMarriage','Chồng')">Thêm Chồng</div>
+              <div class="list-group-item" @click="openMemberModal('AddMarriage','Vợ')">Thêm Vợ</div>
+              <div class="list-group-item" @click="openMemberModal('AddChild','Con')">Thêm Con</div>
               <div class="list-group-item" @click="removeMember()">Xóa thành viên (*)</div>
               <div class="list-group-item feature-overview">Các chức năng Khác</div>
               <div class="list-group-item" style="border-top: none;" @click="setPaternalAncestor(2)">Set làm tộc trưởng</div>
@@ -143,7 +137,7 @@
                     <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
                   </svg>
                 </div>
-                <div class="d-flex justify-content-center" style="flex-grow: 1;">Thành viên {{ n.name }}</div>
+                <div class="d-flex justify-content-center" style="flex-grow: 1;">{{ n.name }}</div>
               </div>
             </div>
           </div>
@@ -499,25 +493,16 @@
                 <div class="col-8">
                   <div style="position: relative; margin-right:10px">
                     <input v-model="objMemberInfor.MemberName" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberInfor.MemberName }">
-                      Tên thành viên
-                      đầy đủ
-                    </label>
+                    <label class="form-label" for="input" :class="{ 'active': objMemberInfor.MemberName }">Tên thành viên đầy đủ</label>
                   </div>
                   <div style="display:flex">
                     <div style="position: relative; width: 50%;margin-right: 10px;">
                       <input v-model="objMemberInfor.NickName" type="text" class="form-control modal-item" placeholder />
-                      <label class="form-label" for="input" :class="{ 'active': objMemberInfor.NickName }">
-                        Tên thường
-                        gọi
-                      </label>
+                      <label class="form-label" for="input" :class="{ 'active': objMemberInfor.NickName }">Tên thường gọi</label>
                     </div>
                     <div style="position: relative;width: 50%; margin-right: 10px;">
                       <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item" placeholder />
-                      <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">
-                        Con
-                        Thứ
-                      </label>
+                      <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con Thứ</label>
                     </div>
                   </div>
                   <div style="display:flex">
@@ -561,16 +546,10 @@
                   </div>
                   <div style="position: relative; margin-right:10px">
                     <input v-model="objMemberInfor.Origin" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberInfor.Origin }">
-                      Nguyên
-                      Quán
-                    </label>
+                    <label class="form-label" for="input" :class="{ 'active': objMemberInfor.Origin }">Nguyên Quán</label>
                   </div>
                   <div class="form-group">
-                    <h6 style="margin-bottom:20px">
-                      Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược
-                      lại)
-                    </h6>
+                    <h6 style="margin-bottom:20px">Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược lại)</h6>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
                         <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar()" />
@@ -584,17 +563,11 @@
                   </div>
                   <div style="position: relative; margin-right:10px">
                     <input v-model="objMemberInfor.BirthPlace" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberInfor.BirthPlace }">
-                      Nơi
-                      sinh
-                    </label>
+                    <label class="form-label" for="input" :class="{ 'active': objMemberInfor.BirthPlace }">Nơi sinh</label>
                   </div>
                   <div class="form-check form-check-inline">
                     <input v-model="IsDead" type="checkbox" class="form-check-input" id="lostCheckbox" />
-                    <label style="font-size: 14px; margin-top: 7px;" class="form-check-label" for="lostCheckbox">
-                      Đã
-                      mất
-                    </label>
+                    <label style="font-size: 14px; margin-top: 7px;" class="form-check-label" for="lostCheckbox">Đã mất</label>
                   </div>
                   <div class="form-group" v-if="IsDead == 1">
                     <h6 style="margin-bottom:20px">Ngày Mất (*)</h6>
@@ -786,8 +759,8 @@
         </div>
         <div class="card-footer" style="background-color:#E8C77B">
           <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-primary mr-2" @click="addMember()">Thêm</button>
-            <button v-if="isEdit" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
+            <button v-if="isAdd" type="button" class="btn btn-primary mr-2" @click="addMember()">Thêm</button>
+            <button v-else-if="isEdit" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
             <button style="margin-left:10px" type="button" class="btn btn-secondary" @click="closeSelectModal()">Cancel</button>
           </div>
         </div>
@@ -837,9 +810,8 @@ export default {
       selectDistrict: null,
       listFilterMember: null,
 
-      isAddChildren: false,
-      isAddMarried: false,
-      isAddParent: false,
+      isAdd: false,
+      isEdit: false,
       checkAll: false,
       newIdMember: null,
       CurrentIdMember: null,
@@ -856,7 +828,6 @@ export default {
         MarriageID: null,
         MemberName: null,
         NickName: null,
-        HasNickName: null,
         BirthOrder: 0,
         Origin: null,
         NationalityID: 1,
@@ -903,7 +874,6 @@ export default {
       },
       objMember: {},
       TitleModal: null,
-      isEdit: false,
       ListNationality: null,
       ListReligion: null,
       nodes: [],
@@ -965,9 +935,31 @@ export default {
         nodeMouseClick: FamilyTree.action.none,
         enableSearch: false,
       });
-      // this.family.onInit(() => {
-      //   this.family.setViewBox("-30,-30,1939,1638");
-      // });
+      this.family.onInit(() => {
+        // this.family.setViewBox("-30,-30,1939,1638");
+        this.family.load(this.nodes);
+      });
+      this.family.onField((args) => {
+        if (args.data.dod == null) {
+          FamilyTree.templates.tommy_female.field_3 = null;
+          FamilyTree.templates.tommy_male.field_3 = null;
+          ('<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="195" y="50" text-anchor="middle"></text>');
+          FamilyTree.templates.tommy_female.field_4 =
+            '<text class="field_4" style="font-size: 12px;" fill="#ffffff" x="90" y="90">Đời: {val}</text>';
+          FamilyTree.templates.tommy_male.field_4 =
+            '<text class="field_4" style="font-size: 12px;" fill="#ffffff" x="90" y="90">Đời: {val}</text>';
+        } else {
+          FamilyTree.templates.tommy_female.field_3 =
+            '<text class="field_3" style="font-size: 12px;" fill="#ffffff" x="90" y="90">Ngày Mất: {val}</text>';
+          FamilyTree.templates.tommy_female.field_4 =
+            '<text class="field_4" style="font-size: 12px;" fill="#ffffff" x="90" y="110">Đời: {val}</text>';
+
+          FamilyTree.templates.tommy_male.field_3 =
+            '<text class="field_3" style="font-size: 12px;" fill="#ffffff" x="90"  y="90">Ngày Mất: {val}</text>';
+          FamilyTree.templates.tommy_male.field_4 =
+            '<text class="field_4" style="font-size: 12px;" fill="#ffffff" x="90" y="110">Đời: {val}</text>';
+        }
+      });
 
       //Get tọa độ ban đầu
       let CoordinatesNode = this.getViewBox();
@@ -1309,19 +1301,24 @@ export default {
             this.NotificationsDelete(response.data.message);
           }
           this.newIdMember = response.data.data.memberId;
-          if (this.objMemberContact.Phone != null) {
-            this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
-          }
-          HTTP.post("addContact", {
-            memberId: this.newIdMember,
-            Address: this.objMemberContact.Address,
-            Phone: this.objMemberContact.Phone,
-            Email: this.objMemberContact.Email,
-            FacebookUrl: this.objMemberContact.FacebookUrl,
-            Zalo: this.objMemberContact.Zalo,
-          }).catch((e) => {
-            console.log(e);
-          });
+          // if (
+          //   this.objMemberContact.Phone != null ||
+          //   this.objMemberContact.Address != null ||
+          //   this.objMemberContact.Email != null ||
+          //   (this.FacebookUrl != this.objMemberContact.Zalo) != null
+          // ) {
+          //   this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
+          //   HTTP.post("addContact", {
+          //     memberId: this.newIdMember,
+          //     Address: this.objMemberContact.Address,
+          //     Phone: this.objMemberContact.Phone,
+          //     Email: this.objMemberContact.Email,
+          //     FacebookUrl: this.objMemberContact.FacebookUrl,
+          //     Zalo: this.objMemberContact.Zalo,
+          //   }).catch((e) => {
+          //     console.log(e);
+          //   });
+          // }
           this.family.load(this.nodes);
           this.getListMember();
         })
@@ -1419,30 +1416,6 @@ export default {
         .catch((e) => {
           console.log(e);
         });
-    },
-    setDefaultCondition() {
-      this.isAddChildren = false;
-      this.isAddMarried = false;
-      this.isAddParent = false;
-      this.isEdit = false;
-    },
-    async openMemberModal(action) {
-      await this.setDefaultCondition();
-      if (action == "children") {
-        this.TitleModal = "Thêm Con";
-        this.isAddChildren = true;
-        this.setDefauValueInModal();
-      } else if (action == "married") {
-        this.TitleModal = "Thêm Vợ - Chồng";
-        this.isAddMarried = true;
-        this.setDefauValueInModal();
-      } else if (action == "parent") {
-        this.TitleModal = "Thêm Cha - mẹ";
-        this.isAddParent = true;
-        this.setDefauValueInModal();
-      }
-      this.selectedInfor();
-      this.$modal.show("member-modal");
     },
     selectRowJob(job) {
       this.JobIDToUpdate = job.JobID;
@@ -1571,6 +1544,15 @@ export default {
     },
     closeCompareModal() {
       this.$modal.hide("compare-modal");
+    },
+    openMemberModal(action, title) {
+      this.isAdd = true;
+      this.isEdit = false;
+      this.objMemberJob = {};
+      this.objMemberContact = {};
+      this.TitleModal = "Thêm Thông Tin " + title;
+      this.addMember(action);
+      this.$modal.show("member-modal");
     },
     closeMemberModal() {
       this.$modal.hide("member-modal");

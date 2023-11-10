@@ -214,20 +214,6 @@ function getListUnspecifiedMembers(CodeID) {
 
 
 
-function GetIdPaternalAncestor(CodeID) {
-    return new Promise((resolve, reject) => {
-        let query = `select MemberID from memberrole
-        where CodeId = ${CodeID}`;
-        db.connection.query(query, (err, result) => {
-            if (err) {
-                console.log(err)
-                reject(err)
-            } else {
-                resolve(result[0])
-            }
-        })
-    })
-}
 
 
 
@@ -318,50 +304,88 @@ async function RelationShipMember(memberId) {
     });
 }
 
-async function ViewFamilyTree(memberId, ListFamily = []) {
+
+function GetIdPaternalAncestor(CodeID) {
     return new Promise((resolve, reject) => {
-        // Lấy thông tin từ bảng familymember
-        let getMemberQuery = `SELECT * FROM familymember WHERE MemberID = ${memberId}`;
-        db.connection.query(getMemberQuery, async (err, memberResult) => {
-            if (err) return reject(err);
-            let member = memberResult[0];
-            let familyData = await createFamilyData(member);
-            ListFamily.push(familyData);
+        let query = `select MemberID from memberrole
+        where CodeId = ${CodeID}`;
+        db.connection.query(query, (err, result) => {
+            if (err) {
+                console.log(err)
+                reject(err)
+            } else {
+                resolve(result[0])
+            }
+        })
+    })
+}
 
-            // Lấy thông tin từ bảng familymember với MarriageID
-            let getMarriage = `SELECT * FROM familymember WHERE MarriageID = ${memberId}`;
-            db.connection.query(getMarriage, async (err, marriageResult) => {
-                if (err) return reject(err);
+async function GetGenealogy(result, MemberID, ListFamily = [], visitedMembers = new Set()) {
+    if (visitedMembers.has(MemberID)) {
+        // If MemberID has been visited, do nothing
+        return ListFamily;
+    }
 
-                if (marriageResult.length > 0) {
-                    let memberMarriage = marriageResult[0];
-                    let familyDataMarriage = await createFamilyData(memberMarriage);
-                    ListFamily.push(familyDataMarriage);
+    visitedMembers.add(MemberID);
+
+    let Member = result.find(member => member.MemberID == MemberID);
+    let familyData = await createFamilyData(Member);
+
+    // Check if the member is already in ListFamily
+    if (!isMemberInList(ListFamily, Member)) {
+        ListFamily.push(familyData);
+    }
+
+    let wife = result.find(member => member.MarriageID == MemberID && member.Male === 0);
+    if (wife) {
+        let wifeData = await createFamilyData(wife);
+
+        // Check if the wife is already in ListFamily
+        if (!isMemberInList(ListFamily, wife)) {
+            ListFamily.push(wifeData);
+        }
+    }
+
+    let children = result.filter(member => member.ParentID == MemberID);
+    for (let child of children) {
+        let childData = await createFamilyData(child);
+
+        // Check if the child is already in ListFamily
+        if (!isMemberInList(ListFamily, child)) {
+            ListFamily.push(childData);
+        }
+
+        await GetGenealogy(result, child.MemberID, ListFamily, visitedMembers);
+    }
+
+    return ListFamily;
+}
+
+// Helper function to check if a member is already in the list
+function isMemberInList(list, member) {
+    return list.some(existingMember => existingMember.id === member.MemberID);
+}
+
+async function ViewFamilyTree(CodeID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let queryGetAllMember = `SELECT * FROM genealogy.familymember WHERE CodeID = 123456`;
+            db.connection.query(queryGetAllMember, async (err, result) => {
+                if (!err) {
+                    let IdPaternal = await GetIdPaternalAncestor(123456)
+                    let data = await GetGenealogy(result, IdPaternal.MemberID)
+                    resolve(data)
                 }
-
-                // Lấy thông tin về con cái
-                let childQuery = `SELECT * FROM familymember WHERE ParentID = ${memberId}`;
-                db.connection.query(childQuery, (err, marriageResult) => {
-                    if (err) return reject(err);
-
-                    const childPromises = [];
-                    marriageResult.forEach((child) => {
-                        childPromises.push(ViewFamilyTree(child.MemberID, ListFamily));
-                    });
-
-                    Promise.all(childPromises)
-                        .then(() => {
-                            resolve(ListFamily);
-                        })
-                        .catch((err) => reject(err));
-                });
-            });
-        });
+            })
+        } catch (e) {
+            console.log(e);
+            reject(e)
+        }
     });
 }
 
 // Hàm tạo đối tượng familyData từ dữ liệu thành viên
-async function createFamilyData(member) {  
+async function createFamilyData(member) {
     if (member !== undefined) {
         let fid = 0;
         let mid = 0;
@@ -387,7 +411,8 @@ async function createFamilyData(member) {
             name: member.MemberName,
             gender: member.Male === 1 ? 'male' : 'female',
             dob: formatDOB(member.Dob),
-            dod: member.IsDead ? '' : formatDOB(member.Dod),
+            dod: formatDOB(member.Dod),
+            // dod: member.IsDead ? null : formatDOB(member.Dod),
             generation: member.Generation,
             img: member.Image
         };
