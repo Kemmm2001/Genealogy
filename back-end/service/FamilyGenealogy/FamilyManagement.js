@@ -4,21 +4,20 @@ function addMember(member) {
     return new Promise((resolve, reject) => {
         const query = `
         INSERT INTO familymember 
-        (  ParentID, MarriageID, MemberName, NickName, HasNickName, 
+        (  ParentID, MarriageID, MemberName, NickName, 
             BirthOrder, Origin, 
             NationalityID, ReligionID, 
             Dob, LunarDob, BirthPlace, 
             IsDead, Dod, PlaceOfDeadth, 
             GraveSite, Note, Generation, BloodType, CodeID, Male, Image)
         VALUES 
-        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
         const values = [
             member.ParentID,
             member.MarriageID,
             member.MemberName,
             member.NickName,
-            member.HasNickName,
             member.BirthOrder,
             member.Origin,
             member.NationalityId,
@@ -231,6 +230,19 @@ function getRelationship(relationshipFrom, relationshipTo) {
         });
     });
 }
+function setGeneration(generation, memberId) {
+    return new Promise((resolve, reject) => {
+        const query = 'UPDATE familymember SET Generation = ? WHERE MemberID = ?';
+        db.connection.query(query, [generation, memberId], (err, result) => {
+            if (err) {
+                console.log(err);
+                reject(err)
+            } else {
+                resolve(result)
+            }
+        })
+    })
+}
 function getMember(memberId) {
     return new Promise((resolve, reject) => {
         const query = 'select * from familymember where memberid = ?';
@@ -411,5 +423,6 @@ function getMemberByMemberID(memberID) {
 
 module.exports = {
     addMember, updateMember, deleteMember, getRelationship, getMember, createRelationship, searchMember, getMemberByMemberID,
+    setGeneration, queryContactMembers,
     getAllMember, InsertMarriIdToMember, queryFamilyMembers, getAllMemberInMemberRole, getAllMemberNotInMemberRole, GetCurrentParentMember, insertParentIdToMember
 };

@@ -62,18 +62,18 @@ var getListBloodTypeGroup = async (req, res) => {
 
 var addMember = async (req, res) => {
     try {
-        req.body.Image = req.file.path;
+        if (req.file != null) {
+            req.body.Image = req.file.path;
+        }
         console.log('Request req.body: ', req.body);
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
             'MemberName',
-            'NickName',
-            'HasNickName',
             'BirthOrder',
             'NationalityId',
             'ReligionId',
             'IsDead',
-            'Generation',
+            'CurrentGeneration',
             'CodeId',
             'BloodType',
             'Male'
@@ -91,7 +91,7 @@ var addMember = async (req, res) => {
         // kiểm tra xem req.body.Action có tồn tại và là 1 trong 3 trường hợp AddParent, AddChild, AddMarriage không
         let data = await FamilyManagementService.addMember(req.body);
         if (req.body.Action != null) {
-            const action = ['AddChild', 'AddMarriage'];
+            const action = ['AddParent', 'AddChild', 'AddMarriage'];
             if (action.filter(field => field === req.body.Action).length == 0) {
                 db.connection.rollback();
                 return res.send(Response.badRequestResponse(null, "Action is not valid"));
@@ -100,34 +100,40 @@ var addMember = async (req, res) => {
                 db.connection.rollback();
                 return res.send(Response.badRequestResponse(null, "Missing CurrentMemberID"));
             }
+            let currentMember = await FamilyManagementService.getMemberByMemberID(req.body.CurrentMemberID);
+            if (currentMember == null || currentMember.length == 0) {
+                db.connection.rollback();
+                return res.send(Response.dataNotFoundResponse(null, "CurrentMemberID not found"));
+            }
             // thêm member vào database
             let parent;
-            if(req.body.parentID != null){
+            if (req.body.parentID != null) {
                 parent = await FamilyManagementService.getMemberByMemberID(req.body.ParentID);
-                if(parent == null || parent.length == 0){
+                if (parent == null || parent.length == 0) {
                     db.connection.rollback();
                     return res.send(Response.dataNotFoundResponse(null, "ParentID not found"));
                 }
                 /* nếu mà đã cưới, đồng thời không có phụ huynh, thì tức là member này là vợ/chồng 
                 của người trong gia phả, thì sẽ không được thêm ai cả */
                 if ((parent[0].MarriageID !== -1 || parent[0].MarriageID != null)
-                 && (parent[0].ParentID === -1) || parent[0].ParentID == null) {
+                    && (parent[0].ParentID === -1) || parent[0].ParentID == null) {
                     db.connection.rollback();
                     return res.send(Response.badRequestResponse(null, "This member is married by some one in family tree, so you can't add parent"));
                 }
             }
-          
+
             if (req.body.Action === 'AddParent') {
-                let currentMember = await FamilyManagementService.getMemberByMemberID(req.body.CurrentMemberID);
-                if (currentMember == null || currentMember.length == 0) {
-                    db.connection.rollback();
-                    return res.send(Response.dataNotFoundResponse(null, "CurrentMemberID not found"));
-                }
-                await FamilyManagementService.insertParentIdToMember(data.insertId,req.body.CurrentMemberID);
+                await FamilyManagementService.setGeneration(req.body.CurrentGeneration+1, data.insertId);
+                await FamilyManagementService.insertParentIdToMember(data.insertId, req.body.CurrentMemberID);
+            }
+            else if (req.body.Action === 'AddChild') {
+                await FamilyManagementService.setGeneration(req.body.CurrentGeneration-1, data.insertId);
+                await FamilyManagementService.insertParentIdToMember(req.body.CurrentMemberID, data.insertId);
             }
             else if (req.body.Action === 'AddMarriage') {
-                let currentMarriageMember = await FamilyManagementService.getMemberByMemberID(req.body.MarriageID);
-                await FamilyManagementService.InsertMarriIdToMember(data.insertId, currentMarriageMember.MemberID);
+                await FamilyManagementService.setGeneration(req.body.CurrentGeneration, data.insertId);
+                await FamilyManagementService.InsertMarriIdToMember(data.insertId, req.body.CurrentMemberID);
+                await FamilyManagementService.InsertMarriIdToMember(req.body.CurrentMemberID, data.insertId);
             }
             // kết thúc phần thêm member theo mối quan hệ cha mẹ, con cái, vợ chồng
 
