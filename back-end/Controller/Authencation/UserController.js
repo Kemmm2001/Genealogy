@@ -3,10 +3,6 @@ const createError = require('http-errors')
 const { registerSchema, loginSchema } = require('../../helper/validation_schema')
 const bcrypt = require('bcrypt');
 const { signAccessToken, signRefreshToken, verifyRefreshToken } = require('../../helper/jwt_helper')
-const express = require('express');
-const app = express();
-// app.use(cookieParser());
-
 
 var registerUser = async (req, res) => {
   try {
@@ -87,7 +83,7 @@ var registerGenealogy = async (req, res) => {
       doesExist = await UserService.checkCodeID(codeID);
     }
 
-    let data1 = await UserService.insertIntoFamily(value);
+    let data1 = await UserService.insertIntoFamily(value, codeID);
 
     if (data1) {
       try {
@@ -111,12 +107,10 @@ var registerGenealogy = async (req, res) => {
 var getGenealogy = async (req, res) => {
   try {
     const request = req.body;
-    let data = await UserService.createGenealogy(request);
+    let doesExist = await UserService.checkAccountID(request.accountID)
+    if (doesExist) throw createError.Conflict(`Account đã có code gia phả`);
     return res.json({ data })
   } catch (error) {
-    if (error.isJoi === true) {
-      error.status = 422;
-    }
     res.status(error.status || 500).json({ error: error.message });
 
   }
