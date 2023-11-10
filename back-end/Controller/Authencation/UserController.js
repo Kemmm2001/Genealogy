@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const { signAccessToken, signRefreshToken, verifyRefreshToken } = require('../../helper/jwt_helper')
 const express = require('express');
 const app = express();
-app.use(cookieParser());
+// app.use(cookieParser());
 
 
 var registerUser = async (req, res) => {
