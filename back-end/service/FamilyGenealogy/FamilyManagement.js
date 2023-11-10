@@ -13,7 +13,6 @@ function addMember(member) {
         VALUES 
         (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
-
         const values = [
             member.ParentID,
             member.MarriageID,
@@ -126,7 +125,7 @@ function updateMember(member) {
 }
 
 // hàm có chức năng xóa ảnh trong thư mục
-const removeMemberPhoto = (MemberID)=> {
+const removeMemberPhoto = (MemberID) => {
     try {
         let querySelect = `SELECT * FROM familymember where MemberID = ?`;
         let value = [MemberID];
@@ -208,7 +207,7 @@ function GetCurrentParentMember(memberID) {
 }
 
 function insertParentIdToMember(parentID, memberID) {
-    let query = `UPDATE familymember SET ParentID = ${parentID} WHERE MemberID = ${memberID});`
+    let query = `UPDATE familymember SET ParentID = ${parentID} WHERE MemberID = ${memberID};`
     db.connection.query(query, (err, result) => {
         if (err) {
             console.log(err)
@@ -396,7 +395,7 @@ function getAllMember() {
     });
 }
 
-function getMemberByMemberID (memberID)  {
+function getMemberByMemberID(memberID) {
     return new Promise((resolve, reject) => {
         const query = `SELECT * FROM familymember WHERE MemberID = ?`;
         db.connection.query(query, memberID, (err, result) => {
