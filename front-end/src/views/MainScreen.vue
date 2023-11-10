@@ -152,6 +152,121 @@
                 <div @click="selectEmail()" :class="{ notiSelected: emailSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0 0.375rem 0 0; cursor: pointer;">Email</div>
                 <div @click="selectSMS()" :class="{ notiSelected: smsSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0.375rem 0 0 0; cursor: pointer;">SMS</div>
               </div>
+              <div v-if="emailSelected" class="d-flex flex-column mt-2" style="height: calc(100% - 48px); overflow-y: auto;">
+                <div class="sent-mail d-flex flex-row">
+                  <div class="h-100 d-flex align-items-center px-3">
+                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
+                  </div>
+                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
+                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
+                </div>
+                <div class="sent-mail d-flex flex-row">
+                  <div class="h-100 d-flex align-items-center px-3">
+                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
+                  </div>
+                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
+                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
+                </div>
+                <div class="sent-mail d-flex flex-row">
+                  <div class="h-100 d-flex align-items-center px-3">
+                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
+                  </div>
+                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
+                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
+                </div>
+                <div class="sent-mail d-flex flex-row">
+                  <div class="h-100 d-flex align-items-center px-3">
+                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
+                  </div>
+                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
+                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
+                </div>
+                <div class="sent-mail d-flex flex-row">
+                  <div class="h-100 d-flex align-items-center px-3">
+                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
+                  </div>
+                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
+                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
+                </div>
+                <div class="sent-mail d-flex flex-row">
+                  <div class="h-100 d-flex align-items-center px-3">
+                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
+                  </div>
+                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
+                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
+                </div>
+                <div class="sent-mail d-flex flex-row">
+                  <div class="h-100 d-flex align-items-center px-3">
+                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
+                  </div>
+                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
+                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
+                </div>
+                <div class="sent-mail d-flex flex-row">
+                  <div class="h-100 d-flex align-items-center px-3">
+                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
+                  </div>
+                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
+                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
+                </div>
+                <div class="sent-mail d-flex flex-row">
+                  <div class="h-100 d-flex align-items-center px-3">
+                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
+                  </div>
+                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
+                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
+                </div>
+                <div class="sent-mail d-flex flex-row">
+                  <div class="h-100 d-flex align-items-center px-3">
+                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
+                  </div>
+                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
+                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
+                </div>
+                <div class="sent-mail d-flex flex-row">
+                  <div class="h-100 d-flex align-items-center px-3">
+                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
+                  </div>
+                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
+                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
+                </div>
+                <div class="sent-mail d-flex flex-row">
+                  <div class="h-100 d-flex align-items-center px-3">
+                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
+                  </div>
+                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
+                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
+                </div>
+                <div class="sent-mail d-flex flex-row">
+                  <div class="h-100 d-flex align-items-center px-3">
+                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
+                  </div>
+                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
+                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
+                </div>
+                <div class="sent-mail d-flex flex-row">
+                  <div class="h-100 d-flex align-items-center px-3">
+                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
+                  </div>
+                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
+                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
+                </div>
+                <div class="sent-mail d-flex flex-row">
+                  <div class="h-100 d-flex align-items-center px-3">
+                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
+                  </div>
+                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
+                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
+                </div>
+                <div class="sent-mail d-flex flex-row">
+                  <div class="h-100 d-flex align-items-center px-3">
+                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
+                  </div>
+                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
+                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
+                </div>
+              </div>
+
               <div v-if="smsSelected" class="d-flex flex-column" style="height: calc(100% - 48px); align-items: flex-end; padding-top: 6px; overflow-y: auto">
                 <div class="position-relative d-flex flex-row">
                   <div class="position-absolute sent-time">30/12/2022</div>
@@ -211,12 +326,37 @@
                 </div>
               </div>
             </div>
-            <div class="position-absolute w-100 px-3 d-flex flex-row" style="bottom: 8px">
-              <input type="text" class="form-control" style="height: 48px;" placeholder="..." v-model="contentMessage" />
-              <div class="d-flex align-items-center" style="padding-left: 12px; cursor: pointer;" @click="sendMessageToMember()">
-                <svg class="noti-send-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                  <path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z" />
-                </svg>
+            <div class="position-absolute w-100" style="bottom: 8px">
+              <div v-if="smsSelected" class="w-100 px-3 d-flex flex-row">
+                <input type="text" class="form-control" style="height: 48px;" placeholder="..." v-model="contentMessage" />
+                <div class="d-flex align-items-center" style="padding-left: 12px; cursor: pointer;" @click="sendMessageToMember()">
+                  <svg class="noti-send-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z" />
+                  </svg>
+                </div>
+              </div>
+              <div v-if="emailSelected" class="w-100 btn px-3 position-relative" style="height: 48px;">
+                <div @click="expandCreateEmail = !expandCreateEmail" class="btn px-2 py-1 position-absolute" style="right: 16px; background-color: #E8C77B;">Tạo email mới</div>
+              </div>
+            </div>
+            <div class="position-absolute create-mail" :class="{ expanded: expandCreateEmail }">
+              <div class="w-100 h-100 d-flex flex-column">
+                <div class="create-mail-title d-flex align-items-center justify-content-center position-relative">
+                  <div>Email mới</div>
+                  <div class="create-mail-close position-absolute" @click="expandCreateEmail = !expandCreateEmail">
+                    <div class="position-relative h-100 w-100">
+                      <svg class="create-mail-close-icon position-absolute" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                        <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div class="create-mail-topic px-2 w-100">
+                  <input type="text" class="mail-topic w-100 p-2" placeholder="Chủ đề email" />
+                </div>
+                <div class="create-mail-content px-2 w-100">
+                  <textarea style="resize: none; outline: none; border: none;" class="h-100 w-100 p-2" placeholder="Viết gì đó..."></textarea>
+                </div>
               </div>
             </div>
           </div>
@@ -358,7 +498,10 @@
                 <div class="col-8">
                   <div style="position: relative; margin-right:10px">
                     <input v-model="objMemberInfor.MemberName" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberInfor.MemberName }">Tên thành viên đầy đủ</label>
+                    <label class="form-label" for="input" :class="{ 'active': objMemberInfor.MemberName }">
+                      Tên thành viên
+                      đầy đủ
+                    </label>
                   </div>
                   <div style="display:flex">
                     <div style="position: relative; width: 50%;margin-right: 10px;">
@@ -423,7 +566,10 @@
                     </label>
                   </div>
                   <div class="form-group">
-                    <h6 style="margin-bottom:20px">Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược lại)</h6>
+                    <h6 style="margin-bottom:20px">
+                      Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược
+                      lại)
+                    </h6>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
                         <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar()" />
@@ -480,7 +626,7 @@
                   <div style="position: relative; width: 50%;margin-right: 10px;">
                     <select v-model="selectCityMember" class="form-select modal-item" @change="getListDistrict()">
                       <option :value="null" selected>Thành Phố/Tỉnh</option>
-                      <option v-for="city in ListCity" :key="city.id" :value="city.id">{{city.name}}</option>
+                      <option v-for="city in ListCity" :key="city.id" :value="city.id">{{ city.name }}</option>
                     </select>
                     <label class="form-label" for="select">Địa Chỉ (Thành Phố/Tỉnh)</label>
                   </div>
@@ -774,6 +920,8 @@ export default {
 
       emailSelected: true,
       smsSelected: false,
+
+      expandCreateEmail: false,
     };
   },
   methods: {
@@ -1210,7 +1358,7 @@ export default {
       });
     },
     addNewMarriedMember() {
-      HTTP.post("member", {        
+      HTTP.post("member", {
         memberName: this.objMemberInfor.MemberName,
         nickName: this.objMemberInfor.NickName,
         parentID: null,
@@ -1232,7 +1380,6 @@ export default {
         bloodType: this.objMemberInfor.BloodType,
         male: this.objMemberInfor.Male,
         codeId: this.CodeID,
-        
       }).then((response) => {
         this.newIdMember = response.data.data.memberId;
         HTTP.post("InserMarrie", {

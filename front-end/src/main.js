@@ -15,6 +15,7 @@ import './assets/css/navbar.css';
 import "./assets/css/icon.css";
 import "./assets/css/list.css";
 import "./assets/css/login.css";
+import "./assets/css/mail.css";
 
 
 Vue.config.productionTip = false

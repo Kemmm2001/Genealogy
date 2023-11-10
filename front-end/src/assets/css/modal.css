@@ -314,3 +314,11 @@ input:focus~label.form-label-number {
     left: 24px;
     font-size: 12px;
 }
+
+.sent-mail{
+    height: 48px;
+    background-color: #f2f6fc;
+    border-radius: 0.375rem;
+    margin: 0 8px;
+    border-bottom: 1px solid lightgray;
+}
