@@ -5,43 +5,14 @@ const FamilyHistoryController = require('../Controller/InformationGenealogy/Fami
 const StatisticsController = require('../Controller/InformationGenealogy/StatisticsController')
 const AlbumPhotoController = require('../Controller/InformationGenealogy/AlbumPhotoController');
 const ArticleController = require('../Controller/FamilyGenealogy/ArticleController')
-const MemberPhotoController = require('../Controller/InformationGenealogy/MemberPhotoController');
+const FamilyPhotoController = require('../Controller/InformationGenealogy/FamilyPhotoController');
 const AddressController = require('../Controller/InformationGenealogy/AddressController');
-const fs = require('fs');
+const CoreFunction = require('../Utils/CoreFunction');
 
 var router = express.Router();
-const multer = require("multer");
-const crypto = require('crypto');
-const upload = multer({
-    storage: multer.diskStorage({
-        destination: function (req, file, cb) {
-            cb(null, '/uploads/images/member-photo');
-        },
-        filename: (req, file, cb) => {
-            // Tạo tên file ngẫu nhiên
-            let fileName = generateRandomFileName(file);
 
-            // Kiểm tra tồn tại
-            const destPath = `uploads/images/member-photo/${fileName}`;
-            while (fs.existsSync(destPath)) {
-                // Nếu tồn tại, tạo tên mới
-                console.log('File đã tồn tại, tạo tên mới');
-                fileName = generateRandomFileName(file);
-            }
-            console.log('Tên file mới:', fileName);
-            // Tên chưa tồn tại, lưu file
-            cb(null, fileName);
-        }
-    })
-});
 
-function generateRandomFileName(file) {
-    // Tạo tên file ngẫu nhiên
-    const randomName = crypto.randomBytes(15).toString('hex');
-    // Thêm đuôi file gốc vào 
-    const fileName = `${randomName}.${file.originalname.split('.').pop()}`;
-    return fileName;
-}
+
 
 
 
@@ -77,14 +48,14 @@ const initWebRouter = (app) => {
     // Delete an AlbumPhoto with id
     router.delete('/albumphoto', AlbumPhotoController.deleteAlbumPhoto);
 
-    // Create a new MemberPhoto
-    router.post('/memberphoto', upload.single('Photo'), MemberPhotoController.addMemberPhoto);
-    // Retrieve a single MemberPhoto with id
-    router.get('/memberphoto', MemberPhotoController.getMemberPhoto);
-    // Update a MemberPhoto with id
-    router.put('/memberphoto', upload.single('Photo'), MemberPhotoController.updateMemberPhoto);
-    // Delete a MemberPhoto with id
-    router.delete('/memberphoto', MemberPhotoController.deleteMemberPhoto);
+    // Create a new FamilyPhoto
+    router.post('/familyphoto', CoreFunction.uploadImage("family-photo").single('Photo'), FamilyPhotoController.addFamilyPhoto);
+    // Retrieve a single FamilyPhoto with id
+    router.get('/familyphoto', FamilyPhotoController.getFamilyPhoto);
+    // Update a FamilyPhoto with id
+    router.put('/familyphoto', CoreFunction.uploadImage("family-photo").single('Photo'), FamilyPhotoController.updateFamilyPhoto);
+    // Delete a FamilyPhoto with id
+    router.delete('/familyphoto', FamilyPhotoController.deleteFamilyPhoto);
     // End API tuấn
     //API Nhật anh
 

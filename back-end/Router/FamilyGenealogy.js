@@ -5,6 +5,7 @@ const JobManagementController = require('../Controller/FamilyGenealogy/JobManage
 const ContactManagementController = require('../Controller/FamilyGenealogy/ContactManagementController')
 const EducationManagementController = require('../Controller/FamilyGenealogy/EducationManagementController')
 const CompareMemberController = require('../Controller/FamilyGenealogy/CompareMemberController')
+const CoreFunction = require('../Utils/CoreFunction');
 
 var router = express.Router();
 
@@ -47,8 +48,9 @@ const initWebRouter = (app) => {
     router.delete('/deleteListEducation', EducationManagementController.RemoveListEducationMember)
 
     //API tuấn
-    router.post('/member', FamilyMemberManagement.addMember)
-    router.put('/member', FamilyMemberManagement.updateMember)
+    router.get('/member', FamilyMemberManagement.getMember);
+    router.post('/member', CoreFunction.uploadImage("member-photo").single('Image'), FamilyMemberManagement.addMember);
+    router.put('/member', CoreFunction.uploadImage("member-photo").single('Image'), FamilyMemberManagement.updateMember);
     router.delete('/member', FamilyMemberManagement.deleteMember)
     router.get('/getparent',FamilyMemberManagement.GetCurrentParentMember)
     router.post('/InsertParentID',FamilyMemberManagement.insertParentIdToMember)
