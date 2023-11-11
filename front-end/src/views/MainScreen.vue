@@ -2,16 +2,49 @@
   <div class="d-flex h-100 w-100 position-relative">
     <div class="list d-flex flex-column align-items-center">
       <div class="w-100 d-flex flex-row">
-        <div class="col-6">
-          <div class="w-100" style="padding: 12px 6px 0px 12px">
+        <div class="col-6 px-2" style="padding-top: 8px;">
+          <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict()">
+            <option :value="null" selected>Tỉnh/Thành phố</option>
+            <option v-for="city in ListCity" :key="city.id" :value="city.id">{{ city.name }}</option>
+          </select>
+        </div>
+        <div class="col-6 px-2" style="padding-top: 8px;">
+          <select v-model="selectDistrict" class="d-flex text-center form-select dropdown p-0">
+            <option :value="null" selected>Quận/Huyện</option>
+          </select>
+        </div>
+      </div>
+      <div class="w-100 d-flex flex-row">
+        <div class="col-6 px-2" style="padding-top: 8px;">
+          <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0"
+            @change="GetListFilterMember()">
+            <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">
+              {{
+                blood.BloodType }}
+            </option>
+          </select>
+        </div>
+        <div class="col-6 px-2" style="padding-top: 8px;">
+          <select class="d-flex text-center form-select dropdown p-0" v-model="selectAge" @change="GetListFilterMember()">
+            <option class="dropdown-item" :value="null">Nhóm Tuổi</option>
+            <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">
+              {{ age.From }} -
+              {{ age.End }} Tuổi
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="w-100 d-flex flex-row" style="padding-top: 8px">
+        <div class="col-6 px-2">
+          <div class="w-100">
             <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary">
               Tạo thông
               báo
             </button>
           </div>
         </div>
-        <div class="col-6">
-          <div class="w-100" style="padding: 12px 12px 0px 6px">
+        <div class="col-6 px-2">
+          <div class="w-100">
             <button @click="openCompareModal()" style="width:100%" type="button" class="btn btn-secondary">
               So
               sánh
@@ -19,7 +52,7 @@
           </div>
         </div>
       </div>
-      <div class="h-100 w-100 d-flex flex-column" style="padding-top: 12px">
+      <div class="h-100 w-100 d-flex flex-column px-2" style="padding-top: 8px">
         <div class="existing-members d-flex flex-column w-100">
           <div class="list-item" style="background-color: #AED6F1; text-align: center;">Danh sách thành viên có trên phả
             đồ</div>
@@ -51,42 +84,17 @@
     </div>
     <div class="d-flex flex-column position-absolute advanced-filter" :class="{ down: advancedFilterDown }">
       <div v-if="advancedFilterDown" class="d-flex flex-column">
-        <div class="px-2" style="padding-top: 8px;">
-          <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict()">
-            <option :value="null" selected>Tỉnh/Thành phố</option>
-            <option v-for="city in ListCity" :key="city.id" :value="city.id">{{ city.name }}</option>
-          </select>
-        </div>
-        <div class="px-2" style="padding-top: 8px;">
-          <select v-model="selectDistrict" class="d-flex text-center form-select dropdown p-0">
-            <option :value="null" selected>Quận/Huyện</option>
-          </select>
-        </div>
-        <div class="px-2" style="padding-top: 8px;">
-          <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0"
-            @change="GetListFilterMember()">
-            <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">
-              {{
-                blood.BloodType }}
-            </option>
-          </select>
-        </div>
-        <div class="px-2" style="padding-top: 8px;">
-          <select class="d-flex text-center form-select dropdown p-0" v-model="selectAge" @change="GetListFilterMember()">
-            <option class="dropdown-item" :value="null">Nhóm Tuổi</option>
-            <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">
-              {{ age.From }} -
-              {{ age.End }} Tuổi
-            </option>
-          </select>
-        </div>
+
       </div>
       <div v-if="!advancedFilterDown">
-        <div class="d-flex align-items-center justify-content-center px-2" style="padding-top: 8px; color: #FFFFFF"> Bộ lọc nâng cao
+        <div class="d-flex align-items-center justify-content-center px-2" style="padding-top: 8px; color: #FFFFFF"> Bộ
+          lọc nâng cao
         </div>
       </div>
-      <div @click="advancedFilterDown = !advancedFilterDown" class="d-flex justify-content-center align-items-center pt-2" style="height: 36px;">
-        <svg class="advanced-filter-up-icon" :class="{ rotateUp: !advancedFilterDown}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+      <div @click="advancedFilterDown = !advancedFilterDown" class="d-flex justify-content-center align-items-center pt-2"
+        style="height: 36px;">
+        <svg class="advanced-filter-up-icon" :class="{ rotateUp: !advancedFilterDown }" xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 448 512">
           <path
             d="M246.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 109.3 361.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160zm160 352l-160-160c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 301.3 361.4 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3z" />
         </svg>
@@ -638,7 +646,8 @@
                         <label class="form-label" for="input">Dương Lịch</label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
-                        <input v-model="objMemberInfor.LunarDod" type="date" class="form-control modal-item" placeholder />
+                        <input v-model="objMemberInfor.LunarDod" type="date" class="form-control modal-item"
+                          placeholder />
                         <label class="form-label-number" min="0" for="input">Âm lịch</label>
                       </div>
                     </div>
@@ -699,7 +708,8 @@
                 <div style="display:flex">
                   <div style="position: relative; width: 50%; margin-right: 10px;">
                     <input v-model="objMemberJob.Organization" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberJob.Organization }">Tên Cơ Quan</label>
+                    <label class="form-label" for="input" :class="{ 'active': objMemberJob.Organization }">Tên Cơ
+                      Quan</label>
                   </div>
                   <div style="position: relative;width: 50%; margin-right: 10px;">
                     <input v-model="objMemberJob.OrganizationAddress" type="text" class="form-control modal-item"
