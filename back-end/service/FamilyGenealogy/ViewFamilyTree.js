@@ -325,7 +325,6 @@ async function GetGenealogy(result, MemberID, ListFamily = [], visitedMembers = 
         // If MemberID has been visited, do nothing
         return ListFamily;
     }
-
     visitedMembers.add(MemberID);
 
     let Member = result.find(member => member.MemberID == MemberID);
@@ -336,12 +335,12 @@ async function GetGenealogy(result, MemberID, ListFamily = [], visitedMembers = 
         ListFamily.push(familyData);
     }
 
-    let wife = result.find(member => member.MarriageID == MemberID && member.Male === 0);
-    if (wife) {
-        let wifeData = await createFamilyData(wife);
+    let married = result.find(member => member.MarriageID == MemberID);
+    if (married) {
+        let wifeData = await createFamilyData(married);
 
         // Check if the wife is already in ListFamily
-        if (!isMemberInList(ListFamily, wife)) {
+        if (!isMemberInList(ListFamily, married)) {
             ListFamily.push(wifeData);
         }
     }
@@ -412,6 +411,7 @@ async function createFamilyData(member) {
             gender: member.Male === 1 ? 'male' : 'female',
             dob: formatDOB(member.Dob),
             dod: formatDOB(member.Dod),
+            isDead: member.IsDead,
             // dod: member.IsDead ? null : formatDOB(member.Dod),
             generation: member.Generation,
             img: member.Image

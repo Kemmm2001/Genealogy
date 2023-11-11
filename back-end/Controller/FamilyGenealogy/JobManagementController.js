@@ -55,7 +55,7 @@ var RemoveJobMember = async (req, res) => {
 
 var RemoveListJobMember = async (req, res) => {
     try {
-        let memberID = req.query.memberID;
+        let memberID = req.query.MemberID;
         await JobManagementService.DeleteListJobByID(memberID)
     } catch (error) {
         console.log(error)

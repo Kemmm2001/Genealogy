@@ -195,7 +195,7 @@ var updateMember = async (req, res) => {
 
 var deleteMember = async (req, res) => {
     try {
-        // Log ra thông tin trong req.query
+        // Log ra thông tin trong req.query      
         let dataMember = await FamilyManagementService.getMemberByMemberID(req.query.MemberID);
         if (dataMember == null || dataMember.length == 0) {
             return res.send(Response.dataNotFoundResponse());

@@ -75,7 +75,7 @@
       <modal name="Select-option-Modal">
         <div class="card" style="width: 370px;left:45%">
           <div class="card-header text-center" style="background-color:#E8C77B;height: 50px">
-            <h5>Thành Viên {{ objMemberInfor.MemberName }}</h5>
+            <h5>{{ TitleModal }}</h5>
             <div class="close-add-form" @click="closeSelectModal()" style="top: 8px;right:5px">
               <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -573,11 +573,11 @@
                     <h6 style="margin-bottom:20px">Ngày Mất (*)</h6>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
-                        <input type="date" class="form-control modal-item" placeholder />
+                        <input v-model="objMemberInfor.Dod" type="date" class="form-control modal-item" placeholder />
                         <label class="form-label" for="input">Dương Lịch</label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
-                        <input type="date" class="form-control modal-item" placeholder />
+                        <input v-model="objMemberInfor.LunarDod" type="date" class="form-control modal-item" placeholder />
                         <label class="form-label-number" min="0" for="input">Âm lịch</label>
                       </div>
                     </div>
@@ -635,10 +635,7 @@
                 <div style="display:flex">
                   <div style="position: relative; width: 50%; margin-right: 10px;">
                     <input v-model="objMemberJob.Organization" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberJob.Organization }">
-                      Tên Cơ
-                      Quan
-                    </label>
+                    <label class="form-label" for="input" :class="{ 'active': objMemberJob.Organization }">Tên Cơ Quan</label>
                   </div>
                   <div style="position: relative;width: 50%; margin-right: 10px;">
                     <input v-model="objMemberJob.OrganizationAddress" type="text" class="form-control modal-item" placeholder />
@@ -810,6 +807,7 @@ export default {
       selectDistrict: null,
       listFilterMember: null,
 
+      action: null,
       isAdd: false,
       isEdit: false,
       checkAll: false,
@@ -828,7 +826,7 @@ export default {
         MarriageID: null,
         MemberName: null,
         NickName: null,
-        BirthOrder: 0,
+        BirthOrder: 1,
         Origin: null,
         NationalityID: 1,
         ReligionID: 1,
@@ -1133,7 +1131,7 @@ export default {
       })
         .then((response) => {
           this.objMember = response.data;
-
+          console.log(this.objMember);
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
             this.takeDataMember(this.CurrentIdMember);
@@ -1183,7 +1181,7 @@ export default {
     removeMember() {
       HTTP.delete("deleteContact", {
         params: {
-          memberID: this.CurrentIdMember,
+          MemberID: this.CurrentIdMember,
         },
       }).catch(() => {
         this.NotificationsDelete("Đã sảy ra lỗi, không thể xóa");
@@ -1191,7 +1189,7 @@ export default {
 
       HTTP.delete("RemoveListJob", {
         params: {
-          memberID: this.CurrentIdMember,
+          MemberID: this.CurrentIdMember,
         },
       }).catch((e) => {
         console.log(e);
@@ -1199,17 +1197,22 @@ export default {
 
       HTTP.delete("deleteListEducation", {
         params: {
-          memberID: this.CurrentIdMember,
+          MemberID: this.CurrentIdMember,
         },
       }).catch((e) => {
         console.log(e);
       });
       HTTP.delete("member", {
         params: {
-          memberID: this.CurrentIdMember,
+          MemberID: this.CurrentIdMember,
         },
-      }).then(() => {
-        this.NotificationsDelete("remove success fully");
+      }).then((response) => {
+        if (response.data.success == true) {
+          this.NotificationsDelete(response.data.message);
+        } else {
+          this.NotificationsDelete(response.data.message);
+        }
+        this.$modal.hide("Select-option-Modal");
         this.getListMember();
       });
     },
@@ -1271,7 +1274,7 @@ export default {
           console.log(e);
         });
     },
-    async addMember(action) {
+    async addMember() {
       await HTTP.post("member", {
         MemberName: this.objMemberInfor.MemberName,
         NickName: this.objMemberInfor.NickName,
@@ -1292,7 +1295,7 @@ export default {
         BloodType: this.objMemberInfor.BloodType,
         Male: this.objMemberInfor.Male,
         CodeId: this.CodeID,
-        Action: action,
+        Action: this.action,
       })
         .then((response) => {
           if (response.data.success == true) {
@@ -1300,25 +1303,28 @@ export default {
           } else {
             this.NotificationsDelete(response.data.message);
           }
-          this.newIdMember = response.data.data.memberId;
-          // if (
-          //   this.objMemberContact.Phone != null ||
-          //   this.objMemberContact.Address != null ||
-          //   this.objMemberContact.Email != null ||
-          //   (this.FacebookUrl != this.objMemberContact.Zalo) != null
-          // ) {
-          //   this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
-          //   HTTP.post("addContact", {
-          //     memberId: this.newIdMember,
-          //     Address: this.objMemberContact.Address,
-          //     Phone: this.objMemberContact.Phone,
-          //     Email: this.objMemberContact.Email,
-          //     FacebookUrl: this.objMemberContact.FacebookUrl,
-          //     Zalo: this.objMemberContact.Zalo,
-          //   }).catch((e) => {
-          //     console.log(e);
-          //   });
-          // }
+          this.newIdMember = response.data.data.MemberID;
+          if (
+            this.objMemberContact.Phone != null ||
+            this.objMemberContact.Address != null ||
+            this.objMemberContact.Email != null ||
+            this.FacebookUrl != null ||
+            this.objMemberContact.Zalo != null
+          ) {
+            this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
+            HTTP.post("addContact", {
+              memberId: this.newIdMember,
+              Address: this.objMemberContact.Address,
+              Phone: this.objMemberContact.Phone,
+              Email: this.objMemberContact.Email,
+              FacebookUrl: this.objMemberContact.FacebookUrl,
+              Zalo: this.objMemberContact.Zalo,
+            }).catch((e) => {
+              console.log(e);
+            });
+          }
+          this.$modal.hide("member-modal");
+          this.$modal.hide("Select-option-Modal");
           this.family.load(this.nodes);
           this.getListMember();
         })
@@ -1548,10 +1554,15 @@ export default {
     openMemberModal(action, title) {
       this.isAdd = true;
       this.isEdit = false;
-      this.objMemberJob = {};
+      this.objMemberInfor = {};
+      this.objMemberInfor.BirthOrder = 1;
+      this.objMemberInfor.Male = 1;
+      this.objMemberInfor.BloodType = null;
+      this.objMemberInfor.NationalityID = 1;
+      this.objMemberInfor.ReligionID = 1;
       this.objMemberContact = {};
       this.TitleModal = "Thêm Thông Tin " + title;
-      this.addMember(action);
+      this.action = action;
       this.$modal.show("member-modal");
     },
     closeMemberModal() {
@@ -1560,18 +1571,20 @@ export default {
     },
 
     OnpenModal_SelectOption(id) {
-      this.highLightSelectNode(id);
+      // this.highLightSelectNode(id);
+      let foundNode = this.nodes.find((node) => node.id == id);
+      this.TitleModal = foundNode.name;
       this.$modal.show("Select-option-Modal");
       this.CurrentIdMember = id;
     },
     closeSelectModal() {
       this.CurrentIdMember = 0;
-      for (let i = 0; i < this.nodes.length; i++) {
-        this.nodes[i].tags = this.nodes[i].tags.filter(
-          (tag) => tag !== "choose" && tag !== "notchoose"
-        );
-      }
-      this.family.load(this.nodes);
+      // for (let i = 0; i < this.nodes.length; i++) {
+      //   this.nodes[i].tags = this.nodes[i].tags.filter(
+      //     (tag) => tag !== "choose" && tag !== "notchoose"
+      //   );
+      // }
+      // this.family.load(this.nodes);
       this.$modal.hide("Select-option-Modal");
     },
     getListMember(idPaternalAncestor) {
@@ -1588,6 +1601,9 @@ export default {
           console.log(this.nodes);
           for (let i = 0; i < this.nodes.length; i++) {
             this.nodes[i].tags = [];
+            if (this.nodes[i].isDead == 1) {
+              this.nodes[i].tags.push("died");
+            }
             if (this.nodes[i].img == null) {
               if (this.nodes[i].gender == "male") {
                 this.nodes[i].img =

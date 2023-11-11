@@ -50,7 +50,7 @@ var RemoveEducationMember = async (req, res) => {
 
 var RemoveListEducationMember = async (req, res) => {
     try {
-        let memberID = req.query.memberID;
+        let memberID = req.query.MemberID;
         await EducationManagementService.RemoveListEducation(memberID);
     } catch (error) {
         console.log(error)

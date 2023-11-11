@@ -152,7 +152,7 @@ const deleteImageBySelectQuery = (query, values) => {
     });
 }
 
-function deleteMember(memberId) {
+function deleteMember(memberId) {   
     return new Promise((resolve, reject) => {
         console.log("memberId: " + memberId);
         const isDeleted = removeMemberPhoto(memberId);
