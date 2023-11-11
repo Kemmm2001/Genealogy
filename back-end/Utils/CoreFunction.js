@@ -4,10 +4,31 @@ const fs = require('fs');
 const db = require('../Models/ConnectDB');
 
 
-const missingFields = (requiredFields, data) => {
-    return requiredFields.filter(field => !(field in data &&
-        (typeof data[field] === 'string' ? data[field].trim() !== '' : true)));
+const missingFields=(requiredFields, data)=> {
+    const missing = [];
+    for (let i = 0; i < requiredFields.length; i++) {
+        const field = requiredFields[i];
+
+        if (!(field in data)) {
+            missing.push(field);
+        } else {
+            const fieldValue = data[field];
+            if (isEmptyOrNullOrSpaces(fieldValue)) {
+                missing.push(field);
+            }
+        }
+    }
+
+    return missing;
 }
+const isEmptyOrNullOrSpaces = (str) => {
+    const isNull = str === null || ( typeof str === 'string' && str.trim() === '') || typeof str === 'undefined';
+    console.log(`Dữ liệu ${str} null hoặc rỗng : ${isNull}`);
+    return isNull;
+}
+
+
+
 
 const uploadImage = (destinationFolder) => {
     return multer({
@@ -75,4 +96,4 @@ const deleteImage = async (imageUrl) => {
 };
 
 
-module.exports = { missingFields, uploadImage, deleteImage };
+module.exports = { missingFields, uploadImage, deleteImage, isEmptyOrNullOrSpaces };

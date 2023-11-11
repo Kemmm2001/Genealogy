@@ -10,6 +10,7 @@ let coreResponse = (success, status_code, message, data) => {
 }
 
 let coreErrorResponse = (status_code, message, data) => {
+    db.connection.rollback();
     return coreResponse(false, status_code, message, data);
 }
 
