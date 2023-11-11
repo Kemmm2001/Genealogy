@@ -26,28 +26,19 @@
         <div class="col-6 px-2" style="padding-top: 8px;">
           <select class="d-flex text-center form-select dropdown p-0" v-model="selectAge" @change="GetListFilterMember()">
             <option class="dropdown-item" :value="null">Nhóm Tuổi</option>
-            <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">
-              {{ age.From }} -
-              {{ age.End }} Tuổi
-            </option>
+            <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{ age.From }} - {{ age.End }} Tuổi</option>
           </select>
         </div>
       </div>
       <div class="w-100 d-flex flex-row" style="padding-top: 8px">
         <div class="col-6 px-2">
           <div class="w-100">
-            <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary">
-              Tạo thông
-              báo
-            </button>
+            <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary">Tạo thông báo</button>
           </div>
         </div>
         <div class="col-6 px-2">
           <div class="w-100">
-            <button @click="openCompareModal()" style="width:100%" type="button" class="btn btn-secondary">
-              So
-              sánh
-            </button>
+            <button @click="openCompareModal()" style="width:100%" type="button" :class="{'btn': true,'btn-secondary': !isCompare,'btn-primary': isCompare}">So sánh</button>
           </div>
         </div>
       </div>
@@ -1011,6 +1002,7 @@ export default {
         );
       });
       this.family.onNodeClick((arg) => {
+        this.highLightSelectNode(arg.node.id);
         if (this.isCompare) {
           if (this.lastClickedNodeId == null) {
             this.lastClickedNodeId = arg.node.id;
@@ -1481,7 +1473,6 @@ export default {
         Note: this.objMemberInfor.Note,
         BloodType: this.objMemberInfor.BloodType,
         Male: this.objMemberInfor.Male,
-        CodeId: this.objMemberInfor.CodeID,
       })
         .then((response) => {
           console.log(response.data);
@@ -1545,23 +1536,23 @@ export default {
         });
     },
     RemoveHightLight() {
+      var nodeElement;
       for (let i = 0; i < this.nodes.length; i++) {
-        this.nodes[i].tags = this.nodes[i].tags.filter(
-          (tag) => tag !== "choose" && tag !== "notchoose"
-        );
+        nodeElement = this.family.getNodeElement(this.nodes[i].id);
+        nodeElement.classList.remove("selected");
+        nodeElement.classList.remove("notselected");
       }
     },
     highLightSelectNode(SelectNode) {
+      var nodeElement;
       this.RemoveHightLight();
       let selectedNode = this.nodes.find((node) => node.id == SelectNode);
       if (selectedNode) {
-        selectedNode.tags.push("choose");
+        nodeElement = this.family.getNodeElement(selectedNode.id);
+        nodeElement.classList.add("selected");
       } else {
         console.log("Nút không tồn tại:", SelectNode);
       }
-
-      // Cập nhật giao diện
-      this.family.load(this.nodes);
     },
     handleRightClick(id) {
       this.OnpenModal_SelectOption(id);
@@ -1570,18 +1561,19 @@ export default {
       this.family.center(id);
     },
     highLightNode() {
+      var nodeElement;
       this.RemoveHightLight();
       let memberIds = this.listFilterMember.map((item) => item.MemberID);
       if (this.selectBloodType != null || this.selectAge != null)
         this.nodes.forEach((node) => {
           if (memberIds.includes(node.id)) {
-            node.tags.push("choose");
+            nodeElement = this.family.getNodeElement(node.id);
+            nodeElement.classList.add("selected");
           } else {
-            node.tags.push("notchoose");
+            nodeElement = this.family.getNodeElement(node.id);
+            nodeElement.classList.add("notselected");
           }
         });
-
-      this.family.load(this.nodes);
     },
     getListAfterSetPaternalAncestor(id) {
       HTTP.get("viewTree", {
@@ -1633,8 +1625,7 @@ export default {
       this.$modal.hide("noti-modal");
     },
     openCompareModal() {
-      this.isCompare = true;
-      // this.$modal.show("compare-modal");
+      this.isCompare = !this.isCompare;
     },
     closeCompareModal() {
       this.$modal.hide("compare-modal");
@@ -1663,16 +1654,12 @@ export default {
       let foundNode = this.nodes.find((node) => node.id == id);
       this.TitleModal = foundNode.name;
       this.$modal.show("Select-option-Modal");
+      this.highLightSelectNode(id);
       this.CurrentIdMember = id;
     },
     closeSelectModal() {
       this.CurrentIdMember = 0;
-      // for (let i = 0; i < this.nodes.length; i++) {
-      //   this.nodes[i].tags = this.nodes[i].tags.filter(
-      //     (tag) => tag !== "choose" && tag !== "notchoose"
-      //   );
-      // }
-      // this.family.load(this.nodes);
+      this.RemoveHightLight();
       this.$modal.hide("Select-option-Modal");
     },
     getListMember(idPaternalAncestor) {
