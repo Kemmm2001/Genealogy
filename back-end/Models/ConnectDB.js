@@ -1,12 +1,9 @@
 const mysql = require('mysql2');
 
 const connection = mysql.createConnection({
-  // host: '14.225.254.123',
-  // user: 'admin',
-  // password: 'AXeTFQW7pC3cxSFg9a7Q8JfwtXkMmy3PSbnG2NgLXASbWhps6x9dBLG',
   host: 'localhost',
-  user: 'root',
-  password: 'Baolan0598.',
+  user: 'admin',
+  password: 'AXeTFQW7pC3cxSFg9a7Q8JfwtXkMmy3PSbnG2NgLXASbWhps6x9dBLG',
   database: 'genealogy'
 });
 
