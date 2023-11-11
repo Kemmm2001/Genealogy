@@ -8,7 +8,7 @@ function addMember(member) {
             BirthOrder, Origin, 
             NationalityID, ReligionID, 
             Dob, LunarDob, BirthPlace, 
-            IsDead, Dod, LunarDod, PlaceOfDeadth, 
+            IsDead, Dod, LunarDod, PlaceOfDeath, 
             GraveSite, Note, Generation, BloodType, CodeID, Male, Image)
         VALUES 
         (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -76,7 +76,7 @@ function addMember(member) {
           IsDead = ?,
           Dod = ?,
           LunarDod = ?,
-          PlaceOfDeadth = ?,
+          PlaceOfDeath = ?,
           GraveSite = ?,
           Note = ?,
           Generation = ?,

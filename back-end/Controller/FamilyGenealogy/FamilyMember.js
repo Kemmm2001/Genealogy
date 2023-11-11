@@ -89,10 +89,10 @@ var addMember = async (req, res) => {
         }
         db.connection.beginTransaction();
         let dataRes = {};
-        // kiểm tra xem req.body.Action có tồn tại và là 1 trong 3 trường hợp AddParent, AddChild, AddMarriage không
+        // kiểm tra xem req.body.Action có tồn tại và là 1 trong 4 trường hợp AddParent, AddChild, AddMarriage, AddNormal không
         let data = await FamilyManagementService.addMember(req.body);
         if (req.body.Action != null) {
-            const action = ['AddParent', 'AddChild', 'AddMarriage'];
+            const action = ['AddParent', 'AddChild', 'AddMarriage', 'AddNormal'];
             if (action.filter(field => field === req.body.Action).length == 0) {
                 db.connection.rollback();
                 return res.send(Response.badRequestResponse(null, "Action không hợp lệ"));
@@ -141,7 +141,11 @@ var addMember = async (req, res) => {
                 await FamilyManagementService.InsertMarriIdToMember(data.insertId, req.body.CurrentMemberID);
                 await FamilyManagementService.InsertMarriIdToMember(req.body.CurrentMemberID, data.insertId);
             }
-            // kết thúc phần thêm member theo mối quan hệ cha mẹ, con cái, vợ chồng
+            // trường hợp muốn thêm thành viên mà không có trong cây gia phả, thì truyền CurrentGeneration là 0 là được
+            else if (req.body.Action === 'AddNormal'){
+                await FamilyManagementService.setGeneration(req.body.CurrentGeneration, data.insertId);
+            }
+            // kết thúc phần thêm member theo action
 
         } else {
             await FamilyManagementService.setGeneration(req.body.CurrentGeneration, data.insertId);
