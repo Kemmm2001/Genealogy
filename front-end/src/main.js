@@ -17,6 +17,7 @@ import "./assets/css/list.css";
 import "./assets/css/login.css";
 import "./assets/css/mail.css";
 import "./assets/css/noti.css";
+import "./assets/css/scrollbar.css";
 
 
 Vue.config.productionTip = false

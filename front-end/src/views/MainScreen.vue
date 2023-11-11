@@ -52,9 +52,9 @@
           </div>
         </div>
       </div>
-      <div class="h-100 w-100 d-flex flex-column px-2" style="padding-top: 8px">
+      <div class="h-100 w-100 d-flex flex-column px-2" style="padding-top: 8px; font-family: 'QuicksandBold', sans-serif;">
         <div class="existing-members d-flex flex-column w-100">
-          <div class="list-item" style="background-color: #AED6F1; text-align: center;">Danh sách thành viên có trên phả
+          <div class="d-flex align-items-center justify-content-center px-2 py-1" style="background-color: #AED6F1; text-align: center; border-radius: 0.175rem 0.175rem 0 0; min-height: 48px; font-size: 18px;">Thành viên có trên phả
             đồ</div>
           <div class="d-flex flex-column w-100" style="overflow-y: auto;cursor: pointer">
             <div v-for="(n, index) in nodes" :key="n.id">
@@ -64,8 +64,8 @@
             </div>
           </div>
         </div>
-        <div class="nonexisting-members d-flex flex-column w-100">
-          <div class="list-item" style="background-color: #AED6F1; text-align: center;">Danh sách thành viên không có trên
+        <div class="d-flex nonexisting-members flex-column w-100" style="margin-top: 4px">
+          <div class="d-flex align-items-center justify-content-center px-2 py-1" style="background-color: #AED6F1; text-align: center; border-radius: 0.175rem 0.175rem 0 0; min-height: 48px; font-size: 18px;">Thành viên không có trên
             phả đồ</div>
           <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100"
             style="overflow-y: auto;auto;cursor: pointer">
@@ -82,26 +82,6 @@
       <div id="tree" ref="tree">
       </div>
     </div>
-    <div class="d-flex flex-column position-absolute advanced-filter" :class="{ down: advancedFilterDown }">
-      <div v-if="advancedFilterDown" class="d-flex flex-column">
-
-      </div>
-      <div v-if="!advancedFilterDown">
-        <div class="d-flex align-items-center justify-content-center px-2" style="padding-top: 8px; color: #FFFFFF"> Bộ
-          lọc nâng cao
-        </div>
-      </div>
-      <div @click="advancedFilterDown = !advancedFilterDown" class="d-flex justify-content-center align-items-center pt-2"
-        style="height: 36px;">
-        <svg class="advanced-filter-up-icon" :class="{ rotateUp: !advancedFilterDown }" xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 448 512">
-          <path
-            d="M246.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 109.3 361.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160zm160 352l-160-160c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 301.3 361.4 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3z" />
-        </svg>
-      </div>
-    </div>
-
-
     <div class="Container-select-modal">
       <modal name="Select-option-Modal">
         <div class="card" style="width: 370px;left:45%">
@@ -185,12 +165,12 @@
           <div class="col-9 h-100 position-relative" style="background: #ebebeb">
             <div class="position-absolute w-100 d-flex flex-column" style="height: calc(100% - 64px); top: 0;">
               <div class="d-flex flex-row" style="height: 48px; background-color: #FFFFFF">
-                <div @click="selectEmail()" :class="{ notiSelected: emailSelected }"
-                  class="col-6 d-flex align-items-center justify-content-center"
-                  style="border-radius: 0 0.375rem 0 0; cursor: pointer;">Email</div>
                 <div @click="selectSMS()" :class="{ notiSelected: smsSelected }"
                   class="col-6 d-flex align-items-center justify-content-center"
                   style="border-radius: 0.375rem 0 0 0; cursor: pointer;">SMS</div>
+                <div @click="selectEmail()" :class="{ notiSelected: emailSelected }"
+                  class="col-6 d-flex align-items-center justify-content-center"
+                  style="border-radius: 0 0.375rem 0 0; cursor: pointer;">Email</div>
               </div>
               <div v-if="emailSelected" class="d-flex flex-column mt-2"
                 style="height: calc(100% - 48px); overflow-y: auto;">
@@ -977,8 +957,8 @@ export default {
       displayList: false,
       expandAddRelationship: false,
 
-      emailSelected: true,
-      smsSelected: false,
+      emailSelected: false,
+      smsSelected: true,
 
       expandCreateEmail: false,
       advancedFilterDown: false,

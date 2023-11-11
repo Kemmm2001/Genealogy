@@ -10,6 +10,11 @@
     background-color: #f2f2f2;
 }
 
+@font-face {
+    font-family: "QuicksandBold";
+    src: url(../fonts/static/Quicksand-Bold.ttf) format("truetype");
+}
+
 .main-screen {
     height: 100vh;
     background-color: #E8C77B;
