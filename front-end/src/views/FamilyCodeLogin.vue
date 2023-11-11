@@ -93,7 +93,6 @@
         </div>
         <div class="position-absolute familycode-noti" :class="{ appear: showCode }">
             <div class="w-100 h-100 position-relative">
-                <button @click="copyCode">Copy</button>
                 <div class="position-absolute familycode-noti-timer" :class="{ timerStart: showCode }"></div>
                 <div v-if="showCode" class="w-100 h-100 d-flex align-items-center justify-content-content px-3"
                     style="font-size: 20px;">Đăng
@@ -116,7 +115,6 @@ export default {
             enlarge: false,
             loggingin: true,
             showCode: false,
-            familycode: 'ABC DEF GHI',
 
             familyTree: {
                 memberId: null,
@@ -215,16 +213,6 @@ export default {
                 this.showCode = false;
             }, 15000);
         },
-
-        copyCode() {
-            this.$copyText(this.familycode).then(function (e) {
-                alert('Copied')
-                console.log(e)
-            }, function (e) {
-                alert('Can not copy')
-                console.log(e)
-            })
-        }
     },
     mounted() {
         this.takeAccountId();
