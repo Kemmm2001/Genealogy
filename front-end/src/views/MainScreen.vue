@@ -1,21 +1,21 @@
 <template>
-  <div class="d-flex h-100 w-100">
+  <div class="d-flex h-100 w-100 position-relative">
     <div class="list d-flex flex-column align-items-center">
       <div class="w-100 d-flex flex-row">
-        <div class="col-6" style="padding-top: 12px; padding-left: 12px; padding-right: 6px;">
+        <div class="col-6 px-2" style="padding-top: 8px;">
           <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict()">
             <option :value="null" selected>Tỉnh/Thành phố</option>
             <option v-for="city in ListCity" :key="city.id" :value="city.id">{{ city.name }}</option>
           </select>
         </div>
-        <div class="col-6" style="padding-top: 12px; padding-left: 6px; padding-right: 12px;">
+        <div class="col-6 px-2" style="padding-top: 8px;">
           <select v-model="selectDistrict" class="d-flex text-center form-select dropdown p-0">
             <option :value="null" selected>Quận/Huyện</option>
           </select>
         </div>
       </div>
-      <div class="d-flex flex-row w-100">
-        <div class="col-md-6" style="padding: 12px 6px 0px 12px">
+      <div class="w-100 d-flex flex-row">
+        <div class="col-6 px-2" style="padding-top: 8px;">
           <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
             <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">
               {{
@@ -23,65 +23,57 @@
             </option>
           </select>
         </div>
-        <div class="col-md-6" style="padding: 12px 12px 0px 6px">
+        <div class="col-6 px-2" style="padding-top: 8px;">
           <select class="d-flex text-center form-select dropdown p-0" v-model="selectAge" @change="GetListFilterMember()">
             <option class="dropdown-item" :value="null">Nhóm Tuổi</option>
-            <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">
-              {{ age.From }} -
-              {{ age.End }} Tuổi
-            </option>
+            <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{ age.From }} - {{ age.End }} Tuổi</option>
           </select>
         </div>
       </div>
-      <div class="w-100 d-flex flex-row">
-        <div class="col-6">
-          <div class="w-100" style="padding: 12px 6px 0px 12px">
-            <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary">
-              Tạo thông
-              báo
-            </button>
+      <div class="w-100 d-flex flex-row" style="padding-top: 8px">
+        <div class="col-6 px-2">
+          <div class="w-100">
+            <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary">Tạo thông báo</button>
           </div>
         </div>
-        <div class="col-6">
-          <div class="w-100" style="padding: 12px 12px 0px 6px">
-            <button @click="openCompareModal()" style="width:100%" type="button" class="btn btn-secondary">
-              So
-              sánh
-            </button>
+        <div class="col-6 px-2">
+          <div class="w-100">
+            <button @click="openCompareModal()" style="width:100%" type="button" :class="{'btn': true,'btn-secondary': !isCompare,'btn-primary': isCompare}">So sánh</button>
           </div>
         </div>
       </div>
-      <div class="h-100 w-100 d-flex flex-column" style="padding-top: 12px">
+      <div class="h-100 w-100 d-flex flex-column px-2" style="padding-top: 8px; font-family: 'QuicksandBold', sans-serif;">
         <div class="existing-members d-flex flex-column w-100">
-          <div class="list-item" style="background-color: #AED6F1; text-align: center;">
-            Danh sách thành viên có trên phả
-            đồ
-          </div>
+          <div class="d-flex align-items-center justify-content-center px-2 py-1" style="background-color: #AED6F1; text-align: center; border-radius: 0.175rem 0.175rem 0 0; min-height: 48px; font-size: 18px;">Thành viên có trên phả
+            đồ</div>
           <div class="d-flex flex-column w-100" style="overflow-y: auto;cursor: pointer">
             <div v-for="(n, index) in nodes" :key="n.id">
-              <div @click="handleLeftClick(n.id)" @contextmenu.prevent="handleRightClick(n.id)" :class="{ 'list-item': true, 'selected-list': n.id == CurrentIdMember, 'ancestor-member': index === 0 }">Thành Viên {{ n.name }}</div>
+              <div @click="handleLeftClick(n.id)" @contextmenu.prevent="handleRightClick(n.id)" :class="{ 'list-item': true, 'selected-list': n.id == CurrentIdMember, 'ancestor-member': index === 0 }">{{ n.name }}</div>
             </div>
           </div>
         </div>
-        <div class="nonexisting-members d-flex flex-column w-100">
-          <div class="list-item" style="background-color: #AED6F1; text-align: center;">
-            Danh sách thành viên không có trên
-            phả đồ
-          </div>
-          <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto;auto;cursor: pointer">
-            <div v-for="list in ListUnspecifiedMembers" :key="list.id" @click="handleLeftClick(list.MemberID)" @contextmenu.prevent="handleRightClick(list.MemberID)" class="list-item">Thành Viên {{ list.MemberName }}</div>
+        <div class="d-flex nonexisting-members flex-column w-100" style="margin-top: 4px">
+          <div class="d-flex align-items-center justify-content-center px-2 py-1" style="background-color: #AED6F1; text-align: center; border-radius: 0.175rem 0.175rem 0 0; min-height: 48px; font-size: 18px;">Thành viên không có trên
+            phả đồ</div>
+          <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100"
+            style="overflow-y: auto;auto;cursor: pointer">
+            <div v-for="list in ListUnspecifiedMembers" :key="list.id" @click="handleLeftClick(list.MemberID)"
+              @contextmenu.prevent="handleRightClick(list.MemberID)" class="list-item">{{ list.MemberName }}</div>
           </div>
         </div>
       </div>
     </div>
-    <div class="d-flex main-screen align-items-center w-100">
+    <div class="d-flex main-screen align-items-center w-100 positon-relative">
+      <div class="position-absolute" style="height: 36px; width: 200px; top: 8px; margin-left: 8px; z-index: 1;">
+        <input type="text" class="form-control h-100 w-100" placeholder="Tên thành viên..." />
+      </div>
       <div id="tree" ref="tree"></div>
     </div>
     <div class="Container-select-modal">
       <modal name="Select-option-Modal">
         <div class="card" style="width: 370px;left:45%">
           <div class="card-header text-center" style="background-color:#E8C77B;height: 50px">
-            <h5>Thành Viên {{ objMemberInfor.MemberName }}</h5>
+            <h5>{{ TitleModal }}</h5>
             <div class="close-add-form" @click="closeSelectModal()" style="top: 8px;right:5px">
               <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -92,11 +84,11 @@
             <div class="list-group">
               <div class="list-group-item feature-overview">Các chức năng chính</div>
               <div class="list-group-item" @click="getInforMember(CurrentIdMember)">Thông tin chi tiết</div>
-              <div class="list-group-item" @click="addMember('AddParent')">Thêm Cha</div>
-              <div class="list-group-item" @click="addMember('AddParent')">Thêm Mẹ</div>
-              <div class="list-group-item" @click="addMember('AddMarriage')">Thêm Chồng</div>
-              <div class="list-group-item" @click="addMember('AddMarriage')">Thêm Vợ</div>
-              <div class="list-group-item" @click="addMember('AddChild')">Thêm Con</div>
+              <div class="list-group-item" @click="openMemberModal('AddParent', 'Cha')">Thêm Cha</div>
+              <div class="list-group-item" @click="openMemberModal('AddParent', 'Mẹ')">Thêm Mẹ</div>
+              <div class="list-group-item" @click="openMemberModal('AddMarriage', 'Chồng')">Thêm Chồng</div>
+              <div class="list-group-item" @click="openMemberModal('AddMarriage', 'Vợ')">Thêm Vợ</div>
+              <div class="list-group-item" @click="openMemberModal('AddChild', 'Con')">Thêm Con</div>
               <div class="list-group-item" @click="removeMember()">Xóa thành viên (*)</div>
               <div class="list-group-item feature-overview">Các chức năng Khác</div>
               <div class="list-group-item" style="border-top: none;" @click="setPaternalAncestor(2)">Set làm tộc trưởng</div>
@@ -143,15 +135,19 @@
                     <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
                   </svg>
                 </div>
-                <div class="d-flex justify-content-center" style="flex-grow: 1;">Thành viên {{ n.name }}</div>
+                <div class="d-flex justify-content-center" style="flex-grow: 1;">{{ n.name }}</div>
               </div>
             </div>
           </div>
           <div class="col-9 h-100 position-relative" style="background: #ebebeb">
             <div class="position-absolute w-100 d-flex flex-column" style="height: calc(100% - 64px); top: 0;">
               <div class="d-flex flex-row" style="height: 48px; background-color: #FFFFFF">
-                <div @click="selectEmail()" :class="{ notiSelected: emailSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0 0.375rem 0 0; cursor: pointer;">Email</div>
-                <div @click="selectSMS()" :class="{ notiSelected: smsSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0.375rem 0 0 0; cursor: pointer;">SMS</div>
+                <div @click="selectSMS()" :class="{ notiSelected: smsSelected }"
+                  class="col-6 d-flex align-items-center justify-content-center"
+                  style="border-radius: 0.375rem 0 0 0; cursor: pointer;">SMS</div>
+                <div @click="selectEmail()" :class="{ notiSelected: emailSelected }"
+                  class="col-6 d-flex align-items-center justify-content-center"
+                  style="border-radius: 0 0.375rem 0 0; cursor: pointer;">Email</div>
               </div>
               <div v-if="emailSelected" class="d-flex flex-column mt-2" style="height: calc(100% - 48px); overflow-y: auto;">
                 <div class="sent-mail d-flex flex-row">
@@ -561,10 +557,7 @@
                   </div>
                   <div style="position: relative; margin-right:10px">
                     <input v-model="objMemberInfor.Origin" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberInfor.Origin }">
-                      Nguyên
-                      Quán
-                    </label>
+                    <label class="form-label" for="input" :class="{ 'active': objMemberInfor.Origin }">Nguyên Quán</label>
                   </div>
                   <div class="form-group">
                     <h6 style="margin-bottom:20px">
@@ -600,11 +593,11 @@
                     <h6 style="margin-bottom:20px">Ngày Mất (*)</h6>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
-                        <input type="date" class="form-control modal-item" placeholder />
+                        <input v-model="objMemberInfor.Dod" type="date" class="form-control modal-item" placeholder />
                         <label class="form-label" for="input">Dương Lịch</label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
-                        <input type="date" class="form-control modal-item" placeholder />
+                        <input v-model="objMemberInfor.LunarDod" type="date" class="form-control modal-item" placeholder />
                         <label class="form-label-number" min="0" for="input">Âm lịch</label>
                       </div>
                     </div>
@@ -786,8 +779,8 @@
         </div>
         <div class="card-footer" style="background-color:#E8C77B">
           <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-primary mr-2" @click="addMember()">Thêm</button>
-            <button v-if="isEdit" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
+            <button v-if="isAdd" type="button" class="btn btn-primary mr-2" @click="addMember()">Thêm</button>
+            <button v-else-if="isEdit" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
             <button style="margin-left:10px" type="button" class="btn btn-secondary" @click="closeSelectModal()">Cancel</button>
           </div>
         </div>
@@ -837,9 +830,9 @@ export default {
       selectDistrict: null,
       listFilterMember: null,
 
-      isAddChildren: false,
-      isAddMarried: false,
-      isAddParent: false,
+      action: null,
+      isAdd: false,
+      isEdit: false,
       checkAll: false,
       newIdMember: null,
       CurrentIdMember: null,
@@ -856,8 +849,7 @@ export default {
         MarriageID: null,
         MemberName: null,
         NickName: null,
-        HasNickName: null,
-        BirthOrder: 0,
+        BirthOrder: 1,
         Origin: null,
         NationalityID: 1,
         ReligionID: 1,
@@ -866,6 +858,7 @@ export default {
         BirthPlace: null,
         IsDead: 0,
         Dod: null,
+        LunarDod: null,
         PlaceOfDeadth: null,
         GraveSite: null,
         Note: null,
@@ -903,24 +896,26 @@ export default {
       },
       objMember: {},
       TitleModal: null,
-      isEdit: false,
       ListNationality: null,
       ListReligion: null,
       nodes: [],
-
       extendedInfo: true,
       extendedContact: false,
       extendedJob: false,
       extendedEdu: false,
       extendedNote: false,
-
+      lastClickedNodeId: null,
+      isCompare: false,
+      objCompareMember1: {},
+      objCompareMember2: {},
       displayList: false,
       expandAddRelationship: false,
 
-      emailSelected: true,
-      smsSelected: false,
+      emailSelected: false,
+      smsSelected: true,
 
       expandCreateEmail: false,
+      advancedFilterDown: false,
     };
   },
   methods: {
@@ -965,9 +960,29 @@ export default {
         nodeMouseClick: FamilyTree.action.none,
         enableSearch: false,
       });
-      // this.family.onInit(() => {
-      //   this.family.setViewBox("-30,-30,1939,1638");
-      // });
+      this.family.onInit(() => {
+        this.family.load(this.nodes);
+      });
+      this.family.onField((args) => {
+        if (args.data.dod == null) {
+          FamilyTree.templates.tommy_female.field_3 = null;
+          FamilyTree.templates.tommy_male.field_3 = null;
+          ('<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="195" y="50" text-anchor="middle"></text>');
+          FamilyTree.templates.tommy_female.field_4 =
+            '<text class="field_4" style="font-size: 12px;" fill="#ffffff" x="90" y="90">Đời: {val}</text>';
+          FamilyTree.templates.tommy_male.field_4 =
+            '<text class="field_4" style="font-size: 12px;" fill="#ffffff" x="90" y="90">Đời: {val}</text>';
+        } else {
+          FamilyTree.templates.tommy_female.field_3 =
+            '<text class="field_3" style="font-size: 12px;" fill="#ffffff" x="90" y="90">Ngày Mất: {val}</text>';
+          FamilyTree.templates.tommy_female.field_4 =
+            '<text class="field_4" style="font-size: 12px;" fill="#ffffff" x="90" y="110">Đời: {val}</text>';
+          FamilyTree.templates.tommy_male.field_3 =
+            '<text class="field_3" style="font-size: 12px;" fill="#ffffff" x="90"  y="90">Ngày Mất: {val}</text>';
+          FamilyTree.templates.tommy_male.field_4 =
+            '<text class="field_4" style="font-size: 12px;" fill="#ffffff" x="90" y="110">Đời: {val}</text>';
+        }
+      });
 
       //Get tọa độ ban đầu
       let CoordinatesNode = this.getViewBox();
@@ -995,11 +1010,65 @@ export default {
         );
       });
       this.family.onNodeClick((arg) => {
-        this.getInforMember(arg.node.id);
+        this.highLightSelectNode(arg.node.id);
+        if (this.isCompare) {
+          if (this.lastClickedNodeId == null) {
+            this.lastClickedNodeId = arg.node.id;
+          } else {
+            if (this.lastClickedNodeId != arg.node.id) {
+              this.compareMember(this.lastClickedNodeId, arg.node.id);
+            } else {
+              this.lastClickedNodeId = arg.node.id;
+            }
+          }
+        } else {
+          this.getInforMember(arg.node.id);
+        }
       });
     },
     getViewBox() {
       return this.family.getViewBox();
+    },
+    getResultMember(id) {
+      const getNodeById = (nodeId) =>
+        this.nodes.find((node) => node.id == nodeId);
+
+      const result = getNodeById(id);
+      const resultMid = result.mid ? getNodeById(result.mid) : null;
+      const resultFid = result.fid ? getNodeById(result.fid) : null;
+
+      const objdata = {
+        name: result.name,
+        gender: result.gender === "male" ? "Nam" : "Nữ",
+        wife: resultMid ? resultMid.name : "Không có vợ",
+        husband: resultMid ? resultMid.name : "Không có Chồng",
+        dob: result.dob,
+        dod: result.dod,
+        father: null,
+        mother: null,
+      };
+
+      if (resultFid) {
+        if (resultFid.gender.toLowerCase() == "male") {
+          objdata.father = resultFid.name;
+          objdata.mother = resultFid.mid
+            ? getNodeById(resultFid.mid)?.name
+            : null;
+        } else {
+          objdata.mother = resultFid.name;
+          objdata.father = resultFid.mid
+            ? getNodeById(resultFid.mid)?.name
+            : null;
+        }
+      }
+
+      return objdata;
+    },
+    compareMember(memberId1, memberId2) {
+      this.objCompareMember1 = this.getResultMember(memberId1);
+      this.objCompareMember2 = this.getResultMember(memberId2);
+      console.log(this.objCompareMember1);
+      console.log(this.objCompareMember2);
     },
     setPaternalAncestor(roleId) {
       HTTP.post("setRole", {
@@ -1110,14 +1179,17 @@ export default {
         false,
         timezone
       );
+      let month = dob.getMonth() + 1;
+      let date = dob.getDate();
+      if (month < 10) {
+        month = "0" + (dob.getMonth() + 1);
+      }
+      if (date < 10) {
+        date = "0" + dob.getDate();
+      }
+
       this.objMemberInfor.Dob =
-        "" +
-        dob.getFullYear() +
-        "-" +
-        (dob.getMonth() + 1) +
-        "-" +
-        dob.getDate();
-      console.log(this.objMemberInfor.Dob);
+        "" + dob.getFullYear() + "-" + month + "-" + date;
     },
     convertSolarToLunar() {
       let Dob = new Date(this.objMemberInfor.Dob);
@@ -1131,7 +1203,6 @@ export default {
       }
       this.objMemberInfor.LunarDob =
         "" + new LunarDate(Dob).getYear() + "-" + month + "-" + date;
-      console.log(this.objMemberInfor.LunarDob);
     },
     getInforMember(id) {
       HTTP.get("InforMember", {
@@ -1141,7 +1212,6 @@ export default {
       })
         .then((response) => {
           this.objMember = response.data;
-
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
             this.takeDataMember(this.CurrentIdMember);
@@ -1150,6 +1220,9 @@ export default {
               this.objMemberInfor.LunarDob
             );
             this.objMemberInfor.Dod = this.formatDate(this.objMemberInfor.Dod);
+            this.objMemberInfor.LunarDod = this.formatDate(
+              this.objMemberInfor.LunarDod
+            );
           }
           if (this.objMember.contact.length > 0) {
             this.objMemberContact = this.objMember.contact[0];
@@ -1191,7 +1264,7 @@ export default {
     removeMember() {
       HTTP.delete("deleteContact", {
         params: {
-          memberID: this.CurrentIdMember,
+          MemberID: this.CurrentIdMember,
         },
       }).catch(() => {
         this.NotificationsDelete("Đã sảy ra lỗi, không thể xóa");
@@ -1199,7 +1272,7 @@ export default {
 
       HTTP.delete("RemoveListJob", {
         params: {
-          memberID: this.CurrentIdMember,
+          MemberID: this.CurrentIdMember,
         },
       }).catch((e) => {
         console.log(e);
@@ -1207,17 +1280,22 @@ export default {
 
       HTTP.delete("deleteListEducation", {
         params: {
-          memberID: this.CurrentIdMember,
+          MemberID: this.CurrentIdMember,
         },
       }).catch((e) => {
         console.log(e);
       });
       HTTP.delete("member", {
         params: {
-          memberID: this.CurrentIdMember,
+          MemberID: this.CurrentIdMember,
         },
-      }).then(() => {
-        this.NotificationsDelete("remove success fully");
+      }).then((response) => {
+        if (response.data.success == true) {
+          this.NotificationsDelete(response.data.message);
+        } else {
+          this.NotificationsDelete(response.data.message);
+        }
+        this.$modal.hide("Select-option-Modal");
         this.getListMember();
       });
     },
@@ -1279,7 +1357,7 @@ export default {
           console.log(e);
         });
     },
-    async addMember(action) {
+    async addMember() {
       await HTTP.post("member", {
         MemberName: this.objMemberInfor.MemberName,
         NickName: this.objMemberInfor.NickName,
@@ -1293,6 +1371,7 @@ export default {
         bnirthPlace: this.objMemberInfor.BirthPlace,
         IsDead: this.IsDead,
         Dod: this.objMemberInfor.Dod,
+        LunarDod: this.objMemberInfor.LunarDod,
         PlaceOfDeath: this.objMemberInfor.PlaceOfDeadth,
         GraveSite: this.objMemberInfor.GraveSite,
         Note: this.objMemberInfor.Note,
@@ -1300,7 +1379,7 @@ export default {
         BloodType: this.objMemberInfor.BloodType,
         Male: this.objMemberInfor.Male,
         CodeId: this.CodeID,
-        Action: action,
+        Action: this.action,
       })
         .then((response) => {
           if (response.data.success == true) {
@@ -1308,20 +1387,28 @@ export default {
           } else {
             this.NotificationsDelete(response.data.message);
           }
-          this.newIdMember = response.data.data.memberId;
-          if (this.objMemberContact.Phone != null) {
+          this.newIdMember = response.data.data.MemberID;
+          if (
+            this.objMemberContact.Phone != null ||
+            this.objMemberContact.Address != null ||
+            this.objMemberContact.Email != null ||
+            this.FacebookUrl != null ||
+            this.objMemberContact.Zalo != null
+          ) {
             this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
+            HTTP.post("addContact", {
+              memberId: this.newIdMember,
+              Address: this.objMemberContact.Address,
+              Phone: this.objMemberContact.Phone,
+              Email: this.objMemberContact.Email,
+              FacebookUrl: this.objMemberContact.FacebookUrl,
+              Zalo: this.objMemberContact.Zalo,
+            }).catch((e) => {
+              console.log(e);
+            });
           }
-          HTTP.post("addContact", {
-            memberId: this.newIdMember,
-            Address: this.objMemberContact.Address,
-            Phone: this.objMemberContact.Phone,
-            Email: this.objMemberContact.Email,
-            FacebookUrl: this.objMemberContact.FacebookUrl,
-            Zalo: this.objMemberContact.Zalo,
-          }).catch((e) => {
-            console.log(e);
-          });
+          this.$modal.hide("member-modal");
+          this.$modal.hide("Select-option-Modal");
           this.family.load(this.nodes);
           this.getListMember();
         })
@@ -1374,75 +1461,53 @@ export default {
 
     updateInformation() {
       HTTP.put("member", {
-        memberID: this.CurrentIdMember,
-        memberName: this.objMemberInfor.MemberName,
-        nickName: this.objMemberInfor.NickName,
-        parentID: this.objMemberInfor.ParentID,
-        marriageID: this.objMemberInfor.MarriageID,
-        hasNickName: this.objMemberInfor.HasNickName,
-        birthOrder: this.objMemberInfor.BirthOrder,
-        origin: this.objMemberInfor.Origin,
-        nationalityId: this.objMemberInfor.NationalityID,
-        religionId: this.objMemberInfor.ReligionID,
-        dob: this.objMemberInfor.Dob,
-        lunarDob: this.objMemberInfor.LunarDob,
-        birthPlace: this.objMemberInfor.BirthPlace,
+        MemberID: this.CurrentIdMember,
+        MemberName: this.objMemberInfor.MemberName,
+        NickName: this.objMemberInfor.NickName,
+        ParentID: this.objMemberInfor.ParentID,
+        MarriageID: this.objMemberInfor.MarriageID,
+        BirthOrder: this.objMemberInfor.BirthOrder,
+        Origin: this.objMemberInfor.Origin,
+        NationalityId: this.objMemberInfor.NationalityID,
+        ReligionId: this.objMemberInfor.ReligionID,
+        Dob: this.objMemberInfor.Dob,
+        LunarDob: this.objMemberInfor.LunarDob,
+        BirthPlace: this.objMemberInfor.BirthPlace,
         IsDead: this.objMemberInfor.IsDead,
-        dod: this.objMemberInfor.Dod,
-        placeOfDeath: this.objMemberInfor.PlaceOfDeadth,
-        graveSite: this.objMemberInfor.GraveSite,
-        note: this.objMemberInfor.Note,
-        generation: this.objMemberInfor.Generation,
-        bloodType: this.objMemberInfor.BloodType,
-        male: this.objMemberInfor.Male,
-        codeId: this.objMemberInfor.CodeID,
+        Dod: this.objMemberInfor.Dod,
+        LunarDod: this.objMemberInfor.LunarDod,
+        PlaceOfDeath: this.objMemberInfor.PlaceOfDeadth,
+        GraveSite: this.objMemberInfor.GraveSite,
+        Note: this.objMemberInfor.Note,
+        BloodType: this.objMemberInfor.BloodType,
+        Male: this.objMemberInfor.Male,
       })
-        .then(() => {
-          if (this.objMemberContact.Phone != null) {
-            this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
+        .then((response) => {
+          console.log(response.data);
+          if (response.data.success == true) {
+            this.NotificationsScuccess(response.data.message);
+            if (this.objMemberContact.Phone != null) {
+              this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
+            }
+            HTTP.put("updateContact", {
+              MemberID: this.CurrentIdMember,
+              Address: this.objMemberContact.Address,
+              Phone: this.objMemberContact.Phone,
+              Email: this.objMemberContact.Email,
+              FacebookUrl: this.objMemberContact.FacebookUrl,
+              Zalo: this.objMemberContact.Zalo,
+            }).then(() => {
+              this.closeMemberModal();
+              this.family.load(this.nodes);
+              this.getListMember();
+            });
+          } else {
+            this.NotificationsDelete(response.data.message);
           }
-          console.log("Trong: " + this.objMemberContact.Phone);
-          HTTP.put("updateContact", {
-            MemberID: this.CurrentIdMember,
-            Address: this.objMemberContact.Address,
-            Phone: this.objMemberContact.Phone,
-            Email: this.objMemberContact.Email,
-            FacebookUrl: this.objMemberContact.FacebookUrl,
-            Zalo: this.objMemberContact.Zalo,
-          }).then(() => {
-            this.NotificationsScuccess("Sửa thông tin thành công");
-            this.closeMemberModal();
-            this.family.load(this.nodes);
-            this.getListMember();
-          });
         })
         .catch((e) => {
           console.log(e);
         });
-    },
-    setDefaultCondition() {
-      this.isAddChildren = false;
-      this.isAddMarried = false;
-      this.isAddParent = false;
-      this.isEdit = false;
-    },
-    async openMemberModal(action) {
-      await this.setDefaultCondition();
-      if (action == "children") {
-        this.TitleModal = "Thêm Con";
-        this.isAddChildren = true;
-        this.setDefauValueInModal();
-      } else if (action == "married") {
-        this.TitleModal = "Thêm Vợ - Chồng";
-        this.isAddMarried = true;
-        this.setDefauValueInModal();
-      } else if (action == "parent") {
-        this.TitleModal = "Thêm Cha - mẹ";
-        this.isAddParent = true;
-        this.setDefauValueInModal();
-      }
-      this.selectedInfor();
-      this.$modal.show("member-modal");
     },
     selectRowJob(job) {
       this.JobIDToUpdate = job.JobID;
@@ -1479,23 +1544,23 @@ export default {
         });
     },
     RemoveHightLight() {
+      var nodeElement;
       for (let i = 0; i < this.nodes.length; i++) {
-        this.nodes[i].tags = this.nodes[i].tags.filter(
-          (tag) => tag !== "choose" && tag !== "notchoose"
-        );
+        nodeElement = this.family.getNodeElement(this.nodes[i].id);
+        nodeElement.classList.remove("selected");
+        nodeElement.classList.remove("notselected");
       }
     },
     highLightSelectNode(SelectNode) {
+      var nodeElement;
       this.RemoveHightLight();
       let selectedNode = this.nodes.find((node) => node.id == SelectNode);
       if (selectedNode) {
-        selectedNode.tags.push("choose");
+        nodeElement = this.family.getNodeElement(selectedNode.id);
+        nodeElement.classList.add("selected");
       } else {
         console.log("Nút không tồn tại:", SelectNode);
       }
-
-      // Cập nhật giao diện
-      this.family.load(this.nodes);
     },
     handleRightClick(id) {
       this.OnpenModal_SelectOption(id);
@@ -1504,18 +1569,19 @@ export default {
       this.family.center(id);
     },
     highLightNode() {
+      var nodeElement;
       this.RemoveHightLight();
       let memberIds = this.listFilterMember.map((item) => item.MemberID);
       if (this.selectBloodType != null || this.selectAge != null)
         this.nodes.forEach((node) => {
           if (memberIds.includes(node.id)) {
-            node.tags.push("choose");
+            nodeElement = this.family.getNodeElement(node.id);
+            nodeElement.classList.add("selected");
           } else {
-            node.tags.push("notchoose");
+            nodeElement = this.family.getNodeElement(node.id);
+            nodeElement.classList.add("notselected");
           }
         });
-
-      this.family.load(this.nodes);
     },
     getListAfterSetPaternalAncestor(id) {
       HTTP.get("viewTree", {
@@ -1567,10 +1633,24 @@ export default {
       this.$modal.hide("noti-modal");
     },
     openCompareModal() {
-      this.$modal.show("compare-modal");
+      this.isCompare = !this.isCompare;
     },
     closeCompareModal() {
       this.$modal.hide("compare-modal");
+    },
+    openMemberModal(action, title) {
+      this.isAdd = true;
+      this.isEdit = false;
+      this.objMemberInfor = {};
+      this.objMemberInfor.BirthOrder = 1;
+      this.objMemberInfor.Male = 1;
+      this.objMemberInfor.BloodType = null;
+      this.objMemberInfor.NationalityID = 1;
+      this.objMemberInfor.ReligionID = 1;
+      this.objMemberContact = {};
+      this.TitleModal = "Thêm Thông Tin " + title;
+      this.action = action;
+      this.$modal.show("member-modal");
     },
     closeMemberModal() {
       this.$modal.hide("member-modal");
@@ -1578,18 +1658,16 @@ export default {
     },
 
     OnpenModal_SelectOption(id) {
-      this.highLightSelectNode(id);
+      // this.highLightSelectNode(id);
+      let foundNode = this.nodes.find((node) => node.id == id);
+      this.TitleModal = foundNode.name;
       this.$modal.show("Select-option-Modal");
+      this.highLightSelectNode(id);
       this.CurrentIdMember = id;
     },
     closeSelectModal() {
       this.CurrentIdMember = 0;
-      for (let i = 0; i < this.nodes.length; i++) {
-        this.nodes[i].tags = this.nodes[i].tags.filter(
-          (tag) => tag !== "choose" && tag !== "notchoose"
-        );
-      }
-      this.family.load(this.nodes);
+      this.RemoveHightLight();
       this.$modal.hide("Select-option-Modal");
     },
     getListMember(idPaternalAncestor) {
@@ -1606,6 +1684,9 @@ export default {
           console.log(this.nodes);
           for (let i = 0; i < this.nodes.length; i++) {
             this.nodes[i].tags = [];
+            if (this.nodes[i].isDead == 1) {
+              this.nodes[i].tags.push("died");
+            }
             if (this.nodes[i].img == null) {
               if (this.nodes[i].gender == "male") {
                 this.nodes[i].img =
@@ -1713,6 +1794,7 @@ export default {
     selectSMS() {
       this.smsSelected = true;
       this.emailSelected = false;
+      this.expandCreateEmail = false;
     },
   },
   created() {

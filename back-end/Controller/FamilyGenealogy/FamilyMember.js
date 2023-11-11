@@ -64,17 +64,19 @@ var addMember = async (req, res) => {
     try {
         if (req.file != null) {
             req.body.Image = req.file.path;
+        } else {
+            req.body.Image = null;
         }
         console.log('Request req.body: ', req.body);
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
             'MemberName',
             'BirthOrder',
-            'NationalityId',
-            'ReligionId',
+            'NationalityID',
+            'ReligionID',
             'IsDead',
             'CurrentGeneration',
-            'CodeId',
+            'CodeID',
             'BloodType',
             'Male'
         ];
@@ -85,7 +87,6 @@ var addMember = async (req, res) => {
         if (missingFields.length) {
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
-        console.log("No missing fields");
         db.connection.beginTransaction();
         let dataRes = {};
         // kiểm tra xem req.body.Action có tồn tại và là 1 trong 3 trường hợp AddParent, AddChild, AddMarriage không
@@ -94,42 +95,47 @@ var addMember = async (req, res) => {
             const action = ['AddParent', 'AddChild', 'AddMarriage'];
             if (action.filter(field => field === req.body.Action).length == 0) {
                 db.connection.rollback();
-                return res.send(Response.badRequestResponse(null, "Action is not valid"));
+                return res.send(Response.badRequestResponse(null, "Action không hợp lệ"));
             }
             if (req.body.CurrentMemberID == null) {
                 db.connection.rollback();
-                return res.send(Response.badRequestResponse(null, "Missing CurrentMemberID"));
+                return res.send(Response.badRequestResponse(null, "Thiếu CurrentMemberID"));
             }
             let currentMember = await FamilyManagementService.getMemberByMemberID(req.body.CurrentMemberID);
             if (currentMember == null || currentMember.length == 0) {
                 db.connection.rollback();
-                return res.send(Response.dataNotFoundResponse(null, "CurrentMemberID not found"));
+                return res.send(Response.dataNotFoundResponse(null, "CurrentMemberID không tồn tại"));
             }
-            // thêm member vào database
-            let parent;
-            if (req.body.parentID != null) {
-                parent = await FamilyManagementService.getMemberByMemberID(req.body.ParentID);
-                if (parent == null || parent.length == 0) {
+            /* nếu mà đã cưới, đồng thời không có bố/mẹ, thì tức là member này là vợ/chồng 
+                  của người trong gia phả, thì sẽ không được thêm ai cả */
+            if (req.body.Action === 'AddParent' || req.body.Action === 'AddChild') {
+                if ((currentMember[0].MarriageID !== -1 || currentMember[0].MarriageID != null)
+                    && (currentMember[0].ParentID === -1) || currentMember[0].ParentID == null) {
                     db.connection.rollback();
-                    return res.send(Response.dataNotFoundResponse(null, "ParentID not found"));
-                }
-                /* nếu mà đã cưới, đồng thời không có phụ huynh, thì tức là member này là vợ/chồng 
-                của người trong gia phả, thì sẽ không được thêm ai cả */
-                if ((parent[0].MarriageID !== -1 || parent[0].MarriageID != null)
-                    && (parent[0].ParentID === -1) || parent[0].ParentID == null) {
-                    db.connection.rollback();
-                    return res.send(Response.badRequestResponse(null, "This member is married by some one in family tree, so you can't add parent"));
-                }
-            }
+                    // Khai báo thông báo chung
+                    let commonMessage = "Thành viên này là ";
 
+                    // Kiểm tra giới tính và thiết lập thông báo cụ thể
+                    let genderMessage = currentMember[0].Male == 1 ? "chồng" : "vợ";
+
+                    // Tạo thông báo hoàn chỉnh
+                    let errorMessage = `${commonMessage}${genderMessage} của người trong gia phả, không thể thêm cha mẹ hoặc con cái`;
+
+                    // Gửi phản hồi về cho người dùng
+                    return res.send(Response.badRequestResponse(null, errorMessage));
+                }
+            }
+            // trường hợp muốn thêm cha mẹ
             if (req.body.Action === 'AddParent') {
-                await FamilyManagementService.setGeneration(req.body.CurrentGeneration+1, data.insertId);
+                await FamilyManagementService.setGeneration(req.body.CurrentGeneration + 1, data.insertId);
                 await FamilyManagementService.insertParentIdToMember(data.insertId, req.body.CurrentMemberID);
             }
+            // trường hợp muốn thêm con cái
             else if (req.body.Action === 'AddChild') {
-                await FamilyManagementService.setGeneration(req.body.CurrentGeneration-1, data.insertId);
+                await FamilyManagementService.setGeneration(req.body.CurrentGeneration - 1, data.insertId);
                 await FamilyManagementService.insertParentIdToMember(req.body.CurrentMemberID, data.insertId);
             }
+            // trường hợp muốn thêm vợ chồng
             else if (req.body.Action === 'AddMarriage') {
                 await FamilyManagementService.setGeneration(req.body.CurrentGeneration, data.insertId);
                 await FamilyManagementService.InsertMarriIdToMember(data.insertId, req.body.CurrentMemberID);
@@ -137,11 +143,12 @@ var addMember = async (req, res) => {
             }
             // kết thúc phần thêm member theo mối quan hệ cha mẹ, con cái, vợ chồng
 
+        } else {
+            await FamilyManagementService.setGeneration(req.body.CurrentGeneration, data.insertId);
         }
         db.connection.commit();
         dataRes.MemberID = data.insertId;
         dataRes.affectedRows = data.affectedRows;
-        console.log("ds" + dataRes);
         return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
@@ -152,23 +159,20 @@ var addMember = async (req, res) => {
 
 var updateMember = async (req, res) => {
     try {
-        console.log('Request req.body: ', req.body);
-        let dataMember = await FamilyManagementService.getMemberByMemberID(req.body.MemberID);
-        if (dataMember == null || dataMember.length == 0) {
-            return res.send(Response.dataNotFoundResponse());
+        if (req.file != null) {
+            req.body.Image = req.file.path;
+        } else {
+            req.body.Image = null;
         }
+        console.log('Request req.body: ', req.body);
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
             'MemberID',
             'MemberName',
-            'NickName',
-            'HasNickName',
             'BirthOrder',
-            'NationalityId',
-            'ReligionId',
+            'NationalityID',
+            'ReligionID',
             'IsDead',
-            'Generation',
-            'CodeId',
             'BloodType',
             'Male'
         ];
@@ -178,8 +182,13 @@ var updateMember = async (req, res) => {
         if (missingFields.length) {
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
+        let dataMember = await FamilyManagementService.getMemberByMemberID(req.body.MemberID);
+        if (dataMember == null || dataMember.length == 0) {
+            return res.send(Response.dataNotFoundResponse());
+        }
+        req.body.Generation = dataMember[0].Generation;
+        req.body.CodeID = dataMember[0].CodeID;
         // update member vào database
-        req.body.Image = req.file.path;
         let data = await FamilyManagementService.updateMember(req.body);
         dataRes = {
             memberID: req.body.memberID,
@@ -195,11 +204,12 @@ var updateMember = async (req, res) => {
 
 var deleteMember = async (req, res) => {
     try {
-        // Log ra thông tin trong req.query
+        // Log ra thông tin trong req.query      
         let dataMember = await FamilyManagementService.getMemberByMemberID(req.query.MemberID);
         if (dataMember == null || dataMember.length == 0) {
             return res.send(Response.dataNotFoundResponse());
-        } // các trường bắt buộc phải có trong req.query
+        }
+        // các trường bắt buộc phải có trong req.query
         const requiredFields = [
             'MemberID'
         ];

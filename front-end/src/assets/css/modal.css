@@ -298,7 +298,8 @@ input:focus~label.form-label-number {
 }
 
 .notiSelected{
-    background-color: #ebebeb;
+    background-color: #007bff;
+    color: #FFFFFF;
 }
 
 .sent-sms{

@@ -1,4 +1,4 @@
-const Response = require("../../Utils/Response"); 
+const Response = require("../../Utils/Response");
 const fs = require('fs');
 
 
@@ -48,4 +48,4 @@ var getDistrict = (req, res) => {
 
 
 
-module.exports = {getProvince, getDistrict}
+module.exports = { getProvince, getDistrict }

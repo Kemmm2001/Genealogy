@@ -89,6 +89,14 @@
                 </div>
             </div>
         </div>
+        <div class="position-absolute familycode-noti" :class="{ appear: showCode }">
+            <div class="w-100 h-100 position-relative">
+                <div class="position-absolute familycode-noti-timer" :class="{ timerStart: showCode }"></div>
+                <div v-if="showCode" class="w-100 h-100 d-flex align-items-center justify-content-content px-3"
+                    style="font-size: 20px;">Đăng
+                    kí thành công! Mã gia tộc của bạn là {{this.familycode}}</div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -104,6 +112,8 @@ export default {
             right: false,
             enlarge: false,
             loggingin: true,
+            showCode: false,
+            familycode: null,
 
             familyTree:{
                 memberId: null,
@@ -115,7 +125,7 @@ export default {
             code1: null,
             code2: null,
             code3: null,
-            codeId: null,
+            codeIdLogin:null,
             accountID: null,
         }
     },
@@ -126,7 +136,8 @@ export default {
                 'Authorization': 'Bearer '+VueCookies.get('accessToken'),
                 },
             }).then((response) => {
-                this.accountID = response.accountID
+                this.accountID = response.data.accountID
+                console.log(this.accountID)
             })
             .catch((e) => {
                 console.log(e);
@@ -137,33 +148,21 @@ export default {
                 accountID: this.accountID,
                 treeName: this.familyTree.treeName,
                 ethnicity:this.familyTree.ethnicity,
+                deathAnniversary: this.familyTree.deathAnniersary
             })
                 .then((response) => {
-                    this.codeId = response.data[0].codeId
-                })
-                .catch((e) => {
-                    console.log(e);
-                });
-            HTTP.post("newGeneral", {
-                TreeName: this.familyTree.treeName,
-                DeathAnniversary: this.familyTree.deathAnniersary,
-                Ethnicity: this.familyTree.ethnicity,
-                CodeID:222111222,
-            })
-                .then((response) => {
-                    this.moveToRight()
-                    this.enlargeBackground()
-                    localStorage.setItem('MemberID', response.data[0].insertId);  
+                    this.familycode = response.data.codeID
+                    this.showFamilyCode();
                 })
                 .catch((e) => {
                     console.log(e);
                 });
         },
         loginWithCode(){
-            this.codeId = this.code1+this.code2+this.code3;
+            this.codeIdLogin = this.code1+"-"+this.code2+"-"+this.code3;
             HTTP.get("generalInfor", {
                 params:{
-                    CodeID: this.codeId,
+                    CodeID: this.codeIdLogin,
                 }
             }).then((response) => {
                 if(response.data[0] != null){
@@ -195,9 +194,15 @@ export default {
                 this.right = false;
             }, 300);
         },
+        showFamilyCode() {
+            this.showCode = true;
+            setTimeout(() => {
+                this.showCode = false;
+            }, 15000);
+        },
     },
     mounted(){
         this.takeAccountId();
-    }
+    },
 }
 </script>
