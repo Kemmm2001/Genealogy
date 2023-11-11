@@ -1,0 +1,24 @@
+.familycode-noti{
+    height: 0;
+    width: 400px;
+    bottom: 12px;
+    right: 12px;
+    background-color: lightgreen;
+    border-radius: 0.375rem;
+    transition: 0.4s;
+}
+
+.familycode-noti.appear{
+    height: 130px;
+}
+
+.familycode-noti-timer{
+    height: 0.2%;
+    background-color: #000;
+    transition: 15s;
+    width: 100%;
+}
+
+.familycode-noti-timer.timerStart{
+    width: 0;
+}
