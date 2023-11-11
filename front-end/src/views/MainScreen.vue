@@ -835,6 +835,7 @@ export default {
         BirthPlace: null,
         IsDead: 0,
         Dod: null,
+        LunarDod: null,
         PlaceOfDeadth: null,
         GraveSite: null,
         Note: null,
@@ -875,13 +876,15 @@ export default {
       ListNationality: null,
       ListReligion: null,
       nodes: [],
-
       extendedInfo: true,
       extendedContact: false,
       extendedJob: false,
       extendedEdu: false,
       extendedNote: false,
-
+      lastClickedNodeId: null,
+      isCompare: false,
+      objCompareMember1: {},
+      objCompareMember2: {},
       displayList: false,
       expandAddRelationship: false,
 
@@ -934,7 +937,6 @@ export default {
         enableSearch: false,
       });
       this.family.onInit(() => {
-        // this.family.setViewBox("-30,-30,1939,1638");
         this.family.load(this.nodes);
       });
       this.family.onField((args) => {
@@ -951,7 +953,6 @@ export default {
             '<text class="field_3" style="font-size: 12px;" fill="#ffffff" x="90" y="90">Ngày Mất: {val}</text>';
           FamilyTree.templates.tommy_female.field_4 =
             '<text class="field_4" style="font-size: 12px;" fill="#ffffff" x="90" y="110">Đời: {val}</text>';
-
           FamilyTree.templates.tommy_male.field_3 =
             '<text class="field_3" style="font-size: 12px;" fill="#ffffff" x="90"  y="90">Ngày Mất: {val}</text>';
           FamilyTree.templates.tommy_male.field_4 =
@@ -985,11 +986,32 @@ export default {
         );
       });
       this.family.onNodeClick((arg) => {
-        this.getInforMember(arg.node.id);
+        if (this.isCompare) {
+          if (this.lastClickedNodeId == null) {
+            this.lastClickedNodeId = arg.node.id;
+          } else {
+            if (this.lastClickedNodeId != arg.node.id) {
+              this.compareMember(this.lastClickedNodeId, arg.node.id);
+            } else {
+              this.lastClickedNodeId = arg.node.id;
+            }
+          }
+        } else {
+          this.getInforMember(arg.node.id);
+        }
       });
     },
     getViewBox() {
       return this.family.getViewBox();
+    },
+    getResultMember(id) {
+      let objdata = {};
+      let result = this.nodes.find((node) => node.id == id);
+      this.TitleModal = result.name;
+    },
+    compareMember(memberId1, memberId2) {
+      console.log(memberId1);
+      console.log(memberId2);
     },
     setPaternalAncestor(roleId) {
       HTTP.post("setRole", {
@@ -1100,14 +1122,17 @@ export default {
         false,
         timezone
       );
+      let month = dob.getMonth() + 1;
+      let date = dob.getDate();
+      if (month < 10) {
+        month = "0" + (dob.getMonth() + 1);
+      }
+      if (date < 10) {
+        date = "0" + dob.getDate();
+      }
+
       this.objMemberInfor.Dob =
-        "" +
-        dob.getFullYear() +
-        "-" +
-        (dob.getMonth() + 1) +
-        "-" +
-        dob.getDate();
-      console.log(this.objMemberInfor.Dob);
+        "" + dob.getFullYear() + "-" + month + "-" + date;
     },
     convertSolarToLunar() {
       let Dob = new Date(this.objMemberInfor.Dob);
@@ -1121,7 +1146,6 @@ export default {
       }
       this.objMemberInfor.LunarDob =
         "" + new LunarDate(Dob).getYear() + "-" + month + "-" + date;
-      console.log(this.objMemberInfor.LunarDob);
     },
     getInforMember(id) {
       HTTP.get("InforMember", {
@@ -1131,7 +1155,6 @@ export default {
       })
         .then((response) => {
           this.objMember = response.data;
-          console.log(this.objMember);
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
             this.takeDataMember(this.CurrentIdMember);
@@ -1140,6 +1163,9 @@ export default {
               this.objMemberInfor.LunarDob
             );
             this.objMemberInfor.Dod = this.formatDate(this.objMemberInfor.Dod);
+            this.objMemberInfor.LunarDod = this.formatDate(
+              this.objMemberInfor.LunarDod
+            );
           }
           if (this.objMember.contact.length > 0) {
             this.objMemberContact = this.objMember.contact[0];
@@ -1288,6 +1314,7 @@ export default {
         bnirthPlace: this.objMemberInfor.BirthPlace,
         IsDead: this.IsDead,
         Dod: this.objMemberInfor.Dod,
+        LunarDod: this.objMemberInfor.LunarDod,
         PlaceOfDeath: this.objMemberInfor.PlaceOfDeadth,
         GraveSite: this.objMemberInfor.GraveSite,
         Note: this.objMemberInfor.Note,
@@ -1377,47 +1404,50 @@ export default {
 
     updateInformation() {
       HTTP.put("member", {
-        memberID: this.CurrentIdMember,
-        memberName: this.objMemberInfor.MemberName,
-        nickName: this.objMemberInfor.NickName,
-        parentID: this.objMemberInfor.ParentID,
-        marriageID: this.objMemberInfor.MarriageID,
-        hasNickName: this.objMemberInfor.HasNickName,
-        birthOrder: this.objMemberInfor.BirthOrder,
-        origin: this.objMemberInfor.Origin,
-        nationalityId: this.objMemberInfor.NationalityID,
-        religionId: this.objMemberInfor.ReligionID,
-        dob: this.objMemberInfor.Dob,
-        lunarDob: this.objMemberInfor.LunarDob,
-        birthPlace: this.objMemberInfor.BirthPlace,
+        MemberID: this.CurrentIdMember,
+        MemberName: this.objMemberInfor.MemberName,
+        NickName: this.objMemberInfor.NickName,
+        ParentID: this.objMemberInfor.ParentID,
+        MarriageID: this.objMemberInfor.MarriageID,
+        BirthOrder: this.objMemberInfor.BirthOrder,
+        Origin: this.objMemberInfor.Origin,
+        NationalityId: this.objMemberInfor.NationalityID,
+        ReligionId: this.objMemberInfor.ReligionID,
+        Dob: this.objMemberInfor.Dob,
+        LunarDob: this.objMemberInfor.LunarDob,
+        BirthPlace: this.objMemberInfor.BirthPlace,
         IsDead: this.objMemberInfor.IsDead,
-        dod: this.objMemberInfor.Dod,
-        placeOfDeath: this.objMemberInfor.PlaceOfDeadth,
-        graveSite: this.objMemberInfor.GraveSite,
-        note: this.objMemberInfor.Note,
-        generation: this.objMemberInfor.Generation,
-        bloodType: this.objMemberInfor.BloodType,
-        male: this.objMemberInfor.Male,
-        codeId: this.objMemberInfor.CodeID,
+        Dod: this.objMemberInfor.Dod,
+        LunarDod: this.objMemberInfor.LunarDod,
+        PlaceOfDeath: this.objMemberInfor.PlaceOfDeadth,
+        GraveSite: this.objMemberInfor.GraveSite,
+        Note: this.objMemberInfor.Note,
+        BloodType: this.objMemberInfor.BloodType,
+        Male: this.objMemberInfor.Male,
+        CodeId: this.objMemberInfor.CodeID,
       })
-        .then(() => {
-          if (this.objMemberContact.Phone != null) {
-            this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
+        .then((response) => {
+          console.log(response.data);
+          if (response.data.success == true) {
+            this.NotificationsScuccess(response.data.message);
+            if (this.objMemberContact.Phone != null) {
+              this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
+            }
+            HTTP.put("updateContact", {
+              MemberID: this.CurrentIdMember,
+              Address: this.objMemberContact.Address,
+              Phone: this.objMemberContact.Phone,
+              Email: this.objMemberContact.Email,
+              FacebookUrl: this.objMemberContact.FacebookUrl,
+              Zalo: this.objMemberContact.Zalo,
+            }).then(() => {
+              this.closeMemberModal();
+              this.family.load(this.nodes);
+              this.getListMember();
+            });
+          } else {
+            this.NotificationsDelete(response.data.message);
           }
-          console.log("Trong: " + this.objMemberContact.Phone);
-          HTTP.put("updateContact", {
-            MemberID: this.CurrentIdMember,
-            Address: this.objMemberContact.Address,
-            Phone: this.objMemberContact.Phone,
-            Email: this.objMemberContact.Email,
-            FacebookUrl: this.objMemberContact.FacebookUrl,
-            Zalo: this.objMemberContact.Zalo,
-          }).then(() => {
-            this.NotificationsScuccess("Sửa thông tin thành công");
-            this.closeMemberModal();
-            this.family.load(this.nodes);
-            this.getListMember();
-          });
         })
         .catch((e) => {
           console.log(e);
