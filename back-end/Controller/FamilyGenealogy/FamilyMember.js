@@ -72,11 +72,11 @@ var addMember = async (req, res) => {
         const requiredFields = [
             'MemberName',
             'BirthOrder',
-            'NationalityId',
-            'ReligionId',
+            'NationalityID',
+            'ReligionID',
             'IsDead',
             'CurrentGeneration',
-            'CodeId',
+            'CodeID',
             'BloodType',
             'Male'
         ];
@@ -170,8 +170,8 @@ var updateMember = async (req, res) => {
             'MemberID',
             'MemberName',
             'BirthOrder',
-            'NationalityId',
-            'ReligionId',
+            'NationalityID',
+            'ReligionID',
             'IsDead',
             'BloodType',
             'Male'

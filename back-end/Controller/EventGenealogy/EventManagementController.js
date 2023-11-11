@@ -171,9 +171,9 @@ var SendEmail = async (req, res) => {
         objData.html = req.body.html;
         let result = SystemAction.SendEmailCore(objData);
         if (result == true) {
-            res.send(Response.successResponse("Send Email successfully!"));
+            res.send(Response.successResponse(null,"Send Email successfully!"));
         } else {
-            res.send(Response.errorResponse("Send Email failed!"));
+            res.send(Response.internalServerErrorResponse());
         }
     } catch (error) {
         console.log(error);
