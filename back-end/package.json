@@ -17,7 +17,8 @@
     "crypto": "^1.0.1",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "firebase": "^10.5.2",
+    "firebase": "^10.6.0",
+    "firebase-admin": "^11.11.0",
     "http-errors": "^2.0.0",
     "json2csv": "^6.0.0-alpha.2",
     "jsonwebtoken": "^9.0.2",
@@ -32,7 +33,7 @@
     "puppeteer": "^21.3.7",
     "redis": "^4.6.10",
     "sequelize": "^6.33.0",
-    "twilio": "^4.18.1"
+    "twilio": "^4.19.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
