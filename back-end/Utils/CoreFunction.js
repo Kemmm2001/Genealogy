@@ -42,8 +42,8 @@ const generateRandomFileName = (file) => {
     return fileName;
 }
 
-const deleteImage = (imageUrl) => {
-    return new Promise((resolve, reject) => {
+const deleteImage = async (imageUrl) => {
+    return new Promise(async (resolve, reject) => {
         console.log("Deleting image: " + imageUrl);
         // Kiểm tra quyền truy cập vào tệp
         fs.promises.access(imageUrl, fs.constants.F_OK)
