@@ -22,7 +22,7 @@ const initWebRouter = (app) => {
   router.post('/get-genealogy', UserController.getGenealogy)
   
   router.post('/set-role', UserController.setRole)
-  
+  router.post('/check-codeId', UserController.checkCodeID)
   //Tiền tố đứng trước route
   app.use('/api/v1', router);
 }
