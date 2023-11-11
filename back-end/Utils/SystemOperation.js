@@ -4,10 +4,12 @@ const schedule = require('node-schedule');
 const UserManagement = require('../service/Authencation/UserManagement');
 
 var transporter = Nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: "systemgenealogy@gmail.com",
-        pass: "gyin yjnt cezd xsmt",
+    host : "giaphanguoiviet.com",
+    port : 465,
+    secure : true,
+    auth : {
+        user : "system@giaphanguoiviet.com",
+        pass : "weJFW732fqijojAWFHOhr4WFWFHO327uHUFWIH"
     }
 });
 
@@ -59,17 +61,17 @@ let SendEmailCore = (objData) => {
         // Tiến hành gửi mail
         var mailOptions = {
             from: process.env.EMAIL_ADDRESS,
-            subject: req.body.subject,
-            text: req.body.text,
-            html: req.body.html,
+            subject: objData.subject,
+            text: objData.text,
+            html: objData.html,
         };
         // // Kiểm tra xem có phải mảng hay không
-        // if (Array.isArray(req.body.to)) {
+        // if (Array.isArray(objData.to)) {
         //     // Nếu là mảng thì join
-        //     mailOptions.to = req.body.to.join(',');
+        //     mailOptions.to = objData.to.join(',');
         // } else {
         //     // Nếu là string thì gán luôn
-        //     mailOptions.to = req.body.to;
+        //     mailOptions.to = objData.to;
         // }
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
