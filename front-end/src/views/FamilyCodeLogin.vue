@@ -1,6 +1,6 @@
 <template>
     <div class="w-100 h-100 position-relative familycode-background" style="min-height: inherit;">
-        <div class="position-absolute login-form-container" style="opacity: 93%;">
+        <div class="position-absolute login-form-container">
             <div class="d-flex flex-row w-100 h-100 position-relative">
                 <div :class="{ rightPos: right, leftPos: !right, enlarged: enlarge }"
                     class="h-100 position-absolute codelogin-background" style="z-index: 1;">
@@ -30,13 +30,15 @@
                             <div class="d-flex flex-row mb-2">
                                 <div class="d-flex align-items-center" style="padding-right: 30.79px;">Gia tộc họ</div>
                                 <div class="h-100" style="flex-grow: 1;">
-                                    <input v-model="familyTree.treeName" type="text" class="form-control" placeholder="Nguyễn" />
+                                    <input v-model="familyTree.treeName" type="text" class="form-control"
+                                        placeholder="Nguyễn" />
                                 </div>
                             </div>
                             <div class="d-flex flex-row mb-2">
                                 <div class="d-flex align-items-center" style="padding-right: 48.15px;">Dân tộc</div>
                                 <div class="h-100" style="flex-grow: 1;">
-                                    <input v-model="familyTree.ethnicity" type="text" class="form-control" placeholder="Kinh" />
+                                    <input v-model="familyTree.ethnicity" type="text" class="form-control"
+                                        placeholder="Kinh" />
                                 </div>
                             </div>
                             <div class="d-flex flex-row mb-3">
@@ -47,7 +49,7 @@
                             </div>
                             <div class="d-flex justify-content-center align-items-center"
                                 style="height: auto; width: auto;">
-                                <button @click="registerFamilyTree()" class="btn register-button">Đăng
+                                <button @click="registerFamilyTree(); showFamilyCode()" class="btn register-button">Đăng
                                     kí</button>
                             </div>
                         </div>
@@ -79,14 +81,23 @@
                                 </div>
                             </div>
                             <!-- <router-link to="/familycode/login"> -->
-                                <div class="d-flex justify-content-center align-items-center"
-                                    style="height: auto; width: auto;">
-                                    <button @click="loginWithCode()" class="btn login-button">Đăng nhập</button>
-                                </div>
+                            <div class="d-flex justify-content-center align-items-center"
+                                style="height: auto; width: auto;">
+                                <button @click="loginWithCode()" class="btn login-button">Đăng nhập</button>
+                            </div>
                             <!-- </router-link> -->
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="position-absolute familycode-noti" :class="{ appear: showCode }">
+            <div class="w-100 h-100 position-relative">
+                <button @click="copyCode">Copy</button>
+                <div class="position-absolute familycode-noti-timer" :class="{ timerStart: showCode }"></div>
+                <div v-if="showCode" class="w-100 h-100 d-flex align-items-center justify-content-content px-3"
+                    style="font-size: 20px;">Đăng
+                    kí thành công! Mã gia tộc của bạn là ABC DEF GHI</div>
             </div>
         </div>
     </div>
@@ -104,11 +115,13 @@ export default {
             right: false,
             enlarge: false,
             loggingin: true,
+            showCode: false,
+            familycode: 'ABC DEF GHI',
 
-            familyTree:{
+            familyTree: {
                 memberId: null,
                 treeName: null,
-                ethnicity:null,
+                ethnicity: null,
                 deathAnniersary: null,
                 codeId: null,
             },
@@ -120,23 +133,23 @@ export default {
         }
     },
     methods: {
-        takeAccountId(){
+        takeAccountId() {
             HTTP.get("protected-route", {
                 headers: {
-                'Authorization': 'Bearer '+VueCookies.get('accessToken'),
+                    'Authorization': 'Bearer ' + VueCookies.get('accessToken'),
                 },
             }).then((response) => {
                 this.accountID = response.accountID
             })
-            .catch((e) => {
-                console.log(e);
-            });
+                .catch((e) => {
+                    console.log(e);
+                });
         },
-        registerFamilyTree(){
+        registerFamilyTree() {
             HTTP.post("register-genealogy", {
                 accountID: this.accountID,
                 treeName: this.familyTree.treeName,
-                ethnicity:this.familyTree.ethnicity,
+                ethnicity: this.familyTree.ethnicity,
             })
                 .then((response) => {
                     this.codeId = response.data[0].codeId
@@ -148,32 +161,32 @@ export default {
                 TreeName: this.familyTree.treeName,
                 DeathAnniversary: this.familyTree.deathAnniersary,
                 Ethnicity: this.familyTree.ethnicity,
-                CodeID:222111222,
+                CodeID: 222111222,
             })
                 .then((response) => {
                     this.moveToRight()
                     this.enlargeBackground()
-                    localStorage.setItem('MemberID', response.data[0].insertId);  
+                    localStorage.setItem('MemberID', response.data[0].insertId);
                 })
                 .catch((e) => {
                     console.log(e);
                 });
         },
-        loginWithCode(){
-            this.codeId = this.code1+this.code2+this.code3;
+        loginWithCode() {
+            this.codeId = this.code1 + this.code2 + this.code3;
             HTTP.get("generalInfor", {
-                params:{
+                params: {
                     CodeID: this.codeId,
                 }
             }).then((response) => {
-                if(response.data[0] != null){
+                if (response.data[0] != null) {
                     this.$router.push('/');
                 }
             })
-            .catch((e) => {
-                console.log(e);
-            });
-            
+                .catch((e) => {
+                    console.log(e);
+                });
+
         },
         enlargeBackground() {
             this.enlarge = true;
@@ -195,9 +208,31 @@ export default {
                 this.right = false;
             }, 300);
         },
+
+        showFamilyCode() {
+            this.showCode = true;
+            setTimeout(() => {
+                this.showCode = false;
+            }, 15000);
+        },
+
+        copyCode() {
+            this.$copyText(this.familycode).then(function (e) {
+                alert('Copied')
+                console.log(e)
+            }, function (e) {
+                alert('Can not copy')
+                console.log(e)
+            })
+        }
     },
-    mounted(){
+    mounted() {
         this.takeAccountId();
+    },
+    watch: {
+        showCode() {
+            console.log(this.showCode);
+        }
     }
 }
 </script>
