@@ -47,7 +47,7 @@ svg.tommy .node.great-grandfather.male rect {
   height: 140px;
 }
 
-svg.tommy .node.choose.male rect {
+/* svg.tommy .node.choose.male rect {
   stroke: #EDF048;
   stroke-width: 5px;
 }
@@ -55,15 +55,25 @@ svg.tommy .node.choose.male rect {
 svg.tommy .node.choose.female rect {
   stroke: #EDF048;
   stroke-width: 5px;
+} */
+
+.selected > rect{
+  stroke: #EDF048;
+  stroke-width: 5px;
 }
 
+.notselected > rect{
+  opacity: 0.5;
+}
+
+/* 
 svg.tommy .node.notchoose.male rect {
   opacity: 0.5;
 }
 
 svg.tommy .node.notchoose.female rect {
   opacity: 0.5;
-}
+} */
 
 svg.tommy .node.male>rect {
   fill: #C69934;

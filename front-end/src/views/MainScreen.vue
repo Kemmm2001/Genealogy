@@ -16,39 +16,29 @@
       </div>
       <div class="w-100 d-flex flex-row">
         <div class="col-6 px-2" style="padding-top: 8px;">
-          <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0"
-            @change="GetListFilterMember()">
+          <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
             <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">
               {{
-                blood.BloodType }}
+              blood.BloodType }}
             </option>
           </select>
         </div>
         <div class="col-6 px-2" style="padding-top: 8px;">
           <select class="d-flex text-center form-select dropdown p-0" v-model="selectAge" @change="GetListFilterMember()">
             <option class="dropdown-item" :value="null">Nhóm Tuổi</option>
-            <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">
-              {{ age.From }} -
-              {{ age.End }} Tuổi
-            </option>
+            <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{ age.From }} - {{ age.End }} Tuổi</option>
           </select>
         </div>
       </div>
       <div class="w-100 d-flex flex-row" style="padding-top: 8px">
         <div class="col-6 px-2">
           <div class="w-100">
-            <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary">
-              Tạo thông
-              báo
-            </button>
+            <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary">Tạo thông báo</button>
           </div>
         </div>
         <div class="col-6 px-2">
           <div class="w-100">
-            <button @click="openCompareModal()" style="width:100%" type="button" class="btn btn-secondary">
-              So
-              sánh
-            </button>
+            <button @click="openCompareModal()" style="width:100%" type="button" :class="{'btn': true,'btn-secondary': !isCompare,'btn-primary': isCompare}">So sánh</button>
           </div>
         </div>
       </div>
@@ -58,9 +48,7 @@
             đồ</div>
           <div class="d-flex flex-column w-100" style="overflow-y: auto;cursor: pointer">
             <div v-for="(n, index) in nodes" :key="n.id">
-              <div @click="handleLeftClick(n.id)" @contextmenu.prevent="handleRightClick(n.id)"
-                :class="{ 'list-item': true, 'selected-list': n.id == CurrentIdMember, 'ancestor-member': index === 0 }">
-                {{ n.name }}</div>
+              <div @click="handleLeftClick(n.id)" @contextmenu.prevent="handleRightClick(n.id)" :class="{ 'list-item': true, 'selected-list': n.id == CurrentIdMember, 'ancestor-member': index === 0 }">{{ n.name }}</div>
             </div>
           </div>
         </div>
@@ -79,8 +67,7 @@
       <div class="position-absolute" style="height: 36px; width: 200px; top: 8px; margin-left: 8px; z-index: 1;">
         <input type="text" class="form-control h-100 w-100" placeholder="Tên thành viên..." />
       </div>
-      <div id="tree" ref="tree">
-      </div>
+      <div id="tree" ref="tree"></div>
     </div>
     <div class="Container-select-modal">
       <modal name="Select-option-Modal">
@@ -89,8 +76,7 @@
             <h5>{{ TitleModal }}</h5>
             <div class="close-add-form" @click="closeSelectModal()" style="top: 8px;right:5px">
               <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                <path
-                  d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
               </svg>
             </div>
           </div>
@@ -105,8 +91,7 @@
               <div class="list-group-item" @click="openMemberModal('AddChild', 'Con')">Thêm Con</div>
               <div class="list-group-item" @click="removeMember()">Xóa thành viên (*)</div>
               <div class="list-group-item feature-overview">Các chức năng Khác</div>
-              <div class="list-group-item" style="border-top: none;" @click="setPaternalAncestor(2)">Set làm tộc trưởng
-              </div>
+              <div class="list-group-item" style="border-top: none;" @click="setPaternalAncestor(2)">Set làm tộc trưởng</div>
               <div class="list-group-item" @click="setPaternalAncestor(1)">Set làm tổ phụ</div>
             </div>
           </div>
@@ -117,14 +102,11 @@
     <!-- Đât là modal thông báo -->
     <modal name="noti-modal">
       <div class="h-100 d-flex flex-column" style="background-color: white;">
-        <div class="modal-title d-flex flex-row align-items-center justify-content-center position-relative"
-          style="border-radius:0px">
-          <div class="col-9 d-flex align-items-center justify-content-center" style="height:50px">Thông báo tới thành viên
-          </div>
+        <div class="modal-title d-flex flex-row align-items-center justify-content-center position-relative" style="border-radius:0px">
+          <div class="col-9 d-flex align-items-center justify-content-center" style="height:50px">Thông báo tới thành viên</div>
           <div class="close-noti-form position-absolute" @click="closeNotiModal()" style="top: 8px;right:5px">
             <svg class="close-noti-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-              <path
-                d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+              <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
             </svg>
           </div>
         </div>
@@ -133,13 +115,11 @@
             <div class="position-relative d-flex" style="height: 48px;">
               <label for="text-search" style="position: absolute; inset: 12px;">
                 <svg class="text-search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                  <path
-                    d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
+                  <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
                 </svg>
               </label>
               <div class="w-100" style="height: 48px; padding: 8px;">
-                <input v-model="searchKeyword" class="form-control px-5 py-0 w-100 h-100" id="text-search" type="text"
-                  @change="searchMember()" />
+                <input v-model="searchKeyword" class="form-control px-5 py-0 w-100 h-100" id="text-search" type="text" @change="searchMember()" />
               </div>
             </div>
             <div class="position-relative d-flex" style="height: 48px;">
@@ -149,13 +129,10 @@
               </div>
             </div>
             <div>
-              <div v-for="(n, index) in nodes" :key="n.id" :tabindex="index"
-                class="noti-modal-member d-flex flex-row align-items-center px-2"
-                :class="{ chosen: ListPhoneToSendMessage.includes(n.id) }" @click="toggleSelection(n.id)">
+              <div v-for="(n, index) in nodes" :key="n.id" :tabindex="index" class="noti-modal-member d-flex flex-row align-items-center px-2" :class="{ chosen: ListPhoneToSendMessage.includes(n.id) }" @click="toggleSelection(n.id)">
                 <div>
                   <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                    <path
-                      d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
+                    <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
                   </svg>
                 </div>
                 <div class="d-flex justify-content-center" style="flex-grow: 1;">{{ n.name }}</div>
@@ -172,8 +149,7 @@
                   class="col-6 d-flex align-items-center justify-content-center"
                   style="border-radius: 0 0.375rem 0 0; cursor: pointer;">Email</div>
               </div>
-              <div v-if="emailSelected" class="d-flex flex-column mt-2"
-                style="height: calc(100% - 48px); overflow-y: auto;">
+              <div v-if="emailSelected" class="d-flex flex-column mt-2" style="height: calc(100% - 48px); overflow-y: auto;">
                 <div class="sent-mail d-flex flex-row">
                   <div class="h-100 d-flex align-items-center px-3">
                     <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
@@ -288,8 +264,7 @@
                 </div>
               </div>
 
-              <div v-if="smsSelected" class="d-flex flex-column"
-                style="height: calc(100% - 48px); align-items: flex-end; padding-top: 6px; overflow-y: auto">
+              <div v-if="smsSelected" class="d-flex flex-column" style="height: calc(100% - 48px); align-items: flex-end; padding-top: 6px; overflow-y: auto">
                 <div class="position-relative d-flex flex-row">
                   <div class="position-absolute sent-time">30/12/2022</div>
                   <div class="sent-sms">Ngày 1/1/2023 là giỗ cụ</div>
@@ -350,19 +325,15 @@
             </div>
             <div class="position-absolute w-100" style="bottom: 8px">
               <div v-if="smsSelected" class="w-100 px-3 d-flex flex-row">
-                <input type="text" class="form-control" style="height: 48px;" placeholder="..."
-                  v-model="contentMessage" />
-                <div class="d-flex align-items-center" style="padding-left: 12px; cursor: pointer;"
-                  @click="sendMessageToMember()">
+                <input type="text" class="form-control" style="height: 48px;" placeholder="..." v-model="contentMessage" />
+                <div class="d-flex align-items-center" style="padding-left: 12px; cursor: pointer;" @click="sendMessageToMember()">
                   <svg class="noti-send-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                    <path
-                      d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z" />
+                    <path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z" />
                   </svg>
                 </div>
               </div>
               <div v-if="emailSelected" class="w-100 btn px-3 position-relative" style="height: 48px;">
-                <div @click="expandCreateEmail = !expandCreateEmail" class="btn px-2 py-1 position-absolute"
-                  style="right: 16px; background-color: #E8C77B;">Tạo email mới</div>
+                <div @click="expandCreateEmail = !expandCreateEmail" class="btn px-2 py-1 position-absolute" style="right: 16px; background-color: #E8C77B;">Tạo email mới</div>
               </div>
             </div>
             <div class="position-absolute create-mail" :class="{ expanded: expandCreateEmail }">
@@ -371,10 +342,8 @@
                   <div>Email mới</div>
                   <div class="create-mail-close position-absolute" @click="expandCreateEmail = !expandCreateEmail">
                     <div class="position-relative h-100 w-100">
-                      <svg class="create-mail-close-icon position-absolute" xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 384 512">
-                        <path
-                          d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                      <svg class="create-mail-close-icon position-absolute" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                        <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
                       </svg>
                     </div>
                   </div>
@@ -383,8 +352,7 @@
                   <input type="text" class="mail-topic w-100 p-2" placeholder="Chủ đề email" />
                 </div>
                 <div class="create-mail-content px-2 w-100">
-                  <textarea style="resize: none; outline: none; border: none;" class="h-100 w-100 p-2"
-                    placeholder="Viết gì đó..."></textarea>
+                  <textarea style="resize: none; outline: none; border: none;" class="h-100 w-100 p-2" placeholder="Viết gì đó..."></textarea>
                 </div>
               </div>
             </div>
@@ -396,8 +364,7 @@
     <!-- Đât là modal so sánh -->
     <modal name="compare-modal">
       <div class="h-100 d-flex flex-column position-relative" style="background-color: #C69934;">
-        <div class="modal-title d-flex flex-row align-items-center justify-content-center"
-          style="background-color: #C69934 !important">
+        <div class="modal-title d-flex flex-row align-items-center justify-content-center" style="background-color: #C69934 !important">
           <div class="col-12 d-flex align-items-center justify-content-center">So sánh 2 thành viên</div>
         </div>
         <div class="d-flex flex-row" style="flex-grow: 1">
@@ -480,8 +447,7 @@
           <h5>{{ TitleModal }}</h5>
           <div class="close-add-form" @click="closeMemberModal" style="top: 8px;right:5px">
             <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-              <path
-                d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+              <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
             </svg>
           </div>
         </div>
@@ -507,11 +473,8 @@
             <div class="col-9" style="padding-top: 15px" v-if="extendedInfo">
               <div class="row">
                 <div class="col-4">
-                  <img style="height:316px;width:360px;margin-bottom:30px" v-if="avatarSrc" :src="avatarSrc"
-                    alt="Avatar" />
-                  <svg v-else style="margin-bottom:46px" fill="#000000" height="300px" width="300px" version="1.1"
-                    id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                    viewBox="0 0 512 512" xml:space="preserve">
+                  <img style="height:316px;width:360px;margin-bottom:30px" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" />
+                  <svg v-else style="margin-bottom:46px" fill="#000000" height="300px" width="300px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
                     <g>
                       <g>
                         <circle cx="256" cy="114.526" r="114.526" />
@@ -526,27 +489,31 @@
                   </svg>
                   <div class="form-group">
                     <label for="imageUpload">Tải ảnh lên</label>
-                    <input type="file" class="form-control input-file" id="imageUpload" accept="image/*"
-                      @change="updateAvatar($event)" />
+                    <input type="file" class="form-control input-file" id="imageUpload" accept="image/*" @change="updateAvatar($event)" />
                   </div>
                 </div>
                 <div class="col-8">
                   <div style="position: relative; margin-right:10px">
                     <input v-model="objMemberInfor.MemberName" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberInfor.MemberName }">Tên thành viên
-                      đầy đủ</label>
+                    <label class="form-label" for="input" :class="{ 'active': objMemberInfor.MemberName }">
+                      Tên thành viên
+                      đầy đủ
+                    </label>
                   </div>
                   <div style="display:flex">
                     <div style="position: relative; width: 50%;margin-right: 10px;">
                       <input v-model="objMemberInfor.NickName" type="text" class="form-control modal-item" placeholder />
-                      <label class="form-label" for="input" :class="{ 'active': objMemberInfor.NickName }">Tên thường
-                        gọi</label>
+                      <label class="form-label" for="input" :class="{ 'active': objMemberInfor.NickName }">
+                        Tên thường
+                        gọi
+                      </label>
                     </div>
                     <div style="position: relative;width: 50%; margin-right: 10px;">
-                      <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item"
-                        placeholder />
-                      <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con
-                        Thứ</label>
+                      <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item" placeholder />
+                      <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">
+                        Con
+                        Thứ
+                      </label>
                     </div>
                   </div>
                   <div style="display:flex">
@@ -573,7 +540,7 @@
                       <select v-model="objMemberInfor.NationalityID" class="form-select modal-item">
                         <option v-for="nation in ListNationality" :key="nation.id" :value="nation.NationalityID">
                           {{
-                            nation.NationalityName }}
+                          nation.NationalityName }}
                         </option>
                       </select>
                       <label class="form-label" for="select">Quốc Tịch</label>
@@ -582,7 +549,7 @@
                       <select v-model="objMemberInfor.ReligionID" class="form-select modal-item">
                         <option v-for="religion in ListReligion" :key="religion.id" :value="religion.ReligionID">
                           {{
-                            religion.ReligionName }}
+                          religion.ReligionName }}
                         </option>
                       </select>
                       <label class="form-label-number" for="select">Tôn Giáo</label>
@@ -593,30 +560,34 @@
                     <label class="form-label" for="input" :class="{ 'active': objMemberInfor.Origin }">Nguyên Quán</label>
                   </div>
                   <div class="form-group">
-                    <h6 style="margin-bottom:20px">Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược
-                      lại)</h6>
+                    <h6 style="margin-bottom:20px">
+                      Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược
+                      lại)
+                    </h6>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
-                        <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder
-                          @change="convertSolarToLunar()" />
+                        <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar()" />
                         <label class="form-label" for="input">Dương Lịch</label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
-                        <input v-model="objMemberInfor.LunarDob" type="date" class="form-control modal-item" placeholder
-                          @change="convertLunarToSolar()" />
+                        <input v-model="objMemberInfor.LunarDob" type="date" class="form-control modal-item" placeholder @change="convertLunarToSolar()" />
                         <label class="form-label-number" min="0" for="input">Âm lịch</label>
                       </div>
                     </div>
                   </div>
                   <div style="position: relative; margin-right:10px">
                     <input v-model="objMemberInfor.BirthPlace" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberInfor.BirthPlace }">Nơi
-                      sinh</label>
+                    <label class="form-label" for="input" :class="{ 'active': objMemberInfor.BirthPlace }">
+                      Nơi
+                      sinh
+                    </label>
                   </div>
                   <div class="form-check form-check-inline">
                     <input v-model="IsDead" type="checkbox" class="form-check-input" id="lostCheckbox" />
-                    <label style="font-size: 14px; margin-top: 7px;" class="form-check-label" for="lostCheckbox">Đã
-                      mất</label>
+                    <label style="font-size: 14px; margin-top: 7px;" class="form-check-label" for="lostCheckbox">
+                      Đã
+                      mất
+                    </label>
                   </div>
                   <div class="form-group" v-if="IsDead == 1">
                     <h6 style="margin-bottom:20px">Ngày Mất (*)</h6>
@@ -626,8 +597,7 @@
                         <label class="form-label" for="input">Dương Lịch</label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
-                        <input v-model="objMemberInfor.LunarDod" type="date" class="form-control modal-item"
-                          placeholder />
+                        <input v-model="objMemberInfor.LunarDod" type="date" class="form-control modal-item" placeholder />
                         <label class="form-label-number" min="0" for="input">Âm lịch</label>
                       </div>
                     </div>
@@ -663,8 +633,7 @@
                 </div>
                 <div style="display:flex">
                   <div style="position: relative; width: 50%;margin-right: 10px;">
-                    <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" :disabled="isDisabled"
-                      :default-country="defaultCountry" :validations="validations"></VuePhoneNumberInput>
+                    <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" :disabled="isDisabled" :default-country="defaultCountry" :validations="validations"></VuePhoneNumberInput>
                   </div>
                   <div style="position: relative;width: 50%; margin-right: 10px;">
                     <input v-model="objMemberContact.Email" type="email" class="form-control modal-item" placeholder />
@@ -673,13 +642,11 @@
                 </div>
                 <div style="position: relative; padding-right: 23px;">
                   <input v-model="objMemberContact.FacebookUrl" type="text" class="form-control modal-item" placeholder />
-                  <label style="left: 25px;" class="form-label" for="input"
-                    :class="{ 'active': objMemberContact.FacebookUrl }">Facebook</label>
+                  <label style="left: 25px;" class="form-label" for="input" :class="{ 'active': objMemberContact.FacebookUrl }">Facebook</label>
                 </div>
                 <div style="position: relative; padding-right: 23px;">
                   <input v-model="objMemberContact.Zalo" type="text" class="form-control modal-item" placeholder />
-                  <label style="left: 25px;" class="form-label" for="input"
-                    :class="{ 'active': objMemberContact.Zalo }">Zalo</label>
+                  <label style="left: 25px;" class="form-label" for="input" :class="{ 'active': objMemberContact.Zalo }">Zalo</label>
                 </div>
               </div>
             </div>
@@ -688,14 +655,14 @@
                 <div style="display:flex">
                   <div style="position: relative; width: 50%; margin-right: 10px;">
                     <input v-model="objMemberJob.Organization" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberJob.Organization }">Tên Cơ
-                      Quan</label>
+                    <label class="form-label" for="input" :class="{ 'active': objMemberJob.Organization }">
+                      Tên Cơ
+                      Quan
+                    </label>
                   </div>
                   <div style="position: relative;width: 50%; margin-right: 10px;">
-                    <input v-model="objMemberJob.OrganizationAddress" type="text" class="form-control modal-item"
-                      placeholder />
-                    <label class="form-label" min="0" for="input"
-                      :class="{ 'active': objMemberJob.OrganizationAddress }">Địa Chỉ</label>
+                    <input v-model="objMemberJob.OrganizationAddress" type="text" class="form-control modal-item" placeholder />
+                    <label class="form-label" min="0" for="input" :class="{ 'active': objMemberJob.OrganizationAddress }">Địa Chỉ</label>
                   </div>
                 </div>
                 <div style="display:flex">
@@ -726,12 +693,9 @@
                 </div>
                 <div class="d-flex justify-content-end">
                   <div class="form-group" role="group">
-                    <button type="button" class="btn btn-primary" @click="addNewJobMember()"
-                      style="margin-right:10px">Thêm</button>
-                    <button type="button" class="btn btn-info mr-1" @click="updateJobMember()"
-                      style="margin-right:10px">Sửa</button>
-                    <button type="button" class="btn btn-danger mr-1" @click="removeJobMember()"
-                      style="margin-right:10px">Xóa</button>
+                    <button type="button" class="btn btn-primary" @click="addNewJobMember()" style="margin-right:10px">Thêm</button>
+                    <button type="button" class="btn btn-info mr-1" @click="updateJobMember()" style="margin-right:10px">Sửa</button>
+                    <button type="button" class="btn btn-danger mr-1" @click="removeJobMember()" style="margin-right:10px">Xóa</button>
                   </div>
                 </div>
                 <div class="form-group" style="margin-top:13px;padding-right:22px">
@@ -745,8 +709,7 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="job in ListMemberJob" :key="job.id" @click="selectRowJob(job)"
-                        :class="{ 'row-selected': job === objMemberJob }">
+                      <tr v-for="job in ListMemberJob" :key="job.id" @click="selectRowJob(job)" :class="{ 'row-selected': job === objMemberJob }">
                         <td>{{ job.Organization }}</td>
                         <td>{{ job.Role }}</td>
                         <td>{{ formatDate(job.StartDate) }}</td>
@@ -761,38 +724,30 @@
               <div class="row">
                 <div style="position: relative;padding-right: 20px;">
                   <input v-model="objMemberEducation.School" type="text" class="form-control modal-item" placeholder />
-                  <label style="left: 20px;" class="form-label" for="input"
-                    :class="{ 'active': objMemberEducation.School }">Tên trường</label>
+                  <label style="left: 20px;" class="form-label" for="input" :class="{ 'active': objMemberEducation.School }">Tên trường</label>
                 </div>
                 <div style="position: relative;padding-right: 20px;">
-                  <input v-model="objMemberEducation.Description" type="text" class="form-control modal-item"
-                    placeholder />
-                  <label style="left: 20px;" class="form-label" for="input"
-                    :class="{ 'active': objMemberEducation.Description }">Mô tả</label>
+                  <input v-model="objMemberEducation.Description" type="text" class="form-control modal-item" placeholder />
+                  <label style="left: 20px;" class="form-label" for="input" :class="{ 'active': objMemberEducation.Description }">Mô tả</label>
                 </div>
                 <div class="form-group">
                   <h6 style="margin-bottom:20px">Thời gian học tập</h6>
                   <div style="display:flex">
                     <div style="position: relative; width: 50%;margin-right: 10px;">
-                      <input v-model="objMemberEducation.StartDate" type="date" class="form-control modal-item"
-                        placeholder />
+                      <input v-model="objMemberEducation.StartDate" type="date" class="form-control modal-item" placeholder />
                       <label class="form-label" for="input">Từ ngày</label>
                     </div>
                     <div style="position: relative;width: 50%; margin-right: 10px;">
-                      <input v-model="objMemberEducation.EndDate" type="date" class="form-control modal-item"
-                        placeholder />
+                      <input v-model="objMemberEducation.EndDate" type="date" class="form-control modal-item" placeholder />
                       <label class="form-label-number" min="0" for="input">Đến ngày</label>
                     </div>
                   </div>
                 </div>
                 <div class="d-flex justify-content-end">
                   <div class="form-group" role="group">
-                    <button type="button" class="btn btn-primary" @click="addNewEducationMember()"
-                      style="margin-right:10px">Thêm</button>
-                    <button type="button" class="btn btn-info mr-1" @click="updateEducationMember()"
-                      style="margin-right:10px">Sửa</button>
-                    <button type="button" class="btn btn-danger mr-1" @click="deleteJobMember()"
-                      style="margin-right:10px">Xóa</button>
+                    <button type="button" class="btn btn-primary" @click="addNewEducationMember()" style="margin-right:10px">Thêm</button>
+                    <button type="button" class="btn btn-info mr-1" @click="updateEducationMember()" style="margin-right:10px">Sửa</button>
+                    <button type="button" class="btn btn-danger mr-1" @click="deleteJobMember()" style="margin-right:10px">Xóa</button>
                   </div>
                 </div>
                 <div class="form-group" style="margin-top:13px;padding-right:22px">
@@ -805,8 +760,7 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="edu in ListMemberEducation" :key="edu.id" @click="selectRowEducation(edu)"
-                        :class="{ 'row-selected': edu === objMemberEducation }">
+                      <tr v-for="edu in ListMemberEducation" :key="edu.id" @click="selectRowEducation(edu)" :class="{ 'row-selected': edu === objMemberEducation }">
                         <td>{{ edu.School }}</td>
                         <td>{{ formatDate(edu.StartDate) }}</td>
                         <td>{{ formatDate(edu.EndDate) }}</td>
@@ -818,8 +772,7 @@
             </div>
             <div class="col-9" style="padding-top: 15px" v-else>
               <div class="form-group" style="margin-top:13px;padding-right:22px">
-                <textarea v-model="objMemberInfor.Note" style="height:300px" class="form-control modal-item"
-                  id="lichSuCongTac" rows="5" placeholder="Ghi Chú"></textarea>
+                <textarea v-model="objMemberInfor.Note" style="height:300px" class="form-control modal-item" id="lichSuCongTac" rows="5" placeholder="Ghi Chú"></textarea>
               </div>
             </div>
           </div>
@@ -827,10 +780,8 @@
         <div class="card-footer" style="background-color:#E8C77B">
           <div class="d-flex justify-content-end">
             <button v-if="isAdd" type="button" class="btn btn-primary mr-2" @click="addMember()">Thêm</button>
-            <button v-else-if="isEdit" type="button" class="btn btn-primary mr-2"
-              @click="updateInformation()">Sửa</button>
-            <button style="margin-left:10px" type="button" class="btn btn-secondary"
-              @click="closeSelectModal()">Cancel</button>
+            <button v-else-if="isEdit" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
+            <button style="margin-left:10px" type="button" class="btn btn-secondary" @click="closeSelectModal()">Cancel</button>
           </div>
         </div>
       </div>
@@ -907,6 +858,7 @@ export default {
         BirthPlace: null,
         IsDead: 0,
         Dod: null,
+        LunarDod: null,
         PlaceOfDeadth: null,
         GraveSite: null,
         Note: null,
@@ -947,13 +899,15 @@ export default {
       ListNationality: null,
       ListReligion: null,
       nodes: [],
-
       extendedInfo: true,
       extendedContact: false,
       extendedJob: false,
       extendedEdu: false,
       extendedNote: false,
-
+      lastClickedNodeId: null,
+      isCompare: false,
+      objCompareMember1: {},
+      objCompareMember2: {},
       displayList: false,
       expandAddRelationship: false,
 
@@ -1007,7 +961,6 @@ export default {
         enableSearch: false,
       });
       this.family.onInit(() => {
-        // this.family.setViewBox("-30,-30,1939,1638");
         this.family.load(this.nodes);
       });
       this.family.onField((args) => {
@@ -1024,7 +977,6 @@ export default {
             '<text class="field_3" style="font-size: 12px;" fill="#ffffff" x="90" y="90">Ngày Mất: {val}</text>';
           FamilyTree.templates.tommy_female.field_4 =
             '<text class="field_4" style="font-size: 12px;" fill="#ffffff" x="90" y="110">Đời: {val}</text>';
-
           FamilyTree.templates.tommy_male.field_3 =
             '<text class="field_3" style="font-size: 12px;" fill="#ffffff" x="90"  y="90">Ngày Mất: {val}</text>';
           FamilyTree.templates.tommy_male.field_4 =
@@ -1058,11 +1010,65 @@ export default {
         );
       });
       this.family.onNodeClick((arg) => {
-        this.getInforMember(arg.node.id);
+        this.highLightSelectNode(arg.node.id);
+        if (this.isCompare) {
+          if (this.lastClickedNodeId == null) {
+            this.lastClickedNodeId = arg.node.id;
+          } else {
+            if (this.lastClickedNodeId != arg.node.id) {
+              this.compareMember(this.lastClickedNodeId, arg.node.id);
+            } else {
+              this.lastClickedNodeId = arg.node.id;
+            }
+          }
+        } else {
+          this.getInforMember(arg.node.id);
+        }
       });
     },
     getViewBox() {
       return this.family.getViewBox();
+    },
+    getResultMember(id) {
+      const getNodeById = (nodeId) =>
+        this.nodes.find((node) => node.id == nodeId);
+
+      const result = getNodeById(id);
+      const resultMid = result.mid ? getNodeById(result.mid) : null;
+      const resultFid = result.fid ? getNodeById(result.fid) : null;
+
+      const objdata = {
+        name: result.name,
+        gender: result.gender === "male" ? "Nam" : "Nữ",
+        wife: resultMid ? resultMid.name : "Không có vợ",
+        husband: resultMid ? resultMid.name : "Không có Chồng",
+        dob: result.dob,
+        dod: result.dod,
+        father: null,
+        mother: null,
+      };
+
+      if (resultFid) {
+        if (resultFid.gender.toLowerCase() == "male") {
+          objdata.father = resultFid.name;
+          objdata.mother = resultFid.mid
+            ? getNodeById(resultFid.mid)?.name
+            : null;
+        } else {
+          objdata.mother = resultFid.name;
+          objdata.father = resultFid.mid
+            ? getNodeById(resultFid.mid)?.name
+            : null;
+        }
+      }
+
+      return objdata;
+    },
+    compareMember(memberId1, memberId2) {
+      this.objCompareMember1 = this.getResultMember(memberId1);
+      this.objCompareMember2 = this.getResultMember(memberId2);
+      console.log(this.objCompareMember1);
+      console.log(this.objCompareMember2);
     },
     setPaternalAncestor(roleId) {
       HTTP.post("setRole", {
@@ -1173,14 +1179,17 @@ export default {
         false,
         timezone
       );
+      let month = dob.getMonth() + 1;
+      let date = dob.getDate();
+      if (month < 10) {
+        month = "0" + (dob.getMonth() + 1);
+      }
+      if (date < 10) {
+        date = "0" + dob.getDate();
+      }
+
       this.objMemberInfor.Dob =
-        "" +
-        dob.getFullYear() +
-        "-" +
-        (dob.getMonth() + 1) +
-        "-" +
-        dob.getDate();
-      console.log(this.objMemberInfor.Dob);
+        "" + dob.getFullYear() + "-" + month + "-" + date;
     },
     convertSolarToLunar() {
       let Dob = new Date(this.objMemberInfor.Dob);
@@ -1194,7 +1203,6 @@ export default {
       }
       this.objMemberInfor.LunarDob =
         "" + new LunarDate(Dob).getYear() + "-" + month + "-" + date;
-      console.log(this.objMemberInfor.LunarDob);
     },
     getInforMember(id) {
       HTTP.get("InforMember", {
@@ -1204,7 +1212,6 @@ export default {
       })
         .then((response) => {
           this.objMember = response.data;
-          console.log(this.objMember);
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
             this.takeDataMember(this.CurrentIdMember);
@@ -1213,6 +1220,9 @@ export default {
               this.objMemberInfor.LunarDob
             );
             this.objMemberInfor.Dod = this.formatDate(this.objMemberInfor.Dod);
+            this.objMemberInfor.LunarDod = this.formatDate(
+              this.objMemberInfor.LunarDod
+            );
           }
           if (this.objMember.contact.length > 0) {
             this.objMemberContact = this.objMember.contact[0];
@@ -1361,6 +1371,7 @@ export default {
         bnirthPlace: this.objMemberInfor.BirthPlace,
         IsDead: this.IsDead,
         Dod: this.objMemberInfor.Dod,
+        LunarDod: this.objMemberInfor.LunarDod,
         PlaceOfDeath: this.objMemberInfor.PlaceOfDeadth,
         GraveSite: this.objMemberInfor.GraveSite,
         Note: this.objMemberInfor.Note,
@@ -1450,47 +1461,49 @@ export default {
 
     updateInformation() {
       HTTP.put("member", {
-        memberID: this.CurrentIdMember,
-        memberName: this.objMemberInfor.MemberName,
-        nickName: this.objMemberInfor.NickName,
-        parentID: this.objMemberInfor.ParentID,
-        marriageID: this.objMemberInfor.MarriageID,
-        hasNickName: this.objMemberInfor.HasNickName,
-        birthOrder: this.objMemberInfor.BirthOrder,
-        origin: this.objMemberInfor.Origin,
-        nationalityId: this.objMemberInfor.NationalityID,
-        religionId: this.objMemberInfor.ReligionID,
-        dob: this.objMemberInfor.Dob,
-        lunarDob: this.objMemberInfor.LunarDob,
-        birthPlace: this.objMemberInfor.BirthPlace,
+        MemberID: this.CurrentIdMember,
+        MemberName: this.objMemberInfor.MemberName,
+        NickName: this.objMemberInfor.NickName,
+        ParentID: this.objMemberInfor.ParentID,
+        MarriageID: this.objMemberInfor.MarriageID,
+        BirthOrder: this.objMemberInfor.BirthOrder,
+        Origin: this.objMemberInfor.Origin,
+        NationalityId: this.objMemberInfor.NationalityID,
+        ReligionId: this.objMemberInfor.ReligionID,
+        Dob: this.objMemberInfor.Dob,
+        LunarDob: this.objMemberInfor.LunarDob,
+        BirthPlace: this.objMemberInfor.BirthPlace,
         IsDead: this.objMemberInfor.IsDead,
-        dod: this.objMemberInfor.Dod,
-        placeOfDeath: this.objMemberInfor.PlaceOfDeadth,
-        graveSite: this.objMemberInfor.GraveSite,
-        note: this.objMemberInfor.Note,
-        generation: this.objMemberInfor.Generation,
-        bloodType: this.objMemberInfor.BloodType,
-        male: this.objMemberInfor.Male,
-        codeId: this.objMemberInfor.CodeID,
+        Dod: this.objMemberInfor.Dod,
+        LunarDod: this.objMemberInfor.LunarDod,
+        PlaceOfDeath: this.objMemberInfor.PlaceOfDeadth,
+        GraveSite: this.objMemberInfor.GraveSite,
+        Note: this.objMemberInfor.Note,
+        BloodType: this.objMemberInfor.BloodType,
+        Male: this.objMemberInfor.Male,
       })
-        .then(() => {
-          if (this.objMemberContact.Phone != null) {
-            this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
+        .then((response) => {
+          console.log(response.data);
+          if (response.data.success == true) {
+            this.NotificationsScuccess(response.data.message);
+            if (this.objMemberContact.Phone != null) {
+              this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
+            }
+            HTTP.put("updateContact", {
+              MemberID: this.CurrentIdMember,
+              Address: this.objMemberContact.Address,
+              Phone: this.objMemberContact.Phone,
+              Email: this.objMemberContact.Email,
+              FacebookUrl: this.objMemberContact.FacebookUrl,
+              Zalo: this.objMemberContact.Zalo,
+            }).then(() => {
+              this.closeMemberModal();
+              this.family.load(this.nodes);
+              this.getListMember();
+            });
+          } else {
+            this.NotificationsDelete(response.data.message);
           }
-          console.log("Trong: " + this.objMemberContact.Phone);
-          HTTP.put("updateContact", {
-            MemberID: this.CurrentIdMember,
-            Address: this.objMemberContact.Address,
-            Phone: this.objMemberContact.Phone,
-            Email: this.objMemberContact.Email,
-            FacebookUrl: this.objMemberContact.FacebookUrl,
-            Zalo: this.objMemberContact.Zalo,
-          }).then(() => {
-            this.NotificationsScuccess("Sửa thông tin thành công");
-            this.closeMemberModal();
-            this.family.load(this.nodes);
-            this.getListMember();
-          });
         })
         .catch((e) => {
           console.log(e);
@@ -1531,23 +1544,23 @@ export default {
         });
     },
     RemoveHightLight() {
+      var nodeElement;
       for (let i = 0; i < this.nodes.length; i++) {
-        this.nodes[i].tags = this.nodes[i].tags.filter(
-          (tag) => tag !== "choose" && tag !== "notchoose"
-        );
+        nodeElement = this.family.getNodeElement(this.nodes[i].id);
+        nodeElement.classList.remove("selected");
+        nodeElement.classList.remove("notselected");
       }
     },
     highLightSelectNode(SelectNode) {
+      var nodeElement;
       this.RemoveHightLight();
       let selectedNode = this.nodes.find((node) => node.id == SelectNode);
       if (selectedNode) {
-        selectedNode.tags.push("choose");
+        nodeElement = this.family.getNodeElement(selectedNode.id);
+        nodeElement.classList.add("selected");
       } else {
         console.log("Nút không tồn tại:", SelectNode);
       }
-
-      // Cập nhật giao diện
-      this.family.load(this.nodes);
     },
     handleRightClick(id) {
       this.OnpenModal_SelectOption(id);
@@ -1556,18 +1569,19 @@ export default {
       this.family.center(id);
     },
     highLightNode() {
+      var nodeElement;
       this.RemoveHightLight();
       let memberIds = this.listFilterMember.map((item) => item.MemberID);
       if (this.selectBloodType != null || this.selectAge != null)
         this.nodes.forEach((node) => {
           if (memberIds.includes(node.id)) {
-            node.tags.push("choose");
+            nodeElement = this.family.getNodeElement(node.id);
+            nodeElement.classList.add("selected");
           } else {
-            node.tags.push("notchoose");
+            nodeElement = this.family.getNodeElement(node.id);
+            nodeElement.classList.add("notselected");
           }
         });
-
-      this.family.load(this.nodes);
     },
     getListAfterSetPaternalAncestor(id) {
       HTTP.get("viewTree", {
@@ -1619,7 +1633,7 @@ export default {
       this.$modal.hide("noti-modal");
     },
     openCompareModal() {
-      this.$modal.show("compare-modal");
+      this.isCompare = !this.isCompare;
     },
     closeCompareModal() {
       this.$modal.hide("compare-modal");
@@ -1648,16 +1662,12 @@ export default {
       let foundNode = this.nodes.find((node) => node.id == id);
       this.TitleModal = foundNode.name;
       this.$modal.show("Select-option-Modal");
+      this.highLightSelectNode(id);
       this.CurrentIdMember = id;
     },
     closeSelectModal() {
       this.CurrentIdMember = 0;
-      // for (let i = 0; i < this.nodes.length; i++) {
-      //   this.nodes[i].tags = this.nodes[i].tags.filter(
-      //     (tag) => tag !== "choose" && tag !== "notchoose"
-      //   );
-      // }
-      // this.family.load(this.nodes);
+      this.RemoveHightLight();
       this.$modal.hide("Select-option-Modal");
     },
     getListMember(idPaternalAncestor) {
@@ -1721,7 +1731,7 @@ export default {
           console.log(e);
         });
     },
-    getListDistrict() { },
+    getListDistrict() {},
     getListCity() {
       HTTP.get("province")
         .then((response) => {
