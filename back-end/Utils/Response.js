@@ -1,3 +1,5 @@
+const db = require('../Models/ConnectDB');
+
 let coreResponse = (success, status_code, message, data) => {
     return {
         success: success,
@@ -7,35 +9,39 @@ let coreResponse = (success, status_code, message, data) => {
     };
 }
 
+let coreErrorResponse = (status_code, message, data) => {
+    return coreResponse(false, status_code, message, data);
+}
+
 let badRequestResponse = (data, message) => {
-    if (message == null) message = "Bad request";
-    if (data == null) return coreResponse(false, 400, message);
+    if (message == null) message = "Yêu cầu không hợp lệ, vui lòng kiểm tra lại";
+    if (data == null) return coreErrorResponse(400, message);
     console.error(`${message} : ${data}`);
-    return coreResponse(false, 400, message, data);
+    return coreErrorResponse(400, message, data);
 }
 
 let dataNotFoundResponse = (data, message) => {
-    if (message == null) message = "Data not found";
-    if (data == null) return coreResponse(false, 404, message);
+    if (message == null) message = "Không tìm thấy dữ liệu phù hợp";
+    if (data == null) return coreErrorResponse( 404, message);
     console.error(`${message} : ${data}`);
-    return coreResponse(false, 404, message, data);
+    return coreErrorResponse(404, message, data);
 }
 let successResponse = (data, message) => {
-    if (message == null) message = "Success";
+    if (message == null) message = "Thành công";
     if (data == null) return coreResponse(true, 200, message);
     console.error(`${message} : ${data}`);
     return coreResponse(true, 200, message, data);
 }
 
 let internalServerErrorResponse = (data, message) => {
-    if (message == null) message = "Internal server error";
-    if (data == null) return coreResponse(false, 500, message);
+    if (message == null) message = "Lỗi hệ thống";
+    if (data == null) return coreErrorResponse(500, message);
     console.error(`${message} : ${data}`);
-    return coreResponse(false, 500, message, data);
+    return coreErrorResponse(500, message, data);
 }
 
 let missingFieldsErrorResponse = (missingFields) => {
-    message = "Missing required fields";
+    message = "Thiếu dữ liệu bắt buộc";
     data = {
         missing_fields: missingFields
     }

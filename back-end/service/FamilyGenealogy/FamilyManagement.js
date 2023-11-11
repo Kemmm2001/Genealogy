@@ -8,10 +8,10 @@ function addMember(member) {
             BirthOrder, Origin, 
             NationalityID, ReligionID, 
             Dob, LunarDob, BirthPlace, 
-            IsDead, Dod, PlaceOfDeadth, 
+            IsDead, Dod, LunarDod, PlaceOfDeadth, 
             GraveSite, Note, Generation, BloodType, CodeID, Male, Image)
         VALUES 
-        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
         const values = [
             member.ParentID,
@@ -20,19 +20,20 @@ function addMember(member) {
             member.NickName,
             member.BirthOrder,
             member.Origin,
-            member.NationalityId,
-            member.ReligionId,
+            member.NationalityID,
+            member.ReligionID,
             member.Dob,
             member.LunarDob,
             member.BirthPlace,
             member.IsDead,
             member.Dod,
+            member.LunarDod,
             member.PlaceOfDeath,
             member.GraveSite,
             member.Note,
             member.Generation,
             member.BloodType,
-            member.CodeId,
+            member.CodeID,
             member.Male,
             member.Image
         ];
@@ -49,12 +50,14 @@ function addMember(member) {
     });
 }
 
-function updateMember(member) {
-    return new Promise((resolve, reject) => {
-        const isDeleted = removeMemberPhoto(member.MemberID);
-        console.log(`isDeleted: ${isDeleted}`);
-        if (isDeleted == false) {
-            reject("Error when delete image");
+ function updateMember(member) {
+    return new Promise(async (resolve, reject) => {
+        if(member.Image == null || member.Image == ""){
+            const isDeleted =await removeMemberPhoto(member.MemberID);
+            console.log(`isDeleted: ${isDeleted}`);
+            if (isDeleted == false) {
+                reject("Error when delete image");
+            }
         }
         const query = `
         UPDATE familymember 
@@ -63,7 +66,6 @@ function updateMember(member) {
           MarriageID = ?,
           MemberName = ?,
           NickName = ?,
-          HasNickName = ?,
           BirthOrder = ?,
           Origin = ?,
           NationalityID = ?,
@@ -73,6 +75,7 @@ function updateMember(member) {
           BirthPlace = ?,
           IsDead = ?,
           Dod = ?,
+          LunarDod = ?,
           PlaceOfDeadth = ?,
           GraveSite = ?,
           Note = ?,
@@ -89,22 +92,22 @@ function updateMember(member) {
             member.MarriageID,
             member.MemberName,
             member.NickName,
-            member.HasNickName,
             member.BirthOrder,
             member.Origin,
-            member.NationalityId,
-            member.ReligionId,
+            member.NationalityID,
+            member.ReligionID,
             member.Dob,
             member.LunarDob,
             member.BirthPlace,
             member.IsDead,
             member.Dod,
+            member.LunarDod,
             member.PlaceOfDeath,
             member.GraveSite,
             member.Note,
             member.Generation,
             member.BloodType,
-            member.CodeId,
+            member.CodeID,
             member.Male,
             member.Image,
             member.MemberID
@@ -124,17 +127,17 @@ function updateMember(member) {
 }
 
 // hàm có chức năng xóa ảnh trong thư mục
-const removeMemberPhoto = (MemberID) => {
+const removeMemberPhoto =async (MemberID) => {
     try {
         let querySelect = `SELECT * FROM familymember where MemberID = ?`;
         let value = [MemberID];
-        return deleteImageBySelectQuery(querySelect, value);
+        return await deleteImageBySelectQuery(querySelect, value);
     } catch (err) {
         console.error("Error : " + err);
         return false; // Trả về false nếu có lỗi
     }
 }
-const deleteImageBySelectQuery = (query, values) => {
+const deleteImageBySelectQuery = async (query, values) => {
     console.log("query: " + query);
     console.log("values: " + values);
     db.connection.query(query, values, async (err, result) => {
