@@ -328,7 +328,7 @@ async function GetGenealogy(result, MemberID, ListFamily = [], visitedMembers = 
     visitedMembers.add(MemberID);
 
     let Member = result.find(member => member.MemberID == MemberID);
-    let familyData = await createFamilyData(Member);
+    let familyData = await createFamilyData(Member, result);
 
     // Check if the member is already in ListFamily
     if (!isMemberInList(ListFamily, Member)) {
@@ -337,7 +337,7 @@ async function GetGenealogy(result, MemberID, ListFamily = [], visitedMembers = 
 
     let married = result.find(member => member.MarriageID == MemberID);
     if (married) {
-        let wifeData = await createFamilyData(married);
+        let wifeData = await createFamilyData(married, result);
 
         // Check if the wife is already in ListFamily
         if (!isMemberInList(ListFamily, married)) {
@@ -347,7 +347,7 @@ async function GetGenealogy(result, MemberID, ListFamily = [], visitedMembers = 
 
     let children = result.filter(member => member.ParentID == MemberID);
     for (let child of children) {
-        let childData = await createFamilyData(child);
+        let childData = await createFamilyData(child, result);
 
         // Check if the child is already in ListFamily
         if (!isMemberInList(ListFamily, child)) {
@@ -384,24 +384,24 @@ async function ViewFamilyTree(CodeID) {
 }
 
 // Hàm tạo đối tượng familyData từ dữ liệu thành viên
-async function createFamilyData(member) {
+async function createFamilyData(member, result) {
     if (member !== undefined) {
         let fid = 0;
         let mid = 0;
         if (member.Generation === 1) {
             fid = '';
             mid = '';
-        } else if (member.Male === 1) {
-            fid = member.ParentID;
-            let marriageIDResult = await getParentID(member.ParentID);
-            if (marriageIDResult != null) mid = marriageIDResult.MarriageID;
-
-        } else {
-            mid = member.ParentID;
-            let marriageIDResult = await getParentID(member.ParentID);
-            if (marriageIDResult != null) fid = marriageIDResult.MarriageID;
         }
-
+        else {
+            let parent = result.find(parent => parent.MemberID == member.ParentID);
+            if (parent.Male == 1) {
+                fid = parent.MemberID;
+                mid = parent.MarriageID;
+            } else {
+                mid = parent.MemberID;
+                fid = parent.MarriageID;
+            }
+        }
         return {
             id: member.MemberID,
             pids: [member.MarriageID],

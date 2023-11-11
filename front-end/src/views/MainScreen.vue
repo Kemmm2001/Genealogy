@@ -1002,7 +1002,6 @@ export default {
         );
       });
       this.family.onNodeClick((arg) => {
-        this.highLightSelectNode(arg.node.id);
         if (this.isCompare) {
           if (this.lastClickedNodeId == null) {
             this.lastClickedNodeId = arg.node.id;
@@ -1022,36 +1021,32 @@ export default {
       return this.family.getViewBox();
     },
     getResultMember(id) {
-      const getNodeById = (nodeId) =>
-        this.nodes.find((node) => node.id == nodeId);
+      const objdata = {};
+      const result = this.nodes.find((node) => node.id == id);
 
-      const result = getNodeById(id);
-      const resultMid = result.mid ? getNodeById(result.mid) : null;
-      const resultFid = result.fid ? getNodeById(result.fid) : null;
+      objdata.name = result.name;
+      objdata.gender = result.gender === "male" ? "Nam" : "Nữ";
 
-      const objdata = {
-        name: result.name,
-        gender: result.gender === "male" ? "Nam" : "Nữ",
-        wife: resultMid ? resultMid.name : "Không có vợ",
-        husband: resultMid ? resultMid.name : "Không có Chồng",
-        dob: result.dob,
-        dod: result.dod,
-        father: null,
-        mother: null,
-      };
+      if (result.pids[0] != null) {
+        const resultMid = this.nodes.find((node) => node.id == result.pids[0]);
+        objdata[result.gender === "male" ? "wife" : "husband"] = resultMid.name;
+      } else {
+        objdata[result.gender === "male" ? "wife" : "husband"] = `Không có ${
+          result.gender === "male" ? "vợ" : "chồng"
+        }`;
+      }
 
-      if (resultFid) {
-        if (resultFid.gender.toLowerCase() == "male") {
-          objdata.father = resultFid.name;
-          objdata.mother = resultFid.mid
-            ? getNodeById(resultFid.mid)?.name
-            : null;
-        } else {
-          objdata.mother = resultFid.name;
-          objdata.father = resultFid.mid
-            ? getNodeById(resultFid.mid)?.name
-            : null;
-        }
+      objdata.dob = result.dob;
+      objdata.dod = result.dod;
+
+      if (result.fid) {
+        const resultFid = this.nodes.find((node) => node.id == result.fid);
+        objdata.father = resultFid.name;
+      }
+
+      if (result.mid) {
+        const resultMid = this.nodes.find((node) => node.id == result.mid);
+        objdata.mother = resultMid.name;
       }
 
       return objdata;
