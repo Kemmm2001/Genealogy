@@ -8,10 +8,6 @@ const connection = mysql.createConnection({
   user: 'root',
   password: 'Baolan0598.',
   database: 'genealogy'
-  // host: '14.225.254.123',
-  // user: 'admin',
-  // password: 'AXeTFQW7pC3cxSFg9a7Q8JfwtXkMmy3PSbnG2NgLXASbWhps6x9dBLG',
-  // database: 'genealogy'
 });
 
 // Kết nối vào cơ sở dữ liệu
