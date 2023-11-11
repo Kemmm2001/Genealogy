@@ -42,19 +42,23 @@
           </div>
         </div>
       </div>
-      <div class="h-100 w-100 d-flex flex-column px-2" style="padding-top: 8px">
+      <div class="h-100 w-100 d-flex flex-column px-2" style="padding-top: 8px; font-family: 'QuicksandBold', sans-serif;">
         <div class="existing-members d-flex flex-column w-100">
-          <div class="list-item" style="background-color: #AED6F1; text-align: center;">Danh sách thành viên có trên phả đồ</div>
+          <div class="d-flex align-items-center justify-content-center px-2 py-1" style="background-color: #AED6F1; text-align: center; border-radius: 0.175rem 0.175rem 0 0; min-height: 48px; font-size: 18px;">Thành viên có trên phả
+            đồ</div>
           <div class="d-flex flex-column w-100" style="overflow-y: auto;cursor: pointer">
             <div v-for="(n, index) in nodes" :key="n.id">
               <div @click="handleLeftClick(n.id)" @contextmenu.prevent="handleRightClick(n.id)" :class="{ 'list-item': true, 'selected-list': n.id == CurrentIdMember, 'ancestor-member': index === 0 }">{{ n.name }}</div>
             </div>
           </div>
         </div>
-        <div class="nonexisting-members d-flex flex-column w-100">
-          <div class="list-item" style="background-color: #AED6F1; text-align: center;">Danh sách thành viên không có trên phả đồ</div>
-          <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto;auto;cursor: pointer">
-            <div v-for="list in ListUnspecifiedMembers" :key="list.id" @click="handleLeftClick(list.MemberID)" @contextmenu.prevent="handleRightClick(list.MemberID)" class="list-item">{{ list.MemberName }}</div>
+        <div class="d-flex nonexisting-members flex-column w-100" style="margin-top: 4px">
+          <div class="d-flex align-items-center justify-content-center px-2 py-1" style="background-color: #AED6F1; text-align: center; border-radius: 0.175rem 0.175rem 0 0; min-height: 48px; font-size: 18px;">Thành viên không có trên
+            phả đồ</div>
+          <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100"
+            style="overflow-y: auto;auto;cursor: pointer">
+            <div v-for="list in ListUnspecifiedMembers" :key="list.id" @click="handleLeftClick(list.MemberID)"
+              @contextmenu.prevent="handleRightClick(list.MemberID)" class="list-item">{{ list.MemberName }}</div>
           </div>
         </div>
       </div>
@@ -138,8 +142,12 @@
           <div class="col-9 h-100 position-relative" style="background: #ebebeb">
             <div class="position-absolute w-100 d-flex flex-column" style="height: calc(100% - 64px); top: 0;">
               <div class="d-flex flex-row" style="height: 48px; background-color: #FFFFFF">
-                <div @click="selectEmail()" :class="{ notiSelected: emailSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0 0.375rem 0 0; cursor: pointer;">Email</div>
-                <div @click="selectSMS()" :class="{ notiSelected: smsSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0.375rem 0 0 0; cursor: pointer;">SMS</div>
+                <div @click="selectSMS()" :class="{ notiSelected: smsSelected }"
+                  class="col-6 d-flex align-items-center justify-content-center"
+                  style="border-radius: 0.375rem 0 0 0; cursor: pointer;">SMS</div>
+                <div @click="selectEmail()" :class="{ notiSelected: emailSelected }"
+                  class="col-6 d-flex align-items-center justify-content-center"
+                  style="border-radius: 0 0.375rem 0 0; cursor: pointer;">Email</div>
               </div>
               <div v-if="emailSelected" class="d-flex flex-column mt-2" style="height: calc(100% - 48px); overflow-y: auto;">
                 <div class="sent-mail d-flex flex-row">
@@ -903,8 +911,8 @@ export default {
       displayList: false,
       expandAddRelationship: false,
 
-      emailSelected: true,
-      smsSelected: false,
+      emailSelected: false,
+      smsSelected: true,
 
       expandCreateEmail: false,
       advancedFilterDown: false,
