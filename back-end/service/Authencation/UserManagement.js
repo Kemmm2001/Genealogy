@@ -123,8 +123,8 @@ function insertAccount(accountID, codeID) {
 
 function insertIntoFamily(value, codeID) {
   return new Promise((resolve, reject) => {
-    const query = 'INSERT INTO genealogy.familytree (CodeID, TreeName, ,DeathAnniversary,AccountID) VALUES (?, ?, ?,?,?)';
-    const values = [codeID, value.treeName, value.ethnicity, value.DeathAnniversary, value.AccountID];
+    const query = 'INSERT INTO genealogy.familytree (CodeID, TreeName,Ethnicity ,DeathAnniversary,AccountID) VALUES (?, ?, ?,?,?)';
+    const values = [codeID, value.treeName, value.ethnicity, value.deathAnniversary, value.accountID];
 
     db.connection.query(query, values, (err, results) => {
       if (err) {

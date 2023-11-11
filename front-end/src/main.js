@@ -2,7 +2,6 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import VModal from "vue-js-modal";
-import VueClipboard from 'vue-clipboard2'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -23,7 +22,7 @@ import "./assets/css/noti.css";
 Vue.config.productionTip = false
 
 
-Vue.use(VModal, { dynamic: true }, VueClipboard);
+Vue.use(VModal, { dynamic: true });
 
 new Vue({
   router,
