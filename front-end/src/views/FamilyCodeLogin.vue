@@ -160,10 +160,8 @@ export default {
         },
         loginWithCode(){
             this.codeIdLogin = this.code1+"-"+this.code2+"-"+this.code3;
-            HTTP.get("generalInfor", {
-                params:{
-                    CodeID: this.codeIdLogin,
-                }
+            HTTP.post("check-codeId", {
+                    codeID: this.codeIdLogin,
             }).then((response) => {
                 if(response.data[0] != null){
                     this.$router.push('/');

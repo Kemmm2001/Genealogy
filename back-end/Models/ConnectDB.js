@@ -6,7 +6,7 @@ const connection = mysql.createConnection({
   // password: 'AXeTFQW7pC3cxSFg9a7Q8JfwtXkMmy3PSbnG2NgLXASbWhps6x9dBLG',
   host: 'localhost',
   user: 'root',
-  password: 'Baolan0598.',
+  password: 'lamdangcapvip',
   database: 'genealogy'
 });
 

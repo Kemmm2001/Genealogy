@@ -736,7 +736,7 @@ export default {
   mounted() {
     HTTP.get("familyhead", {
       params: {
-        CodeID: 123,
+        CodeID: 123456,
       },
     })
       .then((response) => {
