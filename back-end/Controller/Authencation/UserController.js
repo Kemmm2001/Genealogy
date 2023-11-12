@@ -135,6 +135,20 @@ var setRole = async (req, res) => {
   }
 }
 
+var checkCodeID = async (req, res) => {
+  try {
+    
+    let doesExist = await UserService.checkCodeID(request.codeID)
+    if (doesExist) throw createError.Conflict(`Code đã tồn tại`);
+    return res.json({ data })
+  } catch (error) {
+    res.status(error.status || 500).json({ error: error.message });
+
+  }
+}
+
+
+
 function generateRandomNumber() {
   // Tạo 9 chữ số ngẫu nhiên
   const randomNumber = Math.floor(100000000 + Math.random() * 900000000).toString();
@@ -146,5 +160,5 @@ function generateRandomNumber() {
 }
 
 module.exports = {
-  registerUser, loginUser, refreshToken, registerGenealogy, getGenealogy, setRole
+  registerUser, loginUser, refreshToken, registerGenealogy, getGenealogy, setRole, checkCodeID
 };

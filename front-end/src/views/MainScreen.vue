@@ -1789,6 +1789,7 @@ export default {
     selectSMS() {
       this.smsSelected = true;
       this.emailSelected = false;
+      this.expandCreateEmail = false;
     },
   },
   created() {
