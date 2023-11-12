@@ -63,13 +63,13 @@ module.exports = {
           console.log(err.message)
           reject(createError.InternalServerError())
         }
-        
+
         resolve(token);
 
         // Lưu refreshToken vào cơ sở dữ liệu
         const refreshTokenPath = `refreshTokens/${insertId}`; // Đường dẫn trong cơ sở dữ liệu
         const refreshTokenRef = db.ref(refreshTokenPath);
-        
+
         try {
           await refreshTokenRef.set({ token }); // Lưu thông tin refreshToken vào Firebase
         } catch (error) {
@@ -79,16 +79,13 @@ module.exports = {
       })
     })
   },
-  },
-
   verifyRefreshToken: (refreshToken => {
     return new Promise((resolve, reject) => {
       JWT.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, payload) => {
         if (err) return reject(createError.Unauthorized())
-        
+
         resolve(payload)
       })
     })
   })
-  
 }
