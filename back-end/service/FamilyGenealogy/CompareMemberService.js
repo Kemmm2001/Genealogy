@@ -164,6 +164,9 @@ function setResult(objResult, index1, index2) {
 }
 
 async function getResultCompareToMember(DefferenceGeneration, Generation1, Generation2, Flag1, Flag2, Gender1, Gender2) {
+    console.log('Generation1: ' + Generation1.BirthOrder)
+    console.log('Generation2: ' + Generation2.BirthOrder)
+    console.log('DifferenceGeneration: ' + DefferenceGeneration)
     let objResult = {}
     if (DefferenceGeneration === 0) {
         if (Generation1.BirthOrder > Generation2.BirthOrder) {
@@ -199,9 +202,9 @@ async function getResultCompareToMember(DefferenceGeneration, Generation1, Gener
                     }
                 } else {
                     if (Gender2 == 1) {
-                        setResult(objResult, 17, 10);
-                    } else {
                         setResult(objResult, 17, 12);
+                    } else {
+                        setResult(objResult, 17, 10);
                     }
                 }
                 return objResult;
@@ -230,6 +233,14 @@ async function getResultCompareToMember(DefferenceGeneration, Generation1, Gener
                 }
                 return objResult;
             }
+            else if (Generation1.BirthOrder == Generation2.BirthOrder) {
+                if (Gender2 == 1) {
+                    setResult(objResult, 17, 1);
+                } else {
+                    setResult(objResult, 17, 0);
+                }
+                return objResult;
+            }
         }
     }
     else if (DefferenceGeneration > 0) {
@@ -255,6 +266,13 @@ async function getResultCompareToMember(DefferenceGeneration, Generation1, Gener
                     objResult.result2 = PaternalFamily[17].name;
                 }
                 return objResult;
+            } else if (Generation1.BirthOrder == Generation2.BirthOrder) {
+                if (Gender1 == 1) {
+                    setResult(objResult, 18, 8);
+                } else {
+                    setResult(objResult, 18, 9);
+                }
+                return objResult;
             }
         }
         if (DefferenceGeneration == 2 || DefferenceGeneration == -2) {
@@ -274,6 +292,14 @@ async function getResultCompareToMember(DefferenceGeneration, Generation1, Gener
                 } else {
                     objResult.result1 = PaternalFamily[2].name;
                     objResult.result2 = PaternalFamily[17].name;
+                }
+                return objResult;
+            }
+            else if (Generation1.BirthOrder == Generation2.BirthOrder) {
+                if (Gender1 == 1) {
+                    setResult(objResult, 1, 17);
+                } else {
+                    setResult(objResult, 0, 17);
                 }
                 return objResult;
             }
