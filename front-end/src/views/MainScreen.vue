@@ -54,7 +54,7 @@
         <div class="d-flex nonexisting-members flex-column w-100" style="margin-top: 4px">
           <div class="d-flex flex-row px-2 py-1" style="background-color: #AED6F1; ">
             <div class="d-flex align-items-center justify-content-center" style="text-align: center; border-radius: 0.175rem 0.175rem 0 0; min-height: 48px; font-size: 18px;">Thành viên không có trên phả đồ</div>
-            <div class="d-flex align-items-center justify-content-center" style="padding-left: 12px">
+            <div class="d-flex align-items-center justify-content-center" style="padding-left: 12px;cursor:pointer" @click="openMemberModal('AddNormal',' thành viên không có trên phả đồ')">
               <svg class="add-member-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                 <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />
               </svg>
@@ -89,6 +89,7 @@
               <div class="list-group-item" @click="openMemberModal('AddMarriage', 'Chồng')">Thêm Chồng</div>
               <div class="list-group-item" @click="openMemberModal('AddMarriage', 'Vợ')">Thêm Vợ</div>
               <div class="list-group-item" @click="openMemberModal('AddChild', 'Con')">Thêm Con</div>
+              <div class="list-group-item" @click="openModalAddMemberFromList()">Thêm Con (Từ Danh Sách)</div>
               <div class="list-group-item" @click="removeMember()">Xóa thành viên (*)</div>
               <div class="list-group-item feature-overview">Các chức năng Khác</div>
               <div class="list-group-item" style="border-top: none;" @click="setPaternalAncestor(2)">Set làm tộc trưởng</div>
@@ -394,7 +395,7 @@
                   <input type="text" class="w-100 h-100 form-control" :value="objCompareMember1.mother !== undefined ? objCompareMember1.mother + ' (Mẹ)' : 'Không có trên phả đồ'" disabled />
                 </div>
                 <div class="compare-modal-item mx-2 mt-2">
-                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember1.result !== undefined ? 'Mối quan hệ: ' + objCompareMember1.result: 'Không xác định'" disabled />
+                  <input type="text" class="w-100 h-100 form-control" :value="resultCompare1 !== undefined ? 'Mối quan hệ: ' + resultCompare1: 'Không xác định'" disabled />
                 </div>
               </div>
             </div>
@@ -429,7 +430,7 @@
                   <input type="text" class="w-100 h-100 form-control" :value="objCompareMember2.mother !== undefined ? objCompareMember2.mother + ' (Mẹ)' : 'Không có trên phả đồ'" disabled />
                 </div>
                 <div class="compare-modal-item mx-2 mt-2">
-                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember2.result !== undefined ? 'Mối quan hệ: ' + objCompareMember2.result: 'Không xác định'" disabled />
+                  <input type="text" class="w-100 h-100 form-control" :value="resultCompare2 !== undefined ? 'Mối quan hệ: ' + resultCompare2: 'Mối quan hệ: Không xác định'" disabled />
                 </div>
               </div>
             </div>
@@ -441,7 +442,50 @@
       </div>
     </modal>
     <!-- Đây là modal mối quan hệ -->
-    <div></div>
+    <div>
+      <modal name="add-from-list">
+        <div class="w-100 h-100 add-head-modal">
+          <div class="d-flex flex-row w-100 align-items-center position-relative">
+            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm Con Từ Danh Sách</div>
+            <div class="close-add-form" @click="closeModalAddMemberFromList()">
+              <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+              </svg>
+            </div>
+          </div>
+          <div class="d-flex flex-column">
+            <div class="d-flex flex-row">
+              <div class="col-md-4 m-2">
+                <input type="text" class="form-control modal-item m-0" placeholder="Nhập tên thành viên..." />
+              </div>
+            </div>
+            <div class="d-flex flex-column headlist-list-container w-100">
+              <table class="table member headlist-list m-0">
+                <thead>
+                  <tr class="headlist-item">
+                    <th class="headlist-list-th" scope="col">#</th>
+                    <th class="headlist-list-th" scope="col">Họ và Tên</th>
+                    <th class="headlist-list-th" scope="col">Giới tính</th>
+                    <th class="headlist-list-th" scope="col">Ngày sinh</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(m,index) in ListUnspecifiedMembers" :key="m.id">
+                    <th>{{index + 1}}</th>
+                    <th>{{m.MemberName}}</th>
+                    <td>{{ m.Male === 1 ? 'Nam' : 'Nữ' }}</td>
+                    <td>{{formatDate(m.Dob)}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+              <button>abc</button>
+            </div>
+          </div>
+        </div>
+      </modal>
+    </div>
     <!-- Đây là modal member-->
     <modal name="member-modal">
       <div class="card" v-if="objMemberInfor">
@@ -891,13 +935,13 @@ export default {
       objCompareMember2: {},
       displayList: false,
       expandAddRelationship: false,
-
       emailSelected: false,
       smsSelected: true,
-
       expandCreateEmail: false,
       advancedFilterDown: false,
       selectNodeHighLight: [],
+      resultCompare1: null,
+      resultCompare2: null,
     };
   },
   methods: {
@@ -1013,6 +1057,7 @@ export default {
     getResultMember(id) {
       const objdata = {};
       const result = this.nodes.find((node) => node.id == id);
+      console.log(result);
 
       objdata.name = result.name;
       objdata.gender = result.gender === "male" ? "Nam" : "Nữ";
@@ -1037,14 +1082,16 @@ export default {
         const resultMid = this.nodes.find((node) => node.id == result.mid);
         objdata.mother = resultMid.name;
       }
-      objdata.generation = result.Generation;
+      objdata.generation = result.generation;
 
       return objdata;
     },
     compareMember(memberId1, memberId2) {
+      this.RemoveHightLight();
+      this.selectNodeHighLight = [];
+      this.lastClickedNodeId = null;
       this.objCompareMember1 = this.getResultMember(memberId1);
       this.objCompareMember2 = this.getResultMember(memberId2);
-
       HTTP.get("compare", {
         params: {
           MemberID1: memberId1,
@@ -1052,9 +1099,8 @@ export default {
         },
       })
         .then((response) => {
-          this.objCompareMember1.result = response.data.result1;
-          this.objCompareMember2.result = response.data.result2;
-          console.log(this.objCompareMember1.result);
+          this.resultCompare1 = response.data.result1;
+          this.resultCompare2 = response.data.result2;
           this.$modal.show("compare-modal");
         })
         .catch((e) => {
@@ -1349,15 +1395,17 @@ export default {
         });
     },
     async addMember() {
-      console.log(this.CodeID);
+      if (this.action == "AddNormal") {
+        this.generationMember = 0;
+      }
       await HTTP.post("member", {
         MemberName: this.objMemberInfor.MemberName,
         NickName: this.objMemberInfor.NickName,
         CurrentMemberID: this.CurrentIdMember,
         BirthOrder: this.objMemberInfor.BirthOrder,
         Origin: this.objMemberInfor.Origin,
-        NationalityId: this.objMemberInfor.NationalityID,
-        ReligionId: this.objMemberInfor.ReligionID,
+        NationalityID: this.objMemberInfor.NationalityID,
+        ReligionID: this.objMemberInfor.ReligionID,
         Dob: this.objMemberInfor.Dob,
         LunarDob: this.objMemberInfor.Dob,
         bnirthPlace: this.objMemberInfor.BirthPlace,
@@ -1370,10 +1418,13 @@ export default {
         CurrentGeneration: this.generationMember,
         BloodType: this.objMemberInfor.BloodType,
         Male: this.objMemberInfor.Male,
-        CodeId: this.CodeID,
+        CodeID: this.CodeID,
         Action: this.action,
       })
         .then((response) => {
+          if (this.action == "AddNormal") {
+            this.getListUnspecifiedMembers();
+          }
           if (response.data.success == true) {
             this.NotificationsScuccess(response.data.message);
           } else {
@@ -1619,10 +1670,18 @@ export default {
       })
         .then((response) => {
           this.ListUnspecifiedMembers = response.data;
+          console.log(this.ListUnspecifiedMembers);
         })
         .catch((e) => {
           console.log(e);
         });
+    },
+    closeModalAddMemberFromList() {
+      this.$modal.hide("add-from-list");
+      this.closeSelectModal();
+    },
+    openModalAddMemberFromList() {
+      this.$modal.show("add-from-list");
     },
     openNotiModal() {
       this.ListPhoneToSendMessage = [];

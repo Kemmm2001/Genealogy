@@ -164,9 +164,6 @@ function setResult(objResult, index1, index2) {
 }
 
 async function getResultCompareToMember(DefferenceGeneration, Generation1, Generation2, Flag1, Flag2, Gender1, Gender2) {
-    console.log('Generation1: ' + Generation1.BirthOrder)
-    console.log('Generation2: ' + Generation2.BirthOrder)
-    console.log('DifferenceGeneration: ' + DefferenceGeneration)
     let objResult = {}
     if (DefferenceGeneration === 0) {
         if (Generation1.BirthOrder > Generation2.BirthOrder) {
