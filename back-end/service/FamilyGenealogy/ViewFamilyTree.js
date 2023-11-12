@@ -384,22 +384,24 @@ async function ViewFamilyTree(CodeID) {
 }
 
 // Hàm tạo đối tượng familyData từ dữ liệu thành viên
-async function createFamilyData(member, result) {
+async function createFamilyData(member, result) { 
     if (member !== undefined) {
-        let fid = 0;
-        let mid = 0;
+        let fid = '';
+        let mid = '';
         if (member.Generation === 1) {
             fid = '';
             mid = '';
         }
         else {
-            let parent = result.find(parent => parent.MemberID == member.ParentID);
-            if (parent.Male == 1) {
-                fid = parent.MemberID;
-                mid = parent.MarriageID;
-            } else {
-                mid = parent.MemberID;
-                fid = parent.MarriageID;
+            if (member.ParentID != null && member.ParentID != 0) {
+                let parent = result.find(parent => parent.MemberID == member.ParentID);
+                if (parent.Male == 1) {
+                    fid = parent.MemberID;
+                    mid = parent.MarriageID;
+                } else {
+                    mid = parent.MemberID;
+                    fid = parent.MarriageID;
+                }
             }
         }
         return {
