@@ -1,15 +1,6 @@
 const JWT = require('jsonwebtoken')
 const createError = require('http-errors')
-const firebase = require('firebase');
-const admin = require('firebase-admin');
 
-const serviceAccount = require('path/to/serviceAccountKey.json');
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://token-2c4b0.firebaseio.com'
-});
-const db = admin.database();
 module.exports = {
   signAccessToken: (insertId) => {
     return new Promise((resolve, reject) => {
@@ -50,7 +41,7 @@ module.exports = {
   },
 
   signRefreshToken: (insertId) => {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const payload = {
         insertId
       }
@@ -63,22 +54,10 @@ module.exports = {
           console.log(err.message)
           reject(createError.InternalServerError())
         }
-        
-        resolve(token);
-
-        // Lưu refreshToken vào cơ sở dữ liệu
-        const refreshTokenPath = `refreshTokens/${insertId}`; // Đường dẫn trong cơ sở dữ liệu
-        const refreshTokenRef = db.ref(refreshTokenPath);
-        
-        try {
-          await refreshTokenRef.set({ token }); // Lưu thông tin refreshToken vào Firebase
-        } catch (error) {
-          console.error("Lỗi khi lưu refreshToken vào cơ sở dữ liệu Firebase:", error);
-          reject(createError.InternalServerError());
-        }
+      
+        resolve(token)
       })
     })
-  },
   },
 
   verifyRefreshToken: (refreshToken => {
