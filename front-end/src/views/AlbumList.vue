@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex w-100">
+  <div class="d-flex w-100" style="padding: 0 200px">
     <div class="d-flex flex-column h-100 w-100">
       <div class="d-flex flex-row">
         <div class="col-md-6 d-flex align-items-center" style="justify-content: left;">
@@ -54,33 +54,36 @@
           </div>
         </div>
       </div>
-      <div class="d-flex flex-row justify-content-center m-4">
-        <button class="btn px-2 py-0">
-          <svg class="articlelist-paging-icon p-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-            <path
-              d="M470.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 256 265.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160zm-352 160l160-160c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L210.7 256 73.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0z" />
-          </svg>
-        </button>
-        <button class="btn px-2 p-0">
-          <svg class="articlelist-paging-icon p-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-            <path
-              d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" />
-          </svg>
-        </button>
-        <div class="d-flex align-items-center justify-content-center">Trang 1</div>
-        <button class="btn px-2 p-0">
-          <svg class="articlelist-paging-icon p-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-            <path
-              d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" />
-          </svg>
-        </button>
-        <button class="btn px-2 p-0">
-          <svg class="articlelist-paging-icon p-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-            <path
-              d="M470.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 256 265.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160zm-352 160l160-160c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L210.7 256 73.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0z" />
-          </svg>
-        </button>
-      </div>
+      <div class="d-flex flex-row paging justify-content-center m-4" style="bottom: 12px; left: 0; right: 0;">
+          <div class="d-flex flex-row align-items-center">
+            <div class="d-flex align-items-center justify-content-center" style="padding-right: 12px;">
+              <svg class="headlist-paging-icon" style="transform: rotate(180deg);" xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 320 512">
+                <path
+                  d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" />
+              </svg>
+            </div>
+            <div>Trước</div>
+          </div>
+          <div class="d-flex flex-row align-items-center">
+            <div class="page">1</div>
+            <div class="page">2</div>
+            <div class="page">
+              <div :class="{chosen : true}">3</div>
+            </div>
+            <div class="page">4</div>
+            <div class="page">5</div>
+          </div>
+          <div class="d-flex flex-row align-items-center">
+            <div>Sau</div>
+            <div class="d-flex align-items-center justify-content-center" style="padding-left: 12px;">
+              <svg class="headlist-paging-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                <path
+                  d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" />
+              </svg>
+            </div>
+          </div>
+        </div>
     </div>
 
     <modal name="addAlbum-modal">
