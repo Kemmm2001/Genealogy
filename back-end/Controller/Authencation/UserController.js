@@ -137,15 +137,12 @@ var setRole = async (req, res) => {
 
 var checkCodeID = async (req, res) => {
   try {
-    
-    let doesExist = await UserService.checkCodeID(req.body.codeID)
-    if (doesExist) throw createError.Conflict(`Code đã tồn tại`);
-    return res.json({ data })
+    let doesExist = await UserService.checkCodeID(req.body.codeID);
+    return res.json({ doesExist }); // Trả về true hoặc false trong đối tượng doesExist
   } catch (error) {
     res.status(error.status || 500).json({ error: error.message });
-
   }
-}
+};
 
 
 
