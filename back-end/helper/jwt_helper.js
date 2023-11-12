@@ -1,15 +1,6 @@
 const JWT = require('jsonwebtoken')
 const createError = require('http-errors')
-const firebase = require('firebase');
-const admin = require('firebase-admin');
 
-const serviceAccount = require('path/to/serviceAccountKey.json');
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://token-2c4b0.firebaseio.com'
-});
-const db = admin.database();
 module.exports = {
   signAccessToken: (insertId) => {
     return new Promise((resolve, reject) => {
@@ -50,7 +41,7 @@ module.exports = {
   },
 
   signRefreshToken: (insertId) => {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const payload = {
         insertId
       }
@@ -63,6 +54,7 @@ module.exports = {
           console.log(err.message)
           reject(createError.InternalServerError())
         }
+<<<<<<< HEAD
 
         resolve(token);
 
@@ -79,6 +71,14 @@ module.exports = {
       })
     })
   },
+=======
+      
+        resolve(token)
+      })
+    })
+  },
+
+>>>>>>> 99073471e72d517b69047ad037c694e458d84e14
   verifyRefreshToken: (refreshToken => {
     return new Promise((resolve, reject) => {
       JWT.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, payload) => {
