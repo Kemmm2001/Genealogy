@@ -2,7 +2,7 @@ const express = require('express')
 const UserController = require('../Controller/Authencation/UserController'); // Import controller
 var router = express.Router()
 const { verifyAccessToken } = require('../helper/jwt_helper')
-
+const authMiddleware = require('../helper/author_helper')
 
 const initWebRouter = (app) => {
 
@@ -23,6 +23,11 @@ const initWebRouter = (app) => {
   
   router.post('/set-role', UserController.setRole)
   router.post('/check-codeId', UserController.checkCodeID)
+
+  router.get('/admin', authMiddleware.authenticateAndAuthorize(2), (req, res) => {
+    // Xử lý yêu cầu
+    res.json({ message: 'Admin route' });
+  });
   //Tiền tố đứng trước route
   app.use('/api/v1', router);
 }
