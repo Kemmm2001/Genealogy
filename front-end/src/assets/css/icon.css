@@ -102,14 +102,7 @@
     top: 0
 }
 
-.advanced-filter-up-icon{
-    width: 24px;
-    height: 24px;
-    fill: #FFFFFF;
-    cursor: pointer;
-    transition: 0.4s;
-}
-
-.advanced-filter-up-icon.rotateUp{
-    transform: rotate(180deg);
+.add-member-icon{
+    width: 20px;
+    height: 20px;
 }
