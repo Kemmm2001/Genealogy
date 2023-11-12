@@ -230,15 +230,18 @@ input:focus~label.form-label-number {
 
 .add-head-modal {
     background-color: #FFFFFF;
+    border-radius: 0.375rem;
 }
 
 .add-article-modal {
     background-color: #FFFFFF;
+    border-radius: 0.375rem;
 }
 
 
 .add-album-modal{
     background-color: #FFFFFF;
+    border-radius: 0.375rem;
 }
 
 .noti-modal-member{
