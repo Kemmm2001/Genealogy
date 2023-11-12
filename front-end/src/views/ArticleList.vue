@@ -45,7 +45,7 @@
           </tbody>
         </table>
       </div>
-      <div class="d-flex flex-row paging justify-content-center m-4" style="bottom: 12px; left: 0; right: 0;">
+      <div class="d-flex flex-row paging justify-content-center m-4" style="position:absolute; bottom: 12px; left: 0; right: 0;">
           <div class="d-flex flex-row align-items-center">
             <div class="d-flex align-items-center justify-content-center" style="padding-right: 12px;">
               <svg class="headlist-paging-icon" style="transform: rotate(180deg);" xmlns="http://www.w3.org/2000/svg"
