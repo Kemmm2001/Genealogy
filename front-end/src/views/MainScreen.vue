@@ -371,17 +371,17 @@
               <div class="d-flex flex-row pb-2" style="height: 220px">
                 <div class="h-100 col-4" style="background-color: gray; border-radius: 0.375rem;">Ảnh</div>
                 <div class="d-flex flex-column" style="flex-grow: 1; padding-left: 8px;">
-                  <input type="text" class="compare-modal-item form-control" value="Nguyễn Văn A" disabled />
+                  <input type="text" class="compare-modal-item form-control" :value="objCompareMember1.name" disabled />
                   <div class="d-flex flex-row pt-2">
                     <div class="col-6" style="padding-right: 4px">
-                      <input type="text" class="compare-modal-item form-control" value="Giới tính" disabled />
+                      <input type="text" class="compare-modal-item form-control" :value="objCompareMember1.gender" disabled />
                     </div>
                     <div class="col-6" style="padding-left: 4px">
-                      <input type="text" class="compare-modal-item form-control" value="Đời" disabled />
+                      <input type="text" class="compare-modal-item form-control" :value="objCompareMember1.generation" disabled />
                     </div>
                   </div>
                   <div class="pt-2">
-                    <input type="text" class="compare-modal-item form-control" value="Ngày sinh" disabled />
+                    <input type="text" class="compare-modal-item form-control" :value="'Ngày Sinh: ' + objCompareMember1.dob" disabled />
                   </div>
                   <div class="pt-2">
                     <input type="text" class="compare-modal-item form-control" value="Ngày mất (Nếu có)" disabled />
@@ -390,10 +390,10 @@
               </div>
               <div class="d-flex flex-column" style="flex-grow: 1; background-color: #f2f2f2;">
                 <div class="compare-modal-item mx-2 mt-2">
-                  <input type="text" class="w-100 h-100 form-control" value="Nguyễn Văn B (Bố)" disabled />
+                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember1.father !== undefined ? objCompareMember1.father + ' (Bố)' : 'Không có trên phả đồ'" disabled />
                 </div>
                 <div class="compare-modal-item mx-2 mt-2">
-                  <input type="text" class="w-100 h-100 form-control" value="Nguyễn Thị C (Mẹ)" disabled />
+                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember1.mother !== undefined ? objCompareMember1.mother + ' (Mẹ)' : 'Không có trên phả đồ'" disabled />
                 </div>
               </div>
             </div>
@@ -403,17 +403,17 @@
               <div class="d-flex flex-row pb-2" style="height: 220px">
                 <div class="h-100 col-4" style="background-color: gray; border-radius: 0.375rem;">Ảnh</div>
                 <div class="d-flex flex-column" style="flex-grow: 1; padding-left: 8px;">
-                  <input type="text" class="compare-modal-item form-control" value="Nguyễn Văn A" disabled />
+                  <input type="text" class="compare-modal-item form-control" :value="objCompareMember2.name" disabled />
                   <div class="d-flex flex-row pt-2">
                     <div class="col-6" style="padding-right: 4px">
-                      <input type="text" class="compare-modal-item form-control" value="Giới tính" disabled />
+                      <input type="text" class="compare-modal-item form-control" :value="objCompareMember2.gender" disabled />
                     </div>
                     <div class="col-6" style="padding-left: 4px">
-                      <input type="text" class="compare-modal-item form-control" value="Đời" disabled />
+                      <input type="text" class="compare-modal-item form-control" :value="objCompareMember2.generation" disabled />
                     </div>
                   </div>
                   <div class="pt-2">
-                    <input type="text" class="compare-modal-item form-control" value="Ngày sinh" disabled />
+                    <input type="text" class="compare-modal-item form-control" :value="'Ngày Sinh: ' + objCompareMember2.dob" disabled />
                   </div>
                   <div class="pt-2">
                     <input type="text" class="compare-modal-item form-control" value="Ngày mất (Nếu có)" disabled />
@@ -422,10 +422,10 @@
               </div>
               <div class="d-flex flex-column" style="flex-grow: 1; background-color: #f2f2f2;">
                 <div class="compare-modal-item mx-2 mt-2">
-                  <input type="text" class="w-100 h-100 form-control" value="Nguyễn Văn B (Bố)" disabled />
+                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember2.father !== undefined ? objCompareMember2.father + ' (Bố)' : 'Không có trên phả đồ'" disabled />
                 </div>
                 <div class="compare-modal-item mx-2 mt-2">
-                  <input type="text" class="w-100 h-100 form-control" value="Nguyễn Thị C (Mẹ)" disabled />
+                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember2.mother !== undefined ? objCompareMember2.mother + ' (Mẹ)' : 'Không có trên phả đồ'" disabled />
                 </div>
               </div>
             </div>
@@ -914,6 +914,7 @@ export default {
 
       expandCreateEmail: false,
       advancedFilterDown: false,
+      selectNodeHighLight: [],
     };
   },
   methods: {
@@ -956,7 +957,6 @@ export default {
         },
         lazyLoading: false,
         nodeMouseClick: FamilyTree.action.none,
-        enableSearch: false,
       });
       this.family.onInit(() => {
         this.family.load(this.nodes);
@@ -1009,13 +1009,14 @@ export default {
       });
       this.family.onNodeClick((arg) => {
         if (this.isCompare) {
+          this.highLightSelectCompareNode(arg.node.id);
           if (this.lastClickedNodeId == null) {
             this.lastClickedNodeId = arg.node.id;
           } else {
             if (this.lastClickedNodeId != arg.node.id) {
               this.compareMember(this.lastClickedNodeId, arg.node.id);
             } else {
-              this.lastClickedNodeId = arg.node.id;
+              this.lastClickedNodeId = null;
             }
           }
         } else {
@@ -1041,7 +1042,6 @@ export default {
           result.gender === "male" ? "vợ" : "chồng"
         }`;
       }
-
       objdata.dob = result.dob;
       objdata.dod = result.dod;
 
@@ -1054,14 +1054,29 @@ export default {
         const resultMid = this.nodes.find((node) => node.id == result.mid);
         objdata.mother = resultMid.name;
       }
+      objdata.generation = result.Generation;
 
       return objdata;
     },
     compareMember(memberId1, memberId2) {
       this.objCompareMember1 = this.getResultMember(memberId1);
       this.objCompareMember2 = this.getResultMember(memberId2);
-      console.log(this.objCompareMember1);
-      console.log(this.objCompareMember2);
+
+      HTTP.get("compare", {
+        params: {
+          MemberID1: memberId1,
+          MemberID2: memberId2,
+        },
+      })
+        .then((response) => {
+          this.objCompareMember1.result = response.data.result1;
+          this.objCompareMember2.result = response.data.result2;
+          this.$modal.show("compare-modal");
+          console.log(response.data);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
     setPaternalAncestor(roleId) {
       HTTP.post("setRole", {
@@ -1545,6 +1560,24 @@ export default {
         nodeElement.classList.remove("notselected");
       }
     },
+    highLightSelectCompareNode(SelectNode) {
+      var nodeElement;
+      let selectedNode = this.nodes.find((node) => node.id == SelectNode);
+      if (this.selectNodeHighLight.includes(selectedNode.id)) {
+        nodeElement = this.family.getNodeElement(selectedNode.id);
+        nodeElement.classList.remove("selected");
+        this.selectNodeHighLight = this.selectNodeHighLight.filter(
+          (id) => id != selectedNode.id
+        );
+      } else if (selectedNode) {
+        nodeElement = this.family.getNodeElement(selectedNode.id);
+        nodeElement.classList.add("selected");
+        this.selectNodeHighLight.push(selectedNode.id);
+      } else {
+        console.log(selectedNode);
+        console.log("Nút không tồn tại:", SelectNode);
+      }
+    },
     highLightSelectNode(SelectNode) {
       var nodeElement;
       this.RemoveHightLight();
@@ -1595,15 +1628,6 @@ export default {
           console.log(e);
         });
     },
-    GetIdPaternalAncestor() {
-      HTTP.get("idPaternal", {
-        params: {
-          CodeId: this.CodeID,
-        },
-      }).then((response) => {
-        this.getListMember(response.data.MemberID);
-      });
-    },
     async getListUnspecifiedMembers() {
       HTTP.get("unspecified-members", {
         params: {
@@ -1627,7 +1651,6 @@ export default {
       this.$modal.hide("noti-modal");
     },
     openCompareModal() {
-      this.$modal.show("compare-modal");
       this.isCompare = !this.isCompare;
     },
     closeCompareModal() {
@@ -1653,7 +1676,6 @@ export default {
     },
 
     OnpenModal_SelectOption(id) {
-      // this.highLightSelectNode(id);
       let foundNode = this.nodes.find((node) => node.id == id);
       this.TitleModal = foundNode.name;
       this.$modal.show("Select-option-Modal");
@@ -1665,13 +1687,10 @@ export default {
       this.RemoveHightLight();
       this.$modal.hide("Select-option-Modal");
     },
-    getListMember(idPaternalAncestor) {
-      if (idPaternalAncestor != null) {
-        this.idPaternalAncestor = idPaternalAncestor;
-      }
+    getListMember() {
       HTTP.get("viewTree", {
         params: {
-          memberID: this.idPaternalAncestor,
+          memberID: this.CodeID,
         },
       })
         .then((response) => {
@@ -1806,12 +1825,12 @@ export default {
   },
   mounted() {
     this.getListCity();
-    this.GetIdPaternalAncestor();
     this.getListNationality();
     this.getListReligion();
     this.getListAgeGroup();
     this.getListBloodTypeGroup();
     this.getListUnspecifiedMembers();
+    this.getListMember();
   },
 };
 </script>
