@@ -2,7 +2,8 @@ const db = require("../../Models/ConnectDB")
 const CoreFunction = require("../../Utils/CoreFunction");
 function addMember(member) {
     return new Promise((resolve, reject) => {
-        const query = `
+        try {
+            const query = `
         INSERT INTO familymember 
         (  ParentID, MarriageID, MemberName, NickName, 
             BirthOrder, Origin, 
@@ -13,53 +14,59 @@ function addMember(member) {
         VALUES 
         (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
-        const values = [
-            member.ParentID,
-            member.MarriageID,
-            member.MemberName,
-            member.NickName,
-            member.BirthOrder,
-            member.Origin,
-            member.NationalityID,
-            member.ReligionID,
-            member.Dob,
-            member.LunarDob,
-            member.BirthPlace,
-            member.IsDead,
-            member.Dod,
-            member.LunarDod,
-            member.PlaceOfDeath,
-            member.GraveSite,
-            member.Note,
-            member.Generation,
-            member.BloodType,
-            member.CodeID,
-            member.Male,
-            member.Image
-        ];
+            const values = [
+                member.ParentID,
+                member.MarriageID,
+                member.MemberName,
+                member.NickName,
+                member.BirthOrder,
+                member.Origin,
+                member.NationalityID,
+                member.ReligionID,
+                member.Dob,
+                member.LunarDob,
+                member.BirthPlace,
+                member.IsDead,
+                member.Dod,
+                member.LunarDod,
+                member.PlaceOfDeath,
+                member.GraveSite,
+                member.Note,
+                member.Generation,
+                member.BloodType,
+                member.CodeID,
+                member.Male,
+                member.Image
+            ];
 
-        db.connection.query(query, values, (err, result) => {
-            if (err) {
-                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-                reject(err);
-            } else {
-                resolve(result);
-            }
-        });
+            db.connection.query(query, values, (err, result) => {
+                if (err) {
+                    console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            });
 
+        }
+        catch (err) {
+            console.log(err);
+            reject(err);
+        }
     });
 }
 
- function updateMember(member) {
+function updateMember(member) {
     return new Promise(async (resolve, reject) => {
-        if(member.Image == null || member.Image == ""){
-            const isDeleted =await removeMemberPhoto(member.MemberID);
-            console.log(`isDeleted: ${isDeleted}`);
-            if (isDeleted == false) {
-                reject("Error when delete image");
+        try {
+            if (member.Image == null || member.Image == "") {
+                const isDeleted = await removeMemberPhoto(member.MemberID);
+                console.log(`isDeleted: ${isDeleted}`);
+                if (isDeleted == false) {
+                    reject("Error when delete image");
+                }
             }
-        }
-        const query = `
+            const query = `
         UPDATE familymember 
         SET 
           ParentID = ?,
@@ -87,47 +94,51 @@ function addMember(member) {
         WHERE MemberID = ?
       `;
 
-        const values = [
-            member.ParentID,
-            member.MarriageID,
-            member.MemberName,
-            member.NickName,
-            member.BirthOrder,
-            member.Origin,
-            member.NationalityID,
-            member.ReligionID,
-            member.Dob,
-            member.LunarDob,
-            member.BirthPlace,
-            member.IsDead,
-            member.Dod,
-            member.LunarDod,
-            member.PlaceOfDeath,
-            member.GraveSite,
-            member.Note,
-            member.Generation,
-            member.BloodType,
-            member.CodeID,
-            member.Male,
-            member.Image,
-            member.MemberID
-        ];
+            const values = [
+                member.ParentID,
+                member.MarriageID,
+                member.MemberName,
+                member.NickName,
+                member.BirthOrder,
+                member.Origin,
+                member.NationalityID,
+                member.ReligionID,
+                member.Dob,
+                member.LunarDob,
+                member.BirthPlace,
+                member.IsDead,
+                member.Dod,
+                member.LunarDod,
+                member.PlaceOfDeath,
+                member.GraveSite,
+                member.Note,
+                member.Generation,
+                member.BloodType,
+                member.CodeID,
+                member.Male,
+                member.Image,
+                member.MemberID
+            ];
 
-        db.connection.query(query, values, (err, result) => {
-            if (err) {
-                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-                reject(err);
-            } else {
-                resolve(result);
+            db.connection.query(query, values, (err, result) => {
+                if (err) {
+                    console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                    reject(err);
+                } else {
+                    resolve(result);
 
-            }
-        });
+                }
+            });
+        } catch (err) {
+            console.log(err);
+            reject(err);
+        }
     });
 
 }
 
 // hàm có chức năng xóa ảnh trong thư mục
-const removeMemberPhoto =async (MemberID) => {
+const removeMemberPhoto = async (MemberID) => {
     try {
         let querySelect = `SELECT * FROM familymember where MemberID = ?`;
         let value = [MemberID];
@@ -138,41 +149,51 @@ const removeMemberPhoto =async (MemberID) => {
     }
 }
 const deleteImageBySelectQuery = async (query, values) => {
-    console.log("query: " + query);
-    console.log("values: " + values);
-    db.connection.query(query, values, async (err, result) => {
-        if (err) {
-            console.error("Error in query: " + err);
-            return false; // Trả về false nếu có lỗi
-        } else {
-            console.log("Result: ", result);
-            if (result[0].Image == null || result[0].Image == "") return true;
-            // Gọi hàm deleteImage để xóa ảnh
-            const isDeleted = await CoreFunction.deleteImage(result[0].Image);
-            console.log(`isDeleted: ${isDeleted}`);
-            return isDeleted;
-        }
-    });
-}
-
-function deleteMember(memberId) {   
-    return new Promise((resolve, reject) => {
-        console.log("memberId: " + memberId);
-        const isDeleted = removeMemberPhoto(memberId);
-        console.log(`isDeleted: ${isDeleted}`);
-        if (isDeleted == false) {
-            reject("Error when delete image");
-        }
-        const query = 'DELETE FROM familymember WHERE MemberID = ?';
-        db.connection.query(query, memberId, (err, result) => {
+    try {
+        console.log("query: " + query);
+        console.log("values: " + values);
+        db.connection.query(query, values, async (err, result) => {
             if (err) {
-                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-                reject(err);
+                console.error("Error in query: " + err);
+                return false; // Trả về false nếu có lỗi
             } else {
-                console.log('Result: ', result);
-                resolve(result);
+                console.log("Result: ", result);
+                if (result[0].Image == null || result[0].Image == "") return true;
+                // Gọi hàm deleteImage để xóa ảnh
+                const isDeleted = await CoreFunction.deleteImage(result[0].Image);
+                console.log(`isDeleted: ${isDeleted}`);
+                return isDeleted;
             }
         });
+    } catch (err) {
+        console.error("Error: " + err);
+        return false; // Trả về false nếu có lỗi
+    }
+}
+
+function deleteMember(memberId) {
+    return new Promise((resolve, reject) => {
+        try {
+            console.log("memberId: " + memberId);
+            const isDeleted = removeMemberPhoto(memberId);
+            console.log(`isDeleted: ${isDeleted}`);
+            if (isDeleted == false) {
+                reject("Error when delete image");
+            }
+            const query = 'DELETE FROM familymember WHERE MemberID = ?';
+            db.connection.query(query, memberId, (err, result) => {
+                if (err) {
+                    console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                    reject(err);
+                } else {
+                    console.log('Result: ', result);
+                    resolve(result);
+                }
+            });
+        } catch (err) {
+            console.log(err);
+            reject(err);
+        }
     });
 }
 function InsertMarriIdToMember(memberId, marriageID) {

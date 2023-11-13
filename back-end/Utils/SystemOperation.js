@@ -6,14 +6,36 @@ const { promises } = require('nodemailer/lib/xoauth2');
 const db = require('../Models/ConnectDB')
 
 var transporter = Nodemailer.createTransport({
-    host : "mail.giaphanguoiviet.com",
-    port : 587,
-    secure : false,
-    auth : {
-        user : "system@giaphanguoiviet.com",
-        pass : "weJFW732fqijojAWFHOhr4WFWFHO327uHUFWIH"
+    host: "mail.giaphanguoiviet.com",
+    port: 587,
+    secure: false,
+    auth: {
+        user: "system@giaphanguoiviet.com",
+        pass: "weJFW732fqijojAWFHOhr4WFWFHO327uHUFWIH"
     }
 });
+
+let SendEmailCore = (objData) => {
+    try {
+        var mailOptions = {
+            from: "system@giaphanguoiviet.com",
+            to : "nanhtuan1003@gmail.com",
+            subject: "subject",
+            text: "test text",
+        };
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                throw error;
+            } else {
+                console.log('Email sent: ' + info.response);
+                return true;
+            }
+        });
+    } catch (error) {
+        console.log("error : " + error);
+        return false;
+    }
+};
 
 let SendSMSCore = (objData) => {
     try {
@@ -49,7 +71,7 @@ function SetHistorySendEmailandSMS(content, action, CodeID) {
         currentDate = currentDate.toISOString().slice(0, 19).replace("T", " ");
         console.log(currentDate)
         let IsSMS = 0;
-        if (action == 'sms') IsSMS = 1;      
+        if (action == 'sms') IsSMS = 1;
         let query = `INSERT INTO notificationhistory (NotificationContent, NotificationDate, IsSMS, CodeID) VALUES ('${content}', '${currentDate}', ${IsSMS}, ${CodeID}) `;
         db.connection.query(query, (err, result) => {
             if (err) {
@@ -63,52 +85,59 @@ function SetHistorySendEmailandSMS(content, action, CodeID) {
 }
 
 
-let SendEmailCore = (objData) => {
-    try {
-        let requiredFields = ['to', 'subject'];
-        // Trường hợp cả 2 trường text và html đều có
-        if (objData.text != null && objData.html != null) {
-            return Response.badRequestResponse("You can only send either text or html, not both!");
-        }
-        // Trường hợp thiếu cả 2 trường text và html
-        if (objData.text == null && objData.html == null) {
-            return Response.badRequestResponse("You must send either text or html!");
-        }
-        // Kiểm tra xem có đủ các trường trong nhưng trường bắt buộc phải có không
-        const missingFields = requiredFields.filter(field => !(field in objData));
-        console.log(missingFields);
-        // Trong trường hợp thiếu trường bắt buộc
-        if (missingFields.length) {
-            return Response.missingFieldsErrorResponse(missingFields);
-        }
-        // Tiến hành gửi mail
-        var mailOptions = {
-            from: process.env.EMAIL_ADDRESS,
-            subject: objData.subject,
-            text: objData.text,
-            html: objData.html,
-        };
-        // Kiểm tra xem có phải mảng hay không
-        if (Array.isArray(objData.to)) {
-            // Nếu là mảng thì join
-            mailOptions.to = objData.to.join(',');
-        } else {
-            // Nếu là string thì gán luôn
-            mailOptions.to = objData.to;
-        }
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                throw error;
-            } else {
-                console.log('Email sent: ' + info.response);
-                return true;
-            }
-        });
-    } catch (error) {
-        console.log("error : " + error);
-        return false;
-    }
-};
+
+// let SendEmailCore = (objData) => {
+//     try {
+//         let requiredFields = ['to', 'subject'];
+//         // Trường hợp cả 2 trường text và html đều có
+//         if (objData.text != null && objData.html != null) {
+//             return Response.badRequestResponse("You can only send either text or html, not both!");
+//         }
+//         // Trường hợp thiếu cả 2 trường text và html
+//         if (objData.text == null && objData.html == null) {
+//             return Response.badRequestResponse("You must send either text or html!");
+//         }
+//         // Kiểm tra xem có đủ các trường trong nhưng trường bắt buộc phải có không
+//         const missingFields = requiredFields.filter(field => !(field in objData));
+//         console.log(missingFields);
+//         // Trong trường hợp thiếu trường bắt buộc
+//         if (missingFields.length) {
+//             return Response.missingFieldsErrorResponse(missingFields);
+//         }
+//         // Tiến hành gửi mail
+//         var mailOptions = {
+//             from: "system@giaphanguoiviet.com",
+//             subject: "subject",
+//             text: "test text",
+//         };
+
+//         // var mailOptions = {
+//         //     from: process.env.EMAIL_ADDRESS,
+//         //     subject: objData.subject,
+//         //     text: objData.text,
+//         //     html: objData.html,
+//         // };
+//         // Kiểm tra xem có phải mảng hay không
+//         if (Array.isArray(objData.to)) {
+//             // Nếu là mảng thì join
+//             mailOptions.to = objData.to.join(',');
+//         } else {
+//             // Nếu là string thì gán luôn
+//             mailOptions.to = objData.to;
+//         }
+//         transporter.sendMail(mailOptions, (error, info) => {
+//             if (error) {
+//                 throw error;
+//             } else {
+//                 console.log('Email sent: ' + info.response);
+//                 return true;
+//             }
+//         });
+//     } catch (error) {
+//         console.log("error : " + error);
+//         return false;
+//     }
+// };
 
 // schedule sẽ chạy vào mỗi 0h hằng ngày
 schedule.scheduleJob('0 0 * * *', () => {
