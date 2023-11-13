@@ -116,3 +116,14 @@
     margin: auto;
     cursor: pointer;
 }
+
+.advanced-filter-icon{
+    width: 24px;
+    height: 24px;
+    fill: #FFFFFF;
+    transition: 0.4s;
+}
+
+.advanced-filter-icon.rotateDown{
+    transform: rotate(180deg);
+}   
