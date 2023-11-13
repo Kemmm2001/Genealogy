@@ -20,6 +20,7 @@
     "firebase": "^10.6.0",
     "firebase-admin": "^11.11.0",
     "http-errors": "^2.0.0",
+    "js-base64": "^3.7.5",
     "json2csv": "^6.0.0-alpha.2",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.2.0",
