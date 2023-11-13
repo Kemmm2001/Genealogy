@@ -164,6 +164,7 @@ export default {
                     codeID: this.codeIdLogin,
             }).then((response) => {
                 if(response.data.doesExist == true){
+                    localStorage.setItem('CodeID', this.codeIdLogin); 
                     this.$router.push('/');
                 }
             })
