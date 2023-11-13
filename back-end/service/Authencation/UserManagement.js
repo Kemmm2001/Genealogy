@@ -104,10 +104,12 @@ function refreshFreeEmail(usesTime) {
   });
 }
 
-function insertAccount(accountID, codeID) {
+
+
+function insertAccountFamily(accountID, codeID, roleID) {
   return new Promise((resolve, reject) => {
-    const query = 'UPDATE genealogy.account SET CodeID = ?, RoleID = 1 WHERE AccountID = ?';
-    const values = [codeID, accountID];
+    const query = 'INSERT INTO genealogy.AccountFamilyTree (AccountID,CodeID ,RoleID) VALUES (?,?,?)';
+    const values = [accountID, codeID, roleID];
 
     db.connection.query(query, values, (err, results) => {
       if (err) {
@@ -123,8 +125,8 @@ function insertAccount(accountID, codeID) {
 
 function insertIntoFamily(value, codeID) {
   return new Promise((resolve, reject) => {
-    const query = 'INSERT INTO genealogy.familytree (CodeID, TreeName,Ethnicity ,DeathAnniversary,AccountID) VALUES (?, ?, ?,?,?)';
-    const values = [codeID, value.treeName, value.ethnicity, value.deathAnniversary, value.accountID];
+    const query = 'INSERT INTO genealogy.familytree (CodeID, TreeName,Ethnicity ) VALUES (?, ?, ?)';
+    const values = [codeID, value.treeName, value.ethnicity];
 
     db.connection.query(query, values, (err, results) => {
       if (err) {
@@ -138,18 +140,16 @@ function insertIntoFamily(value, codeID) {
   });
 }
 
-function getGenealogy(request) {
+function checkID(accountID) {
   return new Promise((resolve, reject) => {
-    const query = 'UPDATE genealogy.account SET CodeID = ?, RoleID = 3 WHERE AccountID = ?';
-    const values = [request.codeID, request.accountID];
-
-    db.connection.query(query, values, (err, results) => {
+    const query = 'SELECT COUNT(*) AS count FROM genealogy.AccountFamilyTree WHERE AccountID = ?';
+    db.connection.query(query, [accountID], (err, results) => {
       if (err) {
         console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
         reject(err);
       } else {
-        console.log('Dữ liệu đã được cập nhật thành công.');
-        resolve(results);
+        const count = results[0].count;
+        resolve(count > 0);
       }
     });
   });
@@ -157,7 +157,7 @@ function getGenealogy(request) {
 
 function updateRoleID(data) {
   return new Promise((resolve, reject) => {
-    const query = 'UPDATE genealogy.account SET RoleID = ? WHERE AccountID = ?';
+    const query = 'UPDATE genealogy.AccountFamilyTree SET RoleID = ? WHERE AccountID = ?';
     const values = [data.roleID, data.accountID];
 
     db.connection.query(query, values, (err, results) => {
@@ -172,4 +172,4 @@ function updateRoleID(data) {
   });
 }
 
-module.exports = { checkMail, create, getUser, refreshFreeEmail, insertAccount, getGenealogy, checkCodeID, checkAccountID, updateRoleID, insertIntoFamily }
+module.exports = { checkMail,checkID, create, getUser, refreshFreeEmail,insertAccountFamily, checkCodeID, checkAccountID, updateRoleID, insertIntoFamily }

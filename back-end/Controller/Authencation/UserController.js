@@ -19,7 +19,7 @@ var registerUser = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(result.password, 10);
     let newUser = await UserService.create(result.username, result.email, hashedPassword);
-
+    // let data = await UserService.insertInAccountFamily(newUser.insertId)
     return res.json({ newUser });
   } catch (error) {
     if (error.isJoi === true) {
@@ -87,8 +87,8 @@ var registerGenealogy = async (req, res) => {
 
     if (data1) {
       try {
-        let data = await UserService.insertAccount(value.accountID, codeID);
-        return res.json({ codeID });
+        let data = await UserService.insertAccountFamily(value.accountID, codeID, 1);
+        return res.json({ data });
       } catch (error) {
         // Xử lý khi `UserService.insertAccount` không thành công
         res.status(500).json({ error: 'Lỗi khi thực hiện insertAccount' });
@@ -107,8 +107,9 @@ var registerGenealogy = async (req, res) => {
 var getGenealogy = async (req, res) => {
   try {
     const request = req.body;
-    let doesExist = await UserService.checkAccountID(request.accountID)
-    if (doesExist) throw createError.Conflict(`Account đã có code gia phả`);
+     let doesExist = await UserService.checkID(request.accountID)
+     if (doesExist) throw createError.Conflict(`đã đăng kí code gia phả`);
+    let data = await UserService.insertAccountFamily(request.accountID, request.codeID, 3);
     return res.json({ data })
   } catch (error) {
     res.status(error.status || 500).json({ error: error.message });
