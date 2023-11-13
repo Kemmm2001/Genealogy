@@ -4,9 +4,9 @@ const schedule = require('node-schedule');
 const UserManagement = require('../service/Authencation/UserManagement');
 
 var transporter = Nodemailer.createTransport({
-    host : "giaphanguoiviet.com",
-    port : 465,
-    secure : true,
+    host : "mail.giaphanguoiviet.com",
+    port : 587,
+    secure : false,
     auth : {
         user : "system@giaphanguoiviet.com",
         pass : "weJFW732fqijojAWFHOhr4WFWFHO327uHUFWIH"
@@ -65,14 +65,14 @@ let SendEmailCore = (objData) => {
             text: objData.text,
             html: objData.html,
         };
-        // // Kiểm tra xem có phải mảng hay không
-        // if (Array.isArray(objData.to)) {
-        //     // Nếu là mảng thì join
-        //     mailOptions.to = objData.to.join(',');
-        // } else {
-        //     // Nếu là string thì gán luôn
-        //     mailOptions.to = objData.to;
-        // }
+        // Kiểm tra xem có phải mảng hay không
+        if (Array.isArray(objData.to)) {
+            // Nếu là mảng thì join
+            mailOptions.to = objData.to.join(',');
+        } else {
+            // Nếu là string thì gán luôn
+            mailOptions.to = objData.to;
+        }
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 throw error;

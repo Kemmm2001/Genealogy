@@ -101,7 +101,7 @@ var addMember = async (req, res) => {
         if (req.body.Action === 'AddNormal') {
             console.log("Đã vào trường hợp thêm thành viên mà không có trong cây gia phả");
             await FamilyManagementService.setGeneration(0, data.insertId);
-        } 
+        }
         // trường hợp muốn thêm thành viên mà có trong cây gia phả
         else {
             console.log("Đã vào trường hợp thêm thành viên có trong cây gia phả");
@@ -194,6 +194,64 @@ var updateMember = async (req, res) => {
             changedRows: data.changedRows
         }
         return res.send(Response.successResponse(dataRes));
+    } catch (e) {
+        console.log("Error: " + e);
+        return res.send(Response.internalServerErrorResponse(e));
+    }
+}
+
+var updateMemberToGenealogy = async (req, res) => {
+    try {
+        // Log ra thông tin trong req.body
+        console.log('Request req.body: ', req.body);
+        // các trường bắt buộc phải có trong req.body
+        const requiredFields = [
+            'InGenealogyID',
+            'OutGenealogyID',
+            'Action'
+        ];
+        // Kiểm tra xem có đủ các trường của FamilyMember không
+        const missingFields = CoreFunction.missingFields(requiredFields, req.body);
+        console.log(missingFields);
+        // trong trường hợp thiếu trường bắt buộc
+        if (missingFields.length) {
+            return res.send(Response.missingFieldsErrorResponse(missingFields));
+        }
+        console.log("No missing fields");
+        const action = ['AddParent', 'AddChild', 'AddMarriage'];
+        // Kiểm tra xem action có nằm trong 4 trường hợp AddParent, AddChild, AddMarriage không
+        if (!action.includes(req.body.Action)) {
+            return res.send(Response.badRequestResponse(null, "Action không hợp lệ"));
+        }
+        let inGenealogyMemeber = await FamilyManagementService.getMemberByMemberID(req.body.InGenealogyID);
+        let outGenealogyMemeber = await FamilyManagementService.getMemberByMemberID(req.body.OutGenealogyID);
+        if (inGenealogyMemeber == null || inGenealogyMemeber.length == 0 || outGenealogyMemeber == null || outGenealogyMemeber.length == 0) {
+            return res.send(Response.dataNotFoundResponse(null, "Thành viên không tồn tại"));
+        }
+        // nếu không cùng gia phả, tức là không cùng CodeID
+        if (inGenealogyMemeber[0].CodeID !== outGenealogyMemeber[0].CodeID) {
+            return res.send(Response.badRequestResponse(null, "Hai thành viên không cùng gia phả"));
+        }
+        // nếu thành viên out không có generation là 0 thì sai 
+        if (outGenealogyMemeber[0].Generation !== 0) {
+            return res.send(Response.badRequestResponse(null, "Thế hệ của thành viên được add không hợp lệ"));
+        }
+        let dataRes = {};
+        // trường hợp muốn thêm cha mẹ
+        if (req.body.Action === 'AddParent') {
+            await FamilyManagementService.setGeneration(inGenealogyMemeber[0].Generation - 1, outGenealogyMemeber[0].MemberID);
+            await FamilyManagementService.insertParentIdToMember(outGenealogyMemeber[0].MemberID, inGenealogyMemeber[0].MemberID);
+        }
+        // trường hợp muốn thêm con cái
+        else if (req.body.Action === 'AddChild') {
+            await FamilyManagementService.setGeneration(inGenealogyMemeber[0].Generation + 1, outGenealogyMemeber[0].MemberID);
+            await FamilyManagementService.insertParentIdToMember(inGenealogyMemeber[0].MemberID, outGenealogyMemeber[0].MemberID);
+        }
+        // trường hợp muốn thêm vợ chồng
+        else if (req.body.Action === 'AddMarriage') {
+            await FamilyManagementService.setGeneration(inGenealogyMemeber[0].Generation, outGenealogyMemeber[0].MemberID);
+        }
+        return res.send(Response.successResponse(null, "Thêm thành viên vào trong gia phả thành công"));
     } catch (e) {
         console.log("Error: " + e);
         return res.send(Response.internalServerErrorResponse(e));
@@ -369,5 +427,5 @@ var getMember = async (req, res) => {
 module.exports = {
     addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember, sortMembers, InsertMarrieIdToMember,
     getListAgeGroup, getListBloodTypeGroup, getAllMemberSortByRole, GetCurrentParentMember, insertParentIdToMember,
-    getMember
+    getMember, updateMemberToGenealogy
 };
