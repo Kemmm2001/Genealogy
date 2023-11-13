@@ -13,7 +13,7 @@ const initWebRouter = (app) => {
 
     router.get('/birthday', EventManagementController.GetBirthDayInMonth)
     router.get('/deadDay', EventManagementController.GetDeadDayInMonth)
-    router.post('/send-sms', EventManagementController.SendSMSToMember)
+    router.post('/send-sms', EventManagementController.SendSMSToMember)   
     //API tuấn
     // router.post('/send-sms', EventManagementController.SendSMS)
     router.post('/send-email', EventManagementController.SendEmail)
