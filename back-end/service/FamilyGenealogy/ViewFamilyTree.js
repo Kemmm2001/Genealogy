@@ -383,7 +383,7 @@ function getListMessage(CodeID) {
 async function ViewFamilyTree(CodeID) {
     return new Promise((resolve, reject) => {
         try {
-            let queryGetAllMember = `SELECT * FROM genealogy.familymember WHERE CodeID = 123456`;
+            let queryGetAllMember = `SELECT * FROM genealogy.familymember WHERE CodeID = ${CodeID}`;
             db.connection.query(queryGetAllMember, async (err, result) => {
                 if (!err) {
                     let IdPaternal = await GetIdPaternalAncestor(CodeID);

@@ -1559,7 +1559,7 @@ export default {
     getListAfterSetPaternalAncestor(id) {
       HTTP.get("viewTree", {
         params: {
-          memberID: id,
+          CodeID: id,
         },
       })
         .then((response) => {
@@ -1647,7 +1647,7 @@ export default {
     getListMember() {
       HTTP.get("viewTree", {
         params: {
-          memberID: this.CodeID,
+          CodeID: this.CodeID,
         },
       })
         .then((response) => {

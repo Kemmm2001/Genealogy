@@ -12,6 +12,9 @@ var compareMember = async (req, res) => {
         let MemberID1 = req.query.MemberID1;
         let MemberID2 = req.query.MemberID2;
 
+        inforMember1 = await CompareMemberService.getGenerationByID(MemberID1);
+        inforMember2 = await CompareMemberService.getGenerationByID(MemberID2);
+
         isInLaw1 = await CompareMemberService.isInLaw(MemberID1);
         if (isInLaw1.ParentID == null && isInLaw1.MarriageID != null) {
             MemberID1 = isInLaw1.MarriageID
@@ -21,9 +24,12 @@ var compareMember = async (req, res) => {
         if (isInLaw2.ParentID == null && isInLaw2.MarriageID != null) {
             MemberID2 = isInLaw2.MarriageID
             Flag2 = true;
-        }
-        inforMember1 = await CompareMemberService.getGenerationByID(MemberID1);
-        inforMember2 = await CompareMemberService.getGenerationByID(MemberID2);
+        }    
+
+        console.log('MemberID1: ' + MemberID1)
+        console.log('MemberID2: ' + MemberID2)
+        console.log("inforMember1[0].Male: " + inforMember1[0].Male)
+        console.log("inforMember2[0].Male: " + inforMember2[0].Male)
 
         let DefferenceGeneration = inforMember2[0].Generation - inforMember1[0].Generation;
 

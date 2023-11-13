@@ -296,11 +296,11 @@ async function getResultCompareToMember(DefferenceGeneration, Generation1, Gener
                 return objResult;
             }
             else if (Generation1.BirthOrder == Generation2.BirthOrder) {
-                console.log("vao day")
                 if (Gender1 == 1) {
-                    setResult(objResult, 1, 17);
-                } else {
+                    console.log("vao day")
                     setResult(objResult, 0, 17);
+                } else {
+                    setResult(objResult, 1, 17);
                 }
                 return objResult;
             }
@@ -310,6 +310,8 @@ async function getResultCompareToMember(DefferenceGeneration, Generation1, Gener
 }
 
 async function GetResultCompare(MemberId1, MemberId2, DifferenceGeneration, Flag1, Flag2, Gender1, Gender2) {
+    console.log("Gender1: " + Gender1)
+    console.log("Gender2: " + Gender2)
     try {
         const [result1, result2] = await Promise.all([
             GetParentId(MemberId1),
