@@ -82,15 +82,11 @@
               <div class="list-group-item feature-overview">Các chức năng chính</div>
               <div class="list-group-item" @click="getInforMember(CurrentIdMember)">Thông tin chi tiết</div>
               <div class="list-group-item" @click="openMemberModal('AddParent', 'Cha')">Thêm Cha</div>
-              <div class="list-group-item" @click="openModalAddMemberFromList('cha')">Thêm Cha (Từ Danh Sách)</div>
               <div class="list-group-item" @click="openMemberModal('AddParent', 'Mẹ')">Thêm Mẹ</div>
-              <div class="list-group-item" @click="openModalAddMemberFromList('mẹ')">Thêm Mẹ (Từ Danh Sách)</div>
               <div class="list-group-item" @click="openMemberModal('AddMarriage', 'Chồng')">Thêm Chồng</div>
-              <div class="list-group-item" @click="openModalAddMemberFromList('Chồng')">Thêm Chồng (Từ Danh Sách)</div>
               <div class="list-group-item" @click="openMemberModal('AddMarriage', 'Vợ')">Thêm Vợ</div>
-              <div class="list-group-item" @click="openModalAddMemberFromList('vợ')">Thêm Vợ (Từ Dah Sách)</div>
               <div class="list-group-item" @click="openMemberModal('AddChild', 'Con')">Thêm Con</div>
-              <div class="list-group-item" @click="openModalAddMemberFromList('con')">Thêm Con (Từ Danh Sách)</div>
+              <div class="list-group-item" @click="openModalAddMemberFromList()">Thêm mối quan hệ từ Danh Sách</div>
               <div class="list-group-item" @click="removeMember()">Xóa thành viên (*)</div>
               <div class="list-group-item feature-overview">Các chức năng Khác</div>
               <div class="list-group-item" style="border-top: none;" @click="setPaternalAncestor(2)">Set làm tộc trưởng</div>
@@ -148,97 +144,6 @@
                 <div @click="selectEmail()" :class="{ notiSelected: emailSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0.375rem 0 0 0; cursor: pointer;">Email</div>
               </div>
               <div v-if="emailSelected" class="d-flex flex-column mt-2" style="height: calc(100% - 48px); overflow-y: auto;">
-                <div class="sent-mail d-flex flex-row">
-                  <div class="h-100 d-flex align-items-center px-3">
-                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
-                  </div>
-                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
-                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
-                </div>
-                <div class="sent-mail d-flex flex-row">
-                  <div class="h-100 d-flex align-items-center px-3">
-                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
-                  </div>
-                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
-                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
-                </div>
-                <div class="sent-mail d-flex flex-row">
-                  <div class="h-100 d-flex align-items-center px-3">
-                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
-                  </div>
-                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
-                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
-                </div>
-                <div class="sent-mail d-flex flex-row">
-                  <div class="h-100 d-flex align-items-center px-3">
-                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
-                  </div>
-                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
-                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
-                </div>
-                <div class="sent-mail d-flex flex-row">
-                  <div class="h-100 d-flex align-items-center px-3">
-                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
-                  </div>
-                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
-                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
-                </div>
-                <div class="sent-mail d-flex flex-row">
-                  <div class="h-100 d-flex align-items-center px-3">
-                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
-                  </div>
-                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
-                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
-                </div>
-                <div class="sent-mail d-flex flex-row">
-                  <div class="h-100 d-flex align-items-center px-3">
-                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
-                  </div>
-                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
-                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
-                </div>
-                <div class="sent-mail d-flex flex-row">
-                  <div class="h-100 d-flex align-items-center px-3">
-                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
-                  </div>
-                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
-                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
-                </div>
-                <div class="sent-mail d-flex flex-row">
-                  <div class="h-100 d-flex align-items-center px-3">
-                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
-                  </div>
-                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
-                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
-                </div>
-                <div class="sent-mail d-flex flex-row">
-                  <div class="h-100 d-flex align-items-center px-3">
-                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
-                  </div>
-                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
-                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
-                </div>
-                <div class="sent-mail d-flex flex-row">
-                  <div class="h-100 d-flex align-items-center px-3">
-                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
-                  </div>
-                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
-                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
-                </div>
-                <div class="sent-mail d-flex flex-row">
-                  <div class="h-100 d-flex align-items-center px-3">
-                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
-                  </div>
-                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
-                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
-                </div>
-                <div class="sent-mail d-flex flex-row">
-                  <div class="h-100 d-flex align-items-center px-3">
-                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
-                  </div>
-                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
-                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
-                </div>
                 <div class="sent-mail d-flex flex-row">
                   <div class="h-100 d-flex align-items-center px-3">
                     <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
@@ -428,8 +333,8 @@
                     <th class="headlist-list-th" scope="col">Ngày sinh</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr v-for="(m, index) in ListUnspecifiedMembers" :key="m.id">
+                <tbody style="cursor: pointer">
+                  <tr v-for="(m, index) in ListUnspecifiedMembers" :key="m.id" @click="selectMemberFromTable(m,index)" :class="{ 'row-selected': selectedRowIndex === index }">
                     <th>{{ index + 1 }}</th>
                     <th>{{ m.MemberName }}</th>
                     <td>{{ m.Male === 1 ? 'Nam' : 'Nữ' }}</td>
@@ -440,7 +345,7 @@
             </div>
             <div class="modal-footer">
               <div class="d-flex justify-content-end" style="padding-right: 12px;">
-                <button type="button" class="btn btn-primary mr-2">Thêm</button>
+                <button type="button" class="btn btn-primary mr-2" @click="addMemberFromList()">Thêm</button>
                 <button style="margin-left:10px" type="button" class="btn btn-secondary">Cancel</button>
               </div>
             </div>
@@ -821,7 +726,9 @@ export default {
       isEdit: false,
       checkAll: false,
       newIdMember: null,
+
       CurrentIdMember: null,
+
       generationMember: null,
       CodeID: 123456,
       idPaternalAncestor: null,
@@ -903,6 +810,7 @@ export default {
       selectNodeHighLight: [],
       resultCompare1: null,
       resultCompare2: null,
+      selectedRowIndex: null,
     };
   },
   methods: {
@@ -1222,7 +1130,6 @@ export default {
       })
         .then((response) => {
           this.objMember = response.data;
-          console.log(this.objMember);
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
             this.takeDataMember(this.CurrentIdMember);
@@ -1368,6 +1275,30 @@ export default {
           console.log(e);
         });
     },
+    addMemberFromList() {
+      HTTP.put("memberToGenealogy", {
+        InGenealogyID: this.CurrentIdMember,
+        OutGenealogyID: this.newIdMember,
+        Action: this.action,
+      })
+        .then((response) => {
+          if (response.data.success == true) {
+            this.NotificationsScuccess(response.data.message);
+            this.family.load(this.nodes);
+            this.getListMember();
+            this.getListUnspecifiedMembers();
+            this.closeModalAddMemberFromList();
+          } else {
+            this.NotificationsDelete(response.data.message);
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+      console.log(this.CurrentIdMember);
+      console.log(this.action);
+      console.log(this.newIdMember);
+    },
     async addMember() {
       if (this.action == "AddNormal") {
         this.generationMember = 0;
@@ -1433,7 +1364,11 @@ export default {
           console.log(e);
         });
     },
-
+    selectMemberFromTable(member, index) {
+      this.selectedRowIndex = index;
+      this.newIdMember = member.MemberID;
+      console.log(member);
+    },
     setDefauValueInModal() {
       this.objMemberContact = {};
       this.objMemberInfor = {};
@@ -1656,8 +1591,10 @@ export default {
       this.$modal.hide("add-from-list");
       this.closeSelectModal();
     },
-    openModalAddMemberFromList(action) {
-      this.TitleModal = action;
+    openModalAddMemberFromList(action, title) {
+      this.TitleModal = "Thêm mối quan hệ từ Danh Sách";
+      console.log(title);
+      this.action = action;
       this.$modal.show("add-from-list");
     },
     openNotiModal() {
@@ -1772,7 +1709,7 @@ export default {
         },
       })
         .then((response) => {
-          this.ListMessage = response.data;        
+          this.ListMessage = response.data;
         })
         .catch((e) => {
           console.log(e);
