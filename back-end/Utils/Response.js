@@ -46,7 +46,7 @@ let missingFieldsErrorResponse = (missingFields) => {
     data = {
         missing_fields: missingFields
     }
-    return badRequestResponse(message, data);
+    return badRequestResponse(data, message);
 }
 
 module.exports = {

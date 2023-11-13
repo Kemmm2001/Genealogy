@@ -52,6 +52,7 @@ const initWebRouter = (app) => {
     router.get('/member', FamilyMemberManagement.getMember);
     router.post('/member', CoreFunction.uploadImage("member-photo").single('Image'), FamilyMemberManagement.addMember);
     router.put('/member', CoreFunction.uploadImage("member-photo").single('Image'), FamilyMemberManagement.updateMember);
+    router.put('/memberToGenealogy', FamilyMemberManagement.updateMemberToGenealogy);
     router.delete('/member', FamilyMemberManagement.deleteMember)
     router.get('/getparent', FamilyMemberManagement.GetCurrentParentMember)
     router.post('/InsertParentID', FamilyMemberManagement.insertParentIdToMember)
