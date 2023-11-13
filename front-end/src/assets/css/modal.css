@@ -333,3 +333,7 @@ input:focus~label.form-label-number {
     margin: 0 8px;
     border-bottom: 1px solid lightgray;
 }
+
+.member-modal-container .vm--modal{
+    height: 100vh !important;
+}
