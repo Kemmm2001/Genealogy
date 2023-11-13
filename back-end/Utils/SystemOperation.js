@@ -2,6 +2,8 @@ var Nodemailer = require('nodemailer');
 var Response = require('./Response');
 const schedule = require('node-schedule');
 const UserManagement = require('../service/Authencation/UserManagement');
+const { promises } = require('nodemailer/lib/xoauth2');
+const db = require('../Models/ConnectDB')
 
 var transporter = Nodemailer.createTransport({
     host : "mail.giaphanguoiviet.com",
@@ -37,6 +39,27 @@ let SendSMSCore = (objData) => {
         return false;
     }
 
+}
+
+
+
+function SetHistorySendEmailandSMS(content, action, CodeID) {
+    return new Promise((resolve, reject) => {
+        let currentDate = new Date();
+        currentDate = currentDate.toISOString().slice(0, 19).replace("T", " ");
+        console.log(currentDate)
+        let IsSMS = 0;
+        if (action == 'sms') IsSMS = 1;      
+        let query = `INSERT INTO notificationhistory (NotificationContent, NotificationDate, IsSMS, CodeID) VALUES ('${content}', '${currentDate}', ${IsSMS}, ${CodeID}) `;
+        db.connection.query(query, (err, result) => {
+            if (err) {
+                console.log(err);
+                reject(false);
+            } else {
+                resolve(true)
+            }
+        })
+    })
 }
 
 
@@ -89,13 +112,13 @@ let SendEmailCore = (objData) => {
 
 // schedule sẽ chạy vào mỗi 0h hằng ngày
 schedule.scheduleJob('0 0 * * *', () => {
-    try{
+    try {
         console.log("Refresh free email : " + process.env.FREE_EMAIL_EVERY_DAY);
         UserManagement.refreshFreeEmail(process.env.FREE_EMAIL_EVERY_DAY);
-    }catch(error){
+    } catch (error) {
         console.log("error : " + error);
     }
 
 });
 
-module.exports = { SendSMSCore, SendEmailCore };
+module.exports = { SendSMSCore, SendEmailCore, SetHistorySendEmailandSMS };

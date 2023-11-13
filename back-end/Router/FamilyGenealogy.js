@@ -24,9 +24,10 @@ const initWebRouter = (app) => {
     router.get('/InforMember', ManagerFamilyTree.informationMember)
     router.post('/setRole', ManagerFamilyTree.setRole)
     router.get('/viewTree', ManagerFamilyTree.AllMemberInGenelogy)
-    router.get('/relationship',ManagerFamilyTree.getRelationShipMember)
-    router.get('/idPaternal',ManagerFamilyTree.GetIdPaternalAncestor)
-    router.get('/unspecified-members',ManagerFamilyTree.getAllUnspecifiedMembers)
+    router.get('/relationship', ManagerFamilyTree.getRelationShipMember)
+    router.get('/idPaternal', ManagerFamilyTree.GetIdPaternalAncestor)
+    router.get('/unspecified-members', ManagerFamilyTree.getAllUnspecifiedMembers)
+    router.get('/listMessage', ManagerFamilyTree.getListMessage)
 
     router.get('/compare', CompareMemberController.compareMember)
 
@@ -53,8 +54,8 @@ const initWebRouter = (app) => {
     router.put('/member', CoreFunction.uploadImage("member-photo").single('Image'), FamilyMemberManagement.updateMember);
     router.put('/memberToGenealogy', FamilyMemberManagement.updateMemberToGenealogy);
     router.delete('/member', FamilyMemberManagement.deleteMember)
-    router.get('/getparent',FamilyMemberManagement.GetCurrentParentMember)
-    router.post('/InsertParentID',FamilyMemberManagement.insertParentIdToMember)
+    router.get('/getparent', FamilyMemberManagement.GetCurrentParentMember)
+    router.post('/InsertParentID', FamilyMemberManagement.insertParentIdToMember)
     router.post('/InserMarrie', FamilyMemberManagement.InsertMarrieIdToMember)
 
     //API Nhật anh

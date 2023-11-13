@@ -17,10 +17,7 @@
       <div class="w-100 d-flex flex-row">
         <div class="col-6 px-2" style="padding-top: 8px;">
           <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
-            <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">
-              {{
-              blood.BloodType }}
-            </option>
+            <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">{{ blood.BloodType }}</option>
           </select>
         </div>
         <div class="col-6 px-2" style="padding-top: 8px;">
@@ -54,14 +51,14 @@
         <div class="d-flex nonexisting-members flex-column w-100" style="margin-top: 4px">
           <div class="d-flex flex-row px-2 py-1" style="background-color: #AED6F1; ">
             <div class="d-flex align-items-center justify-content-center" style="text-align: center; border-radius: 0.175rem 0.175rem 0 0; min-height: 48px; font-size: 18px;">Thành viên không có trên phả đồ</div>
-            <div class="d-flex align-items-center justify-content-center" style="padding-left: 12px">
+            <div class="d-flex align-items-center justify-content-center" style="padding-left: 12px;cursor:pointer" @click="openMemberModal('AddNormal', ' thành viên không có trên phả đồ')">
               <svg class="add-member-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                 <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />
               </svg>
             </div>
           </div>
           <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto;auto;cursor: pointer">
-            <div v-for="list in ListUnspecifiedMembers" :key="list.id" @click="handleLeftClick(list.MemberID)" @contextmenu.prevent="handleRightClick(list.MemberID)" class="list-item">{{ list.MemberName }}</div>
+            <div v-for="list in ListUnspecifiedMembers" :key="list.id" @click="handleLeftClickUnspecifiedMembers(list.MemberID)" class="list-item">{{ list.MemberName }}</div>
           </div>
         </div>
       </div>
@@ -72,8 +69,8 @@
     <div class="Container-select-modal">
       <modal name="Select-option-Modal">
         <div class="card" style="width: 370px;left:45%">
-          <div class="card-header text-center" style="background-color:#E8C77B;height: 50px">
-            <h5>{{ TitleModal }}</h5>
+          <div class="card-header modal-title text-center d-flex justify-content-center align-items-center">
+            <h5 class="m-0">{{ TitleModal }}</h5>
             <div class="close-add-form" @click="closeSelectModal()" style="top: 8px;right:5px">
               <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -85,10 +82,15 @@
               <div class="list-group-item feature-overview">Các chức năng chính</div>
               <div class="list-group-item" @click="getInforMember(CurrentIdMember)">Thông tin chi tiết</div>
               <div class="list-group-item" @click="openMemberModal('AddParent', 'Cha')">Thêm Cha</div>
+              <div class="list-group-item" @click="openModalAddMemberFromList('cha')">Thêm Cha (Từ Danh Sách)</div>
               <div class="list-group-item" @click="openMemberModal('AddParent', 'Mẹ')">Thêm Mẹ</div>
+              <div class="list-group-item" @click="openModalAddMemberFromList('mẹ')">Thêm Mẹ (Từ Danh Sách)</div>
               <div class="list-group-item" @click="openMemberModal('AddMarriage', 'Chồng')">Thêm Chồng</div>
+              <div class="list-group-item" @click="openModalAddMemberFromList('Chồng')">Thêm Chồng (Từ Danh Sách)</div>
               <div class="list-group-item" @click="openMemberModal('AddMarriage', 'Vợ')">Thêm Vợ</div>
+              <div class="list-group-item" @click="openModalAddMemberFromList('vợ')">Thêm Vợ (Từ Dah Sách)</div>
               <div class="list-group-item" @click="openMemberModal('AddChild', 'Con')">Thêm Con</div>
+              <div class="list-group-item" @click="openModalAddMemberFromList('con')">Thêm Con (Từ Danh Sách)</div>
               <div class="list-group-item" @click="removeMember()">Xóa thành viên (*)</div>
               <div class="list-group-item feature-overview">Các chức năng Khác</div>
               <div class="list-group-item" style="border-top: none;" @click="setPaternalAncestor(2)">Set làm tộc trưởng</div>
@@ -142,8 +144,8 @@
           <div class="col-9 h-100 position-relative" style="background: #ebebeb">
             <div class="position-absolute w-100 d-flex flex-column" style="height: calc(100% - 64px); top: 0;">
               <div class="d-flex flex-row" style="height: 48px; background-color: #FFFFFF">
-                <div @click="selectSMS()" :class="{ notiSelected: smsSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0.375rem 0 0 0; cursor: pointer;">SMS</div>
-                <div @click="selectEmail()" :class="{ notiSelected: emailSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0 0.375rem 0 0; cursor: pointer;">Email</div>
+                <div @click="selectSMS()" :class="{ notiSelected: smsSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0 0.375rem 0 0; cursor: pointer;">SMS</div>
+                <div @click="selectEmail()" :class="{ notiSelected: emailSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0.375rem 0 0 0; cursor: pointer;">Email</div>
               </div>
               <div v-if="emailSelected" class="d-flex flex-column mt-2" style="height: calc(100% - 48px); overflow-y: auto;">
                 <div class="sent-mail d-flex flex-row">
@@ -261,61 +263,9 @@
               </div>
 
               <div v-if="smsSelected" class="d-flex flex-column" style="height: calc(100% - 48px); align-items: flex-end; padding-top: 6px; overflow-y: auto">
-                <div class="position-relative d-flex flex-row">
-                  <div class="position-absolute sent-time">30/12/2022</div>
-                  <div class="sent-sms">Ngày 1/1/2023 là giỗ cụ</div>
-                </div>
-                <div class="position-relative d-flex flex-row">
-                  <div class="position-absolute sent-time">30/12/2022</div>
-                  <div class="sent-sms">Ngày 1/1/2023 là giỗ cụ</div>
-                </div>
-                <div class="position-relative d-flex flex-row">
-                  <div class="position-absolute sent-time">30/12/2022</div>
-                  <div class="sent-sms">Ngày 1/1/2023 là giỗ cụ</div>
-                </div>
-                <div class="position-relative d-flex flex-row">
-                  <div class="position-absolute sent-time">30/12/2022</div>
-                  <div class="sent-sms">Ngày 1/1/2023 là giỗ cụ</div>
-                </div>
-                <div class="position-relative d-flex flex-row">
-                  <div class="position-absolute sent-time">30/12/2022</div>
-                  <div class="sent-sms">Ngày 1/1/2023 là giỗ cụ nên cả họ phải tới không một ai được vắng mặt</div>
-                </div>
-                <div class="position-relative d-flex flex-row">
-                  <div class="position-absolute sent-time">30/12/2022</div>
-                  <div class="sent-sms">Ngày 1/1/2023 là giỗ cụ nên cả họ phải tới không một ai được vắng mặt</div>
-                </div>
-                <div class="position-relative d-flex flex-row">
-                  <div class="position-absolute sent-time">30/12/2022</div>
-                  <div class="sent-sms">Ngày 1/1/2023 là giỗ cụ nên cả họ phải tới không một ai được vắng mặt</div>
-                </div>
-                <div class="position-relative d-flex flex-row">
-                  <div class="position-absolute sent-time">30/12/2022</div>
-                  <div class="sent-sms">Ngày 1/1/2023 là giỗ cụ nên cả họ phải tới không một ai được vắng mặt</div>
-                </div>
-                <div class="position-relative d-flex flex-row">
-                  <div class="position-absolute sent-time">30/12/2022</div>
-                  <div class="sent-sms">Ngày 1/1/2023 là giỗ cụ nên cả họ phải tới không một ai được vắng mặt</div>
-                </div>
-                <div class="position-relative d-flex flex-row">
-                  <div class="position-absolute sent-time">30/12/2022</div>
-                  <div class="sent-sms">Ngày 1/1/2023 là giỗ cụ nên cả họ phải tới không một ai được vắng mặt</div>
-                </div>
-                <div class="position-relative d-flex flex-row">
-                  <div class="position-absolute sent-time">30/12/2022</div>
-                  <div class="sent-sms">Ngày 1/1/2023 là giỗ cụ nên cả họ phải tới không một ai được vắng mặt</div>
-                </div>
-                <div class="position-relative d-flex flex-row">
-                  <div class="position-absolute sent-time">30/12/2022</div>
-                  <div class="sent-sms">Ngày 1/1/2023 là giỗ cụ</div>
-                </div>
-                <div class="position-relative d-flex flex-row">
-                  <div class="position-absolute sent-time">30/12/2022</div>
-                  <div class="sent-sms">Ngày 1/1/2023 là giỗ cụ</div>
-                </div>
-                <div class="position-relative d-flex flex-row">
-                  <div class="position-absolute sent-time">30/12/2022</div>
-                  <div class="sent-sms">Ngày 1/1/2023 là giỗ cụ nên cả họ phải tới không một ai được vắng mặt</div>
+                <div v-for="m in ListMessage" :key="m.id" class="position-relative d-flex flex-row">
+                  <div v-if="m.IsSMS == 1" class="position-absolute sent-time">{{formatDate(m.NotificationDate)}}</div>
+                  <div v-if="m.IsSMS == 1" class="sent-sms">{{m.NotificationContent}}</div>
                 </div>
               </div>
             </div>
@@ -350,6 +300,11 @@
                 <div class="create-mail-content px-2 w-100">
                   <textarea style="resize: none; outline: none; border: none;" class="h-100 w-100 p-2" placeholder="Viết gì đó..."></textarea>
                 </div>
+                <div class="create-mail-footer d-flex flex-row px-5 py-2 w-100" style="justify-content: end;">
+                  <div style="border-radius: 50% 0 0 50%; background: #007bff; width: 25px;"></div>
+                  <div class="btn d-flex align-items-center justify-content-center" style="padding: 4px 12px; background: #007bff; color: #FFFFFF; border-radius: 0">Gửi</div>
+                  <div style="border-radius: 0 50% 50% 0; background: #007bff; width: 25px;"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -359,11 +314,16 @@
 
     <!-- Đât là modal so sánh -->
     <modal name="compare-modal">
-      <div class="h-100 d-flex flex-column position-relative" style="background-color: #C69934;">
-        <div class="modal-title d-flex flex-row align-items-center justify-content-center" style="background-color: #C69934 !important">
+      <div class="h-100 d-flex flex-column position-relative">
+        <div class="modal-title d-flex flex-row align-items-center justify-content-center">
           <div class="col-12 d-flex align-items-center justify-content-center">So sánh 2 thành viên</div>
+          <div class="close-add-form" @click="closeCompareModal()">
+            <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+              <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+            </svg>
+          </div>
         </div>
-        <div class="d-flex flex-row" style="flex-grow: 1">
+        <div class="d-flex flex-row" style="flex-grow: 1; background-color: #FFFFFF;">
           <div class="col-6" style="padding: 0px 4px 48px 8px;">
             <div class="h-100 d-flex flex-column p-2" style="background-color: #FFFFFF; border-radius: 0.375rem;">
               <div class="d-flex flex-row pb-2" style="height: 220px">
@@ -394,7 +354,7 @@
                   <input type="text" class="w-100 h-100 form-control" :value="objCompareMember1.mother !== undefined ? objCompareMember1.mother + ' (Mẹ)' : 'Không có trên phả đồ'" disabled />
                 </div>
                 <div class="compare-modal-item mx-2 mt-2">
-                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember1.result !== undefined ? 'Mối quan hệ: ' + objCompareMember1.result: 'Không xác định'" disabled />
+                  <input type="text" class="w-100 h-100 form-control" :value="resultCompare1 !== undefined ? 'Mối quan hệ: ' + resultCompare1 : 'Không xác định'" disabled />
                 </div>
               </div>
             </div>
@@ -429,344 +389,388 @@
                   <input type="text" class="w-100 h-100 form-control" :value="objCompareMember2.mother !== undefined ? objCompareMember2.mother + ' (Mẹ)' : 'Không có trên phả đồ'" disabled />
                 </div>
                 <div class="compare-modal-item mx-2 mt-2">
-                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember2.result !== undefined ? 'Mối quan hệ: ' + objCompareMember2.result: 'Không xác định'" disabled />
+                  <input type="text" class="w-100 h-100 form-control" :value="resultCompare2 !== undefined ? 'Mối quan hệ: ' + resultCompare2 : 'Mối quan hệ: Không xác định'" disabled />
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div>
+        <div class="modal-footer">
           <div class="compare-modal-btn btn position-absolute">Đổi vị trí trên phả đồ</div>
         </div>
       </div>
     </modal>
     <!-- Đây là modal mối quan hệ -->
-    <div></div>
+    <div>
+      <modal name="add-from-list">
+        <div class="w-100 h-100 add-head-modal">
+          <div class="d-flex flex-row w-100 align-items-center position-relative">
+            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm {{TitleModal}} Từ Danh Sách</div>
+            <div class="close-add-form" @click="closeModalAddMemberFromList()">
+              <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+              </svg>
+            </div>
+          </div>
+          <div class="d-flex flex-column" style="height: calc(100% - 50px)">
+            <div class="d-flex flex-row">
+              <div class="col-md-4 m-2">
+                <input type="text" class="form-control modal-item m-0" placeholder="Nhập tên thành viên..." />
+              </div>
+            </div>
+            <div class="d-flex flex-column headlist-list-container w-100">
+              <table class="table member headlist-list m-0">
+                <thead>
+                  <tr class="headlist-item">
+                    <th class="headlist-list-th" scope="col">#</th>
+                    <th class="headlist-list-th" scope="col">Họ và Tên</th>
+                    <th class="headlist-list-th" scope="col">Giới tính</th>
+                    <th class="headlist-list-th" scope="col">Ngày sinh</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(m, index) in ListUnspecifiedMembers" :key="m.id">
+                    <th>{{ index + 1 }}</th>
+                    <th>{{ m.MemberName }}</th>
+                    <td>{{ m.Male === 1 ? 'Nam' : 'Nữ' }}</td>
+                    <td>{{ formatDate(m.Dob) }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+              <div class="d-flex justify-content-end" style="padding-right: 12px;">
+                <button type="button" class="btn btn-primary mr-2">Thêm</button>
+                <button style="margin-left:10px" type="button" class="btn btn-secondary">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </modal>
+    </div>
     <!-- Đây là modal member-->
-    <modal name="member-modal">
-      <div class="card" v-if="objMemberInfor">
-        <div class="card-header text-center" style="background-color:#E8C77B">
-          <h5>{{ TitleModal }}</h5>
-          <div class="close-add-form" @click="closeMemberModal" style="top: 8px;right:5px">
-            <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-              <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-            </svg>
-          </div>
-        </div>
-        <div class="card-body" style="padding: 0; height: 675px">
-          <div class="row" style="padding: 0;height: 100%;">
-            <div class="col-3 select-menu">
-              <div class="custom-info" :class="{ selected: extendedInfo }" @click="selectedInfor()">
-                <h5>Thông tin</h5>
-              </div>
-              <div class="custom-info" :class="{ selected: extendedContact }" @click="selectedContact()">
-                <h5>Liên Hệ</h5>
-              </div>
-              <div v-if="isEdit" class="custom-info" :class="{ selected: extendedJob }" @click="selectedJob()">
-                <h5>Nghề nghiệp</h5>
-              </div>
-              <div v-if="isEdit" class="custom-info" :class="{ selected: extendedEdu }" @click="selectedEdu()">
-                <h5>Giáo dục</h5>
-              </div>
-              <div class="custom-info" :class="{ selected: extendedNote }" @click="selectedNote()">
-                <h5>Ghi chú</h5>
-              </div>
+    <div class="member-modal-container">
+      <modal name="member-modal">
+        <div class="card" v-if="objMemberInfor" style="border: none;">
+          <div class="card-header modal-title text-center p-0 d-flex align-items-center justify-content-center">
+            <h5 class="m-0">{{ TitleModal }}</h5>
+            <div class="close-add-form" @click="closeMemberModal" style="top: 8px;right:5px">
+              <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+              </svg>
             </div>
-            <div class="col-9" style="padding-top: 15px" v-if="extendedInfo">
-              <div class="row">
-                <div class="col-4">
-                  <img style="height:316px;width:360px;margin-bottom:30px" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" />
-                  <svg v-else style="margin-bottom:46px" fill="#000000" height="300px" width="300px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
-                    <g>
-                      <g>
-                        <circle cx="256" cy="114.526" r="114.526" />
-                      </g>
-                    </g>
-                    <g>
-                      <g>
-                        <path d="M256,256c-111.619,0-202.105,90.487-202.105,202.105c0,29.765,24.13,53.895,53.895,53.895h296.421
-			c29.765,0,53.895-24.13,53.895-53.895C458.105,346.487,367.619,256,256,256z" />
-                      </g>
-                    </g>
-                  </svg>
-                  <div class="form-group">
-                    <label for="imageUpload">Tải ảnh lên</label>
-                    <input type="file" class="form-control input-file" id="imageUpload" accept="image/*" @change="updateAvatar($event)" />
-                  </div>
+          </div>
+          <div class="card-body" style="padding: 0; height: 675px">
+            <div class="row" style="padding: 0;height: 100%;">
+              <div class="col-3 select-menu">
+                <div class="custom-info" :class="{ selected: extendedInfo }" @click="selectedInfor()">
+                  <h5>Thông tin</h5>
                 </div>
-                <div class="col-8">
-                  <div style="position: relative; margin-right:10px">
-                    <input v-model="objMemberInfor.MemberName" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberInfor.MemberName }">Tên thành viên đầy đủ</label>
-                  </div>
-                  <div style="display:flex">
-                    <div style="position: relative; width: 50%;margin-right: 10px;">
-                      <input v-model="objMemberInfor.NickName" type="text" class="form-control modal-item" placeholder />
-                      <label class="form-label" for="input" :class="{ 'active': objMemberInfor.NickName }">Tên thường gọi</label>
-                    </div>
-                    <div style="position: relative;width: 50%; margin-right: 10px;">
-                      <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item" placeholder />
-                      <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con Thứ</label>
-                    </div>
-                  </div>
-                  <div style="display:flex">
-                    <div style="position: relative; width: 50%;margin-right: 10px;">
-                      <select v-model="objMemberInfor.Male" class="form-select modal-item">
-                        <option value="1">Nam</option>
-                        <option value="0">Nữ</option>
-                      </select>
-                      <label class="form-label" for="select">Giới Tính</label>
-                    </div>
-                    <div style="position: relative;width: 50%; margin-right: 10px;">
-                      <select v-model="objMemberInfor.BloodType" id="bloodtype" class="form-select modal-item">
-                        <option :value="null">Chọn Nhóm Máu</option>
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="AB">AB</option>
-                        <option value="O">O</option>
-                      </select>
-                      <label class="form-label-number" for="select">Nhóm Máu</label>
-                    </div>
-                  </div>
-                  <div style="display:flex">
-                    <div style="position: relative; width: 50%;margin-right: 10px;">
-                      <select v-model="objMemberInfor.NationalityID" class="form-select modal-item">
-                        <option v-for="nation in ListNationality" :key="nation.id" :value="nation.NationalityID">
-                          {{
-                          nation.NationalityName }}
-                        </option>
-                      </select>
-                      <label class="form-label" for="select">Quốc Tịch</label>
-                    </div>
-                    <div style="position: relative;width: 50%; margin-right: 10px;">
-                      <select v-model="objMemberInfor.ReligionID" class="form-select modal-item">
-                        <option v-for="religion in ListReligion" :key="religion.id" :value="religion.ReligionID">
-                          {{
-                          religion.ReligionName }}
-                        </option>
-                      </select>
-                      <label class="form-label-number" for="select">Tôn Giáo</label>
+                <div class="custom-info" :class="{ selected: extendedContact }" @click="selectedContact()">
+                  <h5>Liên Hệ</h5>
+                </div>
+                <div v-if="isEdit" class="custom-info" :class="{ selected: extendedJob }" @click="selectedJob()">
+                  <h5>Nghề nghiệp</h5>
+                </div>
+                <div v-if="isEdit" class="custom-info" :class="{ selected: extendedEdu }" @click="selectedEdu()">
+                  <h5>Giáo dục</h5>
+                </div>
+                <div class="custom-info" :class="{ selected: extendedNote }" @click="selectedNote()">
+                  <h5>Ghi chú</h5>
+                </div>
+              </div>
+              <div class="col-9" style="padding-top: 15px" v-if="extendedInfo">
+                <div class="row">
+                  <div class="col-4">
+                    <img style="height:316px;width:360px;margin-bottom:30px" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" />
+                    <svg v-else style="margin-bottom:46px" fill="#000000" height="300px" width="300px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
+                      <g>
+                        <g>
+                          <circle cx="256" cy="114.526" r="114.526" />
+                        </g>
+                      </g>
+                      <g>
+                        <g>
+                          <path d="M256,256c-111.619,0-202.105,90.487-202.105,202.105c0,29.765,24.13,53.895,53.895,53.895h296.421 c29.765,0,53.895-24.13,53.895-53.895C458.105,346.487,367.619,256,256,256z" />
+                        </g>
+                      </g>
+                    </svg>
+                    <div class="form-group">
+                      <label for="imageUpload">Tải ảnh lên</label>
+                      <input type="file" class="form-control input-file" id="imageUpload" accept="image/*" @change="updateAvatar($event)" />
                     </div>
                   </div>
-                  <div style="position: relative; margin-right:10px">
-                    <input v-model="objMemberInfor.Origin" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberInfor.Origin }">Nguyên Quán</label>
-                  </div>
-                  <div class="form-group">
-                    <h6 style="margin-bottom:20px">Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược lại)</h6>
+                  <div class="col-8">
+                    <div style="position: relative; margin-right:10px">
+                      <input v-model="objMemberInfor.MemberName" type="text" class="form-control modal-item" placeholder />
+                      <label class="form-label" for="input" :class="{ 'active': objMemberInfor.MemberName }">Tên thành viên đầy đủ</label>
+                    </div>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
-                        <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar()" />
-                        <label class="form-label" for="input">Dương Lịch</label>
+                        <input v-model="objMemberInfor.NickName" type="text" class="form-control modal-item" placeholder />
+                        <label class="form-label" for="input" :class="{ 'active': objMemberInfor.NickName }">Tên thường gọi</label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
-                        <input v-model="objMemberInfor.LunarDob" type="date" class="form-control modal-item" placeholder @change="convertLunarToSolar()" />
-                        <label class="form-label-number" min="0" for="input">Âm lịch</label>
+                        <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item" placeholder />
+                        <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con Thứ</label>
                       </div>
                     </div>
-                  </div>
-                  <div style="position: relative; margin-right:10px">
-                    <input v-model="objMemberInfor.BirthPlace" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberInfor.BirthPlace }">Nơi sinh</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    <input v-model="IsDead" type="checkbox" class="form-check-input" id="lostCheckbox" />
-                    <label style="font-size: 14px; margin-top: 7px;" class="form-check-label" for="lostCheckbox">Đã mất</label>
-                  </div>
-                  <div class="form-group" v-if="IsDead == 1">
-                    <h6 style="margin-bottom:20px">Ngày Mất (*)</h6>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
-                        <input v-model="objMemberInfor.Dod" type="date" class="form-control modal-item" placeholder />
-                        <label class="form-label" for="input">Dương Lịch</label>
+                        <select v-model="objMemberInfor.Male" class="form-select modal-item">
+                          <option value="1">Nam</option>
+                          <option value="0">Nữ</option>
+                        </select>
+                        <label class="form-label" for="select">Giới Tính</label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
-                        <input v-model="objMemberInfor.LunarDod" type="date" class="form-control modal-item" placeholder />
-                        <label class="form-label-number" min="0" for="input">Âm lịch</label>
+                        <select v-model="objMemberInfor.BloodType" id="bloodtype" class="form-select modal-item">
+                          <option :value="null">Chọn Nhóm Máu</option>
+                          <option value="A">A</option>
+                          <option value="B">B</option>
+                          <option value="AB">AB</option>
+                          <option value="O">O</option>
+                        </select>
+                        <label class="form-label-number" for="select">Nhóm Máu</label>
+                      </div>
+                    </div>
+                    <div style="display:flex">
+                      <div style="position: relative; width: 50%;margin-right: 10px;">
+                        <select v-model="objMemberInfor.NationalityID" class="form-select modal-item">
+                          <option v-for="nation in ListNationality" :key="nation.id" :value="nation.NationalityID">
+                            {{
+                            nation.NationalityName }}
+                          </option>
+                        </select>
+                        <label class="form-label" for="select">Quốc Tịch</label>
+                      </div>
+                      <div style="position: relative;width: 50%; margin-right: 10px;">
+                        <select v-model="objMemberInfor.ReligionID" class="form-select modal-item">
+                          <option v-for="religion in ListReligion" :key="religion.id" :value="religion.ReligionID">
+                            {{
+                            religion.ReligionName }}
+                          </option>
+                        </select>
+                        <label class="form-label-number" for="select">Tôn Giáo</label>
                       </div>
                     </div>
                     <div style="position: relative; margin-right:10px">
-                      <input type="text" class="form-control modal-item" placeholder />
-                      <label class="form-label" for="input">Nơi Mất</label>
+                      <input v-model="objMemberInfor.Origin" type="text" class="form-control modal-item" placeholder />
+                      <label class="form-label" for="input" :class="{ 'active': objMemberInfor.Origin }">Nguyên Quán</label>
+                    </div>
+                    <div class="form-group">
+                      <h6 style="margin-bottom:20px">Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược lại)</h6>
+                      <div style="display:flex">
+                        <div style="position: relative; width: 50%;margin-right: 10px;">
+                          <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar()" />
+                          <label class="form-label" for="input">Dương Lịch</label>
+                        </div>
+                        <div style="position: relative;width: 50%; margin-right: 10px;">
+                          <input v-model="objMemberInfor.LunarDob" type="date" class="form-control modal-item" placeholder @change="convertLunarToSolar()" />
+                          <label class="form-label-number" min="0" for="input">Âm lịch</label>
+                        </div>
+                      </div>
                     </div>
                     <div style="position: relative; margin-right:10px">
-                      <input type="text" class="form-control modal-item" placeholder />
-                      <label class="form-label" for="input">Mộ Phần</label>
+                      <input v-model="objMemberInfor.BirthPlace" type="text" class="form-control modal-item" placeholder />
+                      <label class="form-label" for="input" :class="{ 'active': objMemberInfor.BirthPlace }">Nơi sinh</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input v-model="IsDead" type="checkbox" class="form-check-input" id="lostCheckbox" />
+                      <label style="font-size: 14px; margin-top: 7px;" class="form-check-label" for="lostCheckbox">Đã mất</label>
+                    </div>
+                    <div class="form-group" v-if="IsDead == 1">
+                      <h6 style="margin-bottom:20px">Ngày Mất (*)</h6>
+                      <div style="display:flex">
+                        <div style="position: relative; width: 50%;margin-right: 10px;">
+                          <input v-model="objMemberInfor.Dod" type="date" class="form-control modal-item" placeholder />
+                          <label class="form-label" for="input">Dương Lịch</label>
+                        </div>
+                        <div style="position: relative;width: 50%; margin-right: 10px;">
+                          <input v-model="objMemberInfor.LunarDod" type="date" class="form-control modal-item" placeholder />
+                          <label class="form-label-number" min="0" for="input">Âm lịch</label>
+                        </div>
+                      </div>
+                      <div style="position: relative; margin-right:10px">
+                        <input type="text" class="form-control modal-item" placeholder />
+                        <label class="form-label" for="input">Nơi Mất</label>
+                      </div>
+                      <div style="position: relative; margin-right:10px">
+                        <input type="text" class="form-control modal-item" placeholder />
+                        <label class="form-label" for="input">Mộ Phần</label>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="col-9" style="padding-top: 15px" v-else-if="extendedContact">
-              <div class="row">
-                <!-- <span style="margin-bottom:20px">Hệ thống sẽ lấy thông tin của Quận/huyện</span> -->
-                <div style="display:flex">
-                  <div style="position: relative; width: 50%;margin-right: 10px;">
-                    <select v-model="selectCityMember" class="form-select modal-item" @change="getListDistrict()">
-                      <option :value="null" selected>Thành Phố/Tỉnh</option>
-                      <option v-for="city in ListCity" :key="city.id" :value="city.id">{{ city.name }}</option>
-                    </select>
-                    <label class="form-label" for="select">Địa Chỉ (Thành Phố/Tỉnh)</label>
-                  </div>
-                  <div style="position: relative;width: 50%; margin-right: 10px;">
-                    <select class="form-select modal-item">
-                      <option :value="null" selected>Quận/Huyện</option>
-                    </select>
-                    <label class="form-label" for="select">Địa Chỉ (Quận/Huyện)</label>
-                  </div>
-                </div>
-                <div style="display:flex">
-                  <div style="position: relative; width: 50%;margin-right: 10px;">
-                    <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" :disabled="isDisabled" :default-country="defaultCountry" :validations="validations"></VuePhoneNumberInput>
-                  </div>
-                  <div style="position: relative;width: 50%; margin-right: 10px;">
-                    <input v-model="objMemberContact.Email" type="email" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberContact.Email }">Email</label>
-                  </div>
-                </div>
-                <div style="position: relative; padding-right: 23px;">
-                  <input v-model="objMemberContact.FacebookUrl" type="text" class="form-control modal-item" placeholder />
-                  <label style="left: 25px;" class="form-label" for="input" :class="{ 'active': objMemberContact.FacebookUrl }">Facebook</label>
-                </div>
-                <div style="position: relative; padding-right: 23px;">
-                  <input v-model="objMemberContact.Zalo" type="text" class="form-control modal-item" placeholder />
-                  <label style="left: 25px;" class="form-label" for="input" :class="{ 'active': objMemberContact.Zalo }">Zalo</label>
-                </div>
-              </div>
-            </div>
-            <div class="col-9" style="padding-top: 15px" v-else-if="extendedJob">
-              <div class="row">
-                <div style="display:flex">
-                  <div style="position: relative; width: 50%; margin-right: 10px;">
-                    <input v-model="objMemberJob.Organization" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberJob.Organization }">
-                      Tên Cơ
-                      Quan
-                    </label>
-                  </div>
-                  <div style="position: relative;width: 50%; margin-right: 10px;">
-                    <input v-model="objMemberJob.OrganizationAddress" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" min="0" for="input" :class="{ 'active': objMemberJob.OrganizationAddress }">Địa Chỉ</label>
-                  </div>
-                </div>
-                <div style="display:flex">
-                  <div style="position: relative; width: 50%;margin-right: 10px;">
-                    <input v-model="objMemberJob.Role" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label" for="input" :class="{ 'active': objMemberJob.Role }">Vị trí công tác</label>
-                  </div>
-                  <div style="position: relative;width: 50%; margin-right: 10px;">
-                    <input v-model="objMemberJob.JobName" type="text" class="form-control modal-item" placeholder />
-                    <label class="form-label-number" min="0" for="input" :class="{ 'active': objMemberJob.JobName }">nghề nghiệp</label>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <h6 style="margin-bottom:20px">Thời gian công tác</h6>
+              <div class="col-9" style="padding-top: 15px" v-else-if="extendedContact">
+                <div class="row">
+                  <!-- <span style="margin-bottom:20px">Hệ thống sẽ lấy thông tin của Quận/huyện</span> -->
                   <div style="display:flex">
                     <div style="position: relative; width: 50%;margin-right: 10px;">
-                      <input v-model="objMemberJob.StartDate" type="date" class="form-control modal-item" placeholder />
-                      <label class="form-label" for="input">Từ ngày</label>
+                      <select v-model="selectCityMember" class="form-select modal-item" @change="getListDistrict()">
+                        <option :value="null" selected>Thành Phố/Tỉnh</option>
+                        <option v-for="city in ListCity" :key="city.id" :value="city.id">{{ city.name }}</option>
+                      </select>
+                      <label class="form-label" for="select">Địa Chỉ (Thành Phố/Tỉnh)</label>
                     </div>
                     <div style="position: relative;width: 50%; margin-right: 10px;">
-                      <input v-model="objMemberJob.EndDate" type="date" class="form-control modal-item" placeholder />
-                      <label class="form-label-number" min="0" for="input">Đến ngày</label>
+                      <select class="form-select modal-item">
+                        <option :value="null" selected>Quận/Huyện</option>
+                      </select>
+                      <label class="form-label" for="select">Địa Chỉ (Quận/Huyện)</label>
                     </div>
                   </div>
-                </div>
-                <div class="d-flex justify-content-end">
-                  <div class="form-group" role="group">
-                    <button type="button" class="btn btn-primary" @click="addNewJobMember()" style="margin-right:10px">Thêm</button>
-                    <button type="button" class="btn btn-info mr-1" @click="updateJobMember()" style="margin-right:10px">Sửa</button>
-                    <button type="button" class="btn btn-danger mr-1" @click="removeJobMember()" style="margin-right:10px">Xóa</button>
-                  </div>
-                </div>
-                <div class="form-group" style="margin-top:13px;padding-right:22px">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th scope="col">Tên cơ quan</th>
-                        <th scope="col">Vị trí</th>
-                        <th scope="col">Từ ngày</th>
-                        <th scope="col">Đến ngày</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="job in ListMemberJob" :key="job.id" @click="selectRowJob(job)" :class="{ 'row-selected': job === objMemberJob }">
-                        <td>{{ job.Organization }}</td>
-                        <td>{{ job.Role }}</td>
-                        <td>{{ formatDate(job.StartDate) }}</td>
-                        <td>{{ formatDate(job.EndDate) }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-            <div class="col-9" style="padding-top: 15px" v-else-if="extendedEdu">
-              <div class="row">
-                <div style="position: relative;padding-right: 20px;">
-                  <input v-model="objMemberEducation.School" type="text" class="form-control modal-item" placeholder />
-                  <label style="left: 20px;" class="form-label" for="input" :class="{ 'active': objMemberEducation.School }">Tên trường</label>
-                </div>
-                <div style="position: relative;padding-right: 20px;">
-                  <input v-model="objMemberEducation.Description" type="text" class="form-control modal-item" placeholder />
-                  <label style="left: 20px;" class="form-label" for="input" :class="{ 'active': objMemberEducation.Description }">Mô tả</label>
-                </div>
-                <div class="form-group">
-                  <h6 style="margin-bottom:20px">Thời gian học tập</h6>
                   <div style="display:flex">
                     <div style="position: relative; width: 50%;margin-right: 10px;">
-                      <input v-model="objMemberEducation.StartDate" type="date" class="form-control modal-item" placeholder />
-                      <label class="form-label" for="input">Từ ngày</label>
+                      <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" :disabled="isDisabled" :default-country="defaultCountry" :validations="validations"></VuePhoneNumberInput>
                     </div>
                     <div style="position: relative;width: 50%; margin-right: 10px;">
-                      <input v-model="objMemberEducation.EndDate" type="date" class="form-control modal-item" placeholder />
-                      <label class="form-label-number" min="0" for="input">Đến ngày</label>
+                      <input v-model="objMemberContact.Email" type="email" class="form-control modal-item" placeholder />
+                      <label class="form-label" for="input" :class="{ 'active': objMemberContact.Email }">Email</label>
                     </div>
                   </div>
-                </div>
-                <div class="d-flex justify-content-end">
-                  <div class="form-group" role="group">
-                    <button type="button" class="btn btn-primary" @click="addNewEducationMember()" style="margin-right:10px">Thêm</button>
-                    <button type="button" class="btn btn-info mr-1" @click="updateEducationMember()" style="margin-right:10px">Sửa</button>
-                    <button type="button" class="btn btn-danger mr-1" @click="deleteJobMember()" style="margin-right:10px">Xóa</button>
+                  <div style="position: relative; padding-right: 23px;">
+                    <input v-model="objMemberContact.FacebookUrl" type="text" class="form-control modal-item" placeholder />
+                    <label style="left: 25px;" class="form-label" for="input" :class="{ 'active': objMemberContact.FacebookUrl }">Facebook</label>
+                  </div>
+                  <div style="position: relative; padding-right: 23px;">
+                    <input v-model="objMemberContact.Zalo" type="text" class="form-control modal-item" placeholder />
+                    <label style="left: 25px;" class="form-label" for="input" :class="{ 'active': objMemberContact.Zalo }">Zalo</label>
                   </div>
                 </div>
-                <div class="form-group" style="margin-top:13px;padding-right:22px">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th scope="col">Tên trường</th>
-                        <th scope="col">Từ ngày</th>
-                        <th scope="col">Đến ngày</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="edu in ListMemberEducation" :key="edu.id" @click="selectRowEducation(edu)" :class="{ 'row-selected': edu === objMemberEducation }">
-                        <td>{{ edu.School }}</td>
-                        <td>{{ formatDate(edu.StartDate) }}</td>
-                        <td>{{ formatDate(edu.EndDate) }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
+              </div>
+              <div class="col-9" style="padding-top: 15px" v-else-if="extendedJob">
+                <div class="row">
+                  <div style="display:flex">
+                    <div style="position: relative; width: 50%; margin-right: 10px;">
+                      <input v-model="objMemberJob.Organization" type="text" class="form-control modal-item" placeholder />
+                      <label class="form-label" for="input" :class="{ 'active': objMemberJob.Organization }">Tên Cơ Quan</label>
+                    </div>
+                    <div style="position: relative;width: 50%; margin-right: 10px;">
+                      <input v-model="objMemberJob.OrganizationAddress" type="text" class="form-control modal-item" placeholder />
+                      <label class="form-label" min="0" for="input" :class="{ 'active': objMemberJob.OrganizationAddress }">Địa Chỉ</label>
+                    </div>
+                  </div>
+                  <div style="display:flex">
+                    <div style="position: relative; width: 50%;margin-right: 10px;">
+                      <input v-model="objMemberJob.Role" type="text" class="form-control modal-item" placeholder />
+                      <label class="form-label" for="input" :class="{ 'active': objMemberJob.Role }">Vị trí công tác</label>
+                    </div>
+                    <div style="position: relative;width: 50%; margin-right: 10px;">
+                      <input v-model="objMemberJob.JobName" type="text" class="form-control modal-item" placeholder />
+                      <label class="form-label-number" min="0" for="input" :class="{ 'active': objMemberJob.JobName }">nghề nghiệp</label>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <h6 style="margin-bottom:20px">Thời gian công tác</h6>
+                    <div style="display:flex">
+                      <div style="position: relative; width: 50%;margin-right: 10px;">
+                        <input v-model="objMemberJob.StartDate" type="date" class="form-control modal-item" placeholder />
+                        <label class="form-label" for="input">Từ ngày</label>
+                      </div>
+                      <div style="position: relative;width: 50%; margin-right: 10px;">
+                        <input v-model="objMemberJob.EndDate" type="date" class="form-control modal-item" placeholder />
+                        <label class="form-label-number" min="0" for="input">Đến ngày</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-end">
+                    <div class="form-group" role="group">
+                      <button type="button" class="btn btn-primary" @click="addNewJobMember()" style="margin-right:10px">Thêm</button>
+                      <button type="button" class="btn btn-info mr-1" @click="updateJobMember()" style="margin-right:10px">Sửa</button>
+                      <button type="button" class="btn btn-danger mr-1" @click="removeJobMember()" style="margin-right:10px">Xóa</button>
+                    </div>
+                  </div>
+                  <div class="form-group" style="margin-top:13px;padding-right:22px">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">Tên cơ quan</th>
+                          <th scope="col">Vị trí</th>
+                          <th scope="col">Từ ngày</th>
+                          <th scope="col">Đến ngày</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="job in ListMemberJob" :key="job.id" @click="selectRowJob(job)" :class="{ 'row-selected': job === objMemberJob }">
+                          <td>{{ job.Organization }}</td>
+                          <td>{{ job.Role }}</td>
+                          <td>{{ formatDate(job.StartDate) }}</td>
+                          <td>{{ formatDate(job.EndDate) }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="col-9" style="padding-top: 15px" v-else>
-              <div class="form-group" style="margin-top:13px;padding-right:22px">
-                <textarea v-model="objMemberInfor.Note" style="height:300px" class="form-control modal-item" id="lichSuCongTac" rows="5" placeholder="Ghi Chú"></textarea>
+              <div class="col-9" style="padding-top: 15px" v-else-if="extendedEdu">
+                <div class="row">
+                  <div style="position: relative;padding-right: 20px;">
+                    <input v-model="objMemberEducation.School" type="text" class="form-control modal-item" placeholder />
+                    <label style="left: 20px;" class="form-label" for="input" :class="{ 'active': objMemberEducation.School }">Tên trường</label>
+                  </div>
+                  <div style="position: relative;padding-right: 20px;">
+                    <input v-model="objMemberEducation.Description" type="text" class="form-control modal-item" placeholder />
+                    <label style="left: 20px;" class="form-label" for="input" :class="{ 'active': objMemberEducation.Description }">Mô tả</label>
+                  </div>
+                  <div class="form-group">
+                    <h6 style="margin-bottom:20px">Thời gian học tập</h6>
+                    <div style="display:flex">
+                      <div style="position: relative; width: 50%;margin-right: 10px;">
+                        <input v-model="objMemberEducation.StartDate" type="date" class="form-control modal-item" placeholder />
+                        <label class="form-label" for="input">Từ ngày</label>
+                      </div>
+                      <div style="position: relative;width: 50%; margin-right: 10px;">
+                        <input v-model="objMemberEducation.EndDate" type="date" class="form-control modal-item" placeholder />
+                        <label class="form-label-number" min="0" for="input">Đến ngày</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-end">
+                    <div class="form-group" role="group">
+                      <button type="button" class="btn btn-primary" @click="addNewEducationMember()" style="margin-right:10px">Thêm</button>
+                      <button type="button" class="btn btn-info mr-1" @click="updateEducationMember()" style="margin-right:10px">Sửa</button>
+                      <button type="button" class="btn btn-danger mr-1" @click="deleteJobMember()" style="margin-right:10px">Xóa</button>
+                    </div>
+                  </div>
+                  <div class="form-group" style="margin-top:13px;padding-right:22px">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">Tên trường</th>
+                          <th scope="col">Từ ngày</th>
+                          <th scope="col">Đến ngày</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="edu in ListMemberEducation" :key="edu.id" @click="selectRowEducation(edu)" :class="{ 'row-selected': edu === objMemberEducation }">
+                          <td>{{ edu.School }}</td>
+                          <td>{{ formatDate(edu.StartDate) }}</td>
+                          <td>{{ formatDate(edu.EndDate) }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="col-9" style="padding-top: 15px" v-else>
+                <div class="form-group" style="margin-top:13px;padding-right:22px">
+                  <textarea v-model="objMemberInfor.Note" style="height:300px" class="form-control modal-item" id="lichSuCongTac" rows="5" placeholder="Ghi Chú"></textarea>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="card-footer" style="background-color:#E8C77B">
-          <div class="d-flex justify-content-end">
-            <button v-if="isAdd" type="button" class="btn btn-primary mr-2" @click="addMember()">Thêm</button>
-            <button v-else-if="isEdit" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
-            <button style="margin-left:10px" type="button" class="btn btn-secondary" @click="closeSelectModal()">Cancel</button>
+          <div class="card-footer modal-footer">
+            <div class="d-flex justify-content-end" style="padding-right: 12px;">
+              <button v-if="isAdd" type="button" class="btn btn-primary mr-2" @click="addMember()">Thêm</button>
+              <button v-else-if="isEdit" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
+              <button style="margin-left:10px" type="button" class="btn btn-secondary" @click="closeSelectModal()">Cancel</button>
+            </div>
           </div>
         </div>
-      </div>
-    </modal>
+      </modal>
+    </div>
   </div>
 </template>
 
@@ -787,7 +791,6 @@ export default {
   },
   data() {
     return {
-      contentMessage: null,
       phoneNumber: "",
       isDisabled: false,
       defaultCountry: "VN",
@@ -795,6 +798,8 @@ export default {
         required: true,
       },
       ListCity: null,
+      ListMessage: null,
+      contentMessage: null,
       ListPhoneToSendMessage: [],
       searchKeyword: null,
       avatarSrc: null,
@@ -891,13 +896,13 @@ export default {
       objCompareMember2: {},
       displayList: false,
       expandAddRelationship: false,
-
       emailSelected: false,
       smsSelected: true,
-
       expandCreateEmail: false,
       advancedFilterDown: false,
       selectNodeHighLight: [],
+      resultCompare1: null,
+      resultCompare2: null,
     };
   },
   methods: {
@@ -1013,6 +1018,7 @@ export default {
     getResultMember(id) {
       const objdata = {};
       const result = this.nodes.find((node) => node.id == id);
+      console.log(result);
 
       objdata.name = result.name;
       objdata.gender = result.gender === "male" ? "Nam" : "Nữ";
@@ -1037,14 +1043,16 @@ export default {
         const resultMid = this.nodes.find((node) => node.id == result.mid);
         objdata.mother = resultMid.name;
       }
-      objdata.generation = result.Generation;
+      objdata.generation = result.generation;
 
       return objdata;
     },
     compareMember(memberId1, memberId2) {
+      this.RemoveHightLight();
+      this.selectNodeHighLight = [];
+      this.lastClickedNodeId = null;
       this.objCompareMember1 = this.getResultMember(memberId1);
       this.objCompareMember2 = this.getResultMember(memberId2);
-
       HTTP.get("compare", {
         params: {
           MemberID1: memberId1,
@@ -1052,9 +1060,8 @@ export default {
         },
       })
         .then((response) => {
-          this.objCompareMember1.result = response.data.result1;
-          this.objCompareMember2.result = response.data.result2;
-          console.log(this.objCompareMember1.result);
+          this.resultCompare1 = response.data.result1;
+          this.resultCompare2 = response.data.result2;
           this.$modal.show("compare-modal");
         })
         .catch((e) => {
@@ -1120,23 +1127,30 @@ export default {
         };
         reader.readAsDataURL(file);
       } else {
-        // Xử lý khi không có tệp tải lên
         this.avatarSrc = null; // Có thể thay thế b
       }
     },
     sendMessageToMember() {
-      if (this.contentMessage != null) {
+      if (
+        this.contentMessage != null &&
+        this.ListPhoneToSendMessage.length > 0 &&
+        this.contentMessage != ""
+      ) {
         HTTP.post("send-sms", {
           ListMemberID: this.ListPhoneToSendMessage,
           contentMessage: this.contentMessage,
+          action: "sms",
+          CodeID: 123456,
         })
           .then(() => {
-            this.closeNotiModal();
+            this.getListMessage();
             this.NotificationsScuccess("Gửi thông báo thành công");
           })
           .catch((e) => {
             console.log(e);
           });
+      } else if (this.ListPhoneToSendMessage.length == 0) {
+        this.NotificationsDelete("Hãy chọn những người bạn muốn gửi thông báo");
       } else {
         this.NotificationsDelete("Không có thông báo gì để gửi ");
       }
@@ -1178,9 +1192,11 @@ export default {
       if (date < 10) {
         date = "0" + dob.getDate();
       }
-
-      this.objMemberInfor.Dob =
-        "" + dob.getFullYear() + "-" + month + "-" + date;
+      this.$set(
+        this.objMemberInfor,
+        "Dob",
+        "" + dob.getFullYear() + "-" + month + "-" + date
+      );
     },
     convertSolarToLunar() {
       let Dob = new Date(this.objMemberInfor.Dob);
@@ -1192,8 +1208,11 @@ export default {
       if (new LunarDate(Dob).getDate() < 10) {
         date = "0" + new LunarDate(Dob).getDate();
       }
-      this.objMemberInfor.LunarDob =
-        "" + new LunarDate(Dob).getYear() + "-" + month + "-" + date;
+      this.$set(
+        this.objMemberInfor,
+        "LunarDob",
+        "" + new LunarDate(Dob).getYear() + "-" + month + "-" + date
+      );
     },
     getInforMember(id) {
       HTTP.get("InforMember", {
@@ -1203,6 +1222,7 @@ export default {
       })
         .then((response) => {
           this.objMember = response.data;
+          console.log(this.objMember);
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
             this.takeDataMember(this.CurrentIdMember);
@@ -1349,15 +1369,17 @@ export default {
         });
     },
     async addMember() {
-      console.log(this.CodeID);
+      if (this.action == "AddNormal") {
+        this.generationMember = 0;
+      }
       await HTTP.post("member", {
         MemberName: this.objMemberInfor.MemberName,
         NickName: this.objMemberInfor.NickName,
         CurrentMemberID: this.CurrentIdMember,
         BirthOrder: this.objMemberInfor.BirthOrder,
         Origin: this.objMemberInfor.Origin,
-        NationalityId: this.objMemberInfor.NationalityID,
-        ReligionId: this.objMemberInfor.ReligionID,
+        NationalityID: this.objMemberInfor.NationalityID,
+        ReligionID: this.objMemberInfor.ReligionID,
         Dob: this.objMemberInfor.Dob,
         LunarDob: this.objMemberInfor.Dob,
         bnirthPlace: this.objMemberInfor.BirthPlace,
@@ -1370,10 +1392,13 @@ export default {
         CurrentGeneration: this.generationMember,
         BloodType: this.objMemberInfor.BloodType,
         Male: this.objMemberInfor.Male,
-        CodeId: this.CodeID,
+        CodeID: this.CodeID,
         Action: this.action,
       })
         .then((response) => {
+          if (this.action == "AddNormal") {
+            this.getListUnspecifiedMembers();
+          }
           if (response.data.success == true) {
             this.NotificationsScuccess(response.data.message);
           } else {
@@ -1460,8 +1485,8 @@ export default {
         MarriageID: this.objMemberInfor.MarriageID,
         BirthOrder: this.objMemberInfor.BirthOrder,
         Origin: this.objMemberInfor.Origin,
-        NationalityId: this.objMemberInfor.NationalityID,
-        ReligionId: this.objMemberInfor.ReligionID,
+        NationalityID: this.objMemberInfor.NationalityID,
+        ReligionID: this.objMemberInfor.ReligionID,
         Dob: this.objMemberInfor.Dob,
         LunarDob: this.objMemberInfor.LunarDob,
         BirthPlace: this.objMemberInfor.BirthPlace,
@@ -1575,6 +1600,9 @@ export default {
     handleRightClick(id) {
       this.OnpenModal_SelectOption(id);
     },
+    handleLeftClickUnspecifiedMembers(id) {
+      this.getInforMember(id);
+    },
     handleLeftClick(id) {
       this.family.center(id);
     },
@@ -1624,6 +1652,14 @@ export default {
           console.log(e);
         });
     },
+    closeModalAddMemberFromList() {
+      this.$modal.hide("add-from-list");
+      this.closeSelectModal();
+    },
+    openModalAddMemberFromList(action) {
+      this.TitleModal = action;
+      this.$modal.show("add-from-list");
+    },
     openNotiModal() {
       this.ListPhoneToSendMessage = [];
       this.contentMessage = null;
@@ -1640,6 +1676,7 @@ export default {
       this.$modal.hide("compare-modal");
     },
     openMemberModal(action, title) {
+      this.IsDead = 0;
       this.isAdd = true;
       this.isEdit = false;
       this.objMemberInfor = {};
@@ -1728,6 +1765,19 @@ export default {
           console.log(e);
         });
     },
+    getListMessage() {
+      HTTP.get("listMessage", {
+        params: {
+          CodeID: this.CodeID,
+        },
+      })
+        .then((response) => {
+          this.ListMessage = response.data;        
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     getListDistrict() {},
     getListCity() {
       HTTP.get("province")
@@ -1807,6 +1857,7 @@ export default {
     },
   },
   mounted() {
+    this.getListMessage();
     this.getListCity();
     this.getListNationality();
     this.getListReligion();

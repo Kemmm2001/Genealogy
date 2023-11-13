@@ -37,3 +37,7 @@
 .headlist-table-item:focus{
     background-color: #007aff !important;
 }
+
+.headlist-list-container{
+    height: calc(100% - 107px);
+}

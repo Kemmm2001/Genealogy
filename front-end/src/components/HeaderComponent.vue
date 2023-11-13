@@ -91,7 +91,9 @@
               <div class="d-flex align-items-center p-2" style="color: #35495e; justify-content: right;">Người</div>
               <div class="user-extended d-flex flex-column position-absolute w-100"
                 :class="{ expandContent: expandAccountManage }">
-                <div v-show="expandAccountManage" class="navbar-extended-content p-2 m-1">Tài khoản</div>
+                <router-link to="/profile">
+                  <div v-show="expandAccountManage" class="navbar-extended-content p-2 m-1">Tài khoản</div>
+                </router-link>
                 <router-link to="/login">
                   <div v-show="expandAccountManage" class="navbar-extended-content p-2 m-1">Đăng xuất</div>
                 </router-link>
@@ -155,7 +157,9 @@ export default {
 };
 </script>
 
-<style>router-link-exact-active {
+<style>
+router-link-exact-active {
   background-color: #007bff;
   color: #fff;
-}</style>
+}
+</style>

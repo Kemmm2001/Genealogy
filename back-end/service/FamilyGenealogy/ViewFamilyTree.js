@@ -324,8 +324,8 @@ async function GetGenealogy(result, MemberID, ListFamily = [], visitedMembers = 
     if (visitedMembers.has(MemberID)) {
         // If MemberID has been visited, do nothing
         return ListFamily;
-    }    
-    
+    }
+
     visitedMembers.add(MemberID);
 
     let Member = result.find(member => member.MemberID == MemberID);
@@ -339,13 +339,13 @@ async function GetGenealogy(result, MemberID, ListFamily = [], visitedMembers = 
     let married = result.find(member => member.MarriageID == MemberID);
     if (married) {
         let wifeData = await createFamilyData(married, result);
-      
+
         if (!isMemberInList(ListFamily, married)) {
             ListFamily.push(wifeData);
         }
     }
 
-    let children = result.filter(member => member.ParentID == MemberID);   
+    let children = result.filter(member => member.ParentID == MemberID);
     for (let child of children) {
         let childData = await createFamilyData(child, result);
 
@@ -365,12 +365,27 @@ function isMemberInList(list, member) {
     return list.some(existingMember => existingMember.id === member.MemberID);
 }
 
-async function ViewFamilyTree(CodeID) {   
+
+function getListMessage(CodeID) {
+    return new Promise((resolve, reject) => {
+        let query = `SELECT * FROM genealogy.notificationhistory where CodeID = ${CodeID}`;
+        db.connection.query(query, (err, result) => {
+            if (err) {
+                console.log(err)
+                reject(err);
+            } else {
+                resolve(result)
+            }
+        })
+    })
+}
+
+async function ViewFamilyTree(CodeID) {
     return new Promise((resolve, reject) => {
         try {
             let queryGetAllMember = `SELECT * FROM genealogy.familymember WHERE CodeID = 123456`;
             db.connection.query(queryGetAllMember, async (err, result) => {
-                if (!err) {                    
+                if (!err) {
                     let IdPaternal = await GetIdPaternalAncestor(CodeID);
                     let data = await GetGenealogy(result, IdPaternal.MemberID)
                     resolve(data)
@@ -384,7 +399,7 @@ async function ViewFamilyTree(CodeID) {
 }
 
 // Hàm tạo đối tượng familyData từ dữ liệu thành viên
-async function createFamilyData(member, result) {   
+async function createFamilyData(member, result) {
     if (member !== undefined) {
         let fid = '';
         let mid = '';
@@ -468,6 +483,6 @@ function removePaternalAncestor() {
 
 module.exports = {
     getAllReligion, getInforMember, getContactMember, getEducationMember, getJobMember, getEventMember, getAllNationality, getAllMemberRole,
-    getRoleExist, setRoleMember, removePaternalAncestor, turnOnSQL_SAFE_UPDATES, turnOffSQL_SAFE_UPDATES,
+    getRoleExist, setRoleMember, removePaternalAncestor, turnOnSQL_SAFE_UPDATES, turnOffSQL_SAFE_UPDATES, getListMessage,
     setAllGenerationMember, ResetAllGenerationMember, ViewFamilyTree, getListUnspecifiedMembers, GetIdPaternalAncestor, RelationShipMember
 }

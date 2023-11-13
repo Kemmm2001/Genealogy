@@ -108,14 +108,33 @@ var SendSMSToMember = async (req, res) => {
     try {
         let id = req.body.ListMemberID;
         let contentMessage = req.body.contentMessage;
-        console.log(contentMessage)
+        let action = req.body.action;
+        let CodeID = req.body.CodeID;
+
         let data = await EventManagementService.getListPhone(id);
         for (let i = 0; i < data.length; i++) {
-            ExecuteSendSNS(data[i],contentMessage)
+            ExecuteSendSNS(data[i], contentMessage);
         }
-        console.log(data)
+        await SetHistorySendEmailandSMS(contentMessage, action, CodeID, res);
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        res.send(Response.internalServerErrorResponse(error));
+    }
+}
+
+
+
+async function SetHistorySendEmailandSMS(Content, action, CodeID, res) {
+    try {
+        let data = await SystemAction.SetHistorySendEmailandSMS(Content, action, CodeID);
+        if (data == true) {
+            res.send(Response.successResponse(null, "gửi thông báo thành công!"));
+        } else {
+            res.send(Response.internalServerErrorResponse());
+        }
+    } catch (error) {
+        console.log(error);
+        res.send(Response.internalServerErrorResponse(error));
     }
 }
 
@@ -171,7 +190,7 @@ var SendEmail = async (req, res) => {
         objData.html = req.body.html;
         let result = SystemAction.SendEmailCore(objData);
         if (result == true) {
-            res.send(Response.successResponse(null,"Send Email successfully!"));
+            res.send(Response.successResponse(null, "Send Email successfully!"));
         } else {
             res.send(Response.internalServerErrorResponse());
         }
@@ -183,6 +202,6 @@ var SendEmail = async (req, res) => {
 
 module.exports = {
     getAllEventGenealogy, InsertEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth,
-    SendSMS, SendEmail, searchEvent, filterEvent, SendSMSToMember
+    SendSMS, SendEmail, searchEvent, filterEvent, SendSMSToMember,
 
 }

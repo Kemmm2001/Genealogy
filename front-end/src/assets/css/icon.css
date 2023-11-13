@@ -106,3 +106,13 @@
     width: 20px;
     height: 20px;
 }
+
+.visibility-icon{
+    width: 20px;
+    height: 20px;
+    right: 8px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    cursor: pointer;
+}
