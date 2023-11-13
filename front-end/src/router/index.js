@@ -10,6 +10,11 @@ const routes = [
     component: () => import("../views/MainScreen.vue"),
   },
   {
+    path: "/familystatistics",
+    name: "familystatistics",
+    component: () => import("../views/FamilyStatistics.vue"),
+  },
+  {
     path: "/information/headlist",
     name: "headlist",
     component: () => import("../views/HeadList.vue"),
