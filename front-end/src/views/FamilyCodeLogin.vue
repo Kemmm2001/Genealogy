@@ -163,7 +163,7 @@ export default {
             HTTP.post("check-codeId", {
                     codeID: this.codeIdLogin,
             }).then((response) => {
-                if(response.data.doesExist != null){
+                if(response.data.doesExist == true){
                     this.$router.push('/');
                 }
             })
