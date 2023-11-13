@@ -17,7 +17,6 @@
 
 .main-screen {
     height: 100vh;
-    background-color: #E8C77B;
     flex-grow: 1;
 }
 
@@ -72,4 +71,13 @@ a {
     background-color: #3A4B54;
     color: #FFFFFF;
     border-radius: 50%;
+}
+
+
+.odd{
+    background-color: #cdcdd9;
+}
+
+.even{
+    background-color: #e9e8ed;
 }
