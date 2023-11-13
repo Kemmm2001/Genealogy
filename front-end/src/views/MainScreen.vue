@@ -72,8 +72,8 @@
     <div class="Container-select-modal">
       <modal name="Select-option-Modal">
         <div class="card" style="width: 370px;left:45%">
-          <div class="card-header text-center" style="background-color:#E8C77B;height: 50px">
-            <h5>{{ TitleModal }}</h5>
+          <div class="card-header modal-title text-center d-flex justify-content-center align-items-center">
+            <h5 class="m-0">{{ TitleModal }}</h5>
             <div class="close-add-form" @click="closeSelectModal()" style="top: 8px;right:5px">
               <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -360,11 +360,16 @@
 
     <!-- Đât là modal so sánh -->
     <modal name="compare-modal">
-      <div class="h-100 d-flex flex-column position-relative" style="background-color: #C69934;">
-        <div class="modal-title d-flex flex-row align-items-center justify-content-center" style="background-color: #C69934 !important">
+      <div class="h-100 d-flex flex-column position-relative">
+        <div class="modal-title d-flex flex-row align-items-center justify-content-center">
           <div class="col-12 d-flex align-items-center justify-content-center">So sánh 2 thành viên</div>
+          <div class="close-add-form" @click="closeCompareModal()">
+              <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+              </svg>
+            </div>
         </div>
-        <div class="d-flex flex-row" style="flex-grow: 1">
+        <div class="d-flex flex-row" style="flex-grow: 1; background-color: #FFFFFF;">
           <div class="col-6" style="padding: 0px 4px 48px 8px;">
             <div class="h-100 d-flex flex-column p-2" style="background-color: #FFFFFF; border-radius: 0.375rem;">
               <div class="d-flex flex-row pb-2" style="height: 220px">
@@ -436,7 +441,7 @@
             </div>
           </div>
         </div>
-        <div>
+        <div class="modal-footer">
           <div class="compare-modal-btn btn position-absolute">Đổi vị trí trên phả đồ</div>
         </div>
       </div>
@@ -488,9 +493,9 @@
     </div>
     <!-- Đây là modal member-->
     <modal name="member-modal">
-      <div class="card" v-if="objMemberInfor">
-        <div class="card-header text-center" style="background-color:#E8C77B">
-          <h5>{{ TitleModal }}</h5>
+      <div class="card" v-if="objMemberInfor" style="border: none;">
+        <div class="card-header modal-title text-center p-0 d-flex align-items-center justify-content-center">
+          <h5 class="m-0">{{ TitleModal }}</h5>
           <div class="close-add-form" @click="closeMemberModal" style="top: 8px;right:5px">
             <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
               <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -1693,6 +1698,7 @@ export default {
       this.$modal.hide("noti-modal");
     },
     openCompareModal() {
+      this.$modal.show("compare-modal");
       this.isCompare = !this.isCompare;
     },
     closeCompareModal() {

@@ -11,6 +11,7 @@
     width: auto !important;
     background: none;
     box-shadow: none;
+    border-radius: 0.375rem;
 }
 
 .modal-on-display {
@@ -38,10 +39,16 @@
 
 .modal-title {
     height: 50px;
-    background-color: #E8C77B;
+    background-color: rgb(174, 214, 241);
     font-size: 20px;
     font-weight: bold;
     border-radius: 0.375rem 0.375rem 0 0;
+}
+
+.modal-footer {
+    height: 50px;
+    background-color: rgb(174, 214, 241);
+    border-radius: 0 0 0.375rem;
 }
 
 .profile-pic {
