@@ -807,7 +807,7 @@
             </div>
           </div>
         </div>
-        <div class="card-footer" style="background-color:#E8C77B">
+        <div class="card-footer" style="background-color:rgb(174, 214, 241)">
           <div class="d-flex justify-content-end">
             <button v-if="isAdd" type="button" class="btn btn-primary mr-2" @click="addMember()">Thêm</button>
             <button v-else-if="isEdit" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
@@ -1697,8 +1697,7 @@ export default {
     closeNotiModal() {
       this.$modal.hide("noti-modal");
     },
-    openCompareModal() {
-      this.$modal.show("compare-modal");
+    openCompareModal() {     
       this.isCompare = !this.isCompare;
     },
     closeCompareModal() {
