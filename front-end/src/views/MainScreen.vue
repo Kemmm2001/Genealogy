@@ -922,14 +922,6 @@
               </div>
             </div>
           </div>
-<<<<<<< HEAD
-        </div>
-        <div class="card-footer" style="background-color:rgb(174, 214, 241)">
-          <div class="d-flex justify-content-end">
-            <button v-if="isAdd" type="button" class="btn btn-primary mr-2" @click="addMember()">Thêm</button>
-            <button v-else-if="isEdit" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
-            <button style="margin-left:10px" type="button" class="btn btn-secondary" @click="closeSelectModal()">Cancel</button>
-=======
           <div class="card-footer modal-footer">
             <div class="d-flex justify-content-end" style="padding-right: 12px;">
               <button v-if="isAdd" type="button" class="btn btn-primary mr-2" @click="addMember()">Thêm</button>
@@ -938,7 +930,6 @@
               <button style="margin-left:10px" type="button" class="btn btn-secondary"
                 @click="closeSelectModal()">Cancel</button>
             </div>
->>>>>>> 0f242af750c97e242e26958f98bf5e655c8c7644
           </div>
         </div>
       </modal>
