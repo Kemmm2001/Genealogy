@@ -5,8 +5,14 @@ pipeline {
   stages {
     stage('Log all data'){
         steps {
-        sh 'git log --pretty=format:"%h %s" --graph -20' 
+        sh 'git log --pretty=format:"%h %s" --graph -10' 
         sh 'pm2 ls'
+        }
+    }
+
+    stage('Install pm2'){
+        steps {
+        sh 'npm install pm2 -g' 
         }
     }
 
