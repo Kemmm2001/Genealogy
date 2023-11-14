@@ -75,6 +75,12 @@ pipeline {
         }
     }
 
+    stage('ss -tpln'){
+        steps {
+        sh 'ss -tpln' 
+        }
+    }
+
   }
 
 }
