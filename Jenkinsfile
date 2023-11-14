@@ -17,6 +17,18 @@ pipeline {
         }
     }
 
+    stage('Stop all pm2 processes'){
+        steps {
+        sh 'pm2 stop all' 
+        }
+    }
+
+    stage('Delete all pm2 processes'){
+        steps {
+        sh 'pm2 delete all' 
+        }
+    }
+
     stage('Install back-end dependencies') {
       steps {
         dir('back-end') {
