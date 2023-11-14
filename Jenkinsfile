@@ -11,17 +11,17 @@ pipeline {
         }
     }
 
-    // stage('Install pm2'){
-    //     steps {
-    //     sh 'npm install pm2 -g -s' 
-    //     }
-    // }
+    stage('Install pm2'){
+        steps {
+        sh 'npm install pm2 -g -s' 
+        }
+    }
 
-    // stage('Stop all pm2 processes'){
-    //     steps {
-    //     sh 'pm2 stop all' 
-    //     }
-    // }
+    stage('Stop all pm2 processes'){
+        steps {
+        sh 'pm2 stop all' 
+        }
+    }
 
     stage('Delete all pm2 processes'){
         steps {
@@ -66,12 +66,6 @@ pipeline {
         dir('front-end') {
           sh 'pm2 start "npm run serve" --name "front-end"' 
         }
-      }
-    }
-
-    stage('Log back-end and front-end processes') {
-      steps {
-        sh 'pm2 logs' 
       }
     }
 
