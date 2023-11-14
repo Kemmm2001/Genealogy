@@ -17,7 +17,7 @@ pipeline {
         }
     }
 
-    stage('Install dependencies') {
+    stage('Install back-end dependencies') {
       steps {
         dir('back-end') {
           sh 'npm install'
@@ -33,7 +33,7 @@ pipeline {
       }
     }
     
-    stage('Install dependencies') {
+    stage('Install front-end dependencies') {
       steps {
         dir('front-end') {
           sh 'npm install'
