@@ -1,0 +1,24 @@
+.sidebar:hover{
+    width: 100% !important;
+    /* transform: scale(3, 1); */
+}
+
+.sidebar-item, .sidebar-item-1-expand{
+    color: #FFFFFF;
+    height: 48px;
+    padding: 6px;
+    cursor: pointer;
+}
+
+.sidebar-item:hover, .sidebar-item-1-expand:hover{
+    background-color: #263237;
+    border-radius: 4px;
+}
+
+.sidebar-item-content{
+    margin-left: 12px;
+}
+
+.sidebar-item-1-expand{
+    margin-left: 48px;
+}

@@ -26,12 +26,8 @@ svg.tommy .node.died.male rect {
   fill: gray;
 }
 
-div#tree {
-  background: none;
-}
-
-.main-screen{
-  background-color: #f2f2f2;
+.dark .main-screen{
+  background-color: #060818;
 }
 
 svg.tommy .node {
