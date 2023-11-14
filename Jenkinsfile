@@ -17,7 +17,7 @@ pipeline {
         }
     }
 
-    stage('Build Backend') {
+    stage('Install dependencies') {
       steps {
         dir('back-end') {
           sh 'npm install'
@@ -33,7 +33,7 @@ pipeline {
       }
     }
     
-    stage('Build Frontend') {
+    stage('Install dependencies') {
       steps {
         dir('front-end') {
           sh 'npm install'
@@ -41,10 +41,18 @@ pipeline {
       }
     }
 
+    stage('Build Frontend') {
+      steps {
+        dir('front-end') {
+          sh 'npm run build' 
+        }
+      }
+    }
+
     stage('Start Frontend') {
       steps {
         dir('front-end') {
-          sh 'pm2 start "npm run build" --name "front-end"' 
+          sh 'pm2 start "npm run serve" --name "front-end"' 
         }
       }
     }
