@@ -74,8 +74,9 @@
           </select>
         </div>
         <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
-          <select v-model="selectDistrict" class="d-flex text-center form-select dropdown p-0">
+          <select v-model="selectDistrict" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
             <option :value="null" selected>Quận/Huyện</option>
+            <option v-for="d in ListDistrict" :key="d.id" :value="d.DistrictName">{{d.DistrictName}}</option>
           </select>
         </div>
         <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
@@ -1188,7 +1189,7 @@ export default {
           },
         })
           .then((response) => {
-            this.ListDistrictMember = response.data;      
+            this.ListDistrictMember = response.data;
           })
           .catch((e) => {
             console.log(e);
@@ -1640,7 +1641,6 @@ export default {
           if (memberIds.includes(node.id)) {
             nodeElement = this.family.getNodeElement(node.id);
             nodeElement.classList.add("selected");
-            console.log("đã vào");
           } else {
             nodeElement = this.family.getNodeElement(node.id);
             nodeElement.classList.add("notselected");
@@ -1830,6 +1830,8 @@ export default {
     getListDistrict() {
       if (this.selectCity == null) {
         this.ListDistrict = null;
+        this.selectDistrict = null;
+        this.RemoveHightLight();
       } else {
         let selectedCity = this.ListCity.find(
           (city) => city.id == this.selectCity
