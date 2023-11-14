@@ -1,7 +1,9 @@
 pipeline {
 
   agent any
-  
+  tools {
+    nodejs '18.17.1'
+  }
   stages {
     stage('Log all data'){
         steps {
