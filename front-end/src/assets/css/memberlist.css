@@ -1,13 +1,11 @@
 .container{
-    background-color: #E8C77B;
+    background-color: rgb(174, 214, 241);
 }
 .filter-option{
     padding-top: 20px;
     padding-left:10px;
 }
 .filter-member{
-    font-family: 'Quicksand';
-    font-size: 19px;
     background-color: #f6f6f6;
     height: 140px;
     margin-bottom: 16px;
@@ -43,7 +41,7 @@
 }
 button {
   /* Các thuộc tính khác tùy chỉnh */
-  background-color: #E8C77B;
+  background-color: rgb(174, 214, 241);
   border-radius: 3px;
   /* margin-left: 20px; */
   margin-top: 1%;
@@ -63,18 +61,34 @@ button {
     background-color: #f6f6f6;
     border-radius: 0.375rem;
 }
+.click-color{
+    background-color: #ebe2e2;
+    margin-left: 10px !important;
+}
 img.avatar{
     width: 120px;
+}
+.choose{
+    background-color: lightblue;
+}
+.btn.click-color{
+    background-color: rgb(174, 214, 241);
 }
 .infor-member{
     width: 180px;
     margin-left: 10px;
 }
+.button-normal{
+    background-color: rgb(174, 214, 241);
+}
 .sort-button {
     text-align: center;
 }
-.sort-button button.btn.button-normal {
+button.btn.d-flex.justify-content-center.align-items-center.p-1 {
     width: 80px;
+    margin-left: 10px;
+    border: 1px solid black;
+    padding: 6px 12px;
 }
 .title{
     padding-top:20px;
@@ -90,19 +104,13 @@ img.avatar{
     text-align: center;
     padding-bottom: 10px;
 }
-.pagination {
+.pagination-member-list {
     width: 100%;
     position: absolute;
     bottom: 0;
     margin-bottom: 10px;
 }
-
 .sort-button .chosen{
-    background-color: #0d6efd;
+    background-color: rgb(174, 214, 241);
     color: #FFFFFF;
-    padding: 6px 12px;
-}
-
-.sort-button .chosen:hover{
-    background-color: #0b5ed7;
 }

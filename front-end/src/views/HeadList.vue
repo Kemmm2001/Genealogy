@@ -38,7 +38,7 @@
             </thead>
             <tbody>
               <tr @click="getInforMember(familyhead.MemberID)" class="headlist-item headlist-table-item" v-for="(familyhead, index) in displayedItemsFamilyHead" :key="familyhead.MemberID">
-                <th @click="openEditHeadModal()" scope="row" style="text-align: center;">{{ index + 1 }}</th>
+                <th @click="openEditHeadModal()" scope="row" style="text-align: center;">{{ index + 1 + itemsPerPageFHead*(currentPageFHead-1)  }}</th>
                 <td @click="openEditHeadModal()" class="headlist-table-td" style="text-align: center;">{{ familyhead.MemberName }}</td>
                 <td @click="openEditHeadModal()" class="headlist-table-td" style="text-align: center;">{{ familyhead.Male }}</td>
                 <td @click="openEditHeadModal()" class="headlist-table-td" style="text-align: center;">{{ formatDate(familyhead.Dob) }}</td>
@@ -178,7 +178,7 @@
               </div>
             </div>
             <div class="d-flex flex-column headlist-list-container w-100">
-              <table class="table member headlist-list m-0">
+              <table class="table table-member headlist-list m-0">
                 <thead>
                   <tr class="headlist-item">
                     <th class="headlist-list-th" scope="col">#</th>
@@ -189,7 +189,7 @@
                 </thead>
                 <tbody>
                   <tr @click="chooseMember(member.id), numberItemSelection(index)" :class="{ selected: itemChoose === index }" class="headlist-item headlist-table-item" v-for="(member, index) in displayedItemsMember" :key="member.id">
-                    <th scope="row" style="text-align: center;">{{ index + 1 }}</th>
+                    <th scope="row" style="text-align: center;">{{ index + 1 + itemsPerPageMember*(currentPageMember-1) }}</th>
                     <td style="text-align: center;">{{ member.name }}</td>
                     <td style="text-align: center;">{{ formatDate(member.dob) }}</td>
                     <td style="text-align: center;">{{ member.generation }}</td>
@@ -995,7 +995,7 @@ tr.selected {
   cursor: pointer;
 }
 
-.table.member {
+.table-member {
   --bs-table-bg: transparent !important;
 }
 </style>
