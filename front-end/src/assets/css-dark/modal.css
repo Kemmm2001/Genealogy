@@ -1,0 +1,336 @@
+.vm--modal {
+    /* overflow: auto; */
+    display: flex;
+    flex-direction: column;
+    position: absolute !important;
+    top: 5% !important;
+    bottom: 5% !important;
+    left: 10% !important;
+    right: 10% !important;
+    height: auto !important;
+    width: auto !important;
+    background: none;
+    box-shadow: none;
+    border-radius: 0.375rem;
+}
+
+.modal-on-display {
+    width: 900px;
+    height: 524px;
+    background-color: #E8C77B;
+    border-radius: 0.375rem 0.375rem 0 0;
+}
+
+.btn-modal {
+    background-color: #FFFFFF !important;
+}
+
+.alivebuttoncolor {
+    background-color: #D9D9D9 !important;
+}
+
+.modal-item {
+    height: 41px;
+    outline: none;
+    border: 1px solid lightsteelblue;
+    margin-bottom: 14px;
+    margin-right: 10px
+}
+
+.modal-title {
+    min-height: 50px;
+    height: 50px;
+    background-color: rgb(174, 214, 241);
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 0.375rem 0.375rem 0 0;
+}
+
+.modal-footer {
+    height: 50px;
+    background-color: rgb(174, 214, 241);
+    border-radius: 0 0 0.375rem;
+}
+
+.profile-pic {
+    background-color: #D9D9D9;
+    height: 200px;
+    border-radius: 4px;
+}
+
+.add-form-birthorder-label {
+    top: 18%;
+    left: 10%;
+}
+
+.add-form-birthorder-input {
+    padding-left: 85px !important;
+}
+
+.add-form-bloodtype-label {
+    padding-left: 4px;
+    padding-top: 5px;
+}
+
+.add-form-bloodtype-select {
+    padding-left: 30% !important;
+}
+
+.add-form-date-label {
+    padding-left: 4px;
+    padding-top: 9px;
+}
+
+.extended-info-tab {
+    height: 36px;
+    border-radius: 0.375rem 0.375rem 0 0;
+}
+
+.extended-info-container {
+    background-color: #E8C77B;
+    height: calc(100% - 40px);
+}
+
+.btn.extended-info-colored {
+    background-color: #D0B36E;
+}
+
+.extended-job-data-container,
+.extended-edu-data-container {
+    height: calc(100% - 168px);
+    background-color: #FFFFFF;
+    border-radius: 0.375rem;
+}
+
+.extended-info-container textarea {
+    border-radius: 0.375rem;
+}
+
+.extended-info-container textarea {
+    outline: none;
+    border: none;
+}
+
+.extended-contact-container {
+    border-radius: 0 0.375rem 0.375rem 0.375rem;
+}
+
+.extended-job-container,
+.extended-edu-container {
+    border-radius: 0.375rem;
+}
+
+.extended-note-container {
+    border-radius: 0.375rem 0 0.375rem 0.375rem;
+}
+
+.close-add-form {
+    position: absolute;
+    right: 0;
+}
+
+.close-add-form:hover {
+    cursor: pointer;
+}
+
+.close-noti-form {
+    position: absolute;
+    right: 0;
+}
+
+.close-noti-form:hover {
+    cursor: pointer;
+}
+
+.member-info-tab {
+    background-color: #E8C77B;
+    border-radius: 0.375rem 0 0 0.375rem;
+    text-align: center;
+    width: 65%;
+    cursor: pointer;
+}
+
+.member-info-tab {
+    background-color: #FFFFFF;
+}
+
+.member-info-tab.colored {
+    background-color: #E8C77B;
+}
+
+.btn.colored {
+    background-color: #FFFFFF;
+}
+
+.form-label {
+    position: absolute;
+    left: 8px;
+    top: 5px;
+    padding: 0 4px;
+    color: black;
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
+
+label.form-label-number {
+    position: absolute;
+    left: 8px;
+    top: 5px;
+    padding: 0 4px;
+    color: black;
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
+
+select:not(:placeholder-shown)~label {
+    font-size: 11px;
+    top: -4px;
+    transform: translateY(-30%) scale(1.1);
+    background: #fff;
+    color: #212529;
+}
+
+input:not(:placeholder-shown)~label,
+input:focus~label.form-label {
+    font-size: 11px;
+    top: -3px;
+    transform: translateY(-30%) scale(1.1);
+    background: #fff;
+    color: #212529;
+}
+
+.active {
+    font-size: 11px;
+    top: -3px;
+    transform: translateY(-30%) scale(1.1);
+    background: #fff;
+    color: #212529;
+}
+
+input:not(:placeholder-shown)~label,
+input:focus~label.form-label-number {
+    font-size: 11px;
+    top: -3px;
+    transform: translateY(-30%) scale(1.1);
+    background: #fff;
+    color: #212529;
+}
+
+.custom-info {
+    text-align: center;
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.selected {
+    background-color: #faebd7;
+    color: #a83131 !important;
+    border-radius: 5px;
+
+}
+
+.select-menu {
+    border-right: 1px solid rgba(0, 0, 0, 0.12);
+    padding-right: 0px;
+    padding-top: 50px;
+}
+
+.add-head-modal {
+    background-color: #FFFFFF;
+    border-radius: 0.375rem;
+}
+
+.add-article-modal {
+    background-color: #FFFFFF;
+    border-radius: 0.375rem;
+}
+
+
+.add-album-modal{
+    background-color: #FFFFFF;
+    border-radius: 0.375rem;
+}
+
+.noti-modal-member{
+    height: 56px;
+    cursor: pointer;
+}
+
+.noti-modal-member:hover{
+    background-color: #ebebeb;
+}
+
+.noti-modal-member:focus{
+    background-color: #f2f2f2;
+}
+
+.noti-modal-member.chosen{
+    background-color: #3393FF;
+}
+.Container-select-modal .vm--modal {
+    top: 16% !important;
+}
+
+.compare-modal-container{
+    width: 100vh;
+    position: absolute;
+    inset: 0;
+    margin: auto;
+}
+
+.compare-modal-btn{
+    height:32px;
+    bottom: 8px;
+    right: 8px;
+    background-color: #E8C77B;
+    border-radius: 0.375rem;
+    padding: 4px 8px;
+}
+
+.compare-modal-btn:hover{
+    background-color: #E8C77B;
+}
+
+.compare-modal-item{
+    height: 48px;
+}
+
+.odd-table-row{
+    height: 40px;
+    align-items: center;
+    background-color: #cdcdd9;
+}
+
+.even-table-row{
+    height: 40px;
+    align-items: center;
+    background-color: #e9e8ed;
+}
+
+.notiSelected{
+    background-color: #007bff;
+    color: #FFFFFF;
+}
+
+.sent-sms{
+    border-radius: 0.375rem;
+    background-color: #E8C77B;
+    max-width: 450px;
+    padding: 18px 12px 8px 12px;
+    margin: 6px 12px;
+}
+
+.sent-time{
+    top: 9px;
+    left: 24px;
+    font-size: 12px;
+}
+
+.sent-mail{
+    height: 48px;
+    background-color: #f2f6fc;
+    border-radius: 0.375rem;
+    margin: 0 8px;
+    border-bottom: 1px solid lightgray;
+}

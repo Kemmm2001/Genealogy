@@ -10,7 +10,7 @@
             <div class="d-flex w-100 my-2">
               <div class="px-2">Phân trang</div>
               <div class="d-flex align-items-center">
-                <select class="form-select px-2 py-0">
+                <select v-model="itemsPerPageFHead" class="form-select px-2 py-0">
                   <option selected value="10">10</option>
                   <option value="20">20</option>
                   <option value="30">30</option>
@@ -38,11 +38,11 @@
             </thead>
             <tbody>
               <tr @click="getInforMember(familyhead.MemberID)" class="headlist-item headlist-table-item" v-for="(familyhead, index) in displayedItemsFamilyHead" :key="familyhead.MemberID">
-                <td @click="openEditHeadModal()" scope="row">{{ index + 1 }}</td>
-                <td @click="openEditHeadModal()" class="headlist-table-td">{{ familyhead.MemberName }}</td>
-                <td @click="openEditHeadModal()" class="headlist-table-td">{{ familyhead.Male }}</td>
-                <td @click="openEditHeadModal()" class="headlist-table-td">{{ familyhead.Dob }}</td>
-                <td @click="openEditHeadModal()" class="headlist-table-td">{{ familyhead.Generation }}</td>
+                <th @click="openEditHeadModal()" scope="row" style="text-align: center;">{{ index + 1 }}</th>
+                <td @click="openEditHeadModal()" class="headlist-table-td" style="text-align: center;">{{ familyhead.MemberName }}</td>
+                <td @click="openEditHeadModal()" class="headlist-table-td" style="text-align: center;">{{ familyhead.Male }}</td>
+                <td @click="openEditHeadModal()" class="headlist-table-td" style="text-align: center;">{{ familyhead.Dob }}</td>
+                <td @click="openEditHeadModal()" class="headlist-table-td" style="text-align: center;">{{ familyhead.Generation }}</td>
               </tr>
             </tbody>
           </table>
@@ -55,12 +55,12 @@
           </div>
           <div class="d-flex flex-row align-items-center">
             <div class="d-flex flex-row justify-content-center" style="flex-grow: 1;">
-                    <div class="pagination justify-content-center align-items-center">
-                        <button class="btn button-normal m-0" @click="prevPageFamilyHead">Previous</button>
-                        <span style="margin: 10px;">{{ currentPageFHead }}/{{ this.familyheadFilter.length / this.itemsPerPageFHead }}</span>
-                        <button class="btn button-normal m-0" @click="nextPageFamilyHead">Next</button>
-                    </div>
-                  </div>
+                <div class="pagination justify-content-center align-items-center">
+                    <button class="btn button-normal m-0" @click="prevPageFamilyHead">Previous</button>
+                    <span style="margin: 10px;">{{ currentPageFHead }}/{{ Math.ceil(this.familyheadFilter.length / this.itemsPerPageFHead) }}</span>
+                    <button class="btn button-normal m-0" @click="nextPageFamilyHead">Next</button>
+                </div>
+              </div>
           </div>
           <div class="d-flex flex-row align-items-center">
 
@@ -68,8 +68,8 @@
         </div>
       </div>
 
-      <modal name="addHead-modal">
-        <div class="w-100 h-100 add-head-modal">
+      <modal name="addHead-modalll">
+        <div class="w-100 add-head-modal position: relative;" style="height:620px">
           <div class="d-flex flex-row w-100 align-items-center position-relative">
             <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">
               Thêm tộc
@@ -99,20 +99,92 @@
                 </thead>
                 <tbody>
                   <tr @click="chooseMember(member.id), numberItemSelection(index)" :class="{ selected: itemChoose === index }" class="headlist-item headlist-table-item" v-for="(member, index) in displayedItemsMember" :key="member.id">
-                    <th scope="row">{{ index + 1 }}</th>
-                    <td>{{ member.name }}</td>
-                    <td>{{ member.dob }}</td>
-                    <td>{{ member.generation }}</td>
+                    <th scope="row" style="text-align: center;">{{ index + 1 }}</th>
+                    <td style="text-align: center;">{{ member.name }}</td>
+                    <td style="text-align: center;">{{ member.dob }}</td>
+                    <td style="text-align: center;">{{ member.generation }}</td>
+                  </tr>
+                  <tr v-for="index in lengthAgainMember" :key="index">
+                    <th scope="row" style="text-align: center;"></th>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"></td>
                   </tr>
                 </tbody>
               </table>
-              <div class="headlist-list-footer">
+              <!-- <div class="headlist-list-footer">
                 <div class="d-flex flex-row align-items-center">
-                  
                   <div class="d-flex flex-row justify-content-center" style="flex-grow: 1;">
                     <div class="pagination justify-content-center align-items-center">
                         <button class="btn button-normal m-0" @click="prevPageMember">Previous</button>
-                        <span style="margin: 10px;">{{ currentPageMember }}/{{ this.memberList.length / this.itemsPerPageMember }}</span>
+                        <span style="margin: 10px;">{{ currentPageMember }}/{{ Math.ceil(this.memberList.length / this.itemsPerPageMember) }}</span>
+                        <button class="btn button-normal m-0" @click="nextPageMember">Next</button>
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-content-right m-1">
+                    <button @click="SetFamilyHead()" class="btn headlist-item headlist-item-button text-center">Thêm</button>
+                  </div>
+                </div>
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </modal>
+
+      <modal name="addHead-modal">
+      <div class="form-group">
+        <div class="w-100 h-100 add-article-modal">
+          <div class="d-flex flex-row w-100 align-items-center position-relative">
+            <div class="col-md-12 modal-title d-flex align-items-center  justify-content-center w-100">Thêm tài liệu
+            </div>
+            <div class="close-add-form" @click="closeAddArticleModal()">
+              <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                <path
+                  d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+              </svg>
+            </div>
+          </div>
+          <div class="d-flex flex-column">
+            <div class="d-flex flex-row">
+              <div class="col-md-4 m-2">
+                <input type="text" class="form-control modal-item m-0" placeholder="Nhập tên thành viên..." />
+              </div>
+            </div>
+            <div class="d-flex flex-column headlist-list-container w-100">
+              <table class="table member headlist-list m-0">
+                <thead>
+                  <tr class="headlist-item">
+                    <th class="headlist-list-th" scope="col">#</th>
+                    <th class="headlist-list-th" scope="col">Họ và Tên</th>
+                    <th class="headlist-list-th" scope="col">Ngày sinh</th>
+                    <th class="headlist-list-th" scope="col">Đời</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr @click="chooseMember(member.id), numberItemSelection(index)" :class="{ selected: itemChoose === index }" class="headlist-item headlist-table-item" v-for="(member, index) in displayedItemsMember" :key="member.id">
+                    <th scope="row" style="text-align: center;">{{ index + 1 }}</th>
+                    <td style="text-align: center;">{{ member.name }}</td>
+                    <td style="text-align: center;">{{ member.dob }}</td>
+                    <td style="text-align: center;">{{ member.generation }}</td>
+                  </tr>
+                  <tr v-for="index in lengthAgainMember" :key="index">
+                    <th scope="row" style="text-align: center;"></th>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"></td>
+                  </tr>
+                </tbody>
+              </table>
+              
+            </div>
+            <div class="d-flex flex-row m-3 align-items-center articlelist-button-container">
+              <div class="headlist-list-footer">
+                <div class="d-flex flex-row align-items-center">
+                  <div class="d-flex flex-row justify-content-center" style="flex-grow: 1;">
+                    <div class="pagination justify-content-center align-items-center">
+                        <button class="btn button-normal m-0" @click="prevPageMember">Previous</button>
+                        <span style="margin: 10px;">{{ currentPageMember }}/{{ Math.ceil(this.memberList.length / this.itemsPerPageMember) }}</span>
                         <button class="btn button-normal m-0" @click="nextPageMember">Next</button>
                     </div>
                   </div>
@@ -125,7 +197,8 @@
             </div>
           </div>
         </div>
-      </modal>
+      </div>
+    </modal>
 
       <modal name="editHead-modal">
         <div class="card" v-if="objMemberInfor" style="border: none;">
@@ -441,7 +514,7 @@
           <div class="card-footer modal-footer">
             <div class="d-flex justify-content-end" style="padding-right: 12px;">
               <button type="button" class="btn btn-danger mr-2" @click="removeFamilyHead()">Xóa</button>
-              <button type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
+              <button style="margin-left:10px" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
               <button style="margin-left:10px" type="button" class="btn btn-secondary" @click="closeSelectModal()">Cancel</button>
             </div>
           </div>
@@ -583,7 +656,7 @@ export default {
     },
     nextPageFamilyHead() {
       if (this.currentPageFHead < Math.ceil(this.familyheadFilter.length / this.itemsPerPageFHead)) {
-        this.currentPage++;
+        this.currentPageFHead++;
       }
     },
     updateEducationMember() {

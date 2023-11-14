@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid p-0" style="overflow: hidden;">
+  <div class="container-fluid p-0" :class="{dark : darkMode}" style="overflow: hidden;">
     <div class="d-flex flex-column h-100" style="min-height: inherit;">
       <div class="w-100" v-if="isIncludeRoute">
         <Header />
@@ -12,6 +12,7 @@
 <script>
 // import Sidebar from "./components/SidebarComponent.vue";
 import Header from "./components/HeaderComponent.vue";
+import { EventBus } from "./assets/js/MyEventBus.js";
 
 export default {
   components: {
@@ -19,13 +20,27 @@ export default {
     Header,
   },
   data() {
-    return {};
+    return {
+      darkMode: false,
+    };
   },
   computed: {
     isIncludeRoute() {
       const excludedRoutes = ['/', '/information/headlist', '/information/articlelist', '/information/albumlist', 'memberList', '/profile'];
       return excludedRoutes.includes(this.$route.path);
     }
+  },
+  created() {
+    EventBus.$on("darkMode", (value) => {
+      this.darkMode = value;
+    });
+  },
+  watch: {
+    // darkMode: {
+    //   handler: function () {
+    //     console.log(this.darkMode);
+    //   },
+    // },
   }
 };
 </script>
