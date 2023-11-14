@@ -532,7 +532,7 @@ mounted() {
   
   HTTP.get("viewTree", {
       params: {
-      memberID: 1,
+      CodeID: 123456,
       },
   })
       .then((response) => {

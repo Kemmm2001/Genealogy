@@ -41,7 +41,7 @@
                 <th @click="openEditHeadModal()" scope="row" style="text-align: center;">{{ index + 1 }}</th>
                 <td @click="openEditHeadModal()" class="headlist-table-td" style="text-align: center;">{{ familyhead.MemberName }}</td>
                 <td @click="openEditHeadModal()" class="headlist-table-td" style="text-align: center;">{{ familyhead.Male }}</td>
-                <td @click="openEditHeadModal()" class="headlist-table-td" style="text-align: center;">{{ familyhead.Dob }}</td>
+                <td @click="openEditHeadModal()" class="headlist-table-td" style="text-align: center;">{{ formatDate(familyhead.Dob) }}</td>
                 <td @click="openEditHeadModal()" class="headlist-table-td" style="text-align: center;">{{ familyhead.Generation }}</td>
               </tr>
             </tbody>
@@ -133,7 +133,7 @@
                   <tr @click="chooseMember(member.id), numberItemSelection(index)" :class="{ selected: itemChoose === index }" class="headlist-item headlist-table-item" v-for="(member, index) in displayedItemsMember" :key="member.id">
                     <th scope="row" style="text-align: center;">{{ index + 1 }}</th>
                     <td style="text-align: center;">{{ member.name }}</td>
-                    <td style="text-align: center;">{{ member.dob }}</td>
+                    <td style="text-align: center;">{{ formatDate(member.dob) }}</td>
                     <td style="text-align: center;">{{ member.generation }}</td>
                   </tr>
                 </tbody>
@@ -164,7 +164,7 @@
           <div class="d-flex flex-row w-100 align-items-center position-relative">
             <div class="col-md-12 modal-title d-flex align-items-center  justify-content-center w-100">Thêm tài liệu
             </div>
-            <div class="close-add-form" @click="closeAddArticleModal()">
+            <div class="close-add-form" @click="closeAddHeadModal()">
               <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path
                   d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -191,7 +191,7 @@
                   <tr @click="chooseMember(member.id), numberItemSelection(index)" :class="{ selected: itemChoose === index }" class="headlist-item headlist-table-item" v-for="(member, index) in displayedItemsMember" :key="member.id">
                     <th scope="row" style="text-align: center;">{{ index + 1 }}</th>
                     <td style="text-align: center;">{{ member.name }}</td>
-                    <td style="text-align: center;">{{ member.dob }}</td>
+                    <td style="text-align: center;">{{ formatDate(member.dob) }}</td>
                     <td style="text-align: center;">{{ member.generation }}</td>
                   </tr>
                 </tbody>
@@ -203,9 +203,9 @@
                 <div class="d-flex flex-row align-items-center">
                   <div class="d-flex flex-row justify-content-center" style="flex-grow: 1;">
                     <div class="pagination justify-content-center align-items-center">
-                        <button class="btn button-normal m-0" @click="prevPageMember">Previous</button>
+                        <button class="btn button-normal m-0" @click="prevPageMember">Trước</button>
                         <span style="margin: 10px;">{{ currentPageMember }}/{{ Math.ceil(this.memberList.length / this.itemsPerPageMember) }}</span>
-                        <button class="btn button-normal m-0" @click="nextPageMember">Next</button>
+                        <button class="btn button-normal m-0" @click="nextPageMember">Sau</button>
                     </div>
 
                   </div>
@@ -660,6 +660,20 @@ export default {
     },
   },
   methods: {
+    formatDate(dateString) {
+      let formattedDate
+      if(dateString.length <= 10){
+        const dateParts = dateString.split('-');
+        formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+      }else{
+        formattedDate = dateString
+      }
+      const date = new Date(formattedDate);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    },
     setCurrentPageFHead(page){
       this.currentPageFHead = page
     },
@@ -785,13 +799,6 @@ export default {
     chooseMember(id) {
       this.memberIdChoose = id;
       console.log(id);
-    },
-    formatDate(dateString) {
-      const date = new Date(dateString);
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDate()).padStart(2, "0");
-      return `${year}-${month}-${day}`;
     },
     selectedInfor() {
       this.extendedInfo = true;
