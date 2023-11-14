@@ -3,12 +3,6 @@ pipeline {
   agent any
   
   stages {
-
-    stage('Pull latest source') {
-      steps {
-        sh 'git pull origin test-deploy'
-      }
-    }
     stage('Log all data'){
         steps {
         sh 'git log --pretty=format:"%h %s" --graph -20' 
