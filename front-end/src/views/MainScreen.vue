@@ -9,9 +9,9 @@
           </select>
         </div>
         <div class="col-6 px-2" style="padding-top: 8px;">
-          <select v-model="selectDistrict" class="d-flex text-center form-select dropdown p-0">
+          <select v-model="selectDistrict" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
             <option :value="null" selected>Quận/Huyện</option>
-            <option v-for="d in ListDistrict" :key="d.id" :value="d.DistrictId">{{d.DistrictName}}</option>
+            <option v-for="d in ListDistrict" :key="d.id" :value="d.DistrictName">{{d.DistrictName}}</option>
           </select>
         </div>
       </div>
@@ -337,7 +337,7 @@
         </div>
       </div>
     </modal>
-    <!-- Đây là modal mối quan hệ -->
+    <!-- Đây là modal add mối quan hệ từ danh sách -->
     <div>
       <modal name="add-from-list">
         <div class="w-100 h-100 add-head-modal">
@@ -564,7 +564,7 @@
                     <div style="position: relative;width: 50%; margin-right: 10px;">
                       <select v-model="selectDistrictMember" class="form-select modal-item">
                         <option :value="null" selected>Quận/Huyện</option>
-                        <option v-for="d in ListDistrictMember" :key="d.id" :value="d.DistrictId">{{d.DistrictName}}</option>
+                        <option v-for="d in ListDistrictMember" :key="d.id" :value="d.DistrictName">{{d.DistrictName}}</option>
                       </select>
                       <label class="form-label" for="select">Địa Chỉ (Quận/Huyện)</label>
                     </div>
@@ -761,6 +761,7 @@ export default {
 
       selectAge: null,
       selectBloodType: null,
+      selectAdress: null,
       selectCity: null,
       selectCityMember: null,
       selectDistrict: null,
@@ -782,7 +783,6 @@ export default {
       ListMemberJob: null,
       ListMemberEducation: null,
 
-      
       darkMode: true,
 
       objMemberInfor: {
@@ -1170,6 +1170,31 @@ export default {
         "" + new LunarDate(Dob).getYear() + "-" + month + "-" + date
       );
     },
+    getAdressMember(addressString) {
+      let addressParts = addressString.split("-");
+      let SelectCityName = addressParts[0].trim();
+      let SelectDistinName =
+        addressParts.length > 1 ? addressParts[1].trim() : null;
+
+      this.selectCityMember = this.ListCity.find(
+        (city) => city.name === SelectCityName
+      );
+      this.selectCityMember = this.selectCityMember.id;
+      if (SelectDistinName != null) {
+        this.selectDistrictMember = SelectDistinName;
+        HTTP.get("district", {
+          params: {
+            cityID: this.selectCityMember,
+          },
+        })
+          .then((response) => {
+            this.ListDistrictMember = response.data;      
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
+    },
     getInforMember(id) {
       HTTP.get("InforMember", {
         params: {
@@ -1178,6 +1203,7 @@ export default {
       })
         .then((response) => {
           this.objMember = response.data;
+
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
             this.takeDataMember(this.CurrentIdMember);
@@ -1192,6 +1218,11 @@ export default {
           }
           if (this.objMember.contact.length > 0) {
             this.objMemberContact = this.objMember.contact[0];
+            if (this.objMemberContact.Address != undefined) {
+              this.getAdressMember(this.objMemberContact.Address);
+            }
+          } else {
+            this.selectCityMember = null;
           }
           this.ListMemberEducation = this.objMember.education;
           this.ListMemberJob = this.objMember.job;
@@ -1461,6 +1492,10 @@ export default {
     },
 
     updateInformation() {
+      if (this.selectDistrictMember != null) {
+        this.objMemberContact.Address =
+          this.objMemberContact.Address + "-" + this.selectDistrictMember;
+      }
       HTTP.put("member", {
         MemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
@@ -1529,15 +1564,17 @@ export default {
       );
     },
     GetListFilterMember() {
+      if (this.selectDistrict != null) {
+        this.selectAdress = this.selectAdress + "-" + this.selectDistrict;
+      }
       HTTP.post("filter-member", {
         CodeID: this.CodeID,
         BloodType: this.selectBloodType,
         selectAge: this.selectAge,
-        // Address: "hòa bình"
+        Address: this.selectAdress,
       })
         .then((response) => {
           this.listFilterMember = response.data.data;
-          console.log(this.listFilterMember);
           this.highLightNode();
         })
         .catch((e) => {
@@ -1594,11 +1631,16 @@ export default {
       var nodeElement;
       this.RemoveHightLight();
       let memberIds = this.listFilterMember.map((item) => item.MemberID);
-      if (this.selectBloodType != null || this.selectAge != null)
+      if (
+        this.selectBloodType != null ||
+        this.selectAge != null ||
+        this.selectAdress != null
+      )
         this.nodes.forEach((node) => {
           if (memberIds.includes(node.id)) {
             nodeElement = this.family.getNodeElement(node.id);
             nodeElement.classList.add("selected");
+            console.log("đã vào");
           } else {
             nodeElement = this.family.getNodeElement(node.id);
             nodeElement.classList.add("notselected");
@@ -1768,7 +1810,7 @@ export default {
         (city) => city.id == this.selectCityMember
       );
       this.objMemberContact.Address = selectedCity.name;
-      console.log(this.objMemberContact.Address);     
+      console.log(this.objMemberContact.Address);
       if (this.selectCityMember == null) {
         this.ListDistrictMember = null;
       } else {
@@ -1789,6 +1831,11 @@ export default {
       if (this.selectCity == null) {
         this.ListDistrict = null;
       } else {
+        let selectedCity = this.ListCity.find(
+          (city) => city.id == this.selectCity
+        );
+        this.selectAdress = selectedCity.name;
+        this.GetListFilterMember();
         HTTP.get("district", {
           params: {
             cityID: this.selectCity,
