@@ -42,7 +42,7 @@
       </div>
       <div class="h-100 w-100 d-flex flex-column px-2" style="padding-top: 8px; font-family: 'QuicksandBold', sans-serif;">
         <div class="existing-members d-flex flex-column w-100">
-          <div class="d-flex align-items-center justify-content-center px-2 py-1" style="background-color: #AED6F1; text-align: center; border-radius: 0.175rem 0.175rem 0 0; min-height: 48px; font-size: 18px;">Thành viên có trên phả đồ</div>
+          <div class="d-flex align-items-center justify-content-center px-2 py-1 list-title">Thành viên có trên phả đồ</div>
           <div class="d-flex flex-column w-100" style="overflow-y: auto;cursor: pointer">
             <div v-for="(n, index) in nodes" :key="n.id">
               <div @click="handleLeftClick(n.id)" @contextmenu.prevent="handleRightClick(n.id)" :class="{ 'list-item': true, 'selected-list': n.id == CurrentIdMember, 'ancestor-member': index === 0 }">{{ n.name }}</div>
@@ -50,8 +50,8 @@
           </div>
         </div>
         <div class="d-flex nonexisting-members flex-column w-100" style="margin-top: 4px">
-          <div class="d-flex flex-row px-2 py-1" style="background-color: #AED6F1; ">
-            <div class="d-flex align-items-center justify-content-center" style="text-align: center; border-radius: 0.175rem 0.175rem 0 0; min-height: 48px; font-size: 18px;">Thành viên không có trên phả đồ</div>
+          <div class="d-flex flex-row px-2 py-1 list-title">
+            <div class="d-flex align-items-center justify-content-center">Thành viên không có trên phả đồ</div>
             <div class="d-flex align-items-center justify-content-center" style="padding-left: 12px;cursor:pointer" @click="openMemberModal('AddNormal', ' thành viên không có trên phả đồ')">
               <svg class="add-member-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                 <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />
@@ -90,8 +90,8 @@
             <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{ age.From }} - {{ age.End }} Tuổi</option>
           </select>
         </div>
-        <div class="p-2 d-flex align-items-center justify-content-center" style="height: 48px;">
-          <div @click="advancedFilterDown = !advancedFilterDown" style="cursor: pointer;">
+        <div @click="advancedFilterDown = !advancedFilterDown" class="p-2 d-flex align-items-center justify-content-center" style="height: 48px; cursor: pointer;">
+          <div>
             <svg :class="{rotateDown : advancedFilterDown}" class="advanced-filter-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
               <path d="M246.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 109.3 361.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160zm160 352l-160-160c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 301.3 361.4 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3z" />
             </svg>

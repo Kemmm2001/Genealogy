@@ -55,3 +55,11 @@
 .collapsedAddRelationship.expandedAddRelationship {
     height: 165px;
 }
+
+.list-title{
+    background-color: #AED6F1;
+    text-align: center;
+    border-radius: 0.175rem 0.175rem 0 0;
+    min-height: 48px; 
+    font-size: 18px;
+}
