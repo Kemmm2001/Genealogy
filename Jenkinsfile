@@ -17,39 +17,18 @@ pipeline {
         }
     }
 
-stage('Stop all pm2 processes'){
-    steps {
-        script {
-            // Kiểm tra xem có quy trình nào đang chạy không
-            def processes = sh(script: 'pm2 list', returnStdout: true).trim()
+    // stage('Stop all pm2 processes'){
+    //     steps {
+    //     sh 'pm2 stop all' 
+    //     }
+    // }
 
-            // Kiểm tra xem có quy trình nào không
-            if (processes.contains('PM2')) {
-                // Nếu có quy trình, thì dừng tất cả
-                sh 'pm2 stop all' 
-            } else {
-                echo 'Không có quy trình nào đang chạy.'
-            }
-        }
-    }
-}
+    // stage('Delete all pm2 processes'){
+    //     steps {
+    //     sh 'pm2 delete all' 
+    //     }
+    // }
 
-stage('Delete all pm2 processes'){
-    steps {
-        script {
-            // Kiểm tra xem có quy trình nào đang chạy không
-            def processes = sh(script: 'pm2 list', returnStdout: true).trim()
-
-            // Kiểm tra xem có quy trình nào không
-            if (processes.contains('PM2')) {
-                // Nếu có quy trình, thì xóa tất cả
-                sh 'pm2 delete all' 
-            } else {
-                echo 'Không có quy trình nào đang chạy.'
-            }
-        }
-    }
-}
     stage('Install back-end dependencies') {
       steps {
         dir('back-end') {
