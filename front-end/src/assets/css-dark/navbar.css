@@ -10,7 +10,7 @@
 }
 
 .dark .navbar-item:hover .navbar-text, .dark .header-selected .navbar-text{
-    color: #000;
+    color: #000 !important;
 }
 
 .header-selected {
@@ -39,10 +39,6 @@
     z-index: 1;
 }
 
-.navbar-extended.expandContent {
-    height: 450%;
-}
-
 .user-extended {
     position: absolute;
     left: 0;
@@ -68,7 +64,7 @@
 }
 
 .dark .navbar-text{
-    color: #FFFFFF;
+    color: #D0D2D6 !important;
 }
 
 .navbar-item{

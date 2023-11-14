@@ -26,7 +26,7 @@ export default {
   },
   computed: {
     isIncludeRoute() {
-      const excludedRoutes = ['/', '/information/headlist', '/information/articlelist', '/information/albumlist', 'memberList', '/profile'];
+      const excludedRoutes = ['/', '/information/headlist', '/information/articlelist', '/information/albumlist', 'memberList', '/profile', '/memberList'];
       return excludedRoutes.includes(this.$route.path);
     }
   },

@@ -19,10 +19,10 @@
               </div>
               <div class="list-member w-100">
                   <div class="button-member d-flex align-items-center">
-                      <button class="btn button-normal m-0" @click="openMemberModal" style="margin-left: 10px !important;">+ Thêm thành viên</button>
-                      <button class="btn click-color m-0">Chỉnh sửa</button>
-                      <button class="btn click-color m-0">Xóa</button>
-                      <button class="btn click-color m-0">Lựa chọn</button>
+                      <button class="btn btn-primary m-0" @click="openMemberModal" style="margin-left: 10px !important;">+ Thêm thành viên</button>
+                      <button class="btn btn-info my-0" style="margin-left: 10px;">Chỉnh sửa</button>
+                      <button class="btn btn-info my-0" style="margin-left: 10px;">Xóa</button>
+                      <button class="btn btn-info my-0" style="margin-left: 10px;">Lựa chọn</button>
                   </div>
                   <div class="view-member w-100">
                       <div class="member" v-for="member in displayedItems" :key="member.id">
@@ -41,9 +41,9 @@
                       
                   </div>
                   <div class="pagination justify-content-center align-items-center">
-                        <button class="btn button-normal m-0" @click="prevPage">Previous</button>
+                        <button class="btn btn-primary m-0" @click="prevPage">Previous</button>
                         <span style="margin: 10px;">{{ currentPage }}/{{ this.memberFilter.length / this.itemsPerPage }}</span>
-                        <button class="btn button-normal m-0" @click="nextPage">Next</button>
+                        <button class="btn btn-primary m-0" @click="nextPage">Next</button>
                   </div>
               </div>
           </div>
@@ -51,10 +51,16 @@
               <div class="sort-member">
                   <p class="title">Sắp xếp</p>
                   <div class="sort-button d-flex justify-content-center">
-                      <button class="btn d-flex button-normal justify-content-center align-items-center p-1" style="margin-right: 20px;">
-                        <i class="bi bi-arrow-up"></i>Đời</button>
-                      <button class="btn d-flex button-normal justify-content-center align-items-center p-1" >
-                        <i class="bi bi-arrow-up"></i> Ngày sinh</button>
+                      <button @click="clickGenSort()" :class="{chosen : genSort}" class="btn d-flex justify-content-center align-items-center">
+                        <i v-if="genAscending" class="bi bi-arrow-up" style="padding-right: 8px;"></i>
+                        <i v-if="!genAscending" class="bi bi-arrow-up" style="padding-left: 8px; transform: rotate(180deg);"></i>
+                        <div>Đời</div>
+                      </button>
+                      <button @click="clickDobSort()" :class="{chosen : dobSort}" class="btn d-flex justify-content-center align-items-center" >
+                        <i v-if="dobAscending" class="bi bi-arrow-up" style="padding-right: 8px;"></i>
+                        <i v-if="!dobAscending" class="bi bi-arrow-up" style="padding-left: 8px; transform: rotate(180deg);"></i>
+                        <div>Ngày sinh</div>
+                      </button>
                   </div>
               </div>
               <div class="search-member">
@@ -124,7 +130,7 @@
                       oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                   </div>
                   <div class="submit-control">
-                      <button class="btn button-normal">Làm mới</button>
+                      <button class="btn btn-primary">Làm mới</button>
                   </div>
                   
               </div>
@@ -427,6 +433,11 @@ data() {
 
       itemsPerPage: 8,  // Số mục dữ liệu trên mỗi trang
       currentPage: 1,    // Trang hiện tại
+
+      genSort: false,
+      dobSort: true,
+      genAscending: false,
+      dobAscending: true,
   }
 },
 
@@ -526,6 +537,28 @@ methods:{
   closeMemberModal() {
       this.$modal.hide("member-modal");
   },
+  toggleGenAscendDescend(){
+    this.genAscending = !this.genAscending;
+  },
+  toggleDobAscendDescend(){
+    this.dobAscending = !this.dobAscending;
+  },
+  clickGenSort(){
+    if(this.genSort){
+      this.toggleGenAscendDescend();
+    }else{
+      this.genSort = true;
+      this.dobSort = false;
+    }
+  },
+  clickDobSort(){
+    if(this.dobSort){
+      this.toggleDobAscendDescend();
+    }else{
+      this.dobSort = true;
+      this.genSort = false;
+    }
+  }
 },
 
 mounted() {

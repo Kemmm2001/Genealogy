@@ -28,7 +28,7 @@
 }
 
 .dark .existing-members, .dark .nonexisting-members{
-    background-color: #1b2e4b;
+    background-color: #51585e;
     color: #FFFFFF;
 }
 
@@ -46,4 +46,8 @@
 
 .collapsedAddRelationship.expandedAddRelationship {
     height: 165px;
+}
+
+.dark .list-title{
+    background-color: #283046;
 }

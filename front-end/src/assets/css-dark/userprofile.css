@@ -1,5 +1,5 @@
-.user-screen{   
-    background-color: #FFFFFF;
+.dark .user-screen{   
+    background-color: #060818;
 }
 
 .user-screen .func-container{
@@ -26,8 +26,9 @@
     padding-left: 24px;
 }
 
-.user-screen .func-detail-item{
+.dark .user-screen .func-detail-item{
     height: 70px;
+    color: #FFFFFF;
 }
 
 .user-screen .save-profile-btn{
