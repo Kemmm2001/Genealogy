@@ -69,6 +69,12 @@ pipeline {
       }
     }
 
+    stage('Pm2 force save'){
+        steps {
+        sh 'pm2 save --force' 
+        }
+    }
+
   }
 
 }
