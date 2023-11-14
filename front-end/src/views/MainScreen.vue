@@ -892,6 +892,9 @@ export default {
       ListMemberJob: null,
       ListMemberEducation: null,
 
+      
+      darkMode: true,
+
       objMemberInfor: {
         MemberID: 0,
         ParentID: null,

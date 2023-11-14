@@ -1,0 +1,39 @@
+.articlelist-item{
+    height: 42px !important;
+}
+
+.articlelist-button-container{
+    justify-content: right;
+}
+
+.articlelist-item-button{
+    background-color: #3A4B54;
+    color: #FFFFFF;
+}
+
+.articlelist-item-button:hover{
+    background-color: #4D646F;
+    color: #FFFFFF;
+}
+
+.articlelist-item-button:focus{
+    background-color: #263237 !important;
+    color: #FFFFFF !important;
+}
+
+.articlelist-list-th{
+    background-color: #90CAF9 !important;
+} 
+
+.articlelist-paging-icon{
+    width: 18px;
+    height: 18px;
+}
+
+.articlelist-table-item{
+    cursor: pointer;
+}
+
+.articlelist-table-item:focus{
+    background-color: #007aff !important;
+}

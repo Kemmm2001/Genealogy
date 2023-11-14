@@ -1,0 +1,49 @@
+.list-item {
+    height: 32px !important;
+    padding: 4px 0 4px 8px;
+    ;
+}
+
+.list-item.ancestor-member {
+    background-color: rgb(255, 8, 0);
+    color: white;
+}
+
+
+.list-item.head-member {
+    background-color: #FAFAD2;
+}
+
+.list-item:hover {
+    background-color: lightblue;
+}
+
+.selected-list {
+    background-color: lightblue;
+}
+
+.dropdown {
+    height: 40px;
+    background-image: none !important;
+}
+
+.dark .existing-members, .dark .nonexisting-members{
+    background-color: #1b2e4b;
+    color: #FFFFFF;
+}
+
+.list-group-item {
+    cursor: pointer;
+}
+.list-group-item:hover {
+    background-color: lightblue;
+}
+
+.collapsedAddRelationship {
+    height: 0;
+    transition: 0.5s;
+}
+
+.collapsedAddRelationship.expandedAddRelationship {
+    height: 165px;
+}

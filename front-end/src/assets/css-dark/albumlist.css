@@ -1,0 +1,18 @@
+.album{
+    height: 290px;
+    width: 260px;
+    cursor: pointer;
+}
+
+.album-cover{
+    height: 75%;
+    background-image: url(../no-picture.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.album-general-info{
+    height: 25%;
+    background-color: #FFFFFF;
+}
