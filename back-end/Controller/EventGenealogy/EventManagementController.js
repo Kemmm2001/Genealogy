@@ -188,15 +188,31 @@ var SendEmail = async (req, res) => {
         objData.subject = req.body.subject;
         objData.text = req.body.text;
         objData.html = req.body.html;
+        let requiredFields = ['to', 'subject'];
+        // Trường hợp cả 2 trường text và html đều có
+        if (objData.text != null && objData.html != null) {
+            return res.send(Response.badRequestResponse(null, "Bạn chỉ được gửi text hoặc html!"));
+        }
+        // Trường hợp thiếu cả 2 trường text và html
+        if (objData.text == null && objData.html == null) {
+            return res.send(Response.badRequestResponse(null, "Bạn phải gửi text hoặc html!"));
+        }
+        // Kiểm tra xem có đủ các trường trong nhưng trường bắt buộc phải có không
+        const missingFields = requiredFields.filter(field => !(field in objData));
+        console.log(missingFields);
+        // Trong trường hợp thiếu trường bắt buộc
+        if (missingFields.length) {
+            return res.send(Response.missingFieldsErrorResponse(missingFields));
+        }
         let result = SystemAction.SendEmailCore(objData);
         if (result == true) {
-            res.send(Response.successResponse(null, "Send Email successfully!"));
+            return res.send(Response.successResponse(null, "Gửi email thành công!"));
         } else {
-            res.send(Response.internalServerErrorResponse());
+            return res.send(Response.internalServerErrorResponse());
         }
     } catch (error) {
         console.log(error);
-        res.send(Response.internalServerErrorResponse(error));
+        return res.send(Response.internalServerErrorResponse(error));
     }
 };
 
