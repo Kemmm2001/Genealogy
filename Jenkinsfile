@@ -4,6 +4,12 @@ pipeline {
   tools {
     nodejs '18.17.1'
   }
+
+    environment {
+    // Địa chỉ IP của server
+    SERVER_IP = '14.225.254.123'
+  }
+
   stages {
     stage('Log all data'){
         steps {
@@ -40,7 +46,7 @@ pipeline {
     stage('Start Backend') {
       steps {
         dir('back-end') {
-          sh 'pm2 start "npm start" --name "back-end"' 
+          sh 'pm2 start "npm start -- --port=3003" --name "back-end"' 
         }
       }
     }
@@ -64,7 +70,7 @@ pipeline {
     stage('Start Frontend') {
       steps {
         dir('front-end') {
-          sh 'pm2 start "npm run serve" --name "front-end"' 
+          sh 'pm2 start "npm run serve -- --port=3003" --name "front-end"' 
         }
       }
     }
@@ -72,12 +78,6 @@ pipeline {
     stage('Pm2 force save'){
         steps {
         sh 'pm2 save --force' 
-        }
-    }
-
-    stage('ss -tpln'){
-        steps {
-        sh 'ss -tpln' 
         }
     }
 
