@@ -70,7 +70,7 @@ pipeline {
     stage('Start Frontend') {
       steps {
         dir('front-end') {
-          sh 'pm2 start "npm run serve -- --port=3003" --name "front-end"' 
+          sh 'pm2 start "npm run serve -- --port=3006" --name "front-end"' 
         }
       }
     }
