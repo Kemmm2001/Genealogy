@@ -6,7 +6,6 @@ pipeline {
     stage('Log all data'){
         steps {
         sh 'git log --pretty=format:"%h %s" --graph -10' 
-        sh 'pm2 ls'
         }
     }
 
@@ -16,12 +15,10 @@ pipeline {
         }
     }
 
-    stage('Stop Backend') {
-      steps {
-        dir('back-end') {
-          sh 'pm2 stop "back-end"'
+    stage('Stop all pm2'){
+        steps {
+          sh 'pm2 stop all' 
         }
-      }
     }
     
     stage('Build Backend') {
