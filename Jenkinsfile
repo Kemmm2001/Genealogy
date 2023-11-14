@@ -57,6 +57,12 @@ pipeline {
       }
     }
 
+    stage('Log back-end and front-end processes') {
+      steps {
+        sh 'pm2 logs' 
+      }
+    }
+
   }
 
 }
