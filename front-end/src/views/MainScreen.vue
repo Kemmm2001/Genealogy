@@ -856,10 +856,7 @@ export default {
       });
       this.family.onInit(() => {
         this.family.load(this.nodes);
-      });
-      this.family.searchUI.on('searchclick', function (sender) {
-        sender.instance.searchUI.hide()
-    });
+      });    
       this.family.onField((args) => {
         if (args.data.dod == null) {
           FamilyTree.templates.tommy_female.field_3 = null;
@@ -1610,6 +1607,7 @@ export default {
       this.$modal.hide("noti-modal");
     },
     openCompareModal() {
+      this.RemoveHightLight();
       this.isCompare = !this.isCompare;
     },
     closeCompareModal() {
