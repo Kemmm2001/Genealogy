@@ -13,16 +13,10 @@ pipeline {
 
     stage('Install pm2'){
         steps {
-        sh 'npm install pm2 -g' 
+        sh 'npm install pm2 -g -s' 
         }
     }
 
-    stage('Stop all pm2'){
-        steps {
-          sh 'pm2 stop all' 
-        }
-    }
-    
     stage('Build Backend') {
       steps {
         dir('back-end') {
@@ -39,14 +33,6 @@ pipeline {
       }
     }
     
-    stage('Stop Frontend') {
-      steps {
-        dir('front-end') {
-          sh 'pm2 stop "front-end"'
-        }
-      }
-    }
-
     stage('Build Frontend') {
       steps {
         dir('front-end') {
