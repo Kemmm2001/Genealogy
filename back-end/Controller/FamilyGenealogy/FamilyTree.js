@@ -1,4 +1,5 @@
 const FamilyTreeService = require("../../service/FamilyGenealogy/ViewFamilyTree");
+const Response = require("../../Utils/Response");
 
 // Ví dụ
 var AllReligion = async (req, res) => {
@@ -38,11 +39,16 @@ var getAllUnspecifiedMembers = async (req, res) => {
 }
 var getRelationShipMember = async (req, res) => {
     try {
-        let memberID = req.query.memberID;
-        let data = await FamilyTreeService.RelationShipMember(memberID);
-        res.send(data)
+        let memberID = req.query.memberID;    
+        console.log(memberID)
+        let data = await FamilyTreeService.RelationShipMember(memberID);       
+        if (data == null || data.length == 0) {
+            return res.send(Response.dataNotFoundResponse());
+        }
+        return res.send(Response.successResponse(data));
     } catch (error) {
-        console.log(error)
+        console.log("Error: " + error);
+        return res.send(Response.internalServerErrorResponse(error)); 
     }
 }
 
@@ -58,7 +64,7 @@ var getListMessage = async (req, res) => {
 }
 var AllMemberInGenelogy = async (req, res) => {
     try {
-        let CodeID = req.query.CodeID;        
+        let CodeID = req.query.CodeID;
         let data = await FamilyTreeService.ViewFamilyTree(CodeID);
         data.forEach((item) => {
             if (item.dod === '1-1-1970') {

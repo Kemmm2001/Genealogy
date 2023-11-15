@@ -114,6 +114,7 @@
             <div class="list-group">
               <div class="list-group-item feature-overview">Các chức năng chính</div>
               <div class="list-group-item" @click="getInforMember(CurrentIdMember)">Thông tin chi tiết</div>
+              <div class="list-group-item" @click="openModalRelationship()">Xem các mối quan hệ</div>
               <div class="list-group-item" @click="openMemberModal('AddParent', 'Cha')">Thêm Cha</div>
               <div class="list-group-item" @click="openMemberModal('AddParent', 'Mẹ')">Thêm Mẹ</div>
               <div class="list-group-item" @click="openMemberModal('AddMarriage', 'Chồng')">Thêm Chồng</div>
@@ -124,6 +125,90 @@
               <div class="list-group-item feature-overview">Các chức năng Khác</div>
               <div class="list-group-item" style="border-top: none;" @click="setPaternalAncestor(2)">Set làm tộc trưởng</div>
               <div class="list-group-item" @click="setPaternalAncestor(1)">Set làm tổ phụ</div>
+            </div>
+          </div>
+        </div>
+      </modal>
+    </div>
+
+    <div class="modal-relationship">
+      <modal name="modal-relationship">
+        <div class="form-group">
+          <div class="w-100 h-100 add-article-modal">
+            <div class="d-flex flex-row w-100 align-items-center position-relative">
+              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Các mối quan hệ của</div>
+              <div class="close-add-form" @click="closeModalRelationship()">
+                <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                  <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                </svg>
+              </div>
+            </div>
+            <div class="d-flex flex-column" style="height: calc(100% - 50px);">
+              <div class="d-flex flex-row">
+                <div class="col-md-4 m-2">
+                  <input type="text" class="form-control modal-item m-0" placeholder="Nhập tên thành viên..." />
+                </div>
+              </div>
+              <div class="d-flex flex-column headlist-list-container w-100">
+                <table class="table table-member headlist-list m-0">
+                  <thead>
+                    <tr class="headlist-item">
+                      <th class="headlist-list-th" scope="col">Họ và Tên</th>
+                      <th class="headlist-list-th" scope="col">Giới tính</th>
+                      <th class="headlist-list-th" scope="col">Ngày sinh</th>
+                      <th class="headlist-list-th" scope="col">Mối quan hệ</th>
+                      <th class="headlist-list-th" scope="col"></th>
+                    </tr>
+                  </thead>
+                  <tbody v-if="ResultRelationship">
+                    <tr v-if="ResultRelationship.Father" class="headlist-item headlist-table-item">
+                      <td style="text-align: center;">{{ResultRelationship.Father.MemberName}}</td>
+                      <td style="text-align: center;">{{ResultRelationship.Father.Male == 1 ? "Nam" : "Nữ"}}</td>
+                      <td style="text-align: center;">{{formatDate(ResultRelationship.Father.Dob)}}</td>
+                      <td style="text-align: center;">Cha</td>
+                      <td style="text-align: center;">
+                        <button class="btn btn-secondary">Hủy mối quan hệ</button>
+                      </td>
+                    </tr>
+                    <tr v-if="ResultRelationship.Mother" class="headlist-item headlist-table-item">
+                      <td style="text-align: center;">{{ResultRelationship.Mother.MemberName}}</td>
+                      <td style="text-align: center;">{{ResultRelationship.Mother.Male == 1 ? "Nam" : "Nữ"}}</td>
+                      <td style="text-align: center;">{{formatDate(ResultRelationship.Mother.Dob)}}</td>
+                      <td style="text-align: center;">Mẹ</td>
+                      <td style="text-align: center;">
+                        <button class="btn btn-secondary">Hủy mối quan hệ</button>
+                      </td>
+                    </tr>
+                    <tr v-if="ResultRelationship.Husband" class="headlist-item headlist-table-item">
+                      <td style="text-align: center;">{{ResultRelationship.Husband.MemberName}}</td>
+                      <td style="text-align: center;">{{ResultRelationship.Husband.Male == 1 ? "Nam" : "Nữ"}}</td>
+                      <td style="text-align: center;">{{formatDate(ResultRelationship.Husband.Dob)}}</td>
+                      <td style="text-align: center;">Chồng</td>
+                      <td style="text-align: center;">
+                        <button class="btn btn-secondary">Hủy mối quan hệ</button>
+                      </td>
+                    </tr>
+                    <tr v-if="ResultRelationship.Wife" class="headlist-item headlist-table-item">
+                      <td style="text-align: center;">{{ResultRelationship.Wife.MemberName}}</td>
+                      <td style="text-align: center;">{{ResultRelationship.Wife.Male == 1 ? "Nam" : "Nữ"}}</td>
+                      <td style="text-align: center;">{{formatDate(ResultRelationship.Wife.Dob)}}</td>
+                      <td style="text-align: center;">Vợ</td>
+                      <td style="text-align: center;">
+                        <button class="btn btn-secondary">Hủy mối quan hệ</button>
+                      </td>
+                    </tr>
+                    <tr v-for="c in ResultRelationship.child" :key="c.id" class="headlist-item headlist-table-item">
+                      <td style="text-align: center;">{{c.MemberName}}</td>
+                      <td style="text-align: center;">{{c.Male == 1 ? "Nam" : "Nữ"}}</td>
+                      <td style="text-align: center;">{{formatDate(c.Dob)}}</td>
+                      <td style="text-align: center;">Con</td>
+                      <td style="text-align: center;">
+                        <button class="btn btn-secondary">Hủy mối quan hệ</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>            
             </div>
           </div>
         </div>
@@ -357,7 +442,7 @@
               </div>
             </div>
             <div class="d-flex flex-column headlist-list-container w-100">
-              <table class="table member headlist-list m-0">
+              <table class="table table-member headlist-list m-0">
                 <thead>
                   <tr class="headlist-item">
                     <th class="headlist-list-th">#</th>
@@ -746,6 +831,7 @@ export default {
       validations: {
         required: true,
       },
+      ResultRelationship: null,
       ListCity: null,
       ListDistrict: null,
       ListDistrictMember: null,
@@ -1074,19 +1160,6 @@ export default {
       this.generationMember = this.objMemberInfor.Generation;
       this.IsDead = this.objMemberInfor.IsDead;
     },
-    updateAvatar(event) {
-      const file = event.target.files[0];
-
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.avatarSrc = e.target.result; // Cập nhật ảnh avatar bằng ảnh tải lên
-        };
-        reader.readAsDataURL(file);
-      } else {
-        this.avatarSrc = null; // Có thể thay thế b
-      }
-    },
     sendMessageToMember() {
       if (
         this.contentMessage != null &&
@@ -1378,6 +1451,19 @@ export default {
           .catch((e) => {
             console.log(e);
           });
+      }
+    },
+    updateAvatar(event) {
+      const file = event.target.files[0];
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.avatarSrc = e.target.result; // Cập nhật ảnh avatar bằng ảnh tải lên
+        };
+        reader.readAsDataURL(file);
+      } else {
+        this.avatarSrc = null;
       }
     },
     async addMember() {
@@ -1725,8 +1811,9 @@ export default {
     OnpenModal_SelectOption(id) {
       let foundNode = this.nodes.find((node) => node.id == id);
       this.TitleModal = foundNode.name;
-      this.$modal.show("Select-option-Modal");
+      console.log(id);
       this.highLightSelectNode(id);
+      this.$modal.show("Select-option-Modal");
       this.CurrentIdMember = id;
     },
     closeSelectModal() {
@@ -1734,6 +1821,22 @@ export default {
       this.RemoveHightLight();
       this.$modal.hide("Select-option-Modal");
     },
+    openModalRelationship() {
+      console.log(this.CurrentIdMember);
+      this.$modal.show("modal-relationship");
+      HTTP.get("relationship", {
+        params: {
+          memberID: this.CurrentIdMember,
+        },
+      }).then((response) => {
+        this.ResultRelationship = response.data.data;
+        console.log(this.ResultRelationship.Father);
+      });
+    },
+    closeModalRelationship() {
+      this.$modal.hide("modal-relationship");
+    },
+
     getListMember() {
       HTTP.get("viewTree", {
         params: {
