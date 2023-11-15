@@ -94,10 +94,7 @@ function updateArticle(articleId,codeId, updatedData) {
 
 function deleteArticle(articleId) {
     return new Promise((resolve, reject) => {
-        const query = `
-            DELETE FROM article
-            WHERE ArticleID = ?
-        `;
+        const query = `DELETE FROM article WHERE ArticleID = ?`;
 
         db.connection.query(query, articleId, (err, result) => {
             if (err) {

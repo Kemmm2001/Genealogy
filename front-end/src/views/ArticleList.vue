@@ -27,7 +27,7 @@
         </div>
       </div>
       <div class="">
-        <table class="table table-articlelist-list m-0">
+        <table class="table table-article table-articlelist-list m-0">
           <thead>
             <tr class="articlelist-item">
               <th class="articlelist-list-th" scope="col">#</th>
@@ -37,11 +37,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr class="articlelist-item articlelist-table-item" v-for="(article,index) in  this.articleFilter" :key="article.ArticleID">
-              <th @click="openEditArticleModal()" scope="row">{{index+1}}</th>
-              <td @click="openEditArticleModal()">{{ article.ArticleName }}</td>
-              <td @click="openEditArticleModal()">{{ article.ArticleDescription }}</td>
-              <td @click="openEditArticleModal()">{{ article.ArticleUrl }}</td>
+            <tr @click="openEditArticleModal(),getInforArticle(article.ArticleID)" class="articlelist-item articlelist-table-item" v-for="(article,index) in  this.articleFilter" :key="article.ArticleID">
+              <th scope="row">{{index+1}}</th>
+              <td>{{ article.ArticleName }}</td>
+              <td>{{ article.ArticleDescription }}</td>
+              <td>{{ article.ArticleUrl }}</td>
             </tr>
           </tbody>
         </table>
@@ -175,7 +175,7 @@
                 <button class="articlelist-item-button form-control"> Lưu thay đổi </button>
               </div>
               <div class="mx-2">
-                <button class="articlelist-item-button form-control"> Xóa </button>
+                <button class="articlelist-item-button form-control" @click="removeArticle()"> Xóa </button>
               </div>
             </div>
           </div>
@@ -202,6 +202,7 @@ export default {
         ArticleName : null,
         ArticleDescription : null,
       },
+      articleIdChoose : null,
     };
   },
   methods: {
@@ -225,18 +226,46 @@ export default {
         ArticleDescription : this.objArticleInfor.ArticleDescription,
       }).then(() =>{
         this.NotificationsScuccess("Thêm thành công");
+        this.getListArticle()
       }).catch((e) =>{
         console.log(e);
       })
     },
-    getArticleInfor(){
-      HTTP.post('',{
-        CodeID : 123456, 
-        ArticleUrl : this.objArticleInfor.ArticleUrl,
-        ArticleName : this.objArticleInfor.ArticleName,
-        ArticleDescription : this.objArticleInfor.ArticleDescription,
-      }).then(() =>{
-        this.NotificationsScuccess("Thêm thành công");
+    // getArticleInfor(){
+    //   HTTP.post('',{
+    //     CodeID : 123456, 
+    //     ArticleUrl : this.objArticleInfor.ArticleUrl,
+    //     ArticleName : this.objArticleInfor.ArticleName,
+    //     ArticleDescription : this.objArticleInfor.ArticleDescription,
+    //   }).then(() =>{
+    //   }).catch((e) =>{
+    //     console.log(e);
+    //   })
+    // },
+    getInforArticle(id) {
+      this.articleIdChoose = id;
+      console.log(this.articleIdChoose)
+      HTTP.post("article", {
+        articleId : id,
+        codeId : 123456,
+      })
+        .then((response) => {
+          this.objArticleInfor = response.data.data;
+          console.log(this.objArticleInfor)
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+    removeArticle(){
+      console.log(this.articleIdChoose)
+      HTTP.delete('delete-article',{
+        articleId : 2, 
+        codeId:123456
+      }).then((response) =>{
+        console.log(response.data)
+        this.NotificationsDelete("Xóa thành công");
+        this.getListArticle()
       }).catch((e) =>{
         console.log(e);
       })
@@ -267,14 +296,8 @@ export default {
         },
       });
     },
-  },
-  created(){
-    // EventBus.$emit("HeadList", false);
-    // EventBus.$emit("AlbumList", false);
-    // EventBus.$emit("ArticleList", true);
-  },
-  mounted(){
-    HTTP.get("article", {
+    getListArticle(){
+      HTTP.get("article", {
         params: {
           CodeID: 123456,
         },
@@ -286,6 +309,15 @@ export default {
       .catch((e) => {
       console.log(e);
       });
+    }
+  },
+  created(){
+    // EventBus.$emit("HeadList", false);
+    // EventBus.$emit("AlbumList", false);
+    // EventBus.$emit("ArticleList", true);
+  },
+  mounted(){
+    this.getListArticle()
   }
 };
 </script>
