@@ -19,8 +19,8 @@
               </div>
               <div class="list-member w-100">
                   <div class="button-member d-flex align-items-center">
-                      <button @click="openEditHeadModal()" class="btn click-color m-0" :disabled="isButtonDisabled">Chỉnh sửa</button>
-                      <button @click="removeMember()" class="btn click-color m-0" :disabled="isButtonDisabled">Xóa</button>
+                      <button @click="openEditHeadModal()" class="btn bg-info text-white m-0" :disabled="isButtonDisabled">Chỉnh sửa</button>
+                      <button @click="removeMember()" class="btn bg-info text-white m-0" :disabled="isButtonDisabled">Xóa</button>
                   </div>
                   <div class="view-member w-100">
                       <div @click="numberItemSelection(index),getInforMember(member.id)" class="member" style="cursor: pointer;" :class="{ choose: itemChoose === index }" v-for="(member,index) in displayedItems" :key="member.id">
@@ -38,10 +38,10 @@
                       </div>
                       
                   </div>
-                  <div class="pagination-member-list justify-content-center align-items-center">
-                        <button class="btn button-normal m-0" @click="prevPage">Trước</button>
+                  <div class="d-flex pagination-member-list justify-content-center align-items-center">
+                        <button class="btn bg-primary text-white button-normal m-0" @click="prevPage">Trước</button>
                         <span style="margin: 10px;">{{ currentPage }}/{{ Math.ceil(this.memberFilter.length / this.itemsPerPage) }}</span>
-                        <button class="btn button-normal m-0" @click="nextPage">Sau</button>
+                        <button class="btn bg-primary text-white button-normal m-0" @click="nextPage">Sau</button>
                   </div>
               </div>
             </div>
@@ -49,12 +49,12 @@
               <div class="sort-member">
                   <p class="title">Sắp xếp</p>
                   <div class="sort-button d-flex justify-content-center">
-                    <button @click="clickGenSort(),sortListMember()" :class="{chosen : genSort}" class="btn d-flex justify-content-center align-items-center p-1">
+                    <button @click="clickGenSort(),sortListMember()" :class="{chosen : genSort}" class="btn d-flex justify-content-center align-items-center">
                         <i v-if="genAscending" class="bi bi-arrow-up" style="padding-right: 8px;"></i>
                         <i v-if="!genAscending" class="bi bi-arrow-up" style="padding-left: 8px; transform: rotate(180deg);"></i>
                         <div>Đời</div>
                       </button>
-                      <button @click="clickDobSort(),sortListMember()" :class="{chosen : dobSort}" class="btn d-flex justify-content-center align-items-center p-1" >
+                      <button @click="clickDobSort(),sortListMember()" :class="{chosen : dobSort}" class="btn d-flex justify-content-center align-items-center" >
                         <i v-if="dobAscending" class="bi bi-arrow-up" style="padding-right: 8px;"></i>
                         <i v-if="!dobAscending" class="bi bi-arrow-up" style="padding-left: 8px; transform: rotate(180deg);"></i>
                         <div>Ngày sinh</div>
@@ -123,7 +123,7 @@
                       oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                   </div>
                   <div class="submit-control">
-                      <button @click="refreshSelect()" class="btn button-normal">Làm mới</button>
+                      <button @click="refreshSelect()" class="btn bg-primary text-white button-normal">Làm mới</button>
                   </div>
                   
               </div>
