@@ -14,8 +14,9 @@
     background-color: #FAFAD2;
 }
 
-.list-item:hover {
+.dark .list-item:hover {
     background-color: lightblue;
+    color: #000;
 }
 
 .selected-list {
@@ -29,7 +30,7 @@
 
 .dark .existing-members, .dark .nonexisting-members{
     background-color: #51585e;
-    color: #FFFFFF;
+    color: #D0D2D6;
 }
 
 .list-group-item {
