@@ -37,3 +37,6 @@
 .articlelist-table-item:focus{
     background-color: #007aff !important;
 }
+.table-article{
+    --bs-table-bg: transparent !important;
+}

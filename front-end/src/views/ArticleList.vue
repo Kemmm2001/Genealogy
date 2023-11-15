@@ -27,7 +27,7 @@
         </div>
       </div>
       <div class="">
-        <table class="table articlelist-list m-0">
+        <table class="table table-articlelist-list m-0">
           <thead>
             <tr class="articlelist-item">
               <th class="articlelist-list-th" scope="col">#</th>
@@ -39,9 +39,9 @@
           <tbody>
             <tr class="articlelist-item articlelist-table-item" v-for="(article,index) in  this.articleFilter" :key="article.ArticleID">
               <th @click="openEditArticleModal()" scope="row">{{index+1}}</th>
-              <td @click="openEditArticleModal()" class="articlelist-table-td">{{ article.ArticleName }}</td>
-              <td @click="openEditArticleModal()" class="articlelist-table-td">{{ article.ArticleDescription }}</td>
-              <td @click="openEditArticleModal()" class="articlelist-table-td">{{ article.ArticleUrl }}</td>
+              <td @click="openEditArticleModal()">{{ article.ArticleName }}</td>
+              <td @click="openEditArticleModal()">{{ article.ArticleDescription }}</td>
+              <td @click="openEditArticleModal()">{{ article.ArticleUrl }}</td>
             </tr>
           </tbody>
         </table>

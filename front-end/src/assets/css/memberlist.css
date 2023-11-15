@@ -118,3 +118,12 @@ button.btn.d-flex.justify-content-center.align-items-center{
     color: #FFFFFF;
     border: none !important;
 }
+td th{
+    text-align: center;
+}
+table{
+    background-color: white;
+}
+.table-member {
+    --bs-table-bg: transparent !important;
+  }

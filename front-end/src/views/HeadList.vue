@@ -27,7 +27,7 @@
           </div>
         </div>
         <div class>
-          <table class="table headlist-list m-0">
+          <table class="table table-headlist headlist-list m-0">
             <thead>
               <tr class="headlist-item">
                 <th class="headlist-list-th" scope="col">#</th>
@@ -39,23 +39,23 @@
             </thead>
             <tbody>
               <tr @click="getInforMember(familyhead.MemberID)" class="headlist-item headlist-table-item" v-for="(familyhead, index) in displayedItemsFamilyHead" :key="familyhead.MemberID">
-                <th @click="openEditHeadModal()" scope="row" style="text-align: center;">
+                <th @click="openEditHeadModal()" scope="row">
                   {{ index + 1 +
                   itemsPerPageFHead * (currentPageFHead - 1) }}
                 </th>
-                <td @click="openEditHeadModal()" class="headlist-table-td" style="text-align: center;">
+                <td @click="openEditHeadModal()">
                   {{
                   familyhead.MemberName }}
                 </td>
-                <td @click="openEditHeadModal()" class="headlist-table-td" style="text-align: center;">
+                <td @click="openEditHeadModal()">
                   {{ familyhead.Male
                   }}
                 </td>
-                <td @click="openEditHeadModal()" class="headlist-table-td" style="text-align: center;">
+                <td @click="openEditHeadModal()">
                   {{
                   formatDate(familyhead.Dob) }}
                 </td>
-                <td @click="openEditHeadModal()" class="headlist-table-td" style="text-align: center;">
+                <td @click="openEditHeadModal()">
                   {{
                   familyhead.Generation }}
                 </td>
