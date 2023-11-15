@@ -42,3 +42,8 @@
 .headlist-list-container{
     height: calc(100% - 107px);
 }
+
+.addHead-container .form-group{
+    height: 100%;
+}
+
