@@ -334,3 +334,11 @@ input:focus~label.form-label-number {
     margin: 0 8px;
     border-bottom: 1px solid lightgray;
 }
+
+.cfdel-modal-container .vm--container{
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    width: 35%;
+    height: 19%;
+}
