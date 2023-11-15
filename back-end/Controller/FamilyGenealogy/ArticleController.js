@@ -39,7 +39,7 @@ var addArticle = async (req, res) => {
     try {
         // Log ra thông tin trong req.body
         console.log('Request body: ', req.body);
-        let response;       
+        let response;
         const requiredFields = ['CodeID', 'ArticleUrl', 'ArticleName', 'ArticleDescription'];
         const missingFields = requiredFields.filter(field => !(field in req.body));
         console.log(missingFields);
@@ -73,10 +73,10 @@ var addArticle = async (req, res) => {
 
 var deleteArticle = async (req, res) => {
     try {
-        console.log("Request body: ", req.params);
+        console.log("Request body: ", req.body);
 
         // Gọi hàm xóa bài viết từ service
-        const result = await ArticleManagementService.deleteArticle(req.params.articleId);
+        const result = await ArticleManagementService.deleteArticle(req.body.articleId);
 
         // Kiểm tra xem việc xóa bài viết có thành công hay không
         if (result.affectedRows === 0) {
@@ -114,8 +114,8 @@ var updateArticle = async (req, res) => {
         let response;
 
         // Update the article in the database
-        const updatedArticle = await ArticleManagementService.updateArticle(req.params.articleId,req.params.codeId,req.body);
-        
+        const updatedArticle = await ArticleManagementService.updateArticle(req.params.articleId, req.params.codeId, req.body);
+
         // Check if the article was successfully updated
         if (!updatedArticle) {
             console.error('Failed to update the article');
@@ -137,4 +137,4 @@ var updateArticle = async (req, res) => {
 
 
 
-module.exports = {getAllArticle, getArticle, addArticle, updateArticle, deleteArticle};
+module.exports = { getAllArticle, getArticle, addArticle, updateArticle, deleteArticle };
