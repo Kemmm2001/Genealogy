@@ -53,6 +53,11 @@ const routes = [
     name: "userprofile",
     component: () => import("../views/UserProfile.vue"),
   },
+  {
+    path: "/event",
+    name: "event",
+    component: () => import("../views/FamilyEvent.vue"),
+  },
 ];
 
 const router = new Router({

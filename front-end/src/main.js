@@ -21,6 +21,7 @@ import "./assets/css/noti.css";
 import "./assets/css/scrollbar.css";
 import "./assets/css/userprofile.css";
 import "./assets/css/familytree.css";
+import "./assets/css/event.css";
 
 import './assets/css-dark/style.css';
 import './assets/css-dark/configmenu.css';

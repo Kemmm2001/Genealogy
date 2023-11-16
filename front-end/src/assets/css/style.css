@@ -73,11 +73,14 @@ a {
     border-radius: 50%;
 }
 
-
 .odd{
     background-color: #cdcdd9;
 }
 
 .even{
     background-color: #e9e8ed;
+}
+
+select{
+    cursor: pointer;
 }
