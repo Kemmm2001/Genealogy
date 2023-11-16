@@ -18,7 +18,7 @@
     margin-left: 16px;
 }
 .list-member{
-    background-color: #f6f6f6;
+    background-color: aliceblue;
     padding: 16px;
     border-radius: 0.375rem;
     min-height: 516px;
@@ -54,13 +54,13 @@ button {
     margin-right: 16px;
 }
 .sort-member{
-    background-color: #f6f6f6;
+    background-color: aliceblue;
     height: 140px;
     border-radius: 0.375rem;
     margin-bottom: 16px;
 }
 .search-member{
-    background-color: #f6f6f6;
+    background-color: aliceblue;
     border-radius: 0.375rem;
 }
 .click-color{

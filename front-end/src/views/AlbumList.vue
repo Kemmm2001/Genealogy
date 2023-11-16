@@ -1,61 +1,64 @@
 <template>
-  <div class="d-flex w-100" style="padding: 0 200px">
-    <div class="d-flex flex-column h-100 w-100">
-      <div class="d-flex align-items-center w-100 my-2 mx-2" style="height: 48px; font-size: 20px; font-weight: bold;">Album dòng họ</div>
-      <div class="d-flex flex-row">
-        <div class="col-md-6 d-flex align-items-center" style="justify-content: left;">
-          <div class="w-100 my-2 mx-2">
-            <input type="text" class="form-control modal-item m-0" placeholder="Nhập tên album...">
+  <div class="d-flex position-relative" style="padding: 0 120px; height: calc(100% - 64px)">
+    <div class="d-flex d-flex align-items-center position-absolute" style="top: 5%; bottom: 5%; left: 5%; right: 5%;">
+      <div class="info-pages-container w-100 h-100">
+        <div class="d-flex align-items-center w-100 my-2 mx-2" style="height: 50px; font-size: 20px; font-weight: bold;">
+          Album dòng họ</div>
+        <div class="d-flex flex-row">
+          <div class="col-md-6 d-flex align-items-center" style="justify-content: left;">
+            <div class="w-100 my-2 mx-2">
+              <input type="text" class="form-control modal-item m-0" placeholder="Nhập tên album...">
+            </div>
+            <div class="d-flex w-100 my-2">
+              <div class="px-2">Phân trang</div>
+              <div class="d-flex align-items-center">
+                <select class="form-select px-2 py-0">
+                  <option selected value="1">10</option>
+                  <option value="2">20</option>
+                  <option value="3">30</option>
+                </select>
+              </div>
+            </div>
           </div>
-          <div class="d-flex w-100 my-2">
-            <div class="px-2">Phân trang</div>
-            <div class="d-flex align-items-center">
-              <select class="form-select px-2 py-0">
-                <option selected value="1">10</option>
-                <option value="2">20</option>
-                <option value="3">30</option>
-              </select>
+          <div class="col-md-6 d-flex align-items-center" style="justify-content: right;">
+            <button @click="openAddAlbumModal()"
+              class="btn articlelist-item articlelist-item-button text-center my-4 mx-2">Tạo album</button>
+          </div>
+        </div>
+        <div class="d-flex flex-wrap">
+          <div class="album mx-2 mb-3 d-flex flex-column">
+            <div class="album-cover"></div>
+            <div class="album-general-info d-flex align-items-center">
+              <div class="d-flex justify-content-center w-100">Tên album</div>
+            </div>
+          </div>
+          <div class="album mx-2 mb-3 d-flex flex-column">
+            <div class="album-cover"></div>
+            <div class="album-general-info d-flex align-items-center">
+              <div class="d-flex justify-content-center w-100">Tên album</div>
+            </div>
+          </div>
+          <div class="album mx-2 mb-3 d-flex flex-column">
+            <div class="album-cover"></div>
+            <div class="album-general-info d-flex align-items-center">
+              <div class="d-flex justify-content-center w-100">Tên album</div>
+            </div>
+          </div>
+          <div class="album mx-2 mb-3 d-flex flex-column">
+            <div class="album-cover"></div>
+            <div class="album-general-info d-flex align-items-center">
+              <div class="d-flex justify-content-center w-100">Tên album</div>
+            </div>
+          </div>
+          <div class="album mx-2 mb-3 d-flex flex-column">
+            <div class="album-cover"></div>
+            <div class="album-general-info d-flex align-items-center">
+              <div class="d-flex justify-content-center w-100">Tên album</div>
             </div>
           </div>
         </div>
-        <div class="col-md-6 d-flex align-items-center" style="justify-content: right;">
-          <button @click="openAddAlbumModal()"
-            class="btn articlelist-item articlelist-item-button text-center my-4 mx-2">Tạo album</button>
-        </div>
-      </div>
-      <div class="d-flex flex-wrap">
-        <div class="album mx-2 mb-3 d-flex flex-column">
-          <div class="album-cover"></div>
-          <div class="album-general-info d-flex align-items-center">
-            <div class="d-flex justify-content-center w-100">Tên album</div>
-          </div>
-        </div>
-        <div class="album mx-2 mb-3 d-flex flex-column">
-          <div class="album-cover"></div>
-          <div class="album-general-info d-flex align-items-center">
-            <div class="d-flex justify-content-center w-100">Tên album</div>
-          </div>
-        </div>
-        <div class="album mx-2 mb-3 d-flex flex-column">
-          <div class="album-cover"></div>
-          <div class="album-general-info d-flex align-items-center">
-            <div class="d-flex justify-content-center w-100">Tên album</div>
-          </div>
-        </div>
-        <div class="album mx-2 mb-3 d-flex flex-column">
-          <div class="album-cover"></div>
-          <div class="album-general-info d-flex align-items-center">
-            <div class="d-flex justify-content-center w-100">Tên album</div>
-          </div>
-        </div>
-        <div class="album mx-2 mb-3 d-flex flex-column">
-          <div class="album-cover"></div>
-          <div class="album-general-info d-flex align-items-center">
-            <div class="d-flex justify-content-center w-100">Tên album</div>
-          </div>
-        </div>
-      </div>
-      <div class="d-flex flex-row paging justify-content-center m-4" style="position:absolute; bottom: 12px; left: 0; right: 0;">
+        <div class="d-flex flex-row paging justify-content-center"
+          style="position:absolute; bottom: 0; left: 0; right: 0;">
           <div class="d-flex flex-row align-items-center">
             <div class="d-flex align-items-center justify-content-center" style="padding-right: 12px;">
               <svg class="headlist-paging-icon" style="transform: rotate(180deg);" xmlns="http://www.w3.org/2000/svg"
@@ -70,7 +73,7 @@
             <div class="page">1</div>
             <div class="page">2</div>
             <div class="page">
-              <div :class="{chosen : true}">3</div>
+              <div :class="{ chosen: true }">3</div>
             </div>
             <div class="page">4</div>
             <div class="page">5</div>
@@ -85,6 +88,7 @@
             </div>
           </div>
         </div>
+      </div>
     </div>
 
     <modal name="addAlbum-modal">
