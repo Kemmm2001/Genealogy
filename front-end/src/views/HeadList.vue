@@ -2,6 +2,7 @@
   <div class="container-fluid" style="padding-left: 200px; padding-right: 200px;">
     <div class="d-flex w-100">
       <div class="d-flex flex-column h-100 w-100">
+        <div class="d-flex align-items-center w-100 my-2 mx-2" style="height: 48px; font-size: 20px; font-weight: bold;">Danh sách tộc trưởng</div>
         <div class="d-flex flex-row">
           <div class="col-md-6 d-flex align-items-center" style="justify-content: left;">
             <div class="w-100 my-2 mx-2">
@@ -10,7 +11,7 @@
             <div class="d-flex w-100 my-2">
               <div class="px-2">Phân trang</div>
               <div class="d-flex align-items-center">
-                <select v-model="itemsPerPageFHead" class="form-select px-2 py-0">
+                <select @change="resetCurrentPageFHead()" v-model="itemsPerPageFHead" class="form-select px-2 py-0">
                   <option selected value="10">10</option>
                   <option value="20">20</option>
                   <option value="30">30</option>
@@ -26,7 +27,7 @@
           </div>
         </div>
         <div class>
-          <table class="table headlist-list m-0">
+          <table class="table table-headlist headlist-list m-0">
             <thead>
               <tr class="headlist-item">
                 <th class="headlist-list-th" scope="col">#</th>
@@ -38,20 +39,33 @@
             </thead>
             <tbody>
               <tr @click="getInforMember(familyhead.MemberID)" class="headlist-item headlist-table-item" v-for="(familyhead, index) in displayedItemsFamilyHead" :key="familyhead.MemberID">
-                <th @click="openEditHeadModal()" scope="row" style="text-align: center;">{{ index + 1 + itemsPerPageFHead*(currentPageFHead-1)  }}</th>
-                <td @click="openEditHeadModal()" class="headlist-table-td" style="text-align: center;">{{ familyhead.MemberName }}</td>
-                <td @click="openEditHeadModal()" class="headlist-table-td" style="text-align: center;">{{ familyhead.Male }}</td>
-                <td @click="openEditHeadModal()" class="headlist-table-td" style="text-align: center;">{{ formatDate(familyhead.Dob) }}</td>
-                <td @click="openEditHeadModal()" class="headlist-table-td" style="text-align: center;">{{ familyhead.Generation }}</td>
+                <th @click="openEditHeadModal()" scope="row">
+                  {{ index + 1 +
+                  itemsPerPageFHead * (currentPageFHead - 1) }}
+                </th>
+                <td @click="openEditHeadModal()">
+                  {{
+                  familyhead.MemberName }}
+                </td>
+                <td @click="openEditHeadModal()">
+                  {{ familyhead.Male
+                  }}
+                </td>
+                <td @click="openEditHeadModal()">
+                  {{
+                  formatDate(familyhead.Dob) }}
+                </td>
+                <td @click="openEditHeadModal()">
+                  {{
+                  familyhead.Generation }}
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
         <div class="d-flex flex-row paging justify-content-center m-4" style="position:absolute; bottom: 12px; left: 0; right: 0;">
           <div class="d-flex flex-row align-items-center">
-            <div class="d-flex align-items-center justify-content-center" style="padding-right: 12px;">
-
-            </div>
+            <div class="d-flex align-items-center justify-content-center" style="padding-right: 12px;"></div>
           </div>
           <div class="d-flex flex-row align-items-center">
             <!-- <div class="d-flex flex-row justify-content-center" style="flex-grow: 1;">
@@ -60,60 +74,50 @@
                     <span style="margin: 10px;">{{ currentPageFHead }}/{{ Math.ceil(this.familyheadFilter.length / this.itemsPerPageFHead) }}</span>
                     <button class="btn button-normal m-0" @click="nextPageFamilyHead">Next</button>
                 </div>
-              </div> -->
-              <div class="d-flex flex-row paging justify-content-center m-4" style="position:absolute; bottom: 12px; left: 0; right: 0;">
-                <div @click="prevPageFamilyHead" class="d-flex flex-row align-items-center" style="cursor: pointer;">
-                  <div class="d-flex align-items-center justify-content-center" style="padding-right: 12px;">
-                    <svg class="headlist-paging-icon" style="transform: rotate(180deg);" xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 320 512">
-                      <path
-                        d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" />
-                    </svg>
-                    <div>Trước</div>
-                  </div>
-                </div>
-                <div class="d-flex flex-row align-items-center">
-                  <div @click="setCurrentPageFHead(currentPageFHead - 2)" v-if="currentPageFHead > 2" class="page" style="cursor: pointer;">{{ currentPageFHead - 2}}</div>
-                  <div @click="setCurrentPageFHead(currentPageFHead - 1)" v-if="currentPageFHead > 1" class="page" style="cursor: pointer;">{{ currentPageFHead - 1}}</div>
-                  <div class="page">
-                    <div :class="{chosen : true}">{{ currentPageFHead }}</div>
-                  </div>
-                  <div @click="setCurrentPageFHead(currentPageFHead + 1)" v-if="Math.ceil(this.familyheadFilter.length / this.itemsPerPageFHead) > currentPageFHead" class="page" style="cursor: pointer;">
-                    {{ currentPageFHead + 1}}</div>
-                  <div @click="setCurrentPageFHead(currentPageFHead + 2)" v-if="Math.ceil(this.familyheadFilter.length / this.itemsPerPageFHead) - 1 > currentPageFHead" class="page" style="cursor: pointer;">
-                    {{ currentPageFHead + 2}}</div>
-                </div>
-                <div @click="nextPageFamilyHead" class="d-flex flex-row align-items-center" style="cursor: pointer;">
-                  <div class="d-flex align-items-center justify-content-center" style="padding-left: 12px;">
-                    <div>Sau</div>
-                    <svg class="headlist-paging-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                      <path
-                        d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" />
-                    </svg>
-                  </div>
+            </div>-->
+            <div class="d-flex flex-row paging justify-content-center m-4" style="position:absolute; bottom: 12px; left: 0; right: 0;">
+              <div @click="prevPageFamilyHead" class="d-flex flex-row align-items-center" style="cursor: pointer;">
+                <div class="d-flex align-items-center justify-content-center" style="padding-right: 12px;">
+                  <svg class="headlist-paging-icon" style="transform: rotate(180deg);" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                    <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" />
+                  </svg>
+                  <div>Trước</div>
                 </div>
               </div>
+              <div class="d-flex flex-row align-items-center">
+                <div @click="setCurrentPageFHead(currentPageFHead - 2)" v-if="currentPageFHead > 2" class="page" style="cursor: pointer;">{{ currentPageFHead - 2 }}</div>
+                <div @click="setCurrentPageFHead(currentPageFHead - 1)" v-if="currentPageFHead > 1" class="page" style="cursor: pointer;">{{ currentPageFHead - 1 }}</div>
+                <div class="page">
+                  <div :class="{ chosen: true }">{{ currentPageFHead }}</div>
+                </div>
+                <div @click="setCurrentPageFHead(currentPageFHead + 1)" v-if="Math.ceil(this.familyheadFilter.length / this.itemsPerPageFHead) > currentPageFHead" class="page" style="cursor: pointer;">{{ currentPageFHead + 1 }}</div>
+                <div @click="setCurrentPageFHead(currentPageFHead + 2)" v-if="Math.ceil(this.familyheadFilter.length / this.itemsPerPageFHead) - 1 > currentPageFHead" class="page" style="cursor: pointer;">{{ currentPageFHead + 2 }}</div>
+              </div>
+              <div @click="nextPageFamilyHead" class="d-flex flex-row align-items-center" style="cursor: pointer;">
+                <div class="d-flex align-items-center justify-content-center" style="padding-left: 12px;">
+                  <div>Sau</div>
+                  <svg class="headlist-paging-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                    <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="d-flex flex-row align-items-center">
-
-          </div>
+          <div class="d-flex flex-row align-items-center"></div>
         </div>
       </div>
 
       <modal name="addHead-modalll">
         <div class="w-100 add-head-modal position: relative;" style="height:620px">
           <div class="d-flex flex-row w-100 align-items-center position-relative">
-            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">
-              Thêm tộc
-              trưởng
-            </div>
+            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm tộc trưởng</div>
             <div class="close-add-form" @click="closeAddHeadModal()">
               <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
               </svg>
             </div>
           </div>
-          <div class="d-flex flex-column">
+          <div class="d-flex flex-column position-relative" style="height: calc(100% - 50px);">
             <div class="d-flex flex-row">
               <div class="col-md-4 m-2">
                 <input type="text" class="form-control modal-item m-0" placeholder="Nhập tên thành viên..." />
@@ -152,74 +156,78 @@
                     <button @click="SetFamilyHead()" class="btn headlist-item headlist-item-button text-center">Thêm</button>
                   </div>
                 </div>
-              </div> -->
+              </div>-->
             </div>
           </div>
         </div>
       </modal>
 
-      <modal name="addHead-modal">
-      <div class="form-group">
-        <div class="w-100 h-100 add-article-modal">
-          <div class="d-flex flex-row w-100 align-items-center position-relative">
-            <div class="col-md-12 modal-title d-flex align-items-center  justify-content-center w-100">Thêm tài liệu
-            </div>
-            <div class="close-add-form" @click="closeAddHeadModal()">
-              <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                <path
-                  d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-              </svg>
-            </div>
-          </div>
-          <div class="d-flex flex-column">
-            <div class="d-flex flex-row">
-              <div class="col-md-4 m-2">
-                <input type="text" class="form-control modal-item m-0" placeholder="Nhập tên thành viên..." />
+      <div class="addHead-container">
+        <modal name="addHead-modal">
+          <div class="form-group">
+            <div class="w-100 h-100 add-article-modal">
+              <div class="d-flex flex-row w-100 align-items-center position-relative">
+                <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm tài liệu</div>
+                <div class="close-add-form" @click="closeAddHeadModal()">
+                  <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                    <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                  </svg>
+                </div>
               </div>
-            </div>
-            <div class="d-flex flex-column headlist-list-container w-100">
-              <table class="table table-member headlist-list m-0">
-                <thead>
-                  <tr class="headlist-item">
-                    <th class="headlist-list-th" scope="col">#</th>
-                    <th class="headlist-list-th" scope="col">Họ và Tên</th>
-                    <th class="headlist-list-th" scope="col">Ngày sinh</th>
-                    <th class="headlist-list-th" scope="col">Đời</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr @click="chooseMember(member.id), numberItemSelection(index)" :class="{ selected: itemChoose === index }" class="headlist-item headlist-table-item" v-for="(member, index) in displayedItemsMember" :key="member.id">
-                    <th scope="row" style="text-align: center;">{{ index + 1 + itemsPerPageMember*(currentPageMember-1) }}</th>
-                    <td style="text-align: center;">{{ member.name }}</td>
-                    <td style="text-align: center;">{{ formatDate(member.dob) }}</td>
-                    <td style="text-align: center;">{{ member.generation }}</td>
-                  </tr>
-                </tbody>
-              </table>
-              
-            </div>
-            <div class="d-flex flex-row m-3 align-items-center articlelist-button-container">
-              <div class="headlist-list-footer">
-                <div class="d-flex flex-row align-items-center">
-                  <div class="d-flex flex-row justify-content-center" style="flex-grow: 1;">
-                    <div class="pagination justify-content-center align-items-center">
-                        <button class="btn button-normal m-0" @click="prevPageMember">Trước</button>
-                        <span style="margin: 10px;">{{ currentPageMember }}/{{ Math.ceil(this.memberList.length / this.itemsPerPageMember) }}</span>
-                        <button class="btn button-normal m-0" @click="nextPageMember">Sau</button>
-                    </div>
-
+              <div class="d-flex flex-column" style="height: calc(100% - 50px);">
+                <div class="d-flex flex-row">
+                  <div class="col-md-4 m-2">
+                    <input type="text" class="form-control modal-item m-0" placeholder="Nhập tên thành viên..." />
                   </div>
+                </div>
+                <div class="d-flex flex-column headlist-list-container w-100">
+                  <table class="table table-member headlist-list m-0">
+                    <thead>
+                      <tr class="headlist-item">
+                        <th class="headlist-list-th" scope="col">#</th>
+                        <th class="headlist-list-th" scope="col">Họ và Tên</th>
+                        <th class="headlist-list-th" scope="col">Ngày sinh</th>
+                        <th class="headlist-list-th" scope="col">Đời</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr @click="chooseMember(member.id), numberItemSelection(index)" :class="{ selected: itemChoose === index }" class="headlist-item headlist-table-item" v-for="(member, index) in displayedItemsMember" :key="member.id">
+                        <th scope="row" style="text-align: center;">
+                          {{ index + 1 +
+                          itemsPerPageMember * (currentPageMember - 1) }}
+                        </th>
+                        <td style="text-align: center;">{{ member.name }}</td>
+                        <td style="text-align: center;">{{ formatDate(member.dob) }}</td>
+                        <td style="text-align: center;">{{ member.generation }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="d-flex flex-row m-3 align-items-center articlelist-button-container">
+                  <div class="headlist-list-footer">
+                    <div class="d-flex flex-row align-items-center">
+                      <div class="d-flex flex-row justify-content-center" style="flex-grow: 1;">
+                        <div class="pagination justify-content-center align-items-center">
+                          <button class="btn button-normal m-0" @click="prevPageMember">Trước</button>
+                          <span style="margin: 10px;">
+                            {{ currentPageMember }}/{{ Math.ceil(this.memberList.length /
+                            this.itemsPerPageMember) }}
+                          </span>
+                          <button class="btn button-normal m-0" @click="nextPageMember">Sau</button>
+                        </div>
+                      </div>
 
-                  <div class="d-flex justify-content-right m-1">
-                    <button @click="SetFamilyHead()" class="btn headlist-item headlist-item-button text-center">Thêm</button>
+                      <div class="d-flex justify-content-right m-1">
+                        <button @click="SetFamilyHead()" class="btn headlist-item headlist-item-button text-center">Thêm</button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </modal>
       </div>
-    </modal>
 
       <modal name="editHead-modal">
         <div class="card" v-if="objMemberInfor" style="border: none;">
@@ -274,16 +282,25 @@
                   <div class="col-8">
                     <div style="position: relative; margin-right:10px">
                       <input v-model="objMemberInfor.MemberName" type="text" class="form-control modal-item" placeholder />
-                      <label class="form-label" for="input" :class="{ 'active': objMemberInfor.MemberName }">Tên thành viên đầy đủ</label>
+                      <label class="form-label" for="input" :class="{ 'active': objMemberInfor.MemberName }">
+                        Tên thành
+                        viên đầy đủ
+                      </label>
                     </div>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
                         <input v-model="objMemberInfor.NickName" type="text" class="form-control modal-item" placeholder />
-                        <label class="form-label" for="input" :class="{ 'active': objMemberInfor.NickName }">Tên thường gọi</label>
+                        <label class="form-label" for="input" :class="{ 'active': objMemberInfor.NickName }">
+                          Tên thường
+                          gọi
+                        </label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
                         <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item" placeholder />
-                        <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con Thứ</label>
+                        <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">
+                          Con
+                          Thứ
+                        </label>
                       </div>
                     </div>
                     <div style="display:flex">
@@ -327,10 +344,16 @@
                     </div>
                     <div style="position: relative; margin-right:10px">
                       <input v-model="objMemberInfor.Origin" type="text" class="form-control modal-item" placeholder />
-                      <label class="form-label" for="input" :class="{ 'active': objMemberInfor.Origin }">Nguyên Quán</label>
+                      <label class="form-label" for="input" :class="{ 'active': objMemberInfor.Origin }">
+                        Nguyên
+                        Quán
+                      </label>
                     </div>
                     <div class="form-group">
-                      <h6 style="margin-bottom:20px">Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược lại)</h6>
+                      <h6 style="margin-bottom:20px">
+                        Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và
+                        ngược lại)
+                      </h6>
                       <div style="display:flex">
                         <div style="position: relative; width: 50%;margin-right: 10px;">
                           <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar()" />
@@ -344,11 +367,17 @@
                     </div>
                     <div style="position: relative; margin-right:10px">
                       <input v-model="objMemberInfor.BirthPlace" type="text" class="form-control modal-item" placeholder />
-                      <label class="form-label" for="input" :class="{ 'active': objMemberInfor.BirthPlace }">Nơi sinh</label>
+                      <label class="form-label" for="input" :class="{ 'active': objMemberInfor.BirthPlace }">
+                        Nơi
+                        sinh
+                      </label>
                     </div>
                     <div class="form-check form-check-inline">
                       <input v-model="IsDead" type="checkbox" class="form-check-input" id="lostCheckbox" />
-                      <label style="font-size: 14px; margin-top: 7px;" class="form-check-label" for="lostCheckbox">Đã mất</label>
+                      <label style="font-size: 14px; margin-top: 7px;" class="form-check-label" for="lostCheckbox">
+                        Đã
+                        mất
+                      </label>
                     </div>
                     <div class="form-group" v-if="IsDead == 1">
                       <h6 style="margin-bottom:20px">Ngày Mất (*)</h6>
@@ -416,7 +445,10 @@
                   <div style="display:flex">
                     <div style="position: relative; width: 50%; margin-right: 10px;">
                       <input v-model="objMemberJob.Organization" type="text" class="form-control modal-item" placeholder />
-                      <label class="form-label" for="input" :class="{ 'active': objMemberJob.Organization }">Tên Cơ Quan</label>
+                      <label class="form-label" for="input" :class="{ 'active': objMemberJob.Organization }">
+                        Tên Cơ
+                        Quan
+                      </label>
                     </div>
                     <div style="position: relative;width: 50%; margin-right: 10px;">
                       <input v-model="objMemberJob.OrganizationAddress" type="text" class="form-control modal-item" placeholder />
@@ -426,7 +458,10 @@
                   <div style="display:flex">
                     <div style="position: relative; width: 50%;margin-right: 10px;">
                       <input v-model="objMemberJob.Role" type="text" class="form-control modal-item" placeholder />
-                      <label class="form-label" for="input" :class="{ 'active': objMemberJob.Role }">Vị trí công tác</label>
+                      <label class="form-label" for="input" :class="{ 'active': objMemberJob.Role }">
+                        Vị trí công
+                        tác
+                      </label>
                     </div>
                     <div style="position: relative;width: 50%; margin-right: 10px;">
                       <input v-model="objMemberJob.JobName" type="text" class="form-control modal-item" placeholder />
@@ -592,8 +627,7 @@ export default {
         ParentID: null,
         MarriageID: null,
         MemberName: null,
-        NickName: null,
-        HasNickName: null,
+        NickName: null,      
         BirthOrder: 0,
         Origin: null,
         NationalityID: 1,
@@ -638,11 +672,11 @@ export default {
         StartDate: null,
         EndDate: null,
       },
-      itemsPerPageMember: 10,  // Số mục dữ liệu trên mỗi trang
-      currentPageMember: 1, 
-      itemsPerPageFHead: 10,  // Số mục dữ liệu trên mỗi trang
+      itemsPerPageMember: 10, // Số mục dữ liệu trên mỗi trang
+      currentPageMember: 1,
+      itemsPerPageFHead: 10, // Số mục dữ liệu trên mỗi trang
       currentPageFHead: 1,
-      TitleModal:null,
+      TitleModal: null,
     };
   },
   computed: {
@@ -661,12 +695,12 @@ export default {
   },
   methods: {
     formatDate(dateString) {
-      let formattedDate
-      if(dateString.length <= 10){
-        const dateParts = dateString.split('-');
+      let formattedDate;
+      if (dateString.length <= 10) {
+        const dateParts = dateString.split("-");
         formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
-      }else{
-        formattedDate = dateString
+      } else {
+        formattedDate = dateString;
       }
       const date = new Date(formattedDate);
       const year = date.getFullYear();
@@ -674,8 +708,11 @@ export default {
       const day = String(date.getDate()).padStart(2, "0");
       return `${year}-${month}-${day}`;
     },
-    setCurrentPageFHead(page){
-      this.currentPageFHead = page
+    resetCurrentPageFHead(){
+      this.currentPageFHead = 1;
+    },
+    setCurrentPageFHead(page) {
+      this.currentPageFHead = page;
     },
     prevPageMember() {
       if (this.currentPageMember > 1) {
@@ -683,7 +720,10 @@ export default {
       }
     },
     nextPageMember() {
-      if (this.currentPageMember < Math.ceil(this.memberList.length / this.itemsPerPageMember)) {
+      if (
+        this.currentPageMember <
+        Math.ceil(this.memberList.length / this.itemsPerPageMember)
+      ) {
         this.currentPageMember++;
       }
     },
@@ -693,7 +733,10 @@ export default {
       }
     },
     nextPageFamilyHead() {
-      if (this.currentPageFHead < Math.ceil(this.familyheadFilter.length / this.itemsPerPageFHead)) {
+      if (
+        this.currentPageFHead <
+        Math.ceil(this.familyheadFilter.length / this.itemsPerPageFHead)
+      ) {
         this.currentPageFHead++;
       }
     },
@@ -855,7 +898,9 @@ export default {
       })
         .then((response) => {
           this.memberList = response.data;
-          this.memberList = this.memberList.filter((member) => member.gender != "female");
+          this.memberList = this.memberList.filter(
+            (member) => member.gender != "female"
+          );
         })
         .catch((e) => {
           console.log(e);
@@ -959,27 +1004,25 @@ export default {
         },
       });
     },
-    getFamilyHead(){
+    getFamilyHead() {
       HTTP.get("familyhead", {
-      params: {
-        CodeID: 123456,
-      },
-    })
-      .then((response) => {
-        this.familyheadList = response.data;
-        console.log(this.familyheadList)
-        this.familyheadFilter = this.familyheadList;
+        params: {
+          CodeID: 123456,
+        },
       })
-      .catch((e) => {
-        console.log(e);
-      });
-    }
+        .then((response) => {
+          this.familyheadList = response.data;
+          console.log(this.familyheadList);
+          this.familyheadFilter = this.familyheadList;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
   },
   mounted() {
     this.getFamilyHead();
-    this.getListNationality(),
-    this.getListReligion(),
-    this.getListMember();
+    this.getListNationality(), this.getListReligion(), this.getListMember();
   },
 
   created() {

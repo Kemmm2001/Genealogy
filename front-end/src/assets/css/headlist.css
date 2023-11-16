@@ -42,3 +42,16 @@
 .headlist-list-container{
     height: calc(100% - 107px);
 }
+td th{
+    text-align: center;
+}
+table{
+    background-color: white;
+}
+.table-headlist {
+--bs-table-bg: transparent !important;
+}
+tr:hover{
+background-color: lightblue;
+cursor: pointer;
+}

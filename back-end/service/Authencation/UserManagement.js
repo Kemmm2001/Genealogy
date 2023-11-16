@@ -89,6 +89,53 @@ function getUser(email) {
   });
 }
 
+function getUserInfo(accountID) {
+  return new Promise((resolve, reject) => {
+    const query = 'SELECT Username, Email, Password FROM genealogy.account WHERE AccountID = ?';
+    const values = [accountID];
+
+    db.connection.query(query, values, (err, result) => {
+      if (err) {
+        console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+        reject(err);
+      } else {
+        if (result.length === 0) {
+
+          resolve(null);
+        } else {
+
+          const user = {
+            username: result[0].Username,
+            email: result[0].Email,
+            password: result[0].Password
+          };
+          resolve(user);
+        }
+      }
+    });
+  });
+}
+
+function getUserCodeID(accountID) {
+  return new Promise((resolve, reject) => {
+    const query = 'SELECT CodeID FROM genealogy.account WHERE AccountID = ?';
+    const values = [accountID];
+
+    db.connection.query(query, values, (err, result) => {
+      if (err) {
+        console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+        reject(err);
+      } else {
+        if (result.length === 0) {
+          resolve(null);
+        } else {
+          resolve(result)
+        }
+      }
+    });
+  });
+}
+
 function refreshFreeEmail(usesTime) {
   return new Promise((resolve, reject) => {
     const query = 'UPDATE genealogy.account SET FreeEmail = ?';
@@ -172,4 +219,4 @@ function updateRoleID(data) {
   });
 }
 
-module.exports = { checkMail,checkID, create, getUser, refreshFreeEmail,insertAccountFamily, checkCodeID, checkAccountID, updateRoleID, insertIntoFamily }
+module.exports = { checkMail,checkID, create, getUser, refreshFreeEmail,insertAccountFamily, checkCodeID, checkAccountID, updateRoleID, insertIntoFamily,getUserInfo, getUserCodeID }

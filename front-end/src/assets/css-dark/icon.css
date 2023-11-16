@@ -17,7 +17,7 @@
     width: 24px;
     height: 24px;
     border-radius: 0.375rem;
-    fill: #FFFFFF;
+    fill: #D0D2D6;
 }
 
 .dark .header-selected .navbar-icon-sm, .dark .navbar-item:hover .navbar-icon-sm{
@@ -112,9 +112,10 @@
     top: 0
 }
 
-.add-member-icon{
+.dark .add-member-icon{
     width: 20px;
     height: 20px;
+    fill: #D0D2D6;
 }
 
 .visibility-icon{

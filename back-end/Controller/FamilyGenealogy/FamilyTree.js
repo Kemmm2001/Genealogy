@@ -1,4 +1,5 @@
 const FamilyTreeService = require("../../service/FamilyGenealogy/ViewFamilyTree");
+const Response = require("../../Utils/Response");
 
 // Ví dụ
 var AllReligion = async (req, res) => {
@@ -39,10 +40,51 @@ var getAllUnspecifiedMembers = async (req, res) => {
 var getRelationShipMember = async (req, res) => {
     try {
         let memberID = req.query.memberID;
+        console.log(memberID)
         let data = await FamilyTreeService.RelationShipMember(memberID);
-        res.send(data)
+        if (data == null || data.length == 0) {
+            return res.send(Response.dataNotFoundResponse());
+        }
+        return res.send(Response.successResponse(data));
+    } catch (error) {
+        console.log("Error: " + error);
+        return res.send(Response.internalServerErrorResponse(error));
+    }
+}
+
+var removeRelationship = async (req, res) => {
+    try {
+        let currentID = req.body.CurrentID;
+        let memberToRemove = req.body.RemoveID;
+        let action = req.body.action;
+        console.log('currentID: ' + currentID)
+        console.log('memberToRemove: ' + memberToRemove)
+        if (action == 'RemoveChild') {
+            let data = await FamilyTreeService.RemoveRelationshipChild(memberToRemove);
+            if (data == true) {
+                return res.send(Response.successResponse());
+            } else {
+                return res.send(Response.internalServerErrorResponse());
+            }
+        } else if (action == 'RemoveMarried') {
+            let data = await FamilyTreeService.RemoveRelationshipMarried(currentID, memberToRemove)
+            console.log(data)
+            if (data == true) {
+                return res.send(Response.successResponse());
+            } else {
+                return res.send(Response.internalServerErrorResponse());
+            }
+        } else if (action == 'RemoveParent') {
+            let data = await FamilyTreeService.RemoveRelationshipParent(currentID, memberToRemove);
+            if (data == true) {
+                return res.send(Response.successResponse());
+            } else {
+                return res.send(Response.internalServerErrorResponse());
+            }
+        }
     } catch (error) {
         console.log(error)
+        return res.send(Response.internalServerErrorResponse(error));
     }
 }
 
@@ -58,7 +100,7 @@ var getListMessage = async (req, res) => {
 }
 var AllMemberInGenelogy = async (req, res) => {
     try {
-        let CodeID = req.query.CodeID;        
+        let CodeID = req.query.CodeID;
         let data = await FamilyTreeService.ViewFamilyTree(CodeID);
         data.forEach((item) => {
             if (item.dod === '1-1-1970') {
@@ -136,5 +178,6 @@ var informationMember = async (req, res) => {
 }
 
 module.exports = {
-    AllReligion, informationMember, AllNationality, AllMemberRole, setRole, AllMemberInGenelogy, getAllUnspecifiedMembers, GetIdPaternalAncestor, getRelationShipMember, getListMessage
+    AllReligion, informationMember, AllNationality, AllMemberRole, setRole, AllMemberInGenelogy, getAllUnspecifiedMembers,
+    GetIdPaternalAncestor, getRelationShipMember, getListMessage, removeRelationship
 };

@@ -11,7 +11,7 @@
         <div class="col-6 px-2" style="padding-top: 8px;">
           <select v-model="selectDistrict" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
             <option :value="null" selected>Quận/Huyện</option>
-            <option v-for="d in ListDistrict" :key="d.id" :value="d.DistrictName">{{d.DistrictName}}</option>
+            <option v-for="d in ListDistrict" :key="d.id" :value="d.DistrictName">{{ d.DistrictName }}</option>
           </select>
         </div>
       </div>
@@ -76,7 +76,7 @@
         <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
           <select v-model="selectDistrict" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
             <option :value="null" selected>Quận/Huyện</option>
-            <option v-for="d in ListDistrict" :key="d.id" :value="d.DistrictName">{{d.DistrictName}}</option>
+            <option v-for="d in ListDistrict" :key="d.id" :value="d.DistrictName">{{ d.DistrictName }}</option>
           </select>
         </div>
         <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
@@ -92,7 +92,7 @@
         </div>
         <div @click="advancedFilterDown = !advancedFilterDown" class="p-2 d-flex align-items-center justify-content-center" style="height: 48px; cursor: pointer;">
           <div>
-            <svg :class="{rotateDown : advancedFilterDown}" class="advanced-filter-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+            <svg :class="{ rotateDown: advancedFilterDown }" class="advanced-filter-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
               <path d="M246.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 109.3 361.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160zm160 352l-160-160c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 301.3 361.4 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3z" />
             </svg>
           </div>
@@ -114,17 +114,107 @@
             <div class="list-group">
               <div class="list-group-item feature-overview">Các chức năng chính</div>
               <div class="list-group-item" @click="getInforMember(CurrentIdMember)">Thông tin chi tiết</div>
-              <div class="list-group-item" @click="openMemberModal('AddParent', 'Cha')">Thêm Cha</div>
-              <div class="list-group-item" @click="openMemberModal('AddParent', 'Mẹ')">Thêm Mẹ</div>
-              <div class="list-group-item" @click="openMemberModal('AddMarriage', 'Chồng')">Thêm Chồng</div>
-              <div class="list-group-item" @click="openMemberModal('AddMarriage', 'Vợ')">Thêm Vợ</div>
+              <div class="list-group-item" @click="openModalRelationship()">Xem các mối quan hệ</div>
+              <div v-if="canAddFather" class="list-group-item" @click="openMemberModal('AddParent', 'Cha')">Thêm Cha</div>
+              <div v-if="canAddMother" class="list-group-item" @click="openMemberModal('AddParent', 'Mẹ')">Thêm Mẹ</div>
+              <div v-if="canAddhusband" class="list-group-item" @click="openMemberModal('AddMarriage', 'Chồng')">Thêm Chồng</div>
+              <div v-if="canAddWife" class="list-group-item" @click="openMemberModal('AddMarriage', 'Vợ')">Thêm Vợ</div>
               <div class="list-group-item" @click="openMemberModal('AddChild', 'Con')">Thêm Con</div>
               <div class="list-group-item" @click="openModalAddMemberFromList()">Thêm mối quan hệ từ Danh Sách</div>
-              <div class="list-group-item" @click="removeMember()">Xóa thành viên (*)</div>
+              <!-- Em xóa tạm thằng removeMember() để test modal -->
+              <div class="list-group-item" @click="openCfDelModal()">Xóa thành viên (*)</div>
               <div class="list-group-item feature-overview">Các chức năng Khác</div>
               <div class="list-group-item" style="border-top: none;" @click="setPaternalAncestor(2)">Set làm tộc trưởng</div>
               <div class="list-group-item" @click="setPaternalAncestor(1)">Set làm tổ phụ</div>
             </div>
+          </div>
+        </div>
+      </modal>
+    </div>
+
+    <!-- Modal raletionship -->
+    <div class="modal-relationship">
+      <modal name="modal-relationship">
+        <div class="form-group h-100">
+          <div class="w-100 h-100 add-article-modal">
+            <div class="d-flex flex-row w-100 align-items-center position-relative">
+              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Các mối quan hệ của</div>
+              <div class="close-add-form" @click="closeModalRelationship()">
+                <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                  <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                </svg>
+              </div>
+            </div>
+            <div class="d-flex flex-column" style="height: calc(100% - 50px);">
+              <div class="d-flex flex-row">
+                <div class="col-md-4 m-2">
+                  <input type="text" class="form-control modal-item m-0" placeholder="Nhập tên thành viên..." />
+                </div>
+              </div>
+              <div class="d-flex flex-column headlist-list-container w-100">
+                <table class="table table-member headlist-list m-0">
+                  <thead>
+                    <tr class="headlist-item">
+                      <th class="headlist-list-th" scope="col">Họ và Tên</th>
+                      <th class="headlist-list-th" scope="col">Giới tính</th>
+                      <th class="headlist-list-th" scope="col">Ngày sinh</th>
+                      <th class="headlist-list-th" scope="col">Mối quan hệ</th>
+                      <th class="headlist-list-th" scope="col"></th>
+                    </tr>
+                  </thead>
+                  <tbody v-if="ResultRelationship">
+                    <tr v-if="ResultRelationship.Father" class="headlist-item headlist-table-item" @click="getInforMember(ResultRelationship.Father.MemberID)">
+                      <td style="text-align: center;">{{ ResultRelationship.Father.MemberName }}</td>
+                      <td style="text-align: center;">{{ ResultRelationship.Father.Male == 1 ? "Nam" : "Nữ" }}</td>
+                      <td style="text-align: center;">{{ formatDate(ResultRelationship.Father.Dob) }}</td>
+                      <td style="text-align: center;">Cha</td>
+                      <td style="text-align: center;">
+                        <button class="btn btn-secondary" @click.stop="openCfDelModal(true,ResultRelationship.Father.MemberID,ResultRelationship.Father.MemberName,'RemoveParent')">Hủy mối quan hệ</button>
+                      </td>
+                    </tr>
+                    <tr v-if="ResultRelationship.Mother" class="headlist-item headlist-table-item" @click="getInforMember(ResultRelationship.Mother.MemberID)">
+                      <td style="text-align: center;">{{ ResultRelationship.Mother.MemberName }}</td>
+                      <td style="text-align: center;">{{ ResultRelationship.Mother.Male == 1 ? "Nam" : "Nữ" }}</td>
+                      <td style="text-align: center;">{{ formatDate(ResultRelationship.Mother.Dob) }}</td>
+                      <td style="text-align: center;">Mẹ</td>
+                      <td style="text-align: center;">
+                        <button class="btn btn-secondary" @click.stop="openCfDelModal(true,ResultRelationship.Mother.MemberID,ResultRelationship.Mother.MemberName,'RemoveParent')">Hủy mối quan hệ</button>
+                      </td>
+                    </tr>
+                    <tr v-if="ResultRelationship.Husband" class="headlist-item headlist-table-item" @click="getInforMember(ResultRelationship.Husband.MemberID)">
+                      <td style="text-align: center;">{{ ResultRelationship.Husband.MemberName }}</td>
+                      <td style="text-align: center;">{{ ResultRelationship.Husband.Male == 1 ? "Nam" : "Nữ" }}</td>
+                      <td style="text-align: center;">{{ formatDate(ResultRelationship.Husband.Dob) }}</td>
+                      <td style="text-align: center;">Chồng</td>
+                      <td style="text-align: center;">
+                        <button class="btn btn-secondary" @click.stop="openCfDelModal(true,ResultRelationship.Husband.MemberID,ResultRelationship.Husband.MemberName,'RemoveMarried')">Hủy mối quan hệ</button>
+                      </td>
+                    </tr>
+                    <tr v-if="ResultRelationship.Wife" class="headlist-item headlist-table-item" @click="getInforMember(ResultRelationship.Wife.MemberID)">
+                      <td style="text-align: center;">{{ ResultRelationship.Wife.MemberName }}</td>
+                      <td style="text-align: center;">{{ ResultRelationship.Wife.Male == 1 ? "Nam" : "Nữ" }}</td>
+                      <td style="text-align: center;">{{ formatDate(ResultRelationship.Wife.Dob) }}</td>
+                      <td style="text-align: center;">Vợ</td>
+                      <td style="text-align: center;">
+                        <button class="btn btn-secondary" @click.stop="openCfDelModal(true,ResultRelationship.Wife.MemberID,ResultRelationship.Wife.MemberName,'RemoveMarried')">Hủy mối quan hệ</button>
+                      </td>
+                    </tr>
+                    <tr v-for="(c,index) in ResultRelationship.child" :key="index" class="headlist-item headlist-table-item" @click="getInforMember(c.MemberID)">
+                      <td style="text-align: center;">{{ c.MemberName }}</td>
+                      <td style="text-align: center;">{{ c.Male == 1 ? "Nam" : "Nữ" }}</td>
+                      <td style="text-align: center;">{{ formatDate(c.Dob) }}</td>
+                      <td style="text-align: center;">Con</td>
+                      <td style="text-align: center;">
+                        <button class="btn btn-secondary" @click.stop="openCfDelModal(true,c.MemberID,c.MemberName,'RemoveChild')">Hủy mối quan hệ</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer position-absolute w-100" style="bottom: 0; padding-right: 8px;">
+            <div class="compare-modal-btn btn">Cancel</div>
           </div>
         </div>
       </modal>
@@ -357,7 +447,7 @@
               </div>
             </div>
             <div class="d-flex flex-column headlist-list-container w-100">
-              <table class="table member headlist-list m-0">
+              <table class="table table-member headlist-list m-0">
                 <thead>
                   <tr class="headlist-item">
                     <th class="headlist-list-th">#</th>
@@ -486,19 +576,13 @@
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
                         <select v-model="objMemberInfor.NationalityID" class="form-select modal-item">
-                          <option v-for="nation in ListNationality" :key="nation.id" :value="nation.NationalityID">
-                            {{
-                            nation.NationalityName }}
-                          </option>
+                          <option v-for="nation in ListNationality" :key="nation.id" :value="nation.NationalityID">{{ nation.NationalityName }}</option>
                         </select>
                         <label class="form-label" for="select">Quốc Tịch</label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
                         <select v-model="objMemberInfor.ReligionID" class="form-select modal-item">
-                          <option v-for="religion in ListReligion" :key="religion.id" :value="religion.ReligionID">
-                            {{
-                            religion.ReligionName }}
-                          </option>
+                          <option v-for="religion in ListReligion" :key="religion.id" :value="religion.ReligionID">{{ religion.ReligionName }}</option>
                         </select>
                         <label class="form-label-number" for="select">Tôn Giáo</label>
                       </div>
@@ -565,7 +649,7 @@
                     <div style="position: relative;width: 50%; margin-right: 10px;">
                       <select v-model="selectDistrictMember" class="form-select modal-item">
                         <option :value="null" selected>Quận/Huyện</option>
-                        <option v-for="d in ListDistrictMember" :key="d.id" :value="d.DistrictName">{{d.DistrictName}}</option>
+                        <option v-for="d in ListDistrictMember" :key="d.id" :value="d.DistrictName">{{ d.DistrictName }}</option>
                       </select>
                       <label class="form-label" for="select">Địa Chỉ (Quận/Huyện)</label>
                     </div>
@@ -720,6 +804,32 @@
         </div>
       </modal>
     </div>
+
+    <div class="cfdel-modal-container">
+      <modal name="cfdel-modal">
+        <div class="w-100 h-100 add-head-modal">
+          <div class="d-flex flex-row w-100 align-items-center position-relative">
+            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100 text-white" style="background-color: rgb(255, 8, 0);;">Quan trọng</div>
+            <div class="close-add-form" @click="closeCfDelModal()">
+              <svg class="close-add-form-icon" style="fill: #FFFFFF !important;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+              </svg>
+            </div>
+          </div>
+          <div class="w-100 d-flex flex-column align-items-center justify-content-center" style="height: calc(100% - 50px);">
+            <div class="d-flex align-items-center" style="height: 50%; font-size: 19px;">{{TitleConfirm}}</div>
+            <div class="d-flex flex-row w-100" style="height: 50%;">
+              <div v-if="isRemoveRelationship" class="col-6 d-flex align-items-center justify-content-center">
+                <div class="btn text-white" @click="removeRelationship()" style="background-color: rgb(255, 8, 0);">Có</div>
+              </div>
+              <div class="col-6 d-flex align-items-center justify-content-center">
+                <div class="btn bg-primary text-white" @click="closeCfDelModal()">Không</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </modal>
+    </div>
   </div>
 </template>
 
@@ -746,6 +856,7 @@ export default {
       validations: {
         required: true,
       },
+      ResultRelationship: null,
       ListCity: null,
       ListDistrict: null,
       ListDistrictMember: null,
@@ -774,8 +885,10 @@ export default {
       isEdit: false,
       checkAll: false,
       newIdMember: null,
-
       CurrentIdMember: null,
+
+      isRemoveRelationship: false,
+      TitleConfirm: null,
 
       generationMember: null,
       CodeID: 123456,
@@ -842,11 +955,18 @@ export default {
       ListNationality: null,
       ListReligion: null,
       nodes: [],
+
       extendedInfo: true,
       extendedContact: false,
       extendedJob: false,
       extendedEdu: false,
       extendedNote: false,
+
+      canAddFather: true,
+      canAddMother: true,
+      canAddhusband: true,
+      canAddWife: true,
+
       lastClickedNodeId: null,
       isCompare: false,
       objCompareMember1: {},
@@ -1072,20 +1192,8 @@ export default {
     takeDataMember() {
       this.CurrentIdMember = this.objMemberInfor.MemberID;
       this.generationMember = this.objMemberInfor.Generation;
+      console.log("Vào Take: " + this.objMemberInfor.Generation);
       this.IsDead = this.objMemberInfor.IsDead;
-    },
-    updateAvatar(event) {
-      const file = event.target.files[0];
-
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.avatarSrc = e.target.result; // Cập nhật ảnh avatar bằng ảnh tải lên
-        };
-        reader.readAsDataURL(file);
-      } else {
-        this.avatarSrc = null; // Có thể thay thế b
-      }
     },
     sendMessageToMember() {
       if (
@@ -1378,6 +1486,19 @@ export default {
           .catch((e) => {
             console.log(e);
           });
+      }
+    },
+    updateAvatar(event) {
+      const file = event.target.files[0];
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.avatarSrc = e.target.result; // Cập nhật ảnh avatar bằng ảnh tải lên
+        };
+        reader.readAsDataURL(file);
+      } else {
+        this.avatarSrc = null;
       }
     },
     async addMember() {
@@ -1721,12 +1842,35 @@ export default {
       this.$modal.hide("member-modal");
       this.CurrentIdMember = 0;
     },
-
+    setFunctionCanDo(foundNode) {
+      this.canAddFather = true;
+      this.canAddhusband = true;
+      this.canAddMother = true;
+      this.canAddWife = true;
+      if (foundNode.fid != null) {
+        this.canAddFather = false;
+      }
+      if (foundNode.mid != null) {
+        this.canAddMother = false;
+      }      
+      if (foundNode.pids[0] == null) {
+        if (foundNode.gender == "male") {
+          this.canAddhusband = false;
+        } else {
+          this.canAddWife = false;
+        }
+      } else {
+        this.canAddWife = false;
+        this.canAddhusband = false;
+      }
+    },
     OnpenModal_SelectOption(id) {
       let foundNode = this.nodes.find((node) => node.id == id);
+      this.setFunctionCanDo(foundNode);
       this.TitleModal = foundNode.name;
-      this.$modal.show("Select-option-Modal");
+      this.generationMember = foundNode.generation;
       this.highLightSelectNode(id);
+      this.$modal.show("Select-option-Modal");
       this.CurrentIdMember = id;
     },
     closeSelectModal() {
@@ -1734,6 +1878,58 @@ export default {
       this.RemoveHightLight();
       this.$modal.hide("Select-option-Modal");
     },
+    removeRelationship() {
+      HTTP.put("removeRelationship", {
+        CurrentID: this.CurrentIdMember,
+        RemoveID: this.newIdMember,
+        action: this.action,
+      })
+        .then((response) => {
+          if (response.data.success == true) {
+            this.NotificationsScuccess(response.data.message);
+          } else {
+            this.NotificationsDelete(response.data.message);
+          }
+          this.closeCfDelModal();
+          this.openModalRelationship();
+          this.getListMember();
+          this.getListUnspecifiedMembers();
+          this.closeSelectModal();
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+    openCfDelModal(flag, id, name, action) {
+      this.isRemoveRelationship = flag;
+      this.$modal.show("cfdel-modal");
+      if (this.isRemoveRelationship) {
+        this.TitleConfirm = "Bạn có chắc chắn muốn hủy mối quan hệ với " + name;
+        this.action = action;
+        this.newIdMember = id;
+        console.log(id);
+      }
+    },
+
+    closeCfDelModal() {
+      this.$modal.hide("cfdel-modal");
+    },
+
+    openModalRelationship() {
+      this.$modal.show("modal-relationship");
+      HTTP.get("relationship", {
+        params: {
+          memberID: this.CurrentIdMember,
+        },
+      }).then((response) => {
+        this.ResultRelationship = response.data.data;
+        console.log(this.ResultRelationship);
+      });
+    },
+    closeModalRelationship() {
+      this.$modal.hide("modal-relationship");
+    },
+
     getListMember() {
       HTTP.get("viewTree", {
         params: {

@@ -63,7 +63,7 @@ function addArticle(article) {
     });
 }
 
-function updateArticle(articleId,codeId, updatedData) {
+function updateArticle(updatedData) {
     return new Promise((resolve, reject) => {
         const query = `
             UPDATE article
@@ -77,8 +77,8 @@ function updateArticle(articleId,codeId, updatedData) {
             updatedData.ArticleUrl,
             updatedData.ArticleName,
             updatedData.ArticleDescription,
-            articleId,
-            codeId
+            updatedData.ArticleId,
+            updatedData.CodeId
         ];
 
         db.connection.query(query, values, (err, result) => {
@@ -94,10 +94,7 @@ function updateArticle(articleId,codeId, updatedData) {
 
 function deleteArticle(articleId) {
     return new Promise((resolve, reject) => {
-        const query = `
-            DELETE FROM article
-            WHERE ArticleID = ?
-        `;
+        const query = `DELETE FROM article WHERE ArticleID = ?`;
 
         db.connection.query(query, articleId, (err, result) => {
             if (err) {
