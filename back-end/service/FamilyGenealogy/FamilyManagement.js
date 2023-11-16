@@ -182,9 +182,8 @@ function deleteMember(memberId) {
             }
             // Tìm tất cả các thành viên liên quan
             findRelatedMembers(memberId, (relatedMembers) => {
-                // Xóa tất cả các thành viên liên quan
-                deleteRelatedMembers(relatedMembers, () => {
-                    console.log('Members deleted successfully');
+                updateRelatedMembers(relatedMembers, () => {
+                    console.log('Genealogy updated successfully');
                     resolve();
                 });
             });
@@ -195,13 +194,11 @@ function deleteMember(memberId) {
     });
 }
 
-// Hàm để tìm tất cả các thành viên liên quan
 function findRelatedMembers(memberId, callback) {
     const query = `
       SELECT * FROM familymember
-      WHERE MemberID = ? OR ParentID = ?
+      WHERE MemberID = ? OR ParentID = ? 
     `;
-
     connection.query(query, [memberId, memberId], (err, results) => {
         if (err) {
             console.error('Error finding related members: ', err);
@@ -211,29 +208,26 @@ function findRelatedMembers(memberId, callback) {
     });
 }
 
-// Hàm để xóa tất cả các thành viên liên quan
-function deleteRelatedMembers(members, callback) {
+function updateRelatedMembers(members, callback) {
     if (members.length === 0) {
-        // Nếu không có thành viên nào liên quan, kết thúc
         callback();
     } else {
-        const memberIdToDelete = members.pop().MemberID;
+        const memberIdToUpdate = members.pop().MemberID;
 
-        // Đệ quy để xóa thành viên tiếp theo
-        deleteRelatedMembers(members, () => {
-            // Xóa thành viên
-            const deleteQuery = 'DELETE FROM familymember WHERE MemberID = ?';
-            connection.query(deleteQuery, [memberIdToDelete], (err) => {
+        updateRelatedMembers(members, () => {
+            const updateQuery = 'UPDATE familymember SET Genealogy = 0 WHERE MemberID = ?';
+            connection.query(updateQuery, [memberIdToUpdate], (err) => {
                 if (err) {
-                    console.error('Error deleting member: ', err);
+                    console.error('Error updating genealogy: ', err);
                     throw err;
                 }
-                console.log(`Member ${memberIdToDelete} deleted`);
+                console.log(`Genealogy for Member ${memberIdToUpdate} updated`);
                 callback();
             });
         });
     }
 }
+
 
 function InsertMarriIdToMember(memberId, marriageID) {
     return new Promise((resolve, reject) => {
