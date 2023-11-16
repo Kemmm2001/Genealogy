@@ -180,15 +180,13 @@ function deleteMember(memberId) {
             if (isDeleted == false) {
                 reject("Error when delete image");
             }
-            const query = 'DELETE FROM familymember WHERE MemberID = ?';
-            db.connection.query(query, memberId, (err, result) => {
-                if (err) {
-                    console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-                    reject(err);
-                } else {
-                    console.log('Result: ', result);
-                    resolve(result);
-                }
+            // Tìm tất cả các thành viên liên quan
+            findRelatedMembers(memberId, (relatedMembers) => {
+                // Xóa tất cả các thành viên liên quan
+                deleteRelatedMembers(relatedMembers, () => {
+                    console.log('Members deleted successfully');
+                    resolve();
+                });
             });
         } catch (err) {
             console.log(err);
@@ -196,6 +194,47 @@ function deleteMember(memberId) {
         }
     });
 }
+
+// Hàm để tìm tất cả các thành viên liên quan
+function findRelatedMembers(memberId, callback) {
+    const query = `
+      SELECT * FROM familymember
+      WHERE MemberID = ? OR ParentID = ?
+    `;
+
+    connection.query(query, [memberId, memberId], (err, results) => {
+        if (err) {
+            console.error('Error finding related members: ', err);
+            throw err;
+        }
+        callback(results);
+    });
+}
+
+// Hàm để xóa tất cả các thành viên liên quan
+function deleteRelatedMembers(members, callback) {
+    if (members.length === 0) {
+        // Nếu không có thành viên nào liên quan, kết thúc
+        callback();
+    } else {
+        const memberIdToDelete = members.pop().MemberID;
+
+        // Đệ quy để xóa thành viên tiếp theo
+        deleteRelatedMembers(members, () => {
+            // Xóa thành viên
+            const deleteQuery = 'DELETE FROM familymember WHERE MemberID = ?';
+            connection.query(deleteQuery, [memberIdToDelete], (err) => {
+                if (err) {
+                    console.error('Error deleting member: ', err);
+                    throw err;
+                }
+                console.log(`Member ${memberIdToDelete} deleted`);
+                callback();
+            });
+        });
+    }
+}
+
 function InsertMarriIdToMember(memberId, marriageID) {
     return new Promise((resolve, reject) => {
         const query = 'UPDATE familymember SET MarriageID = ? WHERE MemberID = ?;';
