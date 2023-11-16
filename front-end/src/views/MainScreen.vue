@@ -538,6 +538,7 @@
                       <label for="imageUpload">Tải ảnh lên</label>
                       <input type="file" class="form-control input-file" id="imageUpload" accept="image/*" @change="updateAvatar($event)" />
                     </div>
+                    <img :src="imagePath" alt="Member Photo" />
                   </div>
                   <div class="col-8">
                     <div style="position: relative; margin-right:10px">
@@ -955,6 +956,7 @@ export default {
       ListNationality: null,
       ListReligion: null,
       nodes: [],
+      formData: null,
 
       extendedInfo: true,
       extendedContact: false,
@@ -981,6 +983,9 @@ export default {
       resultCompare1: null,
       resultCompare2: null,
       selectedRowIndex: null,
+      testAvatar: null,
+      imagePath:
+        "/uploads/images/member-photo/726235fb96dc3db0ce8e76a4c9afe1.jpeg",
     };
   },
   methods: {
@@ -1490,44 +1495,56 @@ export default {
     },
     updateAvatar(event) {
       const file = event.target.files[0];
-
+      this.testAvatar = file;
       if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.avatarSrc = e.target.result; // Cập nhật ảnh avatar bằng ảnh tải lên
-        };
-        reader.readAsDataURL(file);
+        if (file.type.startsWith("image/")) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            this.avatarSrc = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        } else {
+          console.error("Chỉ chấp nhận tệp hình ảnh.");
+        }
       } else {
         this.avatarSrc = null;
       }
     },
+    appendIfDefined(key, value) {
+      if (value !== undefined) {
+        this.formData.append(key, value);
+      }
+    },
     async addMember() {
+      this.formData = new FormData();
       if (this.action == "AddNormal") {
         this.generationMember = 0;
       }
-      await HTTP.post("member", {
-        MemberName: this.objMemberInfor.MemberName,
-        NickName: this.objMemberInfor.NickName,
-        CurrentMemberID: this.CurrentIdMember,
-        BirthOrder: this.objMemberInfor.BirthOrder,
-        Origin: this.objMemberInfor.Origin,
-        NationalityID: this.objMemberInfor.NationalityID,
-        ReligionID: this.objMemberInfor.ReligionID,
-        Dob: this.objMemberInfor.Dob,
-        LunarDob: this.objMemberInfor.Dob,
-        bnirthPlace: this.objMemberInfor.BirthPlace,
-        IsDead: this.IsDead,
-        Dod: this.objMemberInfor.Dod,
-        LunarDod: this.objMemberInfor.LunarDod,
-        PlaceOfDeath: this.objMemberInfor.PlaceOfDeadth,
-        GraveSite: this.objMemberInfor.GraveSite,
-        Note: this.objMemberInfor.Note,
-        CurrentGeneration: this.generationMember,
-        BloodType: this.objMemberInfor.BloodType,
-        Male: this.objMemberInfor.Male,
-        CodeID: this.CodeID,
-        Action: this.action,
-      })
+      console.log(this.avatarSrc);
+      this.appendIfDefined("MemberName", this.objMemberInfor.MemberName);
+      this.appendIfDefined("NickName", this.objMemberInfor.NickName);
+      this.appendIfDefined("CurrentMemberID", this.CurrentIdMember);
+      this.appendIfDefined("BirthOrder", this.objMemberInfor.BirthOrder);
+      this.appendIfDefined("Origin", this.objMemberInfor.Origin);
+      this.appendIfDefined("NationalityID", this.objMemberInfor.NationalityID);
+      this.appendIfDefined("ReligionID", this.objMemberInfor.ReligionID);
+      this.appendIfDefined("Dob", this.objMemberInfor.Dob);
+      this.appendIfDefined("LunarDob", this.objMemberInfor.LunarDob);
+      this.appendIfDefined("bnirthPlace", this.objMemberInfor.BirthPlace);
+      this.appendIfDefined("IsDead", this.IsDead);
+      this.appendIfDefined("Dod", this.objMemberInfor.Dod);
+      this.appendIfDefined("LunarDod", this.objMemberInfor.LunarDod);
+      this.appendIfDefined("PlaceOfDeath", this.objMemberInfor.PlaceOfDeadth);
+      this.appendIfDefined("GraveSite", this.objMemberInfor.GraveSite);
+      this.appendIfDefined("Note", this.objMemberInfor.Note);
+      this.appendIfDefined("CurrentGeneration", this.generationMember);
+      this.appendIfDefined("BloodType", this.objMemberInfor.BloodType);
+      this.appendIfDefined("Male", this.objMemberInfor.Male);
+      this.appendIfDefined("CodeID", this.CodeID);
+      this.appendIfDefined("Action", this.action);
+      this.appendIfDefined("Image", this.avatarSrc);
+
+      await HTTP.post("member", this.formData)
         .then((response) => {
           if (this.action == "AddNormal") {
             this.getListUnspecifiedMembers();
@@ -1779,7 +1796,6 @@ export default {
           for (let i = 0; i < this.nodes.length; i++) {
             this.nodes[i].tags = [];
           }
-
           this.mytree(this.$refs.tree, this.nodes);
         })
         .catch((e) => {
@@ -1852,7 +1868,7 @@ export default {
       }
       if (foundNode.mid != null) {
         this.canAddMother = false;
-      }      
+      }
       if (foundNode.pids[0] == null) {
         if (foundNode.gender == "male") {
           this.canAddhusband = false;
@@ -1867,6 +1883,7 @@ export default {
     OnpenModal_SelectOption(id) {
       let foundNode = this.nodes.find((node) => node.id == id);
       this.setFunctionCanDo(foundNode);
+      console.log(foundNode);
       this.TitleModal = foundNode.name;
       this.generationMember = foundNode.generation;
       this.highLightSelectNode(id);
