@@ -260,8 +260,9 @@ export default {
     removeArticle(){
       console.log(this.articleIdChoose)
       HTTP.delete('delete-article',{
-        articleId : 2, 
-        codeId:123456
+        params:{
+          articleId:this.articleIdChoose
+        }
       }).then((response) =>{
         console.log(response.data)
         this.NotificationsDelete("Xóa thành công");
