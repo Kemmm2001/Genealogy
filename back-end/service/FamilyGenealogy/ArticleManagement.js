@@ -63,7 +63,7 @@ function addArticle(article) {
     });
 }
 
-function updateArticle(articleId,codeId, updatedData) {
+function updateArticle(data) {
     return new Promise((resolve, reject) => {
         const query = `
             UPDATE article
@@ -74,11 +74,11 @@ function updateArticle(articleId,codeId, updatedData) {
         `;
 
         const values = [
-            updatedData.ArticleUrl,
-            updatedData.ArticleName,
-            updatedData.ArticleDescription,
-            articleId,
-            codeId
+            data.ArticleUrl,
+            data.ArticleName,
+            data.ArticleDescription,
+            data.ArticleID,
+            data.CodeID
         ];
 
         db.connection.query(query, values, (err, result) => {

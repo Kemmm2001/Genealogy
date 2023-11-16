@@ -136,7 +136,8 @@
               <div class="list-group-item" @click="openMemberModal('AddMarriage', 'Vợ')">Thêm Vợ</div>
               <div class="list-group-item" @click="openMemberModal('AddChild', 'Con')">Thêm Con</div>
               <div class="list-group-item" @click="openModalAddMemberFromList()">Thêm mối quan hệ từ Danh Sách</div>
-              <div class="list-group-item" @click="removeMember()">Xóa thành viên (*)</div>
+              <!-- Em xóa tạm thằng removeMember() để test modal -->
+              <div class="list-group-item" @click="openCfDelModal()">Xóa thành viên (*)</div>
               <div class="list-group-item feature-overview">Các chức năng Khác</div>
               <div class="list-group-item" style="border-top: none;" @click="setPaternalAncestor(2)">Set làm tộc trưởng</div>
               <div class="list-group-item" @click="setPaternalAncestor(1)">Set làm tổ phụ</div>
@@ -852,6 +853,35 @@
               <button v-if="isAdd" type="button" class="btn btn-primary mr-2" @click="addMember()">Thêm</button>
               <button v-else-if="isEdit" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
               <button style="margin-left:10px" type="button" class="btn btn-secondary" @click="closeSelectModal()">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </modal>
+    </div>
+
+    <div class="cfdel-modal-container">
+      <modal name="cfdel-modal">
+        <div class="w-100 h-100 add-head-modal">
+          <div class="d-flex flex-row w-100 align-items-center position-relative">
+            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100"></div>
+            <div class="close-add-form" @click="closeModalAddMemberFromList()">
+              <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                <path
+                  d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+              </svg>
+            </div>
+          </div>
+          <div class="w-100 d-flex flex-column align-items-center justify-content-center"
+            style="height: calc(100% - 50px);">
+            <div class="d-flex align-items-center" style="height: 50%; font-size: 19px;">Bạn có chắc chắn muốn xóa AAA
+              khỏi gia tộc?</div>
+            <div class="d-flex flex-row w-100" style="height: 50%;">
+              <div class="col-6 d-flex align-items-center justify-content-center">
+                <div class="btn bg-primary text-white">Có</div>
+              </div>
+              <div class="col-6 d-flex align-items-center justify-content-center">
+                <div class="btn bg-primary text-white">Không</div>
+              </div>
             </div>
           </div>
         </div>
@@ -1872,6 +1902,12 @@ export default {
       this.CurrentIdMember = 0;
       this.RemoveHightLight();
       this.$modal.hide("Select-option-Modal");
+    },
+    openCfDelModal() {
+      this.$modal.show("cfdel-modal");
+    },
+    closeCfDelModal() {
+      this.$modal.hide("cfdel-modal");
     },
     openModalRelationship() {
       console.log(this.CurrentIdMember);
