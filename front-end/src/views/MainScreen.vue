@@ -520,7 +520,7 @@
               <div class="col-9" style="padding-top: 15px" v-if="extendedInfo">
                 <div class="row">
                   <div class="col-4">
-                    <img style="height:316px;width:360px;margin-bottom:20px" v-if="objMemberInfor.Image" :src="objMemberInfor.Image" alt="Avatar" />
+                    <img style="height:316px;width:360px;margin-bottom:20px" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" />
                     <svg v-else style="margin-bottom:36px" fill="#000000" height="300px" width="300px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
                       <g>
                         <g>
@@ -1330,6 +1330,7 @@ export default {
             this.objMemberInfor.LunarDod = this.formatDate(
               this.objMemberInfor.LunarDod
             );
+            this.avatarSrc = this.objMemberInfor.Image;
           }
           if (this.objMember.contact.length > 0) {
             this.objMemberContact = this.objMember.contact[0];
@@ -1499,22 +1500,19 @@ export default {
       const file = event.target.files[0];
       this.UrlAvatar = file;
       if (file) {
-        if (file.type.startsWith("image/")) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            this.avatarSrc = e.target.result;
-          };
-          reader.readAsDataURL(file);
-        } else {
-          console.error("Chỉ chấp nhận tệp hình ảnh.");
-        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.avatarSrc = e.target.result; // Cập nhật ảnh avatar bằng ảnh tải lên
+        };
+        reader.readAsDataURL(file);
       } else {
         this.avatarSrc = null;
       }
     },
     appendIfDefined(key, value) {
-      if (value !== undefined) {
+      if (value !== undefined && value !== null) {
         this.formData.append(key, value);
+        console.log(value);
       }
     },
     async addMember() {
@@ -1633,32 +1631,35 @@ export default {
     },
 
     updateInformation() {
+      this.formData = new FormData();
+      console.log(this.objMemberInfor.MarriageID);
+      this.appendIfDefined("MemberID", this.CurrentIdMember);
+      this.appendIfDefined("MemberName", this.objMemberInfor.MemberName);
+      this.appendIfDefined("NickName", this.objMemberInfor.NickName);
+      this.appendIfDefined("ParentID", this.objMemberInfor.ParentID);
+      this.appendIfDefined("MarriageID", this.objMemberInfor.MarriageID);
+      this.appendIfDefined("BirthOrder", this.objMemberInfor.BirthOrder);
+      this.appendIfDefined("Origin", this.objMemberInfor.Origin);
+      this.appendIfDefined("NationalityID", this.objMemberInfor.NationalityID);
+      this.appendIfDefined("ReligionID", this.objMemberInfor.ReligionID);
+      this.appendIfDefined("Dob", this.objMemberInfor.Dob);
+      this.appendIfDefined("LunarDob", this.objMemberInfor.LunarDob);
+      this.appendIfDefined("BirthPlace", this.objMemberInfor.BirthPlace);
+      this.appendIfDefined("IsDead", this.objMemberInfor.IsDead);
+      this.appendIfDefined("Dod", this.objMemberInfor.Dod);
+      this.appendIfDefined("LunarDod", this.objMemberInfor.LunarDod);
+      this.appendIfDefined("PlaceOfDeath", this.objMemberInfor.PlaceOfDeadth);
+      this.appendIfDefined("GraveSite", this.objMemberInfor.GraveSite);
+      this.appendIfDefined("Note", this.objMemberInfor.Note);
+      this.appendIfDefined("BloodType", this.objMemberInfor.BloodType);
+      this.appendIfDefined("Male", this.objMemberInfor.Male);
+      this.appendIfDefined("Image", this.UrlAvatar);
+
       if (this.selectDistrictMember != null) {
         this.objMemberContact.Address =
           this.objMemberContact.Address + "-" + this.selectDistrictMember;
       }
-      HTTP.put("member", {
-        MemberID: this.CurrentIdMember,
-        MemberName: this.objMemberInfor.MemberName,
-        NickName: this.objMemberInfor.NickName,
-        ParentID: this.objMemberInfor.ParentID,
-        MarriageID: this.objMemberInfor.MarriageID,
-        BirthOrder: this.objMemberInfor.BirthOrder,
-        Origin: this.objMemberInfor.Origin,
-        NationalityID: this.objMemberInfor.NationalityID,
-        ReligionID: this.objMemberInfor.ReligionID,
-        Dob: this.objMemberInfor.Dob,
-        LunarDob: this.objMemberInfor.LunarDob,
-        BirthPlace: this.objMemberInfor.BirthPlace,
-        IsDead: this.objMemberInfor.IsDead,
-        Dod: this.objMemberInfor.Dod,
-        LunarDod: this.objMemberInfor.LunarDod,
-        PlaceOfDeath: this.objMemberInfor.PlaceOfDeadth,
-        GraveSite: this.objMemberInfor.GraveSite,
-        Note: this.objMemberInfor.Note,
-        BloodType: this.objMemberInfor.BloodType,
-        Male: this.objMemberInfor.Male,
-      })
+      HTTP.put("member", this.formData)
         .then((response) => {
           console.log(response.data);
           if (response.data.success == true) {
