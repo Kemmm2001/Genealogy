@@ -30,7 +30,7 @@ div#tree {
   background: none;
 }
 
-.main-screen{
+.main-screen {
   background-color: #f2f2f2;
 }
 
@@ -61,12 +61,12 @@ svg.tommy .node.choose.female rect {
   stroke-width: 5px;
 } */
 
-.selected > rect{
+.selected>rect {
   stroke: #EDF048;
   stroke-width: 5px;
 }
 
-.notselected > rect{
+.notselected>rect {
   opacity: 0.5;
 }
 
@@ -107,17 +107,17 @@ svg.tommy .node.female>rect {
 .collapsedAddRelationship.expandedAddRelationship {
   height: 165px;
 }
- 
+
 .collapsedAddRelationship.expandedRelationship {
   height: 290px;
 }
 
-.main-screen .bft-search{
+.main-screen .bft-search {
   left: 20px;
   right: calc(100% - 20px) !important;
 }
 
-.advanced-filter-container{
+.advanced-filter-container {
   background-color: #3A4B54;
   width: 12%;
   height: 48px;
@@ -127,6 +127,14 @@ svg.tommy .node.female>rect {
   transition: 0.4s;
 }
 
-.advanced-filter-container.filterExpanded{
+.advanced-filter-container.filterExpanded {
   height: 240px;
+}
+
+.dark text.field_0,
+.dark text.field_1,
+.dark text.field_2,
+.dark text.field_3,
+.dark text.field_4 {
+  fill: papayawhip;
 }

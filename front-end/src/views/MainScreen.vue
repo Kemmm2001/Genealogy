@@ -121,8 +121,7 @@
               <div v-if="canAddWife" class="list-group-item" @click="openMemberModal('AddMarriage', 'Vợ')">Thêm Vợ</div>
               <div class="list-group-item" @click="openMemberModal('AddChild', 'Con')">Thêm Con</div>
               <div class="list-group-item" @click="openModalAddMemberFromList()">Thêm mối quan hệ từ Danh Sách</div>
-              <!-- Em xóa tạm thằng removeMember() để test modal -->
-              <div class="list-group-item" @click="openCfDelModal()">Xóa thành viên (*)</div>
+              <div class="list-group-item" @click="openCfDelModal(false,null,TitleModal)">Xóa thành viên (*)</div>
               <div class="list-group-item feature-overview">Các chức năng Khác</div>
               <div class="list-group-item" style="border-top: none;" @click="setPaternalAncestor(2)">Set làm tộc trưởng</div>
               <div class="list-group-item" @click="setPaternalAncestor(1)">Set làm tổ phụ</div>
@@ -521,8 +520,8 @@
               <div class="col-9" style="padding-top: 15px" v-if="extendedInfo">
                 <div class="row">
                   <div class="col-4">
-                    <img style="height:316px;width:360px;margin-bottom:30px" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" />
-                    <svg v-else style="margin-bottom:46px" fill="#000000" height="300px" width="300px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
+                    <img style="height:316px;width:360px;margin-bottom:20px" v-if="objMemberInfor.Image" :src="objMemberInfor.Image" alt="Avatar" />
+                    <svg v-else style="margin-bottom:36px" fill="#000000" height="300px" width="300px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
                       <g>
                         <g>
                           <circle cx="256" cy="114.526" r="114.526" />
@@ -535,7 +534,8 @@
                       </g>
                     </svg>
                     <div class="form-group">
-                      <label for="imageUpload">Tải ảnh lên</label>
+                      <label style="margin-bottom:10px" v-if="objMemberInfor.Image" for="imageUpload">Thay đổi ảnh</label>
+                      <label style="margin-bottom:10px" v-else for="imageUpload">Tải ảnh lên</label>
                       <input type="file" class="form-control input-file" id="imageUpload" accept="image/*" @change="updateAvatar($event)" />
                     </div>
                   </div>
@@ -822,6 +822,9 @@
               <div v-if="isRemoveRelationship" class="col-6 d-flex align-items-center justify-content-center">
                 <div class="btn text-white" @click="removeRelationship()" style="background-color: rgb(255, 8, 0);">Có</div>
               </div>
+              <div v-else class="col-6 d-flex align-items-center justify-content-center">
+                <div class="btn bg-danger text-white" @click="removeMember()">Có</div>
+              </div>
               <div class="col-6 d-flex align-items-center justify-content-center">
                 <div class="btn bg-primary text-white" @click="closeCfDelModal()">Không</div>
               </div>
@@ -955,6 +958,7 @@ export default {
       ListNationality: null,
       ListReligion: null,
       nodes: [],
+      formData: null,
 
       extendedInfo: true,
       extendedContact: false,
@@ -981,6 +985,9 @@ export default {
       resultCompare1: null,
       resultCompare2: null,
       selectedRowIndex: null,
+      UrlAvatar: null,
+      imagePath:
+        "/uploads/images/member-photo/726235fb96dc3db0ce8e76a4c9afe1.jpeg",
     };
   },
   methods: {
@@ -1312,7 +1319,6 @@ export default {
       })
         .then((response) => {
           this.objMember = response.data;
-
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
             this.takeDataMember(this.CurrentIdMember);
@@ -1403,6 +1409,7 @@ export default {
         }
         this.$modal.hide("Select-option-Modal");
         this.getListMember();
+        this.closeCfDelModal();
       });
     },
     getListJobMember() {
@@ -1490,44 +1497,56 @@ export default {
     },
     updateAvatar(event) {
       const file = event.target.files[0];
-
+      this.UrlAvatar = file;
       if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.avatarSrc = e.target.result; // Cập nhật ảnh avatar bằng ảnh tải lên
-        };
-        reader.readAsDataURL(file);
+        if (file.type.startsWith("image/")) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            this.avatarSrc = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        } else {
+          console.error("Chỉ chấp nhận tệp hình ảnh.");
+        }
       } else {
         this.avatarSrc = null;
       }
     },
+    appendIfDefined(key, value) {
+      if (value !== undefined) {
+        this.formData.append(key, value);
+      }
+    },
     async addMember() {
+      this.formData = new FormData();
       if (this.action == "AddNormal") {
         this.generationMember = 0;
       }
-      await HTTP.post("member", {
-        MemberName: this.objMemberInfor.MemberName,
-        NickName: this.objMemberInfor.NickName,
-        CurrentMemberID: this.CurrentIdMember,
-        BirthOrder: this.objMemberInfor.BirthOrder,
-        Origin: this.objMemberInfor.Origin,
-        NationalityID: this.objMemberInfor.NationalityID,
-        ReligionID: this.objMemberInfor.ReligionID,
-        Dob: this.objMemberInfor.Dob,
-        LunarDob: this.objMemberInfor.Dob,
-        bnirthPlace: this.objMemberInfor.BirthPlace,
-        IsDead: this.IsDead,
-        Dod: this.objMemberInfor.Dod,
-        LunarDod: this.objMemberInfor.LunarDod,
-        PlaceOfDeath: this.objMemberInfor.PlaceOfDeadth,
-        GraveSite: this.objMemberInfor.GraveSite,
-        Note: this.objMemberInfor.Note,
-        CurrentGeneration: this.generationMember,
-        BloodType: this.objMemberInfor.BloodType,
-        Male: this.objMemberInfor.Male,
-        CodeID: this.CodeID,
-        Action: this.action,
-      })
+      console.log(this.avatarSrc);
+      this.appendIfDefined("MemberName", this.objMemberInfor.MemberName);
+      this.appendIfDefined("NickName", this.objMemberInfor.NickName);
+      this.appendIfDefined("CurrentMemberID", this.CurrentIdMember);
+      this.appendIfDefined("BirthOrder", this.objMemberInfor.BirthOrder);
+      this.appendIfDefined("Origin", this.objMemberInfor.Origin);
+      this.appendIfDefined("NationalityID", this.objMemberInfor.NationalityID);
+      this.appendIfDefined("ReligionID", this.objMemberInfor.ReligionID);
+      this.appendIfDefined("Dob", this.objMemberInfor.Dob);
+      this.appendIfDefined("LunarDob", this.objMemberInfor.LunarDob);
+      this.appendIfDefined("bnirthPlace", this.objMemberInfor.BirthPlace);
+      this.appendIfDefined("IsDead", this.IsDead);
+      this.appendIfDefined("Dod", this.objMemberInfor.Dod);
+      this.appendIfDefined("LunarDod", this.objMemberInfor.LunarDod);
+      this.appendIfDefined("PlaceOfDeath", this.objMemberInfor.PlaceOfDeadth);
+      this.appendIfDefined("GraveSite", this.objMemberInfor.GraveSite);
+      this.appendIfDefined("Note", this.objMemberInfor.Note);
+      this.appendIfDefined("CurrentGeneration", this.generationMember);
+      this.appendIfDefined("BloodType", this.objMemberInfor.BloodType);
+      this.appendIfDefined("Male", this.objMemberInfor.Male);
+      this.appendIfDefined("CodeID", this.CodeID);
+      this.appendIfDefined("Action", this.action);
+      this.appendIfDefined("Image", this.UrlAvatar);
+
+      await HTTP.post("member", this.formData)
         .then((response) => {
           if (this.action == "AddNormal") {
             this.getListUnspecifiedMembers();
@@ -1779,7 +1798,6 @@ export default {
           for (let i = 0; i < this.nodes.length; i++) {
             this.nodes[i].tags = [];
           }
-
           this.mytree(this.$refs.tree, this.nodes);
         })
         .catch((e) => {
@@ -1852,7 +1870,7 @@ export default {
       }
       if (foundNode.mid != null) {
         this.canAddMother = false;
-      }      
+      }
       if (foundNode.pids[0] == null) {
         if (foundNode.gender == "male") {
           this.canAddhusband = false;
@@ -1867,6 +1885,7 @@ export default {
     OnpenModal_SelectOption(id) {
       let foundNode = this.nodes.find((node) => node.id == id);
       this.setFunctionCanDo(foundNode);
+      console.log(foundNode);
       this.TitleModal = foundNode.name;
       this.generationMember = foundNode.generation;
       this.highLightSelectNode(id);
@@ -1908,6 +1927,10 @@ export default {
         this.action = action;
         this.newIdMember = id;
         console.log(id);
+      } else {
+        console.log(this.TitleConfirm);
+        this.TitleConfirm = "Bạn có chắc chắn xóa " + name + " khỏi gia phả";
+        this.$modal.show("cfdel-modal");
       }
     },
 
