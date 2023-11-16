@@ -163,49 +163,49 @@
                     </tr>
                   </thead>
                   <tbody v-if="ResultRelationship">
-                    <tr v-if="ResultRelationship.Father" class="headlist-item headlist-table-item">
+                    <tr v-if="ResultRelationship.Father" class="headlist-item headlist-table-item" @click="getInforMember(ResultRelationship.Father.MemberID)">
                       <td style="text-align: center;">{{ ResultRelationship.Father.MemberName }}</td>
                       <td style="text-align: center;">{{ ResultRelationship.Father.Male == 1 ? "Nam" : "Nữ" }}</td>
                       <td style="text-align: center;">{{ formatDate(ResultRelationship.Father.Dob) }}</td>
                       <td style="text-align: center;">Cha</td>
                       <td style="text-align: center;">
-                        <button class="btn btn-secondary">Hủy mối quan hệ</button>
+                        <button class="btn btn-secondary" @click.stop="openCfDelModal(true,ResultRelationship.Father.MemberID,ResultRelationship.Father.MemberName,'RemoveParent')">Hủy mối quan hệ</button>
                       </td>
                     </tr>
-                    <tr v-if="ResultRelationship.Mother" class="headlist-item headlist-table-item">
+                    <tr v-if="ResultRelationship.Mother" class="headlist-item headlist-table-item" @click="getInforMember(ResultRelationship.Mother.MemberID)">
                       <td style="text-align: center;">{{ ResultRelationship.Mother.MemberName }}</td>
                       <td style="text-align: center;">{{ ResultRelationship.Mother.Male == 1 ? "Nam" : "Nữ" }}</td>
                       <td style="text-align: center;">{{ formatDate(ResultRelationship.Mother.Dob) }}</td>
                       <td style="text-align: center;">Mẹ</td>
                       <td style="text-align: center;">
-                        <button class="btn btn-secondary">Hủy mối quan hệ</button>
+                        <button class="btn btn-secondary" @click.stop="openCfDelModal(true,ResultRelationship.Mother.MemberID,ResultRelationship.Mother.MemberName,'RemoveParent')">Hủy mối quan hệ</button>
                       </td>
                     </tr>
-                    <tr v-if="ResultRelationship.Husband" class="headlist-item headlist-table-item">
+                    <tr v-if="ResultRelationship.Husband" class="headlist-item headlist-table-item" @click="getInforMember(ResultRelationship.Husband.MemberID)">
                       <td style="text-align: center;">{{ ResultRelationship.Husband.MemberName }}</td>
                       <td style="text-align: center;">{{ ResultRelationship.Husband.Male == 1 ? "Nam" : "Nữ" }}</td>
                       <td style="text-align: center;">{{ formatDate(ResultRelationship.Husband.Dob) }}</td>
                       <td style="text-align: center;">Chồng</td>
                       <td style="text-align: center;">
-                        <button class="btn btn-secondary">Hủy mối quan hệ</button>
+                        <button class="btn btn-secondary" @click.stop="openCfDelModal(true,ResultRelationship.Husband.MemberID,ResultRelationship.Husband.MemberName,'RemoveMarried')">Hủy mối quan hệ</button>
                       </td>
                     </tr>
-                    <tr v-if="ResultRelationship.Wife" class="headlist-item headlist-table-item">
+                    <tr v-if="ResultRelationship.Wife" class="headlist-item headlist-table-item" @click="getInforMember(ResultRelationship.Wife.MemberID)">
                       <td style="text-align: center;">{{ ResultRelationship.Wife.MemberName }}</td>
                       <td style="text-align: center;">{{ ResultRelationship.Wife.Male == 1 ? "Nam" : "Nữ" }}</td>
                       <td style="text-align: center;">{{ formatDate(ResultRelationship.Wife.Dob) }}</td>
                       <td style="text-align: center;">Vợ</td>
                       <td style="text-align: center;">
-                        <button class="btn btn-secondary">Hủy mối quan hệ</button>
+                        <button class="btn btn-secondary" @click.stop="openCfDelModal(true,ResultRelationship.Wife.MemberID,ResultRelationship.Wife.MemberName,'RemoveMarried')">Hủy mối quan hệ</button>
                       </td>
                     </tr>
-                    <tr v-for="c in ResultRelationship.child" :key="c.id" class="headlist-item headlist-table-item">
+                    <tr v-for="(c,index) in ResultRelationship.child" :key="index" class="headlist-item headlist-table-item" @click="getInforMember(c.MemberID)">
                       <td style="text-align: center;">{{ c.MemberName }}</td>
                       <td style="text-align: center;">{{ c.Male == 1 ? "Nam" : "Nữ" }}</td>
                       <td style="text-align: center;">{{ formatDate(c.Dob) }}</td>
                       <td style="text-align: center;">Con</td>
                       <td style="text-align: center;">
-                        <button class="btn btn-secondary">Hủy mối quan hệ</button>
+                        <button class="btn btn-secondary" @click.stop="openCfDelModal(true,c.MemberID,c.MemberName,'RemoveChild')">Hủy mối quan hệ</button>
                       </td>
                     </tr>
                   </tbody>
@@ -810,20 +810,20 @@
         <div class="w-100 h-100 add-head-modal">
           <div class="d-flex flex-row w-100 align-items-center position-relative">
             <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100"></div>
-            <div class="close-add-form" @click="closeModalAddMemberFromList()">
+            <div class="close-add-form" @click="closeCfDelModal()">
               <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
               </svg>
             </div>
           </div>
           <div class="w-100 d-flex flex-column align-items-center justify-content-center" style="height: calc(100% - 50px);">
-            <div class="d-flex align-items-center" style="height: 50%; font-size: 19px;">Bạn có chắc chắn muốn xóa AAA khỏi gia tộc?</div>
+            <div class="d-flex align-items-center" style="height: 50%; font-size: 19px;">{{TitleConfirm}}</div>
             <div class="d-flex flex-row w-100" style="height: 50%;">
-              <div class="col-6 d-flex align-items-center justify-content-center">
-                <div class="btn bg-primary text-white">Có</div>
+              <div v-if="isRemoveRelationship" class="col-6 d-flex align-items-center justify-content-center">
+                <div class="btn bg-primary text-white" @click="removeRelationship()">Có</div>
               </div>
               <div class="col-6 d-flex align-items-center justify-content-center">
-                <div class="btn bg-primary text-white">Không</div>
+                <div class="btn bg-primary text-white" @click="closeCfDelModal()">Không</div>
               </div>
             </div>
           </div>
@@ -885,8 +885,10 @@ export default {
       isEdit: false,
       checkAll: false,
       newIdMember: null,
-
       CurrentIdMember: null,
+
+      isRemoveRelationship: false,
+      TitleConfirm: null,
 
       generationMember: null,
       CodeID: 123456,
@@ -1183,6 +1185,7 @@ export default {
     takeDataMember() {
       this.CurrentIdMember = this.objMemberInfor.MemberID;
       this.generationMember = this.objMemberInfor.Generation;
+      console.log("Vào Take: " + this.objMemberInfor.Generation);
       this.IsDead = this.objMemberInfor.IsDead;
     },
     sendMessageToMember() {
@@ -1836,7 +1839,7 @@ export default {
     OnpenModal_SelectOption(id) {
       let foundNode = this.nodes.find((node) => node.id == id);
       this.TitleModal = foundNode.name;
-      console.log(id);
+      this.generationMember = foundNode.generation;
       this.highLightSelectNode(id);
       this.$modal.show("Select-option-Modal");
       this.CurrentIdMember = id;
@@ -1846,14 +1849,42 @@ export default {
       this.RemoveHightLight();
       this.$modal.hide("Select-option-Modal");
     },
-    openCfDelModal() {
-      this.$modal.show("cfdel-modal");
+    removeRelationship() {
+      HTTP.put("removeRelationship", {
+        CurrentID: this.CurrentIdMember,
+        RemoveID: this.newIdMember,
+        action: this.action,
+      })
+        .then((response) => {
+          if (response.data.success == true) {
+            this.NotificationsScuccess(response.data.message);
+          } else {
+            this.NotificationsDelete(response.data.message);
+          }
+          this.closeCfDelModal();
+          this.openModalRelationship();
+          this.getListMember();
+          this.getListUnspecifiedMembers();
+          this.closeSelectModal();
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+    openCfDelModal(flag, id, name, action) {
+      this.isRemoveRelationship = flag;
+      if (this.isRemoveRelationship) {
+        this.TitleConfirm = "Bạn có chắc chắn muốn hủy mối quan hệ với " + name;
+        this.action = action;
+        this.newIdMember = id;
+        this.$modal.show("cfdel-modal");
+        console.log(id);
+      }
     },
     closeCfDelModal() {
       this.$modal.hide("cfdel-modal");
     },
     openModalRelationship() {
-      console.log(this.CurrentIdMember);
       this.$modal.show("modal-relationship");
       HTTP.get("relationship", {
         params: {
@@ -1861,7 +1892,7 @@ export default {
         },
       }).then((response) => {
         this.ResultRelationship = response.data.data;
-        console.log(this.ResultRelationship.Father);
+        console.log(this.ResultRelationship);
       });
     },
     closeModalRelationship() {

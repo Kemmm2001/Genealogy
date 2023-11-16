@@ -27,7 +27,7 @@ async function getListPhone(ListMemberID) {
                     ListPhone.push(result[0].Phone);
                 }
                 count++;
-                if (count === ListMemberID.length) {                   
+                if (count === ListMemberID.length) {
                     resolve(ListPhone);
                 }
             });
@@ -175,7 +175,7 @@ async function filterEvent(filterOptions) {
         return eventResults;
     } catch (error) {
         console.error('Lỗi khi lọc sự kiện:', error);
-        throw error;
+        console.log(error);
     }
 }
 
