@@ -5,9 +5,9 @@
 }
 
 .container-fluid {
-    min-height: 100vh;
+    /* min-height: 100vh; */
     height: 100%;
-    background-color: #f2f2f2;
+    background-color: #bf831526;
 }
 
 @font-face {
@@ -83,4 +83,15 @@ a {
 
 select{
     cursor: pointer;
+}
+
+tr{
+    text-align: center;
+}
+
+.info-pages-container{
+    background-color: #f2f2f2;
+    padding: 15px 100px 35px 100px;
+    border-radius: 0.575rem;
+    position: relative;
 }
