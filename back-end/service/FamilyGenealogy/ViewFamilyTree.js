@@ -109,8 +109,8 @@ async function RemoveParent(RemoveChild) {
                 console.log(err)
             }
         });
-        let queryFindMarried = `select * from genealogy.familymember where MarriageID = ${RemoveChild}`;        
-        db.connection.query(queryFindMarried, async (err, result) => {          
+        let queryFindMarried = `select * from genealogy.familymember where MarriageID = ${RemoveChild}`;
+        db.connection.query(queryFindMarried, async (err, result) => {
             if (!err && result.length > 0) {
                 let queryRemove = `UPDATE familymember SET MarriageID = null WHERE MemberID = ${result[0].MemberID}`;
                 db.connection.query(queryRemove, (err) => {
@@ -290,7 +290,7 @@ function turnOnSQL_SAFE_UPDATES() {
 function ResetAllGenerationMember(CodeID) {
     let query = `UPDATE familymember
     SET Generation = 0
-    where CodeID = ${CodeID}`;
+    where CodeID = '${CodeID}'`;
     db.connection.query(query, (err, result) => {
         if (err) {
             console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
@@ -407,7 +407,7 @@ async function RelationShipMember(memberId) {
                                         resolve(objRelationship);
                                     });
                                 });
-                            } else {                                
+                            } else {
                                 let childQuery = `SELECT * FROM familymember WHERE ParentID = ${memberId}`;
                                 db.connection.query(childQuery, async (err, result) => {
                                     if (!err && result.length > 0) {
@@ -416,7 +416,7 @@ async function RelationShipMember(memberId) {
                                     resolve(objRelationship);
                                 });
                             }
-                            if (member.MarriageID) {                                
+                            if (member.MarriageID) {
                                 let marriedQuery = `SELECT * FROM familymember WHERE MarriageID = ${memberId}`
                                 db.connection.query(marriedQuery, async (err, marriedResult) => {
                                     if (!err && marriedResult.length > 0) {
@@ -480,9 +480,10 @@ async function RelationShipMember(memberId) {
 
 
 function GetIdPaternalAncestor(CodeID) {
+    console.log(CodeID)
     return new Promise((resolve, reject) => {
         let query = `select MemberID from memberrole
-        where CodeId = ${CodeID} and RoleID = 1`;
+        where CodeId = '${CodeID}' and RoleID = 1`;
         db.connection.query(query, (err, result) => {
             if (err) {
                 console.log(err)
@@ -542,7 +543,7 @@ function isMemberInList(list, member) {
 
 function getListMessage(CodeID) {
     return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM genealogy.notificationhistory where CodeID = ${CodeID}`;
+        let query = `SELECT * FROM genealogy.notificationhistory where CodeID = '${CodeID}'`;
         db.connection.query(query, (err, result) => {
             if (err) {
                 console.log(err)
@@ -557,7 +558,7 @@ function getListMessage(CodeID) {
 async function ViewFamilyTree(CodeID) {
     return new Promise((resolve, reject) => {
         try {
-            let queryGetAllMember = `SELECT * FROM genealogy.familymember WHERE CodeID = ${CodeID}`;
+            let queryGetAllMember = `SELECT * FROM genealogy.familymember WHERE CodeID = '${CodeID}'`;
             db.connection.query(queryGetAllMember, async (err, result) => {
                 if (!err) {
                     let IdPaternal = await GetIdPaternalAncestor(CodeID);

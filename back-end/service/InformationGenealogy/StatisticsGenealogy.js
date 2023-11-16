@@ -3,7 +3,7 @@ const db = require('../../Models/ConnectDB')
 function GetListMember(CodeId) {
     return new Promise((resolve, reject) => {
         let query = `SELECT * FROM genealogy.familymember
-        where CodeID = ${CodeId}        `
+        where CodeID = '${CodeId}'`
         db.connection.query(query, (err, result) => {
             if (err) {
                 reject(err)
@@ -16,7 +16,7 @@ function GetListMember(CodeId) {
 function getGenerationNumber(CodeID) {
     return new Promise((resolve, reject) => {
         let query = `SELECT MAX(Generation) AS TotalGenerations FROM genealogy.familymember
-        where CodeID = ${CodeID}        `
+        where CodeID = '${CodeID}'`
         db.connection.query(query, (err, result) => {
             if (err) {
                 reject(err)

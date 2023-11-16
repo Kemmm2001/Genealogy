@@ -894,7 +894,7 @@ export default {
       TitleConfirm: null,
 
       generationMember: null,
-      CodeID: 123456,
+      CodeID: '577-862-785',
       idPaternalAncestor: null,
       IsDead: 0,
       ListMemberJob: null,
@@ -2018,7 +2018,7 @@ export default {
           CodeID: this.CodeID,
         },
       })
-        .then((response) => {
+        .then((response) => {  
           this.ListMessage = response.data;
         })
         .catch((e) => {
@@ -2145,6 +2145,8 @@ export default {
     },
   },
   mounted() {
+    console.log(localStorage.getItem("CodeID"))
+    // this.CodeID = localStorage.getItem("CodeID");
     this.getListMessage();
     this.getListCity();
     this.getListNationality();

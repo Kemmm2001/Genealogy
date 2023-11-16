@@ -101,7 +101,7 @@ var getListMessage = async (req, res) => {
 var AllMemberInGenelogy = async (req, res) => {
     try {
         let CodeID = req.query.CodeID;
-        let data = await FamilyTreeService.ViewFamilyTree(CodeID);
+        let data = await FamilyTreeService.ViewFamilyTree(CodeID);    
         data.forEach((item) => {
             if (item.dod === '1-1-1970') {
                 item.dod = null;

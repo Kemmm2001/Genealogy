@@ -3,7 +3,7 @@ const db = require('../../Models/ConnectDB')
 
 function getAllEvent(CodeID) {
     return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM eventfamily where CodeID = ${CodeID}`;
+        let query = `SELECT * FROM eventfamily where CodeID = '${CodeID}'`;
         db.connection.query(query, (err, result) => {
             if (err) {
                 console.log(err)

@@ -2,7 +2,7 @@ const db = require('../../Models/ConnectDB');
 
 function GeneralInformation(CodeId) {
     return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM familytree where CodeID = ${CodeId}`;
+        let query = `SELECT * FROM familytree where CodeID = '${CodeId}'`;
         db.connection.query(query, (err, result) => {
             if (err) {
                 console.log(err);
