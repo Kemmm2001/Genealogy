@@ -213,7 +213,7 @@
               </div>
             </div>
           </div>
-          <div class="modal-footer position-absolute w-100r" style="bottom: 8px;">
+          <div class="modal-footer position-absolute w-100" style="bottom: 0; padding-right: 8px;">
             <div class="compare-modal-btn btn">Cancel</div>
           </div>
         </div>
@@ -810,9 +810,9 @@
       <modal name="cfdel-modal">
         <div class="w-100 h-100 add-head-modal">
           <div class="d-flex flex-row w-100 align-items-center position-relative">
-            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100"></div>
-            <div class="close-add-form" @click="closeCfDelModal()">
-              <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100 bg-danger text-white">Quan trọng</div>
+            <div class="close-add-form" @click="closeModalAddMemberFromList()">
+              <svg class="close-add-form-icon" style="fill: #FFFFFF !important;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
               </svg>
             </div>
@@ -821,7 +821,7 @@
             <div class="d-flex align-items-center" style="height: 50%; font-size: 19px;">{{TitleConfirm}}</div>
             <div class="d-flex flex-row w-100" style="height: 50%;">
               <div v-if="isRemoveRelationship" class="col-6 d-flex align-items-center justify-content-center">
-                <div class="btn bg-primary text-white" @click="removeRelationship()">Có</div>
+                <div class="btn bg-danger text-white" @click="removeRelationship()">Có</div>
               </div>
               <div class="col-6 d-flex align-items-center justify-content-center">
                 <div class="btn bg-primary text-white" @click="closeCfDelModal()">Không</div>
