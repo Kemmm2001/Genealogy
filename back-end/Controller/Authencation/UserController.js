@@ -113,7 +113,7 @@ var registerGenealogy = async (req, res) => {
     if (data1) {
       try {
         let data = await UserService.insertAccountFamily(value.accountID, codeID, 1);
-        return res.json({ data });
+        return res.json({ codeID });
       } catch (error) {
         // Xử lý khi `UserService.insertAccount` không thành công
         res.status(500).json({ error: 'Lỗi khi thực hiện insertAccount' });
