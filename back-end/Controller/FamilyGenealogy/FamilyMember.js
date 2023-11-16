@@ -126,12 +126,12 @@ var addMember = async (req, res) => {
             }
             // trường hợp muốn thêm cha mẹ
             if (req.body.Action === 'AddParent') {
-                await FamilyManagementService.setGeneration(currentMember[0].Generation + 1, data.insertId);
+                await FamilyManagementService.setGeneration(currentMember[0].Generation - 1, data.insertId);
                 await FamilyManagementService.insertParentIdToMember(data.insertId, req.body.CurrentMemberID);
             }
             // trường hợp muốn thêm con cái
             else if (req.body.Action === 'AddChild') {
-                await FamilyManagementService.setGeneration(currentMember[0].Generation - 1, data.insertId);
+                await FamilyManagementService.setGeneration(currentMember[0].Generation + 1, data.insertId);
                 await FamilyManagementService.insertParentIdToMember(req.body.CurrentMemberID, data.insertId);
             }
             // trường hợp muốn thêm vợ chồng
