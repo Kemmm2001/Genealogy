@@ -121,8 +121,7 @@
               <div v-if="canAddWife" class="list-group-item" @click="openMemberModal('AddMarriage', 'Vợ')">Thêm Vợ</div>
               <div class="list-group-item" @click="openMemberModal('AddChild', 'Con')">Thêm Con</div>
               <div class="list-group-item" @click="openModalAddMemberFromList()">Thêm mối quan hệ từ Danh Sách</div>
-              <!-- Em xóa tạm thằng removeMember() để test modal -->
-              <div class="list-group-item" @click="openCfDelModal()">Xóa thành viên (*)</div>
+              <div class="list-group-item" @click="openCfDelModal(false,null,TitleModal)">Xóa thành viên (*)</div>
               <div class="list-group-item feature-overview">Các chức năng Khác</div>
               <div class="list-group-item" style="border-top: none;" @click="setPaternalAncestor(2)">Set làm tộc trưởng</div>
               <div class="list-group-item" @click="setPaternalAncestor(1)">Set làm tổ phụ</div>
@@ -521,8 +520,8 @@
               <div class="col-9" style="padding-top: 15px" v-if="extendedInfo">
                 <div class="row">
                   <div class="col-4">
-                    <img style="height:316px;width:360px;margin-bottom:30px" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" />
-                    <svg v-else style="margin-bottom:46px" fill="#000000" height="300px" width="300px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
+                    <img style="height:316px;width:360px;margin-bottom:20px" v-if="objMemberInfor.Image" :src="objMemberInfor.Image" alt="Avatar" />
+                    <svg v-else style="margin-bottom:36px" fill="#000000" height="300px" width="300px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
                       <g>
                         <g>
                           <circle cx="256" cy="114.526" r="114.526" />
@@ -535,10 +534,10 @@
                       </g>
                     </svg>
                     <div class="form-group">
-                      <label for="imageUpload">Tải ảnh lên</label>
+                      <label style="margin-bottom:10px" v-if="objMemberInfor.Image" for="imageUpload">Thay đổi ảnh</label>
+                      <label style="margin-bottom:10px" v-else for="imageUpload">Tải ảnh lên</label>
                       <input type="file" class="form-control input-file" id="imageUpload" accept="image/*" @change="updateAvatar($event)" />
                     </div>
-                    <img :src="imagePath" alt="Member Photo" />
                   </div>
                   <div class="col-8">
                     <div style="position: relative; margin-right:10px">
@@ -811,7 +810,7 @@
         <div class="w-100 h-100 add-head-modal">
           <div class="d-flex flex-row w-100 align-items-center position-relative">
             <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100 bg-danger text-white">Quan trọng</div>
-            <div class="close-add-form" @click="closeModalAddMemberFromList()">
+            <div class="close-add-form" @click="closeCfDelModal()">
               <svg class="close-add-form-icon" style="fill: #FFFFFF !important;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
               </svg>
@@ -822,6 +821,9 @@
             <div class="d-flex flex-row w-100" style="height: 50%;">
               <div v-if="isRemoveRelationship" class="col-6 d-flex align-items-center justify-content-center">
                 <div class="btn bg-danger text-white" @click="removeRelationship()">Có</div>
+              </div>
+              <div v-else class="col-6 d-flex align-items-center justify-content-center">
+                <div class="btn bg-danger text-white" @click="removeMember()">Có</div>
               </div>
               <div class="col-6 d-flex align-items-center justify-content-center">
                 <div class="btn bg-primary text-white" @click="closeCfDelModal()">Không</div>
@@ -983,7 +985,7 @@ export default {
       resultCompare1: null,
       resultCompare2: null,
       selectedRowIndex: null,
-      testAvatar: null,
+      UrlAvatar: null,
       imagePath:
         "/uploads/images/member-photo/726235fb96dc3db0ce8e76a4c9afe1.jpeg",
     };
@@ -1317,7 +1319,6 @@ export default {
       })
         .then((response) => {
           this.objMember = response.data;
-
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
             this.takeDataMember(this.CurrentIdMember);
@@ -1408,6 +1409,7 @@ export default {
         }
         this.$modal.hide("Select-option-Modal");
         this.getListMember();
+        this.closeCfDelModal();
       });
     },
     getListJobMember() {
@@ -1495,7 +1497,7 @@ export default {
     },
     updateAvatar(event) {
       const file = event.target.files[0];
-      this.testAvatar = file;
+      this.UrlAvatar = file;
       if (file) {
         if (file.type.startsWith("image/")) {
           const reader = new FileReader();
@@ -1542,7 +1544,7 @@ export default {
       this.appendIfDefined("Male", this.objMemberInfor.Male);
       this.appendIfDefined("CodeID", this.CodeID);
       this.appendIfDefined("Action", this.action);
-      this.appendIfDefined("Image", this.avatarSrc);
+      this.appendIfDefined("Image", this.UrlAvatar);
 
       await HTTP.post("member", this.formData)
         .then((response) => {
@@ -1925,6 +1927,10 @@ export default {
         this.newIdMember = id;
         this.$modal.show("cfdel-modal");
         console.log(id);
+      } else {
+        console.log(this.TitleConfirm);
+        this.TitleConfirm = "Bạn có chắc chắn xóa " + name + " khỏi gia phả";
+        this.$modal.show("cfdel-modal");
       }
     },
     closeCfDelModal() {
