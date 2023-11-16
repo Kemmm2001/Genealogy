@@ -18,29 +18,20 @@
       <div class="w-100 d-flex flex-row">
         <div class="col-6 px-2" style="padding-top: 8px;">
           <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
-            <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">
-              {{
-              blood.BloodType }}
-            </option>
+            <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">{{ blood.BloodType }}</option>
           </select>
         </div>
         <div class="col-6 px-2" style="padding-top: 8px;">
           <select class="d-flex text-center form-select dropdown p-0" v-model="selectAge" @change="GetListFilterMember()">
             <option class="dropdown-item" :value="null">Nhóm Tuổi</option>
-            <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">
-              {{ age.From }} - {{
-              age.End }} Tuổi
-            </option>
+            <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{ age.From }} - {{ age.End }} Tuổi</option>
           </select>
         </div>
       </div>
       <div class="w-100 d-flex flex-row" style="padding-top: 8px">
         <div class="col-6 px-2">
           <div class="w-100">
-            <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary">
-              Tạo thông
-              báo
-            </button>
+            <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary">Tạo thông báo</button>
           </div>
         </div>
         <div class="col-6 px-2">
@@ -90,19 +81,13 @@
         </div>
         <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
           <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
-            <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">
-              {{
-              blood.BloodType }}
-            </option>
+            <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">{{ blood.BloodType }}</option>
           </select>
         </div>
         <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
           <select class="d-flex text-center form-select dropdown p-0" v-model="selectAge" @change="GetListFilterMember()">
             <option class="dropdown-item" :value="null">Nhóm Tuổi</option>
-            <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">
-              {{ age.From }} - {{
-              age.End }} Tuổi
-            </option>
+            <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{ age.From }} - {{ age.End }} Tuổi</option>
           </select>
         </div>
         <div @click="advancedFilterDown = !advancedFilterDown" class="p-2 d-flex align-items-center justify-content-center" style="height: 48px; cursor: pointer;">
@@ -153,10 +138,7 @@
         <div class="form-group h-100">
           <div class="w-100 h-100 add-article-modal">
             <div class="d-flex flex-row w-100 align-items-center position-relative">
-              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">
-                Các mối quan hệ
-                của
-              </div>
+              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Các mối quan hệ của</div>
               <div class="close-add-form" @click="closeModalRelationship()">
                 <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                   <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -451,10 +433,7 @@
       <modal name="add-from-list">
         <div class="w-100 h-100 add-head-modal">
           <div class="d-flex flex-row w-100 align-items-center position-relative">
-            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">
-              Thêm {{ TitleModal
-              }} Từ Danh Sách
-            </div>
+            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm {{ TitleModal }} Từ Danh Sách</div>
             <div class="close-add-form" @click="closeModalAddMemberFromList()">
               <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -563,25 +542,16 @@
                   <div class="col-8">
                     <div style="position: relative; margin-right:10px">
                       <input v-model="objMemberInfor.MemberName" type="text" class="form-control modal-item" placeholder />
-                      <label class="form-label" for="input" :class="{ 'active': objMemberInfor.MemberName }">
-                        Tên thành
-                        viên đầy đủ
-                      </label>
+                      <label class="form-label" for="input" :class="{ 'active': objMemberInfor.MemberName }">Tên thành viên đầy đủ</label>
                     </div>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
                         <input v-model="objMemberInfor.NickName" type="text" class="form-control modal-item" placeholder />
-                        <label class="form-label" for="input" :class="{ 'active': objMemberInfor.NickName }">
-                          Tên thường
-                          gọi
-                        </label>
+                        <label class="form-label" for="input" :class="{ 'active': objMemberInfor.NickName }">Tên thường gọi</label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
                         <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item" placeholder />
-                        <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">
-                          Con
-                          Thứ
-                        </label>
+                        <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con Thứ</label>
                       </div>
                     </div>
                     <div style="display:flex">
@@ -606,35 +576,23 @@
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
                         <select v-model="objMemberInfor.NationalityID" class="form-select modal-item">
-                          <option v-for="nation in ListNationality" :key="nation.id" :value="nation.NationalityID">
-                            {{
-                            nation.NationalityName }}
-                          </option>
+                          <option v-for="nation in ListNationality" :key="nation.id" :value="nation.NationalityID">{{ nation.NationalityName }}</option>
                         </select>
                         <label class="form-label" for="select">Quốc Tịch</label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
                         <select v-model="objMemberInfor.ReligionID" class="form-select modal-item">
-                          <option v-for="religion in ListReligion" :key="religion.id" :value="religion.ReligionID">
-                            {{
-                            religion.ReligionName }}
-                          </option>
+                          <option v-for="religion in ListReligion" :key="religion.id" :value="religion.ReligionID">{{ religion.ReligionName }}</option>
                         </select>
                         <label class="form-label-number" for="select">Tôn Giáo</label>
                       </div>
                     </div>
                     <div style="position: relative; margin-right:10px">
                       <input v-model="objMemberInfor.Origin" type="text" class="form-control modal-item" placeholder />
-                      <label class="form-label" for="input" :class="{ 'active': objMemberInfor.Origin }">
-                        Nguyên
-                        Quán
-                      </label>
+                      <label class="form-label" for="input" :class="{ 'active': objMemberInfor.Origin }">Nguyên Quán</label>
                     </div>
                     <div class="form-group">
-                      <h6 style="margin-bottom:20px">
-                        Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và
-                        ngược lại)
-                      </h6>
+                      <h6 style="margin-bottom:20px">Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược lại)</h6>
                       <div style="display:flex">
                         <div style="position: relative; width: 50%;margin-right: 10px;">
                           <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar()" />
@@ -648,17 +606,11 @@
                     </div>
                     <div style="position: relative; margin-right:10px">
                       <input v-model="objMemberInfor.BirthPlace" type="text" class="form-control modal-item" placeholder />
-                      <label class="form-label" for="input" :class="{ 'active': objMemberInfor.BirthPlace }">
-                        Nơi
-                        sinh
-                      </label>
+                      <label class="form-label" for="input" :class="{ 'active': objMemberInfor.BirthPlace }">Nơi sinh</label>
                     </div>
                     <div class="form-check form-check-inline">
                       <input v-model="IsDead" type="checkbox" class="form-check-input" id="lostCheckbox" />
-                      <label style="font-size: 14px; margin-top: 7px;" class="form-check-label" for="lostCheckbox">
-                        Đã
-                        mất
-                      </label>
+                      <label style="font-size: 14px; margin-top: 7px;" class="form-check-label" for="lostCheckbox">Đã mất</label>
                     </div>
                     <div class="form-group" v-if="IsDead == 1">
                       <h6 style="margin-bottom:20px">Ngày Mất (*)</h6>
@@ -726,10 +678,7 @@
                   <div style="display:flex">
                     <div style="position: relative; width: 50%; margin-right: 10px;">
                       <input v-model="objMemberJob.Organization" type="text" class="form-control modal-item" placeholder />
-                      <label class="form-label" for="input" :class="{ 'active': objMemberJob.Organization }">
-                        Tên Cơ
-                        Quan
-                      </label>
+                      <label class="form-label" for="input" :class="{ 'active': objMemberJob.Organization }">Tên Cơ Quan</label>
                     </div>
                     <div style="position: relative;width: 50%; margin-right: 10px;">
                       <input v-model="objMemberJob.OrganizationAddress" type="text" class="form-control modal-item" placeholder />
@@ -739,10 +688,7 @@
                   <div style="display:flex">
                     <div style="position: relative; width: 50%;margin-right: 10px;">
                       <input v-model="objMemberJob.Role" type="text" class="form-control modal-item" placeholder />
-                      <label class="form-label" for="input" :class="{ 'active': objMemberJob.Role }">
-                        Vị trí công
-                        tác
-                      </label>
+                      <label class="form-label" for="input" :class="{ 'active': objMemberJob.Role }">Vị trí công tác</label>
                     </div>
                     <div style="position: relative;width: 50%; margin-right: 10px;">
                       <input v-model="objMemberJob.JobName" type="text" class="form-control modal-item" placeholder />
@@ -866,15 +812,12 @@
             <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100"></div>
             <div class="close-add-form" @click="closeModalAddMemberFromList()">
               <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                <path
-                  d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
               </svg>
             </div>
           </div>
-          <div class="w-100 d-flex flex-column align-items-center justify-content-center"
-            style="height: calc(100% - 50px);">
-            <div class="d-flex align-items-center" style="height: 50%; font-size: 19px;">Bạn có chắc chắn muốn xóa AAA
-              khỏi gia tộc?</div>
+          <div class="w-100 d-flex flex-column align-items-center justify-content-center" style="height: calc(100% - 50px);">
+            <div class="d-flex align-items-center" style="height: 50%; font-size: 19px;">Bạn có chắc chắn muốn xóa AAA khỏi gia tộc?</div>
             <div class="d-flex flex-row w-100" style="height: 50%;">
               <div class="col-6 d-flex align-items-center justify-content-center">
                 <div class="btn bg-primary text-white">Có</div>
