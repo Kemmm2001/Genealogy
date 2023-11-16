@@ -57,7 +57,9 @@ var removeRelationship = async (req, res) => {
         let currentID = req.body.CurrentID;
         let memberToRemove = req.body.RemoveID;
         let action = req.body.action;
-        if (action == 'RemoveParent') {
+        console.log('currentID: ' + currentID)
+        console.log('memberToRemove: ' + memberToRemove)
+        if (action == 'RemoveChild') {
             let data = await FamilyTreeService.RemoveRelationshipChild(memberToRemove);
             if (data == true) {
                 return res.send(Response.successResponse());
@@ -65,10 +67,24 @@ var removeRelationship = async (req, res) => {
                 return res.send(Response.internalServerErrorResponse());
             }
         } else if (action == 'RemoveMarried') {
-            
+            let data = await FamilyTreeService.RemoveRelationshipMarried(currentID, memberToRemove)
+            console.log(data)
+            if (data == true) {
+                return res.send(Response.successResponse());
+            } else {
+                return res.send(Response.internalServerErrorResponse());
+            }
+        } else if (action == 'RemoveParent') {
+            let data = await FamilyTreeService.RemoveRelationshipParent(currentID, memberToRemove);
+            if (data == true) {
+                return res.send(Response.successResponse());
+            } else {
+                return res.send(Response.internalServerErrorResponse());
+            }
         }
     } catch (error) {
         console.log(error)
+        return res.send(Response.internalServerErrorResponse(error));
     }
 }
 
@@ -162,5 +178,6 @@ var informationMember = async (req, res) => {
 }
 
 module.exports = {
-    AllReligion, informationMember, AllNationality, AllMemberRole, setRole, AllMemberInGenelogy, getAllUnspecifiedMembers, GetIdPaternalAncestor, getRelationShipMember, getListMessage
+    AllReligion, informationMember, AllNationality, AllMemberRole, setRole, AllMemberInGenelogy, getAllUnspecifiedMembers,
+    GetIdPaternalAncestor, getRelationShipMember, getListMessage, removeRelationship
 };
