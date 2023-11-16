@@ -11,7 +11,7 @@
             <div class="d-flex w-100 my-2">
               <div class="px-2">Phân trang</div>
               <div class="d-flex align-items-center">
-                <select v-model="itemsPerPageFHead" class="form-select px-2 py-0">
+                <select @change="resetCurrentPageFHead()" v-model="itemsPerPageFHead" class="form-select px-2 py-0">
                   <option selected value="10">10</option>
                   <option value="20">20</option>
                   <option value="30">30</option>
@@ -707,6 +707,9 @@ export default {
       const month = String(date.getMonth() + 1).padStart(2, "0");
       const day = String(date.getDate()).padStart(2, "0");
       return `${year}-${month}-${day}`;
+    },
+    resetCurrentPageFHead(){
+      this.currentPageFHead = 1;
     },
     setCurrentPageFHead(page) {
       this.currentPageFHead = page;

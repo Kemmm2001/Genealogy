@@ -73,10 +73,10 @@ var addArticle = async (req, res) => {
 
 var deleteArticle = async (req, res) => {
     try {
-        console.log("Request body: ", req.body);
+        console.log("Request body: ", req.query);
 
         // Gọi hàm xóa bài viết từ service
-        const result = await ArticleManagementService.deleteArticle(req.body.articleId);
+        const result = await ArticleManagementService.deleteArticle(req.query.articleId);
 
         // Kiểm tra xem việc xóa bài viết có thành công hay không
         if (result.affectedRows === 0) {
