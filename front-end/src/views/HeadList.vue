@@ -2,9 +2,7 @@
   <div class="container-fluid position-relative" style="padding-left: 120px; padding-right: 120px; height: calc(100% - 64px)">
     <div class="d-flex d-flex align-items-center position-absolute" style="top: 5%; bottom: 5%; left: 5%; right: 5%;">
       <div class="info-pages-container d-flex flex-column h-100 w-100">
-        <div class="d-flex align-items-center w-100 my-2 mx-2"
-          style="height: 50px; font-size: 20px; font-weight: bold;">
-          Danh sách tộc trưởng</div>
+        <div class="d-flex align-items-center w-100 my-2 mx-2" style="height: 50px; font-size: 20px; font-weight: bold;">Danh sách tộc trưởng</div>
         <div class="d-flex flex-row">
           <div class="col-md-6 d-flex align-items-center" style="justify-content: left;">
             <div class="w-100 my-2 mx-2">
@@ -28,7 +26,7 @@
             </button>
           </div>
         </div>
-        <div class="">
+        <div class>
           <table class="table table-headlist headlist-list m-0">
             <thead>
               <tr class="headlist-item">
@@ -40,15 +38,14 @@
               </tr>
             </thead>
             <tbody>
-              <tr @click="getInforMember(familyhead.MemberID)" class="headlist-item headlist-table-item"
-                v-for="(familyhead, index) in displayedItemsFamilyHead" :key="familyhead.MemberID">
+              <tr @click="getInforMember(familyhead.MemberID)" class="headlist-item headlist-table-item" v-for="(familyhead, index) in displayedItemsFamilyHead" :key="familyhead.MemberID">
                 <th @click="openEditHeadModal()" scope="row">
                   {{ index + 1 +
-                    itemsPerPageFHead * (currentPageFHead - 1) }}
+                  itemsPerPageFHead * (currentPageFHead - 1) }}
                 </th>
                 <td @click="openEditHeadModal()">
                   {{
-                    familyhead.MemberName }}
+                  familyhead.MemberName }}
                 </td>
                 <td @click="openEditHeadModal()">
                   {{ familyhead.Male
@@ -56,18 +53,17 @@
                 </td>
                 <td @click="openEditHeadModal()">
                   {{
-                    formatDate(familyhead.Dob) }}
+                  formatDate(familyhead.Dob) }}
                 </td>
                 <td @click="openEditHeadModal()">
                   {{
-                    familyhead.Generation }}
+                  familyhead.Generation }}
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
-        <div class="d-flex flex-row paging justify-content-center"
-          style="position:absolute; bottom: 0; left: 0; right: 0;">
+        <div class="d-flex flex-row paging justify-content-center" style="position:absolute; bottom: 0; left: 0; right: 0;">
           <div class="d-flex flex-row align-items-center">
             <div class="d-flex align-items-center justify-content-center" style="padding-right: 12px;"></div>
           </div>
@@ -79,39 +75,29 @@
                     <button class="btn button-normal m-0" @click="nextPageFamilyHead">Next</button>
                 </div>
             </div>-->
-            <div class="d-flex flex-row paging justify-content-center"
-              style="position:absolute; bottom: 0; left: 0; right: 0; height: 70px;">
+            <div class="d-flex flex-row paging justify-content-center" style="position:absolute; bottom: 0; left: 0; right: 0; height: 70px;">
               <div @click="prevPageFamilyHead" class="d-flex flex-row align-items-center" style="cursor: pointer;">
                 <div class="d-flex align-items-center justify-content-center" style="padding-right: 12px;">
-                  <svg class="headlist-paging-icon" style="transform: rotate(180deg);" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 320 512">
-                    <path
-                      d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" />
+                  <svg class="headlist-paging-icon" style="transform: rotate(180deg);" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                    <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" />
                   </svg>
                   <div>Trước</div>
                 </div>
               </div>
               <div class="d-flex flex-row align-items-center">
-                <div @click="setCurrentPageFHead(currentPageFHead - 2)" v-if="currentPageFHead > 2" class="page"
-                  style="cursor: pointer;">{{ currentPageFHead - 2 }}</div>
-                <div @click="setCurrentPageFHead(currentPageFHead - 1)" v-if="currentPageFHead > 1" class="page"
-                  style="cursor: pointer;">{{ currentPageFHead - 1 }}</div>
+                <div @click="setCurrentPageFHead(currentPageFHead - 2)" v-if="currentPageFHead > 2" class="page" style="cursor: pointer;">{{ currentPageFHead - 2 }}</div>
+                <div @click="setCurrentPageFHead(currentPageFHead - 1)" v-if="currentPageFHead > 1" class="page" style="cursor: pointer;">{{ currentPageFHead - 1 }}</div>
                 <div class="page">
                   <div :class="{ chosen: true }">{{ currentPageFHead }}</div>
                 </div>
-                <div @click="setCurrentPageFHead(currentPageFHead + 1)"
-                  v-if="Math.ceil(this.familyheadFilter.length / this.itemsPerPageFHead) > currentPageFHead" class="page"
-                  style="cursor: pointer;">{{ currentPageFHead + 1 }}</div>
-                <div @click="setCurrentPageFHead(currentPageFHead + 2)"
-                  v-if="Math.ceil(this.familyheadFilter.length / this.itemsPerPageFHead) - 1 > currentPageFHead"
-                  class="page" style="cursor: pointer;">{{ currentPageFHead + 2 }}</div>
+                <div @click="setCurrentPageFHead(currentPageFHead + 1)" v-if="Math.ceil(this.familyheadFilter.length / this.itemsPerPageFHead) > currentPageFHead" class="page" style="cursor: pointer;">{{ currentPageFHead + 1 }}</div>
+                <div @click="setCurrentPageFHead(currentPageFHead + 2)" v-if="Math.ceil(this.familyheadFilter.length / this.itemsPerPageFHead) - 1 > currentPageFHead" class="page" style="cursor: pointer;">{{ currentPageFHead + 2 }}</div>
               </div>
               <div @click="nextPageFamilyHead" class="d-flex flex-row align-items-center" style="cursor: pointer;">
                 <div class="d-flex align-items-center justify-content-center" style="padding-left: 12px;">
                   <div>Sau</div>
                   <svg class="headlist-paging-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                    <path
-                      d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" />
+                    <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" />
                   </svg>
                 </div>
               </div>
@@ -124,12 +110,10 @@
       <modal name="addHead-modalll">
         <div class="w-100 add-head-modal position: relative;" style="height:620px">
           <div class="d-flex flex-row w-100 align-items-center position-relative">
-            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm tộc trưởng
-            </div>
+            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm tộc trưởng</div>
             <div class="close-add-form" @click="closeAddHeadModal()">
               <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                <path
-                  d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
               </svg>
             </div>
           </div>
@@ -150,9 +134,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr @click="chooseMember(member.id), numberItemSelection(index)"
-                    :class="{ selected: itemChoose === index }" class="headlist-item headlist-table-item"
-                    v-for="(member, index) in displayedItemsMember" :key="member.id">
+                  <tr @click="chooseMember(member.id), numberItemSelection(index)" :class="{ selected: itemChoose === index }" class="headlist-item headlist-table-item" v-for="(member, index) in displayedItemsMember" :key="member.id">
                     <th scope="row" style="text-align: center;">{{ index + 1 }}</th>
                     <td style="text-align: center;">{{ member.name }}</td>
                     <td style="text-align: center;">{{ formatDate(member.dob) }}</td>
@@ -185,12 +167,10 @@
           <div class="form-group">
             <div class="w-100 h-100 add-article-modal">
               <div class="d-flex flex-row w-100 align-items-center position-relative">
-                <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm tài liệu
-                </div>
+                <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm tài liệu</div>
                 <div class="close-add-form" @click="closeAddHeadModal()">
                   <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                    <path
-                      d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                    <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
                   </svg>
                 </div>
               </div>
@@ -211,12 +191,10 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr @click="chooseMember(member.id), numberItemSelection(index)"
-                        :class="{ selected: itemChoose === index }" class="headlist-item headlist-table-item"
-                        v-for="(member, index) in displayedItemsMember" :key="member.id">
+                      <tr @click="chooseMember(member.id), numberItemSelection(index)" :class="{ selected: itemChoose === index }" class="headlist-item headlist-table-item" v-for="(member, index) in displayedItemsMember" :key="member.id">
                         <th scope="row" style="text-align: center;">
                           {{ index + 1 +
-                            itemsPerPageMember * (currentPageMember - 1) }}
+                          itemsPerPageMember * (currentPageMember - 1) }}
                         </th>
                         <td style="text-align: center;">{{ member.name }}</td>
                         <td style="text-align: center;">{{ formatDate(member.dob) }}</td>
@@ -233,15 +211,14 @@
                           <button class="btn button-normal m-0" @click="prevPageMember">Trước</button>
                           <span style="margin: 10px;">
                             {{ currentPageMember }}/{{ Math.ceil(this.memberList.length /
-                              this.itemsPerPageMember) }}
+                            this.itemsPerPageMember) }}
                           </span>
                           <button class="btn button-normal m-0" @click="nextPageMember">Sau</button>
                         </div>
                       </div>
 
                       <div class="d-flex justify-content-right m-1">
-                        <button @click="SetFamilyHead()"
-                          class="btn headlist-item headlist-item-button text-center">Thêm</button>
+                        <button @click="SetFamilyHead()" class="btn headlist-item headlist-item-button text-center">Thêm</button>
                       </div>
                     </div>
                   </div>
@@ -258,8 +235,7 @@
             <h5 class="m-0">{{ TitleModal }}</h5>
             <div class="close-add-form" @click="closeEditHeadModal" style="top: 8px;right:5px">
               <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                <path
-                  d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
               </svg>
             </div>
           </div>
@@ -285,11 +261,8 @@
               <div class="col-9" style="padding-top: 15px" v-if="extendedInfo">
                 <div class="row">
                   <div class="col-4">
-                    <img style="height:316px;width:360px;margin-bottom:30px" v-if="avatarSrc" :src="avatarSrc"
-                      alt="Avatar" />
-                    <svg v-else style="margin-bottom:46px" fill="#000000" height="300px" width="300px" version="1.1"
-                      id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                      viewBox="0 0 512 512" xml:space="preserve">
+                    <img style="height:316px;width:360px;margin-bottom:30px" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" />
+                    <svg v-else style="margin-bottom:46px" fill="#000000" height="300px" width="300px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
                       <g>
                         <g>
                           <circle cx="256" cy="114.526" r="114.526" />
@@ -297,21 +270,18 @@
                       </g>
                       <g>
                         <g>
-                          <path
-                            d="M256,256c-111.619,0-202.105,90.487-202.105,202.105c0,29.765,24.13,53.895,53.895,53.895h296.421 c29.765,0,53.895-24.13,53.895-53.895C458.105,346.487,367.619,256,256,256z" />
+                          <path d="M256,256c-111.619,0-202.105,90.487-202.105,202.105c0,29.765,24.13,53.895,53.895,53.895h296.421 c29.765,0,53.895-24.13,53.895-53.895C458.105,346.487,367.619,256,256,256z" />
                         </g>
                       </g>
                     </svg>
                     <div class="form-group">
                       <label for="imageUpload">Tải ảnh lên</label>
-                      <input type="file" class="form-control input-file" id="imageUpload" accept="image/*"
-                        @change="updateAvatar($event)" />
+                      <input type="file" class="form-control input-file" id="imageUpload" accept="image/*" @change="updateAvatar($event)" />
                     </div>
                   </div>
                   <div class="col-8">
                     <div style="position: relative; margin-right:10px">
-                      <input v-model="objMemberInfor.MemberName" type="text" class="form-control modal-item"
-                        placeholder />
+                      <input v-model="objMemberInfor.MemberName" type="text" class="form-control modal-item" placeholder />
                       <label class="form-label" for="input" :class="{ 'active': objMemberInfor.MemberName }">
                         Tên thành
                         viên đầy đủ
@@ -319,16 +289,14 @@
                     </div>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
-                        <input v-model="objMemberInfor.NickName" type="text" class="form-control modal-item"
-                          placeholder />
+                        <input v-model="objMemberInfor.NickName" type="text" class="form-control modal-item" placeholder />
                         <label class="form-label" for="input" :class="{ 'active': objMemberInfor.NickName }">
                           Tên thường
                           gọi
                         </label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
-                        <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item"
-                          placeholder />
+                        <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item" placeholder />
                         <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">
                           Con
                           Thứ
@@ -359,7 +327,7 @@
                         <select v-model="objMemberInfor.NationalityID" class="form-select modal-item">
                           <option v-for="nation in ListNationality" :key="nation.id" :value="nation.NationalityID">
                             {{
-                              nation.NationalityName }}
+                            nation.NationalityName }}
                           </option>
                         </select>
                         <label class="form-label" for="select">Quốc Tịch</label>
@@ -368,7 +336,7 @@
                         <select v-model="objMemberInfor.ReligionID" class="form-select modal-item">
                           <option v-for="religion in ListReligion" :key="religion.id" :value="religion.ReligionID">
                             {{
-                              religion.ReligionName }}
+                            religion.ReligionName }}
                           </option>
                         </select>
                         <label class="form-label-number" for="select">Tôn Giáo</label>
@@ -388,20 +356,17 @@
                       </h6>
                       <div style="display:flex">
                         <div style="position: relative; width: 50%;margin-right: 10px;">
-                          <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder
-                            @change="convertSolarToLunar()" />
+                          <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar()" />
                           <label class="form-label" for="input">Dương Lịch</label>
                         </div>
                         <div style="position: relative;width: 50%; margin-right: 10px;">
-                          <input v-model="objMemberInfor.LunarDob" type="date" class="form-control modal-item" placeholder
-                            @change="convertLunarToSolar()" />
+                          <input v-model="objMemberInfor.LunarDob" type="date" class="form-control modal-item" placeholder @change="convertLunarToSolar()" />
                           <label class="form-label-number" min="0" for="input">Âm lịch</label>
                         </div>
                       </div>
                     </div>
                     <div style="position: relative; margin-right:10px">
-                      <input v-model="objMemberInfor.BirthPlace" type="text" class="form-control modal-item"
-                        placeholder />
+                      <input v-model="objMemberInfor.BirthPlace" type="text" class="form-control modal-item" placeholder />
                       <label class="form-label" for="input" :class="{ 'active': objMemberInfor.BirthPlace }">
                         Nơi
                         sinh
@@ -422,8 +387,7 @@
                           <label class="form-label" for="input">Dương Lịch</label>
                         </div>
                         <div style="position: relative;width: 50%; margin-right: 10px;">
-                          <input v-model="objMemberInfor.LunarDod" type="date" class="form-control modal-item"
-                            placeholder />
+                          <input v-model="objMemberInfor.LunarDod" type="date" class="form-control modal-item" placeholder />
                           <label class="form-label-number" min="0" for="input">Âm lịch</label>
                         </div>
                       </div>
@@ -459,8 +423,7 @@
                   </div>
                   <div style="display:flex">
                     <div style="position: relative; width: 50%;margin-right: 10px;">
-                      <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" :disabled="isDisabled"
-                        :default-country="defaultCountry" :validations="validations"></VuePhoneNumberInput>
+                      <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" :disabled="isDisabled" :default-country="defaultCountry" :validations="validations"></VuePhoneNumberInput>
                     </div>
                     <div style="position: relative;width: 50%; margin-right: 10px;">
                       <input v-model="objMemberContact.Email" type="email" class="form-control modal-item" placeholder />
@@ -468,15 +431,12 @@
                     </div>
                   </div>
                   <div style="position: relative; padding-right: 23px;">
-                    <input v-model="objMemberContact.FacebookUrl" type="text" class="form-control modal-item"
-                      placeholder />
-                    <label style="left: 25px;" class="form-label" for="input"
-                      :class="{ 'active': objMemberContact.FacebookUrl }">Facebook</label>
+                    <input v-model="objMemberContact.FacebookUrl" type="text" class="form-control modal-item" placeholder />
+                    <label style="left: 25px;" class="form-label" for="input" :class="{ 'active': objMemberContact.FacebookUrl }">Facebook</label>
                   </div>
                   <div style="position: relative; padding-right: 23px;">
                     <input v-model="objMemberContact.Zalo" type="text" class="form-control modal-item" placeholder />
-                    <label style="left: 25px;" class="form-label" for="input"
-                      :class="{ 'active': objMemberContact.Zalo }">Zalo</label>
+                    <label style="left: 25px;" class="form-label" for="input" :class="{ 'active': objMemberContact.Zalo }">Zalo</label>
                   </div>
                 </div>
               </div>
@@ -484,18 +444,15 @@
                 <div class="row">
                   <div style="display:flex">
                     <div style="position: relative; width: 50%; margin-right: 10px;">
-                      <input v-model="objMemberJob.Organization" type="text" class="form-control modal-item"
-                        placeholder />
+                      <input v-model="objMemberJob.Organization" type="text" class="form-control modal-item" placeholder />
                       <label class="form-label" for="input" :class="{ 'active': objMemberJob.Organization }">
                         Tên Cơ
                         Quan
                       </label>
                     </div>
                     <div style="position: relative;width: 50%; margin-right: 10px;">
-                      <input v-model="objMemberJob.OrganizationAddress" type="text" class="form-control modal-item"
-                        placeholder />
-                      <label class="form-label" min="0" for="input"
-                        :class="{ 'active': objMemberJob.OrganizationAddress }">Địa Chỉ</label>
+                      <input v-model="objMemberJob.OrganizationAddress" type="text" class="form-control modal-item" placeholder />
+                      <label class="form-label" min="0" for="input" :class="{ 'active': objMemberJob.OrganizationAddress }">Địa Chỉ</label>
                     </div>
                   </div>
                   <div style="display:flex">
@@ -508,8 +465,7 @@
                     </div>
                     <div style="position: relative;width: 50%; margin-right: 10px;">
                       <input v-model="objMemberJob.JobName" type="text" class="form-control modal-item" placeholder />
-                      <label class="form-label-number" min="0" for="input"
-                        :class="{ 'active': objMemberJob.JobName }">nghề nghiệp</label>
+                      <label class="form-label-number" min="0" for="input" :class="{ 'active': objMemberJob.JobName }">nghề nghiệp</label>
                     </div>
                   </div>
                   <div class="form-group">
@@ -527,12 +483,9 @@
                   </div>
                   <div class="d-flex justify-content-end">
                     <div class="form-group" role="group">
-                      <button type="button" class="btn btn-primary" @click="addNewJobMember()"
-                        style="margin-right:10px">Thêm</button>
-                      <button type="button" class="btn btn-info mr-1" @click="updateJobMember()"
-                        style="margin-right:10px">Sửa</button>
-                      <button type="button" class="btn btn-danger mr-1" @click="removeJobMember()"
-                        style="margin-right:10px">Xóa</button>
+                      <button type="button" class="btn btn-primary" @click="addNewJobMember()" style="margin-right:10px">Thêm</button>
+                      <button type="button" class="btn btn-info mr-1" @click="updateJobMember()" style="margin-right:10px">Sửa</button>
+                      <button type="button" class="btn btn-danger mr-1" @click="removeJobMember()" style="margin-right:10px">Xóa</button>
                     </div>
                   </div>
                   <div class="form-group" style="margin-top:13px;padding-right:22px">
@@ -546,8 +499,7 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-for="job in ListMemberJob" :key="job.id" @click="selectRowJob(job)"
-                          :class="{ 'row-selected': job === objMemberJob }">
+                        <tr v-for="job in ListMemberJob" :key="job.id" @click="selectRowJob(job)" :class="{ 'row-selected': job === objMemberJob }">
                           <td>{{ job.Organization }}</td>
                           <td>{{ job.Role }}</td>
                           <td>{{ formatDate(job.StartDate) }}</td>
@@ -562,38 +514,30 @@
                 <div class="row">
                   <div style="position: relative;padding-right: 20px;">
                     <input v-model="objMemberEducation.School" type="text" class="form-control modal-item" placeholder />
-                    <label style="left: 20px;" class="form-label" for="input"
-                      :class="{ 'active': objMemberEducation.School }">Tên trường</label>
+                    <label style="left: 20px;" class="form-label" for="input" :class="{ 'active': objMemberEducation.School }">Tên trường</label>
                   </div>
                   <div style="position: relative;padding-right: 20px;">
-                    <input v-model="objMemberEducation.Description" type="text" class="form-control modal-item"
-                      placeholder />
-                    <label style="left: 20px;" class="form-label" for="input"
-                      :class="{ 'active': objMemberEducation.Description }">Mô tả</label>
+                    <input v-model="objMemberEducation.Description" type="text" class="form-control modal-item" placeholder />
+                    <label style="left: 20px;" class="form-label" for="input" :class="{ 'active': objMemberEducation.Description }">Mô tả</label>
                   </div>
                   <div class="form-group">
                     <h6 style="margin-bottom:20px">Thời gian học tập</h6>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
-                        <input v-model="objMemberEducation.StartDate" type="date" class="form-control modal-item"
-                          placeholder />
+                        <input v-model="objMemberEducation.StartDate" type="date" class="form-control modal-item" placeholder />
                         <label class="form-label" for="input">Từ ngày</label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
-                        <input v-model="objMemberEducation.EndDate" type="date" class="form-control modal-item"
-                          placeholder />
+                        <input v-model="objMemberEducation.EndDate" type="date" class="form-control modal-item" placeholder />
                         <label class="form-label-number" min="0" for="input">Đến ngày</label>
                       </div>
                     </div>
                   </div>
                   <div class="d-flex justify-content-end">
                     <div class="form-group" role="group">
-                      <button type="button" class="btn btn-primary" @click="addNewEducationMember()"
-                        style="margin-right:10px">Thêm</button>
-                      <button type="button" class="btn btn-info mr-1" @click="updateEducationMember()"
-                        style="margin-right:10px">Sửa</button>
-                      <button type="button" class="btn btn-danger mr-1" @click="deleteJobMember()"
-                        style="margin-right:10px">Xóa</button>
+                      <button type="button" class="btn btn-primary" @click="addNewEducationMember()" style="margin-right:10px">Thêm</button>
+                      <button type="button" class="btn btn-info mr-1" @click="updateEducationMember()" style="margin-right:10px">Sửa</button>
+                      <button type="button" class="btn btn-danger mr-1" @click="deleteJobMember()" style="margin-right:10px">Xóa</button>
                     </div>
                   </div>
                   <div class="form-group" style="margin-top:13px;padding-right:22px">
@@ -606,8 +550,7 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-for="edu in ListMemberEducation" :key="edu.id" @click="selectRowEducation(edu)"
-                          :class="{ 'row-selected': edu === objMemberEducation }">
+                        <tr v-for="edu in ListMemberEducation" :key="edu.id" @click="selectRowEducation(edu)" :class="{ 'row-selected': edu === objMemberEducation }">
                           <td>{{ edu.School }}</td>
                           <td>{{ formatDate(edu.StartDate) }}</td>
                           <td>{{ formatDate(edu.EndDate) }}</td>
@@ -619,8 +562,7 @@
               </div>
               <div class="col-9" style="padding-top: 15px" v-else>
                 <div class="form-group" style="margin-top:13px;padding-right:22px">
-                  <textarea v-model="objMemberInfor.Note" style="height:300px" class="form-control modal-item"
-                    id="lichSuCongTac" rows="5" placeholder="Ghi Chú"></textarea>
+                  <textarea v-model="objMemberInfor.Note" style="height:300px" class="form-control modal-item" id="lichSuCongTac" rows="5" placeholder="Ghi Chú"></textarea>
                 </div>
               </div>
             </div>
@@ -628,10 +570,8 @@
           <div class="card-footer modal-footer">
             <div class="d-flex justify-content-end" style="padding-right: 12px;">
               <button type="button" class="btn btn-danger mr-2" @click="removeFamilyHead()">Xóa</button>
-              <button style="margin-left:10px" type="button" class="btn btn-primary mr-2"
-                @click="updateInformation()">Sửa</button>
-              <button style="margin-left:10px" type="button" class="btn btn-secondary"
-                @click="closeSelectModal()">Cancel</button>
+              <button style="margin-left:10px" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
+              <button style="margin-left:10px" type="button" class="btn btn-secondary" @click="closeSelectModal()">Cancel</button>
             </div>
           </div>
         </div>
@@ -953,7 +893,7 @@ export default {
     getListMember() {
       HTTP.get("viewTree", {
         params: {
-          CodeID: 123456,
+          CodeID: '577-862-785',
         },
       })
         .then((response) => {
@@ -1100,4 +1040,5 @@ tr.selected {
 
 .table-member {
   --bs-table-bg: transparent !important;
-}</style>
+}
+</style>

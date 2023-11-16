@@ -479,8 +479,7 @@ async function RelationShipMember(memberId) {
 }
 
 
-function GetIdPaternalAncestor(CodeID) {
-    console.log(CodeID)
+function GetIdPaternalAncestor(CodeID) {  
     return new Promise((resolve, reject) => {
         let query = `select MemberID from memberrole
         where CodeId = '${CodeID}' and RoleID = 1`;
@@ -542,6 +541,7 @@ function isMemberInList(list, member) {
 
 
 function getListMessage(CodeID) {
+    console.log()
     return new Promise((resolve, reject) => {
         let query = `SELECT * FROM genealogy.notificationhistory where CodeID = '${CodeID}'`;
         db.connection.query(query, (err, result) => {

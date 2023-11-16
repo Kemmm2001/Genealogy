@@ -17,7 +17,7 @@ var getArticle = async (req, res) => {
         const articleId = req.body.articleId; 
         const codeId = req.body.codeId; 
         console.log(articleId)
-        console.log(codeId)
+     
         // Gọi hàm service để lấy bài viết dựa trên ArticleID và CodeID
         const article = await ArticleManagementService.getArticle(articleId, codeId);
         console.log(article)

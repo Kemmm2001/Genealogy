@@ -4,24 +4,12 @@
       <div class="d-flex flex-row w-100 h-100 position-relative">
         <div :class="{ rightPos: right, leftPos: !right, enlarged: enlarge }" class="h-100 position-absolute codelogin-background" style="z-index: 1;">
           <div v-if="loggingin" class="d-flex flex-column align-items-center justify-content-center h-100 w-100">
-            <div class="my-3" style="font-size: 20px !important; font-weight: bold; color: #FFFFFF; text-align: center;">
-              Nhập
-              mã để vào gia tộc đã đăng kí
-            </div>
-            <button @click="moveToRight(); enlargeBackground()" class="btn my-3 change-form-button" :class="{ changeToLoginBtn: loggingin }">
-              Đăng
-              nhập
-            </button>
+            <div class="my-3" style="font-size: 20px !important; font-weight: bold; color: #FFFFFF; text-align: center;">Nhập mã để vào gia tộc đã đăng kí</div>
+            <button @click="moveToRight(); enlargeBackground()" class="btn my-3 change-form-button" :class="{ changeToLoginBtn: loggingin }">Đăng nhập</button>
           </div>
           <div v-if="!loggingin" class="d-flex flex-column align-items-center justify-content-center h-100 w-100">
-            <div class="my-3" style="font-size: 20px !important; font-weight: bold; color: #FFFFFF; text-align: center;">
-              Đăng
-              kí gia tộc mới
-            </div>
-            <button @click="moveToLeft(); enlargeBackground()" class="btn my-3 change-form-button" :class="{ changeToRegisterBtn: !loggingin }">
-              Đăng
-              kí
-            </button>
+            <div class="my-3" style="font-size: 20px !important; font-weight: bold; color: #FFFFFF; text-align: center;">Đăng kí gia tộc mới</div>
+            <button @click="moveToLeft(); enlargeBackground()" class="btn my-3 change-form-button" :class="{ changeToRegisterBtn: !loggingin }">Đăng kí</button>
           </div>
         </div>
 
@@ -48,10 +36,7 @@
                 </div>
               </div>
               <div class="d-flex justify-content-center align-items-center" style="height: auto; width: auto;">
-                <button @click="registerFamilyTree()" class="btn register-button">
-                  Đăng
-                  kí
-                </button>
+                <button @click="registerFamilyTree()" class="btn register-button">Đăng kí</button>
               </div>
             </div>
           </div>
@@ -94,19 +79,13 @@
     <div class="position-absolute familycode-noti" :class="{ appear: showCode }">
       <div class="w-100 h-100 position-relative">
         <div class="position-absolute familycode-noti-timer" :class="{ timerStart: showCode }"></div>
-        <div v-if="showCode" class="w-100 h-100 d-flex align-items-center justify-content-content px-3" style="font-size: 20px;">
-          Đăng
-          kí thành công! Mã gia tộc của bạn là {{ this.familycode }}
-        </div>
+        <div v-if="showCode" class="w-100 h-100 d-flex align-items-center justify-content-content px-3" style="font-size: 20px;">Đăng kí thành công! Mã gia tộc của bạn là {{ this.familycode }}</div>
       </div>
     </div>
     <modal name="loginhistory-modal">
       <div class="w-100 h-100 add-album-modal">
         <div class="d-flex flex-row w-100 align-items-center position-relative">
-          <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">
-            Lịch sử đăng
-            nhập code gia tộc
-          </div>
+          <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Lịch sử đăng nhập code gia tộc</div>
           <div class="close-add-form" @click="closeLoginHistoryModal()">
             <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
               <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -263,7 +242,7 @@ export default {
         codeID: this.codeIdLogin,
       })
         .then((response) => {
-          if (response.data.doesExist == true) {       
+          if (response.data.doesExist == true) {
             localStorage.setItem("CodeID", this.codeIdLogin);
             this.$router.push("/");
           }
