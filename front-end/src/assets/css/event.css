@@ -1,0 +1,65 @@
+.event-screen{
+    height: calc(100% - 50px);
+}
+
+.event-screen .calendar{
+    padding: 16px 8px 16px 16px;
+    border-radius: 0.375rem;
+    background-color: black;
+    color: white;
+}
+
+.event-screen .event-list{
+    padding: 16px 16px 16px 8px;
+}
+
+.event-screen .search-filter{
+    height: 48px;
+}
+
+.event-screen .search-filter .item{
+    margin-left: 8px;
+    right: 0;
+}
+
+.event-screen .search-filter .search{
+    flex-grow: 1;
+}
+
+.event-screen .button-list{
+    height: 48px;
+}
+
+.event-screen .button-list .item{
+    margin-left: 8px;
+}
+
+.event-screen .table td{
+    text-align: center;
+}
+
+.event-screen .add-event-container .vm--container{
+    width: 50%;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+.event-screen .add-event-container .item{
+    height: 36px;
+}
+
+.event-screen .text-area{
+    resize: none;
+    outline: none;
+    border-radius: 0.375rem;
+}
+
+.event-screen .text-area.description{
+    background-color: #0000000f;
+}
+
+.event-screen .add-event-container .time-input{
+    width: 120px;
+    margin: 0 8px;
+}
