@@ -115,10 +115,10 @@
               <div class="list-group-item feature-overview">Các chức năng chính</div>
               <div class="list-group-item" @click="getInforMember(CurrentIdMember)">Thông tin chi tiết</div>
               <div class="list-group-item" @click="openModalRelationship()">Xem các mối quan hệ</div>
-              <div class="list-group-item" @click="openMemberModal('AddParent', 'Cha')">Thêm Cha</div>
-              <div class="list-group-item" @click="openMemberModal('AddParent', 'Mẹ')">Thêm Mẹ</div>
-              <div class="list-group-item" @click="openMemberModal('AddMarriage', 'Chồng')">Thêm Chồng</div>
-              <div class="list-group-item" @click="openMemberModal('AddMarriage', 'Vợ')">Thêm Vợ</div>
+              <div v-if="canAddFather" class="list-group-item" @click="openMemberModal('AddParent', 'Cha')">Thêm Cha</div>
+              <div v-if="canAddMother" class="list-group-item" @click="openMemberModal('AddParent', 'Mẹ')">Thêm Mẹ</div>
+              <div v-if="canAddhusband" class="list-group-item" @click="openMemberModal('AddMarriage', 'Chồng')">Thêm Chồng</div>
+              <div v-if="canAddWife" class="list-group-item" @click="openMemberModal('AddMarriage', 'Vợ')">Thêm Vợ</div>
               <div class="list-group-item" @click="openMemberModal('AddChild', 'Con')">Thêm Con</div>
               <div class="list-group-item" @click="openModalAddMemberFromList()">Thêm mối quan hệ từ Danh Sách</div>
               <!-- Em xóa tạm thằng removeMember() để test modal -->
@@ -955,11 +955,18 @@ export default {
       ListNationality: null,
       ListReligion: null,
       nodes: [],
+
       extendedInfo: true,
       extendedContact: false,
       extendedJob: false,
       extendedEdu: false,
       extendedNote: false,
+
+      canAddFather: true,
+      canAddMother: true,
+      canAddhusband: true,
+      canAddWife: true,
+
       lastClickedNodeId: null,
       isCompare: false,
       objCompareMember1: {},
@@ -1835,9 +1842,31 @@ export default {
       this.$modal.hide("member-modal");
       this.CurrentIdMember = 0;
     },
-
+    setFunctionCanDo(foundNode) {
+      this.canAddFather = true;
+      this.canAddhusband = true;
+      this.canAddMother = true;
+      this.canAddWife = true;
+      if (foundNode.fid != null) {
+        this.canAddFather = false;
+      }
+      if (foundNode.mid != null) {
+        this.canAddMother = false;
+      }      
+      if (foundNode.pids[0] == null) {
+        if (foundNode.gender == "male") {
+          this.canAddhusband = false;
+        } else {
+          this.canAddWife = false;
+        }
+      } else {
+        this.canAddWife = false;
+        this.canAddhusband = false;
+      }
+    },
     OnpenModal_SelectOption(id) {
       let foundNode = this.nodes.find((node) => node.id == id);
+      this.setFunctionCanDo(foundNode);
       this.TitleModal = foundNode.name;
       this.generationMember = foundNode.generation;
       this.highLightSelectNode(id);

@@ -16,7 +16,7 @@ const initWebRouter = (app) => {
   router.post('/register', UserController.registerUser);
   router.post('/login', UserController.loginUser);
   router.post('/refresh-token', UserController.refreshToken);
-  router.delete('/logout', UserController.logout);
+  // router.delete('/logout', UserController.logout);
   // router.post('forget-password', UserController.forgetPassword)
 
   router.post('/register-genealogy', UserController.registerGenealogy)
