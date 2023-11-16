@@ -17,13 +17,16 @@ const initWebRouter = (app) => {
   router.post('/login', UserController.loginUser);
   router.post('/refresh-token', UserController.refreshToken);
   // router.delete('/logout', UserController.logout);
+  router.post('forget-password', UserController.forgetPassword)
 
   router.post('/register-genealogy', UserController.registerGenealogy)
   router.post('/get-genealogy', UserController.getGenealogy)
+  router.post('get-codeID', UserController.getUserCodeID)
   
   router.post('/set-role', UserController.setRole)
   router.post('/check-codeId', UserController.checkCodeID)
 
+  router.post('/get-user', UserController.getUserInfor)
   router.get('/admin', authMiddleware.authenticateAndAuthorize(2), (req, res) => {
     // Xử lý yêu cầu
     res.json({ message: 'Admin route' });
