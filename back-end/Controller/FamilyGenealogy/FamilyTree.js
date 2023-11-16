@@ -39,16 +39,36 @@ var getAllUnspecifiedMembers = async (req, res) => {
 }
 var getRelationShipMember = async (req, res) => {
     try {
-        let memberID = req.query.memberID;    
+        let memberID = req.query.memberID;
         console.log(memberID)
-        let data = await FamilyTreeService.RelationShipMember(memberID);       
+        let data = await FamilyTreeService.RelationShipMember(memberID);
         if (data == null || data.length == 0) {
             return res.send(Response.dataNotFoundResponse());
         }
         return res.send(Response.successResponse(data));
     } catch (error) {
         console.log("Error: " + error);
-        return res.send(Response.internalServerErrorResponse(error)); 
+        return res.send(Response.internalServerErrorResponse(error));
+    }
+}
+
+var removeRelationship = async (req, res) => {
+    try {
+        let currentID = req.body.CurrentID;
+        let memberToRemove = req.body.RemoveID;
+        let action = req.body.action;
+        if (action == 'RemoveParent') {
+            let data = await FamilyTreeService.RemoveRelationshipChild(memberToRemove);
+            if (data == true) {
+                return res.send(Response.successResponse());
+            } else {
+                return res.send(Response.internalServerErrorResponse());
+            }
+        } else if (action == 'RemoveMarried') {
+            
+        }
+    } catch (error) {
+        console.log(error)
     }
 }
 

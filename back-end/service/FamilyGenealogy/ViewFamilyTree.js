@@ -14,6 +14,33 @@ function getAllReligion() {
     });
 }
 
+async function RemoveRelationshipChild(id) {
+    try {
+        let query = `UPDATE familymember
+        SET ParentID = null,Generation = 0
+        WHERE MemberID =  ${id}`;
+        db.connection.query(query, (err) => {
+            if (!err) {
+                return true;
+            } else {
+                return false
+            }
+        })
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+async function RemoveRelationshipMarried(currentID, RemoveID) {
+    try {
+        
+    }
+    catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
 function getAllMemberRole(id) {
     return new Promise((resolve, reject) => {
         let query = `SELECT * FROM memberrole where MemberID = '${id}'`;
@@ -529,5 +556,5 @@ function removePaternalAncestor() {
 module.exports = {
     getAllReligion, getInforMember, getContactMember, getEducationMember, getJobMember, getEventMember, getAllNationality, getAllMemberRole,
     getRoleExist, setRoleMember, removePaternalAncestor, turnOnSQL_SAFE_UPDATES, turnOffSQL_SAFE_UPDATES, getListMessage,
-    setAllGenerationMember, ResetAllGenerationMember, ViewFamilyTree, getListUnspecifiedMembers, GetIdPaternalAncestor, RelationShipMember
+    setAllGenerationMember, ResetAllGenerationMember, ViewFamilyTree, getListUnspecifiedMembers, GetIdPaternalAncestor, RelationShipMember, RemoveRelationshipChild
 }
