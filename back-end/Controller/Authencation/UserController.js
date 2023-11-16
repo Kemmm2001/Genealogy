@@ -58,6 +58,31 @@ var loginUser = async (req, res) => {
   }
 }
 
+var getUserInfor = async (req, res) => {
+  try {
+    let data = await UserService.getUserInfo(req.body.accountID)
+    if (!data) throw createError.Conflict(`${data} không tìm thấy`)
+  
+    return res.send({data})
+    
+  } catch (error) {
+    res.status(error.status || 500).json({ error: error.message });
+  }
+}
+
+var getUserCodeID = async (req, res) => {
+  try {
+    let data = await UserService.getUserCodeID(req.body.accountID)
+    if (!data) throw createError.Conflict(`${data} không tìm thấy`)
+  
+    return res.send({data})
+    
+  } catch (error) {
+    res.status(error.status || 500).json({ error: error.message });
+  }
+}
+
+
 var refreshToken = async(req, res) => {
   try {
     const {refreshToken} = req.body
@@ -158,5 +183,5 @@ function generateRandomNumber() {
 }
 
 module.exports = {
-  registerUser, loginUser, refreshToken, registerGenealogy, getGenealogy, setRole, checkCodeID
+  registerUser, loginUser, refreshToken, registerGenealogy, getGenealogy, setRole, checkCodeID, getUserInfor,getUserCodeID
 };

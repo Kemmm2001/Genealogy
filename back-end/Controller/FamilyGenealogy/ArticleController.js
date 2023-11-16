@@ -14,8 +14,8 @@ var getAllArticle = async (req, res) => {
 
 var getArticle = async (req, res) => {
     try {
-        const articleId = req.body.articleId; // Lấy ArticleID từ đường dẫn URL
-        const codeId = req.body.codeId; // Lấy CodeID từ đường dẫn URL
+        const articleId = req.body.articleId; 
+        const codeId = req.body.codeId; 
         console.log(articleId)
         console.log(codeId)
         // Gọi hàm service để lấy bài viết dựa trên ArticleID và CodeID
@@ -114,7 +114,7 @@ var updateArticle = async (req, res) => {
         let response;
 
         // Update the article in the database
-        const updatedArticle = await ArticleManagementService.updateArticle(req.params.articleId,req.params.codeId,req.body);
+        const updatedArticle = await ArticleManagementService.updateArticle(req.body);
         
         // Check if the article was successfully updated
         if (!updatedArticle) {
