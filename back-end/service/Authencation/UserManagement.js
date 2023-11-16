@@ -80,7 +80,7 @@ function getUser(email) {
           // Tìm thấy email và trả về accountID và mật khẩu
           const user = {
             accountID: result[0].accountID,
-            password: result[1].Password
+            password: result[0].Password
           };
           resolve(user);
         }
@@ -106,8 +106,8 @@ function getUserInfo(accountID) {
 
           const user = {
             username: result[0].Username,
-            email: result[1].Email,
-            password: result[2].Password
+            email: result[0].Email,
+            password: result[0].Password
           };
           resolve(user);
         }
