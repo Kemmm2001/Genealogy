@@ -40,3 +40,7 @@
 .table-article{
     --bs-table-bg: transparent !important;
 }
+tr.articlelist-item:hover{
+    background-color: lightblue;
+    cursor: pointer;
+}

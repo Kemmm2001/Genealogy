@@ -30,10 +30,10 @@
               <tr @click="openEditArticleModal(), getInforArticle(article.ArticleID)"
                 class="articlelist-item articlelist-table-item" v-for="(article, index) in articleFilter"
                 :key="article.ArticleID">
-                <th scope="row">{{ index + 1 }}</th>
-                <td>{{ article.ArticleName }}</td>
-                <td>{{ article.ArticleDescription }}</td>
-                <td>{{ article.ArticleUrl }}</td>
+                <th class="td-member" scope="row">{{ index + 1 }}</th>
+                <td class="td-member">{{ article.ArticleName }}</td>
+                <td class="td-member">{{ article.ArticleDescription }}</td>
+                <td class="td-member">{{ article.ArticleUrl }}</td>
               </tr>
             </tbody>
           </table>

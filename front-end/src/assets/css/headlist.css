@@ -51,7 +51,7 @@ table{
 .table-headlist {
 --bs-table-bg: transparent !important;
 }
-tr:hover{
+tr.headlist-item:hover{
 background-color: lightblue;
 cursor: pointer;
 }
