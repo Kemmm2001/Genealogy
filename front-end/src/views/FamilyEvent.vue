@@ -2,31 +2,36 @@
     <div class="event-screen d-flex flex-row w-100 p-0">
         <div class="col-6 h-100 calendar">
             <div class="d-flex flex-row">
-                <select class="form-control">
-                    <option>Tháng</option>
-                    <option>09</option>
-                    <option>10</option>
-                    <option>11</option>
-                    <option>12</option>
+                <select @change="getDayOfMonth()" v-model="currentMonth" class="form-control">
+                    <option value="1">Tháng 01</option>
+                    <option value="2">Tháng 02</option>
+                    <option value="3">Tháng 03</option>
+                    <option value="4">Tháng 04</option>
+                    <option value="5">Tháng 05</option>
+                    <option value="6">Tháng 06</option>
+                    <option value="7">Tháng 07</option>
+                    <option value="8">Tháng 08</option>
+                    <option value="9">Tháng 09</option>
+                    <option value="10">Tháng 10</option>
+                    <option value="11">Tháng 11</option>
+                    <option value="12">Tháng 12</option>
                 </select>
-                <select class="form-control">
-                    <option>Năm</option>
-                    <option>2020</option>
-                    <option>2021</option>
-                    <option>2022</option>
-                    <option>2023</option>
+                <select @change="getDayOfMonth()" v-model="currentYear" class="form-control">
+                    <option v-for="year in listOfYear" :key="year">{{year}}</option>
                 </select>
             </div>
             <div class="d-flex flex-row">
-                <div class="col-6 text-dark">Tháng 11 - 2023</div>
-                <div class="btn bg-primary text-white">Hôm nay</div>
+                <div class="col-6 text-dark">Tháng {{this.currentMonth}} - {{this.currentYear}}</div>
+                <div class="btn bg-primary text-white" @click="setUpDate(),getDayOfMonth()">Hôm nay</div>
             </div>
             <table border="1" class="thang" cellpadding="2" cellspacing="2" width="100%">
                 <tbody><tr class="ngaytuan" style="font-size: 25px;font-weight: bold;background-color: #0088ff;">
                 <td>CN</td> <td>T2</td> <td>T3</td> <td>T4</td> <td>T5</td> <td>T6</td> <td>T7</td>
                 </tr>
                     <tr class="normal" v-for="(week,weekIndex) in dayOfMonth" :key="weekIndex">
-                        <td class="ngaythang" v-for="(day,dayIndex) in week" :key="dayIndex" >
+                        <td class="ngaythang" v-for="(day,dayIndex) in week" :key="dayIndex" 
+                        :class="{choose: dayIndex == indexClickDay && weekIndex == indexClickWeek }" @click="clickDate(dayIndex,weekIndex)"
+                        :style="{color: day.solar.month != currentMonth ? '#bebebe': 'black'}">
                             <div v-if="day.solar.date == 1" class="cn" @click="setChooseDate(day.solar.date,day.solar.month,day.solar.year)">{{ day.solar.date+"/"+(day.solar.month+1) }}</div>
                             <div v-if="day.solar.date != 1" class="cn" @click="setChooseDate(day.solar.date,day.solar.month,day.solar.year)">{{ day.solar.date }}</div>
                             <div>Ngày tết âm lịch</div>
@@ -77,19 +82,19 @@
                 <div class="btn bg-primary text-white d-flex align-items-center item">Xuất excel</div>
             </div>
             <div class="mt-3">
-                <table class="table table-headlist headlist-list m-0">
+                <table class="table table-eventlist eventlist-list m-0">
                     <thead>
-                        <tr class="headlist-item">
-                            <th class="headlist-list-th" scope="col">#</th>
-                            <th class="headlist-list-th" scope="col">Tên sự kiện</th>
-                            <th class="headlist-list-th" scope="col">Thời gian bắt đầu</th>
-                            <th class="headlist-list-th" scope="col">Thời gian kết thúc</th>
-                            <th class="headlist-list-th" scope="col">Địa điểm</th>
-                            <th class="headlist-list-th" scope="col">Kiểu lặp lại</th>
+                        <tr class="eventlist-item">
+                            <th class="eventlist-list-th" scope="col">#</th>
+                            <th class="eventlist-list-th" scope="col">Tên sự kiện</th>
+                            <th class="eventlist-list-th" scope="col">Thời gian bắt đầu</th>
+                            <th class="eventlist-list-th" scope="col">Thời gian kết thúc</th>
+                            <th class="eventlist-list-th" scope="col">Địa điểm</th>
+                            <th class="eventlist-list-th" scope="col">Kiểu lặp lại</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr @click="showEditEventModal()" class="headlist-item headlist-table-item odd">
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item odd">
                             <td>1</td>
                             <td>AAAA</td>
                             <td>
@@ -103,7 +108,7 @@
                             <td>AAAA</td>
                             <td>Tháng</td>
                         </tr>
-                        <tr @click="showEditEventModal()" class="headlist-item headlist-table-item even">
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item even">
                             <td>2</td>
                             <td>AAAA</td>
                             <td>
@@ -212,27 +217,38 @@ export default {
         return{
             calendar:null,
             dayOfMonth:[],
+            listOfYear:[],
             currentMonth: null,
             currentYear: null,
 
             chooseDate: null,
+            indexClickDay:null,
+            indexClickWeek:null,
         }
     },
     methods: {
+        clickDate(indexDay,indexWeek){
+            this.indexClickDay = indexDay
+            this.indexClickWeek = indexWeek
+        },
         setChooseDate(day,month,year){
             this.chooseDate = new Date();
             this.chooseDate.setFullYear(year);
             this.chooseDate.setMonth(month-1); // Tháng bắt đầu từ 0, nên 10 tương ứng với tháng 11
             this.chooseDate.setDate(day);
         },
-        setDate(){
+        setUpDate(){
             const dateNow = new Date();
             this.currentMonth = dateNow.getMonth()+1;
             this.currentYear = dateNow.getFullYear();
+            this.listOfYear = [];
+            for(let i = 1500 ;i < 2199;i++){
+                this.listOfYear.push(i)
+            }
         },
         getDayOfMonth(){
-            this.setDate();
             this.dayOfMonth = new Calendar(this.currentYear,this.currentMonth).weeks;
+            console.log(this.dayOfMonth)
         },
         showAddEventModal() {
             this.$modal.show("add-event-modal")
@@ -248,6 +264,7 @@ export default {
         },
     },
     mounted(){
+        this.setUpDate();
         this.getDayOfMonth();
     }
 }
@@ -267,10 +284,12 @@ text-align: left; /* Căn lề nội dung sang trái */
 }
 
 .cn{
-    font-size: 20px;
+    font-size: 23px;
+}
+td.ngaythang.choose{
+    background-color: lightblue;
 }
 td.ngaythang:hover{
-    background-color: lightblue;
     cursor: pointer;
 }
   </style>
