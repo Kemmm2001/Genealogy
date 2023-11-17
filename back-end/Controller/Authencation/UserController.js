@@ -35,26 +35,28 @@ var registerUser = async (req, res) => {
 
 var loginUser = async (req, res) => {
   try {
+    console.log("vào đây")
+    console.log(req.body)
     const result = await loginSchema.validateAsync(req.body)
 
-    console.log(req.body)
-    let user = await UserService.checkMail(result.email);
-    let data = await UserService.getUser(result.email)
-    if (!user) {
+    // 
+    // let user = await UserService.checkMail(result.email);
+    // let data = await UserService.getUser(result.email)
+    // if (!user) {
 
-      return res.send(Response.dataNotFoundResponse(result.email, 'Email không tồn tại'));
-    }
+    //   return res.send(Response.dataNotFoundResponse(result.email, 'Email không tồn tại'));
+    // }
 
-    const isPasswordMatch = await bcrypt.compare(result.password, data.password);
+    // const isPasswordMatch = await bcrypt.compare(result.password, data.password);
 
-    if (!isPasswordMatch) {
-      return res.send(Response.dataNotFoundResponse(null, 'Mật khẩu không đúng'));
-    }
-    const accessToken = await signAccessToken(data.accountID)
-    console.log(accessToken)
-    const refreshToken = await signRefreshToken(data.accountID)
-    console.log(refreshToken)
-    return res.send({ accessToken, refreshToken })
+    // if (!isPasswordMatch) {
+    //   return res.send(Response.dataNotFoundResponse(null, 'Mật khẩu không đúng'));
+    // }
+    // const accessToken = await signAccessToken(data.accountID)
+    // console.log(accessToken)
+    // const refreshToken = await signRefreshToken(data.accountID)
+    // console.log(refreshToken)
+    // return res.send({ accessToken, refreshToken })
 
   } catch (error) {
     if (error.isJoi === true) {

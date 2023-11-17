@@ -180,6 +180,7 @@ export default {
       localStorage.setItem("CodeID", this.accountLogin.codeId);
     },
     login() {
+      console.log(HTTP);
       if (
         this.accountLogin.email != null &&
         this.accountLogin.password != null
