@@ -39,7 +39,21 @@ function checkCodeIdCreator(AccountID, CodeID, RoleID) {
       if (err) {
         console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
         reject(err);
-      } else {       
+      } else {
+        const count = results[0].count;
+        resolve(count);
+      }
+    });
+  });
+}
+function checkCodeCreatedByID(AccountID) {
+  return new Promise((resolve, reject) => {
+    const query = `select COUNT(*) AS count from AccountFamilyTree where RoleID = 1 AND CodeID IS NOT NULL  and AccountID = ${AccountID}`;
+    db.connection.query(query, (err, results) => {
+      if (err) {
+        console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+        reject(err);
+      } else {
         const count = results[0].count;
         resolve(count);
       }
@@ -186,8 +200,10 @@ function refreshFreeEmail(usesTime) {
 
 function insertAccountFamily(accountID, codeID, roleID) {
   return new Promise((resolve, reject) => {
-    const query = 'INSERT INTO genealogy.AccountFamilyTree (AccountID,CodeID ,RoleID) VALUES (?,?,?)';
-    const values = [accountID, codeID, roleID];
+    let currentDate = new Date();
+    currentDate = currentDate.toISOString().slice(0, 19).replace("T", " ");
+    const query = 'INSERT INTO genealogy.AccountFamilyTree (AccountID,CodeID ,RoleID,AccessTime) VALUES (?,?,?,?)';
+    const values = [accountID, codeID, roleID,currentDate];
 
     db.connection.query(query, values, (err, results) => {
       if (err) {
@@ -198,6 +214,23 @@ function insertAccountFamily(accountID, codeID, roleID) {
         resolve(results);
       }
     });
+  });
+}
+function getHistoryLoginCodeID(AccountID) {
+  return new Promise((resolve, reject) => {
+    try {      
+      let query = `select * from AccountFamilyTree where  AccountID = ${AccountID} and AccessTime is not null`;
+      db.connection.query(query, (err, results) => {
+        if (err) {
+          console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+          reject(err);
+        } else {         
+          resolve(results);
+        }
+      });
+    } catch (error) {
+      console.log(error)
+    }
   });
 }
 
@@ -252,5 +285,6 @@ function updateRoleID(data) {
 
 module.exports = {
   checkMail, checkID, create, getUser, refreshFreeEmail, insertAccountFamily, checkCodeID,
-  checkAccountID, updateRoleID, insertIntoFamily, getUserInfo, getUserCodeID, checkCodeIdCreator, insertAccountFamilyTree
+  checkAccountID, updateRoleID, insertIntoFamily, getUserInfo, getUserCodeID, checkCodeIdCreator,
+  insertAccountFamilyTree, checkCodeCreatedByID, getHistoryLoginCodeID
 }

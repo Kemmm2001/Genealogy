@@ -26,6 +26,20 @@ var registerUser = async (req, res) => {
   }
 }
 
+var getHistoryCodeID = async (req, res) => {
+  try {
+    let accountID = req.query.accountID;
+    let data = await UserService.getHistoryLoginCodeID(accountID);    
+    if (data) {
+      return res.send(Response.successResponse(data));
+    } else {
+      return res.send(Response.dataNotFoundResponse());
+    }
+  } catch (error) {
+    return res.send(Response.dataNotFoundResponse(error));
+  }
+}
+
 var loginUser = async (req, res) => {
   try {
     let checkEmail = await UserService.checkMail(req.body.email);
@@ -55,9 +69,11 @@ var loginUser = async (req, res) => {
 var getUserInfor = async (req, res) => {
   try {
     let data = await UserService.getUserInfo(req.body.accountID)
-    if (!data) throw createError.Conflict(`${data} không tìm thấy`)
+    if (!data) {
+      return res.send(Response.dataNotFoundResponse(null, 'Lỗi hệ thống,không tìm thấy tài khoản'));
+    }
 
-    return res.send({ data })
+    return res.send(Response.successResponse(data));
 
   } catch (error) {
     res.status(error.status || 500).json({ error: error.message });
@@ -98,23 +114,29 @@ var registerGenealogy = async (req, res) => {
     let codeID;
     let doesExist = true;
 
-    while (doesExist) {
-      codeID = generateRandomNumber();
-      doesExist = await UserService.checkCodeID(codeID);
+    let checkCreated = await UserService.checkCodeCreatedByID(req.body.accountID)
+    if (checkCreated > 0) {
+      return res.send(Response.internalServerErrorResponse(null, 'Tài khoản này đã đăng ký gia phả. Không thể đăng ký tiếp'));
     }
-
-    let data1 = await UserService.insertIntoFamily(value, codeID);
-
-    if (data1) {
-      try {
-        await UserService.insertAccountFamily(value.accountID, codeID, 1);
-        return res.send(Response.successResponse(codeID, 'Đăng ký gia phả thành công'));
-      } catch (error) {
-        return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+    else {
+      while (doesExist) {
+        codeID = generateRandomNumber();
+        doesExist = await UserService.checkCodeID(codeID);
       }
-    } else {
-      return res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống'));
+
+      let data1 = await UserService.insertIntoFamily(value, codeID);
+      if (data1) {
+        try {
+          await UserService.insertAccountFamily(value.accountID, codeID, 1);
+          return res.send(Response.successResponse(codeID, 'Đăng ký gia phả thành công'));
+        } catch (error) {
+          return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+        }
+      } else {
+        return res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống'));
+      }
     }
+
   } catch (error) {
     res.status(500).json({ error: 'Lỗi nội bộ' });
   }
@@ -190,5 +212,5 @@ function generateRandomNumber() {
 }
 
 module.exports = {
-  registerUser, loginUser, refreshToken, registerGenealogy, getGenealogy, setRole, checkCodeID, getUserInfor, getUserCodeID
+  registerUser, loginUser, refreshToken, registerGenealogy, getGenealogy, setRole, checkCodeID, getUserInfor, getUserCodeID,getHistoryCodeID
 };

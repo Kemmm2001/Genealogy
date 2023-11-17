@@ -101,7 +101,6 @@ export default {
       accountLogin: {
         email: null,
         password: null,
-        codeId: null,
       },
       accountRegister: {
         username: null,
@@ -175,9 +174,6 @@ export default {
         );
       }
     },
-    saveInfoSession() {
-      localStorage.setItem("CodeID", this.accountLogin.codeId);
-    },
     login() {
       console.log(HTTP);
       if (
@@ -216,14 +212,20 @@ export default {
     },
 
     moveToRight() {
-      this.loggingin = false;
+      (this.accountLogin.email = null),
+        (this.accountLogin.password = null),
+        (this.loggingin = false);
       setTimeout(() => {
         this.right = true;
       }, 300);
     },
 
     moveToLeft() {
-      this.loggingin = true;
+      this.accountRegister.username = null;
+      (this.accountRegister.password = null),
+        (this.accountRegister.rePassword = null),
+        (this.accountRegister.email = null),
+        (this.loggingin = true);
       setTimeout(() => {
         this.right = false;
       }, 300);
@@ -235,6 +237,18 @@ export default {
     showRegisterOptions() {
       this.$modal.show("register-options");
     },
+  },
+  mounted() {
+    if (
+      localStorage.getItem("accountID") != null &&
+      localStorage.getItem("CodeID") != null
+    ) {
+      this.$router.push("/");  
+    } else {
+      if (localStorage.getItem("accountID") != null) {
+        this.$router.push("/familycode");
+      }
+    }
   },
 };
 </script>

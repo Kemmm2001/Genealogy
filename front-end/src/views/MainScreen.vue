@@ -986,8 +986,7 @@ export default {
       resultCompare2: null,
       selectedRowIndex: null,
       UrlAvatar: null,
-      imagePath:
-        "/uploads/images/member-photo/726235fb96dc3db0ce8e76a4c9afe1.jpeg",
+    
     };
   },
   methods: {
@@ -2130,7 +2129,7 @@ export default {
       this.smsSelected = true;
       this.emailSelected = false;
       this.expandCreateEmail = false;
-    },
+    },  
   },
   created() {
     EventBus.$on("displayList", (value) => {
@@ -2156,6 +2155,7 @@ export default {
     }
     console.log("CodeID: " + localStorage.getItem("CodeID"));
     console.log("accountID: " + localStorage.getItem("accountID"));
+
     this.getListMessage();
     this.getListCity();
     this.getListNationality();

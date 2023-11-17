@@ -26,6 +26,7 @@ const initWebRouter = (app) => {
   router.post('/set-role', UserController.setRole)
   router.post('/check-codeId', UserController.checkCodeID)
 
+  router.get('/historyCodeID',UserController.getHistoryCodeID)
   router.post('/get-user', UserController.getUserInfor)
   router.get('/admin', authMiddleware.authenticateAndAuthorize(2), (req, res) => {
     // Xử lý yêu cầu

@@ -79,83 +79,14 @@
           </div>
         </div>
         <div class="d-flex flex-column" style="height: calc(100% - 100px); overflow-y: auto;">
-          <div class="odd d-flex flex-row align-items-center">
-            <div class="col-6 d-flex justify-content-center" style="height: 40px;">12/12/2002</div>
-            <div class="col-6 d-flex justify-content-center">AAA AAA AAA</div>
-          </div>
-          <div class="even d-flex flex-row align-items-center">
-            <div class="col-6 d-flex justify-content-center" style="height: 40px;">12/12/2002</div>
-            <div class="col-6 d-flex justify-content-center">BBB BBB BBB</div>
-          </div>
-          <div class="odd d-flex flex-row align-items-center">
-            <div class="col-6 d-flex justify-content-center" style="height: 40px;">12/12/2002</div>
-            <div class="col-6 d-flex justify-content-center">AAA AAA AAA</div>
-          </div>
-          <div class="even d-flex flex-row align-items-center">
-            <div class="col-6 d-flex justify-content-center" style="height: 40px;">12/12/2002</div>
-            <div class="col-6 d-flex justify-content-center">BBB BBB BBB</div>
-          </div>
-          <div class="odd d-flex flex-row align-items-center">
-            <div class="col-6 d-flex justify-content-center" style="height: 40px;">12/12/2002</div>
-            <div class="col-6 d-flex justify-content-center">AAA AAA AAA</div>
-          </div>
-          <div class="even d-flex flex-row align-items-center">
-            <div class="col-6 d-flex justify-content-center" style="height: 40px;">12/12/2002</div>
-            <div class="col-6 d-flex justify-content-center">BBB BBB BBB</div>
-          </div>
-          <div class="odd d-flex flex-row align-items-center">
-            <div class="col-6 d-flex justify-content-center" style="height: 40px;">12/12/2002</div>
-            <div class="col-6 d-flex justify-content-center">AAA AAA AAA</div>
-          </div>
-          <div class="even d-flex flex-row align-items-center">
-            <div class="col-6 d-flex justify-content-center" style="height: 40px;">12/12/2002</div>
-            <div class="col-6 d-flex justify-content-center">BBB BBB BBB</div>
-          </div>
-          <div class="odd d-flex flex-row align-items-center">
-            <div class="col-6 d-flex justify-content-center" style="height: 40px;">12/12/2002</div>
-            <div class="col-6 d-flex justify-content-center">AAA AAA AAA</div>
-          </div>
-          <div class="even d-flex flex-row align-items-center">
-            <div class="col-6 d-flex justify-content-center" style="height: 40px;">12/12/2002</div>
-            <div class="col-6 d-flex justify-content-center">BBB BBB BBB</div>
-          </div>
-          <div class="odd d-flex flex-row align-items-center">
-            <div class="col-6 d-flex justify-content-center" style="height: 40px;">12/12/2002</div>
-            <div class="col-6 d-flex justify-content-center">AAA AAA AAA</div>
-          </div>
-          <div class="even d-flex flex-row align-items-center">
-            <div class="col-6 d-flex justify-content-center" style="height: 40px;">12/12/2002</div>
-            <div class="col-6 d-flex justify-content-center">BBB BBB BBB</div>
-          </div>
-          <div class="odd d-flex flex-row align-items-center">
-            <div class="col-6 d-flex justify-content-center" style="height: 40px;">12/12/2002</div>
-            <div class="col-6 d-flex justify-content-center">AAA AAA AAA</div>
-          </div>
-          <div class="even d-flex flex-row align-items-center">
-            <div class="col-6 d-flex justify-content-center" style="height: 40px;">12/12/2002</div>
-            <div class="col-6 d-flex justify-content-center">BBB BBB BBB</div>
-          </div>
-          <div class="odd d-flex flex-row align-items-center">
-            <div class="col-6 d-flex justify-content-center" style="height: 40px;">12/12/2002</div>
-            <div class="col-6 d-flex justify-content-center">AAA AAA AAA</div>
-          </div>
-          <div class="even d-flex flex-row align-items-center">
-            <div class="col-6 d-flex justify-content-center" style="height: 40px;">12/12/2002</div>
-            <div class="col-6 d-flex justify-content-center">BBB BBB BBB</div>
-          </div>
-          <div class="odd d-flex flex-row align-items-center">
-            <div class="col-6 d-flex justify-content-center" style="height: 40px;">12/12/2002</div>
-            <div class="col-6 d-flex justify-content-center">AAA AAA AAA</div>
-          </div>
-          <div class="even d-flex flex-row align-items-center">
-            <div class="col-6 d-flex justify-content-center" style="height: 40px;">12/12/2002</div>
-            <div class="col-6 d-flex justify-content-center">BBB BBB BBB</div>
+          <div v-for="h in HistoryCode" :key="h.id" class="odd d-flex flex-row align-items-center">
+            <div class="col-6 d-flex justify-content-center" style="height: 40px;">{{h.AccessTime}}</div>
+            <div class="col-6 d-flex justify-content-center">{{h.CodeID}}</div>
           </div>
         </div>
         <div class="modal-footer w-100 position-absolute" style="bottom: 0;">
-          <div class="d-flex h-100 align-items-center justify-content-end" style="padding-right: 12px;">
-            <button type="button" class="btn btn-primary mr-2" @click="addMemberFromList()">Thêm</button>
-            <button style="margin-left:10px" type="button" class="btn btn-secondary">Cancel</button>
+          <div class="d-flex h-100 align-items-center justify-content-end" style="padding-right: 12px;">          
+            <button style="margin-left:10px" type="button" class="btn btn-secondary" @click="closeLoginHistoryModal()">Cancel</button>
           </div>
         </div>
       </div>
@@ -180,30 +111,36 @@ export default {
       familycode: null,
 
       familyTree: {
-        memberId: null,
         treeName: null,
         ethnicity: null,
         deathAnniersary: null,
-        codeId: null,
       },
       codeIdLogin: null,
       accountID: null,
+      HistoryCode: null,
     };
   },
   methods: {
     takeAccountId() {
-      HTTP.get("protected-route", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
-      })
-        .then((response) => {
-          this.accountID = response.data.accountID;
-          console.log(this.accountID);
+      if (localStorage.getItem("accountID") != null) {
+        this.accountID = localStorage.getItem("accountID");
+        this.getHistoryCodeID();
+      } else {
+        HTTP.get("protected-route", {
+          headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
         })
-        .catch((e) => {
-          console.log(e);
-        });
+          .then((response) => {
+            this.accountID = response.data.accountID;
+            localStorage.setItem("accountID", this.accountID);
+            this.getHistoryCodeID();
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+        console.log(this.accountID);
+      }
     },
     NotificationsDelete(messagee) {
       new Snackbar(messagee, {
@@ -260,7 +197,6 @@ export default {
         .then((response) => {
           if (response.data.success == true) {
             localStorage.setItem("CodeID", this.codeIdLogin);
-            localStorage.setItem("accountID", this.accountID);
             this.$router.push("/");
           } else {
             this.NotificationsDelete(response.data.message);
@@ -278,6 +214,7 @@ export default {
     },
 
     moveToRight() {
+      this.codeIdLogin = null;
       this.loggingin = false;
       setTimeout(() => {
         this.right = true;
@@ -285,6 +222,9 @@ export default {
     },
 
     moveToLeft() {
+      this.familyTree.treeName = null;
+      this.familyTree.ethnicity = null;
+      this.familyTree.deathAnniersary = null;
       this.loggingin = true;
       setTimeout(() => {
         this.right = false;
@@ -302,9 +242,29 @@ export default {
     closeLoginHistoryModal() {
       this.$modal.hide("loginhistory-modal");
     },
+    getHistoryCodeID() {
+      HTTP.get("historyCodeID", {
+        params: {
+          accountID: this.accountID,
+        },
+      })
+        .then((response) => {
+          if ((response.data.success == true)) {
+            this.HistoryCode = response.data.data;
+          } else {
+            this.NotificationsDelete("Không lấy được lịch sử code");
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
   },
   mounted() {
     this.takeAccountId();
+    if (localStorage.getItem("CodeID") != null) {
+      this.$router.push("/");
+    }
   },
 };
 </script>

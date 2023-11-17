@@ -79,7 +79,7 @@ const routes = [
 ];
 
 const router = new Router({
-  mode: "history", // Sử dụng chế độ lịch sử
+  mode: "history", 
   base: process.env.BASE_URL,
   routes,
 });
