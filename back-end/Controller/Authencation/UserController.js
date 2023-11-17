@@ -8,11 +8,10 @@ const Response = require('../../Utils/Response')
 var registerUser = async (req, res) => {
   try {
     console.log("vào đây")
-    // Xử lý yêu cầu đăng ký ở đây
     const result = await registerSchema.validateAsync(req.body);
 
     if (result.password !== result.repassword) {
-      throw new Error("Mật khẩu nhập lại không khớp với mật khẩu");
+      return res.send(Response.successResponse(null, 'Mật khẩu không trùng nhau'));
     }
 
     let doesExist = await UserService.checkMail(result.email);
@@ -53,7 +52,6 @@ var loginUser = async (req, res) => {
     const accessToken = await signAccessToken(data.accountID)
     console.log(accessToken)
     const refreshToken = await signRefreshToken(data.accountID)
-    console.log(refreshToken)
     return res.send({ accessToken, refreshToken })
 
   } catch (error) {
@@ -179,13 +177,8 @@ var checkCodeID = async (req, res) => {
 
 
 function generateRandomNumber() {
-  // Tạo 9 chữ số ngẫu nhiên
-  const randomNumber = Math.floor(100000000 + Math.random() * 900000000).toString();
-
-  // Sử dụng slicing để chia thành các phần 3 chữ số và nối chúng với dấu "-"
-  const formattedNumber = randomNumber.slice(0, 3) + '-' + randomNumber.slice(3, 6) + '-' + randomNumber.slice(6);
-
-  return formattedNumber;
+  const randomNumber = Math.floor(100000 + Math.random() * 900000).toString();
+  return randomNumber;
 }
 
 module.exports = {
