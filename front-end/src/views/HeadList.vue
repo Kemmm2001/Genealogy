@@ -1,6 +1,6 @@
 <template>
-  <div class="container-fluid position-relative" style="padding-left: 120px; padding-right: 120px; height: calc(100% - 64px)">
-    <div class="d-flex d-flex align-items-center position-absolute" style="top: 5%; bottom: 5%; left: 5%; right: 5%;">
+  <div class="container-fluid position-relative" style="padding: 32px 120px;">
+    <div class="d-flex d-flex align-items-center position-absolute" style="width: calc(100% - 240px); height: calc(100% - 64px);">
       <div class="info-pages-container d-flex flex-column h-100 w-100">
         <div class="d-flex align-items-center w-100 my-2 mx-2" style="height: 50px; font-size: 20px; font-weight: bold;">Danh sách tộc trưởng</div>
         <div class="d-flex flex-row">
@@ -53,45 +53,6 @@
           </table>
         </div>
       </div>
-      <modal name="addHead-modalll">
-        <div class="w-100 add-head-modal position: relative;" style="height:620px">
-          <div class="d-flex flex-row w-100 align-items-center position-relative">
-            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm tộc trưởng</div>
-            <div class="close-add-form" @click="closeAddHeadModal()">
-              <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-              </svg>
-            </div>
-          </div>
-          <div class="d-flex flex-column position-relative" style="height: calc(100% - 50px);">
-            <div class="d-flex flex-row">
-              <div class="col-md-4 m-2">
-                <input type="text" class="form-control modal-item m-0" placeholder="Nhập tên thành viên..." />
-              </div>
-            </div>
-            <div class="d-flex flex-column headlist-list-container w-100">
-              <table class="table member headlist-list m-0">
-                <thead>
-                  <tr class="headlist-item">
-                    <th class="headlist-list-th" scope="col">#</th>
-                    <th class="headlist-list-th" scope="col">Họ và Tên</th>
-                    <th class="headlist-list-th" scope="col">Ngày sinh</th>
-                    <th class="headlist-list-th" scope="col">Đời</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr @click="chooseMember(member.id), numberItemSelection(index)" :class="{ selected: itemChoose === index }" class="headlist-item headlist-table-item" v-for="(member, index) in memberList" :key="member.id">
-                    <th scope="row" style="text-align: center;">{{ index + 1 }}</th>
-                    <td style="text-align: center;">{{ member.name }}</td>
-                    <td style="text-align: center;">{{ formatDate(member.dob) }}</td>
-                    <td style="text-align: center;">{{ member.generation }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </modal>
 
       <div class="addHead-container">
         <modal name="addHead-modal">
@@ -111,9 +72,9 @@
                     <input type="text" class="form-control modal-item m-0" placeholder="Nhập tên thành viên..." />
                   </div>
                 </div>
-                <div class="d-flex flex-column headlist-list-container w-100">
+                <div class="d-flex flex-column w-100" style="height: 420px; overflow-y: auto;">
                   <table class="table table-member headlist-list m-0">
-                    <thead>
+                    <thead style="position: sticky; top: 0;">
                       <tr class="headlist-item">
                         <th class="headlist-list-th" scope="col">#</th>
                         <th class="headlist-list-th" scope="col">Họ và Tên</th>

@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid position-relative" style="padding: 32px 120px;">
     <div class="d-flex flex-row position-absolute" style="width: calc(100% - 240px); height: calc(100% - 32px);">
-      <div class="col-10 column m-0" style="height: calc(100% - 35px);">
+      <div class="col-10 column m-0" style="height: calc(100% - 32px);">
         <div class="filter-member d-flex flex-row w-100">
           <div class="filter-option col-3">
             <a>Tổng số thành viên: {{this.memberList.length}} người</a>
