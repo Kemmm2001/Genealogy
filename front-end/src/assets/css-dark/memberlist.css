@@ -5,24 +5,9 @@
     padding-top: 20px;
     padding-left:10px;
 }
-.filter-member{
-    background-color: #f6f6f6;
-    height: 140px;
-    margin-bottom: 16px;
-    border-radius: 0.375rem;
-    font-family: 'QuicksandBold';
-    font-size: 19px;
-}
 .aaaa{
     margin-top:16px;
     margin-left: 16px;
-}
-.list-member{
-    background-color: #f6f6f6;
-    padding: 16px;
-    border-radius: 0.375rem;
-    min-height: 516px;
-    position: relative;
 }
 .button-member{
     background-color: white;
@@ -58,10 +43,6 @@ button {
     height: 140px;
     border-radius: 0.375rem;
     margin-bottom: 16px;
-}
-.search-member{
-    background-color: #f6f6f6;
-    border-radius: 0.375rem;
 }
 .click-color{
     background-color: #ebe2e2;
