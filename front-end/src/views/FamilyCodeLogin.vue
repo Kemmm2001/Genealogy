@@ -178,7 +178,6 @@ export default {
       loggingin: true,
       showCode: false,
       familycode: null,
-      combinedText: "",
 
       familyTree: {
         memberId: null,
