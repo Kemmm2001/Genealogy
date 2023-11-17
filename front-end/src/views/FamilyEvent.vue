@@ -1,6 +1,26 @@
 <template>
     <div class="event-screen d-flex flex-row w-100 p-0">
         <div class="col-6 h-100 calendar">
+            <div class="d-flex flex-row">
+                <select class="form-control">
+                    <option>Tháng</option>
+                    <option>09</option>
+                    <option>10</option>
+                    <option>11</option>
+                    <option>12</option>
+                </select>
+                <select class="form-control">
+                    <option>Năm</option>
+                    <option>2020</option>
+                    <option>2021</option>
+                    <option>2022</option>
+                    <option>2023</option>
+                </select>
+            </div>
+            <div class="d-flex flex-row">
+                <div class="col-6 text-dark">Tháng 11 - 2023</div>
+                <div class="btn bg-primary text-white">Hôm nay</div>
+            </div>
             <table border="1" class="thang" cellpadding="2" cellspacing="2" width="100%">
                 <tbody><tr class="ngaytuan" style="font-size: 25px;font-weight: bold;background-color: #0088ff;">
                 <td>CN</td> <td>T2</td> <td>T3</td> <td>T4</td> <td>T5</td> <td>T6</td> <td>T7</td>

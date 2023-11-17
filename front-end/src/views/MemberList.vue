@@ -1,7 +1,7 @@
 <template>
-  <div class="container-fluid position-relative" style="padding-left: 200px; padding-right: 200px;">
-    <div class="d-flex flex-row position-absolute" style="top: 5%; bottom: 5%; left: 5%; right: 5%; margin: auto;">
-      <div class="col-10 column">
+  <div class="container-fluid position-relative" style="padding: 32px 120px;">
+    <div class="d-flex flex-row position-absolute" style="width: calc(100% - 240px); height: calc(100% - 32px);">
+      <div class="col-10 column m-0" style="height: calc(100% - 35px);">
         <div class="filter-member d-flex flex-row w-100">
           <div class="filter-option col-3">
             <a>Tổng số thành viên: {{this.memberList.length}} người</a>
@@ -45,7 +45,7 @@
           </div>
         </div>
       </div>
-      <div class="col-2 column">
+      <div class="col-2 column m-0" style="height: calc(100% - 35px);">
         <div class="sort-member">
           <p class="title">Sắp xếp</p>
           <div class="sort-button d-flex justify-content-center">

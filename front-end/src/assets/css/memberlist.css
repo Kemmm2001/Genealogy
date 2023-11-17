@@ -22,7 +22,9 @@
     padding: 16px;
     border-radius: 0.375rem;
     min-height: 516px;
+    height: calc(100% - 156px);
     position: relative;
+    overflow-y: auto;
 }
 .button-member{
     background-color: white;
@@ -58,10 +60,14 @@ button {
     height: 140px;
     border-radius: 0.375rem;
     margin-bottom: 16px;
+    margin-left: 16px;
 }
 .search-member{
     background-color: aliceblue;
+    height: calc(100% - 156px);
     border-radius: 0.375rem;
+    margin-bottom: 16px;
+    margin-left: 16px;
 }
 .click-color{
     background-color: #ebe2e2;
