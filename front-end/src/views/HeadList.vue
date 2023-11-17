@@ -8,16 +8,6 @@
             <div class="w-100 my-2 mx-2">
               <input type="text" class="form-control modal-item m-0" placeholder="Nhập tên thành viên..." />
             </div>
-            <div class="d-flex w-100 my-2">
-              <div class="px-2">Phân trang</div>
-              <div class="d-flex align-items-center">
-                <select @change="resetCurrentPageFHead()" v-model="itemsPerPageFHead" class="form-select px-2 py-0">
-                  <option selected value="10">10</option>
-                  <option value="20">20</option>
-                  <option value="30">30</option>
-                </select>
-              </div>
-            </div>
           </div>
           <div class="col-md-6 d-flex align-items-center" style="justify-content: right;">
             <button @click="openAddHeadModal()" class="btn headlist-item headlist-item-button text-center my-4 mx-2">
@@ -38,10 +28,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr @click="getInforMember(familyhead.MemberID)" class="headlist-item headlist-table-item" v-for="(familyhead, index) in displayedItemsFamilyHead" :key="familyhead.MemberID">
+              <tr @click="getInforMember(familyhead.MemberID)" class="headlist-item headlist-table-item" v-for="(familyhead, index) in familyheadFilter" :key="familyhead.MemberID">
                 <th @click="openEditHeadModal()" scope="row">
-                  {{ index + 1 +
-                  itemsPerPageFHead * (currentPageFHead - 1) }}
+                  {{ index + 1 }}
                 </th>
                 <td @click="openEditHeadModal()">
                   {{
@@ -62,48 +51,6 @@
               </tr>
             </tbody>
           </table>
-        </div>
-        <div class="d-flex flex-row paging justify-content-center" style="position:absolute; bottom: 0; left: 0; right: 0;">
-          <div class="d-flex flex-row align-items-center">
-            <div class="d-flex align-items-center justify-content-center" style="padding-right: 12px;"></div>
-          </div>
-          <div class="d-flex flex-row align-items-center">
-            <!-- <div class="d-flex flex-row justify-content-center" style="flex-grow: 1;">
-                <div class="pagination justify-content-center align-items-center">
-                    <button class="btn button-normal m-0" @click="prevPageFamilyHead">Previous</button>
-                    <span style="margin: 10px;">{{ currentPageFHead }}/{{ Math.ceil(this.familyheadFilter.length / this.itemsPerPageFHead) }}</span>
-                    <button class="btn button-normal m-0" @click="nextPageFamilyHead">Next</button>
-                </div>
-            </div>-->
-            <div class="d-flex flex-row paging justify-content-center" style="position:absolute; bottom: 0; left: 0; right: 0; height: 70px;">
-              <div @click="prevPageFamilyHead" class="d-flex flex-row align-items-center" style="cursor: pointer;">
-                <div class="d-flex align-items-center justify-content-center" style="padding-right: 12px;">
-                  <svg class="headlist-paging-icon" style="transform: rotate(180deg);" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                    <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" />
-                  </svg>
-                  <div>Trước</div>
-                </div>
-              </div>
-              <div class="d-flex flex-row align-items-center">
-                <div @click="setCurrentPageFHead(currentPageFHead - 2)" v-if="currentPageFHead > 2" class="page" style="cursor: pointer;">{{ currentPageFHead - 2 }}</div>
-                <div @click="setCurrentPageFHead(currentPageFHead - 1)" v-if="currentPageFHead > 1" class="page" style="cursor: pointer;">{{ currentPageFHead - 1 }}</div>
-                <div class="page">
-                  <div :class="{ chosen: true }">{{ currentPageFHead }}</div>
-                </div>
-                <div @click="setCurrentPageFHead(currentPageFHead + 1)" v-if="Math.ceil(this.familyheadFilter.length / this.itemsPerPageFHead) > currentPageFHead" class="page" style="cursor: pointer;">{{ currentPageFHead + 1 }}</div>
-                <div @click="setCurrentPageFHead(currentPageFHead + 2)" v-if="Math.ceil(this.familyheadFilter.length / this.itemsPerPageFHead) - 1 > currentPageFHead" class="page" style="cursor: pointer;">{{ currentPageFHead + 2 }}</div>
-              </div>
-              <div @click="nextPageFamilyHead" class="d-flex flex-row align-items-center" style="cursor: pointer;">
-                <div class="d-flex align-items-center justify-content-center" style="padding-left: 12px;">
-                  <div>Sau</div>
-                  <svg class="headlist-paging-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                    <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="d-flex flex-row align-items-center"></div>
         </div>
       </div>
 
@@ -134,7 +81,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr @click="chooseMember(member.id), numberItemSelection(index)" :class="{ selected: itemChoose === index }" class="headlist-item headlist-table-item" v-for="(member, index) in displayedItemsMember" :key="member.id">
+                  <tr @click="chooseMember(member.id), numberItemSelection(index)" :class="{ selected: itemChoose === index }" class="headlist-item headlist-table-item" v-for="(member, index) in memberList" :key="member.id">
                     <th scope="row" style="text-align: center;">{{ index + 1 }}</th>
                     <td style="text-align: center;">{{ member.name }}</td>
                     <td style="text-align: center;">{{ formatDate(member.dob) }}</td>
@@ -142,21 +89,6 @@
                   </tr>
                 </tbody>
               </table>
-              <!-- <div class="headlist-list-footer">
-                <div class="d-flex flex-row align-items-center">
-                  <div class="d-flex flex-row justify-content-center" style="flex-grow: 1;">
-                    <div class="pagination justify-content-center align-items-center">
-                        <button class="btn button-normal m-0" @click="prevPageMember">Previous</button>
-                        <span style="margin: 10px;">{{ currentPageMember }}/{{ Math.ceil(this.memberList.length / this.itemsPerPageMember) }}</span>
-                        <button class="btn button-normal m-0" @click="nextPageMember">Next</button>
-                    </div>
-                  </div>
-
-                  <div class="d-flex justify-content-right m-1">
-                    <button @click="SetFamilyHead()" class="btn headlist-item headlist-item-button text-center">Thêm</button>
-                  </div>
-                </div>
-              </div>-->
             </div>
           </div>
         </div>
@@ -191,10 +123,9 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr @click="chooseMember(member.id), numberItemSelection(index)" :class="{ selected: itemChoose === index }" class="headlist-item headlist-table-item" v-for="(member, index) in displayedItemsMember" :key="member.id">
+                      <tr @click="chooseMember(member.id), numberItemSelection(index)" :class="{ selected: itemChoose === index }" class="headlist-item headlist-table-item" v-for="(member, index) in memberList" :key="member.id">
                         <th scope="row" style="text-align: center;">
-                          {{ index + 1 +
-                          itemsPerPageMember * (currentPageMember - 1) }}
+                          {{ index + 1 }}
                         </th>
                         <td style="text-align: center;">{{ member.name }}</td>
                         <td style="text-align: center;">{{ formatDate(member.dob) }}</td>
@@ -206,17 +137,6 @@
                 <div class="d-flex flex-row m-3 align-items-center articlelist-button-container">
                   <div class="headlist-list-footer">
                     <div class="d-flex flex-row align-items-center">
-                      <div class="d-flex flex-row justify-content-center" style="flex-grow: 1;">
-                        <div class="pagination justify-content-center align-items-center">
-                          <button class="btn button-normal m-0" @click="prevPageMember">Trước</button>
-                          <span style="margin: 10px;">
-                            {{ currentPageMember }}/{{ Math.ceil(this.memberList.length /
-                            this.itemsPerPageMember) }}
-                          </span>
-                          <button class="btn button-normal m-0" @click="nextPageMember">Sau</button>
-                        </div>
-                      </div>
-
                       <div class="d-flex justify-content-right m-1">
                         <button @click="SetFamilyHead()" class="btn headlist-item headlist-item-button text-center">Thêm</button>
                       </div>
@@ -672,26 +592,8 @@ export default {
         StartDate: null,
         EndDate: null,
       },
-      itemsPerPageMember: 10, // Số mục dữ liệu trên mỗi trang
-      currentPageMember: 1,
-      itemsPerPageFHead: 10, // Số mục dữ liệu trên mỗi trang
-      currentPageFHead: 1,
       TitleModal: null,
     };
-  },
-  computed: {
-    displayedItemsMember() {
-      // Tính toán các mục dữ liệu cho trang hiện tại
-      const startIndex = (this.currentPageMember - 1) * this.itemsPerPageMember;
-      const endIndex = startIndex + this.itemsPerPageMember;
-      return this.memberList.slice(startIndex, endIndex);
-    },
-    displayedItemsFamilyHead() {
-      // Tính toán các mục dữ liệu cho trang hiện tại
-      const startIndex = (this.currentPageFHead - 1) * this.itemsPerPageFHead;
-      const endIndex = startIndex + this.itemsPerPageFHead;
-      return this.familyheadFilter.slice(startIndex, endIndex);
-    },
   },
   methods: {
     formatDate(dateString) {
@@ -707,38 +609,6 @@ export default {
       const month = String(date.getMonth() + 1).padStart(2, "0");
       const day = String(date.getDate()).padStart(2, "0");
       return `${year}-${month}-${day}`;
-    },
-    resetCurrentPageFHead() {
-      this.currentPageFHead = 1;
-    },
-    setCurrentPageFHead(page) {
-      this.currentPageFHead = page;
-    },
-    prevPageMember() {
-      if (this.currentPageMember > 1) {
-        this.currentPageMember--;
-      }
-    },
-    nextPageMember() {
-      if (
-        this.currentPageMember <
-        Math.ceil(this.memberList.length / this.itemsPerPageMember)
-      ) {
-        this.currentPageMember++;
-      }
-    },
-    prevPageFamilyHead() {
-      if (this.currentPageFHead > 1) {
-        this.currentPageFHead--;
-      }
-    },
-    nextPageFamilyHead() {
-      if (
-        this.currentPageFHead <
-        Math.ceil(this.familyheadFilter.length / this.itemsPerPageFHead)
-      ) {
-        this.currentPageFHead++;
-      }
     },
     updateEducationMember() {
       HTTP.put("updateEducation", {
@@ -893,7 +763,7 @@ export default {
     getListMember() {
       HTTP.get("viewTree", {
         params: {
-          CodeID: '258191',
+          CodeID: "258191",
         },
       })
         .then((response) => {
@@ -924,7 +794,7 @@ export default {
       HTTP.post("setRole", {
         memberId: this.memberIdChoose,
         roleId: 2,
-        CodeId: 123456,
+        CodeId: "258191",
       })
         .then(() => {
           this.NotificationsScuccess("Thêm thành công");
@@ -1007,7 +877,7 @@ export default {
     getFamilyHead() {
       HTTP.get("familyhead", {
         params: {
-          CodeID: 123456,
+          CodeID: "258191",
         },
       })
         .then((response) => {

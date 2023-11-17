@@ -1,6 +1,19 @@
 <template>
     <div class="event-screen d-flex flex-row w-100 p-0">
-        <div class="col-6 h-100 calendar">Lịch</div>
+        <div class="col-6 h-100 calendar">
+            <table class="thang" border="1" cellpadding="2" cellspacing="2" width="100%">
+                <tbody><tr class="ngaytuan">
+                <td>CN</td> <td>T2</td> <td>T3</td> <td>T4</td> <td>T5</td> <td>T6</td> <td>T7</td>
+                </tr>
+                    <tr class="normal" v-for="(week,weekIndex) in dayOfMonth" :key="weekIndex">
+                        <td class="ngaythang" v-for="(day,dayIndex) in week" :key="dayIndex" >
+                            <div class="cn">{{ day.solar.date }}</div>
+                            <div class="am">{{ day.lunar.date }}</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         <div class="col-6 event-list d-flex flex-column">
             <div class="search-filter d-flex flex-row position-relative">
                 <div class="search d-flex">
@@ -170,8 +183,27 @@
 </template>
 
 <script>
+import { Calendar } from "vietnamese-lunar-calendar";
 export default {
+    data(){
+        return{
+            calendar:null,
+            dayOfMonth:[],
+            currentMonth: null,
+            currentYear: null,
+        }
+    },
     methods: {
+        getDayOfMonth(){
+            const dateNow = new Date();
+            this.currentMonth = dateNow.getMonth();
+            this.currentYear = dateNow.getFullYear()
+        },
+        getCalendar(){
+            this.dayOfMonth = new Calendar(this.currentYear,this.currentMonth).weeks;
+            console.log(this.currentMonth)
+            console.log(this.currentYear)
+        },
         showAddEventModal() {
             this.$modal.show("add-event-modal")
         },
@@ -184,6 +216,9 @@ export default {
         closeEditEventModal() {
             this.$modal.hide("edit-event-modal")
         },
+    },
+    mounted(){
+        this.getCalendar();
     }
 }
 </script>

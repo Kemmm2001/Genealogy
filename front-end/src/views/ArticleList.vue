@@ -9,16 +9,6 @@
             <div class="w-100 my-2 mx-2">
               <input type="text" class="form-control modal-item m-0" placeholder="Nhập tên tài liệu...">
             </div>
-            <div class="d-flex w-100 my-2">
-              <div class="px-2">Phân trang</div>
-              <div class="d-flex align-items-center">
-                <select @change="resetCurrentPage()" v-model="itemsPerPage" class="form-select px-2 py-0">
-                  <option selected value="10">10</option>
-                  <option value="20">20</option>
-                  <option value="30">30</option>
-                </select>
-              </div>
-            </div>
           </div>
           <div class="col-md-6 d-flex align-items-center" style="justify-content: right;">
             <button @click="openAddArticleModal()"
@@ -38,52 +28,15 @@
             </thead>
             <tbody>
               <tr @click="openEditArticleModal(), getInforArticle(article.ArticleID)"
-                class="articlelist-item articlelist-table-item" v-for="(article, index) in  displayedItems"
+                class="articlelist-item articlelist-table-item" v-for="(article, index) in articleFilter"
                 :key="article.ArticleID">
-                <th scope="row">{{ index + 1 + itemsPerPage * (currentPage - 1) }}</th>
+                <th scope="row">{{ index + 1 }}</th>
                 <td>{{ article.ArticleName }}</td>
                 <td>{{ article.ArticleDescription }}</td>
                 <td>{{ article.ArticleUrl }}</td>
               </tr>
             </tbody>
           </table>
-        </div>
-        <div class="d-flex flex-row paging justify-content-center"
-          style="position:absolute; bottom: 0; left: 0; right: 0; height: 70px;">
-          <div class="d-flex flex-row align-items-center" @click="prevPage">
-            <div class="d-flex align-items-center justify-content-center" style="padding-right: 12px;">
-              <svg class="headlist-paging-icon" style="transform: rotate(180deg);" xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 320 512">
-                <path
-                  d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" />
-              </svg>
-              <div>Trước</div>
-            </div>
-          </div>
-          <div class="d-flex flex-row align-items-center">
-            <div @click="setCurrentPage(currentPage - 2)" v-if="currentPage > 2" class="page" style="cursor: pointer;">{{
-              currentPage - 2 }}</div>
-            <div @click="setCurrentPage(currentPage - 1)" v-if="currentPage > 1" class="page" style="cursor: pointer;">{{
-              currentPage - 1 }}</div>
-            <div class="page">
-              <div :class="{ chosen: true }">{{ currentPage }}</div>
-            </div>
-            <div @click="setCurrentPage(currentPage + 1)"
-              v-if="Math.ceil(this.articleFilter.length / this.itemsPerPage) > currentPage" class="page"
-              style="cursor: pointer;">{{ currentPage + 1 }}</div>
-            <div @click="setCurrentPage(currentPage + 2)"
-              v-if="Math.ceil(this.articleFilter.length / this.itemsPerPage) - 1 > currentPage" class="page"
-              style="cursor: pointer;">{{ currentPage + 2 }}</div>
-          </div>
-          <div class="d-flex flex-row align-items-center" @click="nextPage">
-            <div class="d-flex align-items-center justify-content-center" style="padding-left: 12px;">
-              <div>Sau</div>
-              <svg class="headlist-paging-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                <path
-                  d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" />
-              </svg>
-            </div>
-          </div>
         </div>
         <modal name="addArticle-modal">
           <div class="form-group">
@@ -221,39 +174,12 @@ export default {
         ArticleDescription: null,
       },
       articleIdChoose: null,
-      currentPage: 1,
-      itemsPerPage: 10
     };
   },
   computed: {
-    displayedItems() {
-      // Tính toán các mục dữ liệu cho trang hiện tại
-      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-      const endIndex = startIndex + this.itemsPerPage;
-      return this.articleFilter.slice(startIndex, endIndex);
-    }
   },
 
   methods: {
-    prevPage() {
-      if (this.currentPage > 1) {
-        this.currentPage--;
-      }
-    },
-    nextPage() {
-      if (
-        this.currentPage <
-        Math.ceil(this.articleFilter.length / this.itemsPerPage)
-      ) {
-        this.currentPage++;
-      }
-    },
-    resetCurrentPage() {
-      this.currentPage = 1
-    },
-    setCurrentPage(page) {
-      this.currentPage = page;
-    },
     openAddArticleModal() {
       this.$modal.show("addArticle-modal");
     },
@@ -268,7 +194,7 @@ export default {
     },
     updateArticle() {
       HTTP.put('update-article', {
-        CodeId: 123456,
+        CodeId: "258191",
         ArticleUrl: this.objArticleInfor.ArticleUrl,
         ArticleName: this.objArticleInfor.ArticleName,
         ArticleDescription: this.objArticleInfor.ArticleDescription,
@@ -282,7 +208,7 @@ export default {
     },
     addArticle() {
       HTTP.post('add-article', {
-        CodeID: 123456,
+        CodeID: "258191",
         ArticleUrl: this.objArticleInfor.ArticleUrl,
         ArticleName: this.objArticleInfor.ArticleName,
         ArticleDescription: this.objArticleInfor.ArticleDescription,
@@ -295,7 +221,7 @@ export default {
     },
     // getArticleInfor(){
     //   HTTP.post('',{
-    //     CodeID : 123456, 
+    //     CodeID : "258191", 
     //     ArticleUrl : this.objArticleInfor.ArticleUrl,
     //     ArticleName : this.objArticleInfor.ArticleName,
     //     ArticleDescription : this.objArticleInfor.ArticleDescription,
@@ -309,7 +235,7 @@ export default {
       console.log(this.articleIdChoose)
       HTTP.post("article", {
         articleId: id,
-        codeId: 123456,
+        codeId: "258191",
       })
         .then((response) => {
           this.objArticleInfor = response.data.data;
@@ -362,7 +288,7 @@ export default {
     getListArticle() {
       HTTP.get("article", {
         params: {
-          CodeID: 123456,
+          CodeID: "258191",
         },
       }).then((response) => {
         this.articleList = response.data.data;
