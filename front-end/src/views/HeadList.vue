@@ -893,7 +893,7 @@ export default {
     getListMember() {
       HTTP.get("viewTree", {
         params: {
-          CodeID: '258191',
+          CodeID: "258191",
         },
       })
         .then((response) => {
@@ -964,11 +964,6 @@ export default {
         .catch((e) => {
           console.log(e);
         });
-
-      // this.$modal.show("member-modal");
-      // this.isEdit = true;
-      // this.selectedInfor();
-      // this.setDefauValueInModal();
     },
 
     takeDataMember(id) {
@@ -1020,7 +1015,7 @@ export default {
         });
     },
   },
-  mounted() {
+  mounted() {  
     this.getFamilyHead();
     this.getListNationality(), this.getListReligion(), this.getListMember();
   },
