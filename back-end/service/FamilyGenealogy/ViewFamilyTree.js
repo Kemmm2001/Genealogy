@@ -334,36 +334,23 @@ function setAllGenerationMember(memberId, generation) {
 
 function getListUnspecifiedMembers(CodeID) {
     return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM genealogy.familymember
-        where Generation = 0 and CodeID = ${CodeID}`;
-        db.connection.query(query, (err, result) => {
-            if (err) {
-                console.log(err);
-                reject(err)
-            } else {
-                resolve(result)
+        try {
+            if (CodeID != undefined) {
+                let query = `SELECT * FROM genealogy.familymember
+                where Generation = 0 and CodeID = ${CodeID}`;
+                db.connection.query(query, (err, result) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err)
+                    } else {
+                        resolve(result)
+                    }
+                })
             }
-        })
+        } catch (error) {
+            console.log(error)
+        }
     })
-}
-
-
-
-
-
-
-async function getParentID(MemberId) {
-    return new Promise((resolve, reject) => {
-        let query = `SELECT MarriageID FROM familymember WHERE MemberID = ${MemberId}`;
-        db.connection.query(query, (err, result) => {
-            if (err) {
-                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-                reject(err);
-            } else {
-                resolve(result[0]);
-            }
-        });
-    });
 }
 
 async function RelationShipMember(memberId) {
