@@ -27,39 +27,21 @@
             <button @click="removeMember()" class="btn bg-info text-white m-2" :disabled="isButtonDisabled">Xóa</button>
           </div>
           <div class="view-member w-100">
-            <div @click="numberItemSelection(index),getInforMember(member.id)" class="member" style="cursor: pointer;" :class="{ choose: itemChoose === index }" v-for="(member,index) in displayedItems" :key="member.id">
+            <div @click="numberItemSelection(index),getInforMember(member.id)" class="member" style="cursor: pointer;" :class="{ choose: itemChoose === index }" v-for="(member,index) in memberFilter" :key="member.id">
               <div class="image-member" v-if="member.gender == 'male'">
                 <img class="avatar" src="https://pereaclinic.com/wp-content/uploads/2019/12/270x270-male-avatar.png" />
               </div>
-              <div class="list-member w-100">
-                <div class="button-member d-flex align-items-center">
-                  <button @click="openEditHeadModal()" class="btn bg-info text-white m-0" :disabled="isButtonDisabled">Chỉnh sửa</button>
-                  <button @click="removeMember()" class="btn bg-info text-white m-2" :disabled="isButtonDisabled">Xóa</button>
-                </div>
-                <div class="view-member w-100">
-                  <div @click="numberItemSelection(index),getInforMember(member.id)" class="member" style="cursor: pointer;" :class="{ choose: itemChoose === index }" v-for="(member,index) in memberFilter" :key="member.id">
-                    <div class="image-member" v-if="member.gender == 'male'">
-                      <img class="avatar" src="https://pereaclinic.com/wp-content/uploads/2019/12/270x270-male-avatar.png" />
-                    </div>
-                    <div class="image-member" v-if="member.gender == 'female'">
-                      <img class="avatar" src="https://pereaclinic.com/wp-content/uploads/2019/12/270x270-female-avatar.png" />
-                    </div>
-                    <div class="infor-member">
-                      <b>{{ member.name }}</b>
-                      <br />
-                      <a>Đời thứ:{{ member.generation }}</a>
-                      <br />
-                      <a>Ngày sinh:{{ member.dob }}</a>
-                    </div>
-                  </div>
-                </div>
+              <div class="image-member" v-if="member.gender == 'female'">
+                <img class="avatar" src="https://pereaclinic.com/wp-content/uploads/2019/12/270x270-female-avatar.png" />
+              </div>
+              <div class="infor-member">
+                <b>{{ member.name }}</b>
+                <br />
+                <a>Đời thứ:{{ member.generation }}</a>
+                <br />
+                <a>Ngày sinh:{{ member.dob }}</a>
               </div>
             </div>
-          </div>
-          <div class="d-flex pagination-member-list justify-content-center align-items-center">
-            <button class="btn bg-primary text-white button-normal m-0" @click="prevPage">Trước</button>
-            <span style="margin: 10px;">{{ currentPage }}/{{ Math.ceil(this.memberFilter.length / this.itemsPerPage) }}</span>
-            <button class="btn bg-primary text-white button-normal m-0" @click="nextPage">Sau</button>
           </div>
         </div>
       </div>
@@ -957,63 +939,6 @@ export default {
             );
           }
         })
-        .then((response) => {
-          this.memberList = response.data;
-          this.memberFilter = this.memberList;
-          this.sortListMember();
-          if (this.genderSearch != "all") {
-            this.memberFilter = this.memberFilter.filter(
-              (member) => member.gender == this.genderSearch
-            );
-          }
-          if (this.generationSearch != 0) {
-            this.memberFilter = this.memberFilter.filter(
-              (member) => member.generation == this.generationSearch
-            );
-          }
-          if (this.monthSearch != 0) {
-            this.memberFilter = this.memberFilter.filter(
-              (member) =>
-                new Date(this.formatDate(member.dob)).getMonth() + 1 ==
-                this.monthSearch
-            );
-          }
-          if (this.isDeadSearch != "all") {
-            this.memberFilter = this.memberFilter.filter(
-              (member) => member.isDead != this.isDeadSearch
-            );
-          }
-          if (this.statusSearch != "all") {
-            if (this.statusSearch == "trongdongho") {
-              this.memberFilter = this.memberFilter.filter(
-                (member) => member.fid != ""
-              );
-            }
-            if (this.statusSearch == "ngoaidongho") {
-              this.memberFilter = this.memberFilter.filter(
-                (member) => member.fid == ""
-              );
-            }
-            if (this.statusSearch == "contrai") {
-              this.memberFilter = this.memberFilter.filter(
-                (member) => member.fid != "" && member.gender == "male"
-              );
-            }
-          }
-          if (this.ageFrom != "" && this.ageFrom != null) {
-            console.log(1);
-            this.memberFilter = this.memberFilter.filter(
-              (member) => this.ageMember(member.dob) >= parseInt(this.ageFrom)
-            );
-          }
-          console.log(this.memberFilter);
-          if (this.ageTo != "" && this.ageTo != null) {
-            console.log(this.ageTo);
-            this.memberFilter = this.memberFilter.filter(
-              (member) => this.ageMember(member.dob) <= parseInt(this.ageTo)
-            );
-          }
-        })
         .catch((e) => {
           console.log(e);
         });
@@ -1098,12 +1023,6 @@ export default {
           CodeID: "258191",
         },
       })
-        .then((response) => {
-          this.memberList = response.data;
-          this.memberFilter = this.memberList;
-          this.takeInforList();
-          console.log(this.memberList);
-        })
         .then((response) => {
           this.memberList = response.data;
           this.memberFilter = this.memberList;

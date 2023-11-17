@@ -1,102 +1,30 @@
 <template>
-    <div class="event-screen d-flex flex-row w-100 p-0">
-        <div class="col-6 h-100 calendar">
-            <table class="thang" border="1" cellpadding="2" cellspacing="2" width="100%">
-                <tbody><tr class="ngaytuan">
-                <td>CN</td> <td>T2</td> <td>T3</td> <td>T4</td> <td>T5</td> <td>T6</td> <td>T7</td>
-                </tr>
-                    <tr class="normal" v-for="(week,weekIndex) in dayOfMonth" :key="weekIndex">
-                        <td class="ngaythang" v-for="(day,dayIndex) in week" :key="dayIndex" >
-                            <div class="cn">{{ day.solar.date }}</div>
-                            <div class="am">{{ day.lunar.date }}</div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="col-6 event-list d-flex flex-column">
-            <div class="search-filter d-flex flex-row position-relative">
-                <div class="search d-flex">
-                    <input type="text" class="form-control h-100" placeholder="Nhập tên sự kiện..." />
-                </div>
-                <div class="d-flex flex-row" style="justify-content: end;">
-                    <div class="item">
-                        <select class="form-control h-100">
-                            <option>Kiểu lịch</option>
-                            <option>Tất cả</option>
-                            <option>Lịch âm</option>
-                            <option>Lịch dương</option>
-                        </select>
-                    </div>
-                    <div class="item">
-                        <select class="form-control h-100">
-                            <option>Kiểu lặp lại</option>
-                            <option>Tất cả</option>
-                            <option>Không lặp lại</option>
-                            <option>Tháng</option>
-                            <option>Năm</option>
-                        </select>
-                    </div>
-                    <div class="item">
-                        <select class="form-control h-100">
-                            <option>Trạng thái</option>
-                            <option>Tất cả</option>
-                            <option>Chưa kết thúc</option>
-                            <option>Đã kết thúc</option>
-                        </select>
-                    </div>
-                    <div class="btn bg-primary text-white d-flex align-items-center item">Làm mới</div>
-                </div>
-            </div>
-            <div class="button-list d-flex flex-row mt-3">
-                <div @click="showAddEventModal()" class="btn bg-primary text-white d-flex align-items-center">Thêm sự kiện
-                </div>
-                <div class="btn bg-primary text-white d-flex align-items-center item">Xuất excel</div>
-            </div>
-            <div class="mt-3">
-                <table class="table table-headlist headlist-list m-0">
-                    <thead>
-                        <tr class="headlist-item">
-                            <th class="headlist-list-th" scope="col">#</th>
-                            <th class="headlist-list-th" scope="col">Tên sự kiện</th>
-                            <th class="headlist-list-th" scope="col">Thời gian bắt đầu</th>
-                            <th class="headlist-list-th" scope="col">Thời gian kết thúc</th>
-                            <th class="headlist-list-th" scope="col">Địa điểm</th>
-                            <th class="headlist-list-th" scope="col">Kiểu lặp lại</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr @click="showEditEventModal()" class="headlist-item headlist-table-item odd">
-                            <td>1</td>
-                            <td>AAAA</td>
-                            <td>
-                                <div>01-01-2000 (DL)</div>
-                                <div>02-01-2000 (AL)</div>
-                            </td>
-                            <td>
-                                <div>01-01-2000 (DL)</div>
-                                <div>02-01-2000 (AL)</div>
-                            </td>
-                            <td>AAAA</td>
-                            <td>Tháng</td>
-                        </tr>
-                        <tr @click="showEditEventModal()" class="headlist-item headlist-table-item even">
-                            <td>2</td>
-                            <td>AAAA</td>
-                            <td>
-                                <div>01-01-2000 (DL)</div>
-                                <div>02-01-2000 (AL)</div>
-                            </td>
-                            <td>
-                                <div>01-01-2000 (DL)</div>
-                                <div>02-01-2000 (AL)</div>
-                            </td>
-                            <td>AAAA</td>
-                            <td>Tháng</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+  <div class="event-screen d-flex flex-row w-100 p-0">
+    <div class="col-6 h-100 calendar">
+      <table class="thang" cellpadding="2" cellspacing="2" width="100%">
+        <tbody>
+          <tr class="ngaytuan">
+            <td>CN</td>
+            <td>T2</td>
+            <td>T3</td>
+            <td>T4</td>
+            <td>T5</td>
+            <td>T6</td>
+            <td>T7</td>
+          </tr>
+          <tr class="normal" v-for="(week,weekIndex) in dayOfMonth" :key="weekIndex">
+            <td class="ngaythang" v-for="(day,dayIndex) in week" :key="dayIndex">
+              <div class="cn">{{ day.solar.date }}</div>
+              <div class="am">{{ day.lunar.date }}</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-6 event-list d-flex flex-column">
+      <div class="search-filter d-flex flex-row position-relative">
+        <div class="search d-flex">
+          <input type="text" class="form-control h-100" placeholder="Nhập tên sự kiện..." />
         </div>
         <div class="d-flex flex-row" style="justify-content: end;">
           <div class="item">
@@ -182,7 +110,10 @@
         <div class="form-group h-100">
           <div class="w-100 h-100 modal-bg position-relative">
             <div class="d-flex flex-row w-100 align-items-center position-relative">
-              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm sự kiện</div>
+              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">
+                Thêm
+                sự kiện
+              </div>
               <div class="close-add-form" @click="closeAddEventModal()">
                 <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                   <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -260,40 +191,40 @@
 <script>
 import { Calendar } from "vietnamese-lunar-calendar";
 export default {
-    data(){
-        return{
-            calendar:null,
-            dayOfMonth:[],
-            currentMonth: null,
-            currentYear: null,
-        }
+  data() {
+    return {
+      calendar: null,
+      dayOfMonth: [],
+      currentMonth: null,
+      currentYear: null,
+    };
+  },
+  methods: {
+    getDayOfMonth() {
+      const dateNow = new Date();
+      this.currentMonth = dateNow.getMonth();
+      this.currentYear = dateNow.getFullYear();
     },
-    methods: {
-        getDayOfMonth(){
-            const dateNow = new Date();
-            this.currentMonth = dateNow.getMonth();
-            this.currentYear = dateNow.getFullYear()
-        },
-        getCalendar(){
-            this.dayOfMonth = new Calendar(this.currentYear,this.currentMonth).weeks;
-            console.log(this.currentMonth)
-            console.log(this.currentYear)
-        },
-        showAddEventModal() {
-            this.$modal.show("add-event-modal")
-        },
-        closeAddEventModal() {
-            this.$modal.hide("add-event-modal")
-        },
-        showEditEventModal() {
-            this.$modal.show("edit-event-modal")
-        },
-        closeEditEventModal() {
-            this.$modal.hide("edit-event-modal")
-        },
+    getCalendar() {
+      this.dayOfMonth = new Calendar(this.currentYear, this.currentMonth).weeks;
+      console.log(this.currentMonth);
+      console.log(this.currentYear);
     },
-    mounted(){
-        this.getCalendar();
-    }
-}
+    showAddEventModal() {
+      this.$modal.show("add-event-modal");
+    },
+    closeAddEventModal() {
+      this.$modal.hide("add-event-modal");
+    },
+    showEditEventModal() {
+      this.$modal.show("edit-event-modal");
+    },
+    closeEditEventModal() {
+      this.$modal.hide("edit-event-modal");
+    },
+  },
+  mounted() {
+    this.getCalendar();
+  },
+};
 </script>
