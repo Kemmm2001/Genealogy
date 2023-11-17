@@ -65,7 +65,10 @@
       </div>
     </div>
     <div class="d-flex main-screen align-items-center w-100 positon-relative">
-      <div id="tree" ref="tree"></div>
+      <div id="tree" ref="tree" v-if="this.nodes.length != 0"></div>
+      <div class="justify-content-center align-items-center" v-if="this.nodes.length == 0">
+        <button>Tạo gia phả</button>
+      </div>
       <div :class="{ filterExpanded: advancedFilterDown }" class="advanced-filter-container d-flex flex-column p-1 position-absolute">
         <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
           <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict()">
