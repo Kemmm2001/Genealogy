@@ -1,5 +1,6 @@
 .event-screen{
     height: calc(100% - 50px);
+    position: relative;
 }
 
 .event-screen .calendar{
@@ -10,7 +11,11 @@
 }
 
 .event-screen .event-list{
-    padding: 16px 16px 16px 8px;
+    top: 5%;
+    bottom: 5%;
+    right: 5%;
+    margin: auto;
+    position: absolute;
 }
 
 .event-screen .search-filter{

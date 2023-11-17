@@ -1,6 +1,6 @@
 <template>
-  <div class="container-fluid" style="padding-left: 200px; padding-right: 200px;">
-      <div class="d-flex flex-row">
+  <div class="container-fluid position-relative" style="padding-left: 200px; padding-right: 200px;">
+      <div class="d-flex flex-row position-absolute" style="top: 5%; bottom: 5%; left: 5%; right: 5%; margin: auto;">
           <div class="col-10 column">
               <div class="filter-member d-flex flex-row w-100">
                   <div class="filter-option col-3">

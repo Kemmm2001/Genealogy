@@ -16,9 +16,9 @@
             </button>
           </div>
         </div>
-        <div class>
+        <div style="height: 420px; overflow-y: auto;">
           <table class="table table-headlist headlist-list m-0">
-            <thead>
+            <thead class="position-sticky" style="top: 0;">
               <tr class="headlist-item">
                 <th class="headlist-list-th" scope="col">#</th>
                 <th class="headlist-list-th" scope="col">Họ và Tên</th>
@@ -52,6 +52,51 @@
             </tbody>
           </table>
         </div>
+<<<<<<< HEAD
+=======
+        <div class="d-flex flex-row paging justify-content-center" style="position:absolute; bottom: 0; left: 0; right: 0;">
+          <div class="d-flex flex-row align-items-center">
+            <div class="d-flex align-items-center justify-content-center" style="padding-right: 12px;"></div>
+          </div>
+          <div class="d-flex flex-row align-items-center">
+            <!-- <div class="d-flex flex-row justify-content-center" style="flex-grow: 1;">
+                <div class="pagination justify-content-center align-items-center">
+                    <button class="btn button-normal m-0" @click="prevPageFamilyHead">Previous</button>
+                    <span style="margin: 10px;">{{ currentPageFHead }}/{{ Math.ceil(this.familyheadFilter.length / this.itemsPerPageFHead) }}</span>
+                    <button class="btn button-normal m-0" @click="nextPageFamilyHead">Next</button>
+                </div>
+            </div>-->
+            <div class="d-flex flex-row paging justify-content-center" style="position:absolute; bottom: 0; left: 0; right: 0; height: 70px;">
+              <div @click="prevPageFamilyHead" class="d-flex flex-row align-items-center" style="cursor: pointer;">
+                <div class="d-flex align-items-center justify-content-center" style="padding-right: 12px;">
+                  <svg class="headlist-paging-icon" style="transform: rotate(180deg);" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                    <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" />
+                  </svg>
+                  <div></div>
+                </div>
+              </div>
+              <div class="d-flex flex-row align-items-center">
+                <div @click="setCurrentPageFHead(currentPageFHead - 2)" v-if="currentPageFHead > 2" class="page" style="cursor: pointer;">{{ currentPageFHead - 2 }}</div>
+                <div @click="setCurrentPageFHead(currentPageFHead - 1)" v-if="currentPageFHead > 1" class="page" style="cursor: pointer;">{{ currentPageFHead - 1 }}</div>
+                <div class="page">
+                  <div :class="{ chosen: true }">{{ currentPageFHead }}</div>
+                </div>
+                <div @click="setCurrentPageFHead(currentPageFHead + 1)" v-if="Math.ceil(this.familyheadFilter.length / this.itemsPerPageFHead) > currentPageFHead" class="page" style="cursor: pointer;">{{ currentPageFHead + 1 }}</div>
+                <div @click="setCurrentPageFHead(currentPageFHead + 2)" v-if="Math.ceil(this.familyheadFilter.length / this.itemsPerPageFHead) - 1 > currentPageFHead" class="page" style="cursor: pointer;">{{ currentPageFHead + 2 }}</div>
+              </div>
+              <div @click="nextPageFamilyHead" class="d-flex flex-row align-items-center" style="cursor: pointer;">
+                <div class="d-flex align-items-center justify-content-center" style="padding-left: 12px;">
+                  <div></div>
+                  <svg class="headlist-paging-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                    <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex flex-row align-items-center"></div>
+        </div>
+>>>>>>> fbe010c99b903c89ff37fe0a651fa9f574554697
       </div>
 
       <modal name="addHead-modalll">
