@@ -182,7 +182,7 @@ export default {
     return {
       albumPhoto:{
         albumName:null,
-        codeID:123456,
+        codeID:258191,
         description:null,
         firstImg: null,
       },
@@ -222,7 +222,7 @@ export default {
     getFamilyPhoto(){
       HTTP.get('familyphoto',{
         params:{
-          CodeID:123456
+          CodeID:"258191"
         }
       })
       .then((response) =>{

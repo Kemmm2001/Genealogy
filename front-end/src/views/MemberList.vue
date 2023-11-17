@@ -31,15 +31,28 @@
               <div class="image-member" v-if="member.gender == 'male'">
                 <img class="avatar" src="https://pereaclinic.com/wp-content/uploads/2019/12/270x270-male-avatar.png" />
               </div>
-              <div class="image-member" v-if="member.gender == 'female'">
-                <img class="avatar" src="https://pereaclinic.com/wp-content/uploads/2019/12/270x270-female-avatar.png" />
-              </div>
-              <div class="infor-member">
-                <b>{{ member.name }}</b>
-                <br />
-                <a>Đời thứ:{{ member.generation }}</a>
-                <br />
-                <a>Ngày sinh:{{ member.dob }}</a>
+              <div class="list-member w-100">
+                <div class="button-member d-flex align-items-center">
+                  <button @click="openEditHeadModal()" class="btn bg-info text-white m-0" :disabled="isButtonDisabled">Chỉnh sửa</button>
+                  <button @click="removeMember()" class="btn bg-info text-white m-2" :disabled="isButtonDisabled">Xóa</button>
+                </div>
+                <div class="view-member w-100">
+                  <div @click="numberItemSelection(index),getInforMember(member.id)" class="member" style="cursor: pointer;" :class="{ choose: itemChoose === index }" v-for="(member,index) in memberFilter" :key="member.id">
+                    <div class="image-member" v-if="member.gender == 'male'">
+                      <img class="avatar" src="https://pereaclinic.com/wp-content/uploads/2019/12/270x270-male-avatar.png" />
+                    </div>
+                    <div class="image-member" v-if="member.gender == 'female'">
+                      <img class="avatar" src="https://pereaclinic.com/wp-content/uploads/2019/12/270x270-female-avatar.png" />
+                    </div>
+                    <div class="infor-member">
+                      <b>{{ member.name }}</b>
+                      <br />
+                      <a>Đời thứ:{{ member.generation }}</a>
+                      <br />
+                      <a>Ngày sinh:{{ member.dob }}</a>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -457,6 +470,9 @@
 <script>
 import { HTTP } from "../assets/js/baseAPI.js";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import { LunarDate } from "vietnamese-lunar-calendar";
+import { convertLunar2Solar } from "vietnamese-lunar-calendar/build/solar-lunar";
+import { getLocalTimezone } from "vietnamese-lunar-calendar/build/solar-lunar/utils";
 import Snackbar from "awesome-snackbar";
 export default {
   data() {
@@ -478,9 +494,6 @@ export default {
       numberGeneration: 0,
       numberAlive: 0,
       numberDied: 0,
-
-      itemsPerPage: 8, // Số mục dữ liệu trên mỗi trang
-      currentPage: 1, // Trang hiện tại
 
       objMemberInfor: {
         MemberID: 0,
@@ -559,30 +572,7 @@ export default {
     };
   },
 
-  computed: {
-    displayedItems() {
-      // Tính toán các mục dữ liệu cho trang hiện tại
-      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-      const endIndex = startIndex + this.itemsPerPage;
-      return this.memberFilter.slice(startIndex, endIndex);
-    },
-  },
-
   methods: {
-    prevPage() {
-      if (this.currentPage > 1) {
-        this.currentPage--;
-        console.log(this.currentPage);
-      }
-    },
-    nextPage() {
-      if (
-        this.currentPage <
-        Math.ceil(this.memberFilter.length / this.itemsPerPage)
-      ) {
-        this.currentPage++;
-      }
-    },
     getListReligion() {
       HTTP.get("religion")
         .then((response) => {
@@ -686,6 +676,46 @@ export default {
     chooseMember(id) {
       this.memberIdChoose = id;
       console.log(id);
+    },
+    convertLunarToSolar() {
+      let LunarDob = new Date(this.objMemberInfor.LunarDob);
+      let timezone = (0, getLocalTimezone)();
+      const dob = convertLunar2Solar(
+        LunarDob.getDate(),
+        LunarDob.getMonth() + 1,
+        LunarDob.getFullYear(),
+        false,
+        timezone
+      );
+      let month = dob.getMonth() + 1;
+      let date = dob.getDate();
+      if (month < 10) {
+        month = "0" + (dob.getMonth() + 1);
+      }
+      if (date < 10) {
+        date = "0" + dob.getDate();
+      }
+      this.$set(
+        this.objMemberInfor,
+        "Dob",
+        "" + dob.getFullYear() + "-" + month + "-" + date
+      );
+    },
+    convertSolarToLunar() {
+      let Dob = new Date(this.objMemberInfor.Dob);
+      let month = new LunarDate(Dob).getMonth();
+      let date = new LunarDate(Dob).getDate();
+      if (new LunarDate(Dob).getMonth() < 10) {
+        month = "0" + new LunarDate(Dob).getMonth();
+      }
+      if (new LunarDate(Dob).getDate() < 10) {
+        date = "0" + new LunarDate(Dob).getDate();
+      }
+      this.$set(
+        this.objMemberInfor,
+        "LunarDob",
+        "" + new LunarDate(Dob).getYear() + "-" + month + "-" + date
+      );
     },
     formatDate(dateString) {
       let formattedDate;
@@ -867,9 +897,66 @@ export default {
     filter() {
       HTTP.get("viewTree", {
         params: {
-          CodeID: this.CodeID,
+          CodeID: "258191",
         },
       })
+        .then((response) => {
+          this.memberList = response.data;
+          this.memberFilter = this.memberList;
+          this.sortListMember();
+          if (this.genderSearch != "all") {
+            this.memberFilter = this.memberFilter.filter(
+              (member) => member.gender == this.genderSearch
+            );
+          }
+          if (this.generationSearch != 0) {
+            this.memberFilter = this.memberFilter.filter(
+              (member) => member.generation == this.generationSearch
+            );
+          }
+          if (this.monthSearch != 0) {
+            this.memberFilter = this.memberFilter.filter(
+              (member) =>
+                new Date(this.formatDate(member.dob)).getMonth() + 1 ==
+                this.monthSearch
+            );
+          }
+          if (this.isDeadSearch != "all") {
+            this.memberFilter = this.memberFilter.filter(
+              (member) => member.isDead != this.isDeadSearch
+            );
+          }
+          if (this.statusSearch != "all") {
+            if (this.statusSearch == "trongdongho") {
+              this.memberFilter = this.memberFilter.filter(
+                (member) => member.fid != ""
+              );
+            }
+            if (this.statusSearch == "ngoaidongho") {
+              this.memberFilter = this.memberFilter.filter(
+                (member) => member.fid == ""
+              );
+            }
+            if (this.statusSearch == "contrai") {
+              this.memberFilter = this.memberFilter.filter(
+                (member) => member.fid != "" && member.gender == "male"
+              );
+            }
+          }
+          if (this.ageFrom != "" && this.ageFrom != null) {
+            console.log(1);
+            this.memberFilter = this.memberFilter.filter(
+              (member) => this.ageMember(member.dob) >= parseInt(this.ageFrom)
+            );
+          }
+          console.log(this.memberFilter);
+          if (this.ageTo != "" && this.ageTo != null) {
+            console.log(this.ageTo);
+            this.memberFilter = this.memberFilter.filter(
+              (member) => this.ageMember(member.dob) <= parseInt(this.ageTo)
+            );
+          }
+        })
         .then((response) => {
           this.memberList = response.data;
           this.memberFilter = this.memberList;
@@ -1008,9 +1095,15 @@ export default {
     getListMember() {
       HTTP.get("viewTree", {
         params: {
-          CodeID: 123456,
+          CodeID: "258191",
         },
       })
+        .then((response) => {
+          this.memberList = response.data;
+          this.memberFilter = this.memberList;
+          this.takeInforList();
+          console.log(this.memberList);
+        })
         .then((response) => {
           this.memberList = response.data;
           this.memberFilter = this.memberList;
@@ -1023,7 +1116,7 @@ export default {
     },
   },
 
-  mounted() {    
+  mounted() {
     this.getListNationality(), this.getListReligion(), this.getListMember();
   },
 };
