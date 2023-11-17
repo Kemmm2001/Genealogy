@@ -894,7 +894,7 @@ export default {
       TitleConfirm: null,
 
       generationMember: null,
-      CodeID: '577-862-785',
+      CodeID: null,
       idPaternalAncestor: null,
       IsDead: 0,
       ListMemberJob: null,
@@ -2018,7 +2018,7 @@ export default {
           CodeID: this.CodeID,
         },
       })
-        .then((response) => {  
+        .then((response) => {
           this.ListMessage = response.data;
         })
         .catch((e) => {
@@ -2145,8 +2145,17 @@ export default {
     },
   },
   mounted() {
-    console.log(localStorage.getItem("CodeID"))
-    // this.CodeID = localStorage.getItem("CodeID");
+    if (localStorage.getItem("CodeID") != null) {
+      this.CodeID = localStorage.getItem("CodeID");
+    } else {
+      if (localStorage.getItem("accountID") != null) {
+        this.$router.push("/familycode");
+      } else {
+        this.$router.push("/login");
+      }
+    }
+    console.log("CodeID: " + localStorage.getItem("CodeID"));
+    console.log("accountID: " + localStorage.getItem("accountID"));
     this.getListMessage();
     this.getListCity();
     this.getListNationality();

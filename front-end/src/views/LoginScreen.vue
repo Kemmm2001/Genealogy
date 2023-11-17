@@ -140,7 +140,6 @@ export default {
       });
     },
     register() {
-      console.log(this.accountRegister.email != null);
       if (
         this.accountRegister.email != null &&
         this.accountRegister.username != null &&
@@ -148,7 +147,6 @@ export default {
         this.accountRegister.rePassword != null
       ) {
         if (this.accountRegister.rePassword == this.accountRegister.password) {
-          console.log("vào đây");
           HTTP.post("register", {
             email: this.accountRegister.email,
             username: this.accountRegister.username,
@@ -156,12 +154,13 @@ export default {
             repassword: this.accountRegister.rePassword,
           })
             .then((response) => {
-              console.log(response.data);
               if (response.data.success == true) {
                 this.moveToRight();
                 this.enlargeBackground();
                 this.accountRegister = [];
                 this.NotificationsScuccess(response.data.message);
+              } else {
+                this.NotificationsDelete(response.data.message);
               }
             })
             .catch((e) => {

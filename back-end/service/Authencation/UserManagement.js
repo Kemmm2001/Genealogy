@@ -9,13 +9,44 @@ function checkMail(email) {
         reject(err);
 
       } else {
-
         const count = results[0].count;
-        resolve(count > 0);
+        resolve(count);
       }
     });
   });
 }
+
+function insertAccountFamilyTree(AccountID, CodeID) {
+  return new Promise((resolve, reject) => {
+    const query = `INSERT INTO AccountFamilyTree (AccountID, CodeID, RoleID)
+    VALUES (?, ?, ?)`;
+    let values = [AccountID, CodeID, 3]
+    db.connection.query(query, values, (err, results) => {
+      if (err) {
+        console.log(err)
+        reject(err);
+      } else {
+        console.log(results)
+      }
+    });
+  });
+}
+
+function checkCodeIdCreator(AccountID, CodeID, RoleID) {
+  return new Promise((resolve, reject) => {
+    const query = `select COUNT(*) AS count from AccountFamilyTree where AccountID = ${AccountID} and CodeID = ${CodeID} and RoleID = ${RoleID}`;
+    db.connection.query(query, (err, results) => {
+      if (err) {
+        console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+        reject(err);
+      } else {       
+        const count = results[0].count;
+        resolve(count);
+      }
+    });
+  });
+}
+
 function checkCodeID(codeID) {
   return new Promise((resolve, reject) => {
     const query = 'SELECT COUNT(*) AS count FROM genealogy.familytree WHERE CodeID = ?';
@@ -25,7 +56,7 @@ function checkCodeID(codeID) {
         reject(err);
       } else {
         const count = results[0].count;
-        resolve(count > 0);
+        resolve(count);
       }
     });
   });
@@ -48,8 +79,8 @@ function checkAccountID(accountID) {
 
 function create(username, email, password) {
   return new Promise((resolve, reject) => {
-    const query = 'INSERT INTO genealogy.account (Username, Email, Password) VALUES (?, ?, ?)';
-    const values = [username, email, password];
+    const query = 'INSERT INTO genealogy.account (Username, Email, Password,FreeSMS,FreeEmail) VALUES (?, ?, ? , ? , ?)';
+    const values = [username, email, password, 5, 5];
 
     db.connection.query(query, values, (err, results) => {
       if (err) {
@@ -172,8 +203,8 @@ function insertAccountFamily(accountID, codeID, roleID) {
 
 function insertIntoFamily(value, codeID) {
   return new Promise((resolve, reject) => {
-    const query = 'INSERT INTO genealogy.familytree (CodeID, TreeName,Ethnicity ) VALUES (?, ?, ?)';
-    const values = [codeID, value.treeName, value.ethnicity];
+    const query = 'INSERT INTO genealogy.familytree (CodeID, TreeName,Ethnicity,DeathAnniversary) VALUES (?, ?, ?, ?)';
+    const values = [codeID, value.treeName, value.ethnicity, value.deathAnniversary];
 
     db.connection.query(query, values, (err, results) => {
       if (err) {
@@ -219,4 +250,7 @@ function updateRoleID(data) {
   });
 }
 
-module.exports = { checkMail,checkID, create, getUser, refreshFreeEmail,insertAccountFamily, checkCodeID, checkAccountID, updateRoleID, insertIntoFamily,getUserInfo, getUserCodeID }
+module.exports = {
+  checkMail, checkID, create, getUser, refreshFreeEmail, insertAccountFamily, checkCodeID,
+  checkAccountID, updateRoleID, insertIntoFamily, getUserInfo, getUserCodeID, checkCodeIdCreator, insertAccountFamilyTree
+}

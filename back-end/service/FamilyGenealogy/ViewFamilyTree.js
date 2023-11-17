@@ -479,7 +479,7 @@ async function RelationShipMember(memberId) {
 }
 
 
-function GetIdPaternalAncestor(CodeID) {  
+function GetIdPaternalAncestor(CodeID) {
     return new Promise((resolve, reject) => {
         let query = `select MemberID from memberrole
         where CodeId = '${CodeID}' and RoleID = 1`;
@@ -562,8 +562,10 @@ async function ViewFamilyTree(CodeID) {
             db.connection.query(queryGetAllMember, async (err, result) => {
                 if (!err) {
                     let IdPaternal = await GetIdPaternalAncestor(CodeID);
-                    let data = await GetGenealogy(result, IdPaternal.MemberID)
-                    resolve(data)
+                    if (IdPaternal != null) {
+                        let data = await GetGenealogy(result, IdPaternal.MemberID)
+                        resolve(data)
+                    }
                 }
             })
         } catch (e) {

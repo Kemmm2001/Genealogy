@@ -7,23 +7,17 @@ const Response = require('../../Utils/Response')
 
 var registerUser = async (req, res) => {
   try {
-    console.log("vào đây")
-    // Xử lý yêu cầu đăng ký ở đây
-    const result = await registerSchema.validateAsync(req.body);
-
-    if (result.password !== result.repassword) {
-      throw new Error("Mật khẩu nhập lại không khớp với mật khẩu");
+    if (req.body.password !== req.body.repassword) {
+      return res.send(Response.dataNotFoundResponse(null, 'Nhập Lại Mật khẩu không trùng nhau'));
     }
-
-    let doesExist = await UserService.checkMail(result.email);
-
-    if (doesExist) throw createError.Conflict(`${result.email} đã được đăng kí`);
-
-    const hashedPassword = await bcrypt.hash(result.password, 10);
-    console.log(result)
-    let newUser = await UserService.create(result.username, result.email, hashedPassword);
-    // let data = await UserService.insertInAccountFamily(newUser.insertId)
+    let doesExist = await UserService.checkMail(req.body.email);
+    if (doesExist > 0) {
+      return res.send(Response.dataNotFoundResponse(null, `${req.body.email} đã được đăng kí`));
+    }
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    let newUser = await UserService.create(req.body.username, req.body.email, hashedPassword);
     return res.send(Response.successResponse(newUser, 'Đăng ký thành công'));
+
   } catch (error) {
     if (error.isJoi === true) {
       error.status = 422;
@@ -32,31 +26,23 @@ var registerUser = async (req, res) => {
   }
 }
 
-
 var loginUser = async (req, res) => {
   try {
-    console.log("vào đây")
-    console.log(req.body)
-    const result = await loginSchema.validateAsync(req.body)
+    let checkEmail = await UserService.checkMail(req.body.email);
+    let data = await UserService.getUser(req.body.email)
 
-    // 
-    // let user = await UserService.checkMail(result.email);
-    // let data = await UserService.getUser(result.email)
-    // if (!user) {
+    if (checkEmail == 0) {
+      return res.send(Response.dataNotFoundResponse(null, 'Email không tồn tại'));
+    }
+    const isPasswordMatch = await bcrypt.compare(req.body.password, data.password);
 
-    //   return res.send(Response.dataNotFoundResponse(result.email, 'Email không tồn tại'));
-    // }
-
-    // const isPasswordMatch = await bcrypt.compare(result.password, data.password);
-
-    // if (!isPasswordMatch) {
-    //   return res.send(Response.dataNotFoundResponse(null, 'Mật khẩu không đúng'));
-    // }
-    // const accessToken = await signAccessToken(data.accountID)
-    // console.log(accessToken)
-    // const refreshToken = await signRefreshToken(data.accountID)
-    // console.log(refreshToken)
-    // return res.send({ accessToken, refreshToken })
+    if (!isPasswordMatch) {
+      return res.send(Response.dataNotFoundResponse(null, 'Mật khẩu không đúng'));
+    }
+    const accessToken = await signAccessToken(data.accountID)
+    console.log(accessToken)
+    const refreshToken = await signRefreshToken(data.accountID)
+    return res.send({ accessToken, refreshToken })
 
   } catch (error) {
     if (error.isJoi === true) {
@@ -108,6 +94,7 @@ var refreshToken = async (req, res) => {
 var registerGenealogy = async (req, res) => {
   try {
     const value = req.body;
+    console.log(req.body)
     let codeID;
     let doesExist = true;
 
@@ -120,15 +107,13 @@ var registerGenealogy = async (req, res) => {
 
     if (data1) {
       try {
-        let data = await UserService.insertAccountFamily(value.accountID, codeID, 1);
-        return res.json({ codeID });
+        await UserService.insertAccountFamily(value.accountID, codeID, 1);
+        return res.send(Response.successResponse(codeID, 'Đăng ký gia phả thành công'));
       } catch (error) {
-        // Xử lý khi `UserService.insertAccount` không thành công
-        res.status(500).json({ error: 'Lỗi khi thực hiện insertAccount' });
+        return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
       }
     } else {
-      // Xử lý khi `data1` không thành công
-      res.status(500).json({ error: 'Lỗi khi thực hiện insertIntoFamily' });
+      return res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống'));
     }
   } catch (error) {
     res.status(500).json({ error: 'Lỗi nội bộ' });
@@ -171,8 +156,27 @@ var setRole = async (req, res) => {
 
 var checkCodeID = async (req, res) => {
   try {
-    let doesExist = await UserService.checkCodeID(req.body.codeID);
-    return res.json({ doesExist }); // Trả về true hoặc false trong đối tượng doesExist
+    console.log(req.body)
+    let CodeID = req.body.codeID;
+    let accountID = req.body.accountID;
+    let doesExist = await UserService.checkCodeID(CodeID);
+    console.log('CodeID: ' + CodeID)
+    console.log('accountID: ' + accountID)
+    if (doesExist > 0) {
+      let checkCodeIdCreator = await UserService.checkCodeIdCreator(accountID, CodeID, 1);
+      console.log('checkCodeIdCreator: ' + checkCodeIdCreator)
+      if (checkCodeIdCreator > 0) {
+        return res.send(Response.successResponse())
+      }
+      else {
+        await UserService.insertAccountFamily(accountID, CodeID, 3);
+        return res.send(Response.successResponse())
+      }
+    } else {
+      return res.send(Response.dataNotFoundResponse(CodeID, `Mã ${CodeID} Không tồn tại`))
+    }
+
+    // return res.json({ doesExist }); // Trả về true hoặc false trong đối tượng doesExist
   } catch (error) {
     res.status(error.status || 500).json({ error: error.message });
   }
@@ -181,13 +185,8 @@ var checkCodeID = async (req, res) => {
 
 
 function generateRandomNumber() {
-  // Tạo 9 chữ số ngẫu nhiên
-  const randomNumber = Math.floor(100000000 + Math.random() * 900000000).toString();
-
-  // Sử dụng slicing để chia thành các phần 3 chữ số và nối chúng với dấu "-"
-  const formattedNumber = randomNumber.slice(0, 3) + '-' + randomNumber.slice(3, 6) + '-' + randomNumber.slice(6);
-
-  return formattedNumber;
+  const randomNumber = Math.floor(100000 + Math.random() * 900000).toString();
+  return randomNumber;
 }
 
 module.exports = {

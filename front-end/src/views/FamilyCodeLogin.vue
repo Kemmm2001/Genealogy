@@ -47,22 +47,8 @@
             <div class="d-flex justify-content-center mt-3 mb-2" style="font-size: 36px; font-weight: bold; color: #fea94e;">Mã gia tộc</div>
             <div class="d-flex flex-column" style="width: 420px;">
               <div class="d-flex flex-row mb-3">
-                <div class="col-4 h-100 d-flex flex-row">
-                  <div>
-                    <input v-model="code1" type="text" class="form-control" placeholder="***" />
-                  </div>
-                  <div class="d-flex align-items-center p-1"></div>
-                </div>
-                <div class="col-4 h-100 d-flex flex-row">
-                  <div>
-                    <input v-model="code2" type="text" class="form-control" placeholder="***" />
-                  </div>
-                  <div class="d-flex align-items-center p-1"></div>
-                </div>
-                <div class="col-4 h-100 d-flex flex-row">
-                  <div>
-                    <input v-model="code3" type="text" class="form-control" placeholder="***" />
-                  </div>
+                <div class="w-100 h-100 d-flex flex-row">
+                  <input v-model="codeIdLogin" type="text" class="form-control" placeholder="*** *** ***" />
                 </div>
               </div>
               <!-- <router-link to="/familycode/login"> -->
@@ -182,6 +168,7 @@ import { HTTP } from "../assets/js/baseAPI.js";
 import Vue from "vue";
 import VueCookies from "vue-cookies";
 Vue.use(VueCookies);
+import Snackbar from "awesome-snackbar";
 
 export default {
   data() {
@@ -191,6 +178,7 @@ export default {
       loggingin: true,
       showCode: false,
       familycode: null,
+      combinedText: "",
 
       familyTree: {
         memberId: null,
@@ -199,9 +187,6 @@ export default {
         deathAnniersary: null,
         codeId: null,
       },
-      code1: null,
-      code2: null,
-      code3: null,
       codeIdLogin: null,
       accountID: null,
     };
@@ -221,6 +206,32 @@ export default {
           console.log(e);
         });
     },
+    NotificationsDelete(messagee) {
+      new Snackbar(messagee, {
+        position: "bottom-right",
+        theme: "light",
+        style: {
+          container: [
+            ["background-color", "#ff4d4d"],
+            ["border-radius", "5px"],
+          ],
+          message: [["color", "#fff"]],
+        },
+      });
+    },
+    NotificationsScuccess(messagee) {
+      new Snackbar(messagee, {
+        position: "bottom-right",
+        theme: "light",
+        style: {
+          container: [
+            ["background-color", "#1abc9c"],
+            ["border-radius", "5px"],
+          ],
+          message: [["color", "#fff"]],
+        },
+      });
+    },
     registerFamilyTree() {
       HTTP.post("register-genealogy", {
         accountID: this.accountID,
@@ -229,22 +240,31 @@ export default {
         deathAnniversary: this.familyTree.deathAnniersary,
       })
         .then((response) => {
-          this.familycode = response.data.codeID;
-          this.showFamilyCode();
+          console.log(response.data);
+          if (response.data.success == true) {
+            this.NotificationsScuccess(response.data.message);
+            this.showFamilyCode();
+            this.familycode = response.data.data;
+          } else {
+            this.NotificationsDelete(response.data.message);
+          }
         })
         .catch((e) => {
           console.log(e);
         });
     },
     loginWithCode() {
-      this.codeIdLogin = this.code1 + "-" + this.code2 + "-" + this.code3;
       HTTP.post("check-codeId", {
         codeID: this.codeIdLogin,
+        accountID: this.accountID,
       })
         .then((response) => {
-          if (response.data.doesExist == true) {
+          if (response.data.success == true) {
             localStorage.setItem("CodeID", this.codeIdLogin);
+            localStorage.setItem("accountID", this.accountID);
             this.$router.push("/");
+          } else {
+            this.NotificationsDelete(response.data.message);
           }
         })
         .catch((e) => {
