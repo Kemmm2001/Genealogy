@@ -1,64 +1,42 @@
 <template>
-  <div class="d-flex position-relative" style="padding: 0 120px; height: calc(100% - 64px)">
-    <div class="d-flex d-flex align-items-center position-absolute" style="top: 5%; bottom: 5%; left: 5%; right: 5%;">
-      <div class="info-pages-container w-100 h-100">
-        <div class="d-flex align-items-center w-100 my-2 mx-2" style="height: 50px; font-size: 20px; font-weight: bold;">
-          Album dòng họ</div>
-        <div class="d-flex flex-row">
-          <div class="col-md-6 d-flex align-items-center" style="justify-content: left;">
-            <div class="w-100 my-2 mx-2">
-              <input type="text" class="form-control modal-item m-0" placeholder="Nhập tên album...">
-            </div>
-            <div class="d-flex w-100 my-2">
-              <div class="px-2">Phân trang</div>
-              <div class="d-flex align-items-center">
-                <select class="form-select px-2 py-0">
-                  <option selected value="1">10</option>
-                  <option value="2">20</option>
-                  <option value="3">30</option>
-                </select>
-              </div>
-            </div>
+  <div class="d-flex w-100" style="padding: 0 200px">
+    <div class="d-flex flex-column h-100 w-100">
+      <div class="d-flex align-items-center w-100 my-2 mx-2" style="height: 48px; font-size: 20px; font-weight: bold;">Album dòng họ</div>
+      <div class="d-flex flex-row">
+        <div class="col-md-6 d-flex align-items-center" style="justify-content: left;">
+          <div class="w-100 my-2 mx-2">
+            <input type="text" class="form-control modal-item m-0" placeholder="Nhập tên album...">
           </div>
-          <div class="col-md-6 d-flex align-items-center" style="justify-content: right;">
-            <button @click="openAddAlbumModal()"
-              class="btn articlelist-item articlelist-item-button text-center my-4 mx-2">Tạo album</button>
-          </div>
-        </div>
-        <div class="d-flex flex-wrap">
-          <div class="album mx-2 mb-3 d-flex flex-column">
-            <div class="album-cover"></div>
-            <div class="album-general-info d-flex align-items-center">
-              <div class="d-flex justify-content-center w-100">Tên album</div>
-            </div>
-          </div>
-          <div class="album mx-2 mb-3 d-flex flex-column">
-            <div class="album-cover"></div>
-            <div class="album-general-info d-flex align-items-center">
-              <div class="d-flex justify-content-center w-100">Tên album</div>
-            </div>
-          </div>
-          <div class="album mx-2 mb-3 d-flex flex-column">
-            <div class="album-cover"></div>
-            <div class="album-general-info d-flex align-items-center">
-              <div class="d-flex justify-content-center w-100">Tên album</div>
-            </div>
-          </div>
-          <div class="album mx-2 mb-3 d-flex flex-column">
-            <div class="album-cover"></div>
-            <div class="album-general-info d-flex align-items-center">
-              <div class="d-flex justify-content-center w-100">Tên album</div>
-            </div>
-          </div>
-          <div class="album mx-2 mb-3 d-flex flex-column">
-            <div class="album-cover"></div>
-            <div class="album-general-info d-flex align-items-center">
-              <div class="d-flex justify-content-center w-100">Tên album</div>
+          <div class="d-flex w-100 my-2">
+            <div class="px-2">Phân trang</div>
+            <div class="d-flex align-items-center">
+              <select class="form-select px-2 py-0">
+                <option selected value="1">10</option>
+                <option value="2">20</option>
+                <option value="3">30</option>
+              </select>
             </div>
           </div>
         </div>
-        <div class="d-flex flex-row paging justify-content-center"
-          style="position:absolute; bottom: 0; left: 0; right: 0;">
+        <div class="col-md-6 d-flex align-items-center" style="justify-content: right;">
+          <button @click="openAddAlbumModal()"
+            class="btn articlelist-item articlelist-item-button text-center my-4 mx-2">Tạo album</button>
+        </div>
+      </div>
+      <div class="d-flex flex-wrap" v-for=" album in this.AlbumPhotoList" :key="album.AlnumID">
+        <div class="album mx-2 mb-3 d-flex flex-column">
+          <div class="album-cover" v-if="album.PhotoUrl != null">
+            <img :src="getRelativeImagePath(album.PhotoUrl)" />    
+          </div>
+          <div class="album-cover" v-if="album.PhotoUrl == null">
+            <img src="aaaaa" />  
+          </div>
+          <div class="album-general-info d-flex align-items-center">
+            <div class="d-flex justify-content-center w-100">{{album.AlbumName}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex flex-row paging justify-content-center m-4" style="position:absolute; bottom: 12px; left: 0; right: 0;">
           <div class="d-flex flex-row align-items-center">
             <div class="d-flex align-items-center justify-content-center" style="padding-right: 12px;">
               <svg class="headlist-paging-icon" style="transform: rotate(180deg);" xmlns="http://www.w3.org/2000/svg"
@@ -73,7 +51,7 @@
             <div class="page">1</div>
             <div class="page">2</div>
             <div class="page">
-              <div :class="{ chosen: true }">3</div>
+              <div :class="{chosen : true}">3</div>
             </div>
             <div class="page">4</div>
             <div class="page">5</div>
@@ -88,7 +66,6 @@
             </div>
           </div>
         </div>
-      </div>
     </div>
 
     <modal name="addAlbum-modal">
@@ -105,35 +82,35 @@
             </div>
           </div>
           <div class="d-flex flex-column">
-            <div class="d-flex flex-row mt-4 mb-1 align-items-center">
+            <!-- <div class="d-flex flex-row mt-4 mb-1 align-items-center">
               <label class="col-3 d-flex justify-content-center" for="off-url" style="cursor: pointer;">Ảnh bìa
                 album</label>
               <div class="mx-2 w-100">
-                <input id="off-url" type="file" class="form-control input-file" />
+                <input id="off-url" type="file" class="form-control input-file"  @change="handleFileChange" />
               </div>
-            </div>
+            </div> -->
             <div class="d-flex flex-row my-1 align-items-center">
               <label class="col-3 d-flex justify-content-center" for="article-name" style="cursor: pointer;">Tên
                 album</label>
               <div class="mx-2 w-100">
-                <input id="article-name" type="text" class="form-control" />
+                <input id="article-name" type="text" v-model="albumPhoto.albumName" class="form-control" />
               </div>
             </div>
             <div class="d-flex flex-row my-1 align-items-center">
               <label class="col-3 d-flex justify-content-center" for="article-des" style="cursor: pointer;">Mô tả</label>
               <div class="mx-2 w-100">
-                <input id="article-des" type="text" class="form-control" />
+                <input id="article-des" type="text" v-model="albumPhoto.description" class="form-control" />
               </div>
             </div>
             <div class="d-flex flex-row my-1 align-items-center">
               <label class="col-3 d-flex justify-content-center" for="off-url" style="cursor: pointer;">Thêm ảnh</label>
               <div class="mx-2 w-100">
-                <input id="off-url" type="file" class="form-control input-file" />
+                <input id="off-url" type="file" class="form-control input-file" @change="handleFileChange" />
               </div>
             </div>
             <div class="d-flex flex-row m-3 align-items-center articlelist-button-container">
               <div class="">
-                <button class="articlelist-item-button form-control">Thêm</button>
+                <button class="articlelist-item-button form-control" @click="addAlbumPhoto()">Thêm</button>
               </div>
             </div>
           </div>
@@ -199,13 +176,33 @@
   
 <script>
 // import { EventBus } from "../assets/js/MyEventBus.js";
+import { HTTP } from "../assets/js/baseAPI.js";
 export default {
   data() {
     return {
+      albumPhoto:{
+        albumName:null,
+        codeID:123456,
+        description:null,
+        firstImg: null,
+      },
+      familyPhoto: {
+        albumID: null,
+        file: null,
+      },
+      AlbumPhotoList:[],
+      FamilyPhotoList:[],
       trClicked: false,
+      baseUrl: 'http://localhost:3006/information'
     };
   },
   methods: {
+    getRelativeImagePath(fullPath) {
+      console.log(fullPath)
+      // Loại bỏ đường dẫn cơ sở khỏi đường dẫn đầy đủ
+      fullPath = 'C:'+fullPath
+      return fullPath
+    },
     openAddAlbumModal() {
       this.$modal.show("addAlbum-modal");
     },
@@ -218,6 +215,78 @@ export default {
     closeEditAlbumModal() {
       this.$modal.hide("editAlbum-modal");
     },
+    handleFileChange(event) {
+      // Lấy file từ sự kiện change và gán vào formData
+      this.familyPhoto.file = event.target.files[0];
+    },
+    getFamilyPhoto(){
+      HTTP.get('familyphoto',{
+        params:{
+          CodeID:123456
+        }
+      })
+      .then((response) =>{
+        this.AlbumPhotoList = response.data.data;
+        console.log(response.data.data)
+      }).catch((e) =>{
+        console.log(e);
+      })
+    },
+    getAlbumPhoto(){
+      HTTP.get('albumphoto',{
+        params:{
+          CodeID:123
+        }
+      })
+      .then((response) =>{
+        this.AlbumPhotoList = response.data.data;
+        for(let i = 0; i < this.AlbumPhotoList.length;i++){
+          this.AlbumPhotoList[i].firstImg = this.getFamilyPhotoByAlbumId(this.AlbumPhotoList[i].AlbumID);
+        }
+        console.log(this.AlbumPhotoList)
+        console.log(response.data.data)
+      }).catch((e) =>{
+        console.log(e);
+      })
+    },
+    getFamilyPhotoByAlbumId(id){
+      HTTP.get('familyphoto',{
+        params:{
+          AlbumID:id
+        }
+      })
+      .then((response) =>{
+        this.AlbumPhotoList = response.data.data;
+        console.log(response.data.data)
+        console.log(id)
+      }).catch((e) =>{
+        console.log(e);
+      })
+    },
+    addFamilyPhoto() {
+      const formData = new FormData();
+      formData.append('AlbumID', this.familyPhoto.AlbumID);
+      formData.append('Photo', this.familyPhoto.file);
+      HTTP.post('familyphoto',formData)
+      .then(() =>{
+      }).catch((e) =>{
+        console.log(e);
+      })
+    },
+    addAlbumPhoto() {
+      const formData = new FormData();
+      formData.append('AlbumName', this.albumPhoto.albumName);
+      formData.append('CodeID', this.albumPhoto.codeID);
+      HTTP.post('albumphoto',formData)
+      .then(() =>{
+        this.addFamilyPhoto();
+      }).catch((e) =>{
+        console.log(e);
+      })
+    },
+  },
+  mounted(){
+    this.getAlbumPhoto()
   },
   created() {
     // EventBus.$emit("HeadList", false);

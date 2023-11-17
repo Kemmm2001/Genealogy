@@ -3,6 +3,30 @@ import Router from "vue-router";
 
 Vue.use(Router);
 
+const router = new Router({
+  mode: "history", // Sử dụng chế độ lịch sử
+  base: process.env.BASE_URL,
+  routes,
+});
+
+// router.beforeEach((to, from, next) => {
+//   console.log(localStorage.getItem('CodeID'))
+//   if (to.path !== "/login") {
+//     // Kiểm tra xem phiên làm việc "account" có tồn tại không
+//     console.log(localStorage.getItem('CodeID'))
+//     if (!localStorage.getItem('CodeID')) {
+//       // Nếu phiên làm việc không tồn tại, chuyển hướng đến trang "/login"
+//       next('/login');
+//     } else {
+//       // Nếu phiên làm việc tồn tại, cho phép điều hướng bình thường
+//       next();
+//     }
+//   } else {
+//     // Cho phép điều hướng bình thường cho các trang khác
+//     next();
+//   }
+// });
+
 const routes = [
   {
     path: "/",
@@ -60,28 +84,6 @@ const routes = [
   },
 ];
 
-const router = new Router({
-  mode: "history", // Sử dụng chế độ lịch sử
-  base: process.env.BASE_URL,
-  routes,
-});
 
-// router.beforeEach((to, from, next) => {
-//   console.log(localStorage.getItem('CodeID'))
-//   if (to.path !== "/login") {
-//     // Kiểm tra xem phiên làm việc "account" có tồn tại không
-//     console.log(localStorage.getItem('CodeID'))
-//     if (!localStorage.getItem('CodeID')) {
-//       // Nếu phiên làm việc không tồn tại, chuyển hướng đến trang "/login"
-//       next('/login');
-//     } else {
-//       // Nếu phiên làm việc tồn tại, cho phép điều hướng bình thường
-//       next();
-//     }
-//   } else {
-//     // Cho phép điều hướng bình thường cho các trang khác
-//     next();
-//   }
-// });
 
 export default router;
