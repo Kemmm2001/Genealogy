@@ -1,30 +1,41 @@
 pipeline {
 
   agent any
-  
-  stages {
+  tools {
+    nodejs '18.17.1'
+  }
 
-    stage('Pull latest source') {
-      steps {
-        sh 'git pull origin test-deploy'
-      }
-    }
+    environment {
+    // Địa chỉ IP của server
+    SERVER_IP = '14.225.254.123'
+  }
+
+  stages {
     stage('Log all data'){
         steps {
-        sh 'git log --pretty=format:"%h %s" --graph -20' 
-        sh 'pm2 ls'
+        sh 'git log --pretty=format:"%h %s" --graph -10' 
         }
     }
 
-    stage('Stop Backend') {
-      steps {
-        dir('back-end') {
-          sh 'pm2 stop "back-end"'
+    stage('Install pm2'){
+        steps {
+        sh 'npm install pm2 -g -s' 
         }
-      }
     }
-    
-    stage('Build Backend') {
+
+    // stage('Stop all pm2 processes'){
+    //     steps {
+    //     sh 'pm2 stop all' 
+    //     }
+    // }
+
+    // stage('Delete all pm2 processes'){
+    //     steps {
+    //     sh 'pm2 delete all' 
+    //     }
+    // }
+
+    stage('Install back-end dependencies') {
       steps {
         dir('back-end') {
           sh 'npm install'
@@ -35,20 +46,12 @@ pipeline {
     stage('Start Backend') {
       steps {
         dir('back-end') {
-          sh 'pm2 start "npm start" --name "back-end"' 
+          sh 'pm2 start "npm start -- --port=3003" --name "back-end"' 
         }
       }
     }
     
-    stage('Stop Frontend') {
-      steps {
-        dir('front-end') {
-          sh 'pm2 stop "front-end"'
-        }
-      }
-    }
-
-    stage('Build Frontend') {
+    stage('Install front-end dependencies') {
       steps {
         dir('front-end') {
           sh 'npm install'
@@ -56,12 +59,26 @@ pipeline {
       }
     }
 
+    stage('Build Frontend') {
+      steps {
+        dir('front-end') {
+          sh 'npm run build' 
+        }
+      }
+    }
+
     stage('Start Frontend') {
       steps {
         dir('front-end') {
-          sh 'pm2 start "npm run build" --name "front-end"' 
+          sh 'pm2 start "npm run serve -- --port=3006" --name "front-end"' 
         }
       }
+    }
+
+    stage('Pm2 force save'){
+        steps {
+        sh 'pm2 save --force' 
+        }
     }
 
   }
