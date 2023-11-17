@@ -3,12 +3,6 @@ import Router from "vue-router";
 
 Vue.use(Router);
 
-const router = new Router({
-  mode: "history", // Sử dụng chế độ lịch sử
-  base: process.env.BASE_URL,
-  routes,
-});
-
 // router.beforeEach((to, from, next) => {
 //   console.log(localStorage.getItem('CodeID'))
 //   if (to.path !== "/login") {
@@ -84,6 +78,10 @@ const routes = [
   },
 ];
 
-
+const router = new Router({
+  mode: "history", // Sử dụng chế độ lịch sử
+  base: process.env.BASE_URL,
+  routes,
+});
 
 export default router;

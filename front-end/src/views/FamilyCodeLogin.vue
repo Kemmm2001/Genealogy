@@ -188,7 +188,6 @@ export default {
       loggingin: true,
       showCode: false,
       familycode: null,
-      combinedText: '',
 
       familyTree: {
         memberId: null,
@@ -197,9 +196,6 @@ export default {
         deathAnniersary: null,
         codeId: null,
       },
-      code1: null,
-      code2: null,
-      code3: null,
       codeIdLogin: null,
       accountID: null,
     };
@@ -235,7 +231,6 @@ export default {
         });
     },
     loginWithCode() {
-      this.codeIdLogin = this.code1 + "-" + this.code2 + "-" + this.code3;
       HTTP.post("check-codeId", {
         codeID: this.codeIdLogin,
       })
