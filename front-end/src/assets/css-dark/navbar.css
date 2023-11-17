@@ -50,10 +50,6 @@
     z-index: 1;
 }
 
-.user-extended.expandContent {
-    height: 170%;
-}
-
 .dark .navbar-extended-content {
     color: #000;
 }

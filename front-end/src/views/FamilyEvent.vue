@@ -1,7 +1,7 @@
 <template>
     <div class="event-screen d-flex flex-row w-100 p-0">
         <div class="col-6 h-100 calendar">Lịch</div>
-        <div class="col-6 event-list d-flex flex-column">
+        <div class="event-list d-flex flex-column">
             <div class="search-filter d-flex flex-row position-relative">
                 <div class="search d-flex">
                     <input type="text" class="form-control h-100" placeholder="Nhập tên sự kiện..." />
