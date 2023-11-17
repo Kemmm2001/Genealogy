@@ -64,10 +64,10 @@
         </div>
       </div>
     </div>
-    <div class="d-flex main-screen align-items-center w-100 positon-relative">
+    <div class="d-flex main-screen align-items-center w-100 position-relative">
       <div id="tree" ref="tree" v-if="this.nodes.length != 0"></div>
-      <div class="justify-content-center align-items-center" v-if="this.nodes.length == 0">
-        <button>Tạo gia phả</button>
+      <div style="inset: 0; margin: auto;" v-if="this.nodes.length == 0">
+        <div class="btn bg-primary text-white">Tạo gia phả</div>
       </div>
       <div :class="{ filterExpanded: advancedFilterDown }" class="advanced-filter-container d-flex flex-column p-1 position-absolute">
         <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">

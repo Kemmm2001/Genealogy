@@ -342,7 +342,14 @@ input:focus~label.form-label-number {
     width: 35%;
     height: 35%;
 }
+
 .modal-bg{
     
     background-color: #FFFFFF;
+}
+
+.addHead-container .vm--container{
+    height: 73%;
+    inset: 0;
+    margin: auto;
 }

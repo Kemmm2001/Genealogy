@@ -1,6 +1,6 @@
 <template>
-  <div class="container-fluid position-relative" style="padding-left: 120px; padding-right: 120px; height: calc(100% - 64px)">
-    <div class="d-flex d-flex align-items-center position-absolute" style="top: 5%; bottom: 5%; left: 5%; right: 5%;">
+  <div class="container-fluid position-relative" style="padding: 32px 120px;">
+    <div class="d-flex d-flex align-items-center position-absolute" style="width: calc(100% - 240px); height: calc(100% - 64px);">
       <div class="info-pages-container d-flex flex-column h-100 w-100">
         <div class="d-flex align-items-center w-100 my-2 mx-2" style="height: 50px; font-size: 20px; font-weight: bold;">
           Tư liệu dòng họ</div>
@@ -16,9 +16,9 @@
               tài liệu</button>
           </div>
         </div>
-        <div class="">
+        <div style="height: 420px; overflow-y: auto;">
           <table class="table table-article table-articlelist-list m-0">
-            <thead>
+            <thead style="position: sticky; top: 0;">
               <tr class="articlelist-item">
                 <th class="articlelist-list-th" scope="col">#</th>
                 <th class="articlelist-list-th" scope="col">Tên tài liệu</th>

@@ -81,9 +81,9 @@
                 </div>
                 <div class="btn bg-primary text-white d-flex align-items-center item">Xuất excel</div>
             </div>
-            <div class="mt-3">
+            <div class="mt-3" style="height: 560px; overflow-y: auto;">
                 <table class="table table-eventlist eventlist-list m-0">
-                    <thead>
+                    <thead style="position: sticky; top: 0">
                         <tr class="eventlist-item">
                             <th class="eventlist-list-th" scope="col">#</th>
                             <th class="eventlist-list-th" scope="col">Tên sự kiện</th>
@@ -94,6 +94,370 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item odd">
+                            <td>1</td>
+                            <td>AAAA</td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>AAAA</td>
+                            <td>Tháng</td>
+                        </tr>
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item even">
+                            <td>2</td>
+                            <td>AAAA</td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>AAAA</td>
+                            <td>Tháng</td>
+                        </tr>
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item odd">
+                            <td>1</td>
+                            <td>AAAA</td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>AAAA</td>
+                            <td>Tháng</td>
+                        </tr>
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item even">
+                            <td>2</td>
+                            <td>AAAA</td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>AAAA</td>
+                            <td>Tháng</td>
+                        </tr>
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item odd">
+                            <td>1</td>
+                            <td>AAAA</td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>AAAA</td>
+                            <td>Tháng</td>
+                        </tr>
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item even">
+                            <td>2</td>
+                            <td>AAAA</td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>AAAA</td>
+                            <td>Tháng</td>
+                        </tr>
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item odd">
+                            <td>1</td>
+                            <td>AAAA</td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>AAAA</td>
+                            <td>Tháng</td>
+                        </tr>
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item even">
+                            <td>2</td>
+                            <td>AAAA</td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>AAAA</td>
+                            <td>Tháng</td>
+                        </tr>
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item odd">
+                            <td>1</td>
+                            <td>AAAA</td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>AAAA</td>
+                            <td>Tháng</td>
+                        </tr>
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item even">
+                            <td>2</td>
+                            <td>AAAA</td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>AAAA</td>
+                            <td>Tháng</td>
+                        </tr>
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item odd">
+                            <td>1</td>
+                            <td>AAAA</td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>AAAA</td>
+                            <td>Tháng</td>
+                        </tr>
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item even">
+                            <td>2</td>
+                            <td>AAAA</td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>AAAA</td>
+                            <td>Tháng</td>
+                        </tr>
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item odd">
+                            <td>1</td>
+                            <td>AAAA</td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>AAAA</td>
+                            <td>Tháng</td>
+                        </tr>
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item even">
+                            <td>2</td>
+                            <td>AAAA</td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>AAAA</td>
+                            <td>Tháng</td>
+                        </tr>
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item odd">
+                            <td>1</td>
+                            <td>AAAA</td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>AAAA</td>
+                            <td>Tháng</td>
+                        </tr>
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item even">
+                            <td>2</td>
+                            <td>AAAA</td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>AAAA</td>
+                            <td>Tháng</td>
+                        </tr>
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item odd">
+                            <td>1</td>
+                            <td>AAAA</td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>AAAA</td>
+                            <td>Tháng</td>
+                        </tr>
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item even">
+                            <td>2</td>
+                            <td>AAAA</td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>AAAA</td>
+                            <td>Tháng</td>
+                        </tr>
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item odd">
+                            <td>1</td>
+                            <td>AAAA</td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>AAAA</td>
+                            <td>Tháng</td>
+                        </tr>
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item even">
+                            <td>2</td>
+                            <td>AAAA</td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>AAAA</td>
+                            <td>Tháng</td>
+                        </tr>
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item odd">
+                            <td>1</td>
+                            <td>AAAA</td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>AAAA</td>
+                            <td>Tháng</td>
+                        </tr>
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item even">
+                            <td>2</td>
+                            <td>AAAA</td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>AAAA</td>
+                            <td>Tháng</td>
+                        </tr>
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item odd">
+                            <td>1</td>
+                            <td>AAAA</td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>AAAA</td>
+                            <td>Tháng</td>
+                        </tr>
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item even">
+                            <td>2</td>
+                            <td>AAAA</td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>AAAA</td>
+                            <td>Tháng</td>
+                        </tr>
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item odd">
+                            <td>1</td>
+                            <td>AAAA</td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>AAAA</td>
+                            <td>Tháng</td>
+                        </tr>
+                        <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item even">
+                            <td>2</td>
+                            <td>AAAA</td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>
+                                <div>01-01-2000 (DL)</div>
+                                <div>02-01-2000 (AL)</div>
+                            </td>
+                            <td>AAAA</td>
+                            <td>Tháng</td>
+                        </tr>
                         <tr @click="showEditEventModal()" class="eventlist-item eventlist-table-item odd">
                             <td>1</td>
                             <td>AAAA</td>
