@@ -205,6 +205,7 @@ var SendEmail = async (req, res) => {
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         let result = SystemAction.SendEmailCore(objData);
+        console.log(result);
         if (result == true) {
             return res.send(Response.successResponse(null, "Gửi email thành công!"));
         } else {
