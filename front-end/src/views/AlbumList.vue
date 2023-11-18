@@ -1,7 +1,7 @@
 <template>
-  <div class="d-flex w-100" style="padding: 0 200px">
-    <div class="d-flex flex-column h-100 w-100">
-      <div class="d-flex align-items-center w-100 my-2 mx-2" style="height: 48px; font-size: 20px; font-weight: bold;">Album dòng họ</div>
+  <div class="d-flex h-100 w-100" style="padding: 32px 120px">
+    <div class="info-pages-container h-100 w-100 d-flex flex-column">
+      <div class="d-flex align-items-center w-100 my-2 mx-2" style="height: 50px; font-size: 20px; font-weight: bold;">Album dòng họ</div>
       <div class="d-flex flex-row">
         <div class="col-md-6 d-flex align-items-center" style="justify-content: left;">
           <div class="w-100 my-2 mx-2">

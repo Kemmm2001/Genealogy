@@ -133,11 +133,46 @@ function getUser(email) {
     });
   });
 }
+function ChangePassword(newPassword, AccountID) {
+  return new Promise((resolve, reject) => {
+    try {
+      let query = `UPDATE account as a SET a.Password = '${newPassword}' WHERE AccountID = ${AccountID};`;
+      db.connection.query(query, (err) => {
+        if (!err) {
+          resolve(true)
+        } else {
+          reject(false)
+        }
+      })
+    } catch (error) {
+      console.log(error)
+      reject(false)
+    }
+  })
+}
+
+function getListRoleMember(CodeID) {
+  return new Promise((resolve, reject) => {
+    try {
+      let query = `SELECT * FROM genealogy.AccountFamilyTree where CodeID = '${CodeID}';`;
+      db.connection.query(query, (err, result) => {
+        if (!err && result.length > 0) {
+          resolve(result)
+        } else {
+          reject(err)
+        }
+      })
+    } catch (error) {
+      console.log(error);
+      reject(error)
+    }
+  })
+}
 
 function getUserInfo(accountID) {
   return new Promise((resolve, reject) => {
-    const query = 'SELECT Username, Email, Password FROM genealogy.account WHERE AccountID = ?';
-    const values = [accountID];
+    let query = 'SELECT Username, Email, Password FROM genealogy.account WHERE AccountID = ?';
+    let values = [accountID];
 
     db.connection.query(query, values, (err, result) => {
       if (err) {
@@ -203,7 +238,7 @@ function insertAccountFamily(accountID, codeID, roleID) {
     let currentDate = new Date();
     currentDate = currentDate.toISOString().slice(0, 19).replace("T", " ");
     const query = 'INSERT INTO genealogy.AccountFamilyTree (AccountID,CodeID ,RoleID,AccessTime) VALUES (?,?,?,?)';
-    const values = [accountID, codeID, roleID,currentDate];
+    const values = [accountID, codeID, roleID, currentDate];
 
     db.connection.query(query, values, (err, results) => {
       if (err) {
@@ -218,13 +253,13 @@ function insertAccountFamily(accountID, codeID, roleID) {
 }
 function getHistoryLoginCodeID(AccountID) {
   return new Promise((resolve, reject) => {
-    try {      
+    try {
       let query = `select * from AccountFamilyTree where  AccountID = ${AccountID} and AccessTime is not null`;
       db.connection.query(query, (err, results) => {
         if (err) {
           console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
           reject(err);
-        } else {         
+        } else {
           resolve(results);
         }
       });
@@ -286,5 +321,5 @@ function updateRoleID(data) {
 module.exports = {
   checkMail, checkID, create, getUser, refreshFreeEmail, insertAccountFamily, checkCodeID,
   checkAccountID, updateRoleID, insertIntoFamily, getUserInfo, getUserCodeID, checkCodeIdCreator,
-  insertAccountFamilyTree, checkCodeCreatedByID, getHistoryLoginCodeID
+  insertAccountFamilyTree, checkCodeCreatedByID, getHistoryLoginCodeID, ChangePassword,getListRoleMember
 }

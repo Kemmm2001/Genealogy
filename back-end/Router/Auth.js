@@ -7,7 +7,7 @@ const authMiddleware = require('../helper/author_helper')
 const initWebRouter = (app) => {
 
   router.get('/protected-route', verifyAccessToken, (req, res) => {
-    
+
     const accountID = req.payload.insertId;
     res.json({ accountID });
   });
@@ -22,11 +22,13 @@ const initWebRouter = (app) => {
   router.post('/register-genealogy', UserController.registerGenealogy)
   router.post('/get-genealogy', UserController.getGenealogy)
   router.post('get-codeID', UserController.getUserCodeID)
-  
+
   router.post('/set-role', UserController.setRole)
   router.post('/check-codeId', UserController.checkCodeID)
+  router.get('/listrole', UserController.getListRoleMember)
 
-  router.get('/historyCodeID',UserController.getHistoryCodeID)
+  router.put('/changepassword', UserController.ChangePassword)
+  router.get('/historyCodeID', UserController.getHistoryCodeID)
   router.post('/get-user', UserController.getUserInfor)
   router.get('/admin', authMiddleware.authenticateAndAuthorize(2), (req, res) => {
     // Xử lý yêu cầu

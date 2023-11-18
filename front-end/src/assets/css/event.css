@@ -4,17 +4,13 @@
 }
 
 .event-screen .calendar{
-    padding: 16px 8px 16px 16px;
+    padding: 32px 30px 32px 120px;
     border-radius: 0.375rem;
     color: white;
 }
 
 .event-screen .event-list{
-    top: 5%;
-    bottom: 5%;
-    right: 5%;
-    margin: auto;
-    position: absolute;
+    padding: 32px 120px 32px 30px;
 }
 
 .event-screen .search-filter{
