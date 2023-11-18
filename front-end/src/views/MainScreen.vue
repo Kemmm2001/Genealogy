@@ -3,7 +3,7 @@
     <div class="list d-flex flex-column align-items-center">
       <div class="w-100 d-flex flex-row">
         <div class="col-6 px-2" style="padding-top: 8px;">
-          <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict()">
+          <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict(),GetListFilterMember()">
             <option :value="null" selected>Tỉnh/Thành phố</option>
             <option v-for="city in ListCity" :key="city.id" :value="city.id">{{ city.name }}</option>
           </select>
@@ -2062,9 +2062,9 @@ export default {
       if (this.selectCity == null) {
         this.ListDistrict = null;
         this.selectDistrict = null;
-        this.RemoveHightLight();
-      } else {
         this.selectAdress = null;
+        // this.RemoveHightLight();
+      } else {
         let selectedCity = this.ListCity.find(
           (city) => city.id == this.selectCity
         );
