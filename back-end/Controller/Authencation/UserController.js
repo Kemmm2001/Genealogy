@@ -29,9 +29,47 @@ var registerUser = async (req, res) => {
 var getHistoryCodeID = async (req, res) => {
   try {
     let accountID = req.query.accountID;
-    let data = await UserService.getHistoryLoginCodeID(accountID);    
+    let data = await UserService.getHistoryLoginCodeID(accountID);
     if (data) {
       return res.send(Response.successResponse(data));
+    } else {
+      return res.send(Response.dataNotFoundResponse());
+    }
+  } catch (error) {
+    return res.send(Response.dataNotFoundResponse(error));
+  }
+}
+
+var getListRoleMember = async (req, res) => {
+  try {
+    console.log('req: ' + req.query)
+    let data = await UserService.getListRoleMember(req.query.codeID);
+    if (data) {
+      return res.send(Response.successResponse(data));
+    } else {
+      return res.send(Response.dataNotFoundResponse());
+    }
+  } catch (error) {
+    return res.send(Response.dataNotFoundResponse(error));
+  }
+}
+
+var ChangePassword = async (req, res) => {
+  try {
+    let data = await UserService.getUserInfo(req.body.accountID);
+    if (data) {
+      let isPasswordMatch = await bcrypt.compare(req.body.currentpassword, data.password);
+      if (!isPasswordMatch) {
+        return res.send(Response.dataNotFoundResponse(null, 'Mật khẩu không đúng'));
+      } else {
+        let hashedPassword = await bcrypt.hash(req.body.newPassword, 10);
+        let data = await UserService.ChangePassword(hashedPassword, req.body.accountID)
+        if (data == true) {
+          return res.send(Response.successResponse());
+        } else {
+          return res.send(Response.dataNotFoundResponse());
+        }
+      }
     } else {
       return res.send(Response.dataNotFoundResponse());
     }
@@ -68,6 +106,7 @@ var loginUser = async (req, res) => {
 
 var getUserInfor = async (req, res) => {
   try {
+    console.log(req.body)
     let data = await UserService.getUserInfo(req.body.accountID)
     if (!data) {
       return res.send(Response.dataNotFoundResponse(null, 'Lỗi hệ thống,không tìm thấy tài khoản'));
@@ -178,12 +217,9 @@ var setRole = async (req, res) => {
 
 var checkCodeID = async (req, res) => {
   try {
-    console.log(req.body)
     let CodeID = req.body.codeID;
     let accountID = req.body.accountID;
     let doesExist = await UserService.checkCodeID(CodeID);
-    console.log('CodeID: ' + CodeID)
-    console.log('accountID: ' + accountID)
     if (doesExist > 0) {
       let checkCodeIdCreator = await UserService.checkCodeIdCreator(accountID, CodeID, 1);
       console.log('checkCodeIdCreator: ' + checkCodeIdCreator)
@@ -198,7 +234,6 @@ var checkCodeID = async (req, res) => {
       return res.send(Response.dataNotFoundResponse(CodeID, `Mã ${CodeID} Không tồn tại`))
     }
 
-    // return res.json({ doesExist }); // Trả về true hoặc false trong đối tượng doesExist
   } catch (error) {
     res.status(error.status || 500).json({ error: error.message });
   }
@@ -212,5 +247,6 @@ function generateRandomNumber() {
 }
 
 module.exports = {
-  registerUser, loginUser, refreshToken, registerGenealogy, getGenealogy, setRole, checkCodeID, getUserInfor, getUserCodeID,getHistoryCodeID
+  registerUser, loginUser, refreshToken, registerGenealogy, getGenealogy, setRole,
+  checkCodeID, getUserInfor, getUserCodeID, getHistoryCodeID, ChangePassword, getListRoleMember
 };
