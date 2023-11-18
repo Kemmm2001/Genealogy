@@ -67,7 +67,7 @@
     <div class="d-flex main-screen align-items-center w-100 position-relative">
       <div id="tree" ref="tree" v-if="this.nodes.length != 0"></div>
       <div style="inset: 0; margin: auto;" v-if="this.nodes.length == 0">
-        <div class="btn bg-primary text-white d-flex flex-row align-items-center">
+        <div @click="openMemberModal('AddFirst','cụ tổ')" class="btn bg-primary text-white d-flex flex-row align-items-center">
           <div style="padding-right: 8px;">Thêm tổ phụ</div>
           <svg style="fill: white;" class="add-member-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
             <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />
@@ -999,7 +999,6 @@ export default {
       resultCompare2: null,
       selectedRowIndex: null,
       UrlAvatar: null,
-    
     };
   },
   methods: {
@@ -2142,7 +2141,7 @@ export default {
       this.smsSelected = true;
       this.emailSelected = false;
       this.expandCreateEmail = false;
-    },  
+    },
   },
   created() {
     EventBus.$on("displayList", (value) => {

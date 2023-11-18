@@ -49,12 +49,12 @@
         <div class="sort-member">
           <p class="title">Sắp xếp</p>
           <div class="sort-button d-flex justify-content-center">
-            <button @click="clickGenSort(),sortListMember()" :class="{chosen : genSort}" class="btn d-flex justify-content-center align-items-center">
+            <button @click="clickGenSort()" :class="{chosen : genSort}" class="btn d-flex justify-content-center align-items-center">
               <i v-if="genAscending" class="bi bi-arrow-up" style="padding-right: 8px;"></i>
               <i v-if="!genAscending" class="bi bi-arrow-up" style="padding-left: 8px; transform: rotate(180deg);"></i>
               <div>Đời</div>
             </button>
-            <button @click="clickDobSort(),sortListMember()" :class="{chosen : dobSort}" class="btn d-flex justify-content-center align-items-center" style="margin-left: 4px;">
+            <button @click="clickDobSort()" :class="{chosen : dobSort}" class="btn d-flex justify-content-center align-items-center" style="margin-left: 4px;">
               <i v-if="dobAscending" class="bi bi-arrow-up" style="padding-right: 8px;"></i>
               <i v-if="!dobAscending" class="bi bi-arrow-up" style="padding-left: 8px; transform: rotate(180deg);"></i>
               <div>Ngày sinh</div>
@@ -586,6 +586,7 @@ export default {
         this.genSort = true;
         this.dobSort = false;
       }
+      this.sortListMember()
     },
     clickDobSort() {
       if (this.dobSort) {
@@ -594,6 +595,7 @@ export default {
         this.dobSort = true;
         this.genSort = false;
       }
+      this.sortListMember()
     },
     selectedInfor() {
       this.extendedInfo = true;
@@ -631,29 +633,22 @@ export default {
       this.extendedNote = true;
     },
     sortListMember() {
-      if (this.genAscending) {
+      if (this.genAscending && this.genSort) {
         this.memberFilter.sort((a, b) => a.generation - b.generation);
-      } else {
+      } else if (!this.genAscending && this.genSort){
         this.memberFilter.sort((a, b) => b.generation - a.generation);
       }
-      if (this.dobAscending) {
+      if (this.dobAscending && this.dobSort) {
         this.memberFilter.sort(
           (a, b) =>
             new Date(this.formatDate(b.dob)) - new Date(this.formatDate(a.dob))
         );
-      } else {
+      } else if(!this.dobAscending && this.dobSort) {
         this.memberFilter.sort(
           (a, b) =>
             new Date(this.formatDate(a.dob)) - new Date(this.formatDate(b.dob))
         );
       }
-    },
-    searchMember() {
-      this.filterByMonth();
-      // this.filterByGeneration(),
-      // this.filterByGender()
-      // this.filterByAlive(),
-      // this.filterByKind()
     },
     chooseMember(id) {
       this.memberIdChoose = id;
@@ -877,71 +872,60 @@ export default {
       this.$modal.hide("editHead-modal");
     },
     filter() {
-      HTTP.get("viewTree", {
-        params: {
-          CodeID: "258191",
-        },
-      })
-        .then((response) => {
-          this.memberList = response.data;
-          this.memberFilter = this.memberList;
-          this.sortListMember();
-          if (this.genderSearch != "all") {
-            this.memberFilter = this.memberFilter.filter(
-              (member) => member.gender == this.genderSearch
-            );
-          }
-          if (this.generationSearch != 0) {
-            this.memberFilter = this.memberFilter.filter(
-              (member) => member.generation == this.generationSearch
-            );
-          }
-          if (this.monthSearch != 0) {
-            this.memberFilter = this.memberFilter.filter(
-              (member) =>
-                new Date(this.formatDate(member.dob)).getMonth() + 1 ==
-                this.monthSearch
-            );
-          }
-          if (this.isDeadSearch != "all") {
-            this.memberFilter = this.memberFilter.filter(
-              (member) => member.isDead != this.isDeadSearch
-            );
-          }
-          if (this.statusSearch != "all") {
-            if (this.statusSearch == "trongdongho") {
-              this.memberFilter = this.memberFilter.filter(
-                (member) => member.fid != ""
-              );
-            }
-            if (this.statusSearch == "ngoaidongho") {
-              this.memberFilter = this.memberFilter.filter(
-                (member) => member.fid == ""
-              );
-            }
-            if (this.statusSearch == "contrai") {
-              this.memberFilter = this.memberFilter.filter(
-                (member) => member.fid != "" && member.gender == "male"
-              );
-            }
-          }
-          if (this.ageFrom != "" && this.ageFrom != null) {
-            console.log(1);
-            this.memberFilter = this.memberFilter.filter(
-              (member) => this.ageMember(member.dob) >= parseInt(this.ageFrom)
-            );
-          }
-          console.log(this.memberFilter);
-          if (this.ageTo != "" && this.ageTo != null) {
-            console.log(this.ageTo);
-            this.memberFilter = this.memberFilter.filter(
-              (member) => this.ageMember(member.dob) <= parseInt(this.ageTo)
-            );
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+      this.memberFilter = this.memberList;
+      this.sortListMember();
+      if (this.genderSearch != "all") {
+        this.memberFilter = this.memberFilter.filter(
+          (member) => member.gender == this.genderSearch
+        );
+      }
+      if (this.generationSearch != 0) {
+        this.memberFilter = this.memberFilter.filter(
+          (member) => member.generation == this.generationSearch
+        );
+      }
+      if (this.monthSearch != 0) {
+        this.memberFilter = this.memberFilter.filter(
+          (member) =>
+            new Date(this.formatDate(member.dob)).getMonth() + 1 ==
+            this.monthSearch
+        );
+      }
+      if (this.isDeadSearch != "all") {
+        this.memberFilter = this.memberFilter.filter(
+          (member) => member.isDead != this.isDeadSearch
+        );
+      }
+      if (this.statusSearch != "all") {
+        if (this.statusSearch == "trongdongho") {
+          this.memberFilter = this.memberFilter.filter(
+            (member) => member.fid != ""
+          );
+        }
+        if (this.statusSearch == "ngoaidongho") {
+          this.memberFilter = this.memberFilter.filter(
+            (member) => member.fid == ""
+          );
+        }
+        if (this.statusSearch == "contrai") {
+          this.memberFilter = this.memberFilter.filter(
+            (member) => member.fid != "" && member.gender == "male"
+          );
+        }
+      }
+      if (this.ageFrom != "" && this.ageFrom != null) {
+        console.log(1);
+        this.memberFilter = this.memberFilter.filter(
+          (member) => this.ageMember(member.dob) >= parseInt(this.ageFrom)
+        );
+      }
+      console.log(this.memberFilter);
+      if (this.ageTo != "" && this.ageTo != null) {
+        console.log(this.ageTo);
+        this.memberFilter = this.memberFilter.filter(
+          (member) => this.ageMember(member.dob) <= parseInt(this.ageTo)
+        );
+      }
     },
     ageMember(memberDob) {
       let dob = new Date(this.formatDate(memberDob));
@@ -955,7 +939,7 @@ export default {
       this.numberFemale = 0;
       this.numberAlive = 0;
       this.numberDied = 0;
-      for (let i = 0; i < this.memberList.length; i++) {
+      for (let i = 0; i < this.memberFilter.length; i++) {
         if (this.memberFilter[i].gender == "male") {
           this.numberMale += 1;
         }
@@ -1027,7 +1011,6 @@ export default {
           this.memberList = response.data;
           this.memberFilter = this.memberList;
           this.takeInforList();
-          console.log(this.memberList);
         })
         .catch((e) => {
           console.log(e);
