@@ -3,6 +3,7 @@ const createError = require('http-errors')
 
 module.exports = {
   signAccessToken: (insertId) => {
+    console.log('insertId: ' + insertId)
     return new Promise((resolve, reject) => {
       const payload = {
         insertId

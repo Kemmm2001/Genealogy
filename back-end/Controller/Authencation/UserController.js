@@ -80,20 +80,21 @@ var ChangePassword = async (req, res) => {
 
 var loginUser = async (req, res) => {
   try {
+    console.log(req.body)
     let checkEmail = await UserService.checkMail(req.body.email);
     let data = await UserService.getUser(req.body.email)
 
     if (checkEmail == 0) {
       return res.send(Response.dataNotFoundResponse(null, 'Email không tồn tại'));
     }
-    const isPasswordMatch = await bcrypt.compare(req.body.password, data.password);
+    let isPasswordMatch = await bcrypt.compare(req.body.password, data.password);
 
     if (!isPasswordMatch) {
       return res.send(Response.dataNotFoundResponse(null, 'Mật khẩu không đúng'));
     }
-    const accessToken = await signAccessToken(data.accountID)
-    console.log(accessToken)
-    const refreshToken = await signRefreshToken(data.accountID)
+    let accessToken = await signAccessToken(data.accountID)
+    console.log('accessToken: ' + accessToken)
+    let refreshToken = await signRefreshToken(data.accountID)
     return res.send({ accessToken, refreshToken })
 
   } catch (error) {
