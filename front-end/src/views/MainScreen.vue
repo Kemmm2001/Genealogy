@@ -65,7 +65,7 @@
       </div>
     </div>
     <div class="d-flex main-screen align-items-center w-100 position-relative">
-      <div id="tree" ref="tree" v-if="this.nodes.length != 0"></div>
+      <div id="tree" ref="tree"></div>
       <div style="inset: 0; margin: auto;" v-if="this.nodes.length == 0">
         <div @click="openMemberModal('AddFirst','cụ tổ')" class="btn bg-primary text-white d-flex flex-row align-items-center">
           <div style="padding-right: 8px;">Thêm tổ phụ</div>
@@ -2064,6 +2064,7 @@ export default {
         this.selectDistrict = null;
         this.RemoveHightLight();
       } else {
+        this.selectAdress = null;
         let selectedCity = this.ListCity.find(
           (city) => city.id == this.selectCity
         );

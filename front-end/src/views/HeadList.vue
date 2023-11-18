@@ -25,10 +25,10 @@
             </thead>
             <tbody>
               <tr @click="getInforMember(familyhead.MemberID)" class="headlist-item headlist-table-item" v-for="(familyhead, index) in familyheadList" :key="familyhead.MemberID">
-                <th @click="openEditHeadModal()" scope="row">{{ index + 1 }}</th>
-                <td @click="openEditHeadModal()">{{ familyhead.MemberName }}</td>
-                <td @click="openEditHeadModal()">{{ formatDate(familyhead.Dob) }}</td>
-                <td @click="openEditHeadModal()">{{ familyhead.Generation }}</td>
+                <th @click="openEditHeadModal()" scope="row" style="text-align: center;">{{ index + 1 }}</th>
+                <td @click="openEditHeadModal()" style="text-align: center;">{{ familyhead.MemberName }}</td>
+                <td @click="openEditHeadModal()" style="text-align: center;">{{ formatDate(familyhead.Dob) }}</td>
+                <td @click="openEditHeadModal()" style="text-align: center;">{{ familyhead.Generation }}</td>
               </tr>
             </tbody>
           </table>
@@ -659,6 +659,7 @@ export default {
       this.extendedNote = true;
     },
     openAddHeadModal() {
+      this.itemChoose = null;
       this.$modal.show("addHead-modal");
     },
     closeAddHeadModal() {

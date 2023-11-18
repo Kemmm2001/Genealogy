@@ -576,9 +576,22 @@
 
 <script>
 import { Calendar } from "vietnamese-lunar-calendar";
+import { HTTP } from "../assets/js/baseAPI.js";
 export default {
     data(){
         return{
+            eventFamily:{
+                eventName:null,
+                typeLoop:null,
+                description :null,
+                hourFrom:null,
+                hourTo:null,
+                startDate:null,
+                endDate:null,
+                place:null,
+                note:null,
+            },
+
             calendar:null,
             dayOfMonth:[],
             listOfYear:[],
@@ -588,9 +601,58 @@ export default {
             chooseDate: null,
             indexClickDay:null,
             indexClickWeek:null,
+
+            currentEventId:null,
         }
     },
     methods: {
+        addEvent(){
+            HTTP.post("addEvent", {
+                EventName:this.eventFamily.eventName,
+                CodeID: 258191,
+                StartDate:this.eventFamily.startDate,
+                EndDate:this.eventFamily.endDate,
+                Description:this.eventFamily.description,
+                Note : this.eventFamily.note,
+                Place: this.eventFamily.place
+            })
+            .then(() => {
+                console.log("da vao")
+            })
+            .catch((e) => {
+            console.log(e);
+            });
+        },
+        updateEvent(){
+            HTTP.put("updateEvent", {
+                EventID:this.currentEventId,
+                EventName:this.eventFamily.eventName,
+                StartDate:this.eventFamily.startDate,
+                EndDate:this.eventFamily.endDate,
+                Description:this.eventFamily.description,
+                Note : this.eventFamily.note,
+                Place: this.eventFamily.place
+            })
+            .then(() => {
+                console.log("da vao")
+            })
+            .catch((e) => {
+            console.log(e);
+            });
+        },
+        removeEvent(){
+            HTTP.delete("removeEvent", {
+                params:{
+                    EventID:this.currentEventId,
+                }
+            })
+            .then(() => {
+                console.log("da vao")
+            })
+            .catch((e) => {
+            console.log(e);
+            });
+        },
         clickDate(indexDay,indexWeek){
             this.indexClickDay = indexDay
             this.indexClickWeek = indexWeek
