@@ -1,7 +1,7 @@
 const db = require('../Models/ConnectDB');
 
 let coreResponse = (success, status_code, message, data) => {
-    console.log(`success: ${success}, status_code: ${status_code}, message: ${message}, data: ${data}`);
+    console.log(`success: ${success}, status_code: ${status_code}, message: ${message}`);
     return {
         success: success,
         status_code: status_code,

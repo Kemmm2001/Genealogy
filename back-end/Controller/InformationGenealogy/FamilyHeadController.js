@@ -1,14 +1,36 @@
 const FamilyHeadManagementService = require('../../service/InformationGenealogy/ManagementFamilyHead')
+const Response = require("../../Utils/Response");
 
-var ListFamilyHead = async (req, res) => {   
+var ListFamilyHead = async (req, res) => {
     try {
         let CodeID = req.query.CodeID;
         let data = await FamilyHeadManagementService.getAllFamilyHead(CodeID);
-        res.send(data);
+        if (data) {
+            return res.send(Response.successResponse(data))
+        } else {
+            return res.send(Response.dataNotFoundResponse())
+        }
     } catch (error) {
         console.log(error)
     }
 }
+
+
+var ListFamilyHeadCanAdd = async (req, res) => {
+    try {
+        let CodeID = req.query.CodeID;
+        let data = await FamilyHeadManagementService.getListFamilyHeadCanAdd(CodeID);
+        if (data) {
+            return res.send(Response.successResponse(data));
+        } else {
+            return res.send(Response.dataNotFoundResponse())
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
 var removeRoleFamilyHead = async (req, res) => {
     try {
         let memberId = req.query.memberId;
@@ -22,5 +44,5 @@ var removeRoleFamilyHead = async (req, res) => {
 
 
 module.exports = {
-    ListFamilyHead, removeRoleFamilyHead
+    ListFamilyHead, removeRoleFamilyHead, ListFamilyHeadCanAdd
 }

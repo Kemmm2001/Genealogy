@@ -101,7 +101,7 @@ var getListMessage = async (req, res) => {
 var AllMemberInGenelogy = async (req, res) => {
     try {
         let CodeID = req.query.CodeID;
-        let data = await FamilyTreeService.ViewFamilyTree(CodeID);    
+        let data = await FamilyTreeService.ViewFamilyTree(CodeID);
         data.forEach((item) => {
             if (item.dod === '1-1-1970') {
                 item.dod = null;
@@ -136,15 +136,15 @@ var setRole = async (req, res) => {
         if (roleId == 2) {
             let existingFamilyHead = await FamilyTreeService.getRoleExist(memberId, 2);
             if (existingFamilyHead.length > 0) {
-                res.send("thành viên đã là tộc trưởng");
+                return res.send(Response.dataNotFoundResponse(null, 'thành viên đã là tộc trưởng'));
             } else {
                 await FamilyTreeService.setRoleMember(memberId, roleId, CodeId);
-                res.send("set success");
+                return res.send(Response.successResponse(null, 'thêm tộc trưởng thành công'));
             }
         } else if (roleId == 1) {
             let existingPaternalAncestor = await FamilyTreeService.getRoleExist(memberId, 1);
             if (existingPaternalAncestor.length > 0) {
-                res.send("thành viên đã là tổ phụ");
+                return res.send(Response.dataNotFoundResponse(null, 'thành viên đã là tổ phụ'));
             } else {
                 await FamilyTreeService.removePaternalAncestor();
                 await FamilyTreeService.setRoleMember(memberId, roleId, CodeId);
@@ -152,7 +152,7 @@ var setRole = async (req, res) => {
                 await FamilyTreeService.ResetAllGenerationMember(CodeId);
                 await FamilyTreeService.turnOnSQL_SAFE_UPDATES();
                 await FamilyTreeService.setAllGenerationMember(memberId, 1);
-                res.send("set success");
+                return res.send(Response.successResponse(null, 'thêm tổ phụ thành công'));
             }
         }
     } catch (e) {
