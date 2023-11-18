@@ -76,6 +76,11 @@ const routes = [
     name: "event",
     component: () => import("../views/FamilyEvent.vue"),
   },
+  {
+    path: "/forgotpwd",
+    name: "forgotpwd",
+    component: () => import("../views/ForgotPwd.vue"),
+  },
 ];
 
 const router = new Router({

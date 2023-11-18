@@ -8,6 +8,11 @@
     background-position: bottom;
 }
 
+.raining-background{
+    background-image: url(../raining.jpg);
+    background-position: bottom;
+}
+
 .login-form-container{
     top: 0;
     bottom: 0;
