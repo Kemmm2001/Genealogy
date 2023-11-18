@@ -16,7 +16,7 @@
 }
 
 .main-screen {
-    height: 100vh;
+    height: 100%;
     flex-grow: 1;
 }
 
@@ -94,4 +94,10 @@ tr{
     padding: 15px 100px 35px 100px;
     border-radius: 0.575rem;
     position: relative;
+}
+
+.logo{
+    height: 95px;
+    position: absolute;
+    bottom: -15px;
 }

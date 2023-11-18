@@ -64,11 +64,16 @@
         </div>
       </div>
     </div>
-    <div class="d-flex main-screen align-items-center w-100 positon-relative">
-      <div id="tree" ref="tree"></div>
-      <!-- <div class="justify-content-center align-items-center">
-        <button @click="openMemberModal('AddFirst','cụ tổ')">Tạo gia phả</button>
-      </div>-->
+    <div class="d-flex main-screen align-items-center w-100 position-relative">
+      <div id="tree" ref="tree" v-if="this.nodes.length != 0"></div>
+      <div style="inset: 0; margin: auto;" v-if="this.nodes.length == 0">
+        <div @click="openMemberModal('AddFirst','cụ tổ')" class="btn bg-primary text-white d-flex flex-row align-items-center">
+          <div style="padding-right: 8px;">Thêm tổ phụ</div>
+          <svg style="fill: white;" class="add-member-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+            <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />
+          </svg>
+        </div>
+      </div>
       <div :class="{ filterExpanded: advancedFilterDown }" class="advanced-filter-container d-flex flex-column p-1 position-absolute">
         <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
           <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict()">
@@ -100,6 +105,11 @@
             </svg>
           </div>
         </div>
+      </div>
+      <div style="position: absolute; bottom: 0; right: 0;">
+        <svg class="help-icon p-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+          <path d="M80 160c0-35.3 28.7-64 64-64h32c35.3 0 64 28.7 64 64v3.6c0 21.8-11.1 42.1-29.4 53.8l-42.2 27.1c-25.2 16.2-40.4 44.1-40.4 74V320c0 17.7 14.3 32 32 32s32-14.3 32-32v-1.4c0-8.2 4.2-15.8 11-20.2l42.2-27.1c36.6-23.6 58.8-64.1 58.8-107.7V160c0-70.7-57.3-128-128-128H144C73.3 32 16 89.3 16 160c0 17.7 14.3 32 32 32s32-14.3 32-32zm80 320a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"/>
+        </svg>
       </div>
     </div>
     <div class="Container-select-modal">
