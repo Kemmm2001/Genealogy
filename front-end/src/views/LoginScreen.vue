@@ -74,8 +74,11 @@
               </div>
             </div>
             <!-- <router-link to="/familycode"> -->
-            <div class="d-flex justify-content-center align-items-center" style="height: auto; width: auto;">
+            <div class="d-flex align-items-center" style="justify-content: space-around;">
               <button @click="login()" class="btn login-button">Đăng nhập</button>
+              <router-link to="/forgotpwd">
+                <button class="btn login-button">Quên mật khẩu?</button>
+              </router-link>
             </div>
             <!-- </router-link> -->
           </div>
