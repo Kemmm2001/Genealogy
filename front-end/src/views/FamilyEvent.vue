@@ -154,6 +154,84 @@
                 </div>
             </div>
         </div>
+        <div class="add-event-container">
+            <modal name="add-event-modal">
+                <div class="form-group h-100">
+                    <div class="w-100 h-100 modal-bg position-relative">
+                        <div class="d-flex flex-row w-100 align-items-center position-relative">
+                            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm
+                                sự kiện</div>
+                            <div class="close-add-form" @click="closeAddEventModal()">
+                                <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                                    <path
+                                        d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column" style="height: calc(100% - 50px);">
+                            <div class="item mt-2 px-2 d-flex flex-row">
+                                <div class="d-flex flex-row" style="flex-grow: 1;">
+                                    <div class="d-flex align-items-center" style="padding-right: 8px;">Tên sự kiện</div>
+                                    <div class="d-flex h-100" style="flex-grow: 1;">
+                                        <input type="text" class="form-control h-100 w-100" />
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-row">
+                                    <div class="d-flex align-items-center px-2">Kiểu lặp lại</div>
+                                    <div>
+                                        <select class="form-control h-100">
+                                            <option>Tất cả</option>
+                                            <option>Không lặp lại</option>
+                                            <option>Tháng</option>
+                                            <option>Năm</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-2 px-2" style="height: 120px;">
+                                <textarea class="w-100 h-100 text-area description" placeholder="Mô tả"></textarea>
+                            </div>
+                            <div class="item mt-2 px-2 d-flex flex-row">
+                                <div class="d-flex align-items-center" style="width: 38px; padding-right: 8px;">Từ</div>
+                                <input class="form-control time-input" type="number" min="00" max="23" />
+                                <div class="d-flex align-items-center">:</div>
+                                <input class="form-control time-input" type="number" min="00" max="59" />
+                                <div class="d-flex" style="flex-grow: 1;">
+                                    <input type="date" class="form-control h-100 w-100" />
+                                </div>
+                            </div>
+                            <div class="item mt-2 px-2 d-flex flex-row">
+                                <div class="d-flex align-items-center" style="width: 38px; padding-right: 8px;">Đến</div>
+                                <input class="form-control time-input" type="number" min="00" max="23" />
+                                <div class="d-flex align-items-center">:</div>
+                                <input class="form-control time-input" type="number" min="00" max="59" />
+                                <div class="d-flex" style="flex-grow: 1;">
+                                    <input type="date" class="form-control h-100 w-100" />
+                                </div>
+                            </div>
+                            <div class="item mt-2 px-2 d-flex flex-row">
+                                <div class="d-flex flex-row" style="flex-grow: 1;">
+                                    <div class="d-flex align-items-center" style="padding-right: 8px;">Địa điểm</div>
+                                    <div class="d-flex h-100" style="flex-grow: 1; padding-right: 8px;">
+                                        <input type="text" class="form-control h-100 w-100" />
+                                    </div>
+                                    <div class="h-100 d-flex flex-row align-items-center" style="padding-right: 8px;">
+                                        <input class="form-check-input m-0" type="checkbox" />
+                                        <div style="padding-left: 8px;">Sự kiện quan trọng</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-2 px-2" style="height: 120px;">
+                                <textarea class="w-100 h-100 text-area" placeholder="Ghi chú"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer position-absolute w-100" style="bottom: 0;">
+                            <div class="bg-primary text-white btn mx-2">Lưu</div>
+                        </div>
+                    </div>
+                </div>
+            </modal>
+        </div>
     </div>
 </template>
 
