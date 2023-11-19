@@ -1010,18 +1010,18 @@ export default {
         '<image preserveAspectRatio="xMidYMid slice" clip-path="url(#ulaImg)" xlink:href="{val}" x="10" y="20" width="70" height="70"></image>';
 
       FamilyTree.templates.tommy_male.field_0 =
-        '<text class="field_0" style="font-size: 16px;" fill="#ffffff" x="90" y="30">{val}</text>';   
+        '<text class="field_0" style="font-size: 16px;" fill="#ffffff" x="90" y="40">{val}</text>';   
       FamilyTree.templates.tommy_male.field_1 =
-        '<text class="field_2" style="font-size: 12px;" fill="#ffffff" x="90" y="70">Ngày Sinh: {val}</text>'; 
+        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="90" y="60">Ngày Sinh: {val}</text>'; 
       FamilyTree.templates.tommy_male.field_2 =
-        '<text class="field_4" style="font-size: 12px;" fill="#ffffff" x="90" y="110">Đời: {val}</text>';
+        '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="90" y="80">Đời: {val}</text>';
 
       FamilyTree.templates.tommy_female.field_0 =
-        '<text class="field_0" style="font-size: 16px;" fill="#ffffff" x="90" y="30">{val}</text>';      
+        '<text class="field_0" style="font-size: 16px;" fill="#ffffff" x="90" y="40">{val}</text>';      
       FamilyTree.templates.tommy_female.field_1 =
-        '<text class="field_2" style="font-size: 12px;" fill="#ffffff" x="90" y="70">Ngày Sinh: {val}</text>';     
+        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="90" y="60">Ngày Sinh: {val}</text>';     
       FamilyTree.templates.tommy_female.field_2 =
-        '<text class="field_4" style="font-size: 12px;" fill="#ffffff" x="90" y="110">Đời: {val}</text>';
+        '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="90" y="80">Đời: {val}</text>';
       this.family = new FamilyTree(domEl, {
         nodes: x,
         nodeBinding: {
