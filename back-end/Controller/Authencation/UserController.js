@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const { signAccessToken, signRefreshToken, signRePassToken ,verifyRepassToken,  verifyRefreshToken } = require('../../helper/jwt_helper')
 const Response = require('../../Utils/Response')
 const nodemailer = require('nodemailer')
-const random = require('randomstring')
+
 
 var registerUser = async (req, res) => {
   try {
@@ -317,6 +317,6 @@ var resetPassword = async (req, res) => {
 
 module.exports = {
   registerUser, loginUser, refreshToken, registerGenealogy, getGenealogy, setRole,
-  checkCodeID, getUserInfor, getUserCodeID, getHistoryCodeID, ChangePassword, getListRoleMember, forgetPassword, resetPassword
+  checkCodeID, getUserInfor, getUserCodeID, getHistoryCodeID, ChangePassword, getListRoleMember, forgetPassword, resetPassword,getMemberRole
 
 };
