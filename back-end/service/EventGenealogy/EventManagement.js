@@ -36,8 +36,8 @@ async function getListPhone(ListMemberID) {
 }
 
 async function InsertNewEvent(objData) {
-    let query = `INSERT INTO eventfamily (EventName,CodeID,Status,StartDate,EndDate, Description, IsImportant, Note,Place, RepeatID,IsSolarCalendar,eventfamilycol)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    let query = `INSERT INTO eventfamily (EventName,CodeID,Status,StartDate,EndDate, Description, IsImportant, Note,Place, RepeatID)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     let values = [
         objData.EventName,
         objData.CodeID,
@@ -49,8 +49,7 @@ async function InsertNewEvent(objData) {
         objData.Note,
         objData.Place,
         objData.RepeatID,
-        objData.IsSolarCalendar,
-        objData.eventfamilycol,
+    
     ]
     db.connection.query(query, values, (err) => {
         if (err) {
@@ -63,7 +62,7 @@ async function InsertNewEvent(objData) {
 
 async function UpdateEvent(objData) {
     let query = `UPDATE eventfamily SET EventName = ?, Status = ?, StartDate = ?, EndDate = ?, Description = ?,IsImportant = ?, Note = ?, Place = ?, 
-    RepeatID = ?, IsSolarCalendar = ?, eventfamilycol = ? WHERE EventID = ?`;
+    RepeatID = ? WHERE EventID = ?`;
     let values = [
         objData.EventName,
         objData.Status,
@@ -73,9 +72,7 @@ async function UpdateEvent(objData) {
         objData.IsImportant,
         objData.Note,
         objData.Place,
-        objData.RepeatID,
-        objData.IsSolarCalendar,
-        objData.eventfamilycol,
+        objData.RepeatID,     
         objData.EventID,
     ]
     db.connection.query(query, values, (err) => {

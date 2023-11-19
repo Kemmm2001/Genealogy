@@ -15,6 +15,21 @@ var ListFamilyHead = async (req, res) => {
     }
 }
 
+var searchMemberFamilyHead = async (req, res) => {
+    try {
+        let CodeID = req.body.CodeID;
+        let KeySearch = req.body.KeySearch;
+        let data = await FamilyHeadManagementService.SearchMemberFamilyHead(CodeID, KeySearch);
+        if (data) {
+            return res.send(Response.successResponse(data))
+        } else {
+            return res.send(Response.dataNotFoundResponse())
+        }
+    } catch (error) {
+        return res.send(Response.dataNotFoundResponse(error))
+    }
+}
+
 
 var ListFamilyHeadCanAdd = async (req, res) => {
     try {
@@ -27,6 +42,21 @@ var ListFamilyHeadCanAdd = async (req, res) => {
         }
     } catch (error) {
         console.log(error)
+    }
+}
+
+var searchFamilyCanSearch = async (req, res) => {
+    try {
+        let CodeID = req.body.CodeID;
+        let KeySearch = req.body.KeySearch;
+        let data = await FamilyHeadManagementService.SearchMemberFamilyHeadCanAdd(CodeID, KeySearch);
+        if (data) {
+            return res.send(Response.successResponse(data));
+        } else {
+            return res.send(Response.dataNotFoundResponse())
+        }
+    } catch (error) {
+        return res.send(Response.dataNotFoundResponse(error))
     }
 }
 
@@ -44,5 +74,5 @@ var removeRoleFamilyHead = async (req, res) => {
 
 
 module.exports = {
-    ListFamilyHead, removeRoleFamilyHead, ListFamilyHeadCanAdd
+    ListFamilyHead, removeRoleFamilyHead, ListFamilyHeadCanAdd, searchMemberFamilyHead, searchFamilyCanSearch
 }
