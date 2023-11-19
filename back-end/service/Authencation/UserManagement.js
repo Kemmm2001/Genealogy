@@ -217,6 +217,26 @@ function getListRoleMember(CodeID) {
   })
 }
 
+function changeUsername(AccountId, Username) {
+  return new Promise((resolve, reject) => {
+    try {
+      let query = `UPDATE account AS a SET a.Username = '${Username}' WHERE a.AccountID = ${AccountId};`;
+      console.log(query);
+      db.connection.query(query, (err) => {
+        if (err) {       
+          reject(false);
+        } else {          
+          resolve(true);
+        }
+      });
+    } catch (error) {
+      console.error(error);
+      reject(false);
+    }
+  });
+}
+
+
 function getUserInfo(accountID) {
   return new Promise((resolve, reject) => {
     let query = 'SELECT Username, Email, Password FROM genealogy.account WHERE AccountID = ?';
@@ -333,6 +353,8 @@ function getMemberRole(AccountID, CodeID) {
   })
 }
 
+
+
 function insertIntoFamily(value, codeID) {
   return new Promise((resolve, reject) => {
     const query = 'INSERT INTO genealogy.familytree (CodeID, TreeName,Ethnicity,DeathAnniversary) VALUES (?, ?, ?, ?)';
@@ -385,6 +407,7 @@ function updateRoleID(data) {
 module.exports = {
   checkMail, checkID, create, getUser, refreshFreeEmail, insertAccountFamily, checkCodeID,
   checkAccountID, updateRoleID, insertIntoFamily, getUserInfo, getUserCodeID, checkCodeIdCreator,
-  insertAccountFamilyTree, checkCodeCreatedByID, getHistoryLoginCodeID, ChangePassword,getListRoleMember, UpdateAccount, UpdatePassword, checkToken
+  insertAccountFamilyTree, checkCodeCreatedByID, getHistoryLoginCodeID, ChangePassword, getListRoleMember, UpdateAccount, UpdatePassword,
+  checkToken, getMemberRole, changeUsername
 
 }

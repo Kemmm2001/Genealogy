@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex h-100 w-100 position-relative">
+  <div class="d-flex h-100 w-100">
     <div class="list h-100 d-flex flex-column align-items-center">
       <div class="w-100 d-flex flex-row">
         <div class="col-6 px-2" style="padding-top: 8px;">
@@ -1010,62 +1010,32 @@ export default {
         '<image preserveAspectRatio="xMidYMid slice" clip-path="url(#ulaImg)" xlink:href="{val}" x="10" y="20" width="70" height="70"></image>';
 
       FamilyTree.templates.tommy_male.field_0 =
-        '<text class="field_0" style="font-size: 16px;" fill="#ffffff" x="90" y="30">{val}</text>';
+        '<text class="field_0" style="font-size: 16px;" fill="#ffffff" x="90" y="30">{val}</text>';   
       FamilyTree.templates.tommy_male.field_1 =
-        '<text class="field_1" style="font-size: 12px;" fill="#ffffff" x="90" y="50">Giới Tính: Nam</text>';
+        '<text class="field_2" style="font-size: 12px;" fill="#ffffff" x="90" y="70">Ngày Sinh: {val}</text>'; 
       FamilyTree.templates.tommy_male.field_2 =
-        '<text class="field_2" style="font-size: 12px;" fill="#ffffff" x="90" y="70">Ngày Sinh: {val}</text>';
-      FamilyTree.templates.tommy_male.field_3 =
-        '<text class="field_3" style="font-size: 12px;" fill="#ffffff" x="90"  y="90">Ngày Mất: {val}</text>';
-      FamilyTree.templates.tommy_male.field_4 =
         '<text class="field_4" style="font-size: 12px;" fill="#ffffff" x="90" y="110">Đời: {val}</text>';
 
       FamilyTree.templates.tommy_female.field_0 =
-        '<text class="field_0" style="font-size: 16px;" fill="#ffffff" x="90" y="30">{val}</text>';
+        '<text class="field_0" style="font-size: 16px;" fill="#ffffff" x="90" y="30">{val}</text>';      
       FamilyTree.templates.tommy_female.field_1 =
-        '<text class="field_1" style="font-size: 12px;" fill="#ffffff" x="90" y="50">Giới Tính: Nữ</text>';
+        '<text class="field_2" style="font-size: 12px;" fill="#ffffff" x="90" y="70">Ngày Sinh: {val}</text>';     
       FamilyTree.templates.tommy_female.field_2 =
-        '<text class="field_2" style="font-size: 12px;" fill="#ffffff" x="90" y="70">Ngày Sinh: {val}</text>';
-      FamilyTree.templates.tommy_female.field_3 =
-        '<text class="field_3" style="font-size: 12px;" fill="#ffffff" x="90" y="90">Ngày Mất: {val}</text>';
-      FamilyTree.templates.tommy_female.field_4 =
         '<text class="field_4" style="font-size: 12px;" fill="#ffffff" x="90" y="110">Đời: {val}</text>';
       this.family = new FamilyTree(domEl, {
         nodes: x,
         nodeBinding: {
           field_0: "name",
-          img_0: "img",
-          field_1: "gender",
-          field_2: "dob",
-          field_3: "dod",
-          field_4: "generation",
+          img_0: "img",         
+          field_1: "dob",       
+          field_2: "generation",
         },
-        lazyLoading: false,
+        // lazyLoading:false,
         nodeMouseClick: FamilyTree.action.none,
       });
       this.family.onInit(() => {
         this.family.load(this.nodes);
-      });
-      this.family.onField((args) => {
-        if (args.data.dod == null) {
-          FamilyTree.templates.tommy_female.field_3 = null;
-          FamilyTree.templates.tommy_male.field_3 = null;
-          ('<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="195" y="50" text-anchor="middle"></text>');
-          FamilyTree.templates.tommy_female.field_4 =
-            '<text class="field_4" style="font-size: 12px;" fill="#ffffff" x="90" y="90">Đời: {val}</text>';
-          FamilyTree.templates.tommy_male.field_4 =
-            '<text class="field_4" style="font-size: 12px;" fill="#ffffff" x="90" y="90">Đời: {val}</text>';
-        } else {
-          FamilyTree.templates.tommy_female.field_3 =
-            '<text class="field_3" style="font-size: 12px;" fill="#ffffff" x="90" y="90">Ngày Mất: {val}</text>';
-          FamilyTree.templates.tommy_female.field_4 =
-            '<text class="field_4" style="font-size: 12px;" fill="#ffffff" x="90" y="110">Đời: {val}</text>';
-          FamilyTree.templates.tommy_male.field_3 =
-            '<text class="field_3" style="font-size: 12px;" fill="#ffffff" x="90"  y="90">Ngày Mất: {val}</text>';
-          FamilyTree.templates.tommy_male.field_4 =
-            '<text class="field_4" style="font-size: 12px;" fill="#ffffff" x="90" y="110">Đời: {val}</text>';
-        }
-      });
+      });  
 
       //Get tọa độ ban đầu
       let CoordinatesNode = this.getViewBox();

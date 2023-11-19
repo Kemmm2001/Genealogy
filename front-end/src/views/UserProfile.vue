@@ -13,14 +13,14 @@
         <div v-if="profileSelected" class="func-detail w-100 h-100 position-relative">
           <div class="func-detail-item">
             <div class="pb-2" style="font-weight: bold;">Tên tài khoản</div>
-            <div>
-              <input type="text" class="form-control" value="User" />
+            <div v-if="accountInfor">
+              <input v-model="accountInfor.username" type="text" class="form-control" />
             </div>
           </div>
-          <div class="func-detail-item mt-3">
+          <div v-if="accountInfor" class="func-detail-item mt-3">
             <div class="pb-2" style="font-weight: bold;">Tài khoản gmail</div>
             <div>
-              <input type="text" class="form-control" value="user@gmail.com" />
+              <input v-model="accountInfor.email" type="text" class="form-control" disabled />
             </div>
           </div>
           <div class="func-detail-item mt-3">
@@ -29,7 +29,7 @@
               <input type="text" class="form-control" value="Quản trị viên" disabled />
             </div>
           </div>
-          <div class="btn save-profile-btn position-absolute bg-primary text-white">Lưu thay đổi</div>
+          <div @click="changeUserName()" class="btn save-profile-btn position-absolute bg-primary text-white">Lưu thay đổi</div>
         </div>
         <div v-if="editRoleSelected" class="func-detail w-100 h-100 position-relative">
           <div class="func-detail-item">
@@ -41,25 +41,8 @@
           <div class="mt-3">
             <div class="pb-2" style="font-weight: bold; height: 32px;">Tài khoản thành viên thuộc gia tộc</div>
             <div class="family-account">
-              <div class="family-account-item odd py-2 position-relative">
-                <div class="username position-absolute">baolan0598</div>
-                <div class="role h-100 position-absolute py-1">
-                  <select class="form-select h-100 px-3 py-0">
-                    <option style="text-align: center;" value>Thành viên</option>
-                    <option style="text-align: center;" value>Được tin cậy</option>
-                  </select>
-                </div>
-              </div>
-              <div class="family-account-item even py-2 position-relative">
-                <div class="username position-absolute">lamdangcapvip</div>
-                <div class="role h-100 position-absolute py-1">
-                  <select class="form-select h-100 px-3 py-0">
-                    <option style="text-align: center;" value>Thành viên</option>
-                    <option style="text-align: center;" value>Được tin cậy</option>
-                  </select>
-                </div>
-              </div>
-              <div class="family-account-item odd py-2 position-relative">
+              <div v-for="(m,index) in listMemberRole" :key="index" :class="{'family-account-item odd py-2 position-relative': index % 2 !== 0, 
+              'family-account-item even py-2 position-relative' : index % 2 == 0}">
                 <div class="username position-absolute">baolan0598</div>
                 <div class="role h-100 position-absolute py-1">
                   <select class="form-select h-100 px-3 py-0">
@@ -129,11 +112,12 @@ export default {
   data() {
     return {
       accountID: null,
-      codeID: null,
       listMemberRole: null,
       InputCurentPassword: null,
       InputNewPassword: null,
       InputRe_newpassword: null,
+      accountInfor: null,
+      CodeID: null,
 
       getCurrentPassword: null,
 
@@ -176,6 +160,22 @@ export default {
         },
       });
     },
+    changeUserName() {
+      HTTP.post("changeUsername", {
+        username: this.accountInfor.username,
+        AccountID: this.accountID,
+      })
+        .then((respone) => {
+          if (respone.data.success == true) {
+            this.NotificationsScuccess(respone.data.message);
+          } else {
+            this.NotificationsDelete(respone.data.message);
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     changePassword() {
       if (this.InputNewPassword == this.InputRe_newpassword) {
         HTTP.put("changepassword", {
@@ -196,15 +196,31 @@ export default {
         this.NotificationsDelete("Nhập lại mật khẩu không đúng");
       }
     },
+    getInforAccount() {
+      HTTP.post("get-user", {
+        accountID: this.accountID,
+      })
+        .then((respone) => {
+          if (respone.data.success == true) {
+            this.accountInfor = respone.data.data;
+          } else {
+            this.NotificationsScuccess(respone.data.message);
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     getListRoleMember() {
+      console.log(this.CodeID);
       HTTP.get("listrole", {
         params: {
-          codeID: this.codeID,
+          CodeID: this.CodeID,
         },
       }).then((respone) => {
         if (respone.data.success == true) {
           this.listMemberRole = respone.data.data;
-          console.log(this.listMemberRole);
+          console.log(respone.data);
         }
       });
     },
@@ -254,7 +270,7 @@ export default {
       }
     }
     this.getListRoleMember();
-    console.log(this.accountID);
+    this.getInforAccount();
   },
 };
 </script>

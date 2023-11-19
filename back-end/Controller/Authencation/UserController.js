@@ -2,7 +2,7 @@ const UserService = require('../../service/Authencation/UserManagement');
 const createError = require('http-errors')
 const { registerSchema, loginSchema } = require('../../helper/validation_schema')
 const bcrypt = require('bcrypt');
-const { signAccessToken, signRefreshToken, signRePassToken ,verifyRepassToken,  verifyRefreshToken } = require('../../helper/jwt_helper')
+const { signAccessToken, signRefreshToken, signRePassToken, verifyRepassToken, verifyRefreshToken } = require('../../helper/jwt_helper')
 const Response = require('../../Utils/Response')
 const nodemailer = require('nodemailer')
 
@@ -29,12 +29,28 @@ var registerUser = async (req, res) => {
 }
 
 var getMemberRole = async (req, res) => {
-  try {  
+  try {
     let accountID = req.body.accountID;
     let codeID = req.body.codeID;
     let data = await UserService.getMemberRole(accountID, codeID);
     if (data) {
       return res.send(Response.successResponse(data));
+    } else {
+      return res.send(Response.dataNotFoundResponse());
+    }
+  } catch (error) {
+    return res.send(Response.dataNotFoundResponse(error));
+  }
+}
+
+var changeUsername = async (req, res) => {
+  try {
+    console.log(req.body)
+    let AccountID = req.body.AccountID;
+    let username = req.body.username;
+    let data = await UserService.changeUsername(AccountID, username);
+    if (data) {
+      return res.send(Response.successResponse(null, 'Thay đổi username thành công'));
     } else {
       return res.send(Response.dataNotFoundResponse());
     }
@@ -59,8 +75,8 @@ var getHistoryCodeID = async (req, res) => {
 
 var getListRoleMember = async (req, res) => {
   try {
-    console.log('req: ' + req.query)
-    let data = await UserService.getListRoleMember(req.query.codeID);
+    console.log('req: ' + req.query.CodeID)
+    let data = await UserService.getListRoleMember(req.query.CodeID);
     if (data) {
       return res.send(Response.successResponse(data));
     } else {
@@ -96,7 +112,7 @@ var ChangePassword = async (req, res) => {
 }
 
 var loginUser = async (req, res) => {
-  try {  
+  try {
     let checkEmail = await UserService.checkMail(req.body.email);
     let data = await UserService.getUser(req.body.email)
 
@@ -163,7 +179,7 @@ var refreshToken = async (req, res) => {
 
 var registerGenealogy = async (req, res) => {
   try {
-    const value = req.body;    
+    const value = req.body;
     let codeID;
     let doesExist = true;
 
@@ -273,7 +289,7 @@ var forgetPassword = async (req, res) => {
       try {
         const data = await UserService.UpdateAccount(email, token)
         //guiw mail
-        if(data == true){
+        if (data == true) {
           return res.send(Response.successResponse(null, 'Vui lòng kiểm tra hộp thư đến trong gmail của bạn'));
         }
         return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
@@ -297,17 +313,17 @@ var resetPassword = async (req, res) => {
       return res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống'));
     }
 
-    if(req.body.password !== req.body.repassword){
+    if (req.body.password !== req.body.repassword) {
       return res.send(Response.dataNotFoundResponse(null, 'Nhập Lại Mật khẩu không trùng nhau'));
     }
-    else{
+    else {
       let hashedPassword = await bcrypt.hash(req.body.password, 10);
-        let data = await UserService.UpdatePassword(hashedPassword, email)
-        if (data == true) {
-          return res.send(Response.successResponse());
-        } else {
-          return res.send(Response.dataNotFoundResponse());
-        }
+      let data = await UserService.UpdatePassword(hashedPassword, email)
+      if (data == true) {
+        return res.send(Response.successResponse());
+      } else {
+        return res.send(Response.dataNotFoundResponse());
+      }
     }
   } catch (error) {
     return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
@@ -317,6 +333,7 @@ var resetPassword = async (req, res) => {
 
 module.exports = {
   registerUser, loginUser, refreshToken, registerGenealogy, getGenealogy, setRole,
-  checkCodeID, getUserInfor, getUserCodeID, getHistoryCodeID, ChangePassword, getListRoleMember, forgetPassword, resetPassword,getMemberRole
+  checkCodeID, getUserInfor, getUserCodeID, getHistoryCodeID, ChangePassword, getListRoleMember,
+  forgetPassword, resetPassword, getMemberRole, changeUsername
 
 };
