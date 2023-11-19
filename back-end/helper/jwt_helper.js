@@ -57,17 +57,6 @@ module.exports = {
         }
 
         resolve(token);
-
-        // Lưu refreshToken vào cơ sở dữ liệu
-        // const refreshTokenPath = `refreshTokens/${insertId}`; // Đường dẫn trong cơ sở dữ liệu
-        // const refreshTokenRef = db.ref(refreshTokenPath);
-
-        // try {
-        //   await refreshTokenRef.set({ token }); // Lưu thông tin refreshToken vào Firebase
-        // } catch (error) {
-        //   console.error("Lỗi khi lưu refreshToken vào cơ sở dữ liệu Firebase:", error);
-        //   reject(createError.InternalServerError());
-        // }
       })
     })
   },
@@ -79,5 +68,40 @@ module.exports = {
         resolve(payload)
       })
     })
-  })
+  }),
+
+  signRePassToken: (email) => {
+    return new Promise((resolve, reject) => {
+      const payload = {
+        email
+      }
+      const secret = process.env.REPASS_TOKEN_SECRET
+      const options = {
+        expiresIn: "",
+      }
+      JWT.sign(payload, secret, options, (err, token) => {
+        if (err) {
+          console.log(err.message)
+          reject(createError.InternalServerError())
+        }
+        resolve(token)
+      })
+    })
+  },
+
+
+  verifyRepassToken: (token => {
+    return new Promise((resolve, reject) => {
+      JWT.verify(token, process.env.REPASS_TOKEN_SECRET, (err, payload) => {
+        if (err) {
+          if (err.name === 'TokenExpiredError') {
+            return resolve.status(401).json({ error: 'Token expired' });
+          } else {
+            return resolve.status(401).json({ error: 'Invalid token' });
+          }
+        }
+        resolve(payload);
+      });
+    })
+  }),
 }
