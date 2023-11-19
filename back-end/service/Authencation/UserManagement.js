@@ -268,6 +268,22 @@ function getHistoryLoginCodeID(AccountID) {
     }
   });
 }
+function getMemberRole(AccountID, CodeID) {
+  return new Promise((resolve, reject) => {
+    try {
+      let query = `select RoleID from AccountFamilyTree where AccountID = ${AccountID} and CodeID = ${CodeID}`;
+      db.connection.query(query, (err, result) => {
+        if (!err && result.length > 0) {
+          resolve(result[0].RoleID)
+        } else {
+          reject(err)
+        }
+      })
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
 
 function insertIntoFamily(value, codeID) {
   return new Promise((resolve, reject) => {
@@ -321,5 +337,5 @@ function updateRoleID(data) {
 module.exports = {
   checkMail, checkID, create, getUser, refreshFreeEmail, insertAccountFamily, checkCodeID,
   checkAccountID, updateRoleID, insertIntoFamily, getUserInfo, getUserCodeID, checkCodeIdCreator,
-  insertAccountFamilyTree, checkCodeCreatedByID, getHistoryLoginCodeID, ChangePassword,getListRoleMember
+  insertAccountFamilyTree, checkCodeCreatedByID, getHistoryLoginCodeID, ChangePassword, getListRoleMember, getMemberRole
 }

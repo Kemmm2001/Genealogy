@@ -28,7 +28,7 @@
           </select>
         </div>
       </div>
-      <div class="w-100 d-flex flex-row" style="padding-top: 8px">
+      <div v-if="memberRole != 3" class="w-100 d-flex flex-row" style="padding-top: 8px">
         <div class="col-6 px-2">
           <div class="w-100">
             <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary">Tạo thông báo</button>
@@ -52,7 +52,7 @@
         <div class="d-flex nonexisting-members flex-column w-100" style="margin-top: 4px">
           <div class="d-flex flex-row px-2 py-1 list-title">
             <div class="d-flex align-items-center justify-content-center">Thành viên không có trên phả đồ</div>
-            <div class="d-flex align-items-center justify-content-center" style="padding-left: 12px;cursor:pointer" @click="openMemberModal('AddNormal', ' thành viên không có trên phả đồ')">
+            <div v-if="memberRole != 3" class="d-flex align-items-center justify-content-center" style="padding-left: 12px;cursor:pointer" @click="openMemberModal('AddNormal', ' thành viên không có trên phả đồ')">
               <svg class="add-member-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                 <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />
               </svg>
@@ -66,14 +66,14 @@
     </div>
     <div class="d-flex main-screen align-items-center w-100 position-relative">
       <div id="tree" ref="tree"></div>
-      <div style="inset: 0; margin: auto;" v-if="this.nodes.length == 0">
+      <!-- <div style="inset: 0; margin: auto;">
         <div @click="openMemberModal('AddFirst','cụ tổ')" class="btn bg-primary text-white d-flex flex-row align-items-center">
           <div style="padding-right: 8px;">Thêm tổ phụ</div>
           <svg style="fill: white;" class="add-member-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
             <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />
           </svg>
         </div>
-      </div>
+      </div>-->
       <div :class="{ filterExpanded: advancedFilterDown }" class="advanced-filter-container d-flex flex-column p-1 position-absolute">
         <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
           <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict()">
@@ -108,7 +108,7 @@
       </div>
       <div style="position: absolute; bottom: 0; right: 0;">
         <svg class="help-icon p-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-          <path d="M80 160c0-35.3 28.7-64 64-64h32c35.3 0 64 28.7 64 64v3.6c0 21.8-11.1 42.1-29.4 53.8l-42.2 27.1c-25.2 16.2-40.4 44.1-40.4 74V320c0 17.7 14.3 32 32 32s32-14.3 32-32v-1.4c0-8.2 4.2-15.8 11-20.2l42.2-27.1c36.6-23.6 58.8-64.1 58.8-107.7V160c0-70.7-57.3-128-128-128H144C73.3 32 16 89.3 16 160c0 17.7 14.3 32 32 32s32-14.3 32-32zm80 320a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"/>
+          <path d="M80 160c0-35.3 28.7-64 64-64h32c35.3 0 64 28.7 64 64v3.6c0 21.8-11.1 42.1-29.4 53.8l-42.2 27.1c-25.2 16.2-40.4 44.1-40.4 74V320c0 17.7 14.3 32 32 32s32-14.3 32-32v-1.4c0-8.2 4.2-15.8 11-20.2l42.2-27.1c36.6-23.6 58.8-64.1 58.8-107.7V160c0-70.7-57.3-128-128-128H144C73.3 32 16 89.3 16 160c0 17.7 14.3 32 32 32s32-14.3 32-32zm80 320a40 40 0 1 0 0-80 40 40 0 1 0 0 80z" />
         </svg>
       </div>
     </div>
@@ -809,8 +809,8 @@
           </div>
           <div class="card-footer modal-footer position-absolute w-100" style="bottom: 0;">
             <div class="d-flex justify-content-end" style="padding-right: 12px;">
-              <button v-if="isAdd" type="button" class="btn btn-primary mr-2" @click="addMember()">Thêm</button>
-              <button v-else-if="isEdit" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
+              <button v-if="isAdd && memberRole != 3" type="button" class="btn btn-primary mr-2" @click="addMember()">Thêm</button>
+              <button v-else-if="isEdit && memberRole != 3" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
               <button style="margin-left:10px" type="button" class="btn btn-secondary" @click="closeSelectModal()">Cancel</button>
             </div>
           </div>
@@ -912,6 +912,7 @@ export default {
       IsDead: 0,
       ListMemberJob: null,
       ListMemberEducation: null,
+      memberRole: null,
 
       darkMode: true,
 
@@ -1075,22 +1076,24 @@ export default {
       });
       // right click
       const self = this;
-      this.family.onInit(function () {
-        this.element.addEventListener(
-          "contextmenu",
-          function (ev) {
-            let nodeElement = ev.target;
-            if (nodeElement.hasAttribute("data-n-id") == false) {
-              nodeElement = nodeElement.parentNode;
-            }
-            if (nodeElement && nodeElement.hasAttribute("data-n-id")) {
-              let id = nodeElement.getAttribute("data-n-id");
-              self.OnpenModal_SelectOption(id);
-            }
-          },
-          false
-        );
-      });
+      if (this.memberRole != 3) {
+        this.family.onInit(function () {
+          this.element.addEventListener(
+            "contextmenu",
+            function (ev) {
+              let nodeElement = ev.target;
+              if (nodeElement.hasAttribute("data-n-id") == false) {
+                nodeElement = nodeElement.parentNode;
+              }
+              if (nodeElement && nodeElement.hasAttribute("data-n-id")) {
+                let id = nodeElement.getAttribute("data-n-id");
+                self.OnpenModal_SelectOption(id);
+              }
+            },
+            false
+          );
+        });
+      }
       this.family.onNodeClick((arg) => {
         if (this.isCompare) {
           this.highLightSelectCompareNode(arg.node.id);
@@ -1772,7 +1775,9 @@ export default {
       }
     },
     handleRightClick(id) {
-      this.OnpenModal_SelectOption(id);
+      if (this.memberRole != 3) {
+        this.OnpenModal_SelectOption(id);
+      }
     },
     handleLeftClickUnspecifiedMembers(id) {
       this.getInforMember(id);
@@ -2079,6 +2084,16 @@ export default {
         });
       }
     },
+    getMemberRole() {
+      HTTP.post("memberRole", {
+        accountID: localStorage.getItem("accountID"),
+        codeID: localStorage.getItem("CodeID"),
+      }).then((response) => {
+        if (response.data.success == true) {
+          this.memberRole = response.data.data;
+        }
+      });
+    },
     getListCity() {
       HTTP.get("province")
         .then((response) => {
@@ -2166,9 +2181,8 @@ export default {
         this.$router.push("/login");
       }
     }
-    console.log("CodeID: " + localStorage.getItem("CodeID"));
-    console.log("accountID: " + localStorage.getItem("accountID"));
-
+    console.log(localStorage.getItem("CodeID"));
+    console.log(localStorage.getItem("accountID"));
     this.getListMessage();
     this.getListCity();
     this.getListNationality();
@@ -2177,6 +2191,7 @@ export default {
     this.getListBloodTypeGroup();
     this.getListUnspecifiedMembers();
     this.getListMember();
+    this.getMemberRole();
   },
 };
 </script>

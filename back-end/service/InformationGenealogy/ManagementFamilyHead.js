@@ -16,6 +16,41 @@ async function getAllFamilyHead(CodeID) {
         })
     })
 }
+function SearchMemberFamilyHead(CodeID, KeySearch) {
+    return new Promise((resolve, reject) => {
+        let query = `SELECT fm.MemberID, fm.MemberName, fm.Dob, fm.Generation
+        FROM genealogy.memberrole as mr
+        INNER JOIN familymember as fm ON mr.MemberID = fm.MemberID
+        WHERE mr.RoleID = 2 AND mr.CodeId = ${CodeID} AND fm.MemberName LIKE '%${KeySearch}%';	`;
+        db.connection.query(query, (err, result) => {
+            if (err) {
+                console.log(err)
+                reject(err)
+            } else {
+                resolve(result)
+            }
+        })
+    })
+}
+
+function SearchMemberFamilyHeadCanAdd(CodeID, KeySearch) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `select f.MemberID, f.MemberName,f.Dob,f.Generation from familymember as f    
+            where f.Male = 1 and f.Generation != 0 and CodeID = '${CodeID}' AND f.MemberName LIKE '%${KeySearch}%';`;
+            db.connection.query(query, (err, result) => {
+                if (err) {
+                    console.log(err)
+                    reject(err)
+                } else {
+                    resolve(result)
+                }
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    })
+}
 
 function getListFamilyHeadCanAdd(CodeID) {
     return new Promise((resolve, reject) => {
@@ -60,5 +95,5 @@ function addForefather(MemberId, CodeId) {
 }
 
 module.exports = {
-    getAllFamilyHead, removeFamilyHead, addForefather, getListFamilyHeadCanAdd
+    getAllFamilyHead, removeFamilyHead, addForefather, getListFamilyHeadCanAdd, SearchMemberFamilyHead, SearchMemberFamilyHeadCanAdd
 }

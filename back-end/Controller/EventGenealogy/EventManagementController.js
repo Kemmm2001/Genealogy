@@ -25,9 +25,7 @@ var InsertEvent = async (req, res) => {
         objData.IsImportant = req.body.IsImportant;
         objData.Note = req.body.Note;
         objData.Place = req.body.Place;
-        objData.RepeatID = req.body.RepeatID;
-        objData.IsSolarCalendar = req.body.IsSolarCalendar;
-        objData.eventfamilycol = req.body.eventfamilycol;
+        objData.RepeatID = req.body.RepeatID;   
         await EventManagementService.InsertNewEvent(objData);
         res.send("Success")
     } catch (error) {
@@ -46,9 +44,7 @@ var UpdateEvent = async (req, res) => {
         objData.IsImportant = req.body.IsImportant;
         objData.Note = req.body.Note;
         objData.Place = req.body.Place;
-        objData.RepeatID = req.body.RepeatID;
-        objData.IsSolarCalendar = req.body.IsSolarCalendar;
-        objData.eventfamilycol = req.body.eventfamilycol;
+        objData.RepeatID = req.body.RepeatID;       
         objData.EventID = req.body.EventID;
         await EventManagementService.UpdateEvent(objData);
         res.send("update success")
@@ -205,7 +201,7 @@ var SendEmail = async (req, res) => {
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         let result = SystemAction.SendEmailCore(objData);
-        console.log(result);
+
         if (result == true) {
             return res.send(Response.successResponse(null, "Gửi email thành công!"));
         } else {

@@ -27,9 +27,7 @@
           <div class="album-cover" v-if="album.PhotoUrl != null">
             <img :src="getRelativeImagePath(album.PhotoUrl)" />
           </div>
-          <div class="album-cover" v-if="album.PhotoUrl == null">
-            <img src="aaaaa" />
-          </div>
+          <div class="album-cover" v-if="album.PhotoUrl == null"></div>
           <div class="album-general-info d-flex align-items-center">
             <div class="d-flex justify-content-center w-100">{{album.AlbumName}}</div>
           </div>
