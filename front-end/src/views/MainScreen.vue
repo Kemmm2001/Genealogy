@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex h-100 w-100 position-relative">
-    <div class="list d-flex flex-column align-items-center">
+    <div class="list h-100 d-flex flex-column align-items-center">
       <div class="w-100 d-flex flex-row">
         <div class="col-6 px-2" style="padding-top: 8px;">
           <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict(),GetListFilterMember()">
@@ -64,8 +64,8 @@
         </div>
       </div>
     </div>
-    <div class="d-flex main-screen align-items-center w-100 position-relative">
-      <div id="tree" ref="tree"></div>
+    <div class="d-flex main-screen align-items-center h-100 w-100 position-relative">
+      <!-- <div id="tree" ref="tree"></div> -->
       <!-- <div style="inset: 0; margin: auto;">
         <div @click="openMemberModal('AddFirst','cụ tổ')" class="btn bg-primary text-white d-flex flex-row align-items-center">
           <div style="padding-right: 8px;">Thêm tổ phụ</div>
