@@ -25,7 +25,8 @@
                         </select>
                     </div>
                 </div>
-                <div class="d-flex flex-row pt-3 mt-2" style="height: 48px; background-color: #FFFFFF; border-radius: 0.375rem;">
+                <div class="d-flex flex-row pt-3 mt-2"
+                    style="height: 48px; background-color: #FFFFFF; border-radius: 0.375rem;">
                     <div class="col-6 text-dark d-flex align-items-center h-100">
                         <div class="w-100 d-flex justify-content-center">Tháng {{ this.currentMonth }} - {{
                             this.currentYear }}</div>
@@ -530,156 +531,158 @@
                     </div>
                 </div>
             </div>
-          </div>
         </div>
-      </modal>
     </div>
-    <modal name="edit-event-modal"></modal>
-  </div>
 </template>
 
 <script>
 import { Calendar } from "vietnamese-lunar-calendar";
 import { HTTP } from "../assets/js/baseAPI.js";
 export default {
-  data() {
-    return {
-      eventFamily: {
-        eventName: null,
-        typeLoop: null,
-        description: null,
-        hourFrom: null,
-        hourTo: null,
-        startDate: null,
-        endDate: null,
-        place: null,
-        note: null,
-      },
+    data() {
+        return {
+            eventFamily: {
+                eventName: null,
+                typeLoop: null,
+                description: null,
+                hourFrom: null,
+                hourTo: null,
+                startDate: null,
+                endDate: null,
+                place: null,
+                note: null,
+            },
 
-      calendar: null,
-      dayOfMonth: [],
-      listOfYear: [],
-      currentMonth: null,
-      currentYear: null,
+            calendar: null,
+            dayOfMonth: [],
+            listOfYear: [],
+            currentMonth: null,
+            currentYear: null,
 
-      chooseDate: null,
-      indexClickDay: null,
-      indexClickWeek: null,
+            chooseDate: null,
+            indexClickDay: null,
+            indexClickWeek: null,
 
-      currentEventId: null,
-    };
-  },
-  methods: {
-    addEvent() {
-      HTTP.post("addEvent", {
-        EventName: this.eventFamily.eventName,
-        CodeID: 258191,
-        StartDate: this.eventFamily.startDate,
-        EndDate: this.eventFamily.endDate,
-        Description: this.eventFamily.description,
-        Note: this.eventFamily.note,
-        Place: this.eventFamily.place,
-      })
-        .then(() => {
-          console.log("da vao");
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+            currentEventId: null,
+        };
     },
-    updateEvent() {
-      HTTP.put("updateEvent", {
-        EventID: this.currentEventId,
-        EventName: this.eventFamily.eventName,
-        StartDate: this.eventFamily.startDate,
-        EndDate: this.eventFamily.endDate,
-        Description: this.eventFamily.description,
-        Note: this.eventFamily.note,
-        Place: this.eventFamily.place,
-      })
-        .then(() => {
-          console.log("da vao");
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
-    removeEvent() {
-      HTTP.delete("removeEvent", {
-        params: {
-          EventID: this.currentEventId,
+    methods: {
+        addEvent() {
+            HTTP.post("addEvent", {
+                EventName: this.eventFamily.eventName,
+                CodeID: 258191,
+                StartDate: this.eventFamily.startDate,
+                EndDate: this.eventFamily.endDate,
+                Description: this.eventFamily.description,
+                Note: this.eventFamily.note,
+                Place: this.eventFamily.place,
+            })
+                .then(() => {
+                    console.log("da vao");
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
         },
-      })
-        .then(() => {
-          console.log("da vao");
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+        updateEvent() {
+            HTTP.put("updateEvent", {
+                EventID: this.currentEventId,
+                EventName: this.eventFamily.eventName,
+                StartDate: this.eventFamily.startDate,
+                EndDate: this.eventFamily.endDate,
+                Description: this.eventFamily.description,
+                Note: this.eventFamily.note,
+                Place: this.eventFamily.place,
+            })
+                .then(() => {
+                    console.log("da vao");
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
+        },
+        removeEvent() {
+            HTTP.delete("removeEvent", {
+                params: {
+                    EventID: this.currentEventId,
+                },
+            })
+                .then(() => {
+                    console.log("da vao");
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
+        },
+        clickDate(indexDay, indexWeek) {
+            this.indexClickDay = indexDay;
+            this.indexClickWeek = indexWeek;
+        },
+        setChooseDate(day, month, year) {
+            this.chooseDate = new Date();
+            this.chooseDate.setFullYear(year);
+            this.chooseDate.setMonth(month - 1); // Tháng bắt đầu từ 0, nên 10 tương ứng với tháng 11
+            this.chooseDate.setDate(day);
+        },
+        setUpDate() {
+            const dateNow = new Date();
+            this.currentMonth = dateNow.getMonth() + 1;
+            this.currentYear = dateNow.getFullYear();
+            this.listOfYear = [];
+            for (let i = 1500; i < 2199; i++) {
+                this.listOfYear.push(i);
+            }
+        },
+        getDayOfMonth() {
+            this.dayOfMonth = new Calendar(this.currentYear, this.currentMonth).weeks;
+        },
+        showAddEventModal() {
+            this.$modal.show("add-event-modal");
+        },
+        closeAddEventModal() {
+            this.$modal.hide("add-event-modal");
+        },
+        showEditEventModal() {
+            this.$modal.show("edit-event-modal");
+        },
+        closeEditEventModal() {
+            this.$modal.hide("edit-event-modal");
+        },
     },
-    clickDate(indexDay, indexWeek) {
-      this.indexClickDay = indexDay;
-      this.indexClickWeek = indexWeek;
+    mounted() {
+        this.setUpDate();
+        this.getDayOfMonth();
     },
-    setChooseDate(day, month, year) {
-      this.chooseDate = new Date();
-      this.chooseDate.setFullYear(year);
-      this.chooseDate.setMonth(month - 1); // Tháng bắt đầu từ 0, nên 10 tương ứng với tháng 11
-      this.chooseDate.setDate(day);
-    },
-    setUpDate() {
-      const dateNow = new Date();
-      this.currentMonth = dateNow.getMonth() + 1;
-      this.currentYear = dateNow.getFullYear();
-      this.listOfYear = [];
-      for (let i = 1500; i < 2199; i++) {
-        this.listOfYear.push(i);
-      }
-    },
-    getDayOfMonth() {
-      this.dayOfMonth = new Calendar(this.currentYear, this.currentMonth).weeks;
-    },
-    showAddEventModal() {
-      this.$modal.show("add-event-modal");
-    },
-    closeAddEventModal() {
-      this.$modal.hide("add-event-modal");
-    },
-    showEditEventModal() {
-      this.$modal.show("edit-event-modal");
-    },
-    closeEditEventModal() {
-      this.$modal.hide("edit-event-modal");
-    },
-  },
-  mounted() {
-    this.setUpDate();
-    this.getDayOfMonth();
-  },
 };
 </script>
 <style>
 table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px; /* Thêm khoảng cách giữa bảng và các phần tử khác */
-  color: black;
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    /* Thêm khoảng cách giữa bảng và các phần tử khác */
+    color: black;
 }
 
 th,
 td {
-  border: 1px solid #ddd; /* Đường viền cho các ô */
-  padding: 8px; /* Khoảng cách giữa nội dung và đường viền */
-  text-align: left; /* Căn lề nội dung sang trái */
+    border: 1px solid #ddd;
+    /* Đường viền cho các ô */
+    padding: 8px;
+    /* Khoảng cách giữa nội dung và đường viền */
+    text-align: left;
+    /* Căn lề nội dung sang trái */
 }
 
 .cn {
-  font-size: 23px;
+    font-size: 23px;
 }
+
 td.ngaythang.choose {
-  background-color: lightblue;
+    background-color: lightblue;
 }
+
 td.ngaythang:hover {
-  cursor: pointer;
+    cursor: pointer;
 }
 </style>
