@@ -28,6 +28,21 @@ var registerUser = async (req, res) => {
   }
 }
 
+var getMemberRole = async (req, res) => {
+  try {  
+    let accountID = req.body.accountID;
+    let codeID = req.body.codeID;
+    let data = await UserService.getMemberRole(accountID, codeID);
+    if (data) {
+      return res.send(Response.successResponse(data));
+    } else {
+      return res.send(Response.dataNotFoundResponse());
+    }
+  } catch (error) {
+    return res.send(Response.dataNotFoundResponse(error));
+  }
+}
+
 var getHistoryCodeID = async (req, res) => {
   try {
     let accountID = req.query.accountID;
@@ -81,8 +96,7 @@ var ChangePassword = async (req, res) => {
 }
 
 var loginUser = async (req, res) => {
-  try {
-    console.log(req.body)
+  try {  
     let checkEmail = await UserService.checkMail(req.body.email);
     let data = await UserService.getUser(req.body.email)
 
@@ -108,7 +122,6 @@ var loginUser = async (req, res) => {
 
 var getUserInfor = async (req, res) => {
   try {
-    console.log(req.body)
     let data = await UserService.getUserInfo(req.body.accountID)
     if (!data) {
       return res.send(Response.dataNotFoundResponse(null, 'Lỗi hệ thống,không tìm thấy tài khoản'));
@@ -150,8 +163,7 @@ var refreshToken = async (req, res) => {
 
 var registerGenealogy = async (req, res) => {
   try {
-    const value = req.body;
-    console.log(req.body)
+    const value = req.body;    
     let codeID;
     let doesExist = true;
 
@@ -306,4 +318,5 @@ var resetPassword = async (req, res) => {
 module.exports = {
   registerUser, loginUser, refreshToken, registerGenealogy, getGenealogy, setRole,
   checkCodeID, getUserInfor, getUserCodeID, getHistoryCodeID, ChangePassword, getListRoleMember, forgetPassword, resetPassword
+
 };
