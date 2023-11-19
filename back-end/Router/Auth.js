@@ -1,7 +1,7 @@
 const express = require('express')
 const UserController = require('../Controller/Authencation/UserController'); // Import controller
 var router = express.Router()
-const { verifyAccessToken } = require('../helper/jwt_helper')
+const { verifyAccessToken, verifyRepassToken } = require('../helper/jwt_helper')
 const authMiddleware = require('../helper/author_helper')
 
 const initWebRouter = (app) => {
@@ -17,7 +17,8 @@ const initWebRouter = (app) => {
   router.post('/login', UserController.loginUser);
   router.post('/refresh-token', UserController.refreshToken);
   // router.delete('/logout', UserController.logout);
-  // router.post('forget-password', UserController.forgetPassword)
+  router.post('forget-password', UserController.forgetPassword)
+  router.post('reset-password', UserController.resetPassword)
 
   router.post('/register-genealogy', UserController.registerGenealogy)
   router.post('/get-genealogy', UserController.getGenealogy)

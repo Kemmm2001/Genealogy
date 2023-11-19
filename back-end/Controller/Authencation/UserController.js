@@ -2,8 +2,10 @@ const UserService = require('../../service/Authencation/UserManagement');
 const createError = require('http-errors')
 const { registerSchema, loginSchema } = require('../../helper/validation_schema')
 const bcrypt = require('bcrypt');
-const { signAccessToken, signRefreshToken, verifyRefreshToken } = require('../../helper/jwt_helper')
+const { signAccessToken, signRefreshToken, signRePassToken ,verifyRepassToken,  verifyRefreshToken } = require('../../helper/jwt_helper')
 const Response = require('../../Utils/Response')
+const nodemailer = require('nodemailer')
+const random = require('randomstring')
 
 var registerUser = async (req, res) => {
   try {
@@ -107,7 +109,6 @@ var loginUser = async (req, res) => {
       return res.send(Response.dataNotFoundResponse(null, 'Mật khẩu không đúng'));
     }
     let accessToken = await signAccessToken(data.accountID)
-    console.log('accessToken: ' + accessToken)
     let refreshToken = await signRefreshToken(data.accountID)
     return res.send({ accessToken, refreshToken })
 
@@ -259,7 +260,63 @@ function generateRandomNumber() {
   return randomNumber;
 }
 
+var forgetPassword = async (req, res) => {
+  try {
+    const email = req.body.email
+    let checkEmail = await UserService.checkMail(email);
+
+    if (checkEmail == 0) {
+      return res.send(Response.dataNotFoundResponse(null, 'Email không tồn tại'));
+    }
+    else {
+      const token = await signAccessToken(email)
+      try {
+        const data = await UserService.UpdateAccount(email, token)
+        //guiw mail
+        if(data == true){
+          return res.send(Response.successResponse(null, 'Vui lòng kiểm tra hộp thư đến trong gmail của bạn'));
+        }
+        return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+      } catch (error) {
+        return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+      }
+    }
+
+  } catch (error) {
+    return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+
+  }
+}
+
+var resetPassword = async (req, res) => {
+  try {
+    const token = req.query.token;
+    const email = await verifyRepassToken(token)
+    const tokenData = UserService.checkToken(token);
+    if (tokenData == 0) {
+      return res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống'));
+    }
+
+    if(req.body.password !== req.body.repassword){
+      return res.send(Response.dataNotFoundResponse(null, 'Nhập Lại Mật khẩu không trùng nhau'));
+    }
+    else{
+      let hashedPassword = await bcrypt.hash(req.body.password, 10);
+        let data = await UserService.UpdatePassword(hashedPassword, email)
+        if (data == true) {
+          return res.send(Response.successResponse());
+        } else {
+          return res.send(Response.dataNotFoundResponse());
+        }
+    }
+  } catch (error) {
+    return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+
+  }
+}
+
 module.exports = {
   registerUser, loginUser, refreshToken, registerGenealogy, getGenealogy, setRole,
-  checkCodeID, getUserInfor, getUserCodeID, getHistoryCodeID, ChangePassword, getListRoleMember, getMemberRole
+  checkCodeID, getUserInfor, getUserCodeID, getHistoryCodeID, ChangePassword, getListRoleMember, forgetPassword, resetPassword
+
 };

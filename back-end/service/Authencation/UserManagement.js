@@ -15,6 +15,21 @@ function checkMail(email) {
     });
   });
 }
+function checkToken(token) {
+  return new Promise((resolve, reject) => {
+    const query = `SELECT COUNT(*) AS count FROM genealogy.account WHERE RePassToken = ?`;
+    db.connection.query(query, [token], (err, results) => {
+      if (err) {
+        console.log(err)
+        reject(err);
+
+      } else {
+        const count = results[0].count;
+        resolve(count);
+      }
+    });
+  });
+}
 
 function insertAccountFamilyTree(AccountID, CodeID) {
   return new Promise((resolve, reject) => {
@@ -27,6 +42,20 @@ function insertAccountFamilyTree(AccountID, CodeID) {
         reject(err);
       } else {
         console.log(results)
+      }
+    });
+  });
+}
+
+function UpdateAccount(email, token) {
+  return new Promise((resolve, reject) => {
+    const query = `UPDATE genealogy.account as a SET a.RePassToken = '${token}' WHERE Email = ${email}`;
+    db.connection.query(query, (err, results) => {
+      if (err) {
+        console.log(err)
+        resolve(false);
+      } else {
+        resolve(true)
       }
     });
   });
@@ -133,10 +162,29 @@ function getUser(email) {
     });
   });
 }
+
 function ChangePassword(newPassword, AccountID) {
   return new Promise((resolve, reject) => {
     try {
       let query = `UPDATE account as a SET a.Password = '${newPassword}' WHERE AccountID = ${AccountID};`;
+      db.connection.query(query, (err) => {
+        if (!err) {
+          resolve(true)
+        } else {
+          reject(false)
+        }
+      })
+    } catch (error) {
+      console.log(error)
+      reject(false)
+    }
+  })
+}
+
+function UpdatePassword(newPassword, email) {
+  return new Promise((resolve, reject) => {
+    try {
+      let query = `UPDATE genealogy.account as a SET a.Password = '${newPassword}' WHERE Email = ${email};`;
       db.connection.query(query, (err) => {
         if (!err) {
           resolve(true)
@@ -337,5 +385,6 @@ function updateRoleID(data) {
 module.exports = {
   checkMail, checkID, create, getUser, refreshFreeEmail, insertAccountFamily, checkCodeID,
   checkAccountID, updateRoleID, insertIntoFamily, getUserInfo, getUserCodeID, checkCodeIdCreator,
-  insertAccountFamilyTree, checkCodeCreatedByID, getHistoryLoginCodeID, ChangePassword, getListRoleMember, getMemberRole
+  insertAccountFamilyTree, checkCodeCreatedByID, getHistoryLoginCodeID, ChangePassword,getListRoleMember, UpdateAccount, UpdatePassword, checkToken
+
 }
