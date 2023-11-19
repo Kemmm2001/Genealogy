@@ -22,12 +22,12 @@
           <button @click="openAddAlbumModal()" class="btn articlelist-item articlelist-item-button text-center my-4 mx-2">Tạo album</button>
         </div>
       </div>
-      <div class="d-flex flex-wrap" v-for=" album in this.AlbumPhotoList" :key="album.AlnumID">
+      <div class="d-flex flex-wrap" v-for=" album in this.AlbumPhotoList" :key="album.AlbumID" @click="getAlbumCurrentId(album.AlbumID)">
         <div class="album mx-2 mb-3 d-flex flex-column">
-          <div class="album-cover" v-if="album.PhotoUrl != null">
-            <img :src="getRelativeImagePath(album.PhotoUrl)" />
+          <div class="album-cover" v-if="album.backGroundPhoto != null">
+            <img :src="'C/'+album.backGroundPhoto" />
           </div>
-          <div class="album-cover" v-if="album.PhotoUrl == null"></div>
+          <div class="album-cover" v-if="album.backGroundPhoto == null"></div>
           <div class="album-general-info d-flex align-items-center">
             <div class="d-flex justify-content-center w-100">{{album.AlbumName}}</div>
           </div>
@@ -96,7 +96,13 @@
             <div class="d-flex flex-row my-1 align-items-center">
               <label class="col-3 d-flex justify-content-center" for="off-url" style="cursor: pointer;">Thêm ảnh</label>
               <div class="mx-2 w-100">
-                <input id="off-url" type="file" class="form-control input-file" @change="handleFileChange" />
+                <input id="off-url" type="file" class="form-control input-file" @change="handleFileChangePhoto" />
+              </div>
+            </div>
+            <div class="d-flex flex-row my-1 align-items-center">
+              <label class="col-3 d-flex justify-content-center" for="off-url" style="cursor: pointer;">Thêm ảnh bìa</label>
+              <div class="mx-2 w-100">
+                <input id="off-url" type="file" class="form-control input-file" @change="handleFileChangeBackGround" />
               </div>
             </div>
             <div class="d-flex flex-row m-3 align-items-center articlelist-button-container">
@@ -179,23 +185,25 @@ export default {
         albumName: null,
         codeID: 258191,
         description: null,
-        firstImg: null,
+        backGroundPhoto: null,
       },
       familyPhoto: {
         albumID: null,
         file: null,
       },
+      albumCurrentId:null,
+      photoCurrentId:null,
       AlbumPhotoList: [],
       FamilyPhotoList: [],
       trClicked: false,
     };
   },
   methods: {
-    getRelativeImagePath(fullPath) {
-      console.log(fullPath);
-      // Loại bỏ đường dẫn cơ sở khỏi đường dẫn đầy đủ
-      fullPath = "C:" + fullPath;
-      return fullPath;
+    getAlbumCurrentId(id){
+      this.albumCurrentId = id;
+    },
+    getPhotoCurrentId(id){
+      this.photoCurrentId = id
     },
     openAddAlbumModal() {
       this.$modal.show("addAlbum-modal");
@@ -209,42 +217,39 @@ export default {
     closeEditAlbumModal() {
       this.$modal.hide("editAlbum-modal");
     },
-    handleFileChange(event) {
+    handleFileChangePhoto(event) {
       this.familyPhoto.file = event.target.files[0];
     },
-    getFamilyPhoto() {
+    handleFileChangeBackGround(event) {
+      this.albumPhoto.backGroundPhoto = event.target.files[0];
+    },
+    getFamilyPhotoByPhotoId() {
       HTTP.get("familyphoto", {
         params: {
-          CodeID: "258191",
+          PhotoID: 1,
         },
       })
         .then((response) => {
-          this.AlbumPhotoList = response.data.data;
+          this.familyPhoto = response.data.data[0];
           console.log(response.data.data);
         })
         .catch((e) => {
           console.log(e);
         });
     },
-    getAlbumPhoto() {
+    getAlbumPhotoByCodeId() {
       HTTP.get("albumphoto", {
         params: {
           CodeID: 123,
         },
       })
-        .then((response) => {
-          this.AlbumPhotoList = response.data.data;
-          for (let i = 0; i < this.AlbumPhotoList.length; i++) {
-            this.AlbumPhotoList[i].firstImg = this.getFamilyPhotoByAlbumId(
-              this.AlbumPhotoList[i].AlbumID
-            );
-          }
-          console.log(this.AlbumPhotoList);
-          console.log(response.data.data);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+      .then((response) => {
+        this.AlbumPhotoList = response.data.data;
+        console.log(this.AlbumPhotoList);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
     },
     getFamilyPhotoByAlbumId(id) {
       HTTP.get("familyphoto", {
@@ -254,8 +259,6 @@ export default {
       })
         .then((response) => {
           this.AlbumPhotoList = response.data.data;
-          console.log(response.data.data);
-          console.log(id);
         })
         .catch((e) => {
           console.log(e);
@@ -263,7 +266,7 @@ export default {
     },
     addFamilyPhoto() {
       const formData = new FormData();
-      formData.append("AlbumID", this.familyPhoto.AlbumID);
+      formData.append("AlbumID", 1);
       formData.append("Photo", this.familyPhoto.file);
       HTTP.post("familyphoto", formData)
         .then(() => {})
@@ -274,7 +277,7 @@ export default {
     addAlbumPhoto() {
       const formData = new FormData();
       formData.append("AlbumName", this.albumPhoto.albumName);
-      formData.append("CodeID", this.albumPhoto.codeID);
+      formData.append("CodeID", 258191);
       HTTP.post("albumphoto", formData)
         .then(() => {
           this.addFamilyPhoto();
@@ -285,7 +288,7 @@ export default {
     },
   },
   mounted() {
-    this.getAlbumPhoto();
+    this.getAlbumPhotoByCodeId();
   },
   created() {
     // EventBus.$emit("HeadList", false);
