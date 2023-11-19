@@ -6,7 +6,7 @@
           <div class="filter-option col-3">
             <a>Tổng số thành viên: {{ this.memberList.length }} người</a>
             <br />
-            <a>Dòng họ có: {{ this.numberGeneration }} người</a>
+            <a>Dòng họ có: {{ this.numberGeneration }} đời</a>
           </div>
           <div class="filter-option col-3">
             <a>Nam: {{ this.numberMale }} người</a>
