@@ -1010,31 +1010,32 @@ export default {
         '<image preserveAspectRatio="xMidYMid slice" clip-path="url(#ulaImg)" xlink:href="{val}" x="10" y="20" width="70" height="70"></image>';
 
       FamilyTree.templates.tommy_male.field_0 =
-        '<text class="field_0" style="font-size: 16px;" fill="#ffffff" x="90" y="40">{val}</text>';   
+        '<text class="field_0" style="font-size: 16px;" fill="#ffffff" x="90" y="40">{val}</text>';
       FamilyTree.templates.tommy_male.field_1 =
-        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="90" y="60">Ngày Sinh: {val}</text>'; 
+        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="90" y="60">Ngày Sinh: {val}</text>';
       FamilyTree.templates.tommy_male.field_2 =
         '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="90" y="80">Đời: {val}</text>';
 
       FamilyTree.templates.tommy_female.field_0 =
-        '<text class="field_0" style="font-size: 16px;" fill="#ffffff" x="90" y="40">{val}</text>';      
+        '<text class="field_0" style="font-size: 16px;" fill="#ffffff" x="90" y="40">{val}</text>';
       FamilyTree.templates.tommy_female.field_1 =
-        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="90" y="60">Ngày Sinh: {val}</text>';     
+        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="90" y="60">Ngày Sinh: {val}</text>';
       FamilyTree.templates.tommy_female.field_2 =
         '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="90" y="80">Đời: {val}</text>';
       this.family = new FamilyTree(domEl, {
         nodes: x,
         nodeBinding: {
           field_0: "name",
-          img_0: "img",         
-          field_1: "dob",       
+          img_0: "img",
+          field_1: "dob",
           field_2: "generation",
-        },       
+        },
+        lazyLoading: false,
         nodeMouseClick: FamilyTree.action.none,
       });
       this.family.onInit(() => {
         this.family.load(this.nodes);
-      });  
+      });
 
       //Get tọa độ ban đầu
       let CoordinatesNode = this.getViewBox();
@@ -1084,30 +1085,22 @@ export default {
       return this.family.getViewBox();
     },
     getResultMember(id) {
-      const objdata = {};
-      const result = this.nodes.find((node) => node.id == id);
+      let objdata = {};
+      let result = this.nodes.find((node) => node.id == id);
 
       objdata.name = result.name;
       objdata.gender = result.gender === "male" ? "Nam" : "Nữ";
 
-      if (result.pids[0] != null) {
-        const resultMid = this.nodes.find((node) => node.id == result.pids[0]);
-        objdata[result.gender === "male" ? "wife" : "husband"] = resultMid.name;
-      } else {
-        objdata[result.gender === "male" ? "wife" : "husband"] = `Không có ${
-          result.gender === "male" ? "vợ" : "chồng"
-        }`;
-      }
       objdata.dob = result.dob;
       objdata.dod = result.dod;
 
       if (result.fid) {
-        const resultFid = this.nodes.find((node) => node.id == result.fid);
+        let resultFid = this.nodes.find((node) => node.id == result.fid);
         objdata.father = resultFid.name;
       }
 
       if (result.mid) {
-        const resultMid = this.nodes.find((node) => node.id == result.mid);
+        let resultMid = this.nodes.find((node) => node.id == result.mid);
         objdata.mother = resultMid.name;
       }
       objdata.generation = result.generation;
@@ -1115,6 +1108,8 @@ export default {
       return objdata;
     },
     compareMember(memberId1, memberId2) {
+      console.log(memberId1);
+      console.log(memberId2);
       this.RemoveHightLight();
       this.selectNodeHighLight = [];
       this.lastClickedNodeId = null;
