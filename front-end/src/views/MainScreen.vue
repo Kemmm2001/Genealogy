@@ -64,6 +64,7 @@
         </div>
       </div>
     </div> -->
+
     <div @mouseenter="expandList = true" @mouseleave="expandList = false" class="list h-100 d-flex flex-column align-items-center" :class="{expanded : expandList}">
       <div v-if="expandList" class="w-100 d-flex flex-row">
         <div class="col-6 px-2" style="padding-top: 8px;">
@@ -1096,8 +1097,7 @@ export default {
           img_0: "img",         
           field_1: "dob",       
           field_2: "generation",
-        },
-        // lazyLoading:false,
+        },       
         nodeMouseClick: FamilyTree.action.none,
       });
       this.family.onInit(() => {

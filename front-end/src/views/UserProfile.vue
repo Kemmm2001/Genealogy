@@ -43,11 +43,12 @@
             <div class="family-account">
               <div v-for="(m,index) in listMemberRole" :key="index" :class="{'family-account-item odd py-2 position-relative': index % 2 !== 0, 
               'family-account-item even py-2 position-relative' : index % 2 == 0}">
-                <div class="username position-absolute">baolan0598</div>
+                <div class="username position-absolute">{{m.Username}}</div>
                 <div class="role h-100 position-absolute py-1">
-                  <select class="form-select h-100 px-3 py-0">
-                    <option style="text-align: center;" value>Thành viên</option>
-                    <option style="text-align: center;" value>Được tin cậy</option>
+                  <select v-model="m.RoleID" class="form-select h-100 px-3 py-0" @change="changeRole(m.RoleID,m.AccountID)">
+                    <option v-if="m.RoleID == 1" style="text-align: center;" value="1">Admin</option>
+                    <option v-if="m.RoleID != 1" style="text-align: center;" value="3">Thành viên</option>
+                    <option v-if="m.RoleID != 1" style="text-align: center;" value="2">Được tin cậy</option>
                   </select>
                 </div>
               </div>
@@ -176,6 +177,24 @@ export default {
           console.log(e);
         });
     },
+    changeRole(RoleId, AccountID) {
+      console.log(RoleId, AccountID);
+      HTTP.post("set-role", {
+        RoleId: RoleId,
+        accountID: AccountID,
+        CodeID: this.CodeID,
+      })
+        .then((respone) => {
+          if (respone.data.success == true) {
+            this.NotificationsScuccess(respone.data.message);
+          } else {
+            this.NotificationsDelete(respone.data.message);
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     changePassword() {
       if (this.InputNewPassword == this.InputRe_newpassword) {
         HTTP.put("changepassword", {
@@ -220,7 +239,6 @@ export default {
       }).then((respone) => {
         if (respone.data.success == true) {
           this.listMemberRole = respone.data.data;
-          console.log(respone.data);
         }
       });
     },
