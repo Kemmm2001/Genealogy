@@ -63,3 +63,7 @@
     width: 120px;
     margin: 0 8px;
 }
+
+.event-screen .eventlist-list-th{
+    background-color: #90CAF9 !important;
+}
