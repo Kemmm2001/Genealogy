@@ -173,6 +173,10 @@
     height: 42px;
 }
 
+.loginhistory-container th{
+    background-color: #90CAF9 !important;
+}
+
 .loginhistory-container .vm--container{
     inset: 0;
     margin: auto;
