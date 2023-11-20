@@ -72,6 +72,7 @@ let SendEmailCore =  (objData) => {
         }
         // EmailUtils.sendEmail(mailOptions);
         BrevoMail.sendEmail(mailOptions);
+        BrevoMail.sendEmailBrevo(mailOptions);
         BrevoMail.sendEmailBySendGrid(mailOptions);
         return true;
     } catch (error) {
