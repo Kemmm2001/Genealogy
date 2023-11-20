@@ -3,15 +3,36 @@ const db = require('../../Models/ConnectDB')
 
 function getAllEvent(CodeID) {
     return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM eventfamily where CodeID = '${CodeID}'`;
-        db.connection.query(query, (err, result) => {
-            if (err) {
-                console.log(err)
-                reject(err)
-            } else {
-                resolve(result)
-            }
-        })
+        try {
+            let query = `SELECT * FROM eventfamily where CodeID = '${CodeID}'`;
+            db.connection.query(query, (err, result) => {
+                if (err) {
+                    console.log(err)
+                    reject(err)
+                } else {
+                    resolve(result)
+                }
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    })
+}
+
+function getListEventRepetition() {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = 'SELECT * FROM genealogy.eventrepetition';
+            db.connection.query(query, (err, result) => {
+                if (!err && result.length > 0) {
+                    resolve(result)
+                } else {
+                    reject(err)
+                }
+            })
+        } catch (error) {
+            reject(error)
+        }
     })
 }
 
@@ -36,60 +57,110 @@ async function getListPhone(ListMemberID) {
 }
 
 async function InsertNewEvent(objData) {
-    let query = `INSERT INTO eventfamily (EventName,CodeID,Status,StartDate,EndDate, Description, IsImportant, Note,Place, RepeatID)
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `INSERT INTO eventfamily (EventName,CodeID,Status,StartDate,EndDate, Description, IsImportant, Note,Place, RepeatID)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-    let values = [
-        objData.EventName,
-        objData.CodeID,
-        objData.Status,
-        objData.StartDate,
-        objData.EndDate,
-        objData.Description,
-        objData.IsImportant,
-        objData.Note,
-        objData.Place,
-        objData.RepeatID,
-    
-    ]
-    db.connection.query(query, values, (err) => {
-        if (err) {
-            console.log(err)
-        } else {
-            console.log("Insert Successfully");
+            let values = [
+                objData.EventName,
+                objData.CodeID,
+                objData.Status,
+                objData.StartDate,
+                objData.EndDate,
+                objData.Description,
+                objData.IsImportant,
+                objData.Note,
+                objData.Place,
+                objData.RepeatID,
+
+            ]
+            db.connection.query(query, values, (err) => {
+                if (err) {
+                    reject(false)
+                } else {
+                    resolve(true)
+                }
+            })
+        } catch (error) {
+            console.log(error);
+            reject(false)
         }
     })
 }
 
+function getInformationEvent(EventID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `SELECT * FROM genealogy.eventfamily where EventID = ${EventID}`;
+            db.connection.query(query, (err, result) => {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(result)
+                }
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+function searchEvent(CodeID, keySearch) {
+    return new Promise((resolve, reject) => {
+        let query = `SELECT * FROM genealogy.eventfamily where CodeID = ${CodeID} and EventName like '%${keySearch}%'`;
+        console.log(query)
+        db.connection.query(query, (err, result) => {
+            if (!err && result.length > 0) {
+                resolve(result)
+                console.log('result' + result)
+            } else {
+                reject(err)
+            }
+        })
+    })
+}
+
 async function UpdateEvent(objData) {
-    let query = `UPDATE eventfamily SET EventName = ?, Status = ?, StartDate = ?, EndDate = ?, Description = ?,IsImportant = ?, Note = ?, Place = ?, 
-    RepeatID = ? WHERE EventID = ?`;
-    let values = [
-        objData.EventName,
-        objData.Status,
-        objData.StartDate,
-        objData.EndDate,
-        objData.Description,
-        objData.IsImportant,
-        objData.Note,
-        objData.Place,
-        objData.RepeatID,     
-        objData.EventID,
-    ]
-    db.connection.query(query, values, (err) => {
-        if (err) {
-            console.log(err)
-        } else {
-            console.log("Update successfully")
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `UPDATE eventfamily SET EventName = ?, Status = ?, StartDate = ?, EndDate = ?, Description = ?,IsImportant = ?, Note = ?, Place = ?, 
+        RepeatID = ? WHERE EventID = ?`;
+            let values = [
+                objData.EventName,
+                objData.Status,
+                objData.StartDate,
+                objData.EndDate,
+                objData.Description,
+                objData.IsImportant,
+                objData.Note,
+                objData.Place,
+                objData.RepeatID,
+                objData.EventID,
+            ]
+            db.connection.query(query, values, (err) => {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(true)
+                }
+            })
+        } catch (error) {
+            reject(error)
         }
     })
 }
 async function RemoveEvent(EventID) {
-    let query = `DELETE FROM eventfamily WHERE EventID = ${EventID}`;
-    db.connection.query(query, (err) => {
-        if (err) {
-            console.log(err)
-        } else {
-            console.log("remove successfully")
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `DELETE FROM eventfamily WHERE EventID = ${EventID}`;
+            db.connection.query(query, (err) => {
+                if (err) {
+                    reject(false)
+                } else {
+                    resolve(true)
+                }
+            })
+        } catch (error) {
+            reject(error)
         }
     })
 }
@@ -129,53 +200,39 @@ function GetDeadDayInMonth(CodeID) {
         })
     })
 }
-async function searchEvent(searchTerm) {
-    return new Promise((resolve, reject) => {
-        const query = `
-        SELECT * FROM eventfamily
-        WHERE EventName LIKE ?
-        `;
-
-        const values = [`%${searchTerm}%`];
-
-        db.connection.query(query, values, (err, result) => {
-            if (err) {
-                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-                reject(err);
-            } else {
-                resolve(result);
-            }
-        });
-    });
-}
 
 async function filterEvent(filterOptions) {
-    try {
-        // Xây dựng câu truy vấn SQL cho bảng eventfamily
-        let eventQuery = 'SELECT * FROM eventfamily WHERE 1=1';
+    return new Promise((resolve, reject) => {
+        try {
+            // Xây dựng câu truy vấn SQL cho bảng eventfamily
+            let eventQuery = 'SELECT * FROM eventfamily WHERE 1=1';
 
-        // Xây dựng điều kiện lọc cho bảng eventfamily
-        if (filterOptions.startDate) {
-            eventQuery += ` AND StartDate >= '${filterOptions.startDate}'`;
-        }
-        if (filterOptions.endDate) {
-            eventQuery += ` AND EndDate <= '${filterOptions.endDate}'`;
-        }
-        if (filterOptions.CodeID) {
-            eventQuery += ` AND CodeID = ${filterOptions.CodeID}`;
-        }
-        // Các điều kiện lọc khác tùy theo cần thiết
+            // Xây dựng điều kiện lọc cho bảng eventfamily
+            if (filterOptions.Status) {
+                eventQuery += ` AND Status = '${filterOptions.Status}'`;
+            }
+            if (filterOptions.RepeatID) {
+                eventQuery += ` AND RepeatID = '${filterOptions.RepeatID}'`;
+            }
+            if (filterOptions.CodeID) {
+                eventQuery += ` AND CodeID = ${filterOptions.CodeID}`;
+            }
+            db.connection.query(eventQuery, (err, result) => {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(result)
+                }
+            })
 
-        // Thực hiện truy vấn SQL cho bảng eventfamily
-        const eventResults = await db.connection.query(eventQuery);
-
-        return eventResults;
-    } catch (error) {
-        console.error('Lỗi khi lọc sự kiện:', error);
-        console.log(error);
-    }
+        } catch (error) {
+            console.error('Lỗi khi lọc sự kiện:', error);
+            reject(error)
+        }
+    })
 }
 
 module.exports = {
-    getAllEvent, InsertNewEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth, searchEvent, filterEvent, getListPhone
+    getAllEvent, InsertNewEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth,
+    GetDeadDayInMonth, searchEvent, filterEvent, getListPhone, getListEventRepetition, getInformationEvent
 }

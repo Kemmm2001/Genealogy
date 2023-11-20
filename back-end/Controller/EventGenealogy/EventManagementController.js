@@ -6,9 +6,40 @@ var getAllEventGenealogy = async (req, res) => {
     try {
         let CodeID = req.query.CodeID;
         let data = await EventManagementService.getAllEvent(CodeID);
-        res.send(data)
+        if (data) {
+            return res.send(Response.successResponse(data));
+        } else {
+            return res.send(Response.internalServerErrorResponse)
+        }
+
     } catch (error) {
         console.log(error)
+    }
+}
+
+var getInformationEvent = async (req, res) => {
+    try {
+        let data = await EventManagementService.getInformationEvent(req.query.EventID);
+        if (data) {
+            return res.send(Response.successResponse(data))
+        } else {
+            return res.send(Response.internalServerErrorResponse)
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+var getAllEventRepetition = async (req, res) => {
+    try {
+        let data = await EventManagementService.getListEventRepetition();
+        if (data) {
+            return res.send(Response.successResponse(data));
+        } else {
+            return res.send(Response.internalServerErrorResponse)
+        }
+    } catch (error) {
+        return res.send(Response.internalServerErrorResponse(error))
     }
 }
 
@@ -25,12 +56,32 @@ var InsertEvent = async (req, res) => {
         objData.IsImportant = req.body.IsImportant;
         objData.Note = req.body.Note;
         objData.Place = req.body.Place;
-        objData.RepeatID = req.body.RepeatID;   
-        await EventManagementService.InsertNewEvent(objData);
-        res.send("Success")
+        objData.RepeatID = req.body.RepeatID;
+        console.log(objData)
+        let data = await EventManagementService.InsertNewEvent(objData);
+        if (data) {
+            return res.send(Response.successResponse(data, 'Thêm sự kiện thành công'));
+        } else {
+            return res.send(Response.internalServerErrorResponse)
+        }
+
     } catch (error) {
-        console.log(error)
+        return res.send(Response.internalServerErrorResponse(error))
     }
+}
+var searchEvent = async (req, res) => {
+    try {
+        console.log(req.body)
+        let data = await EventManagementService.searchEvent(req.body.CodeID, req.body.keySearch);
+        if (data) {
+            return res.send(Response.successResponse(data));
+        } else {
+            return res.send(Response.internalServerErrorResponse)
+        }
+    } catch (error) {
+        return res.send(Response.internalServerErrorResponse(error))
+    }
+
 }
 
 var UpdateEvent = async (req, res) => {
@@ -44,21 +95,30 @@ var UpdateEvent = async (req, res) => {
         objData.IsImportant = req.body.IsImportant;
         objData.Note = req.body.Note;
         objData.Place = req.body.Place;
-        objData.RepeatID = req.body.RepeatID;       
+        objData.RepeatID = req.body.RepeatID;
         objData.EventID = req.body.EventID;
-        await EventManagementService.UpdateEvent(objData);
-        res.send("update success")
+        let data = await EventManagementService.UpdateEvent(objData);
+        if (data) {
+            return res.send(Response.successResponse(null, "Sửa thông tin sự kiện thành công"));
+        } else {
+            return res.send(Response.internalServerErrorResponse)
+        }
     } catch (error) {
-        console.log(error)
+        return res.send(Response.internalServerErrorResponse(error))
     }
 }
 var RemoveEvent = async (req, res) => {
     try {
         let EventID = req.query.EventID;
-        await EventManagementService.RemoveEvent(EventID);
-        res.send("Successuly")
+        let data = await EventManagementService.RemoveEvent(EventID);
+        if (data) {
+            return res.send(Response.successResponse(null, 'Xóa sự kiện thành công'))
+        }
+        else {
+            return res.send(Response.internalServerErrorResponse)
+        }
     } catch (error) {
-        console.log(error)
+        return res.send(error)
     }
 }
 
@@ -152,28 +212,18 @@ function ExecuteSendSNS(ToPhoneNumber, Message) {
 }
 
 
-var searchEvent = async (req, res) => {
-    try {
-        const { searchTerm } = req.body;
-        // Thực hiện tìm kiếm event trong database dựa trên searchTerm
-        const searchResult = await EventManagementService.searchEvent(searchTerm);
-        res.json(searchResult);
-    } catch (e) {
-        res.send(e);
-    }
-}
 var filterEvent = async function (req, res) {
     try {
-        const filterOptions = req.body; // Lấy filterOptions từ request body
-        const filteredEvents = await EventManagementService.filterEvent(filterOptions);
-
-        res.json({
-            success: true,
-            data: filteredEvents,
-        });
+        let filterOptions = req.body; // Lấy filterOptions từ request body
+        let filteredEvents = await EventManagementService.filterEvent(filterOptions);
+        if (filteredEvents) {
+            return res.send(Response.successResponse(filteredEvents));
+        } else {
+            res.send(Response.internalServerErrorResponse());
+        }
     } catch (error) {
-        console.error('Lỗi khi lọc thành viên:', error);
-        res.status(500).json({ success: false, message: 'Lỗi khi lọc thành viên' });
+        console.log(error);
+        res.send(Response.internalServerErrorResponse(error));
     }
 }
 
@@ -215,6 +265,6 @@ var SendEmail = async (req, res) => {
 
 module.exports = {
     getAllEventGenealogy, InsertEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth,
-    SendSMS, SendEmail, searchEvent, filterEvent, SendSMSToMember,
+    SendSMS, SendEmail, searchEvent, filterEvent, SendSMSToMember, getAllEventRepetition, getInformationEvent
 
 }
