@@ -13,7 +13,7 @@
     cursor: pointer;
 }
 
-.dark .header-selected {
+.header-selected {
     background-color: #c9e6ff;
     border-radius: 0.375rem;
 }
