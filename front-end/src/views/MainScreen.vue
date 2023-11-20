@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex h-100 w-100 position-relative">
-    <!-- <div class="list h-100 d-flex flex-column align-items-center">
+    <div class="list h-100 d-flex flex-column align-items-center">
       <div class="w-100 d-flex flex-row">
         <div class="col-6 px-2" style="padding-top: 8px;">
           <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict(),GetListFilterMember()">
@@ -41,70 +41,6 @@
         </div>
       </div>
       <div class="h-100 w-100 d-flex flex-column px-2" style="padding-top: 8px; font-family: 'QuicksandBold', sans-serif;">
-        <div class="existing-members d-flex flex-column w-100">
-          <div class="d-flex align-items-center justify-content-center px-2 py-1 list-title">Thành viên có trên phả đồ</div>
-          <div class="d-flex flex-column w-100" style="overflow-y: auto;cursor: pointer">
-            <div v-for="(n, index) in nodes" :key="n.id">
-              <div @click="handleLeftClick(n.id)" @contextmenu.prevent="handleRightClick(n.id)" :class="{ 'list-item': true, 'selected-list': n.id == CurrentIdMember, 'ancestor-member': index === 0 }">{{ n.name }}</div>
-            </div>
-          </div>
-        </div>
-        <div class="d-flex nonexisting-members flex-column w-100" style="margin-top: 4px">
-          <div class="d-flex flex-row px-2 py-1 list-title">
-            <div class="d-flex align-items-center justify-content-center">Thành viên không có trên phả đồ</div>
-            <div v-if="memberRole != 3" class="d-flex align-items-center justify-content-center" style="padding-left: 12px;cursor:pointer" @click="openMemberModal('AddNormal', ' thành viên không có trên phả đồ')">
-              <svg class="add-member-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />
-              </svg>
-            </div>
-          </div>
-          <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto;auto;cursor: pointer">
-            <div v-for="list in ListUnspecifiedMembers" :key="list.id" @click="handleLeftClickUnspecifiedMembers(list.MemberID)" class="list-item">{{ list.MemberName }}</div>
-          </div>
-        </div>
-      </div>
-    </div> -->
-    <div @mouseenter="expandList = true" @mouseleave="expandList = false" class="list h-100 d-flex flex-column align-items-center" :class="{expanded : expandList}">
-      <div v-if="expandList" class="w-100 d-flex flex-row">
-        <div class="col-6 px-2" style="padding-top: 8px;">
-          <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict(),GetListFilterMember()">
-            <option :value="null" selected>Tỉnh/Thành phố</option>
-            <option v-for="city in ListCity" :key="city.id" :value="city.id">{{ city.name }}</option>
-          </select>
-        </div>
-        <div class="col-6 px-2" style="padding-top: 8px;">
-          <select v-model="selectDistrict" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
-            <option :value="null" selected>Quận/Huyện</option>
-            <option v-for="d in ListDistrict" :key="d.id" :value="d.DistrictName">{{ d.DistrictName }}</option>
-          </select>
-        </div>
-      </div>
-      <div v-if="expandList" class="w-100 d-flex flex-row">
-        <div class="col-6 px-2" style="padding-top: 8px;">
-          <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
-            <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">{{ blood.BloodType }}</option>
-          </select>
-        </div>
-        <div class="col-6 px-2" style="padding-top: 8px;">
-          <select class="d-flex text-center form-select dropdown p-0" v-model="selectAge" @change="GetListFilterMember()">
-            <option class="dropdown-item" :value="null">Nhóm Tuổi</option>
-            <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{ age.From }} - {{ age.End }} Tuổi</option>
-          </select>
-        </div>
-      </div>
-      <div v-if="memberRole != 3 && expandList" class="w-100 d-flex flex-row" style="padding-top: 8px">
-        <div class="col-6 px-2">
-          <div class="w-100">
-            <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary">Tạo thông báo</button>
-          </div>
-        </div>
-        <div class="col-6 px-2">
-          <div class="w-100">
-            <button @click="openCompareModal()" style="width:100%" type="button" :class="{ 'btn': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">So sánh</button>
-          </div>
-        </div>
-      </div>
-      <div v-if="expandList" class="h-100 w-100 d-flex flex-column px-2" style="padding-top: 8px; font-family: 'QuicksandBold', sans-serif;">
         <div class="existing-members d-flex flex-column w-100">
           <div class="d-flex align-items-center justify-content-center px-2 py-1 list-title">Thành viên có trên phả đồ</div>
           <div class="d-flex flex-column w-100" style="overflow-y: auto;cursor: pointer">
@@ -980,8 +916,6 @@ export default {
       memberRole: null,
 
       darkMode: true,
-
-      expandList: false,
 
       objMemberInfor: {
         MemberID: 0,

@@ -177,5 +177,13 @@
     inset: 0;
     margin: auto;
     height: 352px;
-    width: 90%;
+    width: 1048px;
+}
+
+.loginhistory-container .vm--modal{
+    top: 0;
+    height: 0;
+    width: 100% !important;
+    height: 100% !important;
+    inset: 0 !important;
 }
