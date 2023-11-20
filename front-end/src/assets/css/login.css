@@ -8,6 +8,11 @@
     background-position: bottom;
 }
 
+.raining-background{
+    background-image: url(../raining.jpg);
+    background-position: bottom;
+}
+
 .login-form-container{
     top: 0;
     bottom: 0;
@@ -162,4 +167,15 @@
     left: 0;
     right: 0;
     z-index: 1;
+}
+
+.loginhistory-container th, .loginhistory-container td{
+    height: 42px;
+}
+
+.loginhistory-container .vm--container{
+    inset: 0;
+    margin: auto;
+    height: 352px;
+    width: 90%;
 }

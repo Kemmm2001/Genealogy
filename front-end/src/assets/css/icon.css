@@ -126,4 +126,17 @@
 
 .advanced-filter-icon.rotateDown{
     transform: rotate(180deg);
-}   
+}
+
+.help-icon{
+    background-color: #000;
+    fill: #FFFFFF;
+    width: 36px;
+    height: 36px;
+    border-radius: 0.375rem;
+}
+
+.change-pic-icon{
+    height: 36px;
+    width: 24px;
+}

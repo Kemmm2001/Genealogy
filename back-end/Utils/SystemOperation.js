@@ -54,7 +54,7 @@ function SetHistorySendEmailandSMS(content, action, CodeID) {
 
 
 
-let SendEmailCore = (objData) => {
+let SendEmailCore =  (objData) => {
     try {
         var mailOptions = {
             from: process.env.EMAIL_ADDRESS,
@@ -70,7 +70,9 @@ let SendEmailCore = (objData) => {
             // Nếu là string thì gán luôn
             mailOptions.to = objData.to;
         }
+        // EmailUtils.sendEmail(mailOptions);
         BrevoMail.sendEmail(mailOptions);
+        BrevoMail.sendEmailBySendGrid(mailOptions);
         return true;
     } catch (error) {
         console.log("error : " + error);

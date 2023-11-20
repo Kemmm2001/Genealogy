@@ -1,11 +1,10 @@
 #app {
     font-size: 16px !important;
     font-family: Arial, Helvetica, sans-serif;
-    /* overflow: hidden; */
+    overflow: hidden;
 }
 
 .container-fluid {
-    /* min-height: 100vh; */
     height: 100%;
     background-color: #bf831526;
 }
@@ -16,31 +15,22 @@
 }
 
 .main-screen {
-    height: 100vh;
-    flex-grow: 1;
-}
-
-.sidebar-list {
-    width: 16% !important;
-}
-
-.sidebar {
-    background-color: #13191C;
-    width: 25% !important;
-    transition: 0.3s;
+    height: 100%;
+    width: 100%;
 }
 
 .list {
     background-color: #3A4B54;
-    width: 25% !important;
+    width: 3% !important;
     padding: 4px;
+    position: absolute;
+    left: 0;
+    z-index: 1;
+    transition: 0.3s;
 }
 
-.config-sidebar {
-    background-color: #D9D9D9;
-    width: 0%;
-    height: 100%;
-    transition: 0.24s;
+.list.expanded{
+    width: 19% !important;
 }
 
 .form-select {
@@ -94,4 +84,16 @@ tr{
     padding: 15px 100px 35px 100px;
     border-radius: 0.575rem;
     position: relative;
+}
+
+.logo{
+    height: 95px;
+    position: absolute;
+    bottom: -15px;
+}
+
+th{
+    background-color: rgb(0, 136, 255);
+    text-align: center;
+    vertical-align: middle;
 }

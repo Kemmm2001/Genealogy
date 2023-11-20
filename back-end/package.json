@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@hapi/joi": "^17.1.1",
+    "@sendgrid/mail": "^6.5.5",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -34,7 +35,7 @@
     "puppeteer": "^21.3.7",
     "redis": "^4.6.10",
     "sequelize": "^6.33.0",
-    "twilio": "^4.19.0"
+    "twilio": "^3.40.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

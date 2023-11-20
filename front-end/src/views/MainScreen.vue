@@ -1,9 +1,9 @@
 <template>
   <div class="d-flex h-100 w-100 position-relative">
-    <div class="list d-flex flex-column align-items-center">
+    <!-- <div class="list h-100 d-flex flex-column align-items-center">
       <div class="w-100 d-flex flex-row">
         <div class="col-6 px-2" style="padding-top: 8px;">
-          <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict()">
+          <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict(),GetListFilterMember()">
             <option :value="null" selected>Tỉnh/Thành phố</option>
             <option v-for="city in ListCity" :key="city.id" :value="city.id">{{ city.name }}</option>
           </select>
@@ -28,7 +28,7 @@
           </select>
         </div>
       </div>
-      <div class="w-100 d-flex flex-row" style="padding-top: 8px">
+      <div v-if="memberRole != 3" class="w-100 d-flex flex-row" style="padding-top: 8px">
         <div class="col-6 px-2">
           <div class="w-100">
             <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary">Tạo thông báo</button>
@@ -52,7 +52,72 @@
         <div class="d-flex nonexisting-members flex-column w-100" style="margin-top: 4px">
           <div class="d-flex flex-row px-2 py-1 list-title">
             <div class="d-flex align-items-center justify-content-center">Thành viên không có trên phả đồ</div>
-            <div class="d-flex align-items-center justify-content-center" style="padding-left: 12px;cursor:pointer" @click="openMemberModal('AddNormal', ' thành viên không có trên phả đồ')">
+            <div v-if="memberRole != 3" class="d-flex align-items-center justify-content-center" style="padding-left: 12px;cursor:pointer" @click="openMemberModal('AddNormal', ' thành viên không có trên phả đồ')">
+              <svg class="add-member-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />
+              </svg>
+            </div>
+          </div>
+          <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto;auto;cursor: pointer">
+            <div v-for="list in ListUnspecifiedMembers" :key="list.id" @click="handleLeftClickUnspecifiedMembers(list.MemberID)" class="list-item">{{ list.MemberName }}</div>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+    <div @mouseenter="expandList = true" @mouseleave="expandList = false" class="list h-100 d-flex flex-column align-items-center" :class="{expanded : expandList}">
+      <div v-if="expandList" class="w-100 d-flex flex-row">
+        <div class="col-6 px-2" style="padding-top: 8px;">
+          <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict(),GetListFilterMember()">
+            <option :value="null" selected>Tỉnh/Thành phố</option>
+            <option v-for="city in ListCity" :key="city.id" :value="city.id">{{ city.name }}</option>
+          </select>
+        </div>
+        <div class="col-6 px-2" style="padding-top: 8px;">
+          <select v-model="selectDistrict" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
+            <option :value="null" selected>Quận/Huyện</option>
+            <option v-for="d in ListDistrict" :key="d.id" :value="d.DistrictName">{{ d.DistrictName }}</option>
+          </select>
+        </div>
+      </div>
+      <div v-if="expandList" class="w-100 d-flex flex-row">
+        <div class="col-6 px-2" style="padding-top: 8px;">
+          <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
+            <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">{{ blood.BloodType }}</option>
+          </select>
+        </div>
+        <div class="col-6 px-2" style="padding-top: 8px;">
+          <select class="d-flex text-center form-select dropdown p-0" v-model="selectAge" @change="GetListFilterMember()">
+            <option class="dropdown-item" :value="null">Nhóm Tuổi</option>
+            <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{ age.From }} - {{ age.End }} Tuổi</option>
+          </select>
+        </div>
+      </div>
+      <div v-if="memberRole != 3 && expandList" class="w-100 d-flex flex-row" style="padding-top: 8px">
+        <div class="col-6 px-2">
+          <div class="w-100">
+            <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary">Tạo thông báo</button>
+          </div>
+        </div>
+        <div class="col-6 px-2">
+          <div class="w-100">
+            <button @click="openCompareModal()" style="width:100%" type="button" :class="{ 'btn': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">So sánh</button>
+          </div>
+        </div>
+      </div>
+      <div v-if="expandList" class="h-100 w-100 d-flex flex-column px-2" style="padding-top: 8px; font-family: 'QuicksandBold', sans-serif;">
+        <div class="existing-members d-flex flex-column w-100">
+          <div class="d-flex align-items-center justify-content-center px-2 py-1 list-title">Thành viên có trên phả đồ</div>
+          <div class="d-flex flex-column w-100" style="overflow-y: auto;cursor: pointer">
+            <div v-for="(n, index) in nodes" :key="n.id">
+              <div @click="handleLeftClick(n.id)" @contextmenu.prevent="handleRightClick(n.id)" :class="{ 'list-item': true, 'selected-list': n.id == CurrentIdMember, 'ancestor-member': index === 0 }">{{ n.name }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex nonexisting-members flex-column w-100" style="margin-top: 4px">
+          <div class="d-flex flex-row px-2 py-1 list-title">
+            <div class="d-flex align-items-center justify-content-center">Thành viên không có trên phả đồ</div>
+            <div v-if="memberRole != 3" class="d-flex align-items-center justify-content-center" style="padding-left: 12px;cursor:pointer" @click="openMemberModal('AddNormal', ' thành viên không có trên phả đồ')">
               <svg class="add-member-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                 <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />
               </svg>
@@ -64,8 +129,17 @@
         </div>
       </div>
     </div>
-    <div class="d-flex main-screen align-items-center w-100 positon-relative">
+
+    <div class="d-flex main-screen align-items-center h-100 w-100 position-relative">
       <div id="tree" ref="tree"></div>
+      <!-- <div style="inset: 0; margin: auto;">
+        <div @click="openMemberModal('AddFirst','cụ tổ')" class="btn bg-primary text-white d-flex flex-row align-items-center">
+          <div style="padding-right: 8px;">Thêm tổ phụ</div>
+          <svg style="fill: white;" class="add-member-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+            <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />
+          </svg>
+        </div>
+      </div>-->
       <div :class="{ filterExpanded: advancedFilterDown }" class="advanced-filter-container d-flex flex-column p-1 position-absolute">
         <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
           <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict()">
@@ -97,6 +171,11 @@
             </svg>
           </div>
         </div>
+      </div>
+      <div style="position: absolute; bottom: 0; right: 0;">
+        <svg class="help-icon p-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+          <path d="M80 160c0-35.3 28.7-64 64-64h32c35.3 0 64 28.7 64 64v3.6c0 21.8-11.1 42.1-29.4 53.8l-42.2 27.1c-25.2 16.2-40.4 44.1-40.4 74V320c0 17.7 14.3 32 32 32s32-14.3 32-32v-1.4c0-8.2 4.2-15.8 11-20.2l42.2-27.1c36.6-23.6 58.8-64.1 58.8-107.7V160c0-70.7-57.3-128-128-128H144C73.3 32 16 89.3 16 160c0 17.7 14.3 32 32 32s32-14.3 32-32zm80 320a40 40 0 1 0 0-80 40 40 0 1 0 0 80z" />
+        </svg>
       </div>
     </div>
     <div class="Container-select-modal">
@@ -796,8 +875,8 @@
           </div>
           <div class="card-footer modal-footer position-absolute w-100" style="bottom: 0;">
             <div class="d-flex justify-content-end" style="padding-right: 12px;">
-              <button v-if="isAdd" type="button" class="btn btn-primary mr-2" @click="addMember()">Thêm</button>
-              <button v-else-if="isEdit" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
+              <button v-if="isAdd && memberRole != 3" type="button" class="btn btn-primary mr-2" @click="addMember()">Thêm</button>
+              <button v-else-if="isEdit && memberRole != 3" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
               <button style="margin-left:10px" type="button" class="btn btn-secondary" @click="closeSelectModal()">Cancel</button>
             </div>
           </div>
@@ -899,8 +978,11 @@ export default {
       IsDead: 0,
       ListMemberJob: null,
       ListMemberEducation: null,
+      memberRole: null,
 
       darkMode: true,
+
+      expandList: false,
 
       objMemberInfor: {
         MemberID: 0,
@@ -986,7 +1068,6 @@ export default {
       resultCompare2: null,
       selectedRowIndex: null,
       UrlAvatar: null,
-    
     };
   },
   methods: {
@@ -997,62 +1078,32 @@ export default {
         '<image preserveAspectRatio="xMidYMid slice" clip-path="url(#ulaImg)" xlink:href="{val}" x="10" y="20" width="70" height="70"></image>';
 
       FamilyTree.templates.tommy_male.field_0 =
-        '<text class="field_0" style="font-size: 16px;" fill="#ffffff" x="90" y="30">{val}</text>';
+        '<text class="field_0" style="font-size: 16px;" fill="#ffffff" x="90" y="40">{val}</text>';   
       FamilyTree.templates.tommy_male.field_1 =
-        '<text class="field_1" style="font-size: 12px;" fill="#ffffff" x="90" y="50">Giới Tính: Nam</text>';
+        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="90" y="60">Ngày Sinh: {val}</text>'; 
       FamilyTree.templates.tommy_male.field_2 =
-        '<text class="field_2" style="font-size: 12px;" fill="#ffffff" x="90" y="70">Ngày Sinh: {val}</text>';
-      FamilyTree.templates.tommy_male.field_3 =
-        '<text class="field_3" style="font-size: 12px;" fill="#ffffff" x="90"  y="90">Ngày Mất: {val}</text>';
-      FamilyTree.templates.tommy_male.field_4 =
-        '<text class="field_4" style="font-size: 12px;" fill="#ffffff" x="90" y="110">Đời: {val}</text>';
+        '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="90" y="80">Đời: {val}</text>';
 
       FamilyTree.templates.tommy_female.field_0 =
-        '<text class="field_0" style="font-size: 16px;" fill="#ffffff" x="90" y="30">{val}</text>';
+        '<text class="field_0" style="font-size: 16px;" fill="#ffffff" x="90" y="40">{val}</text>';      
       FamilyTree.templates.tommy_female.field_1 =
-        '<text class="field_1" style="font-size: 12px;" fill="#ffffff" x="90" y="50">Giới Tính: Nữ</text>';
+        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="90" y="60">Ngày Sinh: {val}</text>';     
       FamilyTree.templates.tommy_female.field_2 =
-        '<text class="field_2" style="font-size: 12px;" fill="#ffffff" x="90" y="70">Ngày Sinh: {val}</text>';
-      FamilyTree.templates.tommy_female.field_3 =
-        '<text class="field_3" style="font-size: 12px;" fill="#ffffff" x="90" y="90">Ngày Mất: {val}</text>';
-      FamilyTree.templates.tommy_female.field_4 =
-        '<text class="field_4" style="font-size: 12px;" fill="#ffffff" x="90" y="110">Đời: {val}</text>';
+        '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="90" y="80">Đời: {val}</text>';
       this.family = new FamilyTree(domEl, {
         nodes: x,
         nodeBinding: {
           field_0: "name",
-          img_0: "img",
-          field_1: "gender",
-          field_2: "dob",
-          field_3: "dod",
-          field_4: "generation",
+          img_0: "img",         
+          field_1: "dob",       
+          field_2: "generation",
         },
-        lazyLoading: false,
+        // lazyLoading:false,
         nodeMouseClick: FamilyTree.action.none,
       });
       this.family.onInit(() => {
         this.family.load(this.nodes);
-      });
-      this.family.onField((args) => {
-        if (args.data.dod == null) {
-          FamilyTree.templates.tommy_female.field_3 = null;
-          FamilyTree.templates.tommy_male.field_3 = null;
-          ('<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="195" y="50" text-anchor="middle"></text>');
-          FamilyTree.templates.tommy_female.field_4 =
-            '<text class="field_4" style="font-size: 12px;" fill="#ffffff" x="90" y="90">Đời: {val}</text>';
-          FamilyTree.templates.tommy_male.field_4 =
-            '<text class="field_4" style="font-size: 12px;" fill="#ffffff" x="90" y="90">Đời: {val}</text>';
-        } else {
-          FamilyTree.templates.tommy_female.field_3 =
-            '<text class="field_3" style="font-size: 12px;" fill="#ffffff" x="90" y="90">Ngày Mất: {val}</text>';
-          FamilyTree.templates.tommy_female.field_4 =
-            '<text class="field_4" style="font-size: 12px;" fill="#ffffff" x="90" y="110">Đời: {val}</text>';
-          FamilyTree.templates.tommy_male.field_3 =
-            '<text class="field_3" style="font-size: 12px;" fill="#ffffff" x="90"  y="90">Ngày Mất: {val}</text>';
-          FamilyTree.templates.tommy_male.field_4 =
-            '<text class="field_4" style="font-size: 12px;" fill="#ffffff" x="90" y="110">Đời: {val}</text>';
-        }
-      });
+      });  
 
       //Get tọa độ ban đầu
       let CoordinatesNode = this.getViewBox();
@@ -1063,22 +1114,24 @@ export default {
       });
       // right click
       const self = this;
-      this.family.onInit(function () {
-        this.element.addEventListener(
-          "contextmenu",
-          function (ev) {
-            let nodeElement = ev.target;
-            if (nodeElement.hasAttribute("data-n-id") == false) {
-              nodeElement = nodeElement.parentNode;
-            }
-            if (nodeElement && nodeElement.hasAttribute("data-n-id")) {
-              let id = nodeElement.getAttribute("data-n-id");
-              self.OnpenModal_SelectOption(id);
-            }
-          },
-          false
-        );
-      });
+      if (this.memberRole != 3) {
+        this.family.onInit(function () {
+          this.element.addEventListener(
+            "contextmenu",
+            function (ev) {
+              let nodeElement = ev.target;
+              if (nodeElement.hasAttribute("data-n-id") == false) {
+                nodeElement = nodeElement.parentNode;
+              }
+              if (nodeElement && nodeElement.hasAttribute("data-n-id")) {
+                let id = nodeElement.getAttribute("data-n-id");
+                self.OnpenModal_SelectOption(id);
+              }
+            },
+            false
+          );
+        });
+      }
       this.family.onNodeClick((arg) => {
         if (this.isCompare) {
           this.highLightSelectCompareNode(arg.node.id);
@@ -1760,7 +1813,9 @@ export default {
       }
     },
     handleRightClick(id) {
-      this.OnpenModal_SelectOption(id);
+      if (this.memberRole != 3) {
+        this.OnpenModal_SelectOption(id);
+      }
     },
     handleLeftClickUnspecifiedMembers(id) {
       this.getInforMember(id);
@@ -2050,7 +2105,8 @@ export default {
       if (this.selectCity == null) {
         this.ListDistrict = null;
         this.selectDistrict = null;
-        this.RemoveHightLight();
+        this.selectAdress = null;
+        // this.RemoveHightLight();
       } else {
         let selectedCity = this.ListCity.find(
           (city) => city.id == this.selectCity
@@ -2065,6 +2121,16 @@ export default {
           this.ListDistrict = response.data;
         });
       }
+    },
+    getMemberRole() {
+      HTTP.post("memberRole", {
+        accountID: localStorage.getItem("accountID"),
+        codeID: localStorage.getItem("CodeID"),
+      }).then((response) => {
+        if (response.data.success == true) {
+          this.memberRole = response.data.data;
+        }
+      });
     },
     getListCity() {
       HTTP.get("province")
@@ -2129,7 +2195,7 @@ export default {
       this.smsSelected = true;
       this.emailSelected = false;
       this.expandCreateEmail = false;
-    },  
+    },
   },
   created() {
     EventBus.$on("displayList", (value) => {
@@ -2153,9 +2219,8 @@ export default {
         this.$router.push("/login");
       }
     }
-    console.log("CodeID: " + localStorage.getItem("CodeID"));
-    console.log("accountID: " + localStorage.getItem("accountID"));
-
+    console.log(localStorage.getItem("CodeID"));
+    console.log(localStorage.getItem("accountID"));
     this.getListMessage();
     this.getListCity();
     this.getListNationality();
@@ -2164,6 +2229,7 @@ export default {
     this.getListBloodTypeGroup();
     this.getListUnspecifiedMembers();
     this.getListMember();
+    this.getMemberRole();
   },
 };
 </script>

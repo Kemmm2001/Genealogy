@@ -2,8 +2,10 @@ const UserService = require('../../service/Authencation/UserManagement');
 const createError = require('http-errors')
 const { registerSchema, loginSchema } = require('../../helper/validation_schema')
 const bcrypt = require('bcrypt');
-const { signAccessToken, signRefreshToken, verifyRefreshToken } = require('../../helper/jwt_helper')
+const { signAccessToken, signRefreshToken, signRePassToken, verifyRepassToken, verifyRefreshToken } = require('../../helper/jwt_helper')
 const Response = require('../../Utils/Response')
+const nodemailer = require('nodemailer')
+
 
 var registerUser = async (req, res) => {
   try {
@@ -26,12 +28,81 @@ var registerUser = async (req, res) => {
   }
 }
 
+var getMemberRole = async (req, res) => {
+  try {
+    let accountID = req.body.accountID;
+    let codeID = req.body.codeID;
+    let data = await UserService.getMemberRole(accountID, codeID);
+    if (data) {
+      return res.send(Response.successResponse(data));
+    } else {
+      return res.send(Response.dataNotFoundResponse());
+    }
+  } catch (error) {
+    return res.send(Response.dataNotFoundResponse(error));
+  }
+}
+
+var changeUsername = async (req, res) => {
+  try {
+    console.log(req.body)
+    let AccountID = req.body.AccountID;
+    let username = req.body.username;
+    let data = await UserService.changeUsername(AccountID, username);
+    if (data) {
+      return res.send(Response.successResponse(null, 'Thay đổi username thành công'));
+    } else {
+      return res.send(Response.dataNotFoundResponse());
+    }
+  } catch (error) {
+    return res.send(Response.dataNotFoundResponse(error));
+  }
+}
+
 var getHistoryCodeID = async (req, res) => {
   try {
     let accountID = req.query.accountID;
-    let data = await UserService.getHistoryLoginCodeID(accountID);    
+    let data = await UserService.getHistoryLoginCodeID(accountID);
     if (data) {
       return res.send(Response.successResponse(data));
+    } else {
+      return res.send(Response.dataNotFoundResponse());
+    }
+  } catch (error) {
+    return res.send(Response.dataNotFoundResponse(error));
+  }
+}
+
+var getListRoleMember = async (req, res) => {
+  try {
+    console.log('req: ' + req.query.CodeID)
+    let data = await UserService.getListRoleMember(req.query.CodeID);
+    if (data) {
+      return res.send(Response.successResponse(data));
+    } else {
+      return res.send(Response.dataNotFoundResponse());
+    }
+  } catch (error) {
+    return res.send(Response.dataNotFoundResponse(error));
+  }
+}
+
+var ChangePassword = async (req, res) => {
+  try {
+    let data = await UserService.getUserInfo(req.body.accountID);
+    if (data) {
+      let isPasswordMatch = await bcrypt.compare(req.body.currentpassword, data.password);
+      if (!isPasswordMatch) {
+        return res.send(Response.dataNotFoundResponse(null, 'Mật khẩu không đúng'));
+      } else {
+        let hashedPassword = await bcrypt.hash(req.body.newPassword, 10);
+        let data = await UserService.ChangePassword(hashedPassword, req.body.accountID)
+        if (data == true) {
+          return res.send(Response.successResponse());
+        } else {
+          return res.send(Response.dataNotFoundResponse());
+        }
+      }
     } else {
       return res.send(Response.dataNotFoundResponse());
     }
@@ -48,14 +119,13 @@ var loginUser = async (req, res) => {
     if (checkEmail == 0) {
       return res.send(Response.dataNotFoundResponse(null, 'Email không tồn tại'));
     }
-    const isPasswordMatch = await bcrypt.compare(req.body.password, data.password);
+    let isPasswordMatch = await bcrypt.compare(req.body.password, data.password);
 
     if (!isPasswordMatch) {
       return res.send(Response.dataNotFoundResponse(null, 'Mật khẩu không đúng'));
     }
-    const accessToken = await signAccessToken(data.accountID)
-    console.log(accessToken)
-    const refreshToken = await signRefreshToken(data.accountID)
+    let accessToken = await signAccessToken(data.accountID)
+    let refreshToken = await signRefreshToken(data.accountID)
     return res.send({ accessToken, refreshToken })
 
   } catch (error) {
@@ -110,7 +180,6 @@ var refreshToken = async (req, res) => {
 var registerGenealogy = async (req, res) => {
   try {
     const value = req.body;
-    console.log(req.body)
     let codeID;
     let doesExist = true;
 
@@ -178,12 +247,9 @@ var setRole = async (req, res) => {
 
 var checkCodeID = async (req, res) => {
   try {
-    console.log(req.body)
     let CodeID = req.body.codeID;
     let accountID = req.body.accountID;
     let doesExist = await UserService.checkCodeID(CodeID);
-    console.log('CodeID: ' + CodeID)
-    console.log('accountID: ' + accountID)
     if (doesExist > 0) {
       let checkCodeIdCreator = await UserService.checkCodeIdCreator(accountID, CodeID, 1);
       console.log('checkCodeIdCreator: ' + checkCodeIdCreator)
@@ -198,7 +264,6 @@ var checkCodeID = async (req, res) => {
       return res.send(Response.dataNotFoundResponse(CodeID, `Mã ${CodeID} Không tồn tại`))
     }
 
-    // return res.json({ doesExist }); // Trả về true hoặc false trong đối tượng doesExist
   } catch (error) {
     res.status(error.status || 500).json({ error: error.message });
   }
@@ -211,6 +276,64 @@ function generateRandomNumber() {
   return randomNumber;
 }
 
+var forgetPassword = async (req, res) => {
+  try {
+    const email = req.body.email
+    let checkEmail = await UserService.checkMail(email);
+
+    if (checkEmail == 0) {
+      return res.send(Response.dataNotFoundResponse(null, 'Email không tồn tại'));
+    }
+    else {
+      const token = await signAccessToken(email)
+      try {
+        const data = await UserService.UpdateAccount(email, token)
+        //guiw mail
+        if (data == true) {
+          return res.send(Response.successResponse(null, 'Vui lòng kiểm tra hộp thư đến trong gmail của bạn'));
+        }
+        return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+      } catch (error) {
+        return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+      }
+    }
+
+  } catch (error) {
+    return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+
+  }
+}
+
+var resetPassword = async (req, res) => {
+  try {
+    const token = req.query.token;
+    const email = await verifyRepassToken(token)
+    const tokenData = UserService.checkToken(token);
+    if (tokenData == 0) {
+      return res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống'));
+    }
+
+    if (req.body.password !== req.body.repassword) {
+      return res.send(Response.dataNotFoundResponse(null, 'Nhập Lại Mật khẩu không trùng nhau'));
+    }
+    else {
+      let hashedPassword = await bcrypt.hash(req.body.password, 10);
+      let data = await UserService.UpdatePassword(hashedPassword, email)
+      if (data == true) {
+        return res.send(Response.successResponse());
+      } else {
+        return res.send(Response.dataNotFoundResponse());
+      }
+    }
+  } catch (error) {
+    return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+
+  }
+}
+
 module.exports = {
-  registerUser, loginUser, refreshToken, registerGenealogy, getGenealogy, setRole, checkCodeID, getUserInfor, getUserCodeID,getHistoryCodeID
+  registerUser, loginUser, refreshToken, registerGenealogy, getGenealogy, setRole,
+  checkCodeID, getUserInfor, getUserCodeID, getHistoryCodeID, ChangePassword, getListRoleMember,
+  forgetPassword, resetPassword, getMemberRole, changeUsername
+
 };

@@ -1,4 +1,5 @@
 var Nodemailer = require('nodemailer');
+const sgMail = require('@sendgrid/mail')
 
 var transporter = Nodemailer.createTransport({
     host: "smtp-relay.sendinblue.com",
@@ -20,4 +21,19 @@ const sendEmail = (objData) => {
     });
 }
 
-module.exports = { sendEmail };
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+const sendEmailBySendGrid = (objData) => {
+    try {
+        sgMail.send(objData)
+            .then(() => { console.log('Email sent successfully') })
+            ;
+        return true;
+    } catch (error) {
+        console.log(error)
+        return false;
+    }
+}
+
+
+module.exports = { sendEmail, sendEmailBySendGrid };

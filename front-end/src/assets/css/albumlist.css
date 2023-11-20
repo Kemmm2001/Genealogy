@@ -16,3 +16,37 @@
     height: 25%;
     background-color: #FFFFFF;
 }
+
+.pic-container{
+    justify-content: space-around;
+}
+
+.pic-list{
+    height: 64px;
+    background-color: black;
+    justify-content: center;
+}
+
+.pic-in-list{
+    height: 48px;
+    width: 72px;
+    background-color: #FFFFFF;
+    margin: 4px;
+}
+
+.pic-in-list.chosen{
+    border: 3px solid sandybrown;
+}
+
+.main-pic{
+    height: 300px;
+    width: 600px;
+    background-color: black;
+}
+
+.editAlbum-container .vm--modal{
+    height: 480px !important;
+    width: 888px !important;
+    inset: 0 !important;
+    margin: auto;
+}
