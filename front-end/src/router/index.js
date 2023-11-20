@@ -81,6 +81,11 @@ const routes = [
     name: "forgotpwd",
     component: () => import("../views/ForgotPwd.vue"),
   },
+  {
+    path: "/information/history",
+    name: "history",
+    component: () => import("../views/FamilyHistory.vue"),
+  },
 ];
 
 const router = new Router({
