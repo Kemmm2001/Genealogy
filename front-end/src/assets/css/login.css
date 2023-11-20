@@ -168,3 +168,14 @@
     right: 0;
     z-index: 1;
 }
+
+.loginhistory-container th, .loginhistory-container td{
+    height: 42px;
+}
+
+.loginhistory-container .vm--container{
+    inset: 0;
+    margin: auto;
+    height: 352px;
+    width: 90%;
+}

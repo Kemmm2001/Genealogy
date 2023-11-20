@@ -16,30 +16,21 @@
 
 .main-screen {
     height: 100%;
-    flex-grow: 1;
-}
-
-.sidebar-list {
-    width: 16% !important;
-}
-
-.sidebar {
-    background-color: #13191C;
-    width: 25% !important;
-    transition: 0.3s;
+    width: 100%;
 }
 
 .list {
     background-color: #3A4B54;
-    width: 25% !important;
+    width: 3% !important;
     padding: 4px;
+    position: absolute;
+    left: 0;
+    z-index: 1;
+    transition: 0.3s;
 }
 
-.config-sidebar {
-    background-color: #D9D9D9;
-    width: 0%;
-    height: 100%;
-    transition: 0.24s;
+.list.expanded{
+    width: 19% !important;
 }
 
 .form-select {
