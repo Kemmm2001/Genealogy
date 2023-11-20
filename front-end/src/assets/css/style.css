@@ -21,16 +21,12 @@
 
 .list {
     background-color: #3A4B54;
-    width: 3% !important;
+    width: 19% !important;
     padding: 4px;
     position: absolute;
     left: 0;
     z-index: 1;
     transition: 0.3s;
-}
-
-.list.expanded{
-    width: 19% !important;
 }
 
 .form-select {
