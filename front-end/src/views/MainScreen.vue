@@ -1030,7 +1030,6 @@ export default {
           field_1: "dob",
           field_2: "generation",
         },
-        lazyLoading: false,
         nodeMouseClick: FamilyTree.action.none,
       });
       this.family.onInit(() => {
@@ -1705,8 +1704,10 @@ export default {
       var nodeElement;
       for (let i = 0; i < this.nodes.length; i++) {
         nodeElement = this.family.getNodeElement(this.nodes[i].id);
-        nodeElement.classList.remove("selected");
-        nodeElement.classList.remove("notselected");
+        if(nodeElement != null){
+          nodeElement.classList.remove("selected");
+          nodeElement.classList.remove("notselected");
+        }
       }
     },
     highLightSelectCompareNode(SelectNode) {
@@ -1761,10 +1762,15 @@ export default {
         this.nodes.forEach((node) => {
           if (memberIds.includes(node.id)) {
             nodeElement = this.family.getNodeElement(node.id);
-            nodeElement.classList.add("selected");
+            if(nodeElement != null){
+              nodeElement.classList.add("selected");
+            }
+            
           } else {
             nodeElement = this.family.getNodeElement(node.id);
-            nodeElement.classList.add("notselected");
+            if(nodeElement != null){
+              nodeElement.classList.add("notselected");
+            }
           }
         });
     },

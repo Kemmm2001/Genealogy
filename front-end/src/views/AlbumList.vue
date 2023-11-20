@@ -8,16 +8,6 @@
           <div class="w-100 my-2 mx-2">
             <input type="text" class="form-control modal-item m-0" placeholder="Nhập tên album..." />
           </div>
-          <div class="d-flex w-100 my-2">
-            <div class="px-2">Phân trang</div>
-            <div class="d-flex align-items-center">
-              <select class="form-select px-2 py-0">
-                <option selected value="1">10</option>
-                <option value="2">20</option>
-                <option value="3">30</option>
-              </select>
-            </div>
-          </div>
         </div>
         <div class="col-md-6 d-flex align-items-center" style="justify-content: right;">
           <button @click="openAddAlbumModal()"
@@ -84,13 +74,6 @@
             </div>
           </div>
           <div class="d-flex flex-column">
-            <!-- <div class="d-flex flex-row mt-4 mb-1 align-items-center">
-              <label class="col-3 d-flex justify-content-center" for="off-url" style="cursor: pointer;">Ảnh bìa
-                album</label>
-              <div class="mx-2 w-100">
-                <input id="off-url" type="file" class="form-control input-file"  @change="handleFileChange" />
-              </div>
-            </div>-->
             <div class="d-flex flex-row my-1 align-items-center">
               <label class="col-3 d-flex justify-content-center" for="article-name" style="cursor: pointer;">Tên
                 album</label>
@@ -102,12 +85,6 @@
               <label class="col-3 d-flex justify-content-center" for="article-des" style="cursor: pointer;">Mô tả</label>
               <div class="mx-2 w-100">
                 <input id="article-des" type="text" v-model="albumPhoto.description" class="form-control" />
-              </div>
-            </div>
-            <div class="d-flex flex-row my-1 align-items-center">
-              <label class="col-3 d-flex justify-content-center" for="off-url" style="cursor: pointer;">Thêm ảnh</label>
-              <div class="mx-2 w-100">
-                <input id="off-url" type="file" class="form-control input-file" @change="handleFileChangePhoto" />
               </div>
             </div>
             <div class="d-flex flex-row my-1 align-items-center">
@@ -126,7 +103,30 @@
         </div>
       </div>
     </modal>
-
+    <div class="addPhoto-container">
+      <modal name="addPhoto-modal">
+        <div class="form-group">
+          <div class="add-photo-modal" style="background-color: white;height:700px">
+            <div class="MuiBox-root css-1l8y0m9" tabindex="-1">
+              <div class="MuiGrid-root MuiGrid-container css-1d3bbye">
+                <div class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-9 css-1xd5sck">
+                  <h2 class="MuiTypography-root MuiTypography-h3 css-1nlwkog" id="modal-modal-title">Thêm ảnh</h2>
+                </div>
+                <div class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-3 css-1ud8c4x">
+                  <button tabindex="0" type="submit">
+                    <span class="MuiButton-startIcon MuiButton-iconSizeSmall css-16rzsu1">
+                      <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-vubbuv">
+                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path>
+                      </svg>
+                    </span>Thêm<span class="MuiTouchRipple-root css-w0pj6f"></span>
+                  </button>
+                </div>
+              </div>
+              </div>
+          </div>
+        </div>
+      </modal>
+    </div>
     <div class="editAlbum-container">
       <modal name="editAlbum-modal">
         <div class="form-group">
@@ -143,36 +143,27 @@
             </div>
             <div class="d-flex flex-column">
               <div class="pic-list d-flex flex-row align-items-center mb-2">
-                <div class="pic-in-list"></div>
-                <div class="pic-in-list"></div>
-                <div class="pic-in-list"></div>
-                <div class="pic-in-list"></div>
-                <div class="pic-in-list"></div>
-                <div class="pic-in-list chosen"></div>
-                <div class="pic-in-list"></div>
-                <div class="pic-in-list"></div>
-                <div class="pic-in-list"></div>
-                <div class="pic-in-list"></div>
-                <div class="pic-in-list"></div>
+                <button type="button" class="btn btn-primary mr-2"  @click="triggerFileInput">Thêm ảnh</button>
+                <input ref="fileAdd" type="file" class="form-control" @change="handleFileChangePhoto" style="display: none;" />
               </div>
-              <div class="pic-container d-flex flex-row mb-2">
-                <div class="d-flex align-items-center" style="transform: rotate(180deg);">
-                  <svg class="change-pic-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                    <path
-                      d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
-                  </svg>
+              <div class="pic-container d-flex flex-row mb-2" v-for="photo in FamilyPhotoList" :key=photo.PhotoID>
+                <!-- <div class="pic-in-list"></div>
+                <div class="pic-in-list"></div>
+                <div class="pic-in-list"></div>
+                <div class="pic-in-list"></div>
+                <div class="pic-in-list"></div> -->
+                <div class="pic-in-list chosen" @click="getPhotoCurrentId()">
+                  {{ photo.PhotoUrl }}
                 </div>
-                <div class="main-pic"></div>
-                <div class="d-flex align-items-center">
-                  <svg class="change-pic-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                    <path
-                      d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
-                  </svg>
-                </div>
+                <!-- <div class="pic-in-list"></div>
+                <div class="pic-in-list"></div>
+                <div class="pic-in-list"></div>
+                <div class="pic-in-list"></div>
+                <div class="pic-in-list"></div> -->
               </div>
               <div class="modal-footer">
                 <div class="d-flex justify-content-end" style="padding-right: 12px;">
-                  <button type="button" class="btn btn-danger mr-2">Xóa ảnh</button>
+                  <button type="button" class="btn btn-danger mr-2" :disabled="isButtonDisabled">Xóa ảnh</button>
                   <button style="margin-left:10px" type="button" class="btn btn-primary mr-2">Lưu</button>
                 </div>
               </div>
@@ -200,19 +191,28 @@ export default {
         albumID: null,
         file: null,
       },
+      FamilyPhotoListAdd:[],
       albumCurrentId: null,
       photoCurrentId: null,
       AlbumPhotoList: [],
       FamilyPhotoList: [],
       trClicked: false,
+      isButtonDisabled:true,
     };
   },
   methods: {
+    triggerFileInput() {
+      // Sử dụng $refs để truy cập đến phần tử input
+      this.$refs.fileAdd.click();
+    },
     getAlbumCurrentId(id) {
       this.albumCurrentId = id;
+      this.getFamilyPhotoByAlbumId(id);
     },
+    
     getPhotoCurrentId(id) {
-      this.photoCurrentId = id
+      this.photoCurrentId = id;
+      this.isButtonDisabled = false;
     },
     openAddAlbumModal() {
       this.$modal.show("addAlbum-modal");
@@ -225,6 +225,7 @@ export default {
     },
     closeEditAlbumModal() {
       this.$modal.hide("editAlbum-modal");
+      this.isButtonDisabled = true;
     },
     handleFileChangePhoto(event) {
       this.familyPhoto.file = event.target.files[0];
@@ -267,15 +268,15 @@ export default {
         },
       })
         .then((response) => {
-          this.AlbumPhotoList = response.data.data;
+          this.FamilyPhotoList = response.data.data;
         })
         .catch((e) => {
           console.log(e);
         });
     },
-    addFamilyPhoto() {
+    addFamilyPhotoByAlbumId(id) {
       const formData = new FormData();
-      formData.append("AlbumID", 1);
+      formData.append("AlbumID", id);
       formData.append("Photo", this.familyPhoto.file);
       HTTP.post("familyphoto", formData)
         .then(() => { })
@@ -284,12 +285,15 @@ export default {
         });
     },
     addAlbumPhoto() {
-      const formData = new FormData();
-      formData.append("AlbumName", this.albumPhoto.albumName);
-      formData.append("CodeID", 258191);
-      HTTP.post("albumphoto", formData)
+      // const formData = new FormData();
+      // formData.append("AlbumName", this.albumPhoto.albumName);
+      // formData.append("CodeID", '123');
+      HTTP.post("albumphoto", {
+        AlbumName: this.albumPhoto.albumName,
+        CodeID:123
+      })
         .then(() => {
-          this.addFamilyPhoto();
+          
         })
         .catch((e) => {
           console.log(e);
@@ -298,6 +302,7 @@ export default {
   },
   mounted() {
     this.getAlbumPhotoByCodeId();
+    this.$modal.show("addPhoto-modal");
   },
   created() {
     // EventBus.$emit("HeadList", false);
