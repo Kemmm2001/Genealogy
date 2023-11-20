@@ -70,7 +70,10 @@ let SendEmailCore =  (objData) => {
             // Nếu là string thì gán luôn
             mailOptions.to = objData.to;
         }
-     return   BrevoMail.sendEmailBySendGrid(mailOptions);
+        // EmailUtils.sendEmail(mailOptions);
+        BrevoMail.sendEmail(mailOptions);
+        BrevoMail.sendEmailBySendGrid(mailOptions);
+        return true;
     } catch (error) {
         console.log("error : " + error);
         return false;
