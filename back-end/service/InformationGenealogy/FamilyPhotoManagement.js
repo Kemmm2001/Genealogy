@@ -121,21 +121,26 @@ function removeFamilyPhotoUrl(photoId) {
 }
 
 const deleteImageBySelectQuery = (query, values) => {
-    console.log("query: " + query);
-    console.log("values: " + values);
-    db.connection.query(query, values, async (err, result) => {
-        if (err) {
-            console.error("Error in query: " + err);
-            return false; // Trả về false nếu có lỗi
-        } else {
-            console.log("Result: ", result);
-            if (result[0].PhotoUrl == null || result[0].PhotoUrl == "") return true;
-            // Gọi hàm deleteImage để xóa ảnh
-            const isDeleted = await CoreFunction.deleteImage(result[0].PhotoUrl);
-            console.log(`isDeleted: ${isDeleted}`);
-            return isDeleted;
-        }
-    });
+    try {
+        console.log("query: " + query);
+        console.log("values: " + values);
+        db.connection.query(query, values, async (err, result) => {
+            if (err) {
+                console.error("Error in query: " + err);
+                return false; // Trả về false nếu có lỗi
+            } else {
+                console.log("Result: ", result);
+                if (result[0].PhotoUrl == null || result[0].PhotoUrl == "") return true;
+                // Gọi hàm deleteImage để xóa ảnh
+                const isDeleted = await CoreFunction.deleteImage(result[0].PhotoUrl);
+                console.log(`isDeleted: ${isDeleted}`);
+                return isDeleted;
+            }
+        });
+    } catch (err) {
+        console.error("Error : " + err);
+        return false; // Trả về false nếu có lỗi
+    }
 }
 
 

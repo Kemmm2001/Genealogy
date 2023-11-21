@@ -9,7 +9,6 @@ var addFamilyPhoto = async (req, res) => {
         console.log('Request body: ', req.body);
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
-            'PhotoUrl',
             'AlbumID'
         ];
         // Kiểm tra xem có đủ các trường của FamilyPhoto không
@@ -30,7 +29,7 @@ var addFamilyPhoto = async (req, res) => {
         return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
-        return res.send(Response.internalServerErrorResponse(e));
+        return res.send(Response.internalServerErrorResponse());
     }
 };
 
@@ -72,7 +71,7 @@ var updateFamilyPhoto = async (req, res) => {
         return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
-        return res.send(Response.internalServerErrorResponse(e));
+        return res.send(Response.internalServerErrorResponse());
     }
 };
 
@@ -105,7 +104,7 @@ var deleteFamilyPhoto = async (req, res) => {
         return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
-        return res.send(Response.internalServerErrorResponse(e));
+        return res.send(Response.internalServerErrorResponse());
     }
 };
 
@@ -133,7 +132,7 @@ var getFamilyPhoto = async (req, res) => {
 
     } catch (e) {
         console.log("Error: " + e);
-        return res.send(Response.internalServerErrorResponse(e));
+        return res.send(Response.internalServerErrorResponse());
     }
 };
 
@@ -144,7 +143,7 @@ var getAllFamilyPhotos = async (req, res) => {
         return res.send(Response.successResponse(data));
     } catch (e) {
         console.log("Error: " + e);
-        return res.send(Response.internalServerErrorResponse(e));
+        return res.send(Response.internalServerErrorResponse());
     }
 };
 
