@@ -23,7 +23,10 @@
             </div>
             <div class="album-cover" v-if="album.backGroundPhoto == null"></div>
             <div class="album-general-info d-flex align-items-center">
-              <div class="d-flex justify-content-center w-100">{{ album.AlbumName }}</div>
+              <div class="d-flex justify-content-center w-100">{{ album.AlbumName }} <i class="bi bi-trash"></i> <i class="bi bi-pen"></i></div>
+              <div class="d-flex justify-content-center w-100">
+                <i class="bi bi-trash"></i> <i class="bi bi-pen"></i>
+              </div>
             </div>
           </div>
         </div>
@@ -78,7 +81,7 @@
               <label class="col-3 d-flex justify-content-center" for="article-name" style="cursor: pointer;">Tên
                 album</label>
               <div class="mx-2 w-100">
-                <input id="article-name" type="text" v-model="albumPhoto.albumName" class="form-control" />
+                <input id="article-name" type="text" v-model="albumPhoto.AlbumName" class="form-control" />
               </div>
             </div>
             <div class="d-flex flex-row my-1 align-items-center">
@@ -109,12 +112,12 @@
           <div class="add-photo-modal" style="background-color: white;height:700px">
             <div class="add-photo-layout">
               <button type="button" class="btn btn-primary mr-2"  @click="triggerFileInput">Thêm ảnh</button>
-              <input ref="fileAdd" type="file" class="form-control" @change="handleFileChangePhoto" style="display: none;" />
-              <button class="btn btn-danger mr-2">Xóa Ảnh</button>
+              <input ref="fileAdd" type="file" class="hidden-input form-control" @change="handleFileChangePhoto" style="display: none;" />
+              <button class="btn btn-danger mr-2" :disabled="isButtonDisabled" @click="removeFamilyPhotoAdd()">Xóa Ảnh</button>
               <button class="btn btn-primary mr-2" @click="addFamilyPhotoByAlbumId()">Lưu</button>
             </div>
             <div class="add-photo-list d-flex">
-              <div class="add-photo" v-for="(photo,index) in FamilyPhotoListAddShow" :key="index">
+              <div class="add-photo" v-for="(photo,index) in FamilyPhotoListAddShow" :key="index" :class="{ choose: index == indexClickPhotoAdd }" @click="clickPhotoAdd(index)">
                 <img :src="photo" style="width: 300px;">
               </div>
             </div>
@@ -126,14 +129,15 @@
       <modal name="editAlbum-modal">
         <div class="form-group">
           <div class="form-group">
+            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">{{albumPhoto.AlbumName}}</div>
             <div class="edit-photo-modal" style="background-color: white;height:700px">
-              <div class="add-photo-layout">
-                <button type="button" class="btn btn-primary mr-2"  @click="triggerFileInput">Thêm ảnh</button>
-                <input ref="fileAdd" type="file" class="form-control" @change="handleFileChangePhoto" style="display: none;" />
-                <button class="btn btn-danger mr-2" :disabled="isButtonDisabled" @click="removeFamilyPhotoByPhotoId()">Xóa Ảnh</button>
+              <div class="add-photo-layout d-flex">
+                <button class="btn btn-primary mr-2" style="margin: 10px;" @click="triggerFileInput">Thêm ảnh</button>
+                <input id="fileAdd" type="file" class="hidden-input form-control" @change="handleFileChangePhoto" style="display: none;" />
+                <button class="btn btn-danger mr-2" style="margin: 10px;"  :disabled="isButtonDisabled" @click="removeFamilyPhotoByPhotoId()">Xóa Ảnh</button>
               </div>
               <div class="add-photo-list d-flex">
-                <div class="add-photo" v-for="(photo,index) in FamilyPhotoList" :key="index" @click="getPhotoCurrentId(photo.PhotoID)">
+                <div class="add-photo" v-for="(photo,index) in FamilyPhotoList" :class="{ choose: index == indexClickPhoto }" :key="index" @click="clickPhoto(index),getPhotoCurrentId(photo.PhotoID)" style="margin-left:10px;">
                   <img :src="photo.PhotoUrl" style="width: 300px;">
                 </div>
               </div>
@@ -152,10 +156,10 @@ export default {
   data() {
     return {
       albumPhoto: {
-        albumName: null,
-        codeID: 258191,
+        AlbumName: null,
+        CodeID: 258191,
         description: null,
-        backGroundPhoto: null,
+        BackGroundPhoto: null,
       },
       familyPhoto: {
         albumID: null,
@@ -163,22 +167,38 @@ export default {
       },
       FamilyPhotoListAdd:[],
       FamilyPhotoListAddShow:[],
+
       albumCurrentId: null,
       photoCurrentId: null,
+
       AlbumPhotoList: [],
       FamilyPhotoList: [],
+
       trClicked: false,
       isButtonDisabled:true,
       imageSrc:null,
+      indexClickPhoto:null,
+      indexClickPhotoAdd:null,
     };
   },
   methods: {
+    clickPhoto(index){
+      this.indexClickPhoto = index
+    },
+    clickPhotoAdd(index){
+      this.indexClickPhotoAdd = index
+      this.isButtonDisabled = false;
+    },
     triggerFileInput() {
-      // Sử dụng $refs để truy cập đến phần tử input
-      this.$refs.fileAdd.click();
+      const fileInput = document.getElementById("fileAdd");
+      if(fileInput != null){
+        fileInput.click();
+      }
+        
     },
     getAlbumCurrentId(id) {
       this.albumCurrentId = id;
+      this.getAlbumPhotoByAlbumId();
       this.getFamilyPhotoByAlbumId();
     },
     
@@ -187,6 +207,7 @@ export default {
       this.isButtonDisabled = false;
     },
     openAddAlbumModal() {
+      this.albumPhoto = [];
       this.$modal.show("addAlbum-modal");
     },
     closeAddAlbumModal() {
@@ -223,7 +244,12 @@ export default {
       this.openAddPhotoModal();
     },
     handleFileChangeBackGround(event) {
-      this.albumPhoto.backGroundPhoto = event.target.files[0];
+      this.albumPhoto.BackGroundPhoto = event.target.files[0];
+    },
+    removeFamilyPhotoAdd(){
+      this.FamilyPhotoListAddShow.splice(this.indexClickPhotoAdd, 1);
+      this.FamilyPhotoListAdd.splice(this.indexClickPhotoAdd, 1);
+      this.isButtonDisabled = true;
     },
     getFamilyPhotoByPhotoId() {
       HTTP.get("familyphoto", {
@@ -241,16 +267,23 @@ export default {
         });
     },
     removeFamilyPhotoByPhotoId() {
-      HTTP.delete("familyphoto", {
+      const isConfirmed = window.confirm("Bạn có chắc chắn muốn xóa ảnh này?");
+      if (isConfirmed) {
+        HTTP.delete("familyphoto", {
         params: {
           PhotoID: this.photoCurrentId,
         },
       })
-        .then(() => {
+        .then((response) => {
+          if(response.data.success){
+            this.getFamilyPhotoByAlbumId()
+          }
         })
         .catch((e) => {
           console.log(e);
         });
+      }
+      this.isButtonDisabled=true;
     },
     getAlbumPhotoByCodeId() {
       HTTP.get("albumphoto", {
@@ -267,6 +300,22 @@ export default {
           console.log(e);
         });
     },
+    getAlbumPhotoByAlbumId() {
+      HTTP.get("albumphoto", {
+        params: {
+          AlbumID: this.albumCurrentId,
+        },
+      })
+        .then((response) => {
+          if(response.data.success == true){
+            this.albumPhoto = response.data.data[0];
+            console.log(this.albumPhoto)
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     getFamilyPhotoByAlbumId() {
       HTTP.get("familyphoto", {
         params: {
@@ -276,6 +325,8 @@ export default {
         .then((response) => {
           if(response.data.success == true){
             this.FamilyPhotoList = response.data.data;
+          }else{
+            this.FamilyPhotoList = [];
           }
         })
         .catch((e) => {
@@ -289,7 +340,10 @@ export default {
         formData.append("AlbumID", this.albumCurrentId);
         formData.append("Photo", this.FamilyPhotoListAdd[i]);
         HTTP.post("familyphoto", formData)
-        .then(() => {
+        .then((response) => {
+          if(response.data.success){
+            this.getFamilyPhotoByAlbumId()
+          }
          })
         .catch((e) => {
           console.log(e);
@@ -322,3 +376,8 @@ export default {
   },
 };
 </script>
+<style>
+.add-photo.choose {
+  border: 5px solid aquamarine;
+}
+</style>
