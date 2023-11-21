@@ -164,7 +164,7 @@
                 <textarea v-model="eventFamily.Description" class="w-100 h-100 text-area description" placeholder="Mô tả"></textarea>
               </div>
               <div class="item mt-2 px-2 d-flex flex-row">
-                <div class="d-flex align-items-center" style="width: 38px; padding-right: 8px;">Từ(*)</div>
+                <div class="d-flex align-items-center" style="width: 38px; margin-right: 8px;">Từ(*)</div>
                 <input v-model="startHour" class="form-control time-input" type="number" min="00" max="23" />
                 <div class="d-flex align-items-center">:</div>
                 <input v-model="startMinute" class="form-control time-input" type="number" min="00" max="59" />
@@ -173,7 +173,7 @@
                 </div>
               </div>
               <div class="item mt-2 px-2 d-flex flex-row">
-                <div class="d-flex align-items-center" style="width: 38px; padding-right: 8px;">Đến(*)</div>
+                <div class="d-flex align-items-center" style="width: 38px; margin-right: 8px;">Đến(*)</div>
                 <input v-model="endHour" class="form-control time-input" type="number" min="00" max="23" />
                 <div class="d-flex align-items-center">:</div>
                 <input v-model="endMinute" class="form-control time-input" type="number" min="00" max="59" />
