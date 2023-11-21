@@ -39,8 +39,8 @@
       </div>
     </div>
     <div class="h-100 position-absolute" style="top: 0; right: 0; width: 80%; background-color: gray;">
-      <draggable :list="list" :disabled="!enabled" class="list-group" ghost-class="ghost" :move="checkMove" @start="dragging = true" @end="dragging = false">
-        <div class="list-group-item" v-for="element in list" :key="element.name">{{ element.name }}</div>
+      <draggable :list="listHistory" :disabled="!enabled" class="list-group" ghost-class="ghost" :move="checkMove" @start="dragging = true" @end="dragging = false">
+        <div class="list-group-item" v-for="element in listHistory" :key="element.name">{{ element.Description }}</div>
       </draggable>
     </div>
     <div class="addHistory-container">
@@ -80,6 +80,7 @@
 
 <script>
 import draggable from "vuedraggable";
+import { HTTP } from "../assets/js/baseAPI";
 
 export default {
   components: {
@@ -87,18 +88,32 @@ export default {
   },
   data() {
     return {
+      CodeID: null,
+      listHistory: null,
       enabled: true,
       list: [
         { name: "John", id: 0 },
-        { name: "Joao", id: 1 },
-        { name: "Jean", id: 2 },
+        { name: "Joao123", id: 2 },
+        { name: "Jean", id: 1 },
       ],
       dragging: false,
     };
   },
   methods: {
-    checkMove() {
-      console.log("vào đây");
+    checkMove() {},
+    getListHistory() {
+      HTTP.get("familyhistory", {
+        params: {
+          CodeID: this.CodeID,
+        },
+      })
+        .then((response) => {
+          this.listHistory = response.data.data;
+          console.log()
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
     showAddHistoryModal() {
       this.$modal.show("addHistory-modal");
@@ -107,7 +122,17 @@ export default {
       this.$modal.hide("addHistory-modal");
     },
   },
+  mounted() {
+    if (localStorage.getItem("CodeID") != null) {
+      this.CodeID = localStorage.getItem("CodeID");
+    } else {
+      if (localStorage.getItem("accountID") != null) {
+        this.$router.push("/familycode");
+      } else {
+        this.$router.push("/login");
+      }
+    }
+    this.getListHistory();
+  },
 };
 </script>
-<style>
-</style>
