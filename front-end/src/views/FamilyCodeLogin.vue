@@ -106,27 +106,6 @@
                   <td>{{ h.AccessTime }}</td>
                   <td>{{ h.CodeID }}</td>
                 </tr>
-                <tr>
-                  <td>AAAAAAAAA</td>
-                  <td>AAAAAAAAA</td>
-                </tr>
-                <tr>
-                  <td>AAAAAAAAA</td>
-                  <td>AAAAAAAAA</td>
-                </tr>
-                <tr>
-                  <td>AAAAAAAAA</td>
-                  <td>AAAAAAAAA</td>
-                </tr>
-                <tr>
-                  <td>AAAAAAAAA</td>
-                  <td>AAAAAAAAA</td>
-                </tr>
-                <tr>
-                  <td>AAAAAAAAA</td>
-                  <td>AAAAAAAAA</td>
-                </tr>
-
               </tbody>
             </table>
           </div>

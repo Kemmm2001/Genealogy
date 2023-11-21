@@ -40,8 +40,8 @@
 
 .event-screen .add-event-container .vm--container{
     width: 50%;
-    left: 0;
-    right: 0;
+    height: 598px;
+    inset: 0;
     margin: auto;
 }
 
