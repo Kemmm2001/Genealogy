@@ -318,14 +318,14 @@
                   </div>
                 </div>
                 <div class="create-mail-topic px-2 w-100">
-                  <input type="text" class="mail-topic w-100 p-2" placeholder="Chủ đề email" />
+                  <input v-model="subjectEmail" type="text" class="mail-topic w-100 p-2" placeholder="Chủ đề email" />
                 </div>
                 <div class="create-mail-content px-2 w-100">
-                  <textarea style="resize: none; outline: none; border: none;" class="h-100 w-100 p-2" placeholder="Viết gì đó..."></textarea>
+                  <textarea v-model="contentEmail" style="resize: none; outline: none; border: none;" class="h-100 w-100 p-2" placeholder="Viết gì đó..."></textarea>
                 </div>
                 <div class="create-mail-footer d-flex flex-row px-5 py-2 w-100" style="justify-content: end;">
                   <div style="border-radius: 50% 0 0 50%; background: #007bff; width: 25px;"></div>
-                  <div class="btn d-flex align-items-center justify-content-center" style="padding: 4px 12px; background: #007bff; color: #FFFFFF; border-radius: 0">Gửi</div>
+                  <div class="btn d-flex align-items-center justify-content-center" style="padding: 4px 12px; background: #007bff; color: #FFFFFF; border-radius: 0" @click="sendEmailToMember()">Gửi</div>
                   <div style="border-radius: 0 50% 50% 0; background: #007bff; width: 25px;"></div>
                 </div>
               </div>
@@ -890,6 +890,9 @@ export default {
       isRemoveRelationship: false,
       TitleConfirm: null,
 
+      subjectEmail: null,
+      contentEmail: null,
+
       generationMember: null,
       CodeID: null,
       idPaternalAncestor: null,
@@ -1162,6 +1165,39 @@ export default {
       this.generationMember = this.objMemberInfor.Generation;
       console.log("Vào Take: " + this.objMemberInfor.Generation);
       this.IsDead = this.objMemberInfor.IsDead;
+    },
+    sendEmailToMember() {
+      console.log("vào đây");
+      if (
+        this.subjectEmail != null &&
+        this.subjectEmail != "" &&
+        this.contentEmail != null &&
+        this.contentEmail != "" &&
+        this.ListPhoneToSendMessage.length > 0
+      ) {
+        HTTP.post("send-email", {
+          listID: this.ListPhoneToSendMessage,
+          subject: this.subjectEmail,
+          text: this.contentEmail,
+          CodeID: this.CodeID,
+        })
+          .then((response) => {
+            if (response.data.success == true) {
+              this.NotificationsScuccess("Gửi email thành công");
+              this.expandCreateEmail = false;
+              this.getListHistoryEmail();
+            } else {
+              this.NotificationsDelete(response.data.message);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } else if (this.ListPhoneToSendMessage.length == 0) {
+        this.NotificationsDelete("Hãy chọn những người bạn muốn gửi thông báo");
+      } else {
+        this.NotificationsDelete("Không có thông báo gì để gửi ");
+      }
     },
     sendMessageToMember() {
       if (
@@ -1799,6 +1835,9 @@ export default {
       this.ListPhoneToSendMessage = [];
       this.contentMessage = null;
       this.checkAll = false;
+      this.expandCreateEmail = false;
+      this.smsSelected = true;
+      this.emailSelected = false;
       this.$modal.show("noti-modal");
     },
     closeNotiModal() {
@@ -2000,7 +2039,7 @@ export default {
           CodeID: this.CodeID,
         },
       })
-        .then((response) => {       
+        .then((response) => {
           if (response.data.success == true) {
             this.ListHistoryEmail = response.data.data;
           }

@@ -91,11 +91,11 @@ var checkAlbumExist = async (req) => {
 }
 
 var checkAlbumIDExist = async (req) => {
-    try {
+    try {      
         let dataAlbumID;
-        if (req.body.AlbumID != null && req.body.AlbumID != undefined && req.body.AlbumID !== "") {
-            console.log(`Get AlbumPhoto by AlbumID : ${req.body.AlbumID}`);
-            dataAlbumID = await AlbumPhotoManagementService.getAlbumPhotoById(req.body.AlbumID)
+        if (req.query.AlbumID != null && req.query.AlbumID != undefined && req.query.AlbumID !== "") {
+            console.log(`Get AlbumPhoto by AlbumID : ${req.query.AlbumID}`);
+            dataAlbumID = await AlbumPhotoManagementService.getAlbumPhotoById(req.query.AlbumID)
         }
         console.log("dataAlbumID: " + dataAlbumID);
         if (dataAlbumID == null || dataAlbumID.length == 0) {

@@ -56,6 +56,28 @@ async function getListPhone(ListMemberID) {
     });
 }
 
+async function getListEmail(ListMemberID) {
+    let ListEmail = [];
+    return new Promise((resolve, reject) => {
+        let count = 0;
+        for (let i = 0; i < ListMemberID.length; i++) {
+            let query = `SELECT Email FROM genealogy.contact
+            where MemberID = ${ListMemberID[i]}`;
+            db.connection.query(query, (err, result) => {
+                if (!err && result.length > 0 && result[0].Email != null) {
+                    ListEmail.push(result[0].Email);
+                } else {
+                    reject(err)
+                }
+                count++;
+                if (count === ListMemberID.length) {
+                    resolve(ListEmail);
+                }
+            });
+        }
+    });
+}
+
 async function InsertNewEvent(objData) {
     return new Promise((resolve, reject) => {
         try {
@@ -234,5 +256,5 @@ async function filterEvent(filterOptions) {
 
 module.exports = {
     getAllEvent, InsertNewEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth,
-    GetDeadDayInMonth, searchEvent, filterEvent, getListPhone, getListEventRepetition, getInformationEvent
+    GetDeadDayInMonth, searchEvent, filterEvent, getListPhone, getListEventRepetition, getInformationEvent, getListEmail
 }

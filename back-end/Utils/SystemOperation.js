@@ -38,7 +38,7 @@ function SetHistorySendEmailandSMS(content, CodeID) {
         let currentDate = new Date();
         currentDate = currentDate.toISOString().slice(0, 19).replace("T", " ");
         let query = `INSERT INTO notificationhistory (NotificationContent, NotificationDate, CodeID) VALUES ('${content}', '${currentDate}', ${CodeID}) `;
-        db.connection.query(query, (err, result) => {
+        db.connection.query(query, (err) => {
             if (err) {
                 console.log(err);
                 reject(false);
@@ -47,6 +47,19 @@ function SetHistorySendEmailandSMS(content, CodeID) {
             }
         })
     })
+}
+function SetHistorySendEmail(EmailSubject, EmailContent, CodeID) {   
+    return new Promise((resolve, reject) => {
+        let currentDate = new Date().toISOString().slice(0, 19).replace("T", " ");
+        let query = `INSERT INTO notificationemail (EmailSubject, EmailContent, EmailDate, CodeID) VALUES (?, ?, ?, ?)`;
+        db.connection.query(query, [EmailSubject, EmailContent, currentDate, CodeID], (err) => {           
+            if (err) {            
+                reject(false);
+            } else {               
+                resolve(true);
+            }
+        });
+    });
 }
 
 
@@ -89,4 +102,4 @@ schedule.scheduleJob('0 0 * * *', () => {
 
 });
 
-module.exports = { SendSMSCore, SendEmailCore, SetHistorySendEmailandSMS };
+module.exports = { SendSMSCore, SendEmailCore, SetHistorySendEmailandSMS, SetHistorySendEmail };

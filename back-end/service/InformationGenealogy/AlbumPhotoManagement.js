@@ -20,6 +20,7 @@ function getAlbumPhotoByCodeId(codeId) {
 }
 
 function getAlbumPhotoById(albumId) {
+    console.log('albumId: ' + albumId)
     return new Promise((resolve, reject) => {
         try {
             let query = `SELECT * FROM albumphoto where AlbumID  = ${albumId}`

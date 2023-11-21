@@ -160,28 +160,6 @@ var SendSMS = async (req, res) => {
 }
 
 
-var SendSMSToMember = async (req, res) => {
-    try {
-        let id = req.body.ListMemberID;
-        let contentMessage = req.body.contentMessage;
-        let action = req.body.action;
-        let CodeID = req.body.CodeID;
-
-        let data = await EventManagementService.getListPhone(id);
-        for (let i = 0; i < data.length; i++) {
-            ExecuteSendSNS(data[i], contentMessage);
-        }
-        await SetHistorySendEmailandSMS(contentMessage, action, CodeID, res);
-    } catch (error) {
-        console.log(error);
-        res.send(Response.internalServerErrorResponse(error));
-    }
-}
-
-
-
-
-
 async function SetHistorySendEmailandSMS(Content, action, CodeID, res) {
     try {
         let data = await SystemAction.SetHistorySendEmailandSMS(Content, action, CodeID);
@@ -228,6 +206,87 @@ var filterEvent = async function (req, res) {
         res.send(Response.internalServerErrorResponse(error));
     }
 }
+var SendSMSToMember = async (req, res) => {
+    try {
+        let id = req.body.ListMemberID;
+        let contentMessage = req.body.contentMessage;
+        let action = req.body.action;
+        let CodeID = req.body.CodeID;
+
+        let data = await EventManagementService.getListPhone(id);
+        for (let i = 0; i < data.length; i++) {
+            ExecuteSendSNS(data[i], contentMessage);
+        }
+        await SetHistorySendEmailandSMS(contentMessage, action, CodeID, res);
+    } catch (error) {
+        console.log(error);
+        res.send(Response.internalServerErrorResponse(error));
+    }
+}
+
+
+var sendEmailToMember = async (req, res) => {
+    try {
+        let objData = {};
+        console.log(req.body)
+        let listID = req.body.listID;
+        objData.subject = req.body.subject;
+        objData.text = req.body.text;
+        objData.html = req.body.html;
+        let CodeID = req.body.CodeID;
+        let data = await EventManagementService.getListEmail(listID);
+        if (data) {
+            for (let i = 0; i < data.length; i++) {
+                ExecuteSendEmail(data[i], objData.subject, objData.text, objData.html, res);
+            }
+        } else {
+            return res.send(Response.dataNotFoundResponse())
+        }
+        let setHistory = await SystemAction.SetHistorySendEmail(objData.subject, objData.text, CodeID);
+
+        if (setHistory) {
+            return res.send(Response.successResponse());
+        } else {
+            return res.send(Response.dataNotFoundResponse())
+        }
+
+    } catch (error) {
+
+    }
+}
+
+function ExecuteSendEmail(to, subject, text, html) {
+    try {
+        let objData = {};
+        objData.to = to;
+        objData.subject = subject;
+        objData.text = text;
+        objData.html = html;
+        let requiredFields = ['to', 'subject'];
+        // Trường hợp cả 2 trường text và html đều có
+        if (objData.text != null && objData.html != null) {
+            console.log("Bạn chỉ được gửi text hoặc html!");
+        }
+        // Trường hợp thiếu cả 2 trường text và html
+        if (objData.text == null && objData.html == null) {
+            console.log("Bạn phải gửi text hoặc html!");
+        }
+        // Kiểm tra xem có đủ các trường trong nhưng trường bắt buộc phải có không
+        const missingFields = requiredFields.filter(field => !(field in objData));
+        console.log(missingFields);
+        // Trong trường hợp thiếu trường bắt buộc
+        if (missingFields.length) {
+            return res.send(Response.missingFieldsErrorResponse(missingFields));
+        }
+        let result = SystemAction.SendEmailCore(objData);
+
+        if (result == true) {
+            console.log("Gửi email thành công!");
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 var SendEmail = async (req, res) => {
     try {
@@ -267,6 +326,6 @@ var SendEmail = async (req, res) => {
 
 module.exports = {
     getAllEventGenealogy, InsertEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth,
-    SendSMS, SendEmail, searchEvent, filterEvent, SendSMSToMember, getAllEventRepetition, getInformationEvent
+    SendSMS, SendEmail, searchEvent, filterEvent, SendSMSToMember, getAllEventRepetition, getInformationEvent, sendEmailToMember
 
 }
