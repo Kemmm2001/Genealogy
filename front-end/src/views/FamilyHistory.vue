@@ -1,13 +1,17 @@
 <template>
   <div class="history-screen d-flex h-100 w-100 p-0 position-relative" style="overflow-y: auto;">
     <div class="h-100 position-absolute" style="top: 0; left: 0; width: 20%;">
-      <div class="position-relative d-flex">
+      <div class="pt-2 px-2 d-flex flex-row align-items-center justify-content-center"
+        style="height: 50px; font-size: 20px; font-weight: bold;">Lịch sử gia tộc</div>
+      <div class="position-relative p-2 d-flex">
         <label for="text-search" style="position: absolute; inset: 12px;">
-          <svg class="text-search-icon h-100 d-flex align-items-center" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-            <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
+          <svg class="text-search-icon h-100 d-flex align-items-center" xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 512 512">
+            <path
+              d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
           </svg>
         </label>
-        <div class="w-100" style="height: 56px; padding: 8px;">
+        <div class="w-100" style="height: 48px;">
           <input class="form-control px-5 py-0 w-100 h-100" id="text-search" type="text" />
         </div>
       </div>
@@ -19,28 +23,21 @@
         <div class="d-flex align-items-center" style="width: 15%;">Đến</div>
         <input class="form-control" type="date" />
       </div>
-      <div class="pb-2 px-2">
-        <div class="w-100 d-flex flex-column" style="height: 420px; background-color: black; overflow-y: auto;">
-          <div class="item mx-2 mt-2 d-flex align-items-center">Sự kiện 1</div>
-          <div class="item mx-2 mt-2 d-flex align-items-center">Sự kiện 2</div>
-          <div class="item mx-2 mt-2 d-flex align-items-center">Sự kiện 3</div>
-          <div class="item mx-2 mt-2 d-flex align-items-center">Sự kiện 4</div>
-          <div class="item mx-2 mt-2 d-flex align-items-center">Sự kiện 5</div>
-          <div class="item mx-2 mt-2 d-flex align-items-center">Sự kiện 6</div>
-          <div class="item mx-2 mt-2 d-flex align-items-center">Sự kiện 7</div>
-          <div class="item mx-2 mt-2 d-flex align-items-center">Sự kiện 8</div>
-          <div class="item mx-2 mt-2 d-flex align-items-center">Sự kiện 9</div>
-          <div class="item mx-2 mt-2 d-flex align-items-center">Sự kiện 10</div>
-          <div class="item mx-2 mt-2 d-flex align-items-center">Sự kiện 11</div>
-        </div>
-      </div>
       <div class="pb-2 px-2 d-flex justify-content-center">
         <div @click="showAddHistoryModal()" class="btn bg-primary text-white">Thêm</div>
       </div>
     </div>
-    <div class="h-100 position-absolute" style="top: 0; right: 0; width: 80%; background-color: gray;">
-      <draggable :list="listHistory" :disabled="!enabled" class="list-group" ghost-class="ghost" :move="checkMove" @start="dragging = true" @end="dragging = false">
-        <div class="list-group-item" v-for="element in listHistory" :key="element.name">{{ element.Description }}</div>
+    <div class="h-100 position-absolute" style="top: 0; right: 0; width: 80%; background-color: #f2f2f2;">
+      <draggable :list="list" :disabled="!enabled" class="list-group" ghost-class="ghost" :move="checkMove"
+        @start="dragging = true" @end="dragging = false">
+        <!-- <div class="list-group-item" v-for="element in list" :key="element.name">{{ element.name }}</div> -->
+        <div class= "w-100" style="min-height: 60px;" v-for="element in list" :key="element.name">
+          <div class="list-group-item position-relative" style="min-height: inherit; width: 49%; float: right;">
+            <div class="position-absolute history-start">{{ element.start }}</div>
+            <div class="position-absolute history-end">{{ element.end }}</div>
+            <div class="d-flex align-items-center" style="min-height: inherit; padding-top: 12px;">{{ element.name }}</div>
+          </div>
+        </div>
       </draggable>
     </div>
     <div class="addHistory-container">
@@ -48,10 +45,12 @@
         <div class="form-group h-100">
           <div class="w-100 h-100 modal-bg position-relative">
             <div class="d-flex flex-row w-100 align-items-center position-relative">
-              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm lịch sử dòng họ</div>
+              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm lịch sử dòng
+                họ</div>
               <div class="close-add-form" @click="closeAddHistoryModal()">
                 <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                  <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                  <path
+                    d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
                 </svg>
               </div>
             </div>
@@ -65,7 +64,7 @@
                 <input type="date" class="form-control" />
               </div>
               <div class="pt-2 px-2" style="height: 120px;">
-                <textarea class="w-100 h-100 text-area description" placeholder="Mô tả"></textarea>
+                <textarea class="w-100 h-100 text-area description form-control" placeholder="Mô tả"></textarea>
               </div>
             </div>
             <div class="modal-footer position-absolute w-100" style="bottom: 0;">
@@ -92,9 +91,11 @@ export default {
       listHistory: null,
       enabled: true,
       list: [
-        { name: "John", id: 0 },
-        { name: "Joao123", id: 2 },
-        { name: "Jean", id: 1 },
+        { name: "John", id: 0, start: '10/10/2002', end: '10/10/2002' },
+        { name: "Joao", id: 1, start: '10/10/2002', end: '10/10/2002' },
+        { name: "Jean", id: 2, start: '10/10/2002', end: '10/10/2002' },
+        { name: "1", id: 3, start: '10/10/2002', end: '10/10/2002' },
+        { name: "2", id: 4, start: '10/10/2002', end: '10/10/2002' },
       ],
       dragging: false,
     };
