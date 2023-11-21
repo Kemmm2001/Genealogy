@@ -5,15 +5,29 @@
 .dark .navbar-item:hover .navbar-text, .dark .header-selected .navbar-text{
     color: #000 !important;
 }
-.dark .navbar-extended-content {
-    color: #000;
+
+.dark .navbar-extended-content{
+    color: #FFFFFF;
 }
 
 .dark .navbar-extended-content:hover {
     background-color: #c9e6ff;
     border-radius: 0.375rem;
+    color: #000;
 }
 
 .dark .navbar-text{
-    color: #D0D2D6 !important;
+    color: #FFFFFF !important;
+}
+
+.dark .user-extended{
+    background-color: #191e3a;
+}
+
+.dark .navbar-extended.expandContent{
+    background-color: #191e3a;
+}
+
+.dark .header-selected{
+    color: #000;
 }
