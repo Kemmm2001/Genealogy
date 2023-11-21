@@ -70,12 +70,14 @@ var updateFamilyHistory = async (req, res) => {
 
 var swapOrder_position = async (req, res) => {
     try {
+        console.log("vào đây")
         let HistoryID1 = req.body.HistoryID1;
         let HistoryID2 = req.body.HistoryID2;
         let Position1 = req.body.Position1;
         let Position2 = req.body.Position2;
-        let data = await FamilyHistoryManagementService.updateOrder_positionHistory(Position1, HistoryID1);
-        let data1 = await FamilyHistoryManagementService.updateOrder_positionHistory(Position2, HistoryID2);
+        console.log(req.body)
+        let data = await FamilyHistoryManagementService.updateOrder_positionHistory(Position1, HistoryID2);
+        let data1 = await FamilyHistoryManagementService.updateOrder_positionHistory(Position2, HistoryID1);
         if (data && data1) {
             return res.send(Response.successResponse(null, 'Thay đổi thứ tự lịch sử thành công'));
         } else {

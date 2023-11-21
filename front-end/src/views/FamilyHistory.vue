@@ -25,13 +25,12 @@
       </div>
     </div>
     <div class="h-100 position-absolute" style="top: 0; right: 0; width: 80%; background-color: #f2f2f2;">
-      <draggable :list="list" :disabled="!enabled" class="list-group" ghost-class="ghost" :move="checkMove" @start="dragging = true" @end="dragging = false">
-        <!-- <div class="list-group-item" v-for="element in list" :key="element.name">{{ element.name }}</div> -->
-        <div class="w-100" style="min-height: 60px;" v-for="element in list" :key="element.name">
-          <div class="list-group-item position-relative" style="min-height: inherit; width: 49%; float: right;">
-            <div class="position-absolute history-start">{{ element.start }}</div>
-            <div class="position-absolute history-end">{{ element.end }}</div>
-            <div class="d-flex align-items-center" style="min-height: inherit; padding-top: 12px;">{{ element.name }}</div>
+      <draggable :list="listHistory" :disabled="!enabled" class="list-group" ghost-class="ghost" :move="checkMove" @start="dragging = true" @end="dragging = false" @update="onUpdate">
+        <div v-for="element in listHistory" :key="element.HistoryID" class="w-100" :style="{ 'min-height': '60px','float': element.HistoryID % 2 === 0 ? 'right' : 'left'}">
+          <div class="list-group-item position-relative" :style="{'min-height': 'inherit','width': '49%','float': element.HistoryID % 2 === 0 ? 'right' : 'left'}">
+            <div class="position-absolute history-start">{{ formatDate(element.startDate) }}</div>
+            <div class="position-absolute history-end">{{ formatDate(element.endDate)}}</div>
+            <div class="d-flex align-items-center" style="min-height: inherit; padding-top: 12px;">{{ element.Description }}</div>
           </div>
         </div>
       </draggable>
@@ -77,7 +76,7 @@
 <script>
 import draggable from "vuedraggable";
 import { HTTP } from "../assets/js/baseAPI";
-
+import Snackbar from "awesome-snackbar";
 export default {
   components: {
     draggable,
@@ -98,15 +97,60 @@ export default {
     };
   },
   methods: {
+    NotificationsDelete(messagee) {
+      new Snackbar(messagee, {
+        position: "bottom-right",
+        theme: "light",
+        style: {
+          container: [
+            ["background-color", "#ff4d4d"],
+            ["border-radius", "5px"],
+          ],
+          message: [["color", "#fff"]],
+        },
+      });
+    },
+    NotificationsScuccess(messagee) {
+      new Snackbar(messagee, {
+        position: "bottom-right",
+        theme: "light",
+        style: {
+          container: [
+            ["background-color", "#1abc9c"],
+            ["border-radius", "5px"],
+          ],
+          message: [["color", "#fff"]],
+        },
+      });
+    },
     onUpdate(event) {
       let draggedElement = this.listHistory[event.oldIndex];
       let targetElement = this.listHistory[event.newIndex];
-
-      console.log("Dragged Element ID:", draggedElement);
-      console.log("Target Element ID:", targetElement);
+      HTTP.put("swapPosition", {
+        HistoryID1: draggedElement.HistoryID,
+        HistoryID2: targetElement.HistoryID,
+        Position1: draggedElement.order_position,
+        Position2: targetElement.order_position,
+      })
+        .then((response) => {
+          if (response.data.success == true) {
+            this.NotificationsScuccess(response.data.message);
+            this.getListHistory();
+          } else {
+            this.NotificationsDelete(response.data.message);
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
-    checkMove() {
-      HTTP;
+    checkMove() {},
+    formatDate(dateString) {
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
     },
     getListHistory() {
       HTTP.get("familyhistory", {
@@ -116,7 +160,7 @@ export default {
       })
         .then((response) => {
           this.listHistory = response.data.data;
-          console.log();
+          console.log(this.listHistory);
         })
         .catch((e) => {
           console.log(e);

@@ -1,14 +1,16 @@
 const db = require('../../Models/ConnectDB')
 
-function getFamilyHistoryByCodeId(codeId) {
+function getFamilyHistoryByCodeId(codeId) {  
     return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM genealogy.familyhistory WHERE CodeID = '${codeId}' ORDER BY order_position ASC;`
+        let query = `SELECT * FROM genealogy.familyhistory WHERE CodeID = '${codeId}' ORDER BY order_position ASC;`       
         db.connection.query(query, (err, result) => {
+            console.log('result' + result)
             if (err) {
                 console.log("Have err : " + err);
                 reject(err)
             } else {
                 resolve(result)
+                console.log('result' + result)
             }
         })
     })
@@ -28,6 +30,7 @@ function updateOrder_positionHistory(position, HistoryID) {
 }
 
 function getFamilyHistoryById(historyId) {
+    console.log("vào đâyyyyy")
     return new Promise((resolve, reject) => {
         let query = `SELECT * FROM familyhistory where HistoryID  = ${historyId}`
         db.connection.query(query, (err, result) => {
@@ -41,19 +44,6 @@ function getFamilyHistoryById(historyId) {
     })
 }
 
-function getFamilyHistoryByCodeId(codeID) {
-    return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM familyhistory where CodeID  = ${codeID}`
-        db.connection.query(query, (err, result) => {
-            if (err) {
-                console.log("Have err : " + err);
-                reject(err)
-            } else {
-                resolve(result)
-            }
-        })
-    })
-}
 function getFamilyHistoryByIdAndCodeId(historyId, codeId) {
     return new Promise((resolve, reject) => {
         let query = `SELECT * FROM familyhistory where HistoryID  = ${historyId} and CodeID = ${codeId}`
@@ -139,7 +129,6 @@ module.exports = {
     getFamilyHistoryByCodeId,
     getFamilyHistoryById,
     getFamilyHistoryByIdAndCodeId,
-    getFamilyHistoryByCodeId,
     getAllFamilyHistory,
     insertFamilyHistory,
     updateFamilyHistory,
