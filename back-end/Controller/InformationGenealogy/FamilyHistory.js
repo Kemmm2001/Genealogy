@@ -68,6 +68,26 @@ var updateFamilyHistory = async (req, res) => {
     }
 };
 
+var swapOrder_position = async (req, res) => {
+    try {
+        let HistoryID1 = req.body.HistoryID1;
+        let HistoryID2 = req.body.HistoryID2;
+        let Position1 = req.body.Position1;
+        let Position2 = req.body.Position2;
+        let data = await FamilyHistoryManagementService.updateOrder_positionHistory(Position1, HistoryID1);
+        let data1 = await FamilyHistoryManagementService.updateOrder_positionHistory(Position2, HistoryID2);
+        if (data && data1) {
+            return res.send(Response.successResponse(null, 'Thay đổi thứ tự lịch sử thành công'));
+        } else {
+            return res.send(Response.internalServerErrorResponse());
+        }
+    } catch (error) {
+        return res.send(Response.internalServerErrorResponse(error));
+    }
+}
+
+
+
 var deleteFamilyHistory = async (req, res) => {
     try {
         // Log ra thông tin trong req.query
@@ -118,7 +138,7 @@ var getFamilyHistory = async (req, res) => {
             console.log(`Get FamilyHistory by CodeID : ${reqData.CodeID}`);
             data = await FamilyHistoryManagementService.getFamilyHistoryByCodeId(req.query.CodeID)
         }
-        
+
         console.log("data: " + data);
         if (data == null || data.length == 0) {
             return res.send(Response.dataNotFoundResponse());
@@ -145,4 +165,4 @@ var getAllFamilyHistories = async (req, res) => {
 
 
 
-module.exports = { addFamilyHistory, updateFamilyHistory, deleteFamilyHistory, getFamilyHistory, getAllFamilyHistories };
+module.exports = { addFamilyHistory, updateFamilyHistory, deleteFamilyHistory, getFamilyHistory, getAllFamilyHistories, swapOrder_position };

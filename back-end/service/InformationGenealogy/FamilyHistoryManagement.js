@@ -2,13 +2,26 @@ const db = require('../../Models/ConnectDB')
 
 function getFamilyHistoryByCodeId(codeId) {
     return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM familyhistory where CodeID  = ${codeId}`
+        let query = `SELECT * FROM genealogy.familyhistory WHERE CodeID = '${codeId}' ORDER BY order_position ASC;`
         db.connection.query(query, (err, result) => {
             if (err) {
                 console.log("Have err : " + err);
                 reject(err)
             } else {
                 resolve(result)
+            }
+        })
+    })
+}
+
+function updateOrder_positionHistory(position, HistoryID) {
+    return new Promise((resolve, reject) => {
+        let query = `UPDATE familyhistory SET order_position = '${position}' WHERE (HistoryID = ${HistoryID});`
+        db.connection.query(query, (err) => {
+            if (err) {
+                reject(false)
+            } else {
+                resolve(true)
             }
         })
     })
@@ -130,5 +143,6 @@ module.exports = {
     getAllFamilyHistory,
     insertFamilyHistory,
     updateFamilyHistory,
-    removeFamilyHistory
+    removeFamilyHistory,
+    updateOrder_positionHistory
 }

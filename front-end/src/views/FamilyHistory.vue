@@ -39,8 +39,8 @@
       </div>
     </div>
     <div class="h-100 position-absolute" style="top: 0; right: 0; width: 80%; background-color: gray;">
-      <draggable :list="listHistory" :disabled="!enabled" class="list-group" ghost-class="ghost" :move="checkMove" @start="dragging = true" @end="dragging = false">
-        <div class="list-group-item" v-for="element in listHistory" :key="element.name">{{ element.Description }}</div>
+      <draggable :list="listHistory" :disabled="!enabled" class="list-group" ghost-class="ghost" :move="checkMove" @start="dragging = true" @end="dragging = false" @update="onUpdate">
+        <div class="list-group-item" v-for="element in listHistory" :key="element.HistoryID">{{ element.Description }}</div>
       </draggable>
     </div>
     <div class="addHistory-container">
@@ -100,7 +100,17 @@ export default {
     };
   },
   methods: {
-    checkMove() {},
+    onUpdate(event) {
+      let draggedElement = this.listHistory[event.oldIndex];
+      let targetElement = this.listHistory[event.newIndex];
+
+        
+      console.log("Dragged Element ID:", draggedElement);
+      console.log("Target Element ID:", targetElement); 
+    },
+    checkMove() {
+        HTTP
+    },
     getListHistory() {
       HTTP.get("familyhistory", {
         params: {
@@ -109,7 +119,7 @@ export default {
       })
         .then((response) => {
           this.listHistory = response.data.data;
-          console.log()
+          console.log();
         })
         .catch((e) => {
           console.log(e);
