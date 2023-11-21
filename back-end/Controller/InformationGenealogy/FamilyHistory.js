@@ -118,6 +118,7 @@ var getFamilyHistory = async (req, res) => {
             console.log(`Get FamilyHistory by CodeID : ${reqData.CodeID}`);
             data = await FamilyHistoryManagementService.getFamilyHistoryByCodeId(req.query.CodeID)
         }
+        
         console.log("data: " + data);
         if (data == null || data.length == 0) {
             return res.send(Response.dataNotFoundResponse());

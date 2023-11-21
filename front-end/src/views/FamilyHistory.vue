@@ -79,6 +79,7 @@
 
 <script>
 import draggable from "vuedraggable";
+import { HTTP } from "../assets/js/baseAPI";
 
 export default {
   components: {
@@ -86,6 +87,8 @@ export default {
   },
   data() {
     return {
+      CodeID: null,
+      listHistory: null,
       enabled: true,
       list: [
         { name: "John", id: 0, start: '10/10/2002', end: '10/10/2002' },
@@ -98,8 +101,20 @@ export default {
     };
   },
   methods: {
-    checkMove() {
-      console.log("vào đây");
+    checkMove() {},
+    getListHistory() {
+      HTTP.get("familyhistory", {
+        params: {
+          CodeID: this.CodeID,
+        },
+      })
+        .then((response) => {
+          this.listHistory = response.data.data;
+          console.log()
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
     showAddHistoryModal() {
       this.$modal.show("addHistory-modal");
@@ -108,6 +123,17 @@ export default {
       this.$modal.hide("addHistory-modal");
     },
   },
+  mounted() {
+    if (localStorage.getItem("CodeID") != null) {
+      this.CodeID = localStorage.getItem("CodeID");
+    } else {
+      if (localStorage.getItem("accountID") != null) {
+        this.$router.push("/familycode");
+      } else {
+        this.$router.push("/login");
+      }
+    }
+    this.getListHistory();
+  },
 };
 </script>
-<style></style>
