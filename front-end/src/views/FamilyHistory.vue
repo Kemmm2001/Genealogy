@@ -1,6 +1,6 @@
 <template>
     <div class="history-screen d-flex h-100 w-100 p-0 position-relative" style="overflow-y: auto;">
-        <div class="h-100 position-absolute" style="top: 0; left: 0;">
+        <div class="h-100 position-absolute" style="top: 0; left: 0; width: 20%;">
             <div class="position-relative d-flex">
                 <label for="text-search" style="position: absolute; inset: 12px;">
                     <svg class="text-search-icon h-100 d-flex align-items-center" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -20,10 +20,26 @@
                 <div class="d-flex align-items-center" style="width: 15%;">Đến</div>
                 <input class="form-control" type="date"/>
             </div>
+            <div class="pb-2 px-2">
+                <div class="w-100 d-flex flex-column" style="height: 420px; background-color: black; overflow-y: auto;">
+                    <div class="item mx-2 mt-2 d-flex align-items-center">Sự kiện 1</div>
+                    <div class="item mx-2 mt-2 d-flex align-items-center">Sự kiện 2</div>
+                    <div class="item mx-2 mt-2 d-flex align-items-center">Sự kiện 3</div>
+                    <div class="item mx-2 mt-2 d-flex align-items-center">Sự kiện 4</div>
+                    <div class="item mx-2 mt-2 d-flex align-items-center">Sự kiện 5</div>
+                    <div class="item mx-2 mt-2 d-flex align-items-center">Sự kiện 6</div>
+                    <div class="item mx-2 mt-2 d-flex align-items-center">Sự kiện 7</div>
+                    <div class="item mx-2 mt-2 d-flex align-items-center">Sự kiện 8</div>
+                    <div class="item mx-2 mt-2 d-flex align-items-center">Sự kiện 9</div>
+                    <div class="item mx-2 mt-2 d-flex align-items-center">Sự kiện 10</div>
+                    <div class="item mx-2 mt-2 d-flex align-items-center">Sự kiện 11</div>
+                </div>
+            </div>
             <div class="pb-2 px-2 d-flex justify-content-center">
                 <div @click="showAddHistoryModal()" class="btn bg-primary text-white">Thêm</div>
             </div>
         </div>
+        <div class="h-100 position-absolute" style="top: 0; right: 0; width: 80%; background-color: gray;"></div>
         <div class="addHistory-container">
             <modal name="addHistory-modal">
                 <div class="form-group h-100">
