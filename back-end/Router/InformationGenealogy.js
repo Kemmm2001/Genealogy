@@ -43,11 +43,11 @@ const initWebRouter = (app) => {
     router.put('/swapPosition', FamilyHistoryController.swapOrder_position);
 
     // Create a new AlbumPhoto
-    router.post('/albumphoto', AlbumPhotoController.addAlbumPhoto);
+    router.post('/albumphoto',CoreFunction.uploadImage("album-photo").single('BackGroundPhoto'), AlbumPhotoController.addAlbumPhoto);
     // Retrieve a single AlbumPhoto with id
     router.get('/albumphoto', AlbumPhotoController.getAlbumPhoto);
     // Update an AlbumPhoto with id
-    router.put('/albumphoto', AlbumPhotoController.updateAlbumPhoto);
+    router.put('/albumphoto',CoreFunction.uploadImage("album-photo").single('BackGroundPhoto'), AlbumPhotoController.updateAlbumPhoto);
     // Delete an AlbumPhoto with id
     router.delete('/albumphoto', AlbumPhotoController.deleteAlbumPhoto);
 
