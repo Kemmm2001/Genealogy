@@ -9,3 +9,27 @@
     flex: 0 0 42px;
     background-color: #FFFFFF;
 }
+
+.history-screen .history-content-odd{
+    width: 47%;
+    position: absolute;
+    left: 0;
+}
+
+.history-screen .history-content-even{
+    width: 47%;
+    position: absolute;
+    right: 0;
+}
+
+.history-screen .history-start{
+    top: 9px;
+    left: 15px;
+    font-size: 12px;
+}
+
+.history-screen .history-end{
+    top: 9px;
+    right: 15px;
+    font-size: 12px;
+}
