@@ -280,8 +280,18 @@
               </div>
               <div v-if="emailSelected" class="d-flex flex-column mt-2" style="height: calc(100% - 48px); overflow-y: auto;">
                 <div v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row">
-                  <div class="col-4 d-flex align-items-center" style="height: 48px">Chủ đề: {{e.EmailSubject}}</div>
-                  <div class="d-flex align-items-center" style="flex-grow: 1;">{{e.EmailContent}}</div>
+                  <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Chủ đề: {{e.EmailSubject}}</div>
+                  <div class="col-6 h-100 d-flex align-items-center position-relative">
+                    <div class="mail-content-prev">{{e.EmailContent}}</div>
+                  </div>
+                  <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">1/1/2000</div>
+                </div>
+                <div class="sent-mail d-flex flex-row">
+                  <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Chủ đề: a</div>
+                  <div class="col-6 h-100 d-flex align-items-center position-relative">
+                    <div class="mail-content-prev">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div>
+                  </div>
+                  <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">1/1/2000</div>
                 </div>
               </div>
 

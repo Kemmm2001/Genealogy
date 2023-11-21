@@ -42,3 +42,16 @@
 .create-mail-footer{
     height: 55px;
 }
+
+.mail-content-prev{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block !important;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    height: 20px;
+    width: 300px;
+}
