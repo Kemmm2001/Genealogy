@@ -30,14 +30,11 @@
     height: 70px;
 }
 
-.user-screen .save-profile-btn{
-    bottom: 0;
-    right: 0;
-}
-
 .user-screen .family-account{
     height: 400px;
     overflow-y: auto;
+    border: 1px solid #000;
+    border-radius: 0.175rem;
 }
 
 .user-screen .family-account-item{

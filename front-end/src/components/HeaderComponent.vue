@@ -43,7 +43,7 @@
                   :class="{ 'header-selected': currentPath === '/information/headlist' }" v-show="expandFamilyInfo"
                   class="navbar-extended-content p-2 m-1">Danh sách tộc trưởng</div>
               </router-link>
-              <router-link to="information/history">
+              <router-link to="/information/history">
                 <div v-show="expandFamilyInfo" class="navbar-extended-content p-2 m-1">Lịch sử dòng họ</div>
               </router-link>
               <router-link to="/information/albumlist">
