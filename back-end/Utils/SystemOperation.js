@@ -33,14 +33,11 @@ let SendSMSCore = (objData) => {
 
 
 
-function SetHistorySendEmailandSMS(content, action, CodeID) {
+function SetHistorySendEmailandSMS(content, CodeID) {
     return new Promise((resolve, reject) => {
         let currentDate = new Date();
         currentDate = currentDate.toISOString().slice(0, 19).replace("T", " ");
-        console.log(currentDate)
-        let IsSMS = 0;
-        if (action == 'sms') IsSMS = 1;
-        let query = `INSERT INTO notificationhistory (NotificationContent, NotificationDate, IsSMS, CodeID) VALUES ('${content}', '${currentDate}', ${IsSMS}, ${CodeID}) `;
+        let query = `INSERT INTO notificationhistory (NotificationContent, NotificationDate, CodeID) VALUES ('${content}', '${currentDate}', ${CodeID}) `;
         db.connection.query(query, (err, result) => {
             if (err) {
                 console.log(err);
@@ -54,7 +51,7 @@ function SetHistorySendEmailandSMS(content, action, CodeID) {
 
 
 
-let SendEmailCore =  (objData) => {
+let SendEmailCore = (objData) => {
     try {
         var mailOptions = {
             from: process.env.EMAIL_ADDRESS,

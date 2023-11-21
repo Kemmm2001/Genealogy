@@ -98,6 +98,20 @@ var getListMessage = async (req, res) => {
         res.send(Response.internalServerErrorResponse(error));
     }
 }
+
+var getListHistoryEmail = async (req, res) => {
+    try {
+        let CodeID = req.query.CodeID;
+        let data = await FamilyTreeService.getListNotificationEmail(CodeID);
+        if (data) {
+            return res.send(Response.successResponse(data))
+        } else {
+            return res.send(Response.dataNotFoundResponse());
+        }
+    } catch (error) {
+        return res.send(Response.dataNotFoundResponse(error));
+    }
+}
 var AllMemberInGenelogy = async (req, res) => {
     try {
         let CodeID = req.query.CodeID;
@@ -179,5 +193,5 @@ var informationMember = async (req, res) => {
 
 module.exports = {
     AllReligion, informationMember, AllNationality, AllMemberRole, setRole, AllMemberInGenelogy, getAllUnspecifiedMembers,
-    GetIdPaternalAncestor, getRelationShipMember, getListMessage, removeRelationship
+    GetIdPaternalAncestor, getRelationShipMember, getListMessage, removeRelationship, getListHistoryEmail
 };

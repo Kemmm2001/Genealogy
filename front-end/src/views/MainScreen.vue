@@ -279,33 +279,16 @@
                 <div @click="selectEmail()" :class="{ notiSelected: emailSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0.375rem 0 0 0; cursor: pointer;">Email</div>
               </div>
               <div v-if="emailSelected" class="d-flex flex-column mt-2" style="height: calc(100% - 48px); overflow-y: auto;">
-                <div class="sent-mail d-flex flex-row">
-                  <div class="h-100 d-flex align-items-center px-3">
-                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
-                  </div>
-                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
-                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
-                </div>
-                <div class="sent-mail d-flex flex-row">
-                  <div class="h-100 d-flex align-items-center px-3">
-                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
-                  </div>
-                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
-                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
-                </div>
-                <div class="sent-mail d-flex flex-row">
-                  <div class="h-100 d-flex align-items-center px-3">
-                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
-                  </div>
-                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
-                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
+                <div v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row">
+                  <div class="col-4 d-flex align-items-center" style="height: 48px">Chủ đề: {{e.EmailSubject}}</div>
+                  <div class="d-flex align-items-center" style="flex-grow: 1;">{{e.EmailContent}}</div>
                 </div>
               </div>
 
               <div v-if="smsSelected" class="d-flex flex-column" style="height: calc(100% - 48px); align-items: flex-end; padding-top: 6px; overflow-y: auto">
                 <div v-for="m in ListMessage" :key="m.id" class="position-relative d-flex flex-row">
-                  <div v-if="m.IsSMS == 1" class="position-absolute sent-time">{{ formatDate(m.NotificationDate) }}</div>
-                  <div v-if="m.IsSMS == 1" class="sent-sms">{{ m.NotificationContent }}</div>
+                  <div class="position-absolute sent-time">{{ formatDate(m.NotificationDate) }}</div>
+                  <div class="sent-sms">{{ m.NotificationContent }}</div>
                 </div>
               </div>
             </div>
@@ -319,7 +302,7 @@
                 </div>
               </div>
               <div v-if="emailSelected" class="w-100 btn px-3 position-relative" style="height: 48px;">
-                <div @click="expandCreateEmail = !expandCreateEmail" class="btn px-2 py-1 position-absolute" style="right: 16px; background-color: #E8C77B;">Tạo email mới</div>
+                <div @click="expandCreateEmail = !expandCreateEmail" class="btn btn-primary px-2 py-1 position-absolute" style="right: 16px">Tạo email mới</div>
               </div>
             </div>
             <div class="position-absolute create-mail" :class="{ expanded: expandCreateEmail }">
@@ -902,6 +885,7 @@ export default {
       checkAll: false,
       newIdMember: null,
       CurrentIdMember: null,
+      ListHistoryEmail: null,
 
       isRemoveRelationship: false,
       TitleConfirm: null,
@@ -1704,7 +1688,7 @@ export default {
       var nodeElement;
       for (let i = 0; i < this.nodes.length; i++) {
         nodeElement = this.family.getNodeElement(this.nodes[i].id);
-        if(nodeElement != null){
+        if (nodeElement != null) {
           nodeElement.classList.remove("selected");
           nodeElement.classList.remove("notselected");
         }
@@ -1762,13 +1746,12 @@ export default {
         this.nodes.forEach((node) => {
           if (memberIds.includes(node.id)) {
             nodeElement = this.family.getNodeElement(node.id);
-            if(nodeElement != null){
+            if (nodeElement != null) {
               nodeElement.classList.add("selected");
             }
-            
           } else {
             nodeElement = this.family.getNodeElement(node.id);
-            if(nodeElement != null){
+            if (nodeElement != null) {
               nodeElement.classList.add("notselected");
             }
           }
@@ -2011,6 +1994,21 @@ export default {
           console.log(e);
         });
     },
+    getListHistoryEmail() {
+      HTTP.get("listHistoryEmail", {
+        params: {
+          CodeID: this.CodeID,
+        },
+      })
+        .then((response) => {       
+          if (response.data.success == true) {
+            this.ListHistoryEmail = response.data.data;
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     getListDistrictMember() {
       let selectedCity = this.ListCity.find(
         (city) => city.id == this.selectCityMember
@@ -2162,6 +2160,7 @@ export default {
     this.getListUnspecifiedMembers();
     this.getListMember();
     this.getMemberRole();
+    this.getListHistoryEmail();
   },
 };
 </script>

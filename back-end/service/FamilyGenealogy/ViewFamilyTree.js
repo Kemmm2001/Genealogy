@@ -528,7 +528,6 @@ function isMemberInList(list, member) {
 
 
 function getListMessage(CodeID) {
-    console.log()
     return new Promise((resolve, reject) => {
         let query = `SELECT * FROM genealogy.notificationhistory where CodeID = '${CodeID}'`;
         db.connection.query(query, (err, result) => {
@@ -539,6 +538,23 @@ function getListMessage(CodeID) {
                 resolve(result)
             }
         })
+    })
+}
+
+function getListNotificationEmail(CodeId) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `SELECT * FROM genealogy.notificationemail where CodeID = '${CodeId}'`;
+            db.connection.query(query, (err, result) => {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(result)
+                }
+            })
+        } catch (error) {
+
+        }
     })
 }
 
@@ -652,5 +668,5 @@ module.exports = {
     getAllReligion, getInforMember, getContactMember, getEducationMember, getJobMember, getEventMember, getAllNationality, getAllMemberRole,
     getRoleExist, setRoleMember, removePaternalAncestor, turnOnSQL_SAFE_UPDATES, turnOffSQL_SAFE_UPDATES, getListMessage,
     setAllGenerationMember, ResetAllGenerationMember, ViewFamilyTree, getListUnspecifiedMembers, GetIdPaternalAncestor, RelationShipMember,
-    RemoveRelationshipChild, RemoveRelationshipMarried, RemoveRelationshipParent
+    RemoveRelationshipChild, RemoveRelationshipMarried, RemoveRelationshipParent,getListNotificationEmail
 }

@@ -25,10 +25,11 @@ const initWebRouter = (app) => {
     router.post('/setRole', ManagerFamilyTree.setRole)
     router.get('/viewTree', ManagerFamilyTree.AllMemberInGenelogy)
     router.get('/relationship', ManagerFamilyTree.getRelationShipMember)
-    router.put('/removeRelationship',ManagerFamilyTree.removeRelationship)
+    router.put('/removeRelationship', ManagerFamilyTree.removeRelationship)
     router.get('/idPaternal', ManagerFamilyTree.GetIdPaternalAncestor)
     router.get('/unspecified-members', ManagerFamilyTree.getAllUnspecifiedMembers)
     router.get('/listMessage', ManagerFamilyTree.getListMessage)
+    router.get('/listHistoryEmail', ManagerFamilyTree.getListHistoryEmail)
 
     router.get('/compare', CompareMemberController.compareMember)
 

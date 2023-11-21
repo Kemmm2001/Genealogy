@@ -69,15 +69,7 @@
           <div class="search d-flex">
             <input v-model="keySearch" type="text" class="form-control h-100" placeholder="Nhập tên sự kiện..." @change="searchEvent()" />
           </div>
-          <div class="d-flex flex-row" style="justify-content: end;">
-            <div class="item">
-              <select class="form-control h-100">
-                <option>Kiểu lịch</option>
-                <option>Tất cả</option>
-                <option>Lịch âm</option>
-                <option>Lịch dương</option>
-              </select>
-            </div>
+          <div class="d-flex flex-row" style="justify-content: end;">          
             <div class="item">
               <select v-model="filterRepeat" class="form-control h-100" @change="filterEvent()">
                 <option :value="null">Kiểu lặp lại</option>
