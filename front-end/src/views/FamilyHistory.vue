@@ -9,25 +9,26 @@
           </svg>
         </label>
         <div class="w-100" style="height: 48px;">
-          <input class="form-control px-5 py-0 w-100 h-100" id="text-search" type="text" />
+          <input v-model="keySearch" @change="searchHistory()" class="form-control px-5 py-0 w-100 h-100" id="text-search" type="text" />
         </div>
       </div>
       <div class="pb-2 px-2 d-flex flex-row">
         <div class="d-flex align-items-center" style="width: 15%;">Từ</div>
-        <input class="form-control" type="date" />
+        <input @change="filterHistory()" v-model="filterStartDate" class="form-control" type="date" />
       </div>
       <div class="pb-2 px-2 d-flex flex-row">
         <div class="d-flex align-items-center" style="width: 15%;">Đến</div>
-        <input class="form-control" type="date" />
+        <input @change="filterHistory()" v-model="filterEndDate" class="form-control" type="date" />
       </div>
       <div class="pb-2 px-2 d-flex justify-content-center">
-        <div @click="showAddHistoryModal()" class="btn bg-primary text-white">Thêm</div>
+        <div @click="showAddHistoryModal('Thêm lịch sử dòng họ','add')" class="btn bg-primary text-white" style="margin-right: 10px;">Thêm</div>
+        <div @click="resertHistory()" class="btn bg-primary text-white">Làm mới</div>
       </div>
     </div>
     <div class="h-100 position-absolute" style="top: 0; right: 0; width: 80%; background-color: #f2f2f2;">
       <draggable :list="listHistory" :disabled="!enabled" class="list-group" ghost-class="ghost" :move="checkMove" @start="dragging = true" @end="dragging = false" @update="onUpdate">
-        <div v-for="element in listHistory" :key="element.HistoryID" class="w-100" :style="{ 'min-height': '60px','float': element.HistoryID % 2 === 0 ? 'right' : 'left'}">
-          <div class="list-group-item position-relative" :style="{'min-height': 'inherit','width': '49%','float': element.HistoryID % 2 === 0 ? 'right' : 'left'}">
+        <div v-for="element in listHistory" :key="element.HistoryID" class="w-100" :style="{ 'min-height': '60px','float': element.HistoryID % 2 === 0 ? 'right' : 'left'} ">
+          <div @click="getInforHistory(element.HistoryID)" class="list-group-item position-relative" :style="{'min-height': 'inherit','width': '49%','float': element.HistoryID % 2 === 0 ? 'right' : 'left'}">
             <div class="position-absolute history-start">{{ formatDate(element.startDate) }}</div>
             <div class="position-absolute history-end">{{ formatDate(element.endDate)}}</div>
             <div class="d-flex align-items-center" style="min-height: inherit; padding-top: 12px;">{{ element.Description }}</div>
@@ -40,10 +41,7 @@
         <div class="form-group h-100">
           <div class="w-100 h-100 modal-bg position-relative">
             <div class="d-flex flex-row w-100 align-items-center position-relative">
-              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">
-                Thêm lịch sử dòng
-                họ
-              </div>
+              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">{{TitleModal}}</div>
               <div class="close-add-form" @click="closeAddHistoryModal()">
                 <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                   <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -53,18 +51,20 @@
             <div class="d-flex flex-column" style="height: calc(100% - 50px);">
               <div class="d-flex flex-row pt-2 px-2">
                 <div>Ngày bắt đầu</div>
-                <input type="date" class="form-control" />
+                <input v-model="startDate" type="date" class="form-control" @change="filterHistory()" />
               </div>
               <div class="d-flex flex-row pt-2 px-2">
                 <div>Ngày kết thúc</div>
-                <input type="date" class="form-control" />
+                <input v-model="endDate" type="date" class="form-control" @change="filterHistory()" />
               </div>
               <div class="pt-2 px-2" style="height: 120px;">
-                <textarea class="w-100 h-100 text-area description form-control" placeholder="Mô tả"></textarea>
+                <textarea v-model="descriptionModal" class="w-100 h-100 text-area description form-control" placeholder="Mô tả"></textarea>
               </div>
             </div>
             <div class="modal-footer position-absolute w-100" style="bottom: 0;">
-              <div class="bg-primary text-white btn mx-2">Thêm</div>
+              <div v-if="isAdd" @click="addHistory()" class="bg-primary text-white btn mx-2">Thêm</div>
+              <div v-else @click="updateHistory()" class="bg-primary text-white btn mx-2">sửa</div>
+              <div v-if="!isAdd" @click="removeHistory()" class="bg-danger text-white btn mx-2">Xóa lịch sử</div>
             </div>
           </div>
         </div>
@@ -83,17 +83,19 @@ export default {
   },
   data() {
     return {
+      isAdd: false,
+      TitleModal: null,
+      descriptionModal: null,
+      endDate: null,
+      startDate: null,
       CodeID: null,
       listHistory: null,
       enabled: true,
-      list: [
-        { name: "John", id: 0, start: "10/10/2002", end: "10/10/2002" },
-        { name: "Joao", id: 1, start: "10/10/2002", end: "10/10/2002" },
-        { name: "Jean", id: 2, start: "10/10/2002", end: "10/10/2002" },
-        { name: "1", id: 3, start: "10/10/2002", end: "10/10/2002" },
-        { name: "2", id: 4, start: "10/10/2002", end: "10/10/2002" },
-      ],
       dragging: false,
+      historyID: null,
+      keySearch: null,
+      filterStartDate: null,
+      filterEndDate: null,
     };
   },
   methods: {
@@ -123,6 +125,42 @@ export default {
         },
       });
     },
+
+    filterHistory() {
+      console.log("vào đây");
+      if (this.filterEndDate != null && this.filterStartDate != null) {
+        HTTP.post("filterHistory", {
+          startDate: this.filterStartDate,
+          endDate: this.filterEndDate,
+        })
+          .then((response) => {
+            if (response.data.success == true) {
+              this.listHistory = response.data.data;         
+            } else {
+              this.NotificationsDelete("Lỗi hệ thống");
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
+    },
+    searchHistory() {
+      HTTP.post("searchHistory", {
+        CodeID: this.CodeID,
+        keySearch: this.keySearch,
+      })
+        .then((response) => {
+          if (response.data.success == true) {
+            this.listHistory = response.data.data;
+          } else {
+            this.NotificationsDelete("Lỗi hệ thống");
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     onUpdate(event) {
       let draggedElement = this.listHistory[event.oldIndex];
       let targetElement = this.listHistory[event.newIndex];
@@ -143,6 +181,106 @@ export default {
         .catch((e) => {
           console.log(e);
         });
+    },
+    removeHistory() {
+      HTTP.delete("familyhistory", {
+        params: {
+          FamilyHistoryID: this.historyID,
+        },
+      })
+        .then((response) => {
+          if (response.data.success == true) {
+            this.NotificationsDelete("xóa thành công");
+            this.closeAddHistoryModal();
+            this.getListHistory();
+          } else {
+            this.NotificationsDelete(response.data.message);
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+    resertHistory() {
+      (this.filterEndDate = null),
+        (this.filterStartDate = null),
+        this.getListHistory();
+    },
+    getInforHistory(historyID) {
+      this.isAdd = false;
+      this.historyID = historyID;
+      HTTP.get("familyhistory", {
+        params: {
+          FamilyHistoryID: historyID,
+        },
+      }).then((response) => {
+        if (response.data.success == true) {
+          let data = response.data.data;
+          data = data[0];
+          this.endDate = this.formatDate(data.endDate);
+          this.startDate = this.formatDate(data.startDate);
+          this.descriptionModal = data.Description;
+          this.showAddHistoryModal("Thông tin lịch sử");
+        }
+      });
+    },
+    updateHistory() {
+      if (
+        this.endDate != null &&
+        this.startDate != null &&
+        this.descriptionModal != null &&
+        this.descriptionModal != ""
+      ) {
+        HTTP.put("familyhistory", {
+          FamilyHistoryID: this.historyID,
+          Description: this.descriptionModal,
+          startDate: this.startDate,
+          endDate: this.endDate,
+        })
+          .then((response) => {
+            if (response.data.success == true) {
+              this.NotificationsScuccess(response.data.message);
+              this.closeAddHistoryModal();
+              this.getListHistory();
+            } else {
+              this.NotificationsDelete(response.data.message);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } else {
+        this.NotificationsDelete("bạn chưa điền hết thông tin");
+      }
+    },
+    addHistory() {
+      if (
+        this.endDate != null &&
+        this.startDate != null &&
+        this.descriptionModal != null &&
+        this.descriptionModal != ""
+      ) {
+        HTTP.post("familyhistory", {
+          CodeID: this.CodeID,
+          Description: this.descriptionModal,
+          startDate: this.startDate,
+          endDate: this.endDate,
+        })
+          .then((response) => {
+            if (response.data.success == true) {
+              this.NotificationsScuccess(response.data.message);
+              this.closeAddHistoryModal();
+              this.getListHistory();
+            } else {
+              this.NotificationsDelete(response.data.message);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } else {
+        this.NotificationsDelete("bạn chưa điền hết thông tin");
+      }
     },
     checkMove() {},
     formatDate(dateString) {
@@ -166,7 +304,14 @@ export default {
           console.log(e);
         });
     },
-    showAddHistoryModal() {
+    showAddHistoryModal(title, action) {
+      this.TitleModal = title;
+      if (action == "add") {
+        this.endDate = null;
+        this.startDate = null;
+        this.descriptionModal = null;
+        this.isAdd = true;
+      }
       this.$modal.show("addHistory-modal");
     },
     closeAddHistoryModal() {

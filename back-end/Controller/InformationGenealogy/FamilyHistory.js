@@ -1,6 +1,7 @@
 const FamilyHistoryManagementService = require("../../service/InformationGenealogy/FamilyHistoryManagement");
 const Response = require("../../Utils/Response");
 const CoreFunction = require("../../Utils/CoreFunction");
+const { addAlbumPhoto } = require("./AlbumPhotoController");
 
 
 var addFamilyHistory = async (req, res) => {
@@ -20,8 +21,13 @@ var addFamilyHistory = async (req, res) => {
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
+
+        let maxPositon = await FamilyHistoryManagementService.getMaxOrder_position();
+        if (!maxPositon) {
+            return res.send(Response.internalServerErrorResponse());
+        }
         // thêm FamilyHistory vào database
-        let data = await FamilyHistoryManagementService.insertFamilyHistory(req.body)
+        let data = await FamilyHistoryManagementService.insertFamilyHistory(req.body, maxPositon)
         dataRes = {
             familyHistoryId: data.insertId,
             affectedRows: data.affectedRows
@@ -40,7 +46,6 @@ var updateFamilyHistory = async (req, res) => {
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
             'FamilyHistoryID',
-            'CodeID',
             'Description'
         ];
         // Kiểm tra xem có đủ các trường của FamilyHistory không
@@ -88,6 +93,34 @@ var swapOrder_position = async (req, res) => {
     }
 }
 
+var searchHistory = async (req, res) => {
+    try {
+        let CodeID = req.body.CodeID;
+        let keySearch = req.body.keySearch;
+        let data = await FamilyHistoryManagementService.searchHistory(CodeID, keySearch)
+        if (data) {
+            return res.send(Response.successResponse(data))
+        } else {
+            return res.send(Response.internalServerErrorResponse());
+        }
+    } catch (error) {
+        return res.send(Response.internalServerErrorResponse(error));
+    }
+}
+var filterHistory = async (req, res) => {
+    try {
+        let startDate = req.body.startDate;
+        let endDate = req.body.endDate;
+        let data = await FamilyHistoryManagementService.filterHistory(startDate, endDate)
+        if (data) {
+            return res.send(Response.successResponse(data))
+        } else {
+            return res.send(Response.internalServerErrorResponse());
+        }
+    } catch (error) {
+        return res.send(Response.internalServerErrorResponse(error));
+    }
+}
 
 
 var deleteFamilyHistory = async (req, res) => {
@@ -167,4 +200,7 @@ var getAllFamilyHistories = async (req, res) => {
 
 
 
-module.exports = { addFamilyHistory, updateFamilyHistory, deleteFamilyHistory, getFamilyHistory, getAllFamilyHistories, swapOrder_position };
+module.exports = {
+    addFamilyHistory, updateFamilyHistory, deleteFamilyHistory, getFamilyHistory, getAllFamilyHistories,
+    searchHistory, swapOrder_position, filterHistory
+};
