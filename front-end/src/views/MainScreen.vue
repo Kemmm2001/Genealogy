@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex h-100 w-100 position-relative">
     <div class="list h-100 d-flex flex-column align-items-center">
-      <div class="w-100 d-flex flex-row">
+      <!-- <div class="w-100 d-flex flex-row">
         <div class="col-6 px-2" style="padding-top: 8px;">
           <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict(),GetListFilterMember()">
             <option :value="null" selected>Tỉnh/Thành phố</option>
@@ -27,7 +27,7 @@
             <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{ age.From }} - {{ age.End }} Tuổi</option>
           </select>
         </div>
-      </div>
+      </div> -->
       <div v-if="memberRole != 3" class="w-100 d-flex flex-row" style="padding-top: 8px">
         <div class="col-6 px-2">
           <div class="w-100">

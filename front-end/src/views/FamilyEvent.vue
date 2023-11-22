@@ -121,7 +121,6 @@
         </div>
       </div>
     </div>
-
     <div class="add-event-container">
       <modal name="add-event-modal">
         <div class="form-group h-100">
