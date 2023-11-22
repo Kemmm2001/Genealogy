@@ -56,7 +56,7 @@ module.exports = {
           reject(createError.InternalServerError());
         }
         try {
-          await saveRefreshToken(token);
+          await saveRefreshToken(insertId,token);
           resolve(token);
         } catch (error) {
           reject(createError.InternalServerError());
