@@ -54,9 +54,7 @@ var updateAlbumPhoto = async (req, res) => {
         // nếu có file ảnh thì lưu đường dẫn vào req.body.BackGroundPhoto, còn ko thì gán null
         if (req.file != null) {
             req.body.BackGroundPhoto = req.file.path;
-        } else {
-            req.body.BackGroundPhoto = null;
-        }
+        } 
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
             'AlbumID',
@@ -72,12 +70,18 @@ var updateAlbumPhoto = async (req, res) => {
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
-
-        let checkAlbumExistResponse = await checkAlbumExist(req.body.AlbumID, req.body.CodeID);
-        if (checkAlbumExistResponse.success === false) {
+        let checkAlbumIDExistResponse = await checkAlbumIDExist(AlbumID);
+        if (checkAlbumIDExistResponse.success === false) {
             CoreFunction.deleteImage(req.file);
-            return res.send(checkAlbumExistResponse);
+            return res.send(checkAlbumIDExistResponse);
         }
+        let checkCodeIDExistResponse = await checkCodeIDExist(CodeID);
+        if (checkCodeIDExistResponse.success === false) {
+            CoreFunction.deleteImage(req.file);
+            return res.send(checkCodeIDExistResponse);
+        }
+        
+        req.body.BackGroundPhoto = checkAlbumIDExistResponse.data[0].BackGroundPhoto;
         // cập nhật AlbumPhoto vào database
         let dataUpdate = await AlbumPhotoManagementService.updateAlbumPhoto(req.body)
         dataRes = {
@@ -91,23 +95,6 @@ var updateAlbumPhoto = async (req, res) => {
     }
 };
 
-var checkAlbumExist = async (AlbumID, CodeID) => {
-    try {
-        let checkAlbumIDExistResponse = await checkAlbumIDExist(AlbumID);
-        if (checkAlbumIDExistResponse.success === false) {
-            return checkAlbumIDExistResponse;
-        }
-        let checkCodeIDExistResponse = await checkCodeIDExist(CodeID);
-        if (checkCodeIDExistResponse.success === false) {
-            return checkCodeIDExistResponse;
-        }
-        return Response.successResponse();
-    } catch (e) {
-        console.log("Error: " + e);
-        return Response.internalServerErrorResponse();
-    }
-}
-
 var checkAlbumIDExist = async (AlbumID) => {
     try {
         let dataAlbumID;
@@ -119,7 +106,7 @@ var checkAlbumIDExist = async (AlbumID) => {
         if (dataAlbumID == null || dataAlbumID.length == 0) {
             return Response.dataNotFoundResponse();
         }
-        return Response.successResponse();
+        return Response.successResponse(dataAlbumID);
     } catch (e) {
         console.log("Error: " + e);
         return Response.internalServerErrorResponse();
@@ -137,7 +124,7 @@ var checkCodeIDExist = async (CodeID) => {
         if (dataCodeID == null || dataCodeID.length == 0) {
             return Response.dataNotFoundResponse();
         }
-        return Response.successResponse();
+        return Response.successResponse(dataCodeID);
     } catch (e) {
         console.log("Error: " + e);
         return Response.internalServerErrorResponse();

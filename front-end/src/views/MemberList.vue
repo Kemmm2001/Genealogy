@@ -12,8 +12,6 @@
             <a>Nam: {{ this.numberMale }} người</a>
             <br />
             <a>Nữ: {{ this.numberFemale }} người</a>
-            <br />
-            <a>Chưa có: người</a>
           </div>
           <div class="filter-option col-3">
             <a>Còn sống: {{ this.numberAlive }} người</a>
@@ -23,11 +21,11 @@
         </div>
         <div class="list-member w-100">
           <div class="button-member d-flex align-items-center">
-            <button @click="openEditHeadModal()" class="btn bg-info text-white m-0" :disabled="isButtonDisabled">Chỉnh
+            <button @click="openEditHeadModal()" class="btn bg-info text-white m-2" :disabled="isButtonDisabled">Chỉnh
               sửa</button>
             <button @click="removeMember()" class="btn bg-info text-white m-2" :disabled="isButtonDisabled">Xóa</button>
           </div>
-          <div class="view-member w-100">
+          <div class="view-member" >
             <div @click="numberItemSelection(index), getInforMember(member.id)" class="member" style="cursor: pointer;"
               :class="{ choose: itemChoose === index }" v-for="(member, index) in memberFilter" :key="member.id">
               <div class="image-member" v-if="member.gender == 'male'">
@@ -100,7 +98,6 @@
               <option value="all">Toàn bộ</option>
               <option value="male">Nam</option>
               <option value="female">Nữ</option>
-              <!-- <option value="0">Không rõ</option> -->
             </select>
           </div>
           <div class="input-control">
@@ -527,7 +524,6 @@ export default {
 
       numberMale: 0,
       numberFemale: 0,
-      numberChuaRo: 0,
       totalMember: 0,
       numberGeneration: 0,
       numberAlive: 0,
@@ -1024,10 +1020,10 @@ export default {
         if (this.memberFilter[i].generation > this.numberGeneration) {
           this.numberGeneration = this.memberFilter[i].generation;
         }
-        if (this.memberFilter[i].dod == null) {
+        if (this.memberFilter[i].isDead == 0) {
           this.numberAlive += 1;
         }
-        if (this.memberFilter[i].dod != null) {
+        if (this.memberFilter[i].isDead == 1) {
           this.numberDied += 1;
         }
       }

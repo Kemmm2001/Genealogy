@@ -18,10 +18,10 @@
         <div class="d-flex" v-for=" album in this.AlbumPhotoList" :key="album.AlbumID"
           @click="getAlbumCurrentId(album.AlbumID)">
           <div class="album mx-2 mb-3 d-flex flex-column">
-            <div class="album-cover" @click="openEditAlbumModal()" v-if="album.backGroundPhoto != null">
-              <img :src="album.backGroundPhoto" />
+            <div class="album-cover" @click="openEditAlbumModal()" v-if="album.BackGroundPhoto != null">
+              <img :src="album.BackGroundPhoto" />
             </div>
-            <div class="album-cover" @click="openEditAlbumModal()" v-if="album.backGroundPhoto == null"></div>
+            <div class="album-cover" @click="openEditAlbumModal()" v-if="album.BackGroundPhoto == null"></div>
             <div class="album-general-info d-flex align-items-center">
               <div class="d-flex justify-content-center w-100">{{ album.AlbumName }} </div>
               <div class="d-flex w-100" style="justify-content: space-around;">
@@ -129,15 +129,14 @@
     </modal>
     <div class="addPhoto-container" style="z-index: 2;">
       <modal name="addPhoto-modal">
-        <div class="form-group">
-          <div class="add-photo-modal" style="background-color: white;height:700px">
+        <div class="form-group" style="height: 100%;">
+          <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm ảnh vào album</div>
+          <div class="add-photo-modal" style="background-color: white;height:900px">
             <div class="add-photo-layout">
-              <button type="button" class="btn btn-primary mr-2" @click="triggerFileInput">Thêm ảnh</button>
-              <input ref="fileAdd" type="file" class="hidden-input form-control" @change="handleFileChangePhoto"
-                style="display: none;" />
-              <button class="btn btn-danger mr-2" :disabled="isButtonDisabled" @click="removeFamilyPhotoAdd()">Xóa
-                Ảnh</button>
-              <button class="btn btn-primary mr-2" @click="addFamilyPhotoByAlbumId()">Lưu</button>
+              <button type="button" class="btn btn-primary mr-2"  @click="triggerFileInput" style="margin: 10px;">Thêm ảnh</button>
+              <input ref="fileAdd" type="file" class="hidden-input form-control" @change="handleFileChangePhoto" style="display: none;" />
+              <button class="btn btn-danger mr-2" :disabled="isButtonDisabled" @click="removeFamilyPhotoAdd()" style="margin: 10px;">Xóa Ảnh</button>
+              <button class="btn btn-primary mr-2" @click="addFamilyPhotoByAlbumId()" style="margin: 10px;">Lưu</button>
             </div>
             <div class="add-photo-list d-flex">
               <div class="add-photo" v-for="(photo, index) in FamilyPhotoListAddShow" :key="index"
@@ -156,7 +155,7 @@
             <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">
               {{ albumPhoto.AlbumName }}</div>
             <div class="edit-photo-modal" style="background-color: white;height:700px">
-              <div class="add-photo-layout d-flex">
+              <div class="edit-photo-layout d-flex">
                 <button class="btn btn-primary mr-2" style="margin: 10px;" @click="triggerFileInput">Thêm ảnh</button>
                 <input id="fileAdd" type="file" class="hidden-input form-control" @change="handleFileChangePhoto"
                   style="display: none;" />
@@ -164,9 +163,7 @@
                   @click="removeFamilyPhotoByPhotoId()">Xóa Ảnh</button>
               </div>
               <div class="add-photo-list d-flex">
-                <div class="add-photo" v-for="(photo, index) in FamilyPhotoList"
-                  :class="{ choose: index == indexClickPhoto }" :key="index"
-                  @click="clickPhoto(index), getPhotoCurrentId(photo.PhotoID)" style="margin-left:10px;">
+                <div class="edit-photo" v-for="(photo,index) in FamilyPhotoList" :class="{ choose: index == indexClickPhoto }" :key="index" @click="clickPhoto(index),getPhotoCurrentId(photo.PhotoID)" style="margin-left:10px;">
                   <img :src="photo.PhotoUrl" style="width: 300px;">
                 </div>
               </div>
@@ -427,15 +424,12 @@ export default {
       this.closeAddPhotoModal();
     },
     addAlbumPhoto() {
-      // const formData = new FormData();
-      // formData.append("AlbumName", this.albumPhoto.albumName);
-      // formData.append("CodeID", '123');
-      console.log()
-      HTTP.post("albumphoto", {
-        AlbumName: this.albumPhoto.AlbumName,
-        Description: this.albumPhoto.description,
-        CodeID: 123
-      })
+      const formData = new FormData();
+      formData.append("AlbumName", this.albumPhoto.AlbumName);
+      formData.append("CodeID", '123');
+      formData.append("Description",  this.albumPhoto.description);
+      formData.append("BackGroundPhoto",  this.albumPhoto.BackGroundPhoto);
+      HTTP.post("albumphoto", formData)
         .then((response) => {
           if (response.data.success == true) {
             this.getAlbumPhotoByCodeId()
@@ -460,5 +454,21 @@ export default {
 <style>
 .add-photo.choose {
   border: 5px solid aquamarine;
+}
+.edit-photo-layout{
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+.add-photo-layout{
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+.vm--modal {
+    height: 900px !important;
+}
+.add-photo {
+    margin: 10px;
 }
 </style>

@@ -39,6 +39,9 @@
               <router-link to="/information/albumlist">
                 <div @click="setSelectedHead('/information/albumlist')" :class="{ 'header-selected': currentPath === '/information/albumlist' }" v-show="expandFamilyInfo" class="navbar-extended-content p-2 m-1">Album dòng họ</div>
               </router-link>
+              <router-link to="/familystatistics">
+                <div @click="setSelectedHead('/familystatistics')" :class="{ 'header-selected': currentPath === '/familystatistics' }" v-show="expandFamilyInfo" class="navbar-extended-content p-2 m-1">Thống kê dòng họ</div>
+              </router-link>
               <!-- <router-link to="/information/articlelist">
                 <div @click="setSelectedHead('/information/articlelist')" :class="{ 'header-selected': currentPath === '/information/articlelist' }" v-show="expandFamilyInfo" class="navbar-extended-content p-2 m-1">Tư liệu dòng họ</div>
               </router-link> -->

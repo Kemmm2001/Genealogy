@@ -49,8 +49,6 @@ var updateFamilyPhoto = async (req, res) => {
         // nếu có file ảnh thì lưu đường dẫn vào req.body.PhotoUrl, còn ko thì gán null
         if (req.file != null) {
             req.body.PhotoUrl = req.file.path;
-        } else {
-            req.body.PhotoUrl = null;
         }
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
@@ -77,6 +75,7 @@ var updateFamilyPhoto = async (req, res) => {
             CoreFunction.deleteImage(req.file);
             return res.send(Response.dataNotFoundResponse(null, "AlbumID not found"));
         }
+        req.body.PhotoUrl = dataPhotoID[0].PhotoUrl;
         // cập nhật FamilyPhoto vào database
         let dataUpdate = await FamilyPhotoManagementService.updateFamilyPhoto(req.body)
         dataRes = {
