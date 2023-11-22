@@ -3,6 +3,7 @@ const Response = require("../../Utils/Response");
 const CoreFunction = require("../../Utils/CoreFunction");
 const db = require('../../Models/ConnectDB');
 const ManagementFamilyHead = require("../../service/InformationGenealogy/ManagementFamilyHead");
+const ViewFamilyTree = require("../../service/FamilyGenealogy/ViewFamilyTree");
 const ListAgeGroup = [
     {
         From: 0,
@@ -117,12 +118,12 @@ var addMember = async (req, res) => {
                 CoreFunction.deleteImage(req.file.path);
                 return res.send(Response.dataNotFoundResponse(null, "CurrentMemberID không tồn tại"));
             }
-            console.log("CurrentMemberID tồn tại");
+            let memberRole = ViewFamilyTree.getAllMemberRole(req.body.CurrentMemberID);
             // nếu muốn add con cái mà thành viên hiện tại là nữ hoặc là chồng của người trong gia phả thì sẽ không được phép
             if (req.body.Action === 'AddChild') {
                 if (
                     (currentMember[0].ParentID != null && currentMember[0].Male === 0) ||
-                    (currentMember[0].ParentID == null && currentMember[0].Male === 1)
+                    (currentMember[0].ParentID == null && currentMember[0].Male === 1 && memberRole[0].Role !== 1)
                 ) {
                     let errorMessage = 'Không thể thêm con cái cho thành viên này';
                     CoreFunction.deleteImage(req.file.path);
