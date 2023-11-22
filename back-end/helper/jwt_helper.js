@@ -1,8 +1,9 @@
 const JWT = require('jsonwebtoken')
 const createError = require('http-errors')
+const { saveRefreshToken } = require('../Models/RefreshTokenSchema');
 
 module.exports = {
-  signAccessToken: (insertId) => {
+  signAccessToken: (insertId) => {s
     console.log('insertId: ' + insertId)
     return new Promise((resolve, reject) => {
       const payload = {
@@ -41,25 +42,32 @@ module.exports = {
     });
   },
 
-  signRefreshToken: (insertId) => {
+  signRefreshToken : (insertId) => {
     return new Promise((resolve, reject) => {
-      const payload = {
-        insertId
-      }
-      const secret = process.env.REFRESH_TOKEN_SECRET
-      const options = {
-        expiresIn: "1m",
-      }
-      JWT.sign(payload, secret, options, async (err, token) => {
-        if (err) {
-          console.log(err.message)
-          reject(createError.InternalServerError())
-        }
+        const payload = {
+            insertId,
+        };
+        const secret = process.env.REFRESH_TOKEN_SECRET;
+        const options = {
+            expiresIn: '1d', // Thời gian hết hạn là 1 ngày
+        };
+        JWT.sign(payload, secret, options, async (err, token) => {
+            if (err) {
+                console.log(err.message);
+                reject(createError.InternalServerError());
+            }
 
-        resolve(token);
-      })
-    })
-  },
+            // Lưu refresh token vào MongoDB
+            try {
+                await saveRefreshToken(token);
+                resolve(token);
+            } catch (error) {
+                reject(createError.InternalServerError());
+            }
+        });
+    });
+},
+
 
   verifyRefreshToken: (refreshToken => {
     return new Promise((resolve, reject) => {
