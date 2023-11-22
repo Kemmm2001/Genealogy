@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex h-100 w-100 position-relative">
-    <!-- <div class="list h-100 d-flex flex-column align-items-center">
+    <div class="list h-100 d-flex flex-column align-items-center">
       <div class="w-100 d-flex flex-row">
         <div class="col-6 px-2" style="padding-top: 8px;">
           <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict(),GetListFilterMember()">
@@ -63,73 +63,7 @@
           </div>
         </div>
       </div>
-    </div> -->
-
-    <div @mouseenter="expandList = true" @mouseleave="expandList = false" class="list h-100 d-flex flex-column align-items-center" :class="{expanded : expandList}">
-      <div v-if="expandList" class="w-100 d-flex flex-row">
-        <div class="col-6 px-2" style="padding-top: 8px;">
-          <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict(),GetListFilterMember()">
-            <option :value="null" selected>Tỉnh/Thành phố</option>
-            <option v-for="city in ListCity" :key="city.id" :value="city.id">{{ city.name }}</option>
-          </select>
-        </div>
-        <div class="col-6 px-2" style="padding-top: 8px;">
-          <select v-model="selectDistrict" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
-            <option :value="null" selected>Quận/Huyện</option>
-            <option v-for="d in ListDistrict" :key="d.id" :value="d.DistrictName">{{ d.DistrictName }}</option>
-          </select>
-        </div>
-      </div>
-      <div v-if="expandList" class="w-100 d-flex flex-row">
-        <div class="col-6 px-2" style="padding-top: 8px;">
-          <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
-            <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">{{ blood.BloodType }}</option>
-          </select>
-        </div>
-        <div class="col-6 px-2" style="padding-top: 8px;">
-          <select class="d-flex text-center form-select dropdown p-0" v-model="selectAge" @change="GetListFilterMember()">
-            <option class="dropdown-item" :value="null">Nhóm Tuổi</option>
-            <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{ age.From }} - {{ age.End }} Tuổi</option>
-          </select>
-        </div>
-      </div>
-      <div v-if="memberRole != 3 && expandList" class="w-100 d-flex flex-row" style="padding-top: 8px">
-        <div class="col-6 px-2">
-          <div class="w-100">
-            <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary">Tạo thông báo</button>
-          </div>
-        </div>
-        <div class="col-6 px-2">
-          <div class="w-100">
-            <button @click="openCompareModal()" style="width:100%" type="button" :class="{ 'btn': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">So sánh</button>
-          </div>
-        </div>
-      </div>
-      <div v-if="expandList" class="h-100 w-100 d-flex flex-column px-2" style="padding-top: 8px; font-family: 'QuicksandBold', sans-serif;">
-        <div class="existing-members d-flex flex-column w-100">
-          <div class="d-flex align-items-center justify-content-center px-2 py-1 list-title">Thành viên có trên phả đồ</div>
-          <div class="d-flex flex-column w-100" style="overflow-y: auto;cursor: pointer">
-            <div v-for="(n, index) in nodes" :key="n.id">
-              <div @click="handleLeftClick(n.id)" @contextmenu.prevent="handleRightClick(n.id)" :class="{ 'list-item': true, 'selected-list': n.id == CurrentIdMember, 'ancestor-member': index === 0 }">{{ n.name }}</div>
-            </div>
-          </div>
-        </div>
-        <div class="d-flex nonexisting-members flex-column w-100" style="margin-top: 4px">
-          <div class="d-flex flex-row px-2 py-1 list-title">
-            <div class="d-flex align-items-center justify-content-center">Thành viên không có trên phả đồ</div>
-            <div v-if="memberRole != 3" class="d-flex align-items-center justify-content-center" style="padding-left: 12px;cursor:pointer" @click="openMemberModal('AddNormal', ' thành viên không có trên phả đồ')">
-              <svg class="add-member-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />
-              </svg>
-            </div>
-          </div>
-          <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto;auto;cursor: pointer">
-            <div v-for="list in ListUnspecifiedMembers" :key="list.id" @click="handleLeftClickUnspecifiedMembers(list.MemberID)" class="list-item">{{ list.MemberName }}</div>
-          </div>
-        </div>
-      </div>
     </div>
-
     <div class="d-flex main-screen align-items-center h-100 w-100 position-relative">
       <div id="tree" ref="tree"></div>
       <!-- <div style="inset: 0; margin: auto;">
@@ -345,33 +279,26 @@
                 <div @click="selectEmail()" :class="{ notiSelected: emailSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0.375rem 0 0 0; cursor: pointer;">Email</div>
               </div>
               <div v-if="emailSelected" class="d-flex flex-column mt-2" style="height: calc(100% - 48px); overflow-y: auto;">
-                <div class="sent-mail d-flex flex-row">
-                  <div class="h-100 d-flex align-items-center px-3">
-                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
+                <div v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row">
+                  <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Chủ đề: {{e.EmailSubject}}</div>
+                  <div class="col-6 h-100 d-flex align-items-center position-relative">
+                    <div class="mail-content-prev">{{e.EmailContent}}</div>
                   </div>
-                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
-                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
+                  <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">1/1/2000</div>
                 </div>
                 <div class="sent-mail d-flex flex-row">
-                  <div class="h-100 d-flex align-items-center px-3">
-                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
+                  <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Chủ đề: a</div>
+                  <div class="col-6 h-100 d-flex align-items-center position-relative">
+                    <div class="mail-content-prev">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div>
                   </div>
-                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
-                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
-                </div>
-                <div class="sent-mail d-flex flex-row">
-                  <div class="h-100 d-flex align-items-center px-3">
-                    <input type="checkbox" class="form-check-input m-0" style="height: 20px; width: 20px;" />
-                  </div>
-                  <div class="col-4 d-flex align-items-center" style="height: 48px">Người nhận: Tất cả mọi người</div>
-                  <div class="d-flex align-items-center" style="flex-grow: 1;">Giỗ cụ tổ</div>
+                  <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">1/1/2000</div>
                 </div>
               </div>
 
               <div v-if="smsSelected" class="d-flex flex-column" style="height: calc(100% - 48px); align-items: flex-end; padding-top: 6px; overflow-y: auto">
                 <div v-for="m in ListMessage" :key="m.id" class="position-relative d-flex flex-row">
-                  <div v-if="m.IsSMS == 1" class="position-absolute sent-time">{{ formatDate(m.NotificationDate) }}</div>
-                  <div v-if="m.IsSMS == 1" class="sent-sms">{{ m.NotificationContent }}</div>
+                  <div class="position-absolute sent-time">{{ formatDate(m.NotificationDate) }}</div>
+                  <div class="sent-sms">{{ m.NotificationContent }}</div>
                 </div>
               </div>
             </div>
@@ -385,7 +312,7 @@
                 </div>
               </div>
               <div v-if="emailSelected" class="w-100 btn px-3 position-relative" style="height: 48px;">
-                <div @click="expandCreateEmail = !expandCreateEmail" class="btn px-2 py-1 position-absolute" style="right: 16px; background-color: #E8C77B;">Tạo email mới</div>
+                <div @click="expandCreateEmail = !expandCreateEmail" class="btn btn-primary px-2 py-1 position-absolute" style="right: 16px">Tạo email mới</div>
               </div>
             </div>
             <div class="position-absolute create-mail" :class="{ expanded: expandCreateEmail }">
@@ -401,14 +328,14 @@
                   </div>
                 </div>
                 <div class="create-mail-topic px-2 w-100">
-                  <input type="text" class="mail-topic w-100 p-2" placeholder="Chủ đề email" />
+                  <input v-model="subjectEmail" type="text" class="mail-topic w-100 p-2" placeholder="Chủ đề email" />
                 </div>
                 <div class="create-mail-content px-2 w-100">
-                  <textarea style="resize: none; outline: none; border: none;" class="h-100 w-100 p-2" placeholder="Viết gì đó..."></textarea>
+                  <textarea v-model="contentEmail" style="resize: none; outline: none; border: none;" class="h-100 w-100 p-2" placeholder="Viết gì đó..."></textarea>
                 </div>
                 <div class="create-mail-footer d-flex flex-row px-5 py-2 w-100" style="justify-content: end;">
                   <div style="border-radius: 50% 0 0 50%; background: #007bff; width: 25px;"></div>
-                  <div class="btn d-flex align-items-center justify-content-center" style="padding: 4px 12px; background: #007bff; color: #FFFFFF; border-radius: 0">Gửi</div>
+                  <div class="btn d-flex align-items-center justify-content-center" style="padding: 4px 12px; background: #007bff; color: #FFFFFF; border-radius: 0" @click="sendEmailToMember()">Gửi</div>
                   <div style="border-radius: 0 50% 50% 0; background: #007bff; width: 25px;"></div>
                 </div>
               </div>
@@ -968,9 +895,13 @@ export default {
       checkAll: false,
       newIdMember: null,
       CurrentIdMember: null,
+      ListHistoryEmail: null,
 
       isRemoveRelationship: false,
       TitleConfirm: null,
+
+      subjectEmail: null,
+      contentEmail: null,
 
       generationMember: null,
       CodeID: null,
@@ -981,8 +912,6 @@ export default {
       memberRole: null,
 
       darkMode: true,
-
-      expandList: false,
 
       objMemberInfor: {
         MemberID: 0,
@@ -1078,32 +1007,32 @@ export default {
         '<image preserveAspectRatio="xMidYMid slice" clip-path="url(#ulaImg)" xlink:href="{val}" x="10" y="20" width="70" height="70"></image>';
 
       FamilyTree.templates.tommy_male.field_0 =
-        '<text class="field_0" style="font-size: 16px;" fill="#ffffff" x="90" y="40">{val}</text>';   
+        '<text class="field_0" style="font-size: 16px;" fill="#ffffff" x="90" y="40">{val}</text>';
       FamilyTree.templates.tommy_male.field_1 =
-        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="90" y="60">Ngày Sinh: {val}</text>'; 
+        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="90" y="60">Ngày Sinh: {val}</text>';
       FamilyTree.templates.tommy_male.field_2 =
         '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="90" y="80">Đời: {val}</text>';
 
       FamilyTree.templates.tommy_female.field_0 =
-        '<text class="field_0" style="font-size: 16px;" fill="#ffffff" x="90" y="40">{val}</text>';      
+        '<text class="field_0" style="font-size: 16px;" fill="#ffffff" x="90" y="40">{val}</text>';
       FamilyTree.templates.tommy_female.field_1 =
-        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="90" y="60">Ngày Sinh: {val}</text>';     
+        '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="90" y="60">Ngày Sinh: {val}</text>';
       FamilyTree.templates.tommy_female.field_2 =
         '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="90" y="80">Đời: {val}</text>';
       this.family = new FamilyTree(domEl, {
         nodes: x,
         nodeBinding: {
           field_0: "name",
-          img_0: "img",         
-          field_1: "dob",       
+          img_0: "img",
+          field_1: "dob",
           field_2: "generation",
         },
-        // lazyLoading:false,
+        // lazyLoading: false,
         nodeMouseClick: FamilyTree.action.none,
       });
       this.family.onInit(() => {
         this.family.load(this.nodes);
-      });  
+      });
 
       //Get tọa độ ban đầu
       let CoordinatesNode = this.getViewBox();
@@ -1153,30 +1082,22 @@ export default {
       return this.family.getViewBox();
     },
     getResultMember(id) {
-      const objdata = {};
-      const result = this.nodes.find((node) => node.id == id);
+      let objdata = {};
+      let result = this.nodes.find((node) => node.id == id);
 
       objdata.name = result.name;
       objdata.gender = result.gender === "male" ? "Nam" : "Nữ";
 
-      if (result.pids[0] != null) {
-        const resultMid = this.nodes.find((node) => node.id == result.pids[0]);
-        objdata[result.gender === "male" ? "wife" : "husband"] = resultMid.name;
-      } else {
-        objdata[result.gender === "male" ? "wife" : "husband"] = `Không có ${
-          result.gender === "male" ? "vợ" : "chồng"
-        }`;
-      }
       objdata.dob = result.dob;
       objdata.dod = result.dod;
 
       if (result.fid) {
-        const resultFid = this.nodes.find((node) => node.id == result.fid);
+        let resultFid = this.nodes.find((node) => node.id == result.fid);
         objdata.father = resultFid.name;
       }
 
       if (result.mid) {
-        const resultMid = this.nodes.find((node) => node.id == result.mid);
+        let resultMid = this.nodes.find((node) => node.id == result.mid);
         objdata.mother = resultMid.name;
       }
       objdata.generation = result.generation;
@@ -1184,6 +1105,8 @@ export default {
       return objdata;
     },
     compareMember(memberId1, memberId2) {
+      console.log(memberId1);
+      console.log(memberId2);
       this.RemoveHightLight();
       this.selectNodeHighLight = [];
       this.lastClickedNodeId = null;
@@ -1253,6 +1176,39 @@ export default {
       this.generationMember = this.objMemberInfor.Generation;
       console.log("Vào Take: " + this.objMemberInfor.Generation);
       this.IsDead = this.objMemberInfor.IsDead;
+    },
+    sendEmailToMember() {
+      console.log("vào đây");
+      if (
+        this.subjectEmail != null &&
+        this.subjectEmail != "" &&
+        this.contentEmail != null &&
+        this.contentEmail != "" &&
+        this.ListPhoneToSendMessage.length > 0
+      ) {
+        HTTP.post("send-email", {
+          listID: this.ListPhoneToSendMessage,
+          subject: this.subjectEmail,
+          text: this.contentEmail,
+          CodeID: this.CodeID,
+        })
+          .then((response) => {
+            if (response.data.success == true) {
+              this.NotificationsScuccess("Gửi email thành công");
+              this.expandCreateEmail = false;
+              this.getListHistoryEmail();
+            } else {
+              this.NotificationsDelete(response.data.message);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } else if (this.ListPhoneToSendMessage.length == 0) {
+        this.NotificationsDelete("Hãy chọn những người bạn muốn gửi thông báo");
+      } else {
+        this.NotificationsDelete("Không có thông báo gì để gửi ");
+      }
     },
     sendMessageToMember() {
       if (
@@ -1779,8 +1735,10 @@ export default {
       var nodeElement;
       for (let i = 0; i < this.nodes.length; i++) {
         nodeElement = this.family.getNodeElement(this.nodes[i].id);
-        nodeElement.classList.remove("selected");
-        nodeElement.classList.remove("notselected");
+        if (nodeElement != null) {
+          nodeElement.classList.remove("selected");
+          nodeElement.classList.remove("notselected");
+        }
       }
     },
     highLightSelectCompareNode(SelectNode) {
@@ -1835,10 +1793,14 @@ export default {
         this.nodes.forEach((node) => {
           if (memberIds.includes(node.id)) {
             nodeElement = this.family.getNodeElement(node.id);
-            nodeElement.classList.add("selected");
+            if (nodeElement != null) {
+              nodeElement.classList.add("selected");
+            }
           } else {
             nodeElement = this.family.getNodeElement(node.id);
-            nodeElement.classList.add("notselected");
+            if (nodeElement != null) {
+              nodeElement.classList.add("notselected");
+            }
           }
         });
     },
@@ -1884,6 +1846,9 @@ export default {
       this.ListPhoneToSendMessage = [];
       this.contentMessage = null;
       this.checkAll = false;
+      this.expandCreateEmail = false;
+      this.smsSelected = true;
+      this.emailSelected = false;
       this.$modal.show("noti-modal");
     },
     closeNotiModal() {
@@ -2079,6 +2044,21 @@ export default {
           console.log(e);
         });
     },
+    getListHistoryEmail() {
+      HTTP.get("listHistoryEmail", {
+        params: {
+          CodeID: this.CodeID,
+        },
+      })
+        .then((response) => {
+          if (response.data.success == true) {
+            this.ListHistoryEmail = response.data.data;
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     getListDistrictMember() {
       let selectedCity = this.ListCity.find(
         (city) => city.id == this.selectCityMember
@@ -2230,6 +2210,7 @@ export default {
     this.getListUnspecifiedMembers();
     this.getListMember();
     this.getMemberRole();
+    this.getListHistoryEmail();
   },
 };
 </script>

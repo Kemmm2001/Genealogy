@@ -202,7 +202,11 @@ function UpdatePassword(newPassword, email) {
 function getListRoleMember(CodeID) {
   return new Promise((resolve, reject) => {
     try {
-      let query = `SELECT * FROM genealogy.AccountFamilyTree where CodeID = '${CodeID}';`;
+      let query = `SELECT ac.Username, af.AccountID, af.CodeID, af.RoleID
+      FROM genealogy.AccountFamilyTree AS af
+      INNER JOIN genealogy.account AS ac ON af.AccountID = ac.AccountID
+      WHERE af.CodeID = '${CodeID}'
+      GROUP BY af.AccountID, af.CodeID, af.RoleID;`;
       db.connection.query(query, (err, result) => {
         if (!err && result.length > 0) {
           resolve(result)
@@ -223,9 +227,9 @@ function changeUsername(AccountId, Username) {
       let query = `UPDATE account AS a SET a.Username = '${Username}' WHERE a.AccountID = ${AccountId};`;
       console.log(query);
       db.connection.query(query, (err) => {
-        if (err) {       
+        if (err) {
           reject(false);
-        } else {          
+        } else {
           resolve(true);
         }
       });
@@ -389,16 +393,15 @@ function checkID(accountID) {
 
 function updateRoleID(data) {
   return new Promise((resolve, reject) => {
-    const query = 'UPDATE genealogy.AccountFamilyTree SET RoleID = ? WHERE AccountID = ?';
-    const values = [data.roleID, data.accountID];
+    const query = 'UPDATE genealogy.AccountFamilyTree SET RoleID = ? WHERE AccountID = ? and CodeID = ?';
+    const values = [data.RoleId, data.accountID,data.CodeID];
 
     db.connection.query(query, values, (err, results) => {
       if (err) {
-        console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-        reject(err);
+        console.log('Lỗi truy vấn cơ sở dữ liệu:', err);
+        reject(false);
       } else {
-        console.log('Dữ liệu đã được cập nhật thành công.');
-        resolve(results);
+        resolve(true);
       }
     });
   });

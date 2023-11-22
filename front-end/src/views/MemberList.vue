@@ -1039,7 +1039,9 @@ export default {
       this.$modal.hide("member-modal");
     },
     removeMember() {
-      HTTP.delete("deleteContact", {
+      const isConfirmed = window.confirm("Bạn có chắc chắn muốn xóa thành viên này?");
+      if (isConfirmed) {
+        HTTP.delete("deleteContact", {
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1075,6 +1077,7 @@ export default {
         this.$modal.hide("Select-option-Modal");
         this.getListMember();
       });
+      }
     },
     getListMember() {
       HTTP.get("viewTree", {

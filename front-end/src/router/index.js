@@ -3,23 +3,6 @@ import Router from "vue-router";
 
 Vue.use(Router);
 
-// router.beforeEach((to, from, next) => {
-//   console.log(localStorage.getItem('CodeID'))
-//   if (to.path !== "/login") {
-//     // Kiểm tra xem phiên làm việc "account" có tồn tại không
-//     console.log(localStorage.getItem('CodeID'))
-//     if (!localStorage.getItem('CodeID')) {
-//       // Nếu phiên làm việc không tồn tại, chuyển hướng đến trang "/login"
-//       next('/login');
-//     } else {
-//       // Nếu phiên làm việc tồn tại, cho phép điều hướng bình thường
-//       next();
-//     }
-//   } else {
-//     // Cho phép điều hướng bình thường cho các trang khác
-//     next();
-//   }
-// });
 
 const routes = [
   {
@@ -36,12 +19,7 @@ const routes = [
     path: "/information/headlist",
     name: "headlist",
     component: () => import("../views/HeadList.vue"),
-  },
-  {
-    path: "/information/articlelist",
-    name: "articlelist",
-    component: () => import("../views/ArticleList.vue"),
-  },
+  },  
   {
     path: "/information/albumlist",
     name: "albumlist",
@@ -80,6 +58,11 @@ const routes = [
     path: "/forgotpwd",
     name: "forgotpwd",
     component: () => import("../views/ForgotPwd.vue"),
+  },
+  {
+    path: "/information/history",
+    name: "history",
+    component: () => import("../views/FamilyHistory.vue"),
   },
 ];
 

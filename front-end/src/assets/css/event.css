@@ -40,8 +40,8 @@
 
 .event-screen .add-event-container .vm--container{
     width: 50%;
-    left: 0;
-    right: 0;
+    height: 598px;
+    inset: 0;
     margin: auto;
 }
 
@@ -62,4 +62,10 @@
 .event-screen .add-event-container .time-input{
     width: 120px;
     margin: 0 8px;
+}
+
+.event-screen .eventlist-list-th{
+    background-color: #90CAF9 !important;
+    text-align: center;
+    vertical-align: middle;
 }

@@ -9,7 +9,6 @@ var addFamilyPhoto = async (req, res) => {
         console.log('Request body: ', req.body);
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
-            'PhotoUrl',
             'AlbumID'
         ];
         // Kiểm tra xem có đủ các trường của FamilyPhoto không
@@ -17,6 +16,7 @@ var addFamilyPhoto = async (req, res) => {
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
+            CoreFunction.deleteImage(req.file.path);
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
@@ -30,7 +30,8 @@ var addFamilyPhoto = async (req, res) => {
         return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
-        return res.send(Response.internalServerErrorResponse(e));
+        CoreFunction.deleteImage(req.file.path);
+        return res.send(Response.internalServerErrorResponse());
     }
 };
 
@@ -52,15 +53,18 @@ var updateFamilyPhoto = async (req, res) => {
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
+            CoreFunction.deleteImage(req.file.path);
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
         let dataPhotoID = await FamilyPhotoManagementService.getFamilyPhotoById(req.body.PhotoID);
         if (dataPhotoID == null || dataPhotoID.length == 0) {
+            CoreFunction.deleteImage(req.file.path);
             return res.send(Response.dataNotFoundResponse(null, "PhotoID not found"));
         }
         let dataAlbumID = await FamilyPhotoManagementService.getFamilyPhotoByAlbumId(req.body.AlbumID);
         if (dataAlbumID == null || dataAlbumID.length == 0) {
+            CoreFunction.deleteImage(req.file.path);
             return res.send(Response.dataNotFoundResponse(null, "AlbumID not found"));
         }
         // cập nhật FamilyPhoto vào database
@@ -72,7 +76,8 @@ var updateFamilyPhoto = async (req, res) => {
         return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
-        return res.send(Response.internalServerErrorResponse(e));
+        CoreFunction.deleteImage(req.file.path);
+        return res.send(Response.internalServerErrorResponse());
     }
 };
 
@@ -105,7 +110,7 @@ var deleteFamilyPhoto = async (req, res) => {
         return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
-        return res.send(Response.internalServerErrorResponse(e));
+        return res.send(Response.internalServerErrorResponse());
     }
 };
 
@@ -133,7 +138,7 @@ var getFamilyPhoto = async (req, res) => {
 
     } catch (e) {
         console.log("Error: " + e);
-        return res.send(Response.internalServerErrorResponse(e));
+        return res.send(Response.internalServerErrorResponse());
     }
 };
 
@@ -144,7 +149,7 @@ var getAllFamilyPhotos = async (req, res) => {
         return res.send(Response.successResponse(data));
     } catch (e) {
         console.log("Error: " + e);
-        return res.send(Response.internalServerErrorResponse(e));
+        return res.send(Response.internalServerErrorResponse());
     }
 };
 

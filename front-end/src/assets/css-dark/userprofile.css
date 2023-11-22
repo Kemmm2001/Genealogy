@@ -2,55 +2,15 @@
     background-color: #060818;
 }
 
-.user-screen .func-container{
-    background-color: #3A4B54;
-}
-
-.user-screen .menu{
-    flex-grow: 1;
-}
-
-.user-screen .menu-item{
-    height: 48px;
-    border-radius: 0.375rem;
-    cursor: pointer;
-}
-
-.user-screen .menu-item.chosen{
-    background-color: #c9e6ff;
-    color: #000 !important;
-}
-
-.user-screen .func-detail{
-    margin: 45px 0px;
-    padding-left: 24px;
-}
-
 .dark .user-screen .func-detail-item{
     height: 70px;
     color: #FFFFFF;
 }
 
-.user-screen .save-profile-btn{
-    bottom: 0;
-    right: 0;
+.dark .user-screen .family-account{
+    background-color: #51585e;
 }
 
-.user-screen .family-account{
-    height: 400px;
-    overflow-y: auto;
-}
-
-.user-screen .family-account-item{
-    height: 40px;
-    display: flex;
-    align-items: center;
-}
-
-.user-screen .family-account-item .username{
-    left: 8px;
-}
-
-.user-screen .family-account-item .role{
-    right: 8px;
+.dark .user-screen .acc-list-container{
+    color: #FFFFFF;
 }

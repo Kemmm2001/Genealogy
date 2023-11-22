@@ -33,15 +33,12 @@ let SendSMSCore = (objData) => {
 
 
 
-function SetHistorySendEmailandSMS(content, action, CodeID) {
+function SetHistorySendEmailandSMS(content, CodeID) {
     return new Promise((resolve, reject) => {
         let currentDate = new Date();
         currentDate = currentDate.toISOString().slice(0, 19).replace("T", " ");
-        console.log(currentDate)
-        let IsSMS = 0;
-        if (action == 'sms') IsSMS = 1;
-        let query = `INSERT INTO notificationhistory (NotificationContent, NotificationDate, IsSMS, CodeID) VALUES ('${content}', '${currentDate}', ${IsSMS}, ${CodeID}) `;
-        db.connection.query(query, (err, result) => {
+        let query = `INSERT INTO notificationhistory (NotificationContent, NotificationDate, CodeID) VALUES ('${content}', '${currentDate}', ${CodeID}) `;
+        db.connection.query(query, (err) => {
             if (err) {
                 console.log(err);
                 reject(false);
@@ -51,10 +48,23 @@ function SetHistorySendEmailandSMS(content, action, CodeID) {
         })
     })
 }
+function SetHistorySendEmail(EmailSubject, EmailContent, CodeID) {   
+    return new Promise((resolve, reject) => {
+        let currentDate = new Date().toISOString().slice(0, 19).replace("T", " ");
+        let query = `INSERT INTO notificationemail (EmailSubject, EmailContent, EmailDate, CodeID) VALUES (?, ?, ?, ?)`;
+        db.connection.query(query, [EmailSubject, EmailContent, currentDate, CodeID], (err) => {           
+            if (err) {            
+                reject(false);
+            } else {               
+                resolve(true);
+            }
+        });
+    });
+}
 
 
 
-let SendEmailCore =  (objData) => {
+let SendEmailCore = (objData) => {
     try {
         var mailOptions = {
             from: process.env.EMAIL_ADDRESS,
@@ -71,9 +81,9 @@ let SendEmailCore =  (objData) => {
             mailOptions.to = objData.to;
         }
         // EmailUtils.sendEmail(mailOptions);
-        BrevoMail.sendEmail(mailOptions);
+        // BrevoMail.sendEmail(mailOptions);
         BrevoMail.sendEmailBrevo(mailOptions);
-        BrevoMail.sendEmailBySendGrid(mailOptions);
+        // BrevoMail.sendEmailBySendGrid(mailOptions);
         return true;
     } catch (error) {
         console.log("error : " + error);
@@ -92,4 +102,4 @@ schedule.scheduleJob('0 0 * * *', () => {
 
 });
 
-module.exports = { SendSMSCore, SendEmailCore, SetHistorySendEmailandSMS };
+module.exports = { SendSMSCore, SendEmailCore, SetHistorySendEmailandSMS, SetHistorySendEmail };
