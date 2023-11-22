@@ -17,13 +17,13 @@ var addAlbumPhoto = async (req, res) => {
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
-            CoreFunction.deleteImage(req.file.path);
+            CoreFunction.deleteImage(req.file);
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
         let checkCodeIDExistResponse = await checkFamilyTreeExist(req);
         if (checkCodeIDExistResponse.success === false) {
-            CoreFunction.deleteImage(req.file.path);
+            CoreFunction.deleteImage(req.file);
             return res.send(checkCodeIDExistResponse);
         }
         // Thêm thông tin vào bảng albumphoto
@@ -35,7 +35,7 @@ var addAlbumPhoto = async (req, res) => {
         return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
-        CoreFunction.deleteImage(req.file.path);
+        CoreFunction.deleteImage(req.file);
         return res.send(Response.internalServerErrorResponse());
     }
 };
@@ -58,14 +58,14 @@ var updateAlbumPhoto = async (req, res) => {
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
-            CoreFunction.deleteImage(req.file.path);
+            CoreFunction.deleteImage(req.file);
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
 
         let checkAlbumExistResponse = await checkAlbumExist(req.body.AlbumID, req.body.CodeID);
         if (checkAlbumExistResponse.success === false) {
-            CoreFunction.deleteImage(req.file.path);
+            CoreFunction.deleteImage(req.file);
             return res.send(checkAlbumExistResponse);
         }
         // cập nhật AlbumPhoto vào database
@@ -76,7 +76,7 @@ var updateAlbumPhoto = async (req, res) => {
         return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
-        CoreFunction.deleteImage(req.file.path);
+        CoreFunction.deleteImage(req.file);
         return res.send(Response.internalServerErrorResponse());
     }
 };
