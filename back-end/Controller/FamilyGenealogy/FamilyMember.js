@@ -123,7 +123,7 @@ var addMember = async (req, res) => {
             if (req.body.Action === 'AddChild') {
                 if (
                     (currentMember[0].ParentID != null && currentMember[0].Male === 0) ||
-                    (currentMember[0].ParentID == null && currentMember[0].Male === 1 && memberRole[0].Role !== 1)
+                    (currentMember[0].ParentID == null && currentMember[0].Male === 1 && memberRole[0].RoleID !== 1)
                 ) {
                     let errorMessage = 'Không thể thêm con cái cho thành viên này';
                     CoreFunction.deleteImage(req.file.path);
