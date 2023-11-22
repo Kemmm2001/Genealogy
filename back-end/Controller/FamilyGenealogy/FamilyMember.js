@@ -118,7 +118,7 @@ var addMember = async (req, res) => {
                 CoreFunction.deleteImage(req.file.path);
                 return res.send(Response.dataNotFoundResponse(null, "CurrentMemberID không tồn tại"));
             }
-            let memberRole = ViewFamilyTree.getAllMemberRole(req.body.CurrentMemberID);
+            let memberRole = await ViewFamilyTree.getAllMemberRole(req.body.CurrentMemberID);
             // nếu muốn add con cái mà thành viên hiện tại là nữ hoặc là chồng của người trong gia phả thì sẽ không được phép
             if (req.body.Action === 'AddChild') {
                 if (
