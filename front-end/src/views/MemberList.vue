@@ -21,11 +21,11 @@
         </div>
         <div class="list-member w-100">
           <div class="button-member d-flex align-items-center">
-            <button @click="openEditHeadModal()" class="btn bg-info text-white m-0" :disabled="isButtonDisabled">Chỉnh
+            <button @click="openEditHeadModal()" class="btn bg-info text-white m-2" :disabled="isButtonDisabled">Chỉnh
               sửa</button>
             <button @click="removeMember()" class="btn bg-info text-white m-2" :disabled="isButtonDisabled">Xóa</button>
           </div>
-          <div class="view-member w-100">
+          <div class="view-member" >
             <div @click="numberItemSelection(index), getInforMember(member.id)" class="member" style="cursor: pointer;"
               :class="{ choose: itemChoose === index }" v-for="(member, index) in memberFilter" :key="member.id">
               <div class="image-member" v-if="member.gender == 'male'">
