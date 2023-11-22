@@ -87,14 +87,14 @@ var addMember = async (req, res) => {
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
-            CoreFunction.deleteImage(req.file.path);
+            CoreFunction.deleteImage(req.file);
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("Đã có đủ các trường bắt buộc");
         const action = ['AddParent', 'AddChild', 'AddMarriage', 'AddNormal', 'AddFirst'];
         // Kiểm tra xem action có nằm trong 4 trường hợp AddParent, AddChild, AddMarriage, AddNormal không
         if (!action.includes(req.body.Action)) {
-            CoreFunction.deleteImage(req.file.path);
+            CoreFunction.deleteImage(req.file);
             return res.send(Response.badRequestResponse(null, "Action không hợp lệ"));
         }
         console.log("Action hợp lệ");
@@ -109,13 +109,13 @@ var addMember = async (req, res) => {
         else {
             console.log("Đã vào trường hợp thêm thành viên có trong cây gia phả");
             if (CoreFunction.isEmptyOrNullOrSpaces(req.body.CurrentMemberID)) {
-                CoreFunction.deleteImage(req.file.path);
+                CoreFunction.deleteImage(req.file);
                 return res.send(Response.badRequestResponse());
             }
             let currentMember = await FamilyManagementService.getMemberByMemberID(req.body.CurrentMemberID);
             console.log("currentMember: ", currentMember);
             if (currentMember == null || currentMember.length == 0) {
-                CoreFunction.deleteImage(req.file.path);
+                CoreFunction.deleteImage(req.file);
                 return res.send(Response.dataNotFoundResponse(null, "CurrentMemberID không tồn tại"));
             }
             let memberRole = await ViewFamilyTree.getAllMemberRole(req.body.CurrentMemberID);
@@ -126,7 +126,7 @@ var addMember = async (req, res) => {
                     (currentMember[0].ParentID == null && currentMember[0].Male === 1 && memberRole[0].RoleID !== 1)
                 ) {
                     let errorMessage = 'Không thể thêm con cái cho thành viên này';
-                    CoreFunction.deleteImage(req.file.path);
+                    CoreFunction.deleteImage(req.file);
                     return res.send(Response.badRequestResponse(null, errorMessage));
                 }
             }
@@ -159,7 +159,7 @@ var addMember = async (req, res) => {
         return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
-        CoreFunction.deleteImage(req.file.path);
+        CoreFunction.deleteImage(req.file);
         return res.send(Response.internalServerErrorResponse(e));
     }
 };
@@ -184,12 +184,12 @@ var updateMember = async (req, res) => {
         const missingFields = CoreFunction.missingFields(requiredFields, req.body);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
-            CoreFunction.deleteImage(req.file.path);
+            CoreFunction.deleteImage(req.file);
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         let dataMember = await FamilyManagementService.getMemberByMemberID(req.body.MemberID);
         if (dataMember == null || dataMember.length == 0) {
-            CoreFunction.deleteImage(req.file.path);
+            CoreFunction.deleteImage(req.file);
             return res.send(Response.dataNotFoundResponse());
         }
         req.body.Generation = dataMember[0].Generation;

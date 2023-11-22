@@ -63,20 +63,22 @@ const generateRandomFileName = (file) => {
     return fileName;
 }
 
-const deleteImage = async (imageUrl) => {
+const deleteImage = async (file) => {
     return new Promise(async (resolve, reject) => {
-        console.log("Deleting image: " + imageUrl);
+        console.log("File : " + file);
+        if(!file) return resolve();
+        console.log("Deleting image: " + file.path);
         // Kiểm tra quyền truy cập vào tệp
-        fs.promises.access(imageUrl, fs.constants.F_OK)
+        fs.promises.access(file.path, fs.constants.F_OK)
             .then(() => {
                 // Tệp tồn tại, tiến hành xóa
-                fs.unlink(imageUrl, (err) => {
+                fs.unlink(file.path, (err) => {
                     if (err) {
                         console.error("Error deleting image: " + err);
                         reject(err);
                     } else {
                         console.log("Image deleted successfully.");
-                        resolve(true);
+                        resolve();
                     }
                 });
             })
@@ -85,7 +87,7 @@ const deleteImage = async (imageUrl) => {
                 if (accessErr.code === 'ENOENT') {
                     // Tệp không tồn tại, xem như đã xóa thành công
                     console.log("Image does not exist. Skipping deletion.");
-                    resolve(true);
+                    resolve();
                 } else {
                     // Lỗi khác, reject với lỗi gốc
                     console.error("Error accessing image: " + accessErr);
