@@ -1,8 +1,8 @@
 const db = require('../../Models/ConnectDB')
 
-function getFamilyHistoryByCodeId(codeId) {  
+function getFamilyHistoryByCodeId(codeId) {
     return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM genealogy.familyhistory WHERE CodeID = '${codeId}' ORDER BY order_position ASC;`       
+        let query = `SELECT * FROM genealogy.familyhistory WHERE CodeID = '${codeId}' ORDER BY order_position ASC;`
         db.connection.query(query, (err, result) => {
             console.log('result' + result)
             if (err) {
@@ -30,7 +30,6 @@ function updateOrder_positionHistory(position, HistoryID) {
 }
 
 function getFamilyHistoryById(historyId) {
-    console.log("vào đâyyyyy")
     return new Promise((resolve, reject) => {
         let query = `SELECT * FROM familyhistory where HistoryID  = ${historyId}`
         db.connection.query(query, (err, result) => {
@@ -39,6 +38,7 @@ function getFamilyHistoryById(historyId) {
                 reject(err)
             } else {
                 resolve(result)
+                console.log('result: ' + result)
             }
         })
     })
@@ -71,12 +71,31 @@ function getAllFamilyHistory() {
     })
 }
 
-function insertFamilyHistory(ObjData) {
+async function getMaxOrder_position() {
     return new Promise((resolve, reject) => {
-        let query = `INSERT INTO familyhistory (CodeID, Description) VALUES (?, ?);`
+        let query = "SELECT MAX(order_position) AS max_order_position FROM familyhistory where CodeID = 258191";
+        db.connection.query(query, (err, result) => {
+            if (err) {
+                console.log("Error while fetching max order_position: " + err);
+                reject(err);
+            } else {
+                // Lấy giá trị max_order_position từ kết quả truy vấn
+                let maxOrderPosition = result[0].max_order_position || 0;
+                resolve(maxOrderPosition);
+            }
+        });
+    });
+}
+
+function insertFamilyHistory(ObjData, maxPositon) {
+    return new Promise((resolve, reject) => {
+        let query = `INSERT INTO familyhistory (CodeID, Description,startDate,endDate,order_position) VALUES (?, ?,? , ? , ?);`
         let values = [
             ObjData.CodeID,
-            ObjData.Description
+            ObjData.Description,
+            ObjData.startDate,
+            ObjData.endDate,
+            maxPositon + 1
         ]
         db.connection.query(query, values, (err, result) => {
             if (err) {
@@ -92,11 +111,12 @@ function insertFamilyHistory(ObjData) {
 
 function updateFamilyHistory(ObjData) {
     return new Promise((resolve, reject) => {
-        let query = `UPDATE familyhistory SET CodeID = ?, Description = ? WHERE HistoryID = ?;`
+        let query = `UPDATE familyhistory SET Description = ?, startDate = ?, endDate = ? WHERE HistoryID = ?;`
         let values = [
-            ObjData.CodeID,
             ObjData.Description,
-            ObjData.FamilyHistoryID
+            ObjData.startDate,
+            ObjData.endDate,
+            ObjData.FamilyHistoryID,
         ]
         db.connection.query(query, values, (err, result) => {
             if (err) {
@@ -108,6 +128,40 @@ function updateFamilyHistory(ObjData) {
         })
     });
 
+}
+
+function filterHistory(startDate, endDate) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `SELECT * FROM familyhistory WHERE CodeID = '258191' AND startDate >= '${startDate}' AND endDate <= '${endDate}'`;
+            db.connection.query(query, (err, result) => {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(result)
+                }
+            })
+        } catch (error) {
+
+        }
+    })
+}
+
+function searchHistory(codeID, keySearch) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `select * from genealogy.familyhistory where CodeID = ${codeID} and Description like '%${keySearch}%'`;
+            db.connection.query(query, (err, result) => {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(result)
+                }
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    })
 }
 
 function removeFamilyHistory(historyId) {
@@ -133,5 +187,8 @@ module.exports = {
     insertFamilyHistory,
     updateFamilyHistory,
     removeFamilyHistory,
-    updateOrder_positionHistory
+    updateOrder_positionHistory,
+    getMaxOrder_position,
+    searchHistory,
+    filterHistory
 }

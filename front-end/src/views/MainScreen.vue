@@ -1027,6 +1027,7 @@ export default {
           field_1: "dob",
           field_2: "generation",
         },
+        // lazyLoading: false,
         nodeMouseClick: FamilyTree.action.none,
       });
       this.family.onInit(() => {

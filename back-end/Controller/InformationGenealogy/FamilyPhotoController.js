@@ -4,9 +4,14 @@ const CoreFunction = require("../../Utils/CoreFunction");
 
 var addFamilyPhoto = async (req, res) => {
     try {
-        req.body.PhotoUrl = req.file.path;
         // Log ra thông tin trong req.body
         console.log('Request body: ', req.body);
+        // nếu có file ảnh thì lưu đường dẫn vào req.body.PhotoUrl, còn ko thì gán null
+        if (req.file != null) {
+            req.body.PhotoUrl = req.file.path;
+        } else {
+            req.body.PhotoUrl = null;
+        }
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
             'AlbumID'
@@ -16,6 +21,7 @@ var addFamilyPhoto = async (req, res) => {
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
+            CoreFunction.deleteImage(req.file);
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
@@ -24,11 +30,12 @@ var addFamilyPhoto = async (req, res) => {
         dataRes = {
             PhotoID: data.insertId,
             affectedRows: data.affectedRows,
-            PhotoUrl : req.body.PhotoUrl
+            PhotoUrl: req.body.PhotoUrl
         }
         return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
+        CoreFunction.deleteImage(req.file);
         return res.send(Response.internalServerErrorResponse());
     }
 };
@@ -37,9 +44,14 @@ var addFamilyPhoto = async (req, res) => {
 
 var updateFamilyPhoto = async (req, res) => {
     try {
-        req.body.PhotoUrl = req.file.path;
         // Log ra thông tin trong req.body
         console.log('Request body: ', req.body);
+        // nếu có file ảnh thì lưu đường dẫn vào req.body.PhotoUrl, còn ko thì gán null
+        if (req.file != null) {
+            req.body.PhotoUrl = req.file.path;
+        } else {
+            req.body.PhotoUrl = null;
+        }
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
             'PhotoUrl',
@@ -51,26 +63,30 @@ var updateFamilyPhoto = async (req, res) => {
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
+            CoreFunction.deleteImage(req.file);
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
         let dataPhotoID = await FamilyPhotoManagementService.getFamilyPhotoById(req.body.PhotoID);
         if (dataPhotoID == null || dataPhotoID.length == 0) {
+            CoreFunction.deleteImage(req.file);
             return res.send(Response.dataNotFoundResponse(null, "PhotoID not found"));
         }
         let dataAlbumID = await FamilyPhotoManagementService.getFamilyPhotoByAlbumId(req.body.AlbumID);
         if (dataAlbumID == null || dataAlbumID.length == 0) {
+            CoreFunction.deleteImage(req.file);
             return res.send(Response.dataNotFoundResponse(null, "AlbumID not found"));
         }
         // cập nhật FamilyPhoto vào database
         let dataUpdate = await FamilyPhotoManagementService.updateFamilyPhoto(req.body)
         dataRes = {
             affectedRows: dataUpdate.affectedRows,
-            PhotoUrl : req.body.PhotoUrl
+            PhotoUrl: req.body.PhotoUrl
         }
         return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
+        CoreFunction.deleteImage(req.file);
         return res.send(Response.internalServerErrorResponse());
     }
 };
@@ -95,7 +111,7 @@ var deleteFamilyPhoto = async (req, res) => {
         }
         // xóa FamilyPhoto khỏi database
         let dataDelete = await FamilyPhotoManagementService.removeFamilyPhoto(req.query.PhotoID)
-        if(dataDelete.affectedRows == 0){
+        if (dataDelete.affectedRows == 0) {
             return res.send(Response.dataNotFoundResponse(null, "PhotoID not found"));
         }
         dataRes = {

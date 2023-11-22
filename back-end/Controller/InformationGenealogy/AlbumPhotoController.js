@@ -4,9 +4,14 @@ const CoreFunction = require("../../Utils/CoreFunction");
 
 var addAlbumPhoto = async (req, res) => {
     try {
-        req.body.BackGroundPhoto = req.file.path;
         // Log ra thông tin trong req.body
         console.log('Request body: ', req.body);
+        // nếu có file ảnh thì lưu đường dẫn vào req.body.BackGroundPhoto, còn ko thì gán null
+        if (req.file != null) {
+            req.body.BackGroundPhoto = req.file.path;
+        } else {
+            req.body.BackGroundPhoto = null;
+        }
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
             'AlbumName',
@@ -17,13 +22,13 @@ var addAlbumPhoto = async (req, res) => {
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
-            CoreFunction.deleteImage(req.file.path);
+            CoreFunction.deleteImage(req.file);
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
         let checkCodeIDExistResponse = await checkFamilyTreeExist(req);
         if (checkCodeIDExistResponse.success === false) {
-            CoreFunction.deleteImage(req.file.path);
+            CoreFunction.deleteImage(req.file);
             return res.send(checkCodeIDExistResponse);
         }
         // Thêm thông tin vào bảng albumphoto
@@ -35,7 +40,7 @@ var addAlbumPhoto = async (req, res) => {
         return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
-        CoreFunction.deleteImage(req.file.path);
+        CoreFunction.deleteImage(req.file);
         return res.send(Response.internalServerErrorResponse());
     }
 };
@@ -44,9 +49,14 @@ var addAlbumPhoto = async (req, res) => {
 
 var updateAlbumPhoto = async (req, res) => {
     try {
-        req.body.BackGroundPhoto = req.file.path;
         // Log ra thông tin trong req.body
         console.log('Request body: ', req.body);
+        // nếu có file ảnh thì lưu đường dẫn vào req.body.BackGroundPhoto, còn ko thì gán null
+        if (req.file != null) {
+            req.body.BackGroundPhoto = req.file.path;
+        } else {
+            req.body.BackGroundPhoto = null;
+        }
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
             'AlbumID',
@@ -58,14 +68,14 @@ var updateAlbumPhoto = async (req, res) => {
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
-            CoreFunction.deleteImage(req.file.path);
+            CoreFunction.deleteImage(req.file);
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
 
         let checkAlbumExistResponse = await checkAlbumExist(req.body.AlbumID, req.body.CodeID);
         if (checkAlbumExistResponse.success === false) {
-            CoreFunction.deleteImage(req.file.path);
+            CoreFunction.deleteImage(req.file);
             return res.send(checkAlbumExistResponse);
         }
         // cập nhật AlbumPhoto vào database
@@ -76,7 +86,7 @@ var updateAlbumPhoto = async (req, res) => {
         return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
-        CoreFunction.deleteImage(req.file.path);
+        CoreFunction.deleteImage(req.file);
         return res.send(Response.internalServerErrorResponse());
     }
 };
@@ -99,7 +109,7 @@ var checkAlbumExist = async (AlbumID, CodeID) => {
 }
 
 var checkAlbumIDExist = async (AlbumID) => {
-    try {      
+    try {
         let dataAlbumID;
         if (AlbumID != null && AlbumID != undefined && AlbumID !== "") {
             console.log(`Get AlbumPhoto by AlbumID : ${AlbumID}`);

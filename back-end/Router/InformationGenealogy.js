@@ -40,14 +40,17 @@ const initWebRouter = (app) => {
     router.put('/familyhistory', FamilyHistoryController.updateFamilyHistory);
     // Delete a FamilyHistory with id
     router.delete('/familyhistory', FamilyHistoryController.deleteFamilyHistory);
+    router.post('/searchHistory', FamilyHistoryController.searchHistory)
+    router.post('/filterHistory', FamilyHistoryController.filterHistory)
+
     router.put('/swapPosition', FamilyHistoryController.swapOrder_position);
 
     // Create a new AlbumPhoto
-    router.post('/albumphoto',CoreFunction.uploadImage("album-photo").single('BackGroundPhoto'), AlbumPhotoController.addAlbumPhoto);
+    router.post('/albumphoto', CoreFunction.uploadImage("album-photo").single('BackGroundPhoto'), AlbumPhotoController.addAlbumPhoto);
     // Retrieve a single AlbumPhoto with id
     router.get('/albumphoto', AlbumPhotoController.getAlbumPhoto);
     // Update an AlbumPhoto with id
-    router.put('/albumphoto',CoreFunction.uploadImage("album-photo").single('BackGroundPhoto'), AlbumPhotoController.updateAlbumPhoto);
+    router.put('/albumphoto', CoreFunction.uploadImage("album-photo").single('BackGroundPhoto'), AlbumPhotoController.updateAlbumPhoto);
     // Delete an AlbumPhoto with id
     router.delete('/albumphoto', AlbumPhotoController.deleteAlbumPhoto);
 

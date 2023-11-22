@@ -1,5 +1,5 @@
 <template>
-  <div class="event-screen d-flex flex-row w-100 p-0" style="overflow-y: auto;">
+  <div class="event-screen d-flex flex-row w-100 p-0" style="overflow-y: auto;background-color: #bf831526">
     <div class="col-6 h-100 calendar">
       <div class="h-100 p-3" style="background-color: #f2f2f2;">
         <div class="d-flex flex-row" style="height: 48px;">
@@ -68,7 +68,7 @@
           <div class="search d-flex">
             <input v-model="keySearch" type="text" class="form-control h-100" placeholder="Nhập tên sự kiện..." @change="searchEvent()" />
           </div>
-          <div class="d-flex flex-row" style="justify-content: end;">          
+          <div class="d-flex flex-row" style="justify-content: end;">
             <div class="item">
               <select v-model="filterRepeat" class="form-control h-100" @change="filterEvent()">
                 <option :value="null">Kiểu lặp lại</option>
