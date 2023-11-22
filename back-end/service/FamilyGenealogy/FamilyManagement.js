@@ -182,10 +182,19 @@ function deleteMember(memberId) {
             }
             // Tìm tất cả các thành viên liên quan
             findRelatedMembers(memberId, (relatedMembers) => {
-                updateRelatedMembers(relatedMembers, () => {
-                    console.log('Genealogy updated successfully');
-                    resolve();
-                });
+                let success = updateRelatedMembers(relatedMembers);
+                console.log(`success in function updateRelatedMembers : ${success}`);
+                return resolve();
+            });
+            // bắt đầu xóa member
+            const query = 'DELETE FROM familymember WHERE MemberID = ?';
+            db.connection.query(query, [memberId], (err, result) => {
+                if (err) {
+                    console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
             });
         } catch (err) {
             console.log(err);
@@ -199,7 +208,7 @@ function findRelatedMembers(memberId, callback) {
       SELECT * FROM familymember
       WHERE MemberID = ? OR ParentID = ? 
     `;
-    connection.query(query, [memberId, memberId], (err, results) => {
+    db.connection.query(query, [memberId, memberId], (err, results) => {
         if (err) {
             console.error('Error finding related members: ', err);
             throw err;
@@ -208,23 +217,30 @@ function findRelatedMembers(memberId, callback) {
     });
 }
 
-function updateRelatedMembers(members, callback) {
-    if (members.length === 0) {
-        callback();
-    } else {
-        const memberIdToUpdate = members.pop().MemberID;
+function updateRelatedMembers(members) {
+    try {
+        if (members.length === 0) {
+            console.log('Không còn thành viên nào liên quan');
+            return true;
+        } else {
+            console.log('Updating genealogy for member: ', members[members.length - 1].MemberID);
+            const memberIdToUpdate = members.pop().MemberID;
 
-        updateRelatedMembers(members, () => {
-            const updateQuery = 'UPDATE familymember SET Genealogy = 0 WHERE MemberID = ?';
-            connection.query(updateQuery, [memberIdToUpdate], (err) => {
-                if (err) {
-                    console.error('Error updating genealogy: ', err);
-                    throw err;
-                }
-                console.log(`Genealogy for Member ${memberIdToUpdate} updated`);
-                callback();
+            updateRelatedMembers(members, () => {
+                const updateQuery = 'UPDATE familymember SET Genealogy = 0 WHERE MemberID = ?';
+                db.connection.query(updateQuery, [memberIdToUpdate], (err) => {
+                    if (err) {
+                        console.error('Error updating genealogy: ', err);
+                        return false;
+                    }
+                    console.log(`Genealogy for Member ${memberIdToUpdate} updated`);
+                    return true;
+                });
             });
-        });
+        }
+    } catch (err) {
+        console.log(err);
+        return false;
     }
 }
 
