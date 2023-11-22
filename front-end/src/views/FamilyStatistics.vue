@@ -7,7 +7,7 @@
           <p class="d-block text-decoration-underline">Thống kê thành viên</p>
           <p class="d-block">Tổng số thành viên: {{ this.totalMember }} người</p>
           <p class="d-block">Số đời: {{ this.numberGeneration }}</p>
-          <p class="d-block">Đời nhiều thành viên nhất</p>
+          <p class="d-block">Đời nhiều thành viên nhất: {{ this.maxMemberGeneration }}</p>
           <p class="d-block">Còn sống: {{ this.numberAlive }} người (100%)</p>
           <p class="d-block">Đã mất: {{ this.numberDied }} người (0%)</p>
         </div>
@@ -175,6 +175,7 @@ export default {
         name: null,
         age: null,
       },
+      maxMemberGeneration: 0,
 
       memberFilter: null,
       memberList: null,
@@ -339,6 +340,15 @@ export default {
     },
   },
   methods: {
+    getNumberMemberByGeneration(generation) {
+      let count = 0;
+      for (let i = 0; i < this.memberList.length; i++) {
+        if (this.memberList[i].generation == generation) {
+          count += 1;
+        }
+      }
+      return count;
+    },
     takeInforList() {
       (this.numberMale = 0),
         (this.numberFemale = 0),
@@ -356,9 +366,17 @@ export default {
         (this.memberOldest = {}),
         (this.memberOldestAlive = {});
       this.totalMember = this.memberList.length;
+
+      let max = 0;
       for (let i = 0; i < this.memberList.length; i++) {
         this.memberOldest.age = 0;
         this.memberOldestAlive.age = 0;
+        if (
+          this.getNumberMemberByGeneration(this.memberList[i].generation) > max
+        ) {
+          max = this.getNumberMemberByGeneration(this.memberList[i]);
+          this.maxMemberGeneration = this.memberList[i].generation;
+        }
         if (this.memberList[i].gender == "male") {
           this.numberMale += 1;
           if (this.memberList[i].fid == null || this.memberList[i].fid == "") {
@@ -577,17 +595,21 @@ export default {
     },
     formatDate(dateString) {
       let formattedDate;
-      if (dateString.length <= 10) {
-        const dateParts = dateString.split("-");
-        formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+      if (dateString != null) {
+        if (dateString.length <= 10) {
+          const dateParts = dateString.split("-");
+          formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+        } else {
+          formattedDate = dateString;
+        }
+        const date = new Date(formattedDate);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
       } else {
-        formattedDate = dateString;
+        return null;
       }
-      const date = new Date(formattedDate);
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDate()).padStart(2, "0");
-      return `${year}-${month}-${day}`;
     },
     getListMember() {
       HTTP.get("viewTree", {
@@ -599,6 +621,7 @@ export default {
           this.memberList = response.data;
           this.memberFilter = this.memberList;
           this.takeInforList();
+          console.log(this.memberFilter);
         })
         .catch((e) => {
           console.log(e);

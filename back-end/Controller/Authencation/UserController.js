@@ -4,7 +4,7 @@ const { registerSchema, loginSchema } = require('../../helper/validation_schema'
 const bcrypt = require('bcrypt');
 const { signAccessToken, signRefreshToken, signRePassToken, verifyRepassToken, verifyRefreshToken } = require('../../helper/jwt_helper')
 const Response = require('../../Utils/Response')
-const nodemailer = require('nodemailer')
+const sendMail = require('../../Utils/SystemOperation')
 
 
 var registerUser = async (req, res) => {
@@ -126,6 +126,7 @@ var loginUser = async (req, res) => {
     }
     let accessToken = await signAccessToken(data.accountID)
     let refreshToken = await signRefreshToken(data.accountID)
+    console.log(refreshToken)
     return res.send({ accessToken, refreshToken })
 
   } catch (error) {
@@ -287,10 +288,17 @@ var forgetPassword = async (req, res) => {
       return res.send(Response.dataNotFoundResponse(null, 'Email không tồn tại'));
     }
     else {
-      const token = await signAccessToken(email)
+      const token = await signRePassToken(email)
       try {
         const data = await UserService.UpdateAccount(email, token)
-        //guiw mail
+        const resetPasswordLink = `http://localhost:3003/api/v1/reset-password?token=${token}`;
+
+        const objData = {
+          to: email,
+          subject: "For reset password",
+          html: `<p> Hii, Please click the link to <a href="${resetPasswordLink}">reset your password</a></p>`
+        };
+        sendMail.SendEmailCore(objData)
         if (data == true) {
           return res.send(Response.successResponse(null, 'Vui lòng kiểm tra hộp thư đến trong gmail của bạn'));
         }

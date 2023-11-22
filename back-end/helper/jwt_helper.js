@@ -1,10 +1,9 @@
 const JWT = require('jsonwebtoken')
 const createError = require('http-errors')
-const { saveRefreshToken } = require('../Models/RefreshTokenSchema');
+const { saveRefreshToken, RefreshToken } = require('../Models/RefreshTokenSchema');
 
 module.exports = {
-  signAccessToken: (insertId) => {s
-    console.log('insertId: ' + insertId)
+  signAccessToken: (insertId) => {
     return new Promise((resolve, reject) => {
       const payload = {
         insertId
@@ -38,58 +37,56 @@ module.exports = {
         return res.status(401).json({ error: message });
       }
       req.payload = payload;
-      next(); // Tiếp tục xử lý yêu cầu
+      next();
     });
   },
 
-  signRefreshToken : (insertId) => {
+  signRefreshToken: (insertId) => {
     return new Promise((resolve, reject) => {
-        const payload = {
-            insertId,
-        };
-        const secret = process.env.REFRESH_TOKEN_SECRET;
-        const options = {
-            expiresIn: '1d', // Thời gian hết hạn là 1 ngày
-        };
-        JWT.sign(payload, secret, options, async (err, token) => {
-            if (err) {
-                console.log(err.message);
-                reject(createError.InternalServerError());
-            }
-
-            // Lưu refresh token vào MongoDB
-            try {
-                await saveRefreshToken(token);
-                resolve(token);
-            } catch (error) {
-                reject(createError.InternalServerError());
-            }
-        });
-    });
-},
-
-
- verifyRefreshToken : (refreshToken) => {
-  return new Promise(async (resolve, reject) => {
-      try {
-          // Tìm kiếm token trong cơ sở dữ liệu
-          const tokenInDB = await RefreshToken.findOne({ token: refreshToken });
-          if (!tokenInDB) {
-              return reject(createError.Unauthorized('Hết hạn token'));
-          }
-
-          // Xác minh token
-          JWT.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, payload) => {
-              if (err) {
-                  return reject(createError.Unauthorized('Token không hợp lệ'));
-              }
-              resolve(payload);
-          });
-      } catch (error) {
+      const payload = {
+        insertId,
+      };
+      const secret = process.env.REFRESH_TOKEN_SECRET;
+      const options = {
+        expiresIn: '1d',
+      };
+      JWT.sign(payload, secret, options, async (err, token) => {
+        if (err) {
+          console.log(err.message);
           reject(createError.InternalServerError());
+        }
+        try {
+          await saveRefreshToken(token);
+          resolve(token);
+        } catch (error) {
+          reject(createError.InternalServerError());
+        }
+      });
+    });
+  },
+
+
+  verifyRefreshToken: (refreshToken) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+
+        const tokenInDB = await RefreshToken.findOne({ token: refreshToken });
+        if (!tokenInDB) {
+          return reject(createError.Unauthorized('Hết hạn token'));
+        }
+
+        // Xác minh token
+        JWT.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, payload) => {
+          if (err) {
+            return reject(createError.Unauthorized('Token không hợp lệ'));
+          }
+          resolve(payload);
+        });
+      } catch (error) {
+        reject(createError.InternalServerError());
       }
-  });
-},
+    });
+  },
 
   signRePassToken: (email) => {
     return new Promise((resolve, reject) => {
@@ -98,7 +95,7 @@ module.exports = {
       }
       const secret = process.env.REPASS_TOKEN_SECRET
       const options = {
-        expiresIn: "",
+        expiresIn: "15m",
       }
       JWT.sign(payload, secret, options, (err, token) => {
         if (err) {
