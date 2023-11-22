@@ -69,14 +69,27 @@ module.exports = {
 },
 
 
-  verifyRefreshToken: (refreshToken => {
-    return new Promise((resolve, reject) => {
-      JWT.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, payload) => {
-        if (err) return reject(createError.Unauthorized())
-        resolve(payload)
-      })
-    })
-  }),
+ verifyRefreshToken : (refreshToken) => {
+  return new Promise(async (resolve, reject) => {
+      try {
+          // Tìm kiếm token trong cơ sở dữ liệu
+          const tokenInDB = await RefreshToken.findOne({ token: refreshToken });
+          if (!tokenInDB) {
+              return reject(createError.Unauthorized('Hết hạn token'));
+          }
+
+          // Xác minh token
+          JWT.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, payload) => {
+              if (err) {
+                  return reject(createError.Unauthorized('Token không hợp lệ'));
+              }
+              resolve(payload);
+          });
+      } catch (error) {
+          reject(createError.InternalServerError());
+      }
+  });
+},
 
   signRePassToken: (email) => {
     return new Promise((resolve, reject) => {
