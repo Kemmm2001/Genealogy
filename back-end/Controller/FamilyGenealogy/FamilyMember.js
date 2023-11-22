@@ -372,7 +372,8 @@ var getAllMemberSortByRole = async (req, res) => {
 var getAllMember = async (req, res) => {
     try {
         // Gọi hàm từ dịch vụ để lấy tất cả thành viên
-        const members = await FamilyManagementService.getAllMember();
+        const codeID = req.body.codeID
+        const members = await FamilyManagementService.getAllMember(codeID);
         console.log("abc")
         // Trả về danh sách thành viên trong phản hồi
         res.json({ success: true, data: members });
