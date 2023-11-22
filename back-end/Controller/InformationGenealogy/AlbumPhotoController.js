@@ -4,9 +4,14 @@ const CoreFunction = require("../../Utils/CoreFunction");
 
 var addAlbumPhoto = async (req, res) => {
     try {
-        req.body.BackGroundPhoto = req.file.path;
         // Log ra thông tin trong req.body
         console.log('Request body: ', req.body);
+        // nếu có file ảnh thì lưu đường dẫn vào req.body.BackGroundPhoto, còn ko thì gán null
+        if (req.file != null) {
+            req.body.BackGroundPhoto = req.file.path;
+        } else {
+            req.body.BackGroundPhoto = null;
+        }
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
             'AlbumName',
@@ -44,9 +49,14 @@ var addAlbumPhoto = async (req, res) => {
 
 var updateAlbumPhoto = async (req, res) => {
     try {
-        req.body.BackGroundPhoto = req.file.path;
         // Log ra thông tin trong req.body
         console.log('Request body: ', req.body);
+        // nếu có file ảnh thì lưu đường dẫn vào req.body.BackGroundPhoto, còn ko thì gán null
+        if (req.file != null) {
+            req.body.BackGroundPhoto = req.file.path;
+        } else {
+            req.body.BackGroundPhoto = null;
+        }
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
             'AlbumID',
@@ -99,7 +109,7 @@ var checkAlbumExist = async (AlbumID, CodeID) => {
 }
 
 var checkAlbumIDExist = async (AlbumID) => {
-    try {      
+    try {
         let dataAlbumID;
         if (AlbumID != null && AlbumID != undefined && AlbumID !== "") {
             console.log(`Get AlbumPhoto by AlbumID : ${AlbumID}`);

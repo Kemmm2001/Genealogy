@@ -204,7 +204,7 @@ var updateMember = async (req, res) => {
         return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
-        CoreFunction.deleteImage(req.file.path);
+        CoreFunction.deleteImage(req.file);
         return res.send(Response.internalServerErrorResponse(e));
     }
 }

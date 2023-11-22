@@ -67,12 +67,11 @@ const deleteImage = async (file) => {
     return new Promise(async (resolve, reject) => {
         console.log("File : " + file);
         if(!file) return resolve();
-        console.log("Deleting image: " + file.path);
         // Kiểm tra quyền truy cập vào tệp
-        fs.promises.access(file.path, fs.constants.F_OK)
+        fs.promises.access(file, fs.constants.F_OK)
             .then(() => {
                 // Tệp tồn tại, tiến hành xóa
-                fs.unlink(file.path, (err) => {
+                fs.unlink(file, (err) => {
                     if (err) {
                         console.error("Error deleting image: " + err);
                         reject(err);
