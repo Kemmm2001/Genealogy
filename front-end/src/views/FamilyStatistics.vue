@@ -185,7 +185,9 @@ export default {
             age41to60Filter:0,
             age61upFilter:0,
             monthFilter:0,
-            numberGenerationFilter:0
+            numberGenerationFilter:0,
+
+            CodeID:null,
         }
     },
     computed: {
@@ -496,7 +498,7 @@ export default {
         getListMember() {
             HTTP.get("viewTree", {
                 params: {
-                    CodeID: "258191",
+                    CodeID: this.CodeID,
                 },
             })
                 .then((response) => {
@@ -510,6 +512,15 @@ export default {
         },
     },
     mounted() {
+        if (localStorage.getItem("CodeID") != null) {
+            this.CodeID = localStorage.getItem("CodeID");
+            } else {
+            if (localStorage.getItem("accountID") != null) {
+                this.$router.push("/familycode");
+            } else {
+                this.$router.push("/login");
+            }
+        }
         this.getListMember();
 
     }
