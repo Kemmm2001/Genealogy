@@ -168,8 +168,6 @@ var updateMember = async (req, res) => {
     try {
         if (req.file != null) {
             req.body.Image = req.file.path;
-        } else {
-            req.body.Image = null;
         }
         console.log('Request req.body: ', req.body);
         // các trường bắt buộc phải có trong req.body
@@ -194,6 +192,7 @@ var updateMember = async (req, res) => {
         }
         req.body.Generation = dataMember[0].Generation;
         req.body.CodeID = dataMember[0].CodeID;
+        req.body.Image = dataMember[0].Image;
         // update member vào database
         let data = await FamilyManagementService.updateMember(req.body);
         dataRes = {
