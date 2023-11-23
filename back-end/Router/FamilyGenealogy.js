@@ -37,18 +37,18 @@ const initWebRouter = (app) => {
     router.post('/addJob', JobManagementController.InsertJobMember)
     router.put('/updateJob', JobManagementController.UpdateJobMember)
     router.delete('/removeJob', JobManagementController.RemoveJobMember)
-    router.delete('/RemoveListJob', JobManagementController.RemoveListJobMember)
+    router.get('/RemoveListJob', JobManagementController.RemoveListJobMember)
 
     router.get('/contact', ContactManagementController.ViewContactMember)
     router.post('/addContact', ContactManagementController.InsertContactMember)
     router.put('/updateContact', ContactManagementController.updateContactMember)
-    router.delete('/deleteContact', ContactManagementController.removeContactMember)
+    router.get('/deleteContact', ContactManagementController.removeContactMember)
 
     router.get('/education', EducationManagementController.ViewEducation)
     router.post('/addEducation', EducationManagementController.InsertEducationMember)
     router.put('/updateEducation', EducationManagementController.UpdateEducationMember)
     router.delete('/deleteEducation', EducationManagementController.RemoveEducationMember)
-    router.delete('/deleteListEducation', EducationManagementController.RemoveListEducationMember)
+    router.get('/deleteListEducation', EducationManagementController.RemoveListEducationMember)
 
     //API tuấn
     router.get('/member', FamilyMemberManagement.getMember);
