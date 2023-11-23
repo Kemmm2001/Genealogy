@@ -767,8 +767,7 @@ export default {
       this.monthSearch = 0;
       this.isDeadSearch = "all";
       this.statusSearch = "all";
-      this.ageFrom = null;
-      this.ageTo = null;
+      this.ageSearch = "all";
       this.itemChoose = null;
       this.filter();
     },
@@ -1077,7 +1076,7 @@ export default {
       }
     },
     getListMember() {
-      HTTP.get("viewTree", {
+      HTTP.get("members", {
         params: {
           CodeID: this.CodeID,
         },

@@ -100,7 +100,7 @@
             <button class="btn click-color m-0" @click="filter()">Lọc</button>
           </div>
           <div class="filter-form m-2">
-            <button class="btn click-color m-0">Làm mới</button>
+            <button class="btn click-color m-0" @click="refreshSelect()">Làm mới</button>
           </div>
         </div>
         <div class="d-flex row" style="min-width: 100vh;">
@@ -348,6 +348,14 @@ export default {
         }
       }
       return count;
+    },
+    refreshSelect() {
+      this.monthSearch= 0,
+      this.generationSearch= 0,
+      this.genderSearch= "all",
+      this.isDeadSearch= "all",
+      this.ageSearch= "all",
+      this.filter();
     },
     takeInforList() {
       (this.numberMale = 0),
