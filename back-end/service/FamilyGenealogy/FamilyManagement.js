@@ -269,19 +269,23 @@ async function deleteMemberRelated(memberId) {
             memberIdsToUpdate.splice(index, 1);
         }
     }
-    // Cập nhật generation = 0 , parentID = null, marriageID = null cho các member liên quan
-    const queryUpdateRelatedMember = `
-        UPDATE familymember 
-        SET Generation = 0, ParentID = null, MarriageID = null
-        WHERE MemberID IN (${memberIdsToUpdate.join(',')}) 
-      `;
-    console.log('queryUpdateRelatedMember: ', queryUpdateRelatedMember);
-    db.connection.query(queryUpdateRelatedMember, (err, result) => {
-        if (err) {
-            console.error('Error updating generation: ', err);
-        }
-        console.log('Generation updated for members: ', memberIdsToUpdate);
-    });
+    // nếu mảng khác rỗng thì mới thực hiện tiếp
+    if (memberIdsToUpdate.length != 0) {
+        // Cập nhật generation = 0 , parentID = null, marriageID = null cho các member liên quan
+        const queryUpdateRelatedMember = `
+    UPDATE familymember 
+    SET Generation = 0, ParentID = null, MarriageID = null
+    WHERE MemberID IN (${memberIdsToUpdate.join(',')}) 
+  `;
+        console.log('queryUpdateRelatedMember: ', queryUpdateRelatedMember);
+        db.connection.query(queryUpdateRelatedMember, (err, result) => {
+            if (err) {
+                console.error('Error updating generation: ', err);
+            }
+            console.log('Generation updated for members: ', memberIdsToUpdate);
+        });
+    }
+
 }
 
 function InsertMarriIdToMember(memberId, marriageID) {
