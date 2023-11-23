@@ -184,7 +184,7 @@ function ChangePassword(newPassword, AccountID) {
 function UpdatePassword(newPassword, email) {
   return new Promise((resolve, reject) => {
     try {
-      let query = `UPDATE genealogy.account as a SET a.Password = '${newPassword}' WHERE Email = ${email};`;
+      let query = `UPDATE genealogy.account as a SET a.Password = '${newPassword}' WHERE Email = '${email};'`;
       db.connection.query(query, (err) => {
         if (!err) {
           resolve(true)

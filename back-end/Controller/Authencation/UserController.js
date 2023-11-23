@@ -159,7 +159,7 @@ var getUserCodeID = async (req, res) => {
     return res.send({ data })
 
   } catch (error) {
-    res.status(error.status || 500).json({ error: error.message });
+    res.json({ error: error.message });
   }
 }
 
@@ -174,7 +174,7 @@ var refreshToken = async (req, res) => {
 
     res.send({ accessToken: accessToken })
   } catch (error) {
-
+    res.send(error)
   }
 }
 
@@ -208,7 +208,7 @@ var registerGenealogy = async (req, res) => {
     }
 
   } catch (error) {
-    res.status(500).json({ error: 'Lỗi nội bộ' });
+    res.json({ error: 'Lỗi nội bộ' });
   }
 }
 
@@ -321,7 +321,7 @@ var resetPassword = async (req, res) => {
     const email = await verifyRepassToken(token)
     const tokenData = UserService.checkToken(token);
     if (tokenData == 0) {
-      return res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống'));
+      return res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống1'));
     }
 
     if (req.body.password !== req.body.repassword) {
@@ -337,7 +337,7 @@ var resetPassword = async (req, res) => {
       }
     }
   } catch (error) {
-    return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+    return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống2'));
 
   }
 }
