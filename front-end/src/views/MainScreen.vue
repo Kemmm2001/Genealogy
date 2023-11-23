@@ -37,10 +37,10 @@
         </div>
       </div>
     </div>
-    <div v-if="listhelp || treehelp" class="h-100" :class="{ shadowed : treehelp }" style="width: 81%; right: 0; position: absolute; z-index: 100;"></div>
+    <div v-if="listhelp || treehelp " class="h-100" :class="{ shadowed : treehelp }" style="width: 81%; right: 0; position: absolute; z-index: 100;"></div>
     <div class="d-flex main-screen align-items-center h-100 w-100 position-relative">
       <div id="tree" ref="tree"></div>
-      <!-- <div style="inset: 0; margin: auto;">
+      <!-- <div v-if=" !dataLoaded  || nodes.length == 0" style="inset: 0; margin: auto;">
         <div @click="openMemberModal('AddFirst','cụ tổ')" class="btn bg-primary text-white d-flex flex-row align-items-center">
           <div style="padding-right: 8px;">Thêm tổ phụ</div>
           <svg style="fill: white;" class="add-member-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -267,13 +267,6 @@
                   <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Chủ đề: {{e.EmailSubject}}</div>
                   <div class="col-6 h-100 d-flex align-items-center position-relative">
                     <div class="mail-content-prev">{{e.EmailContent}}</div>
-                  </div>
-                  <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">1/1/2000</div>
-                </div>
-                <div class="sent-mail d-flex flex-row">
-                  <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Chủ đề: a</div>
-                  <div class="col-6 h-100 d-flex align-items-center position-relative">
-                    <div class="mail-content-prev">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div>
                   </div>
                   <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">1/1/2000</div>
                 </div>
@@ -788,7 +781,7 @@
             <div class="d-flex justify-content-end" style="padding-right: 12px;">
               <button v-if="isAdd && memberRole != 3" type="button" class="btn btn-primary mr-2" @click="addMember()">Thêm</button>
               <button v-else-if="isEdit && memberRole != 3" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
-              <button style="margin-left:10px" type="button" class="btn btn-danger" @click="openCfDelModal(false,null,objMemberInfor.MemberName)">Xóa thành viên</button>
+              <button v-if="nodes.length" style="margin-left:10px" type="button" class="btn btn-danger" @click="openCfDelModal(false,null,objMemberInfor.MemberName)">Xóa thành viên</button>
             </div>
           </div>
         </div>
@@ -867,6 +860,7 @@ export default {
       ListAgeGroup: null,
       ListBloodTypeGroup: null,
       ListUnspecifiedMembers: null,
+      dataLoaded: false,
 
       selectAge: null,
       selectBloodType: null,
@@ -1027,9 +1021,8 @@ export default {
         this.family.load(this.nodes);
       });
 
+      this.CoordinatesNode = this.getViewBox();
       this.family.onRedraw(() => {
-        console.log(this.nodeLength);
-        console.log(this.nodes.length);
         if (
           this.CoordinatesNode != null &&
           this.nodeLength != this.nodes.length
@@ -1129,16 +1122,23 @@ export default {
           console.log(e);
         });
     },
-    setPaternalAncestor(roleId) {
+    async setPaternalAncestor(roleId) {
       HTTP.post("setRole", {
         memberId: this.CurrentIdMember,
         roleId: roleId,
         CodeId: this.CodeID,
-      }).then(() => {
-        this.getListAfterSetPaternalAncestor(this.CurrentIdMember);
-        this.getListUnspecifiedMembers();
-        this.NotificationsScuccess("Set tổ phụ thành công");
-      });
+      })
+        .then(() => {
+          this.getListAfterSetPaternalAncestor(this.CurrentIdMember);
+          this.getListUnspecifiedMembers();
+          this.getListMember();
+          this.closeSelectModal();
+          this.NotificationsScuccess("Set tổ phụ thành công");
+          this.mytree(this.$refs.tree, this.nodes);
+        })
+        .catch(() => {
+          this.NotificationsDelete("Có lỗi hệ thống");
+        });
     },
     NotificationsDelete(messagee) {
       new Snackbar(messagee, {
@@ -1176,7 +1176,6 @@ export default {
     takeDataMember() {
       this.CurrentIdMember = this.objMemberInfor.MemberID;
       this.generationMember = this.objMemberInfor.Generation;
-      console.log("Vào Take: " + this.objMemberInfor.Generation);
       this.IsDead = this.objMemberInfor.IsDead;
     },
     sendEmailToMember() {
@@ -1387,7 +1386,7 @@ export default {
         });
     },
     removeMember() {
-      HTTP.delete("deleteContact", {
+      HTTP.get("deleteContact", {
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1395,7 +1394,7 @@ export default {
         this.NotificationsDelete("Đã sảy ra lỗi, không thể xóa");
       });
 
-      HTTP.delete("RemoveListJob", {
+      HTTP.get("RemoveListJob", {
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1403,20 +1402,20 @@ export default {
         console.log(e);
       });
 
-      HTTP.delete("deleteListEducation", {
+      HTTP.get("deleteListEducation", {
         params: {
           MemberID: this.CurrentIdMember,
         },
       }).catch((e) => {
         console.log(e);
       });
-      HTTP.delete("member", {
+      HTTP.get("delete-member", {
         params: {
           MemberID: this.CurrentIdMember,
         },
       }).then((response) => {
         if (response.data.success == true) {
-          this.NotificationsDelete(response.data.message);
+          this.NotificationsScuccess(response.data.message);
           this.getListUnspecifiedMembers();
         } else {
           this.NotificationsDelete(response.data.message);
@@ -1526,7 +1525,6 @@ export default {
     appendIfDefined(key, value) {
       if (value !== undefined && value !== null) {
         this.formData.append(key, value);
-        console.log(value);
       }
     },
     async addMember() {
@@ -1534,7 +1532,6 @@ export default {
       if (this.action == "AddNormal") {
         this.generationMember = 0;
       }
-      console.log(this.avatarSrc);
       this.appendIfDefined("MemberName", this.objMemberInfor.MemberName);
       this.appendIfDefined("NickName", this.objMemberInfor.NickName);
       this.appendIfDefined("CurrentMemberID", this.CurrentIdMember);
@@ -1910,7 +1907,6 @@ export default {
     OnpenModal_SelectOption(id) {
       let foundNode = this.nodes.find((node) => node.id == id);
       this.setFunctionCanDo(foundNode);
-      console.log(foundNode);
       this.TitleModal = foundNode.name;
       this.generationMember = foundNode.generation;
       this.highLightSelectNode(id);
@@ -1985,7 +1981,6 @@ export default {
       })
         .then((response) => {
           this.nodes = response.data;
-          console.log(this.nodes);
           for (let i = 0; i < this.nodes.length; i++) {
             this.nodes[i].tags = [];
             if (this.nodes[i].isDead == 1) {
@@ -2002,6 +1997,7 @@ export default {
             }
           }
           this.nodes[0].tags.push("great-grandfather");
+          this.dataLoaded = true;
           this.mytree(this.$refs.tree, this.nodes);
         })
         .catch((e) => {
@@ -2212,9 +2208,9 @@ export default {
     this.getListAgeGroup();
     this.getListBloodTypeGroup();
     this.getListUnspecifiedMembers();
-    this.getListMember();
     this.getMemberRole();
     this.getListHistoryEmail();
+    this.getListMember();
   },
 };
 </script>

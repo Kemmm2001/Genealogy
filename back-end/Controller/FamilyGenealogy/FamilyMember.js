@@ -107,8 +107,8 @@ var addMember = async (req, res) => {
         }
         // trường hợp muốn thêm thành viên mà có trong cây gia phả
         else {
-            console.log("Đã vào trường hợp thêm thành viên có trong cây gia phả");
-            if (CoreFunction.isEmptyOrNullOrSpaces(req.body.CurrentMemberID)) {
+            console.log("Đã vào trường hợp thêm thành viên có trong cây gia phả");            
+            if (CoreFunction.isEmptyOrNullOrSpaces(req.body.CurrentMemberID)) {              
                 CoreFunction.deleteImage(req.file);
                 return res.send(Response.badRequestResponse());
             }
@@ -147,7 +147,7 @@ var addMember = async (req, res) => {
                 await FamilyManagementService.InsertMarriIdToMember(req.body.CurrentMemberID, data.insertId);
             }
             // trường hợp muốn thêm thành viên đầu tiên ( tổ phụ tổ tiên)
-            else if (req.body.Action === 'AddFirst') {
+            else if (req.body.Action === 'AddFirst') {              
                 await FamilyManagementService.setGeneration(1, data.insertId);
                 await ManagementFamilyHead.addForefather(data.insertId, req.body.CodeID);
             }
@@ -269,7 +269,7 @@ var updateMemberToGenealogy = async (req, res) => {
 }
 
 var deleteMember = async (req, res) => {
-    try {        
+    try {
         // Log ra thông tin trong req.query      
         let dataMember = await FamilyManagementService.getMemberByMemberID(req.query.MemberID);
         if (dataMember == null || dataMember.length == 0) {

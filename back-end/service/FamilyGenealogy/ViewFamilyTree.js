@@ -302,7 +302,7 @@ function ResetAllGenerationMember(CodeID) {
 
 
 function setAllGenerationMember(memberId, generation) {
-    const updateQuery = `update familymember Set Generation =  ${generation}  where MemberID = ${memberId}`;
+    const updateQuery = `update familymember Set Generation =  ${generation}  where MemberID = ${memberId}`;    
     db.connection.query(updateQuery, (err, results) => {
         if (err) console.log(error);;
 
@@ -317,8 +317,6 @@ function setAllGenerationMember(memberId, generation) {
                 }
             });
         });
-
-
 
         // Tìm tất cả các con của thành viên hiện tại        
         const findChildrenQuery = `SELECT * FROM familymember where ParentID = ${memberId}`;
