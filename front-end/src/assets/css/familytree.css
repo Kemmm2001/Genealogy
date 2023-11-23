@@ -110,6 +110,11 @@ svg.tommy .node.female>rect {
   height: 290px;
 }
 
+input#txt_search {
+  width: 250px;
+  height: 45px;
+}
+
 .main-screen .bft-search {
   left: 21%;
   right: calc(100% - 20px) !important;
@@ -129,13 +134,13 @@ svg.tommy .node.female>rect {
   height: 240px;
 } */
 
-.advanced-filter-container .filter-item{
+.advanced-filter-container .filter-item {
   opacity: 0;
   height: 0;
   transition: 0.4s
 }
 
-.advanced-filter-container .filter-item.expand{
+.advanced-filter-container .filter-item.expand {
   opacity: 1;
   height: 192px;
 }
