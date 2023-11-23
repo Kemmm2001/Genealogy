@@ -63,6 +63,22 @@ export default {
             this.newPwd2VisibilityType =
                 this.newPwd2VisibilityType === "text" ? "password" : "text";
         },
+    },
+    mounted() {
+        const query = this.$route.query;
+
+        // Check if the "token" parameter is present
+        if (query.token) {
+            // Token is present, you can access its value
+            const tokenValue = query.token;
+            console.log(`Token found: ${tokenValue}`);
+
+            // Now you can use the tokenValue as needed, e.g., store it in the component's data
+            this.$data.token = tokenValue;
+        } else {
+            // Token is not present
+            console.log('Token not found');
+        }
     }
 }
 </script>
