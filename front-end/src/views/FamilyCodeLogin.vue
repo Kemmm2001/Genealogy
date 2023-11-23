@@ -8,13 +8,13 @@
             <div class="my-3" style="font-size: 20px !important; font-weight: bold; color: #FFFFFF; text-align: center;">
               Đăng kí gia tộc mới</div>
             <button @click="moveToRight(); enlargeBackground()" class="btn my-3 change-form-button"
-              :class="{ changeToLoginBtn: loggingin }">Đăng nhập</button>
+              :class="{ changeToLoginBtn: loggingin }">Đăng kí</button>
           </div>
           <div v-if="!loggingin" class="d-flex flex-column align-items-center justify-content-center h-100 w-100">
             <div class="my-3" style="font-size: 20px !important; font-weight: bold; color: #FFFFFF; text-align: center;">
               Nhập mã để vào gia tộc đã đăng kí</div>
             <button @click="moveToLeft(); enlargeBackground()" class="btn my-3 change-form-button"
-              :class="{ changeToRegisterBtn: !loggingin }">Đăng kí</button>
+              :class="{ changeToRegisterBtn: !loggingin }">Đăng nhập</button>
           </div>
         </div>
 
@@ -28,15 +28,17 @@
                   <input v-model="codeIdLogin" type="text" class="form-control" />
                 </div>
               </div>
-              <!-- <router-link to="/familycode/login"> -->
-              <div class="d-flex justify-content-center align-items-center" style="height: auto; width: auto;">
-                <button @click="showLoginHistoryModal()" class="btn login-button" style="margin-right: 36px;">
-                  Lịch sử đăng
-                  nhập
-                </button>
-                <button @click="loginWithCode()" class="btn login-button">Đăng nhập</button>
+              <div class="d-flex justify-content-center align-items-center mb-3" style="height: auto; width: auto;">
+                <button @click="loginWithCode()" class="btn login-button" style="margin-right: 36px;">Đăng nhập gia tộc</button>
+                <router-link to="/login">
+                  <button class="btn bg-danger text-white">Đăng xuất tài khoản</button>
+                </router-link>
               </div>
-              <!-- </router-link> -->
+              <div class="d-flex justify-content-center">
+                <button @click="showLoginHistoryModal()" class="btn login-button">
+                  Lịch sử đăng nhập
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -65,7 +67,11 @@
                 </div>
               </div>
               <div class="d-flex justify-content-center align-items-center" style="height: auto; width: auto;">
-                <button @click="registerFamilyTree()" class="btn register-button">Đăng kí</button>
+                <button @click="registerFamilyTree()" class="btn register-button" style="margin-right: 36px;">Đăng
+                  kí</button>
+                <router-link to="/login">
+                  <button class="btn bg-danger text-white">Đăng xuất tài khoản</button>
+                </router-link>
               </div>
             </div>
           </div>
