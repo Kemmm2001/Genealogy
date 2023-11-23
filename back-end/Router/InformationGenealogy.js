@@ -39,7 +39,7 @@ const initWebRouter = (app) => {
     // Update a FamilyHistory with id
     router.put('/familyhistory', FamilyHistoryController.updateFamilyHistory);
     // Delete a FamilyHistory with id
-    router.delete('/familyhistory', FamilyHistoryController.deleteFamilyHistory);
+    router.get('/delete-familyhistory', FamilyHistoryController.deleteFamilyHistory);
     router.post('/searchHistory', FamilyHistoryController.searchHistory)
     router.post('/filterHistory', FamilyHistoryController.filterHistory)
 
@@ -52,7 +52,7 @@ const initWebRouter = (app) => {
     // Update an AlbumPhoto with id
     router.put('/albumphoto', CoreFunction.uploadImage("album-photo").single('BackGroundPhoto'), AlbumPhotoController.updateAlbumPhoto);
     // Delete an AlbumPhoto with id
-    router.delete('/albumphoto', AlbumPhotoController.deleteAlbumPhoto);
+    router.get('/delete-albumphoto', AlbumPhotoController.deleteAlbumPhoto);
 
     // Create a new FamilyPhoto
     router.post('/familyphoto', CoreFunction.uploadImage("family-photo").single('Photo'), FamilyPhotoController.addFamilyPhoto);
@@ -61,7 +61,7 @@ const initWebRouter = (app) => {
     // Update a FamilyPhoto with id
     router.put('/familyphoto', CoreFunction.uploadImage("family-photo").single('Photo'), FamilyPhotoController.updateFamilyPhoto);
     // Delete a FamilyPhoto with id
-    router.delete('/familyphoto', FamilyPhotoController.deleteFamilyPhoto);
+    router.get('/delete-familyphoto', FamilyPhotoController.deleteFamilyPhoto);
     // End API tuấn
     //API Nhật anh
 

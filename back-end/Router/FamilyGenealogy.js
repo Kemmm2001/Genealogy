@@ -37,25 +37,25 @@ const initWebRouter = (app) => {
     router.post('/addJob', JobManagementController.InsertJobMember)
     router.put('/updateJob', JobManagementController.UpdateJobMember)
     router.delete('/removeJob', JobManagementController.RemoveJobMember)
-    router.delete('/RemoveListJob', JobManagementController.RemoveListJobMember)
+    router.get('/RemoveListJob', JobManagementController.RemoveListJobMember)
 
     router.get('/contact', ContactManagementController.ViewContactMember)
     router.post('/addContact', ContactManagementController.InsertContactMember)
     router.put('/updateContact', ContactManagementController.updateContactMember)
-    router.delete('/deleteContact', ContactManagementController.removeContactMember)
+    router.get('/deleteContact', ContactManagementController.removeContactMember)
 
     router.get('/education', EducationManagementController.ViewEducation)
     router.post('/addEducation', EducationManagementController.InsertEducationMember)
     router.put('/updateEducation', EducationManagementController.UpdateEducationMember)
     router.delete('/deleteEducation', EducationManagementController.RemoveEducationMember)
-    router.delete('/deleteListEducation', EducationManagementController.RemoveListEducationMember)
+    router.get('/deleteListEducation', EducationManagementController.RemoveListEducationMember)
 
     //API tuấn
     router.get('/member', FamilyMemberManagement.getMember);
     router.post('/member', CoreFunction.uploadImage("member-photo").single('Image'), FamilyMemberManagement.addMember);
     router.put('/member', CoreFunction.uploadImage("member-photo").single('Image'), FamilyMemberManagement.updateMember);
     router.put('/memberToGenealogy', FamilyMemberManagement.updateMemberToGenealogy);
-    router.delete('/member', FamilyMemberManagement.deleteMember)
+    router.get('/delete-member', FamilyMemberManagement.deleteMember)
     router.get('/getparent', FamilyMemberManagement.GetCurrentParentMember)
     router.post('/InsertParentID', FamilyMemberManagement.insertParentIdToMember)
     router.post('/InserMarrie', FamilyMemberManagement.InsertMarrieIdToMember)
