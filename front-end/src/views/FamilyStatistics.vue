@@ -350,12 +350,12 @@ export default {
       return count;
     },
     refreshSelect() {
-      this.monthSearch= 0,
-      this.generationSearch= 0,
-      this.genderSearch= "all",
-      this.isDeadSearch= "all",
-      this.ageSearch= "all",
-      this.filter();
+      (this.monthSearch = 0),
+        (this.generationSearch = 0),
+        (this.genderSearch = "all"),
+        (this.isDeadSearch = "all"),
+        (this.ageSearch = "all"),
+        this.filter();
     },
     takeInforList() {
       (this.numberMale = 0),
@@ -626,10 +626,11 @@ export default {
         },
       })
         .then((response) => {
-          this.memberList = response.data;
-          this.memberFilter = this.memberList;
-          this.takeInforList();
-          console.log(this.memberFilter);
+          if (response.data.success == true) {
+            this.memberList = response.data.data;
+            this.memberFilter = this.memberList;
+            this.takeInforList();
+          }
         })
         .catch((e) => {
           console.log(e);
@@ -652,7 +653,7 @@ export default {
 </script>
 <style>
 .m-5.bg-colored {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   border-radius: 0.375rem;
 }
 
