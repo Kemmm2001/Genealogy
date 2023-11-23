@@ -1333,6 +1333,8 @@ export default {
       }
     },
     getInforMember(id) {
+      this.isAdd = false;
+      this.isEdit = true;
       HTTP.get("InforMember", {
         params: {
           memberId: id,

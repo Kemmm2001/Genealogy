@@ -212,14 +212,14 @@ async function deleteMemberRelated(memberId) {
     // Khởi tạo biến parentID = memberId truyền vào
 
     // Danh sách các memberId cần update đời
-    const memberIdsToUpdateGeneration = [];
+    const memberIdsToUpdate = [];
 
     let member = await getMember(memberId);
     // Lấy thông tin member cần xóa
 
     if (member[0].MarriageID != null || member[0].MarriageID !== 0) {
         // Nếu member đó có MarriageID (có vợ/chồng)
-        memberIdsToUpdateGeneration.push(member[0].MarriageID);
+        memberIdsToUpdate.push(member[0].MarriageID);
         // Thêm MarriageID vào danh sách cần update đời
     }
 
@@ -247,11 +247,11 @@ async function deleteMemberRelated(memberId) {
                 if (membersChild[index].MarriageID != null && membersChild[index].MarriageID !== 0) {
                     // Nếu đứa con đó có vợ/chồng
                     console.log("memberChild[index].MarriageID: " + membersChild[index].MarriageID);
-                    memberIdsToUpdateGeneration.push(membersChild[index].MarriageID);
+                    memberIdsToUpdate.push(membersChild[index].MarriageID);
                     // Thêm MarriageID vào danh sách cần update đời
                 }
 
-                memberIdsToUpdateGeneration.push(membersChild[index].MemberID);
+                memberIdsToUpdate.push(membersChild[index].MemberID);
                 // Thêm MemberID vào danh sách cần update đời           
 
                 listParentIDToCheck.push(membersChild[index].MemberID);
@@ -263,22 +263,25 @@ async function deleteMemberRelated(memberId) {
         // Cập nhật lại parentID để kiểm tra tiếp ở vòng lặp kế
     }
 
-    // Cập nhật generation = 0 cho các thành viên liên quan
-    const queryUpdateGeneration = `
+    // nếu có cái memberId nào = null ở trong memberIdsToUpdate thì xóa nó đi
+    for (let index = 0; index < memberIdsToUpdate.length; index++) {
+        if (memberIdsToUpdate[index] == null) {
+            memberIdsToUpdate.splice(index, 1);
+        }
+    }
+    // Cập nhật generation = 0 , parentID = null, marriageID = null cho các member liên quan
+    const queryUpdateRelatedMember = `
         UPDATE familymember 
-        SET Generation = 0
-        WHERE MemberID IN (${memberIdsToUpdateGeneration.join(',')}) 
+        SET Generation = 0, ParentID = null, MarriageID = null
+        WHERE MemberID IN (${memberIdsToUpdate.join(',')}) 
       `;
-
-    console.log('queryUpdateGeneration: ', queryUpdateGeneration);
-
-    db.connection.query(queryUpdateGeneration, (err, result) => {
+    console.log('queryUpdateRelatedMember: ', queryUpdateRelatedMember);
+    db.connection.query(queryUpdateRelatedMember, (err, result) => {
         if (err) {
             console.error('Error updating generation: ', err);
         }
-        console.log('Generation updated for members: ', memberIdsToUpdateGeneration);
+        console.log('Generation updated for members: ', memberIdsToUpdate);
     });
-
 }
 
 function InsertMarriIdToMember(memberId, marriageID) {
