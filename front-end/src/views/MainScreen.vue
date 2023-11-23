@@ -991,6 +991,9 @@ export default {
       UrlAvatar: null,
       nodeLength: null,
       CoordinatesNode: null,
+
+      selectedNodes:[],
+      notSelectedNodes:[],
     };
   },
   methods: {
@@ -1017,7 +1020,7 @@ export default {
       FamilyTree.elements.textbox =  function(param1, param2, param3){
         if (param2 && param2.label == FamilyTree.SEARCH_PLACEHOLDER){
           return {
-              html: `<input type="text" id="txt_search" name="txt_search" placeholder="Tìm kiếm thành viên"> <button data-input-btn="">X</button>`,
+              html: `<input type="text" class="form-control" id="txt_search" name="txt_search" placeholder="Tìm kiếm thành viên"> <button data-input-btn="">X</button>`,
               id: 'txt_search'
           }
         }
@@ -1041,8 +1044,19 @@ export default {
       });
 
       this.family.onRedraw(() => {
-        console.log(this.nodeLength);
-        console.log(this.nodes.length);
+        var nodeElement;
+        if (this.selectedNodes.length != 0) {
+          for(let i = 0; i < this.selectedNodes.length; i++){
+            nodeElement = document.querySelector('[data-n-id="' + this.selectedNodes[i] + '"]');
+            nodeElement.classList.add("selected");
+          }
+        }
+        if (this.notSelectedNodes.length != 0) {
+          for(let i = 0; i < this.notSelectedNodes.length; i++){
+            nodeElement = document.querySelector('[data-n-id="' + this.notSelectedNodes[i] + '"]');
+            nodeElement.classList.add("notselected");
+          }
+        }
         if (
           this.CoordinatesNode != null &&
           this.nodeLength != this.nodes.length
@@ -1750,6 +1764,8 @@ export default {
         });
     },
     RemoveHightLight() {
+      this.selectedNodes = [];
+      this.notSelectedNodes = [];
       var nodeElement;
       for (let i = 0; i < this.nodes.length; i++) {
         nodeElement = this.family.getNodeElement(this.nodes[i].id);
@@ -1771,6 +1787,7 @@ export default {
       } else if (selectedNode) {
         nodeElement = this.family.getNodeElement(selectedNode.id);
         nodeElement.classList.add("selected");
+        this.selectedNodes.push(selectedNode.id)
         this.selectNodeHighLight.push(selectedNode.id);
       } else {
         console.log(selectedNode);
@@ -1784,6 +1801,8 @@ export default {
       if (selectedNode) {
         nodeElement = this.family.getNodeElement(selectedNode.id);
         nodeElement.classList.add("selected");
+        console.log(this.selectedNodes)
+        this.selectedNodes.push(selectedNode.id);
       } else {
         console.log("Nút không tồn tại:", SelectNode);
       }
@@ -1800,7 +1819,7 @@ export default {
       this.family.center(id);
     },
     highLightNode() {
-      var nodeElement;
+      let nodeElement;
       this.RemoveHightLight();
       let memberIds = this.listFilterMember.map((item) => item.MemberID);
       if (
@@ -1813,11 +1832,13 @@ export default {
             nodeElement = this.family.getNodeElement(node.id);
             if (nodeElement != null) {
               nodeElement.classList.add("selected");
+              this.selectedNodes.push(node.id)
             }
           } else {
             nodeElement = this.family.getNodeElement(node.id);
             if (nodeElement != null) {
               nodeElement.classList.add("notselected");
+              this.notSelectedNodes.push(node.id)
             }
           }
         });
