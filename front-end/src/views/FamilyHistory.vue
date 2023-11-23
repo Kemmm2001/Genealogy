@@ -127,7 +127,6 @@ export default {
     },
 
     filterHistory() {
-      console.log("vào đây");
       if (this.filterEndDate != null && this.filterStartDate != null) {
         HTTP.post("filterHistory", {
           startDate: this.filterStartDate,
@@ -135,7 +134,7 @@ export default {
         })
           .then((response) => {
             if (response.data.success == true) {
-              this.listHistory = response.data.data;         
+              this.listHistory = response.data.data;
             } else {
               this.NotificationsDelete("Lỗi hệ thống");
             }
@@ -183,7 +182,7 @@ export default {
         });
     },
     removeHistory() {
-      HTTP.delete("familyhistory", {
+      HTTP.get("delete-familyhistory", {
         params: {
           FamilyHistoryID: this.historyID,
         },
