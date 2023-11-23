@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const refreshTokenSchema = new mongoose.Schema({
+    accountID: {
+        type: Number,
+        required: true,
+    },
     token: {
         type: String,
         required: true,
@@ -15,9 +19,9 @@ const refreshTokenSchema = new mongoose.Schema({
 
 const RefreshToken = mongoose.model('RefreshToken', refreshTokenSchema);
 
-const saveRefreshToken = async (token) => {
+const saveRefreshToken = async (accountID, token) => {
     try {
-        const refreshToken = new RefreshToken({ token });
+        const refreshToken = new RefreshToken({ accountID, token });
         await refreshToken.save();
         console.log('Refresh token đã được lưu vào MongoDB.');
     } catch (error) {
