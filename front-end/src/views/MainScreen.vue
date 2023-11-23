@@ -38,16 +38,18 @@
       </div>
     </div>
     <div v-if="listhelp || treehelp " class="h-100" :class="{ shadowed : treehelp }" style="width: 81%; right: 0; position: absolute; z-index: 100;"></div>
-    <div class="d-flex main-screen align-items-center h-100 w-100 position-relative">
-      <div id="tree" ref="tree"></div>
-      <!-- <div v-if=" !dataLoaded  || nodes.length == 0" style="inset: 0; margin: auto;">
+    <div  class="d-flex main-screen align-items-center h-100 w-100 position-relative">
+      
+      <div v-show=" dataLoaded || nodes.length != 0" id="tree" ref="tree"></div>
+      <div v-show=" !dataLoaded || nodes.length == 0" style="inset: 0; margin: auto;">
         <div @click="openMemberModal('AddFirst','cụ tổ')" class="btn bg-primary text-white d-flex flex-row align-items-center">
           <div style="padding-right: 8px;">Thêm tổ phụ</div>
           <svg style="fill: white;" class="add-member-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
             <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />
           </svg>
         </div>
-      </div>-->
+      </div>
+      
       <div @mouseenter="advancedFilterDown = true" @mouseleave="advancedFilterDown = false" :class="{ filterExpanded: advancedFilterDown }" class="advanced-filter-container d-flex flex-column p-1 position-absolute">
         <div :class="{expand : advancedFilterDown}" class="filter-item">
           <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
@@ -1102,6 +1104,7 @@ export default {
         }
       });
     },
+    
     getViewBox() {
       return this.family.getViewBox();
     },
@@ -1444,6 +1447,7 @@ export default {
         },
       }).then((response) => {
         if (response.data.success == true) {
+          this.removeFromSelectedNodes(this.CurrentIdMember)
           this.NotificationsScuccess(response.data.message);
           this.getListUnspecifiedMembers();
         } else {
@@ -1454,6 +1458,14 @@ export default {
         this.getListMember();
         this.closeCfDelModal();
       });
+    },
+    removeFromSelectedNodes(memberid) {
+      for(let i = 0 ; i < this.selectedNodes.length;i++){
+        if(this.selectedNodes[i] == memberid){
+          console.log('davao')
+          this.selectedNodes.splice(i, 1);
+        }
+      }
     },
     getListJobMember() {
       HTTP.get("getJob", {
@@ -2010,13 +2022,16 @@ export default {
     },
 
     getListMember() {
+      console.log(this.CodeID)
       HTTP.get("viewTree", {
         params: {
           CodeID: this.CodeID,
         },
       })
         .then((response) => {
+          console.log(1)
           this.nodes = response.data;
+          console.log(this.nodes.length)
           for (let i = 0; i < this.nodes.length; i++) {
             this.nodes[i].tags = [];
             if (this.nodes[i].isDead == 1) {
@@ -2035,6 +2050,8 @@ export default {
           this.nodes[0].tags.push("great-grandfather");
           this.dataLoaded = true;
           this.mytree(this.$refs.tree, this.nodes);
+          this.family.load(this.nodes);
+          
         })
         .catch((e) => {
           console.log(e);
