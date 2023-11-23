@@ -9,3 +9,8 @@
 .dark .navbar{
     background-color: #191e3a;
 }
+
+.dark .info-pages-container{
+    background-color: #6c757d !important;
+    color: #fff;
+}
