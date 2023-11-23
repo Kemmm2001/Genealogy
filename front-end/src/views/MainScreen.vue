@@ -988,6 +988,8 @@ export default {
       resultCompare2: null,
       selectedRowIndex: null,
       UrlAvatar: null,
+      nodeLength: null,
+      CoordinatesNode: null,
     };
   },
   methods: {
@@ -1025,13 +1027,22 @@ export default {
         this.family.load(this.nodes);
       });
 
-      //Get tọa độ ban đầu
-      let CoordinatesNode = this.getViewBox();
       this.family.onRedraw(() => {
-        if (CoordinatesNode != null) {
-          this.family.setViewBox(CoordinatesNode);
+        console.log(this.nodeLength);
+        console.log(this.nodes.length);
+        if (
+          this.CoordinatesNode != null &&
+          this.nodeLength != this.nodes.length
+        ) {
+          this.family.setViewBox(this.CoordinatesNode);
         }
+        setTimeout(() => {
+          if (this.nodeLength != this.nodes.length) {
+            this.nodeLength = this.nodes.length;
+          }
+        }, 3000);
       });
+
       // right click
       const self = this;
       if (this.memberRole != 3) {
@@ -1320,7 +1331,6 @@ export default {
       })
         .then((response) => {
           this.objMember = response.data;
-          console.log(this.objMember)
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
             this.takeDataMember(this.CurrentIdMember);
@@ -1412,6 +1422,7 @@ export default {
           this.NotificationsDelete(response.data.message);
         }
         this.$modal.hide("Select-option-Modal");
+        this.$modal.hide("member-modal");
         this.getListMember();
         this.closeCfDelModal();
       });
@@ -1664,7 +1675,6 @@ export default {
       }
       HTTP.put("member", this.formData)
         .then((response) => {
-          console.log(response.data);
           if (response.data.success == true) {
             this.NotificationsScuccess(response.data.message);
             if (this.objMemberContact.Phone != null) {
@@ -1934,15 +1944,15 @@ export default {
           console.log(e);
         });
     },
-    openCfDelModal(flag, id, name, action) { 
-      console.log('id: ' + this.CurrentIdMember)    
+    openCfDelModal(flag, id, name, action) {
+      console.log("id: " + this.CurrentIdMember);
       this.isRemoveRelationship = flag;
       this.$modal.show("cfdel-modal");
       if (this.isRemoveRelationship) {
         this.TitleConfirm = "Bạn có chắc chắn muốn hủy mối quan hệ với " + name;
         this.action = action;
-        this.newIdMember = id;    
-      } else {       
+        this.newIdMember = id;
+      } else {
         this.TitleConfirm = "Bạn có chắc chắn xóa " + name + " khỏi gia phả";
         this.$modal.show("cfdel-modal");
       }
