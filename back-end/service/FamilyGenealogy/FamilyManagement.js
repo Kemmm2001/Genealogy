@@ -466,10 +466,10 @@ function getAllMemberNotInMemberRole() {
 }
 
 
-function getAllMember() {
+function getAllMember(codeID) {
     return new Promise((resolve, reject) => {
-        const query = 'SELECT * FROM familymember';
-        db.connection.query(query, (err, result) => {
+        const query = 'SELECT * FROM familymember where CodeID = ?';
+        db.connection.query(query, codeID, (err, result) => {
             if (err) {
                 console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
                 reject(err);

@@ -1,16 +1,33 @@
-const mongoose = require('mongoose')
-const schema = mongoose.Schema
+const mongoose = require('mongoose');
 
-const RefreshTokenSchema = new schema({
-    token:{
+const refreshTokenSchema = new mongoose.Schema({
+    accountID: {
+        type: Number,
+        required: true,
+    },
+    token: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
     },
-    exprireTime:{
-        type: Date
-    }
-})
+    expireAt: {
+        type: Date,
+        default: Date.now,
+        index: { expires: '1d' }, // Hết hạn sau 1 ngày
+    },
+});
 
-const Refresh = mongoose.model('refresh', RefreshTokenSchema)
-module.exports = Refresh
+const RefreshToken = mongoose.model('RefreshToken', refreshTokenSchema);
+
+const saveRefreshToken = async (accountID, token) => {
+    try {
+        const refreshToken = new RefreshToken({ accountID, token });
+        await refreshToken.save();
+        console.log('Refresh token đã được lưu vào MongoDB.');
+    } catch (error) {
+        console.error('Lỗi khi lưu refresh token:', error.message);
+        throw error;
+    }
+};
+
+module.exports = { RefreshToken, saveRefreshToken };

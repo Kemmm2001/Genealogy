@@ -131,7 +131,7 @@
       <modal name="addPhoto-modal">
         <div class="form-group" style="height: 100%;">
           <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm ảnh vào album</div>
-          <div class="add-photo-modal" style="background-color: white;height:900px">
+          <div class="add-photo-modal" style="background-color: white;height:700px">
             <div class="add-photo-layout">
               <button type="button" class="btn btn-primary mr-2"  @click="triggerFileInput" style="margin: 10px;">Thêm ảnh</button>
               <input ref="fileAdd" type="file" class="hidden-input form-control" @change="handleFileChangePhoto" style="display: none;" />
@@ -183,10 +183,11 @@ export default {
     return {
       albumPhoto: {
         AlbumName: null,
-        CodeID: 258191,
+        CodeID: null,
         description: null,
         BackGroundPhoto: null,
       },
+      CodeID:null,
       familyPhoto: {
         albumID: null,
         file: null,
@@ -342,7 +343,7 @@ export default {
     updateAlbum() {
       console.log(this.albumCurrentId)
       HTTP.put("albumphoto", {
-        CodeID: 123,
+        CodeID: this.CodeID,
         AlbumID: this.albumCurrentId,
         AlbumName: this.albumPhoto.AlbumName,
         Description: this.albumPhoto.description
@@ -360,7 +361,7 @@ export default {
     getAlbumPhotoByCodeId() {
       HTTP.get("albumphoto", {
         params: {
-          CodeID: 123,
+          CodeID: this.CodeID,
         },
       })
         .then((response) => {
@@ -426,7 +427,7 @@ export default {
     addAlbumPhoto() {
       const formData = new FormData();
       formData.append("AlbumName", this.albumPhoto.AlbumName);
-      formData.append("CodeID", '123');
+      formData.append("CodeID", this.CodeID);
       formData.append("Description",  this.albumPhoto.description);
       formData.append("BackGroundPhoto",  this.albumPhoto.BackGroundPhoto);
       HTTP.post("albumphoto", formData)
@@ -442,6 +443,16 @@ export default {
     },
   },
   mounted() {
+    if (localStorage.getItem("CodeID") != null) {
+      this.CodeID = localStorage.getItem("CodeID");
+    } else {
+      if (localStorage.getItem("accountID") != null) {
+        this.$router.push("/familycode");
+      } else {
+        this.$router.push("/login");
+      }
+    }
+    this.albumPhoto.CodeID = this.CodeID
     this.getAlbumPhotoByCodeId();
   },
   created() {
@@ -466,7 +477,7 @@ export default {
   right: 0;
 }
 .vm--modal {
-    height: 900px !important;
+    height: 700px !important;
 }
 .add-photo {
     margin: 10px;

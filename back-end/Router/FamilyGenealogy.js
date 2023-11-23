@@ -61,7 +61,7 @@ const initWebRouter = (app) => {
     router.post('/InserMarrie', FamilyMemberManagement.InsertMarrieIdToMember)
 
     //API Nhật anh
-    router.get('/member', FamilyMemberManagement.getAllMember);
+    router.get('/members', FamilyMemberManagement.getAllMember);
     router.post('/search-member', FamilyMemberManagement.searchMember);
     router.post('/filter-member', FamilyMemberManagement.filterMember);
     router.post('/sort-member', FamilyMemberManagement.sortMembers);
