@@ -21,7 +21,7 @@ const initWebRouter = (app) => {
     // router.post('/send-sms', EventManagementController.SendSMS)
     // router.post('/send-email', EventManagementController.SendEmail)
     router.post('/send-email', EventManagementController.sendEmailToMember)
-
+    router.post('/send-email-core', EventManagementController.SendEmail)
 
 
     //API Nhật anh  
