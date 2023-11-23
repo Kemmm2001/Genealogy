@@ -65,20 +65,27 @@ export default {
         },
     },
     mounted() {
-        const query = this.$route.query;
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString)
 
-        // Check if the "token" parameter is present
-        if (query.token) {
-            // Token is present, you can access its value
-            const tokenValue = query.token;
-            console.log(`Token found: ${tokenValue}`);
+        // Lấy giá trị của tham số 'token'
+        const token = urlParams.get("token");
 
-            // Now you can use the tokenValue as needed, e.g., store it in the component's data
-            this.$data.token = tokenValue;
-        } else {
-            // Token is not present
-            console.log('Token not found');
-        }
+        console.log(token); 
+        // const query = this.$route.query;
+
+        // // Check if the "token" parameter is present
+        // if (query.token) {
+        //     // Token is present, you can access its value
+        //     const tokenValue = query.token;
+        //     console.log(`Token found: ${tokenValue}`);
+
+        //     // Now you can use the tokenValue as needed, e.g., store it in the component's data
+        //     this.$data.token = tokenValue;
+        // } else {
+        //     // Token is not present
+        //     console.log('Token not found');
+        // }
     }
 }
 </script>
