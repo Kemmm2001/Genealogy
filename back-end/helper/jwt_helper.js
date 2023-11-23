@@ -55,38 +55,33 @@ module.exports = {
           console.log(err.message);
           reject(createError.InternalServerError());
         }
-        try {
-          await saveRefreshToken(insertId,token);
+         try {
+           await saveRefreshToken(insertId,token);
+           console.log(Date.now()); 
           resolve(token);
-        } catch (error) {
-          reject(createError.InternalServerError());
-        }
+         } catch (error) {
+         reject(createError.InternalServerError());
+         }
+        resolve(token)
       });
     });
   },
 
 
   verifyRefreshToken: (refreshToken) => {
-    return new Promise(async (resolve, reject) => {
-      try {
-
-        const tokenInDB = await RefreshToken.findOne({ token: refreshToken });
-        if (!tokenInDB) {
-          return reject(createError.Unauthorized('Hết hạn token'));
-        }
-
-        // Xác minh token
-        JWT.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, payload) => {
-          if (err) {
-            return reject(createError.Unauthorized('Token không hợp lệ'));
+    return new Promise((resolve, reject) => {
+      JWT.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, payload) => {
+        if (err) {
+          if (err.name === 'TokenExpiredError') {
+            return reject(createError.Unauthorized('Token has expired'));
           }
-          resolve(payload);
-        });
-      } catch (error) {
-        reject(createError.InternalServerError());
-      }
+          return reject(createError.Unauthorized('Invalid token'));
+        }
+        resolve(payload);
+      });
     });
   },
+  
 
   signRePassToken: (email) => {
     return new Promise((resolve, reject) => {

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const moment = require('moment');
 
 const refreshTokenSchema = new mongoose.Schema({
     accountID: {
@@ -12,11 +13,10 @@ const refreshTokenSchema = new mongoose.Schema({
     },
     expireAt: {
         type: Date,
-        default: Date.now,
-        index: { expires: '15s' }, // Hết hạn sau 1 ngày
+        default: () => moment().utcOffset(7 * 60).add(1, 'minute').toDate(), // Lưu thời gian hết hạn theo múi giờ UTC+7
+        index: { expires: 60 }, // Sử dụng expires với đơn vị là giây
     },
 });
-
 const RefreshToken = mongoose.model('RefreshToken', refreshTokenSchema);
 
 const saveRefreshToken = async (accountID, token) => {
