@@ -50,3 +50,19 @@
 .user-screen .family-account-item .role{
     right: 8px;
 }
+
+.resetpwd-screen{
+    background-image: url(../space.jpg);
+    background-position: bottom;
+}
+
+.resetpwd-screen .resetpwd-container{
+    width: 400px;
+    left: 0;
+    right: 0;
+    top: 20%;
+    position: absolute;
+    margin: auto;
+    background-color: #FFFFFF;
+    border-radius: 0.2rem;
+}

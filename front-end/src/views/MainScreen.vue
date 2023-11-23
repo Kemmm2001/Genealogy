@@ -816,6 +816,7 @@
         </div>
       </modal>
     </div>
+    <div @click="resetpwd()" class="btn">reset</div>
     <div v-if="listhelp || treehelp" class="btn bg-primary text-white position-absolute d-flex align-items-center justify-content-center" style="inset: 0; margin: auto; height: 48px; width: 100px; z-index: 999;" @click="listhelp = false; treehelp = false;">Đã hiểu</div>
     <div v-if="listhelp">
       <div class="help-content"></div>
@@ -1006,6 +1007,18 @@ export default {
         '<text class="field_2" style="font-size: 14px;" fill="#ffffff" x="90" y="60">Ngày Sinh: {val}</text>';
       FamilyTree.templates.tommy_female.field_2 =
         '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="90" y="80">Đời: {val}</text>';
+      FamilyTree.elements._textbox = FamilyTree.elements.textbox;
+      FamilyTree.elements.textbox =  function(param1, param2, param3){
+        if (param2 && param2.label == FamilyTree.SEARCH_PLACEHOLDER){
+          return {
+              html: `<input type="text" id="txt_search" name="txt_search" placeholder="Tìm kiếm thành viên"> <button data-input-btn="">X</button>`,
+              id: 'txt_search'
+          }
+        }
+        else{
+            return FamilyTree.elements._textbox(param1, param2, param3);
+        }
+      };
       this.family = new FamilyTree(domEl, {
         nodes: x,
         nodeBinding: {
@@ -2176,6 +2189,9 @@ export default {
       this.emailSelected = false;
       this.expandCreateEmail = false;
     },
+    resetpwd(){
+      this.$router.push({ name: 'resetpwd', query: { token: 'userProvidedToken' } });
+    }
   },
   created() {
     EventBus.$on("displayList", (value) => {
@@ -2220,5 +2236,10 @@ export default {
 
 .row-selected {
   --bs-table-bg: #f0f0f0;
+}
+input#txt_search {
+    height: 40px;
+    width: 300px;
+    border: 0px;
 }
 </style>
