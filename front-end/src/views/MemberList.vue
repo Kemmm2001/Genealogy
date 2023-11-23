@@ -1076,7 +1076,7 @@ export default {
       }
     },
     getListMember() {
-      HTTP.get("members", {
+      HTTP.get("viewTree", {
         params: {
           CodeID: this.CodeID,
         },
