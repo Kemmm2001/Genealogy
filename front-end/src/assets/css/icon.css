@@ -122,6 +122,7 @@
     height: 24px;
     fill: #FFFFFF;
     transition: 0.4s;
+    margin: 8px 0;
 }
 
 .advanced-filter-icon.rotateDown{
@@ -134,6 +135,7 @@
     width: 36px;
     height: 36px;
     border-radius: 0.375rem;
+    cursor: pointer;
 }
 
 .change-pic-icon{
