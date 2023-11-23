@@ -105,6 +105,11 @@ var addMember = async (req, res) => {
             console.log("Đã vào trường hợp thêm thành viên mà không có trong cây gia phả");
             await FamilyManagementService.setGeneration(0, data.insertId);
         }
+        // trường hợp muốn thêm thành viên đầu tiên ( tổ phụ tổ tiên)
+        else if (req.body.Action === 'AddFirst') {
+            await FamilyManagementService.setGeneration(1, data.insertId);
+            await ManagementFamilyHead.addForefather(data.insertId, req.body.CodeID);
+        }
         // trường hợp muốn thêm thành viên mà có trong cây gia phả
         else {
             console.log("Đã vào trường hợp thêm thành viên có trong cây gia phả");
@@ -145,11 +150,6 @@ var addMember = async (req, res) => {
                 await FamilyManagementService.setGeneration(currentMember[0].Generation, data.insertId);
                 await FamilyManagementService.InsertMarriIdToMember(data.insertId, req.body.CurrentMemberID);
                 await FamilyManagementService.InsertMarriIdToMember(req.body.CurrentMemberID, data.insertId);
-            }
-            // trường hợp muốn thêm thành viên đầu tiên ( tổ phụ tổ tiên)
-            else if (req.body.Action === 'AddFirst') {
-                await FamilyManagementService.setGeneration(1, data.insertId);
-                await ManagementFamilyHead.addForefather(data.insertId, req.body.CodeID);
             }
         }
         // kết thúc phần thêm member theo action
@@ -269,7 +269,7 @@ var updateMemberToGenealogy = async (req, res) => {
 }
 
 var deleteMember = async (req, res) => {
-    try {        
+    try {
         // Log ra thông tin trong req.query      
         let dataMember = await FamilyManagementService.getMemberByMemberID(req.query.MemberID);
         if (dataMember == null || dataMember.length == 0) {
