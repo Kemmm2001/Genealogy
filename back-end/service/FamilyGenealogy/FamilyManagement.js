@@ -263,6 +263,12 @@ async function deleteMemberRelated(memberId) {
         // Cập nhật lại parentID để kiểm tra tiếp ở vòng lặp kế
     }
 
+    // nếu có cái memberId nào = null ở trong memberIdsToUpdate thì xóa nó đi
+    for (let index = 0; index < memberIdsToUpdate.length; index++) {
+        if (memberIdsToUpdate[index] == null) {
+            memberIdsToUpdate.splice(index, 1);
+        }
+    }
     // Cập nhật generation = 0 , parentID = null, marriageID = null cho các member liên quan
     const queryUpdateRelatedMember = `
         UPDATE familymember 
