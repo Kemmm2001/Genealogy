@@ -115,9 +115,7 @@
           <div @click="listhelp = true" style="background-color: gray; height: 200px; width: 50px; margin-right: 4px; cursor: pointer;"></div>
           <div @click="treehelp = true" class="" style="background-color: gray; height: 200px; width: 200px; cursor: pointer;"></div>
         </div>
-        <svg @click="togglehelp = !togglehelp" class="help-icon p-1" style="z-index: 101;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-          <path d="M80 160c0-35.3 28.7-64 64-64h32c35.3 0 64 28.7 64 64v3.6c0 21.8-11.1 42.1-29.4 53.8l-42.2 27.1c-25.2 16.2-40.4 44.1-40.4 74V320c0 17.7 14.3 32 32 32s32-14.3 32-32v-1.4c0-8.2 4.2-15.8 11-20.2l42.2-27.1c36.6-23.6 58.8-64.1 58.8-107.7V160c0-70.7-57.3-128-128-128H144C73.3 32 16 89.3 16 160c0 17.7 14.3 32 32 32s32-14.3 32-32zm80 320a40 40 0 1 0 0-80 40 40 0 1 0 0 80z" />
-        </svg>
+        <svg @click="togglehelp = !togglehelp" class="help-icon p-1" style="z-index: 101;" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF"><g><path d="M0,0h24v24H0V0z" fill="none"/><path d="M11,7h2v2h-2V7z M11,11h2v6h-2V11z M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,20 c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8S16.41,20,12,20z"/></g></svg>
       </div>
     </div>
     <div class="Container-select-modal">
@@ -234,7 +232,7 @@
             </div>
           </div>
           <div class="modal-footer position-absolute w-100" style="bottom: 0; padding-right: 8px;">
-            <div class="compare-modal-btn btn">Cancel</div>
+            <div class="btn bg-secondary text-white">Cancel</div>
           </div>
         </div>
       </modal>
@@ -535,7 +533,7 @@
                 <div class="row">
                   <div class="col-4">
                     <img style="height:316px;width:360px;margin-bottom:20px" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" />
-                    <svg v-else style="margin-bottom:36px" fill="#000000" height="300px" width="300px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
+                    <svg v-else style="margin-bottom:36px" fill="#000000" height="275px" width="100%" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
                       <g>
                         <g>
                           <circle cx="256" cy="114.526" r="114.526" />
@@ -831,8 +829,8 @@
             </div>
           </div>
           <div class="w-100 d-flex flex-column align-items-center justify-content-center" style="height: calc(100% - 50px);">
-            <div class="d-flex align-items-center" style="height: 50%; font-size: 19px;">{{TitleConfirm}}</div>
-            <div class="d-flex flex-row w-100" style="height: 50%;">
+            <div class="d-flex align-items-center px-3" style="height: 70%; font-size: 19px;">{{TitleConfirm}}</div>
+            <div class="d-flex flex-row w-100" style="height: 30%;">
               <div v-if="isRemoveRelationship" class="col-6 d-flex align-items-center justify-content-center">
                 <div class="btn text-white" @click="removeRelationship()" style="background-color: rgb(255, 8, 0);">Có</div>
               </div>
