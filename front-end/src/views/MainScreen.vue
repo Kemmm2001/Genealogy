@@ -39,15 +39,15 @@
     </div>
     <div v-if="listhelp || treehelp " class="h-100" :class="{ shadowed : treehelp }" style="width: 81%; right: 0; position: absolute; z-index: 100;"></div>
     <div class="d-flex main-screen align-items-center h-100 w-100 position-relative">
-      <div id="tree" ref="tree"></div>
-      <!-- <div v-if=" !dataLoaded  || nodes.length == 0" style="inset: 0; margin: auto;">
+      <div v-show="nodes.length == 0" style="inset: 0; margin: auto;">
         <div @click="openMemberModal('AddFirst','cụ tổ')" class="btn bg-primary text-white d-flex flex-row align-items-center">
           <div style="padding-right: 8px;">Thêm tổ phụ</div>
           <svg style="fill: white;" class="add-member-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
             <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />
           </svg>
         </div>
-      </div>-->
+      </div>
+      <div v-show="nodes.length > 0" id="tree" ref="tree"></div>
       <div @mouseenter="advancedFilterDown = true" @mouseleave="advancedFilterDown = false" :class="{ filterExpanded: advancedFilterDown }" class="advanced-filter-container d-flex flex-column p-1 position-absolute">
         <div :class="{expand : advancedFilterDown}" class="filter-item">
           <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
@@ -860,7 +860,6 @@ export default {
       ListAgeGroup: null,
       ListBloodTypeGroup: null,
       ListUnspecifiedMembers: null,
-      dataLoaded: false,
 
       selectAge: null,
       selectBloodType: null,
@@ -1014,14 +1013,13 @@ export default {
       FamilyTree.elements.textbox = function (param1, param2, param3) {
         if (param2 && param2.label == FamilyTree.SEARCH_PLACEHOLDER) {
           return {
-            html: '<input type="text" class="form-control" id="txt_search" name="txt_search" placeholder="Tìm kiếm thành viên"> <button data-input-btn="">X</button>',
+            html: `<input type="text" class="form-control" id="txt_search" name="txt_search" placeholder="Tìm kiếm thành viên"> <button class="btn-x" data-input-btn="">X</button>`,
             id: "txt_search",
           };
         } else {
           return FamilyTree.elements._textbox(param1, param2, param3);
         }
       };
-
       this.family = new FamilyTree(domEl, {
         nodes: x,
         nodeBinding: {
@@ -1560,7 +1558,7 @@ export default {
       if (value !== undefined && value !== null) {
         this.formData.append(key, value);
       }
-    },
+    }, 
     async addMember() {
       this.formData = new FormData();
       if (this.action == "AddNormal") {
@@ -1596,6 +1594,10 @@ export default {
           }
           if (response.data.success == true) {
             this.NotificationsScuccess(response.data.message);
+            this.$modal.hide("member-modal");
+            this.$modal.hide("Select-option-Modal");
+            this.family.load(this.nodes);
+            this.getListMember();
           } else {
             this.NotificationsDelete(response.data.message);
           }
@@ -1619,10 +1621,6 @@ export default {
               console.log(e);
             });
           }
-          this.$modal.hide("member-modal");
-          this.$modal.hide("Select-option-Modal");
-          this.family.load(this.nodes);
-          this.getListMember();
         })
         .catch((e) => {
           console.log(e);
@@ -2038,7 +2036,6 @@ export default {
             }
           }
           this.nodes[0].tags.push("great-grandfather");
-          this.dataLoaded = true;
           this.mytree(this.$refs.tree, this.nodes);
         })
         .catch((e) => {
@@ -2219,6 +2216,7 @@ export default {
     },
   },
   created() {
+    // this.getListMember();
     EventBus.$on("displayList", (value) => {
       this.displayList = value;
     });
