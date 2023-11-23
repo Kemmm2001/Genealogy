@@ -1014,7 +1014,7 @@ export default {
       FamilyTree.elements.textbox =  function(param1, param2, param3){
         if (param2 && param2.label == FamilyTree.SEARCH_PLACEHOLDER){
           return {
-              html: `<input type="text" class="form-control" id="txt_search" name="txt_search" placeholder="Tìm kiếm thành viên"> <button data-input-btn="">X</button>`,
+              html: `<input type="text" class="form-control" id="txt_search" name="txt_search" placeholder="Tìm kiếm thành viên"> <button class="btn-x" data-input-btn="">X</button>`,
               id: 'txt_search'
           }
         }
@@ -2264,5 +2264,8 @@ input#txt_search {
     height: 40px;
     width: 300px;
     border: 0px;
+}
+button.btn-x{
+  display: none;
 }
 </style>
