@@ -648,8 +648,8 @@ async function setRoleMember(MemberId, roleId, CodeId) {
 }
 
 
-function removePaternalAncestor() {
-    let query = "DELETE FROM memberrole WHERE RoleID = 1";
+function removePaternalAncestor(CodeID) {
+    let query = `DELETE FROM memberrole WHERE RoleID = 1 and CodeId =  ${CodeID}`;
     db.connection.query(query, (err, result) => {
         if (err) {
             console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
@@ -668,5 +668,5 @@ module.exports = {
     getAllReligion, getInforMember, getContactMember, getEducationMember, getJobMember, getEventMember, getAllNationality, getAllMemberRole,
     getRoleExist, setRoleMember, removePaternalAncestor, turnOnSQL_SAFE_UPDATES, turnOffSQL_SAFE_UPDATES, getListMessage,
     setAllGenerationMember, ResetAllGenerationMember, ViewFamilyTree, getListUnspecifiedMembers, GetIdPaternalAncestor, RelationShipMember,
-    RemoveRelationshipChild, RemoveRelationshipMarried, RemoveRelationshipParent,getListNotificationEmail
+    RemoveRelationshipChild, RemoveRelationshipMarried, RemoveRelationshipParent, getListNotificationEmail
 }

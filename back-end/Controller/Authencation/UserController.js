@@ -290,21 +290,22 @@ var forgetPassword = async (req, res) => {
     else {
       const token = await signRePassToken(email)
       try {
+        console.log(token)
         const data = await UserService.UpdateAccount(email, token)
-        const resetPasswordLink = `http://localhost:3003/api/v1/reset-password?token=${token}`;
+         const resetPasswordLink = `http://localhost:3003/api/v1/reset-password?token=${token}`;
 
-        const objData = {
-          to: email,
-          subject: "For reset password",
-          html: `<p> Hii, Please click the link to <a href="${resetPasswordLink}">reset your password</a></p>`
-        };
-        sendMail.SendEmailCore(objData)
+         const objData = {
+           to: email,
+           subject: "For reset password",
+           html: `<p> Hii, Please click the link to <a href="${resetPasswordLink}">reset your password</a></p>`
+         };
+         sendMail.SendEmailCore(objData)
         if (data == true) {
           return res.send(Response.successResponse(null, 'Vui lòng kiểm tra hộp thư đến trong gmail của bạn'));
         }
-        return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+        return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống1'));
       } catch (error) {
-        return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+        return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống2'));
       }
     }
 
