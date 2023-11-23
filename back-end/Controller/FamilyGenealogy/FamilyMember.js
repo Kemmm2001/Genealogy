@@ -112,8 +112,8 @@ var addMember = async (req, res) => {
         }
         // trường hợp muốn thêm thành viên mà có trong cây gia phả
         else {
-            console.log("Đã vào trường hợp thêm thành viên có trong cây gia phả");            
-            if (CoreFunction.isEmptyOrNullOrSpaces(req.body.CurrentMemberID)) {              
+            console.log("Đã vào trường hợp thêm thành viên có trong cây gia phả");
+            if (CoreFunction.isEmptyOrNullOrSpaces(req.body.CurrentMemberID)) {
                 CoreFunction.deleteImage(req.file);
                 return res.send(Response.badRequestResponse());
             }
@@ -204,12 +204,14 @@ var updateMember = async (req, res) => {
             return res.send(Response.dataNotFoundResponse());
         }
         // nếu birthorder đã tồn tại thì ko thể add
-        let listChild = await FamilyManagementService.getMembersByParentID(dataMember[0].ParentID);
-        for (let i = 0; i < listChild.length; i++) {
-            if (listChild[i].BirthOrder == req.body.BirthOrder && listChild[i].MemberID != req.body.MemberID) {
-                let errorMessage = `Con thứ ${req.body.BirthOrder} đã tồn tại`;
-                CoreFunction.deleteImage(req.file);
-                return res.send(Response.badRequestResponse(null, errorMessage));
+        if (dataMember[0].ParentID != null) {
+            let listChild = await FamilyManagementService.getMembersByParentID(dataMember[0].ParentID);
+            for (let i = 0; i < listChild.length; i++) {
+                if (listChild[i].BirthOrder == req.body.BirthOrder && listChild[i].MemberID != req.body.MemberID) {
+                    let errorMessage = `Con thứ ${req.body.BirthOrder} đã tồn tại`;
+                    CoreFunction.deleteImage(req.file);
+                    return res.send(Response.badRequestResponse(null, errorMessage));
+                }
             }
         }
         req.body.Generation = dataMember[0].Generation;

@@ -984,6 +984,9 @@ export default {
       UrlAvatar: null,
       nodeLength: null,
       CoordinatesNode: null,
+
+      selectedNodes: [],
+      notSelectedNodes: [],
     };
   },
   methods: {
@@ -1037,6 +1040,23 @@ export default {
 
       this.CoordinatesNode = this.getViewBox();
       this.family.onRedraw(() => {
+        var nodeElement;
+        if (this.selectedNodes.length != 0) {
+          for (let i = 0; i < this.selectedNodes.length; i++) {
+            nodeElement = document.querySelector(
+              '[data-n-id="' + this.selectedNodes[i] + '"]'
+            );
+            nodeElement.classList.add("selected");
+          }
+        }
+        if (this.notSelectedNodes.length != 0) {
+          for (let i = 0; i < this.notSelectedNodes.length; i++) {
+            nodeElement = document.querySelector(
+              '[data-n-id="' + this.notSelectedNodes[i] + '"]'
+            );
+            nodeElement.classList.add("notselected");
+          }
+        }
         if (
           this.CoordinatesNode != null &&
           this.nodeLength != this.nodes.length
@@ -1748,6 +1768,8 @@ export default {
         });
     },
     RemoveHightLight() {
+      this.selectedNodes = [];
+      this.notSelectedNodes = [];
       var nodeElement;
       for (let i = 0; i < this.nodes.length; i++) {
         nodeElement = this.family.getNodeElement(this.nodes[i].id);
@@ -1769,6 +1791,7 @@ export default {
       } else if (selectedNode) {
         nodeElement = this.family.getNodeElement(selectedNode.id);
         nodeElement.classList.add("selected");
+        this.selectedNodes.push(selectedNode.id);
         this.selectNodeHighLight.push(selectedNode.id);
       } else {
         console.log(selectedNode);
@@ -1782,6 +1805,8 @@ export default {
       if (selectedNode) {
         nodeElement = this.family.getNodeElement(selectedNode.id);
         nodeElement.classList.add("selected");
+        console.log(this.selectedNodes);
+        this.selectedNodes.push(selectedNode.id);
       } else {
         console.log("Nút không tồn tại:", SelectNode);
       }
@@ -1798,7 +1823,7 @@ export default {
       this.family.center(id);
     },
     highLightNode() {
-      var nodeElement;
+      let nodeElement;
       this.RemoveHightLight();
       let memberIds = this.listFilterMember.map((item) => item.MemberID);
       if (
@@ -1811,11 +1836,13 @@ export default {
             nodeElement = this.family.getNodeElement(node.id);
             if (nodeElement != null) {
               nodeElement.classList.add("selected");
+              this.selectedNodes.push(node.id);
             }
           } else {
             nodeElement = this.family.getNodeElement(node.id);
             if (nodeElement != null) {
               nodeElement.classList.add("notselected");
+              this.notSelectedNodes.push(node.id);
             }
           }
         });
@@ -2234,5 +2261,13 @@ export default {
 
 .row-selected {
   --bs-table-bg: #f0f0f0;
+}
+input#txt_search {
+  height: 40px;
+  width: 300px;
+  border: 0px;
+}
+button.btn-x {
+  display: none;
 }
 </style>
