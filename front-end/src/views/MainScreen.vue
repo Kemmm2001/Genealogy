@@ -1,33 +1,6 @@
 <template>
   <div class="d-flex h-100 w-100 position-relative">
     <div class="list h-100 d-flex flex-column align-items-center">
-      <!-- <div class="w-100 d-flex flex-row">
-        <div class="col-6 px-2" style="padding-top: 8px;">
-          <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict(),GetListFilterMember()">
-            <option :value="null" selected>Tỉnh/Thành phố</option>
-            <option v-for="city in ListCity" :key="city.id" :value="city.id">{{ city.name }}</option>
-          </select>
-        </div>
-        <div class="col-6 px-2" style="padding-top: 8px;">
-          <select v-model="selectDistrict" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
-            <option :value="null" selected>Quận/Huyện</option>
-            <option v-for="d in ListDistrict" :key="d.id" :value="d.DistrictName">{{ d.DistrictName }}</option>
-          </select>
-        </div>
-      </div>
-      <div class="w-100 d-flex flex-row">
-        <div class="col-6 px-2" style="padding-top: 8px;">
-          <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
-            <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">{{ blood.BloodType }}</option>
-          </select>
-        </div>
-        <div class="col-6 px-2" style="padding-top: 8px;">
-          <select class="d-flex text-center form-select dropdown p-0" v-model="selectAge" @change="GetListFilterMember()">
-            <option class="dropdown-item" :value="null">Nhóm Tuổi</option>
-            <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{ age.From }} - {{ age.End }} Tuổi</option>
-          </select>
-        </div>
-      </div> -->
       <div v-if="memberRole != 3" class="w-100 d-flex flex-row" style="padding-top: 8px">
         <div class="col-6 px-2">
           <div class="w-100">
@@ -1322,6 +1295,8 @@ export default {
       }
     },
     getInforMember(id) {
+      this.isAdd = false;
+      this.isEdit = true;
       HTTP.get("InforMember", {
         params: {
           memberId: id,

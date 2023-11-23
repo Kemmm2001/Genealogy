@@ -565,6 +565,8 @@ async function ViewFamilyTree(CodeID) {
             db.connection.query(queryGetAllMember, async (err, result) => {
                 if (!err) {
                     let IdPaternal = await GetIdPaternalAncestor(CodeID);
+                    console.log(IdPaternal);
+                    console.log(result)
                     if (IdPaternal != null) {
                         let data = await GetGenealogy(result, IdPaternal.MemberID)
                         resolve(data)
@@ -668,5 +670,5 @@ module.exports = {
     getAllReligion, getInforMember, getContactMember, getEducationMember, getJobMember, getEventMember, getAllNationality, getAllMemberRole,
     getRoleExist, setRoleMember, removePaternalAncestor, turnOnSQL_SAFE_UPDATES, turnOffSQL_SAFE_UPDATES, getListMessage,
     setAllGenerationMember, ResetAllGenerationMember, ViewFamilyTree, getListUnspecifiedMembers, GetIdPaternalAncestor, RelationShipMember,
-    RemoveRelationshipChild, RemoveRelationshipMarried, RemoveRelationshipParent,getListNotificationEmail
+    RemoveRelationshipChild, RemoveRelationshipMarried, RemoveRelationshipParent, getListNotificationEmail
 }
