@@ -845,6 +845,7 @@
         </div>
       </modal>
     </div>
+    <div @click="resetpwd()" class="btn">reset</div>
     <div v-if="listhelp || treehelp" class="btn bg-primary text-white position-absolute d-flex align-items-center justify-content-center" style="inset: 0; margin: auto; height: 48px; width: 100px; z-index: 999;" @click="listhelp = false; treehelp = false;">Đã hiểu</div>
     <div v-if="listhelp">
       <div class="help-content"></div>
@@ -2189,6 +2190,9 @@ export default {
       this.emailSelected = false;
       this.expandCreateEmail = false;
     },
+    resetpwd(){
+      this.$router.push({ name: 'resetpwd', query: { token: 'userProvidedToken' } });
+    }
   },
   created() {
     EventBus.$on("displayList", (value) => {
