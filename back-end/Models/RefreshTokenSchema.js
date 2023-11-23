@@ -13,7 +13,7 @@ const refreshTokenSchema = new mongoose.Schema({
     expireAt: {
         type: Date,
         default: Date.now,
-        index: { expires: '1d' }, // Hết hạn sau 1 ngày
+        index: { expires: '15s' }, // Hết hạn sau 1 ngày
     },
 });
 

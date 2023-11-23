@@ -24,7 +24,7 @@ module.exports = {
 
   verifyAccessToken: (req, res, next) => {
     if (!req.headers['authorization']) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.json({ error: 'Unauthorized' });
     }
 
     const authHeader = req.headers['authorization'];
@@ -34,7 +34,7 @@ module.exports = {
     JWT.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
       if (err) {
         const message = err.name === 'JsonWebTokenError' ? 'Unauthorize' : err.message
-        return res.status(401).json({ error: message });
+        return res.json({ error: message });
       }
       req.payload = payload;
       next();
@@ -48,7 +48,7 @@ module.exports = {
       };
       const secret = process.env.REFRESH_TOKEN_SECRET;
       const options = {
-        expiresIn: '1d',
+        expiresIn: '1m',
       };
       JWT.sign(payload, secret, options, async (err, token) => {
         if (err) {
@@ -113,9 +113,9 @@ module.exports = {
       JWT.verify(token, process.env.REPASS_TOKEN_SECRET, (err, payload) => {
         if (err) {
           if (err.name === 'TokenExpiredError') {
-            return resolve.status(401).json({ error: 'Token expired' });
+            return resolve.json({ error: 'Token expired' });
           } else {
-            return resolve.status(401).json({ error: 'Invalid token' });
+            return resolve.json({ error: 'Invalid token' });
           }
         }
         resolve(payload);
