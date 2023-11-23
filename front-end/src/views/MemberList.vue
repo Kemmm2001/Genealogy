@@ -528,6 +528,7 @@ export default {
       numberGeneration: 0,
       numberAlive: 0,
       numberDied: 0,
+      CodeID:null,
 
       objMemberInfor: {
         MemberID: 0,
@@ -1078,7 +1079,7 @@ export default {
     getListMember() {
       HTTP.get("viewTree", {
         params: {
-          CodeID: "258191",
+          CodeID: this.CodeID,
         },
       })
         .then((response) => {
@@ -1093,6 +1094,15 @@ export default {
   },
 
   mounted() {
+    if (localStorage.getItem("CodeID") != null) {
+      this.CodeID = localStorage.getItem("CodeID");
+    } else {
+      if (localStorage.getItem("accountID") != null) {
+        this.$router.push("/familycode");
+      } else {
+        this.$router.push("/login");
+      }
+    }
     this.getListNationality(), this.getListReligion(), this.getListMember();
   },
 };

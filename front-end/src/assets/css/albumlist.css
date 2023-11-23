@@ -9,7 +9,9 @@
     background-image: url(../no-picture.png);
     background-repeat: no-repeat;
     background-position: center;
-    background-size: cover;
+    background-size: cover;    
+    border: 1px solid lightgray;
+    border-radius: 0.175rem 0.175rem 0 0;
 }
 
 .album-general-info{

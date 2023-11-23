@@ -173,6 +173,7 @@ export default {
         ArticleName: null,
         ArticleDescription: null,
       },
+      CodeID : null,
       articleIdChoose: null,
     };
   },
@@ -194,7 +195,7 @@ export default {
     },
     updateArticle() {
       HTTP.put('update-article', {
-        CodeId: "258191",
+        CodeId: this.CodeID,
         ArticleUrl: this.objArticleInfor.ArticleUrl,
         ArticleName: this.objArticleInfor.ArticleName,
         ArticleDescription: this.objArticleInfor.ArticleDescription,
@@ -208,7 +209,7 @@ export default {
     },
     addArticle() {
       HTTP.post('add-article', {
-        CodeID: "258191",
+        CodeID: this.CodeID,
         ArticleUrl: this.objArticleInfor.ArticleUrl,
         ArticleName: this.objArticleInfor.ArticleName,
         ArticleDescription: this.objArticleInfor.ArticleDescription,
@@ -221,7 +222,7 @@ export default {
     },
     // getArticleInfor(){
     //   HTTP.post('',{
-    //     CodeID : "258191", 
+    //     CodeID : this.CodeID, 
     //     ArticleUrl : this.objArticleInfor.ArticleUrl,
     //     ArticleName : this.objArticleInfor.ArticleName,
     //     ArticleDescription : this.objArticleInfor.ArticleDescription,
@@ -235,7 +236,7 @@ export default {
       console.log(this.articleIdChoose)
       HTTP.post("article", {
         articleId: id,
-        codeId: "258191",
+        codeId: this.CodeID,
       })
         .then((response) => {
           this.objArticleInfor = response.data.data;
@@ -288,7 +289,7 @@ export default {
     getListArticle() {
       HTTP.get("article", {
         params: {
-          CodeID: "258191",
+          CodeID: this.CodeID,
         },
       }).then((response) => {
         this.articleList = response.data.data;
@@ -306,6 +307,15 @@ export default {
     // EventBus.$emit("ArticleList", true);
   },
   mounted() {
+    if (localStorage.getItem("CodeID") != null) {
+      this.CodeID = localStorage.getItem("CodeID");
+    } else {
+      if (localStorage.getItem("accountID") != null) {
+        this.$router.push("/familycode");
+      } else {
+        this.$router.push("/login");
+      }
+    }
     this.getListArticle()
   }
 };

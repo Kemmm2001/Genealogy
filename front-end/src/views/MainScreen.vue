@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex h-100 w-100 position-relative">
-    <div class="list h-100 d-flex flex-column align-items-center">
-      <div class="w-100 d-flex flex-row">
+    <div :class="{ shadowed : listhelp }" class="list h-100 d-flex flex-column align-items-center">
+      <!-- <div class="w-100 d-flex flex-row">
         <div class="col-6 px-2" style="padding-top: 8px;">
           <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict(),GetListFilterMember()">
             <option :value="null" selected>Tỉnh/Thành phố</option>
@@ -27,7 +27,7 @@
             <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{ age.From }} - {{ age.End }} Tuổi</option>
           </select>
         </div>
-      </div>
+      </div> -->
       <div v-if="memberRole != 3" class="w-100 d-flex flex-row" style="padding-top: 8px">
         <div class="col-6 px-2">
           <div class="w-100">
@@ -64,6 +64,7 @@
         </div>
       </div>
     </div>
+    <div v-if="listhelp || treehelp" class="h-100" :class="{ shadowed : treehelp }" style="width: 81%; right: 0; position: absolute; z-index: 100;"></div>
     <div class="d-flex main-screen align-items-center h-100 w-100 position-relative">
       <div id="tree" ref="tree"></div>
       <!-- <div style="inset: 0; margin: auto;">
@@ -74,31 +75,34 @@
           </svg>
         </div>
       </div>-->
-      <div :class="{ filterExpanded: advancedFilterDown }" class="advanced-filter-container d-flex flex-column p-1 position-absolute">
-        <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
+      <div @mouseenter="advancedFilterDown = true"  @mouseleave="advancedFilterDown = false" :class="{ filterExpanded: advancedFilterDown }" class="advanced-filter-container d-flex flex-column p-1 position-absolute">
+        <div :class="{expand : advancedFilterDown}" class="filter-item">
+          <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
           <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict()">
             <option :value="null" selected>Tỉnh/Thành phố</option>
             <option v-for="city in ListCity" :key="city.id" :value="city.id">{{ city.name }}</option>
           </select>
-        </div>
-        <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
+          </div>
+          <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
           <select v-model="selectDistrict" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
             <option :value="null" selected>Quận/Huyện</option>
             <option v-for="d in ListDistrict" :key="d.id" :value="d.DistrictName">{{ d.DistrictName }}</option>
           </select>
-        </div>
-        <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
+          </div>
+          <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
           <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
             <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">{{ blood.BloodType }}</option>
           </select>
-        </div>
-        <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
+          </div>
+          <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
           <select class="d-flex text-center form-select dropdown p-0" v-model="selectAge" @change="GetListFilterMember()">
             <option class="dropdown-item" :value="null">Nhóm Tuổi</option>
             <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{ age.From }} - {{ age.End }} Tuổi</option>
           </select>
+          </div>
         </div>
-        <div @click="advancedFilterDown = !advancedFilterDown" class="p-2 d-flex align-items-center justify-content-center" style="height: 48px; cursor: pointer;">
+        <div class="d-flex flex-column align-items-center justify-content-center h-100">
+          <div v-if="!advancedFilterDown" style="color: white; font-weight: bold">Bộ lọc nâng cao</div>
           <div>
             <svg :class="{ rotateDown: !advancedFilterDown }" class="advanced-filter-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
               <path d="M246.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 109.3 361.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160zm160 352l-160-160c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 301.3 361.4 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3z" />
@@ -107,10 +111,11 @@
         </div>
       </div>
       <div class="d-flex flex-row" style="position: absolute; bottom: 0; right: 0; align-items: end;">
-        <div v-if="showhelp" class="p-2 mb-2" style="border-radius: 0.375rem; background-color: #000; width: 280px; margin-right: 8px; color:#FFFFFF">Click chuột trái để mở thông tin thành viên, chuột phải để tương tác với thành viên trên phả đồ</div>
-        <svg @mouseover="showhelp = true" @mouseleave="showhelp = false" class="help-icon p-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-          <path d="M80 160c0-35.3 28.7-64 64-64h32c35.3 0 64 28.7 64 64v3.6c0 21.8-11.1 42.1-29.4 53.8l-42.2 27.1c-25.2 16.2-40.4 44.1-40.4 74V320c0 17.7 14.3 32 32 32s32-14.3 32-32v-1.4c0-8.2 4.2-15.8 11-20.2l42.2-27.1c36.6-23.6 58.8-64.1 58.8-107.7V160c0-70.7-57.3-128-128-128H144C73.3 32 16 89.3 16 160c0 17.7 14.3 32 32 32s32-14.3 32-32zm80 320a40 40 0 1 0 0-80 40 40 0 1 0 0 80z" />
-        </svg>
+        <div v-if="togglehelp" class="p-1 mb-2 d-flex flex-row" style="border-radius: 0.375rem; background-color: #000; margin-right: 8px; color:#FFFFFF">
+          <div @click="listhelp = true" style="background-color: gray; height: 200px; width: 50px; margin-right: 4px; cursor: pointer;"></div>
+          <div @click="treehelp = true" class="" style="background-color: gray; height: 200px; width: 200px; cursor: pointer;"></div>
+        </div>
+        <svg @click="togglehelp = !togglehelp" class="help-icon p-1" style="z-index: 101;" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF"><g><path d="M0,0h24v24H0V0z" fill="none"/><path d="M11,7h2v2h-2V7z M11,11h2v6h-2V11z M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,20 c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8S16.41,20,12,20z"/></g></svg>
       </div>
     </div>
     <div class="Container-select-modal">
@@ -227,7 +232,7 @@
             </div>
           </div>
           <div class="modal-footer position-absolute w-100" style="bottom: 0; padding-right: 8px;">
-            <div class="compare-modal-btn btn">Cancel</div>
+            <div class="btn bg-secondary text-white">Cancel</div>
           </div>
         </div>
       </modal>
@@ -528,7 +533,7 @@
                 <div class="row">
                   <div class="col-4">
                     <img style="height:316px;width:360px;margin-bottom:20px" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" />
-                    <svg v-else style="margin-bottom:36px" fill="#000000" height="300px" width="300px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
+                    <svg v-else style="margin-bottom:36px" fill="#000000" height="275px" width="100%" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
                       <g>
                         <g>
                           <circle cx="256" cy="114.526" r="114.526" />
@@ -824,8 +829,8 @@
             </div>
           </div>
           <div class="w-100 d-flex flex-column align-items-center justify-content-center" style="height: calc(100% - 50px);">
-            <div class="d-flex align-items-center" style="height: 50%; font-size: 19px;">{{TitleConfirm}}</div>
-            <div class="d-flex flex-row w-100" style="height: 50%;">
+            <div class="d-flex align-items-center px-3" style="height: 70%; font-size: 19px;">{{TitleConfirm}}</div>
+            <div class="d-flex flex-row w-100" style="height: 30%;">
               <div v-if="isRemoveRelationship" class="col-6 d-flex align-items-center justify-content-center">
                 <div class="btn text-white" @click="removeRelationship()" style="background-color: rgb(255, 8, 0);">Có</div>
               </div>
@@ -839,6 +844,10 @@
           </div>
         </div>
       </modal>
+    </div>
+    <div v-if="listhelp || treehelp" class="btn bg-primary text-white position-absolute d-flex align-items-center justify-content-center" style="inset: 0; margin: auto; height: 48px; width: 100px; z-index: 999;" @click="listhelp = false; treehelp = false;">Đã hiểu</div>
+    <div v-if="listhelp">
+      <div class="help-content"></div>
     </div>
   </div>
 </template>
@@ -913,7 +922,9 @@ export default {
       memberRole: null,
 
       darkMode: true,
-      showhelp: false,
+      togglehelp: false,
+      listhelp: false,
+      treehelp: false,
 
       objMemberInfor: {
         MemberID: 0,
