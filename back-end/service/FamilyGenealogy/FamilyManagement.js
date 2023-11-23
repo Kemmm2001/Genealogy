@@ -231,7 +231,7 @@ async function deleteMemberRelated(memberId) {
 
         console.log("parentID: " + parentID);
 
-        let membersChild = await getMemberByParentID(parentID);
+        let membersChild = await getMembersByParentID(parentID);
         // Lấy danh sách con của parentID
 
         if (membersChild.length == 0) {
@@ -373,7 +373,7 @@ function getMember(memberId) {
     });
 }
 
-function getMemberByParentID(parentID) {
+function getMembersByParentID(parentID) {
     return new Promise((resolve, reject) => {
         const query = 'select * from familymember where parentID = ?';
         db.connection.query(query, parentID, (err, result) => {
@@ -554,5 +554,6 @@ function getMemberByMemberID(memberID) {
 module.exports = {
     addMember, updateMember, deleteMember, getRelationship, getMember, createRelationship, searchMember, getMemberByMemberID,
     setGeneration, queryContactMembers,
-    getAllMember, InsertMarriIdToMember, queryFamilyMembers, getAllMemberInMemberRole, getAllMemberNotInMemberRole, GetCurrentParentMember, insertParentIdToMember
+    getAllMember, InsertMarriIdToMember, queryFamilyMembers, getAllMemberInMemberRole, getAllMemberNotInMemberRole, GetCurrentParentMember, 
+    insertParentIdToMember, getMembersByParentID
 };
