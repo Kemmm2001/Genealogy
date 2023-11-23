@@ -160,7 +160,7 @@ var setRole = async (req, res) => {
             if (existingPaternalAncestor.length > 0) {
                 return res.send(Response.dataNotFoundResponse(null, 'thành viên đã là tổ phụ'));
             } else {
-                await FamilyTreeService.removePaternalAncestor();
+                await FamilyTreeService.removePaternalAncestor(CodeId);
                 await FamilyTreeService.setRoleMember(memberId, roleId, CodeId);
                 await FamilyTreeService.turnOffSQL_SAFE_UPDATES();
                 await FamilyTreeService.ResetAllGenerationMember(CodeId);

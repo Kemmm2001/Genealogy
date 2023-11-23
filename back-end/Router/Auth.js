@@ -34,7 +34,7 @@ const initWebRouter = (app) => {
   router.post('/changeUsername', UserController.changeUsername)
   router.put('/changepassword', UserController.ChangePassword)
   router.get('/historyCodeID', UserController.getHistoryCodeID)
-  router.post('/get-user', authMiddleware.authenticateAndAuthorize(2) , UserController.getUserInfor)
+  router.post('/get-user', UserController.getUserInfor)
 
   //api test
   router.get('/admin', authMiddleware.authenticateAndAuthorize(2), (req, res) => {

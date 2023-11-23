@@ -1,33 +1,6 @@
 <template>
   <div class="d-flex h-100 w-100 position-relative">
     <div :class="{ shadowed : listhelp }" class="list h-100 d-flex flex-column align-items-center">
-      <!-- <div class="w-100 d-flex flex-row">
-        <div class="col-6 px-2" style="padding-top: 8px;">
-          <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict(),GetListFilterMember()">
-            <option :value="null" selected>Tỉnh/Thành phố</option>
-            <option v-for="city in ListCity" :key="city.id" :value="city.id">{{ city.name }}</option>
-          </select>
-        </div>
-        <div class="col-6 px-2" style="padding-top: 8px;">
-          <select v-model="selectDistrict" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
-            <option :value="null" selected>Quận/Huyện</option>
-            <option v-for="d in ListDistrict" :key="d.id" :value="d.DistrictName">{{ d.DistrictName }}</option>
-          </select>
-        </div>
-      </div>
-      <div class="w-100 d-flex flex-row">
-        <div class="col-6 px-2" style="padding-top: 8px;">
-          <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
-            <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">{{ blood.BloodType }}</option>
-          </select>
-        </div>
-        <div class="col-6 px-2" style="padding-top: 8px;">
-          <select class="d-flex text-center form-select dropdown p-0" v-model="selectAge" @change="GetListFilterMember()">
-            <option class="dropdown-item" :value="null">Nhóm Tuổi</option>
-            <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{ age.From }} - {{ age.End }} Tuổi</option>
-          </select>
-        </div>
-      </div> -->
       <div v-if="memberRole != 3" class="w-100 d-flex flex-row" style="padding-top: 8px">
         <div class="col-6 px-2">
           <div class="w-100">
@@ -75,30 +48,30 @@
           </svg>
         </div>
       </div>-->
-      <div @mouseenter="advancedFilterDown = true"  @mouseleave="advancedFilterDown = false" :class="{ filterExpanded: advancedFilterDown }" class="advanced-filter-container d-flex flex-column p-1 position-absolute">
+      <div @mouseenter="advancedFilterDown = true" @mouseleave="advancedFilterDown = false" :class="{ filterExpanded: advancedFilterDown }" class="advanced-filter-container d-flex flex-column p-1 position-absolute">
         <div :class="{expand : advancedFilterDown}" class="filter-item">
           <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
-          <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict()">
-            <option :value="null" selected>Tỉnh/Thành phố</option>
-            <option v-for="city in ListCity" :key="city.id" :value="city.id">{{ city.name }}</option>
-          </select>
+            <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict(),GetListFilterMember()">
+              <option :value="null" selected>Tỉnh/Thành phố</option>
+              <option v-for="city in ListCity" :key="city.id" :value="city.id">{{ city.name }}</option>
+            </select>
           </div>
           <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
-          <select v-model="selectDistrict" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
-            <option :value="null" selected>Quận/Huyện</option>
-            <option v-for="d in ListDistrict" :key="d.id" :value="d.DistrictName">{{ d.DistrictName }}</option>
-          </select>
+            <select v-model="selectDistrict" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
+              <option :value="null" selected>Quận/Huyện</option>
+              <option v-for="d in ListDistrict" :key="d.id" :value="d.DistrictName">{{ d.DistrictName }}</option>
+            </select>
           </div>
           <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
-          <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
-            <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">{{ blood.BloodType }}</option>
-          </select>
+            <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
+              <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">{{ blood.BloodType }}</option>
+            </select>
           </div>
           <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
-          <select class="d-flex text-center form-select dropdown p-0" v-model="selectAge" @change="GetListFilterMember()">
-            <option class="dropdown-item" :value="null">Nhóm Tuổi</option>
-            <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{ age.From }} - {{ age.End }} Tuổi</option>
-          </select>
+            <select class="d-flex text-center form-select dropdown p-0" v-model="selectAge" @change="GetListFilterMember()">
+              <option class="dropdown-item" :value="null">Nhóm Tuổi</option>
+              <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{ age.From }} - {{ age.End }} Tuổi</option>
+            </select>
           </div>
         </div>
         <div class="d-flex flex-column align-items-center justify-content-center h-100">
@@ -113,9 +86,14 @@
       <div class="d-flex flex-row" style="position: absolute; bottom: 0; right: 0; align-items: end;">
         <div v-if="togglehelp" class="p-1 mb-2 d-flex flex-row" style="border-radius: 0.375rem; background-color: #000; margin-right: 8px; color:#FFFFFF">
           <div @click="listhelp = true" style="background-color: gray; height: 200px; width: 50px; margin-right: 4px; cursor: pointer;"></div>
-          <div @click="treehelp = true" class="" style="background-color: gray; height: 200px; width: 200px; cursor: pointer;"></div>
+          <div @click="treehelp = true" class style="background-color: gray; height: 200px; width: 200px; cursor: pointer;"></div>
         </div>
-        <svg @click="togglehelp = !togglehelp" class="help-icon p-1" style="z-index: 101;" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF"><g><path d="M0,0h24v24H0V0z" fill="none"/><path d="M11,7h2v2h-2V7z M11,11h2v6h-2V11z M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,20 c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8S16.41,20,12,20z"/></g></svg>
+        <svg @click="togglehelp = !togglehelp" class="help-icon p-1" style="z-index: 101;" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF">
+          <g>
+            <path d="M0,0h24v24H0V0z" fill="none" />
+            <path d="M11,7h2v2h-2V7z M11,11h2v6h-2V11z M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,20 c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8S16.41,20,12,20z" />
+          </g>
+        </svg>
       </div>
     </div>
     <div class="Container-select-modal">
@@ -491,7 +469,7 @@
             <div class="modal-footer">
               <div class="d-flex justify-content-end" style="padding-right: 12px;">
                 <button type="button" class="btn btn-primary mr-2" @click="addMemberFromList()">Thêm</button>
-                <button style="margin-left:10px" type="button" class="btn btn-secondary">Cancel</button>
+                <button style="margin-left:10px" type="button" @click="closeModalAddMemberFromList()" class="btn btn-secondary">Cancel</button>
               </div>
             </div>
           </div>
@@ -810,7 +788,7 @@
             <div class="d-flex justify-content-end" style="padding-right: 12px;">
               <button v-if="isAdd && memberRole != 3" type="button" class="btn btn-primary mr-2" @click="addMember()">Thêm</button>
               <button v-else-if="isEdit && memberRole != 3" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
-              <button style="margin-left:10px" type="button" class="btn btn-secondary" @click="closeSelectModal()">Cancel</button>
+              <button style="margin-left:10px" type="button" class="btn btn-danger" @click="openCfDelModal(false,null,objMemberInfor.MemberName)">Xóa thành viên</button>
             </div>
           </div>
         </div>
@@ -1342,6 +1320,7 @@ export default {
       })
         .then((response) => {
           this.objMember = response.data;
+          console.log(this.objMember)
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
             this.takeDataMember(this.CurrentIdMember);
@@ -1428,6 +1407,7 @@ export default {
       }).then((response) => {
         if (response.data.success == true) {
           this.NotificationsDelete(response.data.message);
+          this.getListUnspecifiedMembers();
         } else {
           this.NotificationsDelete(response.data.message);
         }
@@ -1954,16 +1934,15 @@ export default {
           console.log(e);
         });
     },
-    openCfDelModal(flag, id, name, action) {
+    openCfDelModal(flag, id, name, action) { 
+      console.log('id: ' + this.CurrentIdMember)    
       this.isRemoveRelationship = flag;
       this.$modal.show("cfdel-modal");
       if (this.isRemoveRelationship) {
         this.TitleConfirm = "Bạn có chắc chắn muốn hủy mối quan hệ với " + name;
         this.action = action;
-        this.newIdMember = id;
-        console.log(id);
-      } else {
-        console.log(this.TitleConfirm);
+        this.newIdMember = id;    
+      } else {       
         this.TitleConfirm = "Bạn có chắc chắn xóa " + name + " khỏi gia phả";
         this.$modal.show("cfdel-modal");
       }

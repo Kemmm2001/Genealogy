@@ -565,8 +565,6 @@ async function ViewFamilyTree(CodeID) {
             db.connection.query(queryGetAllMember, async (err, result) => {
                 if (!err) {
                     let IdPaternal = await GetIdPaternalAncestor(CodeID);
-                    console.log(IdPaternal);
-                    console.log(result)
                     if (IdPaternal != null) {
                         let data = await GetGenealogy(result, IdPaternal.MemberID)
                         resolve(data)
@@ -650,8 +648,8 @@ async function setRoleMember(MemberId, roleId, CodeId) {
 }
 
 
-function removePaternalAncestor() {
-    let query = "DELETE FROM memberrole WHERE RoleID = 1";
+function removePaternalAncestor(CodeID) {
+    let query = `DELETE FROM memberrole WHERE RoleID = 1 and CodeId =  ${CodeID}`;
     db.connection.query(query, (err, result) => {
         if (err) {
             console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
