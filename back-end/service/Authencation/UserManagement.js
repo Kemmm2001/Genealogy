@@ -49,7 +49,7 @@ function insertAccountFamilyTree(AccountID, CodeID) {
 
 function UpdateAccount(email, token) {
   return new Promise((resolve, reject) => {
-    const query = `UPDATE genealogy.account as a SET a.RePassToken = '${token}' WHERE Email = ${email}`;
+    const query = `UPDATE genealogy.account as a SET a.RePassToken = '${token}' WHERE Email = '${email}'`;
     db.connection.query(query, (err, results) => {
       if (err) {
         console.log(err)
