@@ -24,6 +24,7 @@ import "./assets/css/familytree.css";
 import "./assets/css/event.css";
 import "./assets/css/history.css";
 
+import "./assets/css-dark/memberlist.css";
 import './assets/css-dark/style.css';
 import './assets/css-dark/configmenu.css';
 import './assets/css-dark/modal.css';
@@ -39,6 +40,8 @@ import "./assets/css-dark/noti.css";
 import "./assets/css-dark/scrollbar.css";
 import "./assets/css-dark/userprofile.css";
 import "./assets/css-dark/familytree.css";
+import "./assets/css-dark/event.css";
+
 
 
 Vue.config.productionTip = false

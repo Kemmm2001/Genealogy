@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid" style="overflow-y: auto;">
-    <div class="m-5">
+    <div class="m-5 bg-colored">
       <h1 class="pt-4">Thống kê chung</h1>
       <div class="d-flex flex-row m-4">
         <div class="col-2 filter">
@@ -39,7 +39,7 @@
         </div>
       </div>
     </div>
-    <div class="m-5" style="min-height: 100vh; ">
+    <div class="m-5 bg-colored" style="min-height: 100vh; ">
       <h2 class="pt-4">Thống kê chi tiết</h2>
       <div class="m-4">
         <div>
@@ -97,10 +97,10 @@
             </select>
           </div>
           <div class="filter-form m-2">
-            <button class="btn click-color m-0" @click="filter()">Lọc</button>
+            <button class="btn click-color bg-primary text-white m-0" @click="filter()">Lọc</button>
           </div>
           <div class="filter-form m-2">
-            <button class="btn click-color m-0">Làm mới</button>
+            <button class="btn click-color bg-primary text-white m-0">Làm mới</button>
           </div>
         </div>
         <div class="d-flex row" style="min-width: 100vh;">
@@ -643,8 +643,8 @@ export default {
 };
 </script>
 <style>
-.m-5 {
-  background-color: #e5e5e5;
+.m-5.bg-colored {
+  background-color: #FFFFFF;
   border-radius: 0.375rem;
 }
 

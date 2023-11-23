@@ -42,7 +42,8 @@
     display: flex;
     margin-bottom:16px;
     align-items: center;
-    margin-bottom: 70px;
+    margin-bottom: 50px;
+    padding: 8px;
 }
 button {
   /* Các thuộc tính khác tùy chỉnh */
@@ -75,7 +76,7 @@ button {
     margin-left: 10px !important;
 }
 img.avatar{
-    width: 120px;
+    width: 80px;
 }
 .choose{
     background-color: lightblue;

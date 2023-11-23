@@ -1,7 +1,7 @@
 <template>
   <div class="event-screen d-flex flex-row w-100 p-0" style="overflow-y: auto;background-color: #bf831526">
     <div class="col-6 h-100 calendar">
-      <div class="h-100 p-3" style="background-color: #f2f2f2;">
+      <div class="h-100 p-3 bg-colored" style="background-color: #f2f2f2;">
         <div class="d-flex flex-row" style="height: 48px;">
           <div class="h-100 w-100" style="padding-right: 4px;">
             <select @change="getDayOfMonth()" v-model="currentMonth" class="form-control h-100 w-100">
@@ -33,9 +33,9 @@
             <div class="btn bg-primary text-white h-100 d-flex align-items-center">Hôm nay</div>
           </div>
         </div>
-        <div class="pt-3" style="height: calc(100% - 96px); background-color: #FFFFFF;">
+        <div class="pt-3" style="background-color: #FFFFFF;">
           <div class="h-100">
-            <table class="table table-eventlist eventlist-list m-0" style="height: 610px;">
+            <table class="table table-eventlist eventlist-list m-0">
               <thead style="position: sticky; top: 0;">
                 <tr class="eventlist-item">
                   <th class="eventlist-list-th" scope="col">CN</th>
@@ -63,7 +63,7 @@
       </div>
     </div>
     <div class="col-6 h-100 event-list">
-      <div class="h-100 p-3" style="background-color: #f2f2f2;">
+      <div class="h-100 p-3 bg-colored" style="background-color: #f2f2f2;">
         <div class="search-filter d-flex flex-row position-relative">
           <div class="search d-flex">
             <input v-model="keySearch" type="text" class="form-control h-100" placeholder="Nhập tên sự kiện..." @change="searchEvent()" />
@@ -90,7 +90,7 @@
           <div class="btn bg-primary text-white d-flex align-items-center item">Xuất excel</div>
         </div>
         <div class="pt-3" style="height: calc(100% - 96px);">
-          <div style="overflow-y: auto; height: 610px">
+          <div style="overflow-y: auto;">
             <table class="table table-eventlist eventlist-list m-0">
               <thead style="position: sticky; top: 0;">
                 <tr class="eventlist-item">
