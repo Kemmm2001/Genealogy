@@ -1610,7 +1610,8 @@ export default {
     },
     appendIfDefined(key, value) {
       if (value !== undefined && value !== null) {
-        this.formData.append(key, value);
+        let appendedValue = value === true ? 1 : value === false ? 0 : value;
+        this.formData.append(key, appendedValue);
       }
     },
     addMember() {
