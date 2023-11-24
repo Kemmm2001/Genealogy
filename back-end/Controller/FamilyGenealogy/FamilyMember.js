@@ -166,7 +166,6 @@ var addMember = async (req, res) => {
             }
         }
         // kết thúc phần thêm member theo action
-        db.connection.commit();
         dataRes.MemberID = data.insertId;
         dataRes.affectedRows = data.affectedRows;
         return res.send(Response.successResponse(dataRes));
@@ -179,6 +178,7 @@ var addMember = async (req, res) => {
 
 var updateMember = async (req, res) => {
     try {
+        db.connection.beginTransaction();
         if (req.file != null) {
             req.body.Image = req.file.path;
         }
@@ -216,7 +216,6 @@ var updateMember = async (req, res) => {
         }
         req.body.Generation = dataMember[0].Generation;
         req.body.CodeID = dataMember[0].CodeID;
-        req.body.Image = dataMember[0].Image;
         // update member vào database
         let data = await FamilyManagementService.updateMember(req.body);
         dataRes = {
@@ -234,6 +233,7 @@ var updateMember = async (req, res) => {
 
 var updateMemberToGenealogy = async (req, res) => {
     try {
+        db.connection.beginTransaction();
         // Log ra thông tin trong req.body
         console.log('Request req.body: ', req.body);
         // các trường bắt buộc phải có trong req.body
@@ -303,6 +303,7 @@ var updateMemberToGenealogy = async (req, res) => {
 
 var deleteMember = async (req, res) => {
     try {
+        db.connection.beginTransaction();
         // Log ra thông tin trong req.query      
         let dataMember = await FamilyManagementService.getMemberByMemberID(req.query.MemberID);
         if (dataMember == null || dataMember.length == 0) {
