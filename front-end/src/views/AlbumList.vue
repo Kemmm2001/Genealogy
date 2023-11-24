@@ -341,13 +341,18 @@ export default {
       }
     },
     updateAlbum() {
+      // formData.append("AlbumName", this.albumPhoto.AlbumName);
+      // formData.append("CodeID", this.CodeID);
+      // formData.append("Description",  this.albumPhoto.description);
+      // formData.append("BackGroundPhoto",  this.albumPhoto.BackGroundPhoto);
       console.log(this.albumCurrentId)
-      HTTP.put("albumphoto", {
-        CodeID: this.CodeID,
-        AlbumID: this.albumCurrentId,
-        AlbumName: this.albumPhoto.AlbumName,
-        Description: this.albumPhoto.description
-      })
+      const formData = new FormData();
+      formData.append("CodeID", this.CodeID);
+      formData.append("AlbumID", this.albumCurrentId);
+      formData.append("AlbumName", this.albumPhoto.AlbumName);
+      formData.append("Description", this.albumPhoto.description);
+      formData.append("BackGroundPhoto",this.albumPhoto.BackGroundPhoto)
+      HTTP.put("albumphoto", formData)
         .then((response) => {
           if (response.data.success == true) {
             this.getAlbumPhotoByCodeId();
