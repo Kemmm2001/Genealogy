@@ -109,13 +109,26 @@
           </div>
           <div class="card-body" style="padding: 5px;height:auto">
             <div class="list-group">
-              <div class="list-group-item feature-overview">Các chức năng chính</div>
+              <!-- <div class="list-group-item feature-overview">Các chức năng chính</div>
               <div class="list-group-item" @click="getInforMember(CurrentIdMember)">Thông tin chi tiết</div>
               <div class="list-group-item" @click="openModalRelationship()">Xem các mối quan hệ</div>
               <div v-if="canAddFather" class="list-group-item" @click="openMemberModal('AddParent', 'Cha')">Thêm Cha</div>
               <div v-if="canAddMother" class="list-group-item" @click="openMemberModal('AddParent', 'Mẹ')">Thêm Mẹ</div>
               <div v-if="canAddhusband" class="list-group-item" @click="openMemberModal('AddMarriage', 'Chồng')">Thêm Chồng</div>
               <div v-if="canAddWife" class="list-group-item" @click="openMemberModal('AddMarriage', 'Vợ')">Thêm Vợ</div>
+              <div class="list-group-item" @click="openMemberModal('AddChild', 'Con')">Thêm Con</div>
+              <div class="list-group-item" @click="openModalAddMemberFromList()">Thêm mối quan hệ từ Danh Sách</div>
+              <div class="list-group-item" @click="openCfDelModal(false,null,TitleModal)">Xóa thành viên (*)</div>
+              <div class="list-group-item feature-overview">Các chức năng Khác</div>
+              <div class="list-group-item" style="border-top: none;" @click="setPaternalAncestor(2)">Set làm tộc trưởng</div>
+              <div class="list-group-item" @click="setPaternalAncestor(1)">Set làm tổ phụ</div>-->
+              <div class="list-group-item feature-overview">Các chức năng chính</div>
+              <div class="list-group-item" @click="getInforMember(CurrentIdMember)">Thông tin chi tiết</div>
+              <div class="list-group-item" @click="openModalRelationship()">Xem các mối quan hệ</div>
+              <div class="list-group-item" @click="openMemberModal('AddParent', 'Cha')">Thêm Cha</div>
+              <div class="list-group-item" @click="openMemberModal('AddParent', 'Mẹ')">Thêm Mẹ</div>
+              <div class="list-group-item" @click="openMemberModal('AddMarriage', 'Chồng')">Thêm Chồng</div>
+              <div class="list-group-item" @click="openMemberModal('AddMarriage', 'Vợ')">Thêm Vợ</div>
               <div class="list-group-item" @click="openMemberModal('AddChild', 'Con')">Thêm Con</div>
               <div class="list-group-item" @click="openModalAddMemberFromList()">Thêm mối quan hệ từ Danh Sách</div>
               <div class="list-group-item" @click="openCfDelModal(false,null,TitleModal)">Xóa thành viên (*)</div>
@@ -2081,6 +2094,7 @@ export default {
           this.nodes = [];
           if (response.data.success == true) {
             this.nodes = response.data.data;
+            console.log(this.nodes);
             for (let i = 0; i < this.nodes.length; i++) {
               this.nodes[i].tags = [];
               if (this.nodes[i].isDead == 1) {
