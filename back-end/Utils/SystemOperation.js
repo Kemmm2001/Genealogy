@@ -48,14 +48,14 @@ function SetHistorySendEmailandSMS(content, CodeID) {
         })
     })
 }
-function SetHistorySendEmail(EmailSubject, EmailContent, CodeID) {   
+function SetHistorySendEmail(EmailSubject, EmailContent, CodeID) {
     return new Promise((resolve, reject) => {
         let currentDate = new Date().toISOString().slice(0, 19).replace("T", " ");
         let query = `INSERT INTO notificationemail (EmailSubject, EmailContent, EmailDate, CodeID) VALUES (?, ?, ?, ?)`;
-        db.connection.query(query, [EmailSubject, EmailContent, currentDate, CodeID], (err) => {           
-            if (err) {            
+        db.connection.query(query, [EmailSubject, EmailContent, currentDate, CodeID], (err) => {
+            if (err) {
                 reject(false);
-            } else {               
+            } else {
                 resolve(true);
             }
         });

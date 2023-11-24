@@ -160,9 +160,9 @@ var SendSMS = async (req, res) => {
 }
 
 
-async function SetHistorySendEmailandSMS(Content, action, CodeID, res) {
+async function SetHistorySendEmailandSMS(Content, CodeID, res) {
     try {
-        let data = await SystemAction.SetHistorySendEmailandSMS(Content, action, CodeID);
+        let data = await SystemAction.SetHistorySendEmailandSMS(Content, CodeID);
         if (data == true) {
             res.send(Response.successResponse(null, "gửi thông báo thành công!"));
         } else {
@@ -209,15 +209,14 @@ var filterEvent = async function (req, res) {
 var SendSMSToMember = async (req, res) => {
     try {
         let id = req.body.ListMemberID;
-        let contentMessage = req.body.contentMessage;
-        let action = req.body.action;
+        let contentMessage = req.body.contentMessage;       
         let CodeID = req.body.CodeID;
 
         let data = await EventManagementService.getListPhone(id);
         for (let i = 0; i < data.length; i++) {
             ExecuteSendSNS(data[i], contentMessage);
         }
-        await SetHistorySendEmailandSMS(contentMessage, action, CodeID, res);
+        await SetHistorySendEmailandSMS(contentMessage, CodeID, res);
     } catch (error) {
         console.log(error);
         res.send(Response.internalServerErrorResponse(error));
