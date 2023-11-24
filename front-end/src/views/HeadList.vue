@@ -458,6 +458,7 @@ export default {
         .then((response) => {
           console.log(response.data);
           if (response.data.success == true) {
+            this.getFamilyHead();
             this.NotificationsScuccess(response.data.message);
             if (this.objMemberContact.Phone != null) {
               this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;

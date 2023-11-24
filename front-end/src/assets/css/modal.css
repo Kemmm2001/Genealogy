@@ -319,6 +319,7 @@ input:focus~label.form-label-number {
     max-width: 450px;
     padding: 18px 12px 8px 12px;
     margin: 6px 12px;
+    min-width: 85px;
 }
 
 .sent-time{

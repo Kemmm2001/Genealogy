@@ -338,7 +338,7 @@
                     </div>
                     <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">1/1/2000</div>
                   </div>
-                </div>  
+                </div>
                 <div class="create-mail-footer d-flex flex-row px-3 py-2 w-100" style="justify-content: end;">
                   <div style="border-radius: 50% 0 0 50%; background: #007bff; width: 25px;"></div>
                   <div class="btn d-flex align-items-center justify-content-center" style="padding: 4px 12px; background: #007bff; color: #FFFFFF; border-radius: 0" @click="sendEmailToMember()">Gửi</div>
@@ -378,19 +378,19 @@
                     </div>
                   </div>
                   <div class="pt-2">
-                    <input type="text" class="compare-modal-item form-control" :value="'Ngày Sinh: ' + objCompareMember1.dob" disabled />
+                    <input type="text" class="compare-modal-item form-control" :value="'Ngày Sinh: ' + (objCompareMember1.dob ? objCompareMember1.dob : 'không rõ')" disabled />
                   </div>
                   <div class="pt-2">
-                    <input type="text" class="compare-modal-item form-control" value="Ngày mất (Nếu có)" disabled />
+                    <input type="text" class="compare-modal-item form-control" :value="'Ngày Mất: ' + (objCompareMember1.dod ? objCompareMember1.dod : 'không rõ')" disabled />
                   </div>
                 </div>
               </div>
               <div class="d-flex flex-column" style="flex-grow: 1; background-color: #f2f2f2;">
                 <div class="compare-modal-item mx-2 mt-2">
-                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember1.father !== undefined ? objCompareMember1.father + ' (Bố)' : 'Không có trên phả đồ'" disabled />
+                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember1.father !== undefined ? objCompareMember1.father + ' (Bố)' : 'Bố: Không có trên phả đồ'" disabled />
                 </div>
                 <div class="compare-modal-item mx-2 mt-2">
-                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember1.mother !== undefined ? objCompareMember1.mother + ' (Mẹ)' : 'Không có trên phả đồ'" disabled />
+                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember1.mother !== undefined ? objCompareMember1.mother + ' (Mẹ)' : 'Mẹ: Không có trên phả đồ'" disabled />
                 </div>
                 <div class="compare-modal-item mx-2 mt-2">
                   <input type="text" class="w-100 h-100 form-control" :value="resultCompare1 !== undefined ? 'Mối quan hệ: ' + resultCompare1 : 'Không xác định'" disabled />
@@ -413,10 +413,10 @@
                     </div>
                   </div>
                   <div class="pt-2">
-                    <input type="text" class="compare-modal-item form-control" :value="'Ngày Sinh: ' + objCompareMember2.dob" disabled />
+                    <input type="text" class="compare-modal-item form-control" :value="'Ngày Sinh: ' + (objCompareMember2.dob ? objCompareMember2.dob : 'không rõ')" disabled />
                   </div>
                   <div class="pt-2">
-                    <input type="text" class="compare-modal-item form-control" value="Ngày mất (Nếu có)" disabled />
+                    <input type="text" class="compare-modal-item form-control" :value="'Ngày Mất: ' + (objCompareMember2.dod ? objCompareMember2.dod : 'không rõ')" disabled />
                   </div>
                 </div>
               </div>
@@ -1256,6 +1256,8 @@ export default {
         })
           .then((response) => {
             if (response.data.success == true) {
+              this.subjectEmail = null;
+              this.contentEmail = null;
               this.NotificationsScuccess("Gửi email thành công");
               this.expandCreateEmail = false;
               this.getListHistoryEmail();
@@ -1281,10 +1283,10 @@ export default {
         HTTP.post("send-sms", {
           ListMemberID: this.ListPhoneToSendMessage,
           contentMessage: this.contentMessage,
-          action: "sms",
-          CodeID: 123456,
+          CodeID: this.CodeID,
         })
           .then(() => {
+            this.contentMessage = null;
             this.getListMessage();
             this.NotificationsScuccess("Gửi thông báo thành công");
           })
@@ -1741,6 +1743,7 @@ export default {
       HTTP.put("member", this.formData)
         .then((response) => {
           if (response.data.success == true) {
+            this.getListUnspecifiedMembers();
             this.NotificationsScuccess(response.data.message);
             if (this.objMemberContact.Phone != null) {
               this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
@@ -2057,28 +2060,25 @@ export default {
           this.nodes = [];
           if (response.data.success == true) {
             this.nodes = response.data.data;
-              for (let i = 0; i < this.nodes.length; i++) {
-                this.nodes[i].tags = [];
-                if (this.nodes[i].isDead == 1) {
-                  this.nodes[i].tags.push("died");
-                }
-                if (this.nodes[i].img == null || this.nodes[i].img == "") {
-                  if (this.nodes[i].gender == "male") {
-                    this.nodes[i].img =
-                      "data:image/jpeg;base64,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";
-                  } else if (this.nodes[i].gender == "female") {
-                    this.nodes[i].img =
-                      "data:image/jpeg;base64,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";
-                  }
+            for (let i = 0; i < this.nodes.length; i++) {
+              this.nodes[i].tags = [];
+              if (this.nodes[i].isDead == 1) {
+                this.nodes[i].tags.push("died");
+              }
+              if (this.nodes[i].img == null || this.nodes[i].img == "") {
+                if (this.nodes[i].gender == "male") {
+                  this.nodes[i].img =
+                    "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBw8HBhUQBw4SFRUQFhAQFhUTDRgVFRUYFRYWFhUWGxcZHSggGholHRcXITEiJSkrMC4uGB8zODMtNygtLisBCgoKDg0OFxAQFSslHx0rKy0tKy0rNy0tLS0tLS8tLSstLS0tLi0rLS0rKy0tLS8rLTArLSstKy0tLS0tKzcrK//AABEIALIBGwMBIgACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAAAQUDBAYCB//EADMQAQABAgQDBAkDBQAAAAAAAAABAgMEBRExEiFRQWFxsRMzcoGRocHR4SIyNBRCU4Lw/8QAGAEBAQEBAQAAAAAAAAAAAAAAAAIDAQT/xAAcEQEBAQEBAAMBAAAAAAAAAAAAAQIRMQMhURL/2gAMAwEAAhEDEQA/APogD0MgB0AAAAAAAAAAAABNFE3KtKImfCNW3ayu7c3iI9qfs5bI7xpi3t5N/lrn3R9zE4GxhbWtyau6OLnPyT/cOVUALcAAAAAAAAAAAAExshMbOCAHQAAAAAAAAAAB6tW5u3IpojnPIC3bm7XpbjWZ7FvhcoimNcROs9I2/LbwWEpwtvSned56/hssdb74uZeaLdNunSiIiO6NHoEKGrjsHGLo5zpMa6T49zaCXg5fEYerD16XI8J7J8GJ1N+xTft8NyNY8u9zuMw04W7pVt2T1htnXUWcYAFpAAAAAAAAAAExshMbAgAAAAAAAAAAABaZHa4rlVU9mkR791Wuch9VV4x5I347n1aAMWgAAAA1MzsRewk9aYmqPc22PERrYq8KvJ2DlhCXoZAAAAAAAAAACY2QmNgQAAAAAAAAAAAAush9RV7X0hSrvIv41XtfSEb8Vn1ZAMVgAAADxe9TV4T5Pbxe9TV4T5A5RKEvSyAAAAAAAAAAExshMbAgAAAAAAAAAAAB0GVYerD2Ji7GkzOu/dDnnWW6uK3E9YiWfyVWXoBksAAAAeLsa2piO2JewHKXLc2q+G5GkxpyeW3ms64+r/WPlDUeieM6AOuAAAAAAAACY2QmNgQAAAAAAAAAAAA6TL7npMHTPdEfDk5tZZJemm9NEzymNY8Y/CNzsVldgMVgAAACJ2S0s1vzYws8G9X6fju7J0UmLr9JiqpjtmWIG7IAdAAAAAAAABMbITGwIAAAAAAAAAAAAZ8Bc9Fi6Znrp8eX1YByjrRoZVjPT2+Gv91Pzjq32FnGoA4AAClzy7xXopj+2NZ8Z/75rXEXosWZqq7HM3bk3bk1V7zzXiffU6ryA2QAAAAAAAAAAJjZCY2BAAAAAAAAAAAAAALLIqdb9U9I0+M/hdqzJbFVqKpu0zGvDprHis2G/Wk8AEugANTNv4FXu84c66PM6JuYKqLcazPDy98OcmNJ0nsa/H4jQA0SAAAAAAAAAAJjZCY2BAAAAAAAAAAAADZyy36TG06xtPF8Pzow2rNV6rS1TM+ELrK8FOGiZu6azpHKdoTq8jsiwAYNAAAABz+b2+DGzOn7oifpLoGlmeEnFW49HprT16dseSs3lcs+nPjJesV2J0u0zHl8WNuzAAAAAAAAAAExshMbAgAAAAAAAAbeGy65f5zHDHWfpC1w2W27HPTinrP2TdyOyKfD4K5iP2U8us8o/K0w+U0W+d6eKfhCxGd3auZeaKIop0oiIjpEaPQIdAAAAAAAARNMVRpVDRxGVW7vq/0z3bfBvjstg53EZbcsbRxR1p+zUda18Tg6MR6ynn1jlK58n6m5c0LHE5TXb52Z4o6bT+VfVTNNWlUaTHWGksvieIAdcAAAAExshMbAgAAAACmOKdI7eQMmHw9WIucNqPtC8wmXUYfnV+qrrP0hlweGjDWeGn3z1lsMdb6uQAQoAAAAAAAAAAAAAAAAYcRhqMRTpdjXv7Y97MA53H4CcLOsc6Z7eni1HV3KIuUTFcaxPJzOLsf0+ImmezbvjsbY11FjEAtIAAmNkJjYABwAAGXC/wAqj2qPOAKOnAedqAAAAAAAAAAAAAAAAAAAAKPO/wCXHsx5yC8eua8V4DVmAAJAH//Z";
+                } else if (this.nodes[i].gender == "female") {
+                  this.nodes[i].img =
+                    "data:image/jpeg;base64,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";
                 }
               }
-              this.nodes[0].tags.push("great-grandfather");
-              this.family.load(this.nodes);
+            }
+            this.nodes[0].tags.push("great-grandfather");
+            this.mytree(this.$refs.tree, this.nodes);
           }
-          this.mytree(this.$refs.tree, this.nodes);
-          console.log(this.nodes)
-          this.family.load(this.nodes);
-          console.log(this.nodes)
+          // this.family.load(this.nodes);
         })
         .catch((e) => {
           console.log(e);
@@ -2257,7 +2257,6 @@ export default {
     },
   },
   created() {
-    // this.getListMember();
     EventBus.$on("displayList", (value) => {
       this.displayList = value;
     });
