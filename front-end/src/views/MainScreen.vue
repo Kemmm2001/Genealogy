@@ -378,19 +378,19 @@
                     </div>
                   </div>
                   <div class="pt-2">
-                    <input type="text" class="compare-modal-item form-control" :value="'Ngày Sinh: ' + objCompareMember1.dob" disabled />
+                    <input type="text" class="compare-modal-item form-control" :value="'Ngày Sinh: ' + (objCompareMember1.dob ? objCompareMember1.dob : 'không rõ')" disabled />
                   </div>
                   <div class="pt-2">
-                    <input type="text" class="compare-modal-item form-control" value="Ngày mất (Nếu có)" disabled />
+                    <input type="text" class="compare-modal-item form-control" :value="'Ngày Mất: ' + (objCompareMember1.dod ? objCompareMember1.dod : 'không rõ')" disabled />
                   </div>
                 </div>
               </div>
               <div class="d-flex flex-column" style="flex-grow: 1; background-color: #f2f2f2;">
                 <div class="compare-modal-item mx-2 mt-2">
-                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember1.father !== undefined ? objCompareMember1.father + ' (Bố)' : 'Không có trên phả đồ'" disabled />
+                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember1.father !== undefined ? objCompareMember1.father + ' (Bố)' : 'Bố: Không có trên phả đồ'" disabled />
                 </div>
                 <div class="compare-modal-item mx-2 mt-2">
-                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember1.mother !== undefined ? objCompareMember1.mother + ' (Mẹ)' : 'Không có trên phả đồ'" disabled />
+                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember1.mother !== undefined ? objCompareMember1.mother + ' (Mẹ)' : 'Mẹ: Không có trên phả đồ'" disabled />
                 </div>
                 <div class="compare-modal-item mx-2 mt-2">
                   <input type="text" class="w-100 h-100 form-control" :value="resultCompare1 !== undefined ? 'Mối quan hệ: ' + resultCompare1 : 'Không xác định'" disabled />
@@ -413,10 +413,10 @@
                     </div>
                   </div>
                   <div class="pt-2">
-                    <input type="text" class="compare-modal-item form-control" :value="'Ngày Sinh: ' + objCompareMember2.dob" disabled />
+                    <input type="text" class="compare-modal-item form-control" :value="'Ngày Sinh: ' + (objCompareMember2.dob ? objCompareMember2.dob : 'không rõ')" disabled />
                   </div>
                   <div class="pt-2">
-                    <input type="text" class="compare-modal-item form-control" value="Ngày mất (Nếu có)" disabled />
+                    <input type="text" class="compare-modal-item form-control" :value="'Ngày Mất: ' + (objCompareMember2.dod ? objCompareMember2.dod : 'không rõ')" disabled />
                   </div>
                 </div>
               </div>
@@ -1256,6 +1256,8 @@ export default {
         })
           .then((response) => {
             if (response.data.success == true) {
+              this.subjectEmail = null;
+              this.contentEmail = null;
               this.NotificationsScuccess("Gửi email thành công");
               this.expandCreateEmail = false;
               this.getListHistoryEmail();
@@ -1284,6 +1286,7 @@ export default {
           CodeID: this.CodeID,
         })
           .then(() => {
+            this.contentMessage = null;
             this.getListMessage();
             this.NotificationsScuccess("Gửi thông báo thành công");
           })
@@ -1740,6 +1743,7 @@ export default {
       HTTP.put("member", this.formData)
         .then((response) => {
           if (response.data.success == true) {
+            this.getListUnspecifiedMembers();
             this.NotificationsScuccess(response.data.message);
             if (this.objMemberContact.Phone != null) {
               this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
@@ -2073,7 +2077,7 @@ export default {
             }
             this.nodes[0].tags.push("great-grandfather");
             this.mytree(this.$refs.tree, this.nodes);
-          } 
+          }
           // this.family.load(this.nodes);
         })
         .catch((e) => {

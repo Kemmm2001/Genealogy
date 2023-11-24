@@ -209,7 +209,7 @@ var filterEvent = async function (req, res) {
 var SendSMSToMember = async (req, res) => {
     try {
         let id = req.body.ListMemberID;
-        let contentMessage = req.body.contentMessage;       
+        let contentMessage = req.body.contentMessage;
         let CodeID = req.body.CodeID;
 
         let data = await EventManagementService.getListPhone(id);
@@ -227,15 +227,15 @@ var SendSMSToMember = async (req, res) => {
 var sendEmailToMember = async (req, res) => {
     try {
         let objData = {};
-        console.log(req.body)
         let listID = req.body.listID;
         objData.subject = req.body.subject;
         objData.text = req.body.text;
         objData.html = req.body.html;
-        let CodeID = req.body.CodeID;
-        let data = await EventManagementService.getListEmail(listID);
+        let CodeID = req.body.CodeID;      
+        let data = await EventManagementService.getListEmail(listID);    
+        
         if (data) {
-            for (let i = 0; i < data.length; i++) {
+            for (let i = 0; i < data.length; i++) {      
                 ExecuteSendEmail(data[i], objData.subject, objData.text, objData.html, res);
             }
         } else {

@@ -65,6 +65,7 @@ function SetHistorySendEmail(EmailSubject, EmailContent, CodeID) {
 
 
 let SendEmailCore = (objData) => {
+    console.log(objData)
     try {
         var mailOptions = {
             from: process.env.EMAIL_ADDRESS,

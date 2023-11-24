@@ -56,26 +56,37 @@ async function getListPhone(ListMemberID) {
     });
 }
 
+
 async function getListEmail(ListMemberID) {
     let ListEmail = [];
-    return new Promise((resolve, reject) => {
-        let count = 0;
+
+    try {
+        console.log('length: ' + ListMemberID.length)
+
         for (let i = 0; i < ListMemberID.length; i++) {
             let query = `SELECT Email FROM genealogy.contact
             where MemberID = ${ListMemberID[i]}`;
-            db.connection.query(query, (err, result) => {
-                if (!err && result.length > 0 && result[0].Email != null) {
-                    ListEmail.push(result[0].Email);
-                } else {
-                    reject(err)
-                }
-                count++;
-                if (count === ListMemberID.length) {
-                    resolve(ListEmail);
-                }
+            const result = await new Promise((resolve, reject) => {
+                db.connection.query(query, (err, result) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
             });
+
+            if (result.length > 0 && result[0].Email != null) {
+                console.log('result: ' + result[0].Email)
+                ListEmail.push(result[0].Email);
+            }
         }
-    });
+
+        return ListEmail;
+
+    } catch (error) {
+        throw error;
+    }
 }
 
 async function InsertNewEvent(objData) {
