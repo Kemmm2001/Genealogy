@@ -29,6 +29,7 @@ let dataNotFoundResponse = (data, message) => {
 let successResponse = (data, message) => {
     if (message == null) message = "Thành công";
     if (data == null) return coreResponse(true, 200, message);
+    db.connection.commit();
     return coreResponse(true, 200, message, data);
 }
 

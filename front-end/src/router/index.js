@@ -11,8 +11,8 @@ const routes = [
     component: () => import("../views/MainScreen.vue"),
   },
   {
-    path: "/familystatistics",
-    name: "familystatistics",
+    path: "/information/statistics",
+    name: "statistics",
     component: () => import("../views/FamilyStatistics.vue"),
   },
   {
