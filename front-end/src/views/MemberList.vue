@@ -671,6 +671,8 @@ export default {
       } else if (!this.genAscending && this.genSort) {
         this.memberFilter.sort((a, b) => b.generation - a.generation);
       }
+      console.log(this.dobAscending)
+      console.log(this.dobSort)
       if (this.dobAscending && this.dobSort) {
         this.memberFilter.sort(
           (a, b) =>
@@ -729,6 +731,9 @@ export default {
     },
     formatDate(dateString) {
       let formattedDate;
+      if(dateString == null){
+        return null;
+      }
       if (dateString.length <= 10) {
         const dateParts = dateString.split("-");
         formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
@@ -904,6 +909,7 @@ export default {
       this.$modal.hide("editHead-modal");
     },
     filter() {
+      console.log(1)
       this.memberFilter = this.memberList;
       this.sortListMember();
       if (this.genderSearch != "all") {
