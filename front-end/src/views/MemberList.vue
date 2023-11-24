@@ -1033,42 +1033,43 @@ export default {
         "Bạn có chắc chắn muốn xóa thành viên này?"
       );
       if (isConfirmed) {
-        HTTP.delete("deleteContact", {
-          params: {
-            MemberID: this.CurrentIdMember,
-          },
-        }).catch(() => {
-          this.NotificationsDelete("Đã sảy ra lỗi, không thể xóa");
-        });
+        HTTP.get("deleteContact", {
+        params: {
+          MemberID: this.CurrentIdMember,
+        },
+      }).catch(() => {
+        this.NotificationsDelete("Đã sảy ra lỗi, không thể xóa");
+      });
 
-        HTTP.delete("RemoveListJob", {
-          params: {
-            MemberID: this.CurrentIdMember,
-          },
-        }).catch((e) => {
-          console.log(e);
-        });
+      HTTP.get("RemoveListJob", {
+        params: {
+          MemberID: this.CurrentIdMember,
+        },
+      }).catch((e) => {
+        console.log(e);
+      });
 
-        HTTP.delete("deleteListEducation", {
-          params: {
-            MemberID: this.CurrentIdMember,
-          },
-        }).catch((e) => {
-          console.log(e);
-        });
-        HTTP.delete("member", {
-          params: {
-            MemberID: this.CurrentIdMember,
-          },
-        }).then((response) => {
-          if (response.data.success == true) {
-            this.NotificationsDelete(response.data.message);
-            this.$modal.hide("Select-option-Modal");
-            this.getListMember();
-          } else {
-            this.NotificationsDelete(response.data.message);
-          }
-        });
+      HTTP.get("deleteListEducation", {
+        params: {
+          MemberID: this.CurrentIdMember,
+        },
+      }).catch((e) => {
+        console.log(e);
+      });
+      HTTP.get("delete-member", {
+        params: {
+          MemberID: this.CurrentIdMember,
+        },
+      }).then((response) => {
+        if (response.data.success == true) {
+          // this.nodes.length = this.nodes.length - 1;
+          this.NotificationsDelete(response.data.message);
+          this.$modal.hide("Select-option-Modal");
+          this.getListMember();
+        } else {
+          this.NotificationsDelete(response.data.message);
+        }
+      });
       }
     },
     getListMember() {
