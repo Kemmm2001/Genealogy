@@ -41,6 +41,9 @@ export default {
     //     console.log(this.darkMode);
     //   },
     // },
+  },
+  mounted() {
+    document.title = 'Gia phả người Việt';
   }
 };
 </script>
