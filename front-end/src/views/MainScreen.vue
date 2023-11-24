@@ -532,7 +532,7 @@
               <div class="col-9" style="padding-top: 15px" v-if="extendedInfo">
                 <div class="row">
                   <div class="col-4">
-                    <img style="height:316px;width:360px;margin-bottom:20px" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" />
+                    <img style="height:316px;width:100%;margin-bottom:20px" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" />
                     <svg v-else style="margin-bottom:36px" fill="#000000" height="275px" width="100%" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
                       <g>
                         <g>
@@ -668,7 +668,7 @@
                   </div>
                   <div style="display:flex">
                     <div style="position: relative; width: 50%;margin-right: 10px;">
-                      <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" :disabled="isDisabled" :default-country="defaultCountry" :validations="validations"></VuePhoneNumberInput>
+                      <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" v-bind="props"></VuePhoneNumberInput>
                     </div>
                     <div style="position: relative;width: 50%; margin-right: 10px;">
                       <input v-model="objMemberContact.Email" type="email" class="form-control modal-item" placeholder />
@@ -869,12 +869,23 @@ export default {
   },
   data() {
     return {
-      phoneNumber: "",
-      isDisabled: false,
-      defaultCountry: "VN",
-      validations: {
-        required: true,
-      },
+      props: {
+        clearable: true,
+        fetchCountry: true,
+        preferredCountries: ["US", "GB"],
+        noExample: false,
+        translations: {
+          countrySelectorLabel: "Country code",
+          countrySelectorError: "Error",
+          phoneNumberLabel: "Nhập số điện thoại",
+          example: "Example:",
+        },
+      }, // phoneNumber: "",
+      // isDisabled: false,
+      // defaultCountry: "VN",
+      // validations: {
+      //   required: true,
+      // },
       ResultRelationship: null,
       ListCity: null,
       ListDistrict: null,
@@ -1013,6 +1024,7 @@ export default {
       UrlAvatar: null,
       nodeLength: null,
       CoordinatesNode: null,
+      isUpdateAvatar: false,
 
       selectedNodes: [],
       notSelectedNodes: [],
@@ -1405,6 +1417,7 @@ export default {
               this.objMemberInfor.LunarDod
             );
             this.avatarSrc = this.objMemberInfor.Image;
+            console.log("avatarSrc: " + this.avatarSrc);
           }
           if (this.objMember.contact.length > 0) {
             this.objMemberContact = this.objMember.contact[0];
@@ -1582,6 +1595,7 @@ export default {
       }
     },
     updateAvatar(event) {
+      this.isUpdateAvatar = true;
       const file = event.target.files[0];
       this.UrlAvatar = file;
       if (file) {
@@ -1632,6 +1646,7 @@ export default {
             this.getListUnspecifiedMembers();
           }
           if (response.data.success == true) {
+            this.isUpdateAvatar = false;
             this.nodes.length = this.nodes.length + 1;
             this.NotificationsScuccess(response.data.message);
             this.$modal.hide("member-modal");
@@ -1714,6 +1729,11 @@ export default {
 
     updateInformation() {
       this.formData = new FormData();
+      if (!this.isUpdateAvatar) {
+        this.appendIfDefined("Image", this.avatarSrc);
+      } else {
+        this.appendIfDefined("Image", this.UrlAvatar);
+      }
       this.appendIfDefined("MemberID", this.CurrentIdMember);
       this.appendIfDefined("MemberName", this.objMemberInfor.MemberName);
       this.appendIfDefined("NickName", this.objMemberInfor.NickName);
@@ -1734,7 +1754,6 @@ export default {
       this.appendIfDefined("Note", this.objMemberInfor.Note);
       this.appendIfDefined("BloodType", this.objMemberInfor.BloodType);
       this.appendIfDefined("Male", this.objMemberInfor.Male);
-      this.appendIfDefined("Image", this.UrlAvatar);
 
       if (this.selectDistrictMember != null) {
         this.objMemberContact.Address =
@@ -1743,6 +1762,7 @@ export default {
       HTTP.put("member", this.formData)
         .then((response) => {
           if (response.data.success == true) {
+            this.isUpdateAvatar = false;
             this.getListUnspecifiedMembers();
             this.NotificationsScuccess(response.data.message);
             if (this.objMemberContact.Phone != null) {
