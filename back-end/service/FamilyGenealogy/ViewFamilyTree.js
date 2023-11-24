@@ -302,7 +302,7 @@ function ResetAllGenerationMember(CodeID) {
 
 
 function setAllGenerationMember(memberId, generation) {
-    const updateQuery = `update familymember Set Generation =  ${generation}  where MemberID = ${memberId}`;    
+    const updateQuery = `update familymember Set Generation =  ${generation}  where MemberID = ${memberId}`;
     db.connection.query(updateQuery, (err, results) => {
         if (err) console.log(error);;
 
@@ -563,7 +563,10 @@ async function ViewFamilyTree(CodeID) {
             db.connection.query(queryGetAllMember, async (err, result) => {
                 if (!err) {
                     let IdPaternal = await GetIdPaternalAncestor(CodeID);
-                    if (IdPaternal != null) {
+                    console.log(IdPaternal)
+                    if (IdPaternal == null && IdPaternal == undefined) {
+                        reject(false)
+                    } else {
                         let data = await GetGenealogy(result, IdPaternal.MemberID)
                         resolve(data)
                     }
@@ -571,7 +574,7 @@ async function ViewFamilyTree(CodeID) {
             })
         } catch (e) {
             console.log(e);
-            reject(e)
+            reject(false)
         }
     });
 }

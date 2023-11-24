@@ -116,17 +116,21 @@ var AllMemberInGenelogy = async (req, res) => {
     try {
         let CodeID = req.query.CodeID;
         let data = await FamilyTreeService.ViewFamilyTree(CodeID);
-        data.forEach((item) => {
-            if (item.dod === '1-1-1970') {
-                item.dod = null;
-            }
-            if (item.dob === '1-1-1970') {
-                item.dob = null;
-            }
-        });
-        res.send(data);
+        if (data) {
+            data.forEach((item) => {
+                if (item.dod === '1-1-1970') {
+                    item.dod = null;
+                }
+                if (item.dob === '1-1-1970') {
+                    item.dob = null;
+                }
+            });
+            return res.send(Response.successResponse(data));
+        } else {
+            return res.send(Response.dataNotFoundResponse());
+        }
     } catch (e) {
-        console.log(e);
+        return res.send(Response.dataNotFoundResponse(e));
     }
 }
 

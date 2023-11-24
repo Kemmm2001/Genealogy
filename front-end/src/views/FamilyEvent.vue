@@ -106,7 +106,7 @@
                   <td>{{index+1}}</td>
                   <td>{{event.EventName}}</td>
                   <td>
-                    <div>{{event.StartDate}} (DL)</div>
+                    <div>{{formattedCreatedAt(event.StartDate)}} (DL)</div>
                     <div>02-01-2000 (AL)</div>
                   </td>
                   <td>
@@ -247,6 +247,15 @@ export default {
       listEvent: [],
       listRepeat: null,
     };
+  },
+  computed: {
+    formattedCreatedAt() {
+      return (dateString) => {
+        const date = new Date(dateString);
+        //const options = { timeZone: 'Asia/Ho_Chi_Minh' };
+        return date.toLocaleString('vi-VN', ""+Intl.DateTimeFormat().resolvedOptions().timeZone);
+      };
+    },
   },
   methods: {
     NotificationsDelete(messagee) {
