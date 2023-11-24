@@ -179,9 +179,6 @@ var addMember = async (req, res) => {
 var updateMember = async (req, res) => {
     try {
         db.connection.beginTransaction();
-        if (req.file != null) {
-            req.body.Image = req.file.path;
-        }
         console.log('Request req.body: ', req.body);
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
@@ -213,6 +210,10 @@ var updateMember = async (req, res) => {
                     return res.send(Response.badRequestResponse(null, errorMessage));
                 }
             }
+        }
+        if (req.file != null) {
+            console.log("Đã vào trường hợp có file ảnh");
+            req.body.Image = req.file.path;
         }
         req.body.Generation = dataMember[0].Generation;
         req.body.CodeID = dataMember[0].CodeID;
