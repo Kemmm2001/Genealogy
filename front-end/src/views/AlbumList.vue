@@ -304,7 +304,7 @@ export default {
     removeFamilyPhotoByPhotoId() {
       const isConfirmed = window.confirm("Bạn có chắc chắn muốn xóa ảnh này?");
       if (isConfirmed) {
-        HTTP.delete("familyphoto", {
+        HTTP.get("delete-familyphoto", {
           params: {
             PhotoID: this.photoCurrentId,
           },
@@ -324,7 +324,7 @@ export default {
       console.log(this.albumCurrentId)
       const isConfirmed = window.confirm("Bạn có chắc chắn muốn album này?");
       if (isConfirmed) {
-        HTTP.delete("albumphoto", {
+        HTTP.get("delete-albumphoto", {
           params: {
             AlbumID: id,
           },
