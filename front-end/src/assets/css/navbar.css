@@ -5,6 +5,7 @@
 
 .navbar-item{
     align-items: center;
+    height: 53px;
 }
 
 .navbar-item:hover {
