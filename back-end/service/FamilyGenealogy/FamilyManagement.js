@@ -59,12 +59,9 @@ function addMember(member) {
 function updateMember(member) {
     return new Promise(async (resolve, reject) => {
         try {
-            if (member.Image == null || member.Image == "") {
-                const isDeleted = await removeMemberPhoto(member.MemberID);
-                console.log(`isDeleted: ${isDeleted}`);
-                if (isDeleted == false) {
-                    reject("Error when delete image");
-                }
+            if (member.Image == null || member.Image == "" || member.Image == undefined) {
+                console.log("Ảnh nhận được là null, \"\" hoặc undefined");
+                await removeMemberPhoto(member.MemberID);
             }
             const query = `
         UPDATE familymember 
@@ -173,13 +170,8 @@ const deleteImageBySelectQuery = async (query, values) => {
 function deleteMember(memberId) {
     return new Promise(async (resolve, reject) => {
         try {
-            db.connection.beginTransaction();
             console.log("memberId: " + memberId);
             const isDeleted = removeMemberPhoto(memberId);
-            console.log(`isDeleted: ${isDeleted}`);
-            if (isDeleted == false) {
-                reject("Error when delete image");
-            }
             // Tìm và xóa tất cả các thành viên liên quan
             await deleteMemberRelated(memberId);
             // bắt đầu xóa member
@@ -190,7 +182,6 @@ function deleteMember(memberId) {
                     db.connection.rollback();
                     reject(err);
                 } else {
-                    db.connection.commit();
                     resolve(result);
                 }
             });
