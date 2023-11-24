@@ -204,9 +204,12 @@ async function deleteMemberRelated(memberId) {
 
     // Danh sách các memberId cần update đời
     const memberIdsToUpdate = [];
-
-    let member = await getMember(memberId);
+   
     // Lấy thông tin member cần xóa
+    let member = await getMember(memberId);
+    
+    // nếu member đó khác đời 1 ( không phải tổ phụ ) và không có parentid thì return
+    if(member[0].Generation != 1 && member[0].ParentID == null) return;
 
     if (member[0].MarriageID != null || member[0].MarriageID !== 0) {
         // Nếu member đó có MarriageID (có vợ/chồng)
