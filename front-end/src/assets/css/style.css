@@ -97,3 +97,23 @@ th{
 .shadowed{
     box-shadow: 0 0 0 99999px rgba(0, 0, 0, .8);
 }
+
+.help-note{
+    background-color: #000;
+    right: 48px;
+    bottom: 0;
+    margin: auto;
+    height: 48px;
+    width: 0;
+    z-index: 999;
+    padding: 12px 0;
+    text-align: center;
+    border-radius: 0.2rem 0 0 0.2rem;
+    transition: 0.3s;
+    opacity: 0;
+}
+
+.help-note.expandHelp{
+    width: 330px;
+    opacity: 1;
+}

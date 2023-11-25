@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-row w-100 p-0">
+  <div class="d-flex flex-row w-100 p-0 position-relative" style="z-index: 100;">
     <div class="d-flex align-items-center navbar px-3 py-0 w-100 h-100">
       <div class="d-flex col-3" style="height: 64px; justify-content: left;">
         <router-link to="/" class="w-100">

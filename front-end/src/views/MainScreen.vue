@@ -1,19 +1,19 @@
 <template>
   <div class="d-flex h-100 w-100 position-relative">
-    <div :class="{ shadowed : listhelp }" class="list h-100 d-flex flex-column align-items-center">
+    <div class="list h-100 d-flex flex-column align-items-center">
       <div v-if="memberRole != 3" class="w-100 d-flex flex-row" style="padding-top: 8px">
-        <div class="col-6 px-2">
-          <div class="w-100">
-            <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary">Tạo thông báo</button>
+        <div class="col-6" style="padding-left: 8px; padding-right: 6px">
+          <div class="w-100 h-100">
+            <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary h-100">Tạo thông báo</button>
           </div>
         </div>
-        <div class="col-6 px-2">
-          <div class="w-100">
-            <button @click="openCompareModal()" style="width:100%" type="button" :class="{ 'btn': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">So sánh</button>
+        <div class="col-6" style="padding-left: 6px; padding-right: 8px">
+          <div class="w-100 h-100">
+            <button @click="openCompareModal()" style="width:100%" type="button" :class="{ 'btn': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">So sánh</button>
           </div>
         </div>
       </div>
-      <div class="h-100 w-100 d-flex flex-column px-2" style="padding-top: 8px; font-family: 'QuicksandBold', sans-serif;">
+      <div class="h-100 w-100 d-flex flex-column px-2" style="padding-top: 12px; font-family: 'QuicksandBold', sans-serif;">
         <div class="existing-members d-flex flex-column w-100">
           <div class="d-flex align-items-center justify-content-center px-2 py-1 list-title">Thành viên có trên phả đồ</div>
           <div class="d-flex flex-column w-100" style="overflow-y: auto;cursor: pointer">
@@ -22,7 +22,7 @@
             </div>
           </div>
         </div>
-        <div class="d-flex nonexisting-members flex-column w-100" style="margin-top: 4px">
+        <div class="d-flex nonexisting-members flex-column w-100" style="margin: 8px 0">
           <div class="d-flex flex-row px-2 py-1 list-title">
             <div class="d-flex align-items-center justify-content-center">Thành viên không có trên phả đồ</div>
             <div v-if="memberRole != 3" class="d-flex align-items-center justify-content-center" style="padding-left: 12px;cursor:pointer" @click="openMemberModal('AddNormal', ' thành viên không có trên phả đồ')">
@@ -31,13 +31,12 @@
               </svg>
             </div>
           </div>
-          <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto;auto;cursor: pointer">
+          <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto; flex-grow: 1;cursor: pointer">
             <div v-for="list in ListUnspecifiedMembers" :key="list.id" @click="handleLeftClickUnspecifiedMembers(list.MemberID)" class="list-item">{{ list.MemberName }}</div>
           </div>
         </div>
       </div>
     </div>
-    <div v-if="listhelp || treehelp " class="h-100" :class="{ shadowed : treehelp }" style="width: 81%; right: 0; position: absolute; z-index: 100;"></div>
     <div class="d-flex main-screen align-items-center h-100 w-100 position-relative">
       <div v-show=" nodes.length != 0" id="tree" ref="tree"></div>
       <div v-show=" nodes.length == 0" style="inset: 0; margin: auto;">
@@ -48,7 +47,7 @@
           </svg>
         </div>
       </div>
-      <div @mouseenter="advancedFilterDown = true" @mouseleave="advancedFilterDown = false" :class="{ filterExpanded: advancedFilterDown }" class="advanced-filter-container d-flex flex-column p-1 position-absolute">
+      <div @click="advancedFilterDown = !advancedFilterDown" :class="{ filterExpanded: advancedFilterDown }" class="advanced-filter-container d-flex flex-column p-1 position-absolute" style="cursor: pointer;">
         <div :class="{expand : advancedFilterDown}" class="filter-item">
           <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
             <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict(),GetListFilterMember()">
@@ -84,11 +83,11 @@
         </div>
       </div>
       <div class="d-flex flex-row" style="position: absolute; bottom: 0; right: 0; align-items: end;">
-        <div v-if="togglehelp" class="p-1 mb-2 d-flex flex-row" style="border-radius: 0.375rem; background-color: #000; margin-right: 8px; color:#FFFFFF">
+        <!-- <div v-if="togglehelp" class="p-1 mb-2 d-flex flex-row" style="border-radius: 0.375rem; background-color: #000; margin-right: 8px; color:#FFFFFF">
           <div @click="listhelp = true" style="background-color: gray; height: 200px; width: 50px; margin-right: 4px; cursor: pointer;"></div>
           <div @click="treehelp = true" class style="background-color: gray; height: 200px; width: 200px; cursor: pointer;"></div>
-        </div>
-        <svg @click="togglehelp = !togglehelp" class="help-icon p-1" style="z-index: 101;" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF">
+        </div> -->
+        <svg @click="togglehelp = !togglehelp" :class="{expandHelp : togglehelp}" class="help-icon p-1" style="z-index: 101;" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF">
           <g>
             <path d="M0,0h24v24H0V0z" fill="none" />
             <path d="M11,7h2v2h-2V7z M11,11h2v6h-2V11z M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,20 c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8S16.41,20,12,20z" />
@@ -858,9 +857,56 @@
         </div>
       </modal>
     </div>
-    <button v-show="listhelp || treehelp" class="btn bg-primary text-white position-absolute align-items-center justify-content-center" style="inset: 0; margin: auto; height: 48px; width: 100px; z-index: 999;" @click="listhelp = false; treehelp = false;">Đã hiểu</button>
-    <div v-show="listhelp">
-      <div class="help-content"></div>
+    <div class="help-note text-white position-absolute align-items-center justify-content-center" :class="{expandHelp : togglehelp}">
+      <div v-show="togglehelp">Hãy bấm vào chức năng cần hướng dẫn</div>
+    </div>
+    
+    <!-- Đây là div hướng dẫn -->
+    <div v-show="togglehelp" class="w-100 h-100 position-absolute" style="z-index: 2;">
+      <div class="h-100 w-100 position-relative">
+        <div style="width: 19%; left: 0; z-index: 2;" class="h-100 p-1 d-flex flex-column position-absolute">
+          <div class="pt-2 d-flex flex-row">
+            <div class="col-6" style="padding-left: 8px; padding-right: 6px;">
+              <div class="w-100 h-100">
+                <button type="button" class="btn h-100 w-100 bg-secondary text-white">Tạo thông báo</button>
+              </div>
+            </div>
+            <div class="col-6" style="padding-left: 6px; padding-right: 8px;">
+              <div class="w-100 h-100">
+                <button type="button" class="btn h-100 w-100 bg-secondary text-white">So sánh</button>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex flex-column h-100 w-100 px-2" style="padding-top: 12px; font-family: QuicksandBold, sans-serif;">
+            <div class="mb-1 w-100 d-flex flex-column" style="height: 50%; border-radius: 0.375rem 0.375rem 0 0;">
+              <div class="d-flex align-items-center justify-content-center px-2 py-1 list-title">Thành viên có trên phả đồ</div>
+              <div class="d-flex flex-column w-100" style="overflow-y: auto; flex-grow: 1; cursor: pointer; background-color: #FFFFFF;">
+                <div v-for="(n, index) in nodes" :key="n.id">
+                  <div style="height: 32px; padding: 4px 0 4px 8px; cursor: auto !important" :class="{ 'selected-list': n.id == CurrentIdMember, 'list-item ancestor-member': index === 0 }">{{ n.name }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="my-2 w-100 d-flex flex-column" style="height: 50%; border-radius: 0.375rem 0.375rem 0 0;">
+              <div class="d-flex flex-row px-2 py-1 list-title">
+                <div class="d-flex align-items-center justify-content-center">Thành viên không có trên phả đồ</div>
+                <div v-if="memberRole != 3" class="d-flex align-items-center justify-content-center" style="padding-left: 12px;cursor:pointer">
+                  <svg class="add-member-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                    <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />
+                  </svg>
+                </div>
+              </div>
+              <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto; flex-grow: 1; cursor: pointer; background-color: #FFFFFF">
+                <div v-for="list in ListUnspecifiedMembers" :key="list.id" @click="handleLeftClickUnspecifiedMembers(list.MemberID)" class="list-item">{{ list.MemberName }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="width: 81%; right: 0" class="h-100 position-absolute">
+          <div class="h-100 w-100 position-relative">
+            <div class="position-absolute" style="width: 950px; height: 600px; inset: 0; margin: auto; box-shadow: 0 0 0 99999px rgba(0, 0, 0, .8);"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
