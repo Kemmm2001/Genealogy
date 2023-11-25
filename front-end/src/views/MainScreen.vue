@@ -845,8 +845,8 @@
         </div>
       </modal>
     </div>
-    <div v-if="listhelp || treehelp" class="btn bg-primary text-white position-absolute d-flex align-items-center justify-content-center" style="inset: 0; margin: auto; height: 48px; width: 100px; z-index: 999;" @click="listhelp = false; treehelp = false;">Đã hiểu</div>
-    <div v-if="listhelp">
+    <button v-show="listhelp || treehelp" class="btn bg-primary text-white position-absolute align-items-center justify-content-center" style="inset: 0; margin: auto; height: 48px; width: 100px; z-index: 999;" @click="listhelp = false; treehelp = false;">Đã hiểu</button>
+    <div v-show="listhelp">
       <div class="help-content"></div>
     </div>
   </div>

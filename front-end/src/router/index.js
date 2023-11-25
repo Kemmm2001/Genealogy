@@ -16,11 +16,6 @@ const routes = [
     component: () => import("../views/FamilyStatistics.vue"),
   },
   {
-    path: "/information/headlist",
-    name: "headlist",
-    component: () => import("../views/HeadList.vue"),
-  },  
-  {
     path: "/information/albumlist",
     name: "albumlist",
     component: () => import("../views/AlbumList.vue"),
