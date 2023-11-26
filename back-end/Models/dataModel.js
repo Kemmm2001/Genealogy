@@ -19,6 +19,23 @@ const DataModel = {
       });
     });
   },
+  
+  readJsonFromFile: (filePath) => {
+    return new Promise((resolve, reject) => {
+      fs.readFile(filePath, 'utf8', (err, data) => {
+        if (err) {
+          return reject(new Error('Error reading JSON file'));
+        }
+
+        try {
+          const jsonData = JSON.parse(data);
+          resolve(jsonData);
+        } catch (parseError) {
+          reject(new Error('Error parsing JSON file'));
+        }
+      });
+    });
+  },
 };
 
 module.exports = DataModel;
