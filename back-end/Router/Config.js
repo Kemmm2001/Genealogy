@@ -11,7 +11,8 @@ const initWebRouter = (app) => {
     router.post('/export-pdf', PdfController.exportPDF);
     router.get('/export-excle', ExcelController.exportExcel);
     //Tiền tố đứng trước route
-    router.post('/back-up', JsonController.createJSONFile)
+    router.post('/export-json', JsonController.createJSONFile)
+    router.post('/import-json', JsonController.importJsonFile);
     app.use('/api/v1', router);
 }
 
