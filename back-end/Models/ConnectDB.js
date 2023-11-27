@@ -2,8 +2,8 @@ const mysql = require('mysql2');
 const mongoose = require("mongoose");
 
 const connection = mysql.createConnection({
-  host: '14.225.254.123',
-  user: 'admin',
+  host: 'localhost',
+  user: 'root',
   password: 'AXeTFQW7pC3cxSFg9a7Q8JfwtXkMmy3PSbnG2NgLXASbWhps6x9dBLG',
   database: 'genealogy'
 });
