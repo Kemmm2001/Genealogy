@@ -37,6 +37,9 @@
                       d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z" />
                   </svg>
                 </div>
+                <div style="height: 24px; width: 24px;">
+                  <input class="form-check h-100 w-100 p-0" type="checkbox" />
+                </div>
               </div>
             </div>
           </div>
@@ -130,12 +133,16 @@
     <div class="addPhoto-container" style="z-index: 2;">
       <modal name="addPhoto-modal">
         <div class="form-group" style="height: 100%;">
-          <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm ảnh vào album</div>
+          <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm ảnh vào album
+          </div>
           <div class="add-photo-modal" style="background-color: white;height:700px">
             <div class="add-photo-layout">
-              <button type="button" class="btn btn-primary mr-2"  @click="triggerFileInput" style="margin: 10px;">Thêm ảnh</button>
-              <input ref="fileAdd" type="file" class="hidden-input form-control" @change="handleFileChangePhoto" style="display: none;" />
-              <button class="btn btn-danger mr-2" :disabled="isButtonDisabled" @click="removeFamilyPhotoAdd()" style="margin: 10px;">Xóa Ảnh</button>
+              <button type="button" class="btn btn-primary mr-2" @click="triggerFileInput" style="margin: 10px;">Thêm
+                ảnh</button>
+              <input ref="fileAdd" type="file" class="hidden-input form-control" @change="handleFileChangePhoto"
+                style="display: none;" />
+              <button class="btn btn-danger mr-2" :disabled="isButtonDisabled" @click="removeFamilyPhotoAdd()"
+                style="margin: 10px;">Xóa Ảnh</button>
               <button class="btn btn-primary mr-2" @click="addFamilyPhotoByAlbumId()" style="margin: 10px;">Lưu</button>
             </div>
             <div class="add-photo-list d-flex">
@@ -163,7 +170,9 @@
                   @click="removeFamilyPhotoByPhotoId()">Xóa Ảnh</button>
               </div>
               <div class="add-photo-list d-flex">
-                <div class="edit-photo" v-for="(photo,index) in FamilyPhotoList" :class="{ choose: index == indexClickPhoto }" :key="index" @click="clickPhoto(index),getPhotoCurrentId(photo.PhotoID)" style="margin-left:10px;">
+                <div class="edit-photo" v-for="(photo, index) in FamilyPhotoList"
+                  :class="{ choose: index == indexClickPhoto }" :key="index"
+                  @click="clickPhoto(index), getPhotoCurrentId(photo.PhotoID)" style="margin-left:10px;">
                   <img :src="photo.PhotoUrl" style="width: 300px;">
                 </div>
               </div>
@@ -187,7 +196,7 @@ export default {
         description: null,
         BackGroundPhoto: null,
       },
-      CodeID:null,
+      CodeID: null,
       familyPhoto: {
         albumID: null,
         file: null,
@@ -351,7 +360,7 @@ export default {
       formData.append("AlbumID", this.albumCurrentId);
       formData.append("AlbumName", this.albumPhoto.AlbumName);
       formData.append("Description", this.albumPhoto.description);
-      formData.append("BackGroundPhoto",this.albumPhoto.BackGroundPhoto)
+      formData.append("BackGroundPhoto", this.albumPhoto.BackGroundPhoto)
       HTTP.put("albumphoto", formData)
         .then((response) => {
           if (response.data.success == true) {
@@ -433,8 +442,8 @@ export default {
       const formData = new FormData();
       formData.append("AlbumName", this.albumPhoto.AlbumName);
       formData.append("CodeID", this.CodeID);
-      formData.append("Description",  this.albumPhoto.description);
-      formData.append("BackGroundPhoto",  this.albumPhoto.BackGroundPhoto);
+      formData.append("Description", this.albumPhoto.description);
+      formData.append("BackGroundPhoto", this.albumPhoto.BackGroundPhoto);
       HTTP.post("albumphoto", formData)
         .then((response) => {
           if (response.data.success == true) {
@@ -471,20 +480,23 @@ export default {
 .add-photo.choose {
   border: 5px solid aquamarine;
 }
-.edit-photo-layout{
+
+.edit-photo-layout {
   position: absolute;
   bottom: 0;
   right: 0;
 }
-.add-photo-layout{
+
+.add-photo-layout {
   position: absolute;
   bottom: 0;
   right: 0;
 }
+
 .vm--modal {
-    height: 700px !important;
+  height: 700px !important;
 }
+
 .add-photo {
-    margin: 10px;
-}
-</style>
+  margin: 10px;
+}</style>

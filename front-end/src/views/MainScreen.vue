@@ -82,8 +82,8 @@
           </div>
         </div>
       </div>
-      <div class="d-flex flex-row" style="position: absolute; bottom: 0; right: 0; align-items: end;">
-        <svg @click="togglehelp = !togglehelp" :class="{expandHelp : togglehelp}" class="help-icon p-1" style="z-index: 101;" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF">
+      <div class="d-flex flex-row" style="position: absolute; bottom: 0; right: 0; align-items: end; z-index: 999;">
+        <svg @click="togglehelp = !togglehelp" :class="{expandHelp : togglehelp}" class="help-icon p-1" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF">
           <g>
             <path d="M0,0h24v24H0V0z" fill="none" />
             <path d="M11,7h2v2h-2V7z M11,11h2v6h-2V11z M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,20 c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8S16.41,20,12,20z" />
@@ -854,11 +854,14 @@
       </modal>
     </div>
     <div class="help-note text-white position-absolute align-items-center justify-content-center" :class="{expandHelp : togglehelp}">
-      <div v-show="togglehelp">Hãy bấm vào chức năng cần hướng dẫn</div>
+      <div class="d-flex align-items-center" style="height: 64px;" v-show="togglehelp">Thông báo: Gửi mail và tin nhắn SMS về thông tin, sự kiện liên quan tới dòng họ.</div>
+      <div class="d-flex align-items-center" style="height: 64px;" v-show="togglehelp">Xác định quan hệ: Chọn 2 thành viên để xác định quan hệ giữa họ.</div>
+      <div class="d-flex align-items-center" style="height: 64px;" v-show="togglehelp">Nhấp chuột trái vào thành viên trên phả đồ để xem và thay đổi thông tin thành viên</div>
+      <div class="d-flex align-items-center" style="height: 64px;" v-show="togglehelp">Nhấp chuột phải để mở danh sách những chức năng tương tác với thành viên</div>
     </div>
     
     <!-- Đây là div hướng dẫn -->
-    <div v-show="togglehelp" class="help-div w-100 h-100 position-absolute" style="z-index: 2;">
+    <!-- <div v-show="togglehelp" class="help-div w-100 h-100 position-absolute" style="z-index: 2;">
       <div class="h-100 w-100 position-relative">
         <div style="width: 19%; left: 0; z-index: 2;" class="h-100 p-1 d-flex flex-column position-absolute">
           <div class="pt-2 d-flex flex-row">
@@ -908,7 +911,7 @@
           <div class="help-text" style="right: 0; top: 64px;">Có thể gửi mail và tin nhắn SMS về thông tin, sự kiện liên quan tới dòng họ.</div>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
