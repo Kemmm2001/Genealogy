@@ -83,10 +83,6 @@
         </div>
       </div>
       <div class="d-flex flex-row" style="position: absolute; bottom: 0; right: 0; align-items: end;">
-        <!-- <div v-if="togglehelp" class="p-1 mb-2 d-flex flex-row" style="border-radius: 0.375rem; background-color: #000; margin-right: 8px; color:#FFFFFF">
-          <div @click="listhelp = true" style="background-color: gray; height: 200px; width: 50px; margin-right: 4px; cursor: pointer;"></div>
-          <div @click="treehelp = true" class style="background-color: gray; height: 200px; width: 200px; cursor: pointer;"></div>
-        </div> -->
         <svg @click="togglehelp = !togglehelp" :class="{expandHelp : togglehelp}" class="help-icon p-1" style="z-index: 101;" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF">
           <g>
             <path d="M0,0h24v24H0V0z" fill="none" />
@@ -862,23 +858,23 @@
     </div>
     
     <!-- Đây là div hướng dẫn -->
-    <div v-show="togglehelp" class="w-100 h-100 position-absolute" style="z-index: 2;">
+    <div v-show="togglehelp" class="help-div w-100 h-100 position-absolute" style="z-index: 2;">
       <div class="h-100 w-100 position-relative">
         <div style="width: 19%; left: 0; z-index: 2;" class="h-100 p-1 d-flex flex-column position-absolute">
           <div class="pt-2 d-flex flex-row">
             <div class="col-6" style="padding-left: 8px; padding-right: 6px;">
               <div class="w-100 h-100">
-                <button type="button" class="btn h-100 w-100 bg-secondary text-white">Tạo thông báo</button>
+                <button @click="selectHelpNoti()" type="button" :class="{shadowed : !helpNoti, chosen: helpNoti}" class="btn h-100 w-100 bg-secondary text-white">Tạo thông báo</button>
               </div>
             </div>
             <div class="col-6" style="padding-left: 6px; padding-right: 8px;">
               <div class="w-100 h-100">
-                <button type="button" class="btn h-100 w-100 bg-secondary text-white">So sánh</button>
+                <button @click="selectHelpCompare()" type="button" :class="{shadowed : !helpCompare, chosen: helpCompare}" class="btn h-100 w-100 bg-secondary text-white">So sánh</button>
               </div>
             </div>
           </div>
           <div class="d-flex flex-column h-100 w-100 px-2" style="padding-top: 12px; font-family: QuicksandBold, sans-serif;">
-            <div class="mb-1 w-100 d-flex flex-column" style="height: 50%; border-radius: 0.375rem 0.375rem 0 0;">
+            <div @click="selectHelpExist()" :class="{shadowed : !helpExist, chosen: helpExist}" class="mb-1 w-100 d-flex flex-column" style="height: 50%; border-radius: 0.375rem 0.375rem 0 0;">
               <div class="d-flex align-items-center justify-content-center px-2 py-1 list-title">Thành viên có trên phả đồ</div>
               <div class="d-flex flex-column w-100" style="overflow-y: auto; flex-grow: 1; cursor: pointer; background-color: #FFFFFF;">
                 <div v-for="(n, index) in nodes" :key="n.id">
@@ -886,7 +882,7 @@
                 </div>
               </div>
             </div>
-            <div class="my-2 w-100 d-flex flex-column" style="height: 50%; border-radius: 0.375rem 0.375rem 0 0;">
+            <div @click="selectHelpNonExist()" :class="{shadowed : !helpNonExist, chosen: helpNonExist}" class="my-2 w-100 d-flex flex-column" style="height: 50%; border-radius: 0.375rem 0.375rem 0 0;">
               <div class="d-flex flex-row px-2 py-1 list-title">
                 <div class="d-flex align-items-center justify-content-center">Thành viên không có trên phả đồ</div>
                 <div v-if="memberRole != 3" class="d-flex align-items-center justify-content-center" style="padding-left: 12px;cursor:pointer">
@@ -895,16 +891,21 @@
                   </svg>
                 </div>
               </div>
-              <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto; flex-grow: 1; cursor: pointer; background-color: #FFFFFF">
-                <div v-for="list in ListUnspecifiedMembers" :key="list.id" @click="handleLeftClickUnspecifiedMembers(list.MemberID)" class="list-item">{{ list.MemberName }}</div>
+              <div class="d-flex flex-column w-100" style="overflow-y: auto; flex-grow: 1; cursor: pointer; background-color: #FFFFFF">
+                <div v-for="list in ListUnspecifiedMembers" :key="list.id" class="list-item">{{ list.MemberName }}</div>
               </div>
             </div>
           </div>
         </div>
         <div style="width: 81%; right: 0" class="h-100 position-absolute">
           <div class="h-100 w-100 position-relative">
-            <div class="position-absolute" style="width: 950px; height: 600px; inset: 0; margin: auto; box-shadow: 0 0 0 99999px rgba(0, 0, 0, .8);"></div>
+            <div @click="selectHelpTree()" :class="{shadowed : !helpTree, chosen: helpTree}" class="position-absolute" style="width: 950px; height: 600px; inset: 0; margin: auto; box-shadow: 0 0 0 99999px rgba(0, 0, 0, .8); cursor: pointer;"></div>
           </div>
+        </div>
+
+        <div v-show="helpNoti" class="position-relative h-100 w-100">
+          <div class="help-text" style="right: 0">Đây là chức năng tạo thông báo, trưởng họ là người duy nhất trong gia tộc có thể sử dụng chức năng này.</div>
+          <div class="help-text" style="right: 0; top: 64px;">Có thể gửi mail và tin nhắn SMS về thông tin, sự kiện liên quan tới dòng họ.</div>
         </div>
       </div>
     </div>
@@ -1087,6 +1088,12 @@ export default {
 
       selectedNodes: [],
       notSelectedNodes: [],
+
+      helpNoti: false,
+      helpCompare: false,
+      helpExist: false,
+      helpNonExist: false,
+      helpTree: false,
     };
   },
   methods: {
@@ -2335,6 +2342,41 @@ export default {
       this.smsSelected = true;
       this.emailSelected = false;
       this.expandCreateEmail = false;
+    },
+    selectHelpNoti(){
+      this.helpNoti = true;
+      this.helpCompare = false;
+      this.helpExist = false;
+      this.helpNonExist = false;
+      this.helpTree = false;
+    },
+    selectHelpCompare(){
+      this.helpNoti = false;
+      this.helpCompare = true;
+      this.helpExist = false;
+      this.helpNonExist = false;
+      this.helpTree = false;
+    },
+    selectHelpExist(){
+      this.helpNoti = false;
+      this.helpCompare = false;
+      this.helpExist = true;
+      this.helpNonExist = false;
+      this.helpTree = false;
+    },
+    selectHelpNonExist(){
+      this.helpNoti = false;
+      this.helpCompare = false;
+      this.helpExist = false;
+      this.helpNonExist = true;
+      this.helpTree = false;
+    },
+    selectHelpTree(){
+      this.helpNoti = false;
+      this.helpCompare = false;
+      this.helpExist = false;
+      this.helpNonExist = false;
+      this.helpTree = true;
     },
   },
   created() {

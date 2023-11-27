@@ -94,8 +94,13 @@ th{
     vertical-align: middle;
 }
 
-.shadowed{
-    box-shadow: 0 0 0 99999px rgba(0, 0, 0, .8);
+.help-div .shadowed{
+    background-color: #000;
+    opacity: 0.8;
+}
+
+.help-div .chosen{
+    border: 1px solid orangered;
 }
 
 .help-note{
@@ -116,4 +121,15 @@ th{
 .help-note.expandHelp{
     width: 330px;
     opacity: 1;
+}
+
+.help-text{
+    background-color: #000;
+    color: #FFFFFF;
+    border-radius: 0.375rem;
+    position: absolute;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    height: 56px;
 }

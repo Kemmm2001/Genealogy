@@ -64,6 +64,11 @@ const routes = [
     name: "resetpwd",
     component: () => import("../views/ResetPwd.vue"),
   },
+  {
+    path: "/test",
+    name: "test",
+    component: () => import("../views/TestScreen.vue"),
+  },
 ];
 
 const router = new Router({
