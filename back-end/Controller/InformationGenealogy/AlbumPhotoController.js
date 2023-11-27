@@ -27,7 +27,7 @@ var addAlbumPhoto = async (req, res) => {
         }
         console.log("No missing fields");
         let checkCodeIDExistResponse = await checkFamilyTreeExist(req);
-        if (checkCodeIDExistResponse.success === false) {
+        if (checkCodeIDExistResponse.success == false) {
             CoreFunction.deleteImage(req.file);
             return res.send(checkCodeIDExistResponse);
         }
@@ -100,7 +100,7 @@ var checkAlbumIDExist = async (AlbumID) => {
     try {
         console.log("Chạy vào hàm checkAlbumIDExist");
         let dataAlbumID;
-        if (AlbumID != null && AlbumID != undefined && AlbumID !== "") {
+        if (AlbumID != null && AlbumID != undefined && AlbumID != "") {
             console.log(`Get AlbumPhoto by AlbumID : ${AlbumID}`);
             dataAlbumID = await AlbumPhotoManagementService.getAlbumPhotoById(AlbumID)
         }
@@ -119,7 +119,7 @@ var checkCodeIDExist = async (CodeID) => {
     try {
         console.log("Chạy vào hàm checkCodeIDExist");
         let dataCodeID;
-        if (CodeID != null && CodeID != undefined && CodeID !== "") {
+        if (CodeID != null && CodeID != undefined && CodeID != "") {
             console.log(`Get AlbumPhoto by CodeID : ${CodeID}`);
             dataCodeID = await AlbumPhotoManagementService.getAlbumPhotoByCodeId(CodeID)
         }
@@ -135,7 +135,7 @@ var checkCodeIDExist = async (CodeID) => {
 var checkFamilyTreeExist = async (req) => {
     try {
         let dataCodeID;
-        if (req.body.CodeID != null && req.body.CodeID && req.body.CodeID !== "") {
+        if (req.body.CodeID != null && req.body.CodeID && req.body.CodeID != "") {
             console.log(`Get AlbumPhoto by CodeID : ${req.body.CodeID}`);
             dataCodeID = await AlbumPhotoManagementService.getFamilyTreeData(req.body.CodeID)
         }
@@ -166,7 +166,7 @@ var deleteAlbumPhoto = async (req, res) => {
         }
         console.log("No missing fields");
         let checkAlbumIDExistResponse = await checkAlbumIDExist(req.query.AlbumID);
-        if (checkAlbumIDExistResponse.success === false) {
+        if (checkAlbumIDExistResponse.success == false) {
             return res.send(checkAlbumIDExistResponse);
         }
         // xóa AlbumPhoto khỏi database
@@ -189,10 +189,10 @@ var getAlbumPhoto = async (req, res) => {
         // lấy thông tin AlbumPhoto từ database
         // những thông tin có thể lấy được : AlbumID, CodeID
         let data;
-        if (req.query.AlbumID != null && req.query.AlbumID != undefined && req.query.AlbumID !== "") {
+        if (req.query.AlbumID != null && req.query.AlbumID != undefined && req.query.AlbumID != "") {
             console.log(`Get AlbumPhoto by AlbumID : ${req.query.AlbumID}`);
             data = await AlbumPhotoManagementService.getAlbumPhotoById(req.query.AlbumID)
-        } else if (req.query.CodeID != null && req.query.CodeID && req.query.CodeID !== "") {
+        } else if (req.query.CodeID != null && req.query.CodeID && req.query.CodeID != "") {
             console.log(`Get AlbumPhoto by CodeID : ${req.query.CodeID}`);
             data = await AlbumPhotoManagementService.getAlbumPhotoByCodeId(req.query.CodeID)
         }
