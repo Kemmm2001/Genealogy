@@ -211,7 +211,7 @@ async function deleteMemberRelated(memberId) {
     // nếu member đó khác đời 1 ( không phải tổ phụ ) và không có parentid thì return
     if(member[0].Generation != 1 && member[0].ParentID == null) return;
 
-    if (member[0].MarriageID != null || member[0].MarriageID !== 0) {
+    if (member[0].MarriageID != null || member[0].MarriageID != 0) {
         // Nếu member đó có MarriageID (có vợ/chồng)
         memberIdsToUpdate.push(member[0].MarriageID);
         // Thêm MarriageID vào danh sách cần update đời

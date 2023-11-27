@@ -22,7 +22,7 @@ const missingFields=(requiredFields, data)=> {
     return missing;
 }
 const isEmptyOrNullOrSpaces = (str) => {
-    const isNull = str === null || ( typeof str === 'string' && str.trim() === '') || typeof str === 'undefined';
+    const isNull = str == null || ( typeof str == 'string' && str.trim() == '') || typeof str == 'undefined';
     console.log(`Dữ liệu ${str} null hoặc rỗng : ${isNull}`);
     return isNull;
 }
@@ -83,7 +83,7 @@ const deleteImage = async (file) => {
             })
             .catch((accessErr) => {
                 // Lỗi khi kiểm tra quyền truy cập, xem xét xóa tệp
-                if (accessErr.code === 'ENOENT') {
+                if (accessErr.code == 'ENOENT') {
                     // Tệp không tồn tại, xem như đã xóa thành công
                     console.log("Image does not exist. Skipping deletion.");
                     resolve();
