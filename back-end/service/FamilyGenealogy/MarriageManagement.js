@@ -3,7 +3,7 @@
 const db = require("../../Models/ConnectDB");
 
 // Create a new marriage record
-const createMarriage = async (data) => {
+const addMarriage = async (data) => {
     try {
         const { husbandID, wifeID, codeID } = data;
         const query = "INSERT INTO Marriage (husbandID, wifeID, codeID) VALUES (?, ?, ?)";
@@ -99,9 +99,21 @@ const getMarriageByMarriageID = async (marriageID) => {
     }
 };
 
+// Get a marriage record by husbandID and wifeID
+const getMarriageByHusbandIDAndWifeID = async (husbandID, wifeID) => {
+    try {
+        const query = "SELECT * FROM Marriage WHERE husbandID = ? AND wifeID = ?";
+        const values = [husbandID, wifeID];
+        const result = await db.query(query, values);
+        return result;
+    } catch (error) {
+        throw error;
+    }
+};
+
 // Export the CRUD operations
 module.exports = {
-    createMarriage,
+    addMarriage,
     updateMarriage,
     deleteMarriage,
     getAllMarriages,
@@ -109,4 +121,5 @@ module.exports = {
     getMarriageByWifeID,
     getMarriageByCodeID,
     getMarriageByMarriageID,
+    getMarriageByHusbandIDAndWifeID,
 };
