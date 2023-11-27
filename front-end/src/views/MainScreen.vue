@@ -47,7 +47,7 @@
           </svg>
         </div>
       </div>
-      <div @click="advancedFilterDown = !advancedFilterDown" :class="{ filterExpanded: advancedFilterDown }" class="advanced-filter-container d-flex flex-column p-1 position-absolute" style="cursor: pointer;">
+      <div :class="{ filterExpanded: advancedFilterDown }" class="advanced-filter-container d-flex flex-column p-1 position-absolute" style="cursor: pointer;">
         <div :class="{expand : advancedFilterDown}" class="filter-item">
           <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
             <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict(),GetListFilterMember()">
@@ -73,7 +73,7 @@
             </select>
           </div>
         </div>
-        <div class="d-flex flex-column align-items-center justify-content-center h-100">
+        <div @click="advancedFilterDown = !advancedFilterDown" class="d-flex flex-column align-items-center justify-content-center h-100">
           <div v-if="!advancedFilterDown" style="color: white; font-weight: bold">Bộ lọc nâng cao</div>
           <div>
             <svg :class="{ rotateDown: !advancedFilterDown }" class="advanced-filter-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
