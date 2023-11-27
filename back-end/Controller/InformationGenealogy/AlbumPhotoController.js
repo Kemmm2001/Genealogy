@@ -51,10 +51,6 @@ var updateAlbumPhoto = async (req, res) => {
     try {
         // Log ra thông tin trong req.body
         console.log('Request body: ', req.body);
-        // nếu có file ảnh thì lưu đường dẫn vào req.body.BackGroundPhoto, còn ko thì gán null
-        if (req.file != null) {
-            req.body.BackGroundPhoto = req.file.path;
-        } 
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
             'AlbumID',
@@ -70,18 +66,23 @@ var updateAlbumPhoto = async (req, res) => {
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
-        let checkAlbumIDExistResponse = await checkAlbumIDExist(AlbumID);
-        if (checkAlbumIDExistResponse.success === false) {
+        let checkAlbumIDExistResponse = await checkAlbumIDExist(req.body.AlbumID);
+        if (checkAlbumIDExistResponse.success == false) {
             CoreFunction.deleteImage(req.file);
             return res.send(checkAlbumIDExistResponse);
         }
-        let checkCodeIDExistResponse = await checkCodeIDExist(CodeID);
-        if (checkCodeIDExistResponse.success === false) {
+        let checkCodeIDExistResponse = await checkCodeIDExist(req.body.CodeID);
+        if (checkCodeIDExistResponse.success == false) {
             CoreFunction.deleteImage(req.file);
             return res.send(checkCodeIDExistResponse);
         }
-        
-        req.body.BackGroundPhoto = checkAlbumIDExistResponse.data[0].BackGroundPhoto;
+        // nếu có file ảnh thì lưu đường dẫn vào req.body.BackGroundPhoto
+        if (req.file != null) {
+            console.log("Đã vào trường hợp có file ảnh");
+            req.body.BackGroundPhoto = req.file.path;
+        }else{
+            console.log("Đã vào trường hợp không có file ảnh");
+        }
         // cập nhật AlbumPhoto vào database
         let dataUpdate = await AlbumPhotoManagementService.updateAlbumPhoto(req.body)
         dataRes = {
@@ -97,6 +98,7 @@ var updateAlbumPhoto = async (req, res) => {
 
 var checkAlbumIDExist = async (AlbumID) => {
     try {
+        console.log("Chạy vào hàm checkAlbumIDExist");
         let dataAlbumID;
         if (AlbumID != null && AlbumID != undefined && AlbumID !== "") {
             console.log(`Get AlbumPhoto by AlbumID : ${AlbumID}`);
@@ -115,12 +117,12 @@ var checkAlbumIDExist = async (AlbumID) => {
 
 var checkCodeIDExist = async (CodeID) => {
     try {
+        console.log("Chạy vào hàm checkCodeIDExist");
         let dataCodeID;
         if (CodeID != null && CodeID != undefined && CodeID !== "") {
             console.log(`Get AlbumPhoto by CodeID : ${CodeID}`);
             dataCodeID = await AlbumPhotoManagementService.getAlbumPhotoByCodeId(CodeID)
         }
-        console.log("dataCodeID: " + dataCodeID);
         if (dataCodeID == null || dataCodeID.length == 0) {
             return Response.dataNotFoundResponse();
         }
