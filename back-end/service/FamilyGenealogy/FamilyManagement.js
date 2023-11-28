@@ -5,7 +5,7 @@ function addMember(member) {
         try {
             const query = `
         INSERT INTO familymember 
-        (  ParentID, MarriageID, MemberName, NickName, 
+        (  FatherID, MotherID, MemberName, NickName, 
             BirthOrder, Origin, 
             NationalityID, ReligionID, 
             Dob, LunarDob, BirthPlace, 
@@ -15,8 +15,8 @@ function addMember(member) {
         (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
             const values = [
-                member.ParentID,
-                member.MarriageID,
+                member.FatherID,
+                member.MotherID,
                 member.MemberName,
                 member.NickName,
                 member.BirthOrder,
@@ -66,8 +66,8 @@ function updateMember(member) {
             const query = `
         UPDATE familymember 
         SET 
-          ParentID = ?,
-          MarriageID = ?,
+            FatherID = ?,
+            MotherID = ?,
           MemberName = ?,
           NickName = ?,
           BirthOrder = ?,
@@ -204,12 +204,12 @@ async function deleteMemberRelated(memberId) {
 
     // Danh sách các memberId cần update đời
     const memberIdsToUpdate = [];
-   
+
     // Lấy thông tin member cần xóa
     let member = await getMember(memberId);
-    
+
     // nếu member đó khác đời 1 ( không phải tổ phụ ) và không có parentid thì return
-    if(member[0].Generation != 1 && member[0].ParentID == null) return;
+    if (member[0].Generation != 1 && member[0].ParentID == null) return;
 
     if (member[0].MarriageID != null || member[0].MarriageID != 0) {
         // Nếu member đó có MarriageID (có vợ/chồng)
@@ -325,6 +325,33 @@ function insertParentIdToMember(parentID, memberID) {
         }
     })
 }
+
+function insertFatherIDToMember(fatherID, memberID) {
+    let query = `UPDATE familymember SET FatherID = ? WHERE MemberID = ?;`
+    let values = [fatherID, memberID];
+    db.connection.query(query, values, (err, result) => {
+        if (err) {
+            console.log(err)
+        } else {
+            console.log("insert success");
+        }
+    }
+    )
+}
+
+function insertMotherIDToMember(motherID, memberID) {
+    let query = `UPDATE familymember SET MotherID = ? WHERE MemberID = ?;`
+    let values = [motherID, memberID];
+    db.connection.query(query, values, (err, result) => {
+        if (err) {
+            console.log(err)
+        } else {
+            console.log("insert success");
+        }
+    }
+    )
+}
+
 
 function getRelationship(relationshipFrom, relationshipTo) {
     let relationshipName = [relationshipFrom, relationshipTo];
@@ -548,6 +575,6 @@ function getMemberByMemberID(memberID) {
 module.exports = {
     addMember, updateMember, deleteMember, getRelationship, getMember, createRelationship, searchMember, getMemberByMemberID,
     setGeneration, queryContactMembers,
-    getAllMember, InsertMarriIdToMember, queryFamilyMembers, getAllMemberInMemberRole, getAllMemberNotInMemberRole, GetCurrentParentMember, 
-    insertParentIdToMember, getMembersByParentID
+    getAllMember, InsertMarriIdToMember, queryFamilyMembers, getAllMemberInMemberRole, getAllMemberNotInMemberRole, GetCurrentParentMember,
+    getMembersByParentID, insertFatherIDToMember, insertMotherIDToMember
 };
