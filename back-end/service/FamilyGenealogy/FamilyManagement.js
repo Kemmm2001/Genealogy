@@ -6,13 +6,13 @@ function addMember(member) {
             const query = `
         INSERT INTO familymember 
         (  FatherID, MotherID, MemberName, NickName, 
-            BirthOrder, Origin, 
+            BirthOrder,Origin, 
             NationalityID, ReligionID, 
             Dob, LunarDob, BirthPlace, 
             IsDead, Dod, LunarDod, PlaceOfDeath, 
             GraveSite, Note, Generation, BloodType, CodeID, Male, Image)
         VALUES 
-        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (?, ?, ?, ?, ?, ?,?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
             const values = [
                 member.FatherID,
@@ -315,15 +315,17 @@ function GetCurrentParentMember(memberID) {
     })
 }
 
-function insertParentIdToMember(parentID, memberID) {
-    let query = `UPDATE familymember SET ParentID = ${parentID} WHERE MemberID = ${memberID};`
-    db.connection.query(query, (err, result) => {
+function insertParentIdToMember(fatherID, motherID, memberID) {
+    let query = `UPDATE familymember SET FatherID = ?, MotherID = ? WHERE MemberID = ?;`
+    let values = [fatherID, motherID, memberID];
+    db.connection.query(query, values, (err, result) => {
         if (err) {
             console.log(err)
         } else {
             console.log("insert success");
         }
-    })
+    }
+    )
 }
 
 function insertFatherIDToMember(fatherID, memberID) {
@@ -380,6 +382,21 @@ function setGeneration(generation, memberId) {
         })
     })
 }
+
+function setBirthOrder(birthOrder, memberId) {
+    return new Promise((resolve, reject) => {
+        const query = 'UPDATE familymember SET BirthOrder = ? WHERE MemberID = ?';
+        db.connection.query(query, [birthOrder, memberId], (err, result) => {
+            if (err) {
+                console.log(err);
+                reject(err)
+            } else {
+                resolve(result)
+            }
+        })
+    })
+}
+
 function getMember(memberId) {
     return new Promise((resolve, reject) => {
         const query = 'select * from familymember where memberid = ?';
@@ -394,10 +411,39 @@ function getMember(memberId) {
     });
 }
 
-function getMembersByParentID(parentID) {
+function getMembersByFatherID(fatherID) {
     return new Promise((resolve, reject) => {
-        const query = 'select * from familymember where parentID = ?';
-        db.connection.query(query, parentID, (err, result) => {
+        const query = 'select * from familymember where fatherID = ?';
+        db.connection.query(query, fatherID, (err, result) => {
+            if (err) {
+                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+}
+
+function getMembersByMotherID(motherID) {
+    return new Promise((resolve, reject) => {
+        const query = 'select * from familymember where motherID = ?';
+        db.connection.query(query, motherID, (err, result) => {
+            if (err) {
+                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+}
+
+function getMembersByParentID(fatherID, motherID) {
+    return new Promise((resolve, reject) => {
+        const query = 'select * from familymember where fatherID = ? or motherID = ?';
+        const values = [fatherID, motherID];
+        db.connection.query(query, values, (err, result) => {
             if (err) {
                 console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
                 reject(err);
@@ -576,5 +622,6 @@ module.exports = {
     addMember, updateMember, deleteMember, getRelationship, getMember, createRelationship, searchMember, getMemberByMemberID,
     setGeneration, queryContactMembers,
     getAllMember, InsertMarriIdToMember, queryFamilyMembers, getAllMemberInMemberRole, getAllMemberNotInMemberRole, GetCurrentParentMember,
-    getMembersByParentID, insertFatherIDToMember, insertMotherIDToMember
+    insertFatherIDToMember, insertMotherIDToMember, getMembersByFatherID, getMembersByMotherID, getMembersByParentID,
+    setBirthOrder, insertParentIdToMember
 };
