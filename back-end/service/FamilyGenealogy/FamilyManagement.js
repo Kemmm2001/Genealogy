@@ -6,19 +6,20 @@ function addMember(member) {
             const query = `
         INSERT INTO familymember 
         (  FatherID, MotherID, MemberName, NickName, 
-            Origin, 
+            BirthOrder,Origin, 
             NationalityID, ReligionID, 
             Dob, LunarDob, BirthPlace, 
             IsDead, Dod, LunarDod, PlaceOfDeath, 
             GraveSite, Note, Generation, BloodType, CodeID, Male, Image)
         VALUES 
-        (?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (?, ?, ?, ?, ?, ?,?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
             const values = [
                 member.FatherID,
                 member.MotherID,
                 member.MemberName,
                 member.NickName,
+                member.BirthOrder,
                 member.Origin,
                 member.NationalityID,
                 member.ReligionID,

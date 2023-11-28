@@ -210,26 +210,23 @@ var addMember = async (req, res) => {
                 if (CoreFunction.isDataNumberExist(req.body.FatherID) && CoreFunction.isDataNumberExist(req.body.MotherID)) {
                 }
                 // bắt đầu kiểm tra birthorder
-                let listChild;
+                let listChild, parentGeneration;
                 // trường hợp có cha những ko có mẹ 
                 if (CoreFunction.isDataNumberExist(req.body.FatherID) && !CoreFunction.isDataNumberExist(req.body.MotherID)) {
-                    // nếu birthorder đã tồn tại thì ko thể add
                     listChild = await FamilyManagementService.getMembersByFatherID(req.body.FatherID);
-
+                    parentGeneration = fatherData[0].Generation;
                 }
                 // trường hợp có mẹ những ko có cha
                 else if (!CoreFunction.isDataNumberExist(req.body.FatherID) && CoreFunction.isDataNumberExist(req.body.MotherID)) {
-                    // nếu birthorder đã tồn tại thì ko thể add
                     listChild = await FamilyManagementService.getMembersByMotherID(req.body.MotherID);
-
+                    parentGeneration = motherData[0].Generation;
                 }
                 // trường hợp có cả cha và mẹ
                 else if (CoreFunction.isDataNumberExist(req.body.FatherID) && CoreFunction.isDataNumberExist(req.body.MotherID)) {
-                    // nếu birthorder đã tồn tại thì ko thể add
                     listChild = await FamilyManagementService.getMembersByParentID(req.body.FatherID, req.body.MotherID);
-
+                    parentGeneration = fatherData[0].Generation;
                 }
-                if (isBirthOrderExist(req.body.BirthOrder, listChild)) {
+                if (isBirthOrderExist(data.insertId,req.body.BirthOrder, listChild)) {
                     let errorMessage = `Con thứ ${req.body.BirthOrder} đã tồn tại`;
                     console.log(errorMessage);
                     CoreFunction.deleteImage(req.file);
@@ -237,7 +234,7 @@ var addMember = async (req, res) => {
                 }
                 // kết thúc kiểm tra birthorder
                 await FamilyManagementService.setBirthOrder(req.body.BirthOrder, data.insertId);
-                await FamilyManagementService.setGeneration(currentMember[0].Generation + 1, data.insertId);
+                await FamilyManagementService.setGeneration(parentGeneration+1, data.insertId);
                 // await FamilyManagementService.insertParentIdToMember(req.body.CurrentMemberID, data.insertId);
             }
             // trường hợp muốn thêm vợ chồng
@@ -297,11 +294,11 @@ var addMember = async (req, res) => {
     }
 };
 
-var isBirthOrderExist = (birthOrder, listBirthOrderExist) => {
+var isBirthOrderExist = (memberID, birthOrder, listBirthOrderExist) => {
     console.log("listBirthOrderExist length: ", listBirthOrderExist.length);
     for (let i = 0; i < listBirthOrderExist.length; i++) {
         console.log(`listBirthOrderExist[i].BirthOrder: ${listBirthOrderExist[i].BirthOrder}, member birthorder: ${birthOrder}`);
-        if (listBirthOrderExist[i].BirthOrder == birthOrder) {
+        if (listBirthOrderExist[i].BirthOrder == birthOrder && listBirthOrderExist[i].MemberID != memberID) {
             return true;
         }
     }
