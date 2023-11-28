@@ -90,6 +90,7 @@
 
 <script>
 import { HTTP } from "../assets/js/baseAPI.js";
+import SHA256 from 'crypto-js/sha256';
 import Vue from "vue";
 import VueCookies from "vue-cookies";
 Vue.use(VueCookies);
@@ -178,14 +179,16 @@ export default {
       }
     },
     login() {
-      console.log(HTTP);
+      console.log(this.accountLogin.password);
+      console.log(SHA256(this.accountLogin.password).toString());
       if (
         this.accountLogin.email != null &&
         this.accountLogin.password != null
       ) {
         HTTP.post("login", {
           email: this.accountLogin.email,
-          password: this.accountLogin.password,
+          // password: SHA256(this.accountLogin.password).toString(),
+          password:this.accountLogin.password,
         })
           .then((response) => {
             if (response.data.success == false) {
