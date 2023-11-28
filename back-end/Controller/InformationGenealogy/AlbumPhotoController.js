@@ -27,7 +27,7 @@ var addAlbumPhoto = async (req, res) => {
         }
         console.log("No missing fields");
         let checkCodeIDExistResponse = await checkFamilyTreeExist(req);
-        if (checkCodeIDExistResponse.success === false) {
+        if (checkCodeIDExistResponse.success == false) {
             CoreFunction.deleteImage(req.file);
             return res.send(checkCodeIDExistResponse);
         }
@@ -51,10 +51,6 @@ var updateAlbumPhoto = async (req, res) => {
     try {
         // Log ra thông tin trong req.body
         console.log('Request body: ', req.body);
-        // nếu có file ảnh thì lưu đường dẫn vào req.body.BackGroundPhoto, còn ko thì gán null
-        if (req.file != null) {
-            req.body.BackGroundPhoto = req.file.path;
-        } 
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
             'AlbumID',
@@ -70,18 +66,23 @@ var updateAlbumPhoto = async (req, res) => {
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
-        let checkAlbumIDExistResponse = await checkAlbumIDExist(AlbumID);
-        if (checkAlbumIDExistResponse.success === false) {
+        let checkAlbumIDExistResponse = await checkAlbumIDExist(req.body.AlbumID);
+        if (checkAlbumIDExistResponse.success == false) {
             CoreFunction.deleteImage(req.file);
             return res.send(checkAlbumIDExistResponse);
         }
-        let checkCodeIDExistResponse = await checkCodeIDExist(CodeID);
-        if (checkCodeIDExistResponse.success === false) {
+        let checkCodeIDExistResponse = await checkCodeIDExist(req.body.CodeID);
+        if (checkCodeIDExistResponse.success == false) {
             CoreFunction.deleteImage(req.file);
             return res.send(checkCodeIDExistResponse);
         }
-        
-        req.body.BackGroundPhoto = checkAlbumIDExistResponse.data[0].BackGroundPhoto;
+        // nếu có file ảnh thì lưu đường dẫn vào req.body.BackGroundPhoto
+        if (req.file != null) {
+            console.log("Đã vào trường hợp có file ảnh");
+            req.body.BackGroundPhoto = req.file.path;
+        }else{
+            console.log("Đã vào trường hợp không có file ảnh");
+        }
         // cập nhật AlbumPhoto vào database
         let dataUpdate = await AlbumPhotoManagementService.updateAlbumPhoto(req.body)
         dataRes = {
@@ -97,8 +98,9 @@ var updateAlbumPhoto = async (req, res) => {
 
 var checkAlbumIDExist = async (AlbumID) => {
     try {
+        console.log("Chạy vào hàm checkAlbumIDExist");
         let dataAlbumID;
-        if (AlbumID != null && AlbumID != undefined && AlbumID !== "") {
+        if (AlbumID != null && AlbumID != undefined && AlbumID != "") {
             console.log(`Get AlbumPhoto by AlbumID : ${AlbumID}`);
             dataAlbumID = await AlbumPhotoManagementService.getAlbumPhotoById(AlbumID)
         }
@@ -115,12 +117,12 @@ var checkAlbumIDExist = async (AlbumID) => {
 
 var checkCodeIDExist = async (CodeID) => {
     try {
+        console.log("Chạy vào hàm checkCodeIDExist");
         let dataCodeID;
-        if (CodeID != null && CodeID != undefined && CodeID !== "") {
+        if (CodeID != null && CodeID != undefined && CodeID != "") {
             console.log(`Get AlbumPhoto by CodeID : ${CodeID}`);
             dataCodeID = await AlbumPhotoManagementService.getAlbumPhotoByCodeId(CodeID)
         }
-        console.log("dataCodeID: " + dataCodeID);
         if (dataCodeID == null || dataCodeID.length == 0) {
             return Response.dataNotFoundResponse();
         }
@@ -133,7 +135,7 @@ var checkCodeIDExist = async (CodeID) => {
 var checkFamilyTreeExist = async (req) => {
     try {
         let dataCodeID;
-        if (req.body.CodeID != null && req.body.CodeID && req.body.CodeID !== "") {
+        if (req.body.CodeID != null && req.body.CodeID && req.body.CodeID != "") {
             console.log(`Get AlbumPhoto by CodeID : ${req.body.CodeID}`);
             dataCodeID = await AlbumPhotoManagementService.getFamilyTreeData(req.body.CodeID)
         }
@@ -164,7 +166,7 @@ var deleteAlbumPhoto = async (req, res) => {
         }
         console.log("No missing fields");
         let checkAlbumIDExistResponse = await checkAlbumIDExist(req.query.AlbumID);
-        if (checkAlbumIDExistResponse.success === false) {
+        if (checkAlbumIDExistResponse.success == false) {
             return res.send(checkAlbumIDExistResponse);
         }
         // xóa AlbumPhoto khỏi database
@@ -187,10 +189,10 @@ var getAlbumPhoto = async (req, res) => {
         // lấy thông tin AlbumPhoto từ database
         // những thông tin có thể lấy được : AlbumID, CodeID
         let data;
-        if (req.query.AlbumID != null && req.query.AlbumID != undefined && req.query.AlbumID !== "") {
+        if (req.query.AlbumID != null && req.query.AlbumID != undefined && req.query.AlbumID != "") {
             console.log(`Get AlbumPhoto by AlbumID : ${req.query.AlbumID}`);
             data = await AlbumPhotoManagementService.getAlbumPhotoById(req.query.AlbumID)
-        } else if (req.query.CodeID != null && req.query.CodeID && req.query.CodeID !== "") {
+        } else if (req.query.CodeID != null && req.query.CodeID && req.query.CodeID != "") {
             console.log(`Get AlbumPhoto by CodeID : ${req.query.CodeID}`);
             data = await AlbumPhotoManagementService.getAlbumPhotoByCodeId(req.query.CodeID)
         }

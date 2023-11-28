@@ -101,12 +101,12 @@ var addMember = async (req, res) => {
         let dataRes = {};
         let data = await FamilyManagementService.addMember(req.body);
         // trường hợp muốn thêm thành viên mà không có trong cây gia phả
-        if (req.body.Action === 'AddNormal') {
+        if (req.body.Action == 'AddNormal') {
             console.log("Đã vào trường hợp thêm thành viên mà không có trong cây gia phả");
             await FamilyManagementService.setGeneration(0, data.insertId);
         }
         // trường hợp muốn thêm thành viên đầu tiên ( tổ phụ tổ tiên)
-        else if (req.body.Action === 'AddFirst') {
+        else if (req.body.Action == 'AddFirst') {
             await FamilyManagementService.setGeneration(1, data.insertId);
             await ManagementFamilyHead.addForefather(data.insertId, req.body.CodeID);
         }
@@ -121,22 +121,34 @@ var addMember = async (req, res) => {
             console.log("currentMember: ", currentMember);
             if (currentMember == null || currentMember.length == 0) {
                 CoreFunction.deleteImage(req.file);
-                return res.send(Response.dataNotFoundResponse(null, "CurrentMemberID không tồn tại"));
+                return res.send(Response.dataNotFoundResponse(null, "Thành viên hiện tại đang không tồn tại"));
             }
             let memberRole = await ViewFamilyTree.getAllMemberRole(req.body.CurrentMemberID);
             // trường hợp muốn thêm cha mẹ
-            if (req.body.Action === 'AddParent') {
+            if (req.body.Action == 'AddParent') {
                 console.log("Đã vào trường hợp thêm cha mẹ");
+                // nếu đã có cha thì ko thêm
+                if (currentMember[0].ParentID != null && currentMember[0].ParentID != 0 && currentMember[0].ParentID != '') {
+                    let errorMessage = 'Thành viên này đã có cha mẹ';
+                    CoreFunction.deleteImage(req.file);
+                    return res.send(Response.badRequestResponse(null, errorMessage));
+                }
+                // nếu giới tính nữ thì ko cho thêm
+                if(req.body.Male == 0){
+                    let errorMessage = 'Bạn chỉ có thể thêm cha cho thành viên';
+                    CoreFunction.deleteImage(req.file);
+                    return res.send(Response.badRequestResponse(null, errorMessage));
+                }
                 await FamilyManagementService.setGeneration(currentMember[0].Generation - 1, data.insertId);
                 await FamilyManagementService.insertParentIdToMember(data.insertId, req.body.CurrentMemberID);
             }
             // trường hợp muốn thêm con cái
-            else if (req.body.Action === 'AddChild') {
+            else if (req.body.Action == 'AddChild') {
                 console.log("Đã vào trường hợp thêm con cái");
                 // nếu muốn add con cái mà thành viên hiện tại là nữ hoặc là chồng của người trong gia phả thì sẽ không được phép
                 if (
-                    (currentMember[0].ParentID != null && currentMember[0].Male === 0) ||
-                    (currentMember[0].ParentID == null && currentMember[0].Male === 1 && memberRole[0].RoleID !== 1)
+                    (currentMember[0].ParentID != null && currentMember[0].Male == 0) ||
+                    (currentMember[0].ParentID == null && currentMember[0].Male == 1 && memberRole[0].RoleID != 1)
                 ) {
                     let errorMessage = 'Không thể thêm con cái cho thành viên này';
                     CoreFunction.deleteImage(req.file);
@@ -158,8 +170,15 @@ var addMember = async (req, res) => {
                 await FamilyManagementService.insertParentIdToMember(req.body.CurrentMemberID, data.insertId);
             }
             // trường hợp muốn thêm vợ chồng
-            else if (req.body.Action === 'AddMarriage') {
+            else if (req.body.Action == 'AddMarriage') {
                 console.log("Đã vào trường hợp thêm vợ chồng");
+                // nếu không có parentid và có marriageid thì không thể thêm vợ chồng
+                if (currentMember[0].ParentID == null && currentMember[0].MarriageID != null) {
+                    let errorMessage = 'Thành viên này đã cưới rồi';
+                    CoreFunction.deleteImage(req.file);
+                    return res.send(Response.badRequestResponse(null, errorMessage));
+                }
+
                 await FamilyManagementService.setGeneration(currentMember[0].Generation, data.insertId);
                 await FamilyManagementService.InsertMarriIdToMember(data.insertId, req.body.CurrentMemberID);
                 await FamilyManagementService.InsertMarriIdToMember(req.body.CurrentMemberID, data.insertId);
@@ -264,21 +283,21 @@ var updateMemberToGenealogy = async (req, res) => {
             return res.send(Response.dataNotFoundResponse(null, "Thành viên không tồn tại"));
         }
         // nếu không cùng gia phả, tức là không cùng CodeID
-        if (inGenealogyMemeber[0].CodeID !== outGenealogyMemeber[0].CodeID) {
+        if (inGenealogyMemeber[0].CodeID != outGenealogyMemeber[0].CodeID) {
             return res.send(Response.badRequestResponse(null, "Hai thành viên không cùng gia phả"));
         }
         // nếu thành viên out không có generation là 0 thì sai 
-        if (outGenealogyMemeber[0].Generation !== 0) {
+        if (outGenealogyMemeber[0].Generation != 0) {
             return res.send(Response.badRequestResponse(null, "Thế hệ của thành viên được add không hợp lệ"));
         }
         let dataRes = {};
         // trường hợp muốn thêm cha mẹ
-        if (req.body.Action === 'AddParent') {
+        if (req.body.Action == 'AddParent') {
             await FamilyManagementService.setGeneration(inGenealogyMemeber[0].Generation - 1, outGenealogyMemeber[0].MemberID);
             await FamilyManagementService.insertParentIdToMember(outGenealogyMemeber[0].MemberID, inGenealogyMemeber[0].MemberID);
         }
         // trường hợp muốn thêm con cái
-        else if (req.body.Action === 'AddChild') {
+        else if (req.body.Action == 'AddChild') {
             // nếu birthorder đã tồn tại thì ko thể add
             let listChild = await FamilyManagementService.getMembersByParentID(inGenealogyMemeber[0].MemberID);
             for (let i = 0; i < listChild.length; i++) {
@@ -292,7 +311,7 @@ var updateMemberToGenealogy = async (req, res) => {
             await FamilyManagementService.insertParentIdToMember(inGenealogyMemeber[0].MemberID, outGenealogyMemeber[0].MemberID);
         }
         // trường hợp muốn thêm vợ chồng
-        else if (req.body.Action === 'AddMarriage') {
+        else if (req.body.Action == 'AddMarriage') {
             await FamilyManagementService.setGeneration(inGenealogyMemeber[0].Generation, outGenealogyMemeber[0].MemberID);
             await FamilyManagementService.InsertMarriIdToMember(outGenealogyMemeber[0].MemberID, inGenealogyMemeber[0].MemberID);
             await FamilyManagementService.InsertMarriIdToMember(inGenealogyMemeber[0].MemberID, outGenealogyMemeber[0].MemberID);

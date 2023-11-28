@@ -26,7 +26,7 @@
         <div @mouseenter="expandFamilyInfo = true" @mouseleave="expandFamilyInfo = false"
           class="navbar-item d-flex position-relative" style="margin-left: 8px"
           :class="{ 'header-selected': currentPath === '/information/history' || currentPath === '/information/albumlist' || currentPath === '/information/history' || currentPath === '/information/statistics' }">
-          <router-link to="/information/headlist" class="w-100 h-100 d-flex flex-row align-items-center">
+          <router-link to="/information/history" class="w-100 h-100 d-flex flex-row align-items-center">
             <div @click="setSelectedHead('/information/history')" class="d-flex flex-row align-items-center">
               <svg class="navbar-icon-sm" style="margin-left: 8px;" xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 640 512">
