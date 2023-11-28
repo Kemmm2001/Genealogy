@@ -495,7 +495,7 @@ function getAllMarriage(CodeID) {
 }
 
 async function GetGenealogy(result, dataMarriage, MemberID, ListFamily = [], visitedMembers = new Set()) {
-    if (visitedMembers.has(MemberID)) {  
+    if (visitedMembers.has(MemberID)) {
         return ListFamily;
     }
 
@@ -626,6 +626,7 @@ async function ViewFamilyTree(CodeID) {
 
 // Hàm tạo đối tượng familyData từ dữ liệu thành viên
 async function createFamilyData(member, result, marriedArray) {
+    console.log('marriedArray: ' + marriedArray);
     try {
         if (member !== undefined) {
             let fid = '';
@@ -648,7 +649,12 @@ async function createFamilyData(member, result, marriedArray) {
                 }
             }
 
-            pids = marriedArray;
+            // Kiểm tra kiểu dữ liệu của marriedArray
+            if (Array.isArray(marriedArray)) {
+                pids = marriedArray;
+            } else {
+                pids = [marriedArray];
+            }
 
             return {
                 id: member.MemberID,
@@ -668,6 +674,7 @@ async function createFamilyData(member, result, marriedArray) {
         console.log(error);
     }
 }
+
 
 function formatDOB(dateString) {
 
