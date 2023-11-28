@@ -176,6 +176,8 @@ var addMember = async (req, res) => {
     }
 };
 
+
+
 var updateMember = async (req, res) => {
     try {
         db.connection.beginTransaction();
