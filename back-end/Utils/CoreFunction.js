@@ -4,7 +4,7 @@ const fs = require('fs');
 const db = require('../Models/ConnectDB');
 
 
-const missingFields=(requiredFields, data)=> {
+const missingFields = (requiredFields, data) => {
     const missing = [];
     for (let i = 0; i < requiredFields.length; i++) {
         const field = requiredFields[i];
@@ -22,8 +22,7 @@ const missingFields=(requiredFields, data)=> {
     return missing;
 }
 const isEmptyOrNullOrSpaces = (str) => {
-    const isNull = str == null || ( typeof str == 'string' && str.trim() == '') || typeof str == 'undefined';
-    console.log(`Dữ liệu ${str} null hoặc rỗng : ${isNull}`);
+    const isNull = str == null || (typeof str == 'string' && str.trim() == '') || typeof str == 'undefined';
     return isNull;
 }
 
@@ -66,7 +65,7 @@ const generateRandomFileName = (file) => {
 const deleteImage = async (file) => {
     return new Promise(async (resolve, reject) => {
         console.log("File : " + file);
-        if(!file) return resolve();
+        if (!file) return resolve();
         // Kiểm tra quyền truy cập vào tệp
         fs.promises.access(file, fs.constants.F_OK)
             .then(() => {
@@ -96,12 +95,12 @@ const deleteImage = async (file) => {
     });
 };
 
-const isDataStringExist  = (data) => {
-    return data != null && data != '';
+const isDataStringExist = (data) => {
+    return data != null && data != undefined && data != '';
 }
 
 const isDataNumberExist = (data) => {
-    return data != null && data != '' && data != 0;
+    return data != null && data != undefined && data != '' && data != 0;
 }
 
 module.exports = { missingFields, uploadImage, deleteImage, isEmptyOrNullOrSpaces, isDataStringExist, isDataNumberExist };

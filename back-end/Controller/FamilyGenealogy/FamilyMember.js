@@ -119,7 +119,7 @@ var addMember = async (req, res) => {
             }
             let currentMember = await FamilyManagementService.getMemberByMemberID(req.body.CurrentMemberID);
             console.log("currentMember: ", currentMember);
-            if (currentMember == null || currentMember.length == 0) {
+            if (!CoreFunction.isDataNumberExist(currentMember)) {
                 CoreFunction.deleteImage(req.file);
                 return res.send(Response.dataNotFoundResponse(null, "Thành viên hiện tại đang không tồn tại"));
             }
@@ -175,18 +175,68 @@ var addMember = async (req, res) => {
                     CoreFunction.deleteImage(req.file);
                     return res.send(Response.badRequestResponse(null, errorMessage));
                 }
-                // nếu birthorder đã tồn tại thì ko thể add
-                let listChild = await FamilyManagementService.getMembersByParentID(req.body.CurrentMemberID);
-                console.log("listChild : ", listChild.length);
-                for (let i = 0; i < listChild.length; i++) {
-                    console.log(`listChild[i].BirthOrder: ${listChild[i].BirthOrder}, member birthorder: ${req.body.BirthOrder}`);
-                    if (listChild[i].BirthOrder == req.body.BirthOrder) {
-                        let errorMessage = `Con thứ ${req.body.BirthOrder} đã tồn tại`;
-                        console.log(errorMessage);
+                let fatherData, motherData;
+                // nếu cả FatherID và MotherID đều null ở req.body thì không thể thêm con
+                if (!CoreFunction.isDataNumberExist(req.body.FatherID) && !CoreFunction.isDataNumberExist(req.body.MotherID)) {
+                    let errorMessage = 'Không thể thêm con cái nếu không có cha hoặc mẹ';
+                    CoreFunction.deleteImage(req.file);
+                    return res.send(Response.badRequestResponse(null, errorMessage));
+                }
+                // còn nếu vào trường hợp có FatherID ở req.body
+                if (CoreFunction.isDataNumberExist(req.body.FatherID)) {
+                    fatherData = await FamilyManagementService.getMemberByMemberID(req.body.FatherID);
+                    // nếu father ko tồn tại thì ko thể thêm con
+                    if (!CoreFunction.isDataNumberExist(fatherData)) {
+                        let errorMessage = 'Không thể thêm con cái nếu cha không tồn tại';
                         CoreFunction.deleteImage(req.file);
                         return res.send(Response.badRequestResponse(null, errorMessage));
                     }
+                    // thêm cha vào FatherID của con
+                    FamilyManagementService.insertFatherIDToMember(fatherData[0].MemberID, data.insertId);
                 }
+                // còn nếu vào trường hợp có MotherID ở req.body
+                if (CoreFunction.isDataNumberExist(req.body.MotherID)) {
+                    motherData = await FamilyManagementService.getMemberByMemberID(req.body.MotherID);
+                    // nếu mother ko tồn tại thì ko thể thêm con
+                    if (!CoreFunction.isDataNumberExist(motherData)) {
+                        let errorMessage = 'Không thể thêm con cái nếu mẹ không tồn tại';
+                        CoreFunction.deleteImage(req.file);
+                        return res.send(Response.badRequestResponse(null, errorMessage));
+                    }
+                    // thêm mẹ vào MotherID của con
+                    FamilyManagementService.insertMotherIDToMember(motherData[0].MemberID, data.insertId);
+                }
+                // nếu cả FatherID và MotherID đều có ở req.body
+                if (CoreFunction.isDataNumberExist(req.body.FatherID) && CoreFunction.isDataNumberExist(req.body.MotherID)) {
+                }
+                // bắt đầu kiểm tra birthorder
+                let listChild;
+                // trường hợp có cha những ko có mẹ 
+                if (CoreFunction.isDataNumberExist(req.body.FatherID) && !CoreFunction.isDataNumberExist(req.body.MotherID)) {
+                    // nếu birthorder đã tồn tại thì ko thể add
+                    listChild = await FamilyManagementService.getMembersByFatherID(req.body.FatherID);
+
+                }
+                // trường hợp có mẹ những ko có cha
+                else if (!CoreFunction.isDataNumberExist(req.body.FatherID) && CoreFunction.isDataNumberExist(req.body.MotherID)) {
+                    // nếu birthorder đã tồn tại thì ko thể add
+                    listChild = await FamilyManagementService.getMembersByMotherID(req.body.MotherID);
+
+                }
+                // trường hợp có cả cha và mẹ
+                else if (CoreFunction.isDataNumberExist(req.body.FatherID) && CoreFunction.isDataNumberExist(req.body.MotherID)) {
+                    // nếu birthorder đã tồn tại thì ko thể add
+                    listChild = await FamilyManagementService.getMembersByParentID(req.body.FatherID, req.body.MotherID);
+
+                }
+                if (isBirthOrderExist(req.body.BirthOrder, listChild)) {
+                    let errorMessage = `Con thứ ${req.body.BirthOrder} đã tồn tại`;
+                    console.log(errorMessage);
+                    CoreFunction.deleteImage(req.file);
+                    return res.send(Response.badRequestResponse(null, errorMessage));
+                }
+                // kết thúc kiểm tra birthorder
+                await FamilyManagementService.setBirthOrder(req.body.BirthOrder, data.insertId);
                 await FamilyManagementService.setGeneration(currentMember[0].Generation + 1, data.insertId);
                 // await FamilyManagementService.insertParentIdToMember(req.body.CurrentMemberID, data.insertId);
             }
@@ -243,12 +293,20 @@ var addMember = async (req, res) => {
     } catch (e) {
         console.log("Error: " + e);
         CoreFunction.deleteImage(req.file);
-        return res.send(Response.internalServerErrorResponse(e));
+        return res.send(Response.internalServerErrorResponse());
     }
 };
 
-
-
+var isBirthOrderExist = (birthOrder, listBirthOrderExist) => {
+    console.log("listBirthOrderExist length: ", listBirthOrderExist.length);
+    for (let i = 0; i < listBirthOrderExist.length; i++) {
+        console.log(`listBirthOrderExist[i].BirthOrder: ${listBirthOrderExist[i].BirthOrder}, member birthorder: ${birthOrder}`);
+        if (listBirthOrderExist[i].BirthOrder == birthOrder) {
+            return true;
+        }
+    }
+    return false;
+}
 var updateMember = async (req, res) => {
     try {
         db.connection.beginTransaction();
@@ -301,7 +359,7 @@ var updateMember = async (req, res) => {
     } catch (e) {
         console.log("Error: " + e);
         CoreFunction.deleteImage(req.file);
-        return res.send(Response.internalServerErrorResponse(e));
+        return res.send(Response.internalServerErrorResponse());
     }
 }
 
@@ -324,7 +382,7 @@ var updateMemberToGenealogy = async (req, res) => {
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
-        const action = ['AddFather','AddMother', 'AddChild', 'AddHusband', 'AddWife'];
+        const action = ['AddFather', 'AddMother', 'AddChild', 'AddHusband', 'AddWife'];
         if (!action.includes(req.body.Action)) {
             return res.send(Response.badRequestResponse(null, "Action không hợp lệ"));
         }
@@ -353,23 +411,23 @@ var updateMemberToGenealogy = async (req, res) => {
                     return res.send(Response.badRequestResponse(null, errorMessage));
                 }
                 // nếu giới tính là nữ thì ko thêm
-                if(outGenealogyMemeber[0].Male == 0){
+                if (outGenealogyMemeber[0].Male == 0) {
                     let errorMessage = 'Bạn chỉ có thể thêm cha cho thành viên';
                     return res.send(Response.badRequestResponse(null, errorMessage));
                 }
-                FamilyManagementService.insertFatherIDToMember(outGenealogyMemeber[0].MemberID,inGenealogyMemeber[0].MemberID);
-            }else if (req.body.Action == 'AddMother') {
+                FamilyManagementService.insertFatherIDToMember(outGenealogyMemeber[0].MemberID, inGenealogyMemeber[0].MemberID);
+            } else if (req.body.Action == 'AddMother') {
                 // nếu đã có mẹ thì ko thêm
                 if (CoreFunction.isDataNumberExist(inGenealogyMemeber[0].MotherID)) {
                     let errorMessage = 'Thành viên này đã có mẹ';
                     return res.send(Response.badRequestResponse(null, errorMessage));
                 }
                 // nếu giới tính là nam thì ko thêm
-                if(outGenealogyMemeber[0].Male == 1){
+                if (outGenealogyMemeber[0].Male == 1) {
                     let errorMessage = 'Bạn chỉ có thể thêm mẹ cho thành viên';
                     return res.send(Response.badRequestResponse(null, errorMessage));
                 }
-                FamilyManagementService.insertMotherIDToMember(outGenealogyMemeber[0].MemberID,inGenealogyMemeber[0].MemberID);
+                FamilyManagementService.insertMotherIDToMember(outGenealogyMemeber[0].MemberID, inGenealogyMemeber[0].MemberID);
             }
         }
         // trường hợp muốn thêm con cái
@@ -395,7 +453,7 @@ var updateMemberToGenealogy = async (req, res) => {
         return res.send(Response.successResponse(null, "Thêm thành viên vào trong gia phả thành công"));
     } catch (e) {
         console.log("Error: " + e);
-        return res.send(Response.internalServerErrorResponse(e));
+        return res.send(Response.internalServerErrorResponse());
     }
 }
 
@@ -426,7 +484,7 @@ var deleteMember = async (req, res) => {
         return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
-        return res.send(Response.internalServerErrorResponse(e));
+        return res.send(Response.internalServerErrorResponse());
     }
 }
 
@@ -559,7 +617,7 @@ var getMember = async (req, res) => {
         return res.send(Response.successResponse(dataMember));
     } catch (e) {
         console.log("Error: " + e);
-        return res.send(Response.internalServerErrorResponse(e));
+        return res.send(Response.internalServerErrorResponse());
     }
 
 }
