@@ -131,10 +131,10 @@ var getFamilyPhoto = async (req, res) => {
         // lấy thông tin FamilyPhoto từ database
         // những thông tin có thể lấy được: PhotoID, AlbumID
         let data;
-        if (req.query.PhotoID != null && req.query.PhotoID != undefined && req.query.PhotoID !== "") {
+        if (req.query.PhotoID != null && req.query.PhotoID != undefined && req.query.PhotoID != "") {
             console.log(`Get FamilyPhoto by PhotoID : ${req.query.PhotoID}`);
             data = await FamilyPhotoManagementService.getFamilyPhotoById(req.query.PhotoID);
-        } else if (req.query.AlbumID != null && req.query.AlbumID != undefined && req.query.AlbumID !== "") {
+        } else if (req.query.AlbumID != null && req.query.AlbumID != undefined && req.query.AlbumID != "") {
             console.log(`Get FamilyPhoto by AlbumID : ${req.query.AlbumID}`);
             data = await FamilyPhotoManagementService.getFamilyPhotoByAlbumId(req.query.AlbumID);
         }

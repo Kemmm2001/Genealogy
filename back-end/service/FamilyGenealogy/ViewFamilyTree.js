@@ -1,3 +1,4 @@
+const { Code } = require("mongodb");
 const db = require("../../Models/ConnectDB")
 
 function getAllReligion() {
@@ -479,45 +480,67 @@ function GetIdPaternalAncestor(CodeID) {
     })
 }
 
-async function GetGenealogy(result, MemberID, ListFamily = [], visitedMembers = new Set()) {
+function getAllMarriage(CodeID) {
+    return new Promise((resolve, reject) => {
+        let query = `SELECT * FROM marriage where CodeID = ${CodeID}`;
+        db.connection.query(query, (err, result) => {
+            if (err) {
+                console.log(err)
+                reject(err)
+            } else {
+                resolve(result)
+            }
+        })
+    })
+}
+
+async function GetGenealogy(result, dataMarriage, MemberID, ListFamily = [], visitedMembers = new Set()) {
     if (visitedMembers.has(MemberID)) {
-        // If MemberID has been visited, do nothing
         return ListFamily;
     }
 
     visitedMembers.add(MemberID);
 
     let Member = result.find(member => member.MemberID == MemberID);
-    let familyData = await createFamilyData(Member, result);
 
-    // Check if the member is already in ListFamily
-    if (!isMemberInList(ListFamily, Member)) {
+    let marriages;
+
+    if (Member.Male == 1) {
+        marriages = dataMarriage.filter(member => member.husbandID == MemberID);
+    } else {
+        marriages = dataMarriage.filter(member => member.wifeID == MemberID);
+    }
+
+    let spouseIDs = marriages.map(marriage => Member.Male == 1 ? marriage.wifeID : marriage.husbandID);
+    let spouses = result.filter(member => spouseIDs.includes(member.MemberID));
+
+    let spouseMemberIDs = spouses.map(spouse => spouse.MemberID);
+
+    let [familyData, spouseDataArray] = await Promise.all([
+        createFamilyData(Member, result, spouseMemberIDs),
+        Promise.all(spouses.map(spouse => createFamilyData(spouse, result, Member.MemberID)))
+    ]);
+
+    if (!isMemberInList(ListFamily, familyData)) {
         ListFamily.push(familyData);
     }
 
-    let married = result.find(member => member.MarriageID == MemberID);
-    if (married) {
-        let wifeData = await createFamilyData(married, result);
-
-        if (!isMemberInList(ListFamily, married)) {
-            ListFamily.push(wifeData);
+    for (let spouseData of spouseDataArray) {
+        if (!isMemberInList(ListFamily, spouseData)) {
+            ListFamily.push(spouseData);
         }
     }
 
-    let children = result.filter(member => member.ParentID == MemberID);
+    let children = result.filter(member => member.FatherID == MemberID || member.MotherID == MemberID);
     for (let child of children) {
-        let childData = await createFamilyData(child, result);
 
-        // Check if the child is already in ListFamily
-        if (!isMemberInList(ListFamily, child)) {
-            ListFamily.push(childData);
-        }
-
-        await GetGenealogy(result, child.MemberID, ListFamily, visitedMembers);
+        await GetGenealogy(result, dataMarriage, child.MemberID, ListFamily, visitedMembers);
     }
 
     return ListFamily;
 }
+
+
 
 // Helper function to check if a member is already in the list
 function isMemberInList(list, member) {
@@ -556,6 +579,28 @@ function getListNotificationEmail(CodeId) {
     })
 }
 
+async function getFamilyHead(MemberID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let queryGetAllMember = `SELECT *
+            FROM genealogy.familymember
+            WHERE ParentID = 500 AND Male = 1
+            ORDER BY BirthOrder
+            LIMIT 1`;
+            db.connection.query(queryGetAllMember, async (err, result) => {
+                if (!err) {
+
+                } else {
+                    reject(err)
+                }
+            })
+        } catch (e) {
+            console.log(e);
+            reject(false)
+        }
+    })
+}
+
 async function ViewFamilyTree(CodeID) {
     return new Promise((resolve, reject) => {
         try {
@@ -563,11 +608,11 @@ async function ViewFamilyTree(CodeID) {
             db.connection.query(queryGetAllMember, async (err, result) => {
                 if (!err) {
                     let IdPaternal = await GetIdPaternalAncestor(CodeID);
-                    console.log(IdPaternal)
+                    let dataMarriage = await getAllMarriage(CodeID);
                     if (IdPaternal == null && IdPaternal == undefined) {
                         reject(false)
                     } else {
-                        let data = await GetGenealogy(result, IdPaternal.MemberID)
+                        let data = await GetGenealogy(result, dataMarriage, IdPaternal.MemberID)
                         resolve(data)
                     }
                 }
@@ -580,30 +625,40 @@ async function ViewFamilyTree(CodeID) {
 }
 
 // Hàm tạo đối tượng familyData từ dữ liệu thành viên
-async function createFamilyData(member, result) {
+async function createFamilyData(member, result, marriedArray) {
+    console.log('marriedArray: ' + marriedArray);
     try {
         if (member !== undefined) {
             let fid = '';
             let mid = '';
-            if (member.Generation === 1) {
-                fid = '';
-                mid = '';
-            }
-            else {
-                if (member.ParentID != null && member.ParentID != 0) {
-                    let parent = result.find(parent => parent.MemberID == member.ParentID);
-                    if (parent.Male == 1) {
-                        fid = parent.MemberID;
-                        mid = parent.MarriageID;
-                    } else {
-                        mid = parent.MemberID;
-                        fid = parent.MarriageID;
+            let pids = [];
+
+            if (member.Generation !== 1) {
+                if (member.FatherID != null && member.FatherID != 0) {
+                    let father = result.find(parent => parent.MemberID == member.FatherID);
+                    if (father) {
+                        fid = father.MemberID;
+                    }
+                }
+
+                if (member.MotherID != null && member.MotherID != 0) {
+                    let mother = result.find(parent => parent.MemberID == member.MotherID);
+                    if (mother) {
+                        mid = mother.MemberID;
                     }
                 }
             }
+
+            // Kiểm tra kiểu dữ liệu của marriedArray
+            if (Array.isArray(marriedArray)) {
+                pids = marriedArray;
+            } else {
+                pids = [marriedArray];
+            }
+
             return {
                 id: member.MemberID,
-                pids: [member.MarriageID],
+                pids: pids,
                 fid: fid,
                 mid: mid,
                 name: member.MemberName,
@@ -611,15 +666,16 @@ async function createFamilyData(member, result) {
                 dob: formatDOB(member.Dob),
                 dod: formatDOB(member.Dod),
                 isDead: member.IsDead,
-                // dod: member.IsDead ? null : formatDOB(member.Dod),
                 generation: member.Generation,
                 img: member.Image
             };
         }
     } catch (error) {
-        console.log(error)
+        console.log(error);
     }
 }
+
+
 function formatDOB(dateString) {
 
     const date = new Date(dateString);
@@ -669,5 +725,5 @@ module.exports = {
     getAllReligion, getInforMember, getContactMember, getEducationMember, getJobMember, getEventMember, getAllNationality, getAllMemberRole,
     getRoleExist, setRoleMember, removePaternalAncestor, turnOnSQL_SAFE_UPDATES, turnOffSQL_SAFE_UPDATES, getListMessage,
     setAllGenerationMember, ResetAllGenerationMember, ViewFamilyTree, getListUnspecifiedMembers, GetIdPaternalAncestor, RelationShipMember,
-    RemoveRelationshipChild, RemoveRelationshipMarried, RemoveRelationshipParent, getListNotificationEmail
+    RemoveRelationshipChild, RemoveRelationshipMarried, RemoveRelationshipParent, getListNotificationEmail, getAllMarriage
 }

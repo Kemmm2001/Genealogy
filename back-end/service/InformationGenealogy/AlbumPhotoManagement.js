@@ -3,6 +3,7 @@ const CoreFunction = require('../../Utils/CoreFunction');
 
 function getAlbumPhotoByCodeId(codeId) {
     return new Promise((resolve, reject) => {
+        console.log("Chạy vào hàm getAlbumPhotoByCodeId");
         try {
             let query = `SELECT * FROM albumphoto where CodeID  = ${codeId}`
             db.connection.query(query, (err, result) => {
@@ -143,12 +144,9 @@ function insertAlbumPhoto(ObjData) {
 function updateAlbumPhoto(ObjData) {
     return new Promise((resolve, reject) => {
         try {
+            console.log("Chạy vào hàm updateAlbumPhoto");
             // xóa ảnh cũ
-            const isDeleted = removeAlbumPhotoUrl(ObjData.AlbumID);
-            console.log(`isDeleted: ${isDeleted}`);
-            if (isDeleted == false) {
-                reject("Error when delete image");
-            }
+            removeAlbumPhotoUrl(ObjData.AlbumID);
             let query = `UPDATE albumphoto SET AlbumName = ?, CodeID = ?, Description = ?, BackGroundPhoto = ? WHERE AlbumID = ?;`
             let values = [
                 ObjData.AlbumName,

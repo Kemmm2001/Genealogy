@@ -5,18 +5,18 @@ function addMember(member) {
         try {
             const query = `
         INSERT INTO familymember 
-        (  ParentID, MarriageID, MemberName, NickName, 
-            BirthOrder, Origin, 
+        (  FatherID, MotherID, MemberName, NickName, 
+            BirthOrder,Origin, 
             NationalityID, ReligionID, 
             Dob, LunarDob, BirthPlace, 
             IsDead, Dod, LunarDod, PlaceOfDeath, 
             GraveSite, Note, Generation, BloodType, CodeID, Male, Image)
         VALUES 
-        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (?, ?, ?, ?, ?, ?,?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
             const values = [
-                member.ParentID,
-                member.MarriageID,
+                member.FatherID,
+                member.MotherID,
                 member.MemberName,
                 member.NickName,
                 member.BirthOrder,
@@ -66,8 +66,8 @@ function updateMember(member) {
             const query = `
         UPDATE familymember 
         SET 
-          ParentID = ?,
-          MarriageID = ?,
+            FatherID = ?,
+            MotherID = ?,
           MemberName = ?,
           NickName = ?,
           BirthOrder = ?,
@@ -204,14 +204,14 @@ async function deleteMemberRelated(memberId) {
 
     // Danh sách các memberId cần update đời
     const memberIdsToUpdate = [];
-   
+
     // Lấy thông tin member cần xóa
     let member = await getMember(memberId);
-    
-    // nếu member đó khác đời 1 ( không phải tổ phụ ) và không có parentid thì return
-    if(member[0].Generation != 1 && member[0].ParentID == null) return;
 
-    if (member[0].MarriageID != null || member[0].MarriageID !== 0) {
+    // nếu member đó khác đời 1 ( không phải tổ phụ ) và không có parentid thì return
+    if (member[0].Generation != 1 && member[0].ParentID == null) return;
+
+    if (member[0].MarriageID != null || member[0].MarriageID != 0) {
         // Nếu member đó có MarriageID (có vợ/chồng)
         memberIdsToUpdate.push(member[0].MarriageID);
         // Thêm MarriageID vào danh sách cần update đời
@@ -315,16 +315,45 @@ function GetCurrentParentMember(memberID) {
     })
 }
 
-function insertParentIdToMember(parentID, memberID) {
-    let query = `UPDATE familymember SET ParentID = ${parentID} WHERE MemberID = ${memberID};`
-    db.connection.query(query, (err, result) => {
+function insertParentIdToMember(fatherID, motherID, memberID) {
+    let query = `UPDATE familymember SET FatherID = ?, MotherID = ? WHERE MemberID = ?;`
+    let values = [fatherID, motherID, memberID];
+    db.connection.query(query, values, (err, result) => {
         if (err) {
             console.log(err)
         } else {
             console.log("insert success");
         }
-    })
+    }
+    )
 }
+
+function insertFatherIDToMember(fatherID, memberID) {
+    let query = `UPDATE familymember SET FatherID = ? WHERE MemberID = ?;`
+    let values = [fatherID, memberID];
+    db.connection.query(query, values, (err, result) => {
+        if (err) {
+            console.log(err)
+        } else {
+            console.log("insert success");
+        }
+    }
+    )
+}
+
+function insertMotherIDToMember(motherID, memberID) {
+    let query = `UPDATE familymember SET MotherID = ? WHERE MemberID = ?;`
+    let values = [motherID, memberID];
+    db.connection.query(query, values, (err, result) => {
+        if (err) {
+            console.log(err)
+        } else {
+            console.log("insert success");
+        }
+    }
+    )
+}
+
 
 function getRelationship(relationshipFrom, relationshipTo) {
     let relationshipName = [relationshipFrom, relationshipTo];
@@ -353,6 +382,21 @@ function setGeneration(generation, memberId) {
         })
     })
 }
+
+function setBirthOrder(birthOrder, memberId) {
+    return new Promise((resolve, reject) => {
+        const query = 'UPDATE familymember SET BirthOrder = ? WHERE MemberID = ?';
+        db.connection.query(query, [birthOrder, memberId], (err, result) => {
+            if (err) {
+                console.log(err);
+                reject(err)
+            } else {
+                resolve(result)
+            }
+        })
+    })
+}
+
 function getMember(memberId) {
     return new Promise((resolve, reject) => {
         const query = 'select * from familymember where memberid = ?';
@@ -367,10 +411,39 @@ function getMember(memberId) {
     });
 }
 
-function getMembersByParentID(parentID) {
+function getMembersByFatherID(fatherID) {
     return new Promise((resolve, reject) => {
-        const query = 'select * from familymember where parentID = ?';
-        db.connection.query(query, parentID, (err, result) => {
+        const query = 'select * from familymember where fatherID = ?';
+        db.connection.query(query, fatherID, (err, result) => {
+            if (err) {
+                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+}
+
+function getMembersByMotherID(motherID) {
+    return new Promise((resolve, reject) => {
+        const query = 'select * from familymember where motherID = ?';
+        db.connection.query(query, motherID, (err, result) => {
+            if (err) {
+                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+}
+
+function getMembersByParentID(fatherID, motherID) {
+    return new Promise((resolve, reject) => {
+        const query = 'select * from familymember where fatherID = ? or motherID = ?';
+        const values = [fatherID, motherID];
+        db.connection.query(query, values, (err, result) => {
             if (err) {
                 console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
                 reject(err);
@@ -548,6 +621,7 @@ function getMemberByMemberID(memberID) {
 module.exports = {
     addMember, updateMember, deleteMember, getRelationship, getMember, createRelationship, searchMember, getMemberByMemberID,
     setGeneration, queryContactMembers,
-    getAllMember, InsertMarriIdToMember, queryFamilyMembers, getAllMemberInMemberRole, getAllMemberNotInMemberRole, GetCurrentParentMember, 
-    insertParentIdToMember, getMembersByParentID
+    getAllMember, InsertMarriIdToMember, queryFamilyMembers, getAllMemberInMemberRole, getAllMemberNotInMemberRole, GetCurrentParentMember,
+    insertFatherIDToMember, insertMotherIDToMember, getMembersByFatherID, getMembersByMotherID, getMembersByParentID,
+    setBirthOrder, insertParentIdToMember
 };

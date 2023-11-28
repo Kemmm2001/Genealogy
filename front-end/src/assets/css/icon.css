@@ -137,8 +137,12 @@
     fill: #FFFFFF;
     width: 48px;
     height: 48px;
-    border-radius: 0.375rem;
+    border-radius: 0.2rem;
     cursor: pointer;
+}
+
+.help-icon.expandHelp{
+    border-radius: 0 0.2rem 0.2rem 0;
 }
 
 .change-pic-icon{

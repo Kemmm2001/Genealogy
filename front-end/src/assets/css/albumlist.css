@@ -47,8 +47,6 @@
 }
 
 .editAlbum-container .vm--modal{
-    height: 480px !important;
-    width: 888px !important;
     inset: 0 !important;
     margin: auto;
 }

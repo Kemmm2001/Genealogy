@@ -16,11 +16,6 @@ const routes = [
     component: () => import("../views/FamilyStatistics.vue"),
   },
   {
-    path: "/information/headlist",
-    name: "headlist",
-    component: () => import("../views/HeadList.vue"),
-  },  
-  {
     path: "/information/albumlist",
     name: "albumlist",
     component: () => import("../views/AlbumList.vue"),
@@ -68,6 +63,11 @@ const routes = [
     path: "/resetpwd",
     name: "resetpwd",
     component: () => import("../views/ResetPwd.vue"),
+  },
+  {
+    path: "/test",
+    name: "test",
+    component: () => import("../views/TestScreen.vue"),
   },
 ];
 

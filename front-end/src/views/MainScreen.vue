@@ -1,19 +1,19 @@
 <template>
   <div class="d-flex h-100 w-100 position-relative">
-    <div :class="{ shadowed : listhelp }" class="list h-100 d-flex flex-column align-items-center">
+    <div class="list h-100 d-flex flex-column align-items-center">
       <div v-if="memberRole != 3" class="w-100 d-flex flex-row" style="padding-top: 8px">
-        <div class="col-6 px-2">
-          <div class="w-100">
-            <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary">Tạo thông báo</button>
+        <div class="col-6" style="padding-left: 8px; padding-right: 6px">
+          <div class="w-100 h-100">
+            <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary h-100">Tạo thông báo</button>
           </div>
         </div>
-        <div class="col-6 px-2">
-          <div class="w-100">
-            <button @click="openCompareModal()" style="width:100%" type="button" :class="{ 'btn': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">So sánh</button>
+        <div class="col-6" style="padding-left: 6px; padding-right: 8px">
+          <div class="w-100 h-100">
+            <button @click="openCompareModal()" style="width:100%" type="button" :class="{ 'btn': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">So sánh</button>
           </div>
         </div>
       </div>
-      <div class="h-100 w-100 d-flex flex-column px-2" style="padding-top: 8px; font-family: 'QuicksandBold', sans-serif;">
+      <div class="h-100 w-100 d-flex flex-column px-2" style="padding-top: 12px; font-family: 'QuicksandBold', sans-serif;">
         <div class="existing-members d-flex flex-column w-100">
           <div class="d-flex align-items-center justify-content-center px-2 py-1 list-title">Thành viên có trên phả đồ</div>
           <div class="d-flex flex-column w-100" style="overflow-y: auto;cursor: pointer">
@@ -22,7 +22,7 @@
             </div>
           </div>
         </div>
-        <div class="d-flex nonexisting-members flex-column w-100" style="margin-top: 4px">
+        <div class="d-flex nonexisting-members flex-column w-100" style="margin: 8px 0">
           <div class="d-flex flex-row px-2 py-1 list-title">
             <div class="d-flex align-items-center justify-content-center">Thành viên không có trên phả đồ</div>
             <div v-if="memberRole != 3" class="d-flex align-items-center justify-content-center" style="padding-left: 12px;cursor:pointer" @click="openMemberModal('AddNormal', ' thành viên không có trên phả đồ')">
@@ -31,13 +31,12 @@
               </svg>
             </div>
           </div>
-          <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto;auto;cursor: pointer">
+          <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto; flex-grow: 1;cursor: pointer">
             <div v-for="list in ListUnspecifiedMembers" :key="list.id" @click="handleLeftClickUnspecifiedMembers(list.MemberID)" class="list-item">{{ list.MemberName }}</div>
           </div>
         </div>
       </div>
     </div>
-    <div v-if="listhelp || treehelp " class="h-100" :class="{ shadowed : treehelp }" style="width: 81%; right: 0; position: absolute; z-index: 100;"></div>
     <div class="d-flex main-screen align-items-center h-100 w-100 position-relative">
       <div v-show=" nodes.length != 0" id="tree" ref="tree"></div>
       <div v-show=" nodes.length == 0" style="inset: 0; margin: auto;">
@@ -48,7 +47,7 @@
           </svg>
         </div>
       </div>
-      <div @mouseenter="advancedFilterDown = true" @mouseleave="advancedFilterDown = false" :class="{ filterExpanded: advancedFilterDown }" class="advanced-filter-container d-flex flex-column p-1 position-absolute">
+      <div :class="{ filterExpanded: advancedFilterDown }" class="advanced-filter-container d-flex flex-column p-1 position-absolute" style="cursor: pointer;">
         <div :class="{expand : advancedFilterDown}" class="filter-item">
           <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
             <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict(),GetListFilterMember()">
@@ -74,7 +73,7 @@
             </select>
           </div>
         </div>
-        <div class="d-flex flex-column align-items-center justify-content-center h-100">
+        <div @click="advancedFilterDown = !advancedFilterDown" class="d-flex flex-column align-items-center justify-content-center h-100">
           <div v-if="!advancedFilterDown" style="color: white; font-weight: bold">Bộ lọc nâng cao</div>
           <div>
             <svg :class="{ rotateDown: !advancedFilterDown }" class="advanced-filter-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -83,12 +82,8 @@
           </div>
         </div>
       </div>
-      <div class="d-flex flex-row" style="position: absolute; bottom: 0; right: 0; align-items: end;">
-        <div v-if="togglehelp" class="p-1 mb-2 d-flex flex-row" style="border-radius: 0.375rem; background-color: #000; margin-right: 8px; color:#FFFFFF">
-          <div @click="listhelp = true" style="background-color: gray; height: 200px; width: 50px; margin-right: 4px; cursor: pointer;"></div>
-          <div @click="treehelp = true" class style="background-color: gray; height: 200px; width: 200px; cursor: pointer;"></div>
-        </div>
-        <svg @click="togglehelp = !togglehelp" class="help-icon p-1" style="z-index: 101;" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF">
+      <div class="d-flex flex-row" style="position: absolute; bottom: 0; right: 0; align-items: end; z-index: 999;">
+        <svg @click="togglehelp = !togglehelp" :class="{expandHelp : togglehelp}" class="help-icon p-1" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF">
           <g>
             <path d="M0,0h24v24H0V0z" fill="none" />
             <path d="M11,7h2v2h-2V7z M11,11h2v6h-2V11z M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,20 c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8S16.41,20,12,20z" />
@@ -109,13 +104,26 @@
           </div>
           <div class="card-body" style="padding: 5px;height:auto">
             <div class="list-group">
-              <div class="list-group-item feature-overview">Các chức năng chính</div>
+              <!-- <div class="list-group-item feature-overview">Các chức năng chính</div>
               <div class="list-group-item" @click="getInforMember(CurrentIdMember)">Thông tin chi tiết</div>
               <div class="list-group-item" @click="openModalRelationship()">Xem các mối quan hệ</div>
               <div v-if="canAddFather" class="list-group-item" @click="openMemberModal('AddParent', 'Cha')">Thêm Cha</div>
               <div v-if="canAddMother" class="list-group-item" @click="openMemberModal('AddParent', 'Mẹ')">Thêm Mẹ</div>
               <div v-if="canAddhusband" class="list-group-item" @click="openMemberModal('AddMarriage', 'Chồng')">Thêm Chồng</div>
               <div v-if="canAddWife" class="list-group-item" @click="openMemberModal('AddMarriage', 'Vợ')">Thêm Vợ</div>
+              <div class="list-group-item" @click="openMemberModal('AddChild', 'Con')">Thêm Con</div>
+              <div class="list-group-item" @click="openModalAddMemberFromList()">Thêm mối quan hệ từ Danh Sách</div>
+              <div class="list-group-item" @click="openCfDelModal(false,null,TitleModal)">Xóa thành viên (*)</div>
+              <div class="list-group-item feature-overview">Các chức năng Khác</div>
+              <div class="list-group-item" style="border-top: none;" @click="setPaternalAncestor(2)">Set làm tộc trưởng</div>
+              <div class="list-group-item" @click="setPaternalAncestor(1)">Set làm tổ phụ</div>-->
+              <div class="list-group-item feature-overview">Các chức năng chính</div>
+              <div class="list-group-item" @click="getInforMember(CurrentIdMember)">Thông tin chi tiết</div>
+              <div class="list-group-item" @click="openModalRelationship()">Xem các mối quan hệ</div>
+              <div class="list-group-item" @click="openMemberModal('AddFather', 'Cha')">Thêm Cha</div>
+              <div class="list-group-item" @click="openMemberModal('AddMother', 'Mẹ')">Thêm Mẹ</div>
+              <div class="list-group-item" @click="openMemberModal('AddHusband', 'Chồng')">Thêm Chồng</div>
+              <div class="list-group-item" @click="openMemberModal('AddWife', 'Vợ')">Thêm Vợ</div>
               <div class="list-group-item" @click="openMemberModal('AddChild', 'Con')">Thêm Con</div>
               <div class="list-group-item" @click="openModalAddMemberFromList()">Thêm mối quan hệ từ Danh Sách</div>
               <div class="list-group-item" @click="openCfDelModal(false,null,TitleModal)">Xóa thành viên (*)</div>
@@ -845,10 +853,65 @@
         </div>
       </modal>
     </div>
-    <div v-if="listhelp || treehelp" class="btn bg-primary text-white position-absolute d-flex align-items-center justify-content-center" style="inset: 0; margin: auto; height: 48px; width: 100px; z-index: 999;" @click="listhelp = false; treehelp = false;">Đã hiểu</div>
-    <div v-if="listhelp">
-      <div class="help-content"></div>
+    <div class="help-note text-white position-absolute align-items-center justify-content-center" :class="{expandHelp : togglehelp}">
+      <div class="d-flex align-items-center" style="height: 64px;" v-show="togglehelp">Thông báo: Gửi mail và tin nhắn SMS về thông tin, sự kiện liên quan tới dòng họ.</div>
+      <div class="d-flex align-items-center" style="height: 64px;" v-show="togglehelp">Xác định quan hệ: Chọn 2 thành viên để xác định quan hệ giữa họ.</div>
+      <div class="d-flex align-items-center" style="height: 64px;" v-show="togglehelp">Nhấp chuột trái vào thành viên trên phả đồ để xem và thay đổi thông tin thành viên</div>
+      <div class="d-flex align-items-center" style="height: 64px;" v-show="togglehelp">Nhấp chuột phải để mở danh sách những chức năng tương tác với thành viên</div>
     </div>
+
+    <!-- Đây là div hướng dẫn -->
+    <!-- <div v-show="togglehelp" class="help-div w-100 h-100 position-absolute" style="z-index: 2;">
+      <div class="h-100 w-100 position-relative">
+        <div style="width: 19%; left: 0; z-index: 2;" class="h-100 p-1 d-flex flex-column position-absolute">
+          <div class="pt-2 d-flex flex-row">
+            <div class="col-6" style="padding-left: 8px; padding-right: 6px;">
+              <div class="w-100 h-100">
+                <button @click="selectHelpNoti()" type="button" :class="{shadowed : !helpNoti, chosen: helpNoti}" class="btn h-100 w-100 bg-secondary text-white">Tạo thông báo</button>
+              </div>
+            </div>
+            <div class="col-6" style="padding-left: 6px; padding-right: 8px;">
+              <div class="w-100 h-100">
+                <button @click="selectHelpCompare()" type="button" :class="{shadowed : !helpCompare, chosen: helpCompare}" class="btn h-100 w-100 bg-secondary text-white">So sánh</button>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex flex-column h-100 w-100 px-2" style="padding-top: 12px; font-family: QuicksandBold, sans-serif;">
+            <div @click="selectHelpExist()" :class="{shadowed : !helpExist, chosen: helpExist}" class="mb-1 w-100 d-flex flex-column" style="height: 50%; border-radius: 0.375rem 0.375rem 0 0;">
+              <div class="d-flex align-items-center justify-content-center px-2 py-1 list-title">Thành viên có trên phả đồ</div>
+              <div class="d-flex flex-column w-100" style="overflow-y: auto; flex-grow: 1; cursor: pointer; background-color: #FFFFFF;">
+                <div v-for="(n, index) in nodes" :key="n.id">
+                  <div style="height: 32px; padding: 4px 0 4px 8px; cursor: auto !important" :class="{ 'selected-list': n.id == CurrentIdMember, 'list-item ancestor-member': index === 0 }">{{ n.name }}</div>
+                </div>
+              </div>
+            </div>
+            <div @click="selectHelpNonExist()" :class="{shadowed : !helpNonExist, chosen: helpNonExist}" class="my-2 w-100 d-flex flex-column" style="height: 50%; border-radius: 0.375rem 0.375rem 0 0;">
+              <div class="d-flex flex-row px-2 py-1 list-title">
+                <div class="d-flex align-items-center justify-content-center">Thành viên không có trên phả đồ</div>
+                <div v-if="memberRole != 3" class="d-flex align-items-center justify-content-center" style="padding-left: 12px;cursor:pointer">
+                  <svg class="add-member-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                    <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />
+                  </svg>
+                </div>
+              </div>
+              <div class="d-flex flex-column w-100" style="overflow-y: auto; flex-grow: 1; cursor: pointer; background-color: #FFFFFF">
+                <div v-for="list in ListUnspecifiedMembers" :key="list.id" class="list-item">{{ list.MemberName }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="width: 81%; right: 0" class="h-100 position-absolute">
+          <div class="h-100 w-100 position-relative">
+            <div @click="selectHelpTree()" :class="{shadowed : !helpTree, chosen: helpTree}" class="position-absolute" style="width: 950px; height: 600px; inset: 0; margin: auto; box-shadow: 0 0 0 99999px rgba(0, 0, 0, .8); cursor: pointer;"></div>
+          </div>
+        </div>
+
+        <div v-show="helpNoti" class="position-relative h-100 w-100">
+          <div class="help-text" style="right: 0">Đây là chức năng tạo thông báo, trưởng họ là người duy nhất trong gia tộc có thể sử dụng chức năng này.</div>
+          <div class="help-text" style="right: 0; top: 64px;">Có thể gửi mail và tin nhắn SMS về thông tin, sự kiện liên quan tới dòng họ.</div>
+        </div>
+      </div>
+    </div> -->
   </div>
 </template>
 
@@ -1028,6 +1091,12 @@ export default {
 
       selectedNodes: [],
       notSelectedNodes: [],
+
+      helpNoti: false,
+      helpCompare: false,
+      helpExist: false,
+      helpNonExist: false,
+      helpTree: false,
     };
   },
   methods: {
@@ -1051,6 +1120,12 @@ export default {
       FamilyTree.templates.tommy_female.field_2 =
         '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="90" y="80">Đời: {val}</text>';
 
+      var callIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-tree-fill" viewBox="0 0 16 16">
+  <path d="M8.416.223a.5.5 0 0 0-.832 0l-3 4.5A.5.5 0 0 0 5 5.5h.098L3.076 8.735A.5.5 0 0 0 3.5 9.5h.191l-1.638 3.276a.5.5 0 0 0 .447.724H7V16h2v-2.5h4.5a.5.5 0 0 0 .447-.724L12.31 9.5h.191a.5.5 0 0 0 .424-.765L10.902 5.5H11a.5.5 0 0 0 .416-.777l-3-4.5z"/>
+</svg>`;
+      FamilyTree.templates.tommy_male.isGG =
+        '<g transform="translate(220,10)";>' + callIcon + "</g>";
+
       FamilyTree.elements._textbox = FamilyTree.elements.textbox;
       FamilyTree.elements.textbox = function (param1, param2, param3) {
         if (param2 && param2.label == FamilyTree.SEARCH_PLACEHOLDER) {
@@ -1069,6 +1144,7 @@ export default {
           img_0: "img",
           field_1: "dob",
           field_2: "generation",
+          isGG: "isGG",
         },
 
         // lazyLoading: false,
@@ -2081,6 +2157,7 @@ export default {
           this.nodes = [];
           if (response.data.success == true) {
             this.nodes = response.data.data;
+            console.log(this.nodes);
             for (let i = 0; i < this.nodes.length; i++) {
               this.nodes[i].tags = [];
               if (this.nodes[i].isDead == 1) {
@@ -2097,6 +2174,7 @@ export default {
               }
             }
             this.nodes[0].tags.push("great-grandfather");
+            this.nodes[0].isGG = "true";
             this.mytree(this.$refs.tree, this.nodes);
           }
           // this.family.load(this.nodes);
@@ -2276,6 +2354,41 @@ export default {
       this.emailSelected = false;
       this.expandCreateEmail = false;
     },
+    selectHelpNoti() {
+      this.helpNoti = true;
+      this.helpCompare = false;
+      this.helpExist = false;
+      this.helpNonExist = false;
+      this.helpTree = false;
+    },
+    selectHelpCompare() {
+      this.helpNoti = false;
+      this.helpCompare = true;
+      this.helpExist = false;
+      this.helpNonExist = false;
+      this.helpTree = false;
+    },
+    selectHelpExist() {
+      this.helpNoti = false;
+      this.helpCompare = false;
+      this.helpExist = true;
+      this.helpNonExist = false;
+      this.helpTree = false;
+    },
+    selectHelpNonExist() {
+      this.helpNoti = false;
+      this.helpCompare = false;
+      this.helpExist = false;
+      this.helpNonExist = true;
+      this.helpTree = false;
+    },
+    selectHelpTree() {
+      this.helpNoti = false;
+      this.helpCompare = false;
+      this.helpExist = false;
+      this.helpNonExist = false;
+      this.helpTree = true;
+    },
   },
   created() {
     EventBus.$on("displayList", (value) => {
@@ -2299,6 +2412,7 @@ export default {
         this.$router.push("/login");
       }
     }
+    console.log(this.CodeID);
     this.getListMessage();
     this.getListCity();
     this.getListNationality();

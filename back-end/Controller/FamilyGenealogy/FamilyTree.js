@@ -112,6 +112,10 @@ var getListHistoryEmail = async (req, res) => {
         return res.send(Response.dataNotFoundResponse(error));
     }
 }
+
+
+
+
 var AllMemberInGenelogy = async (req, res) => {
     try {
         let CodeID = req.query.CodeID;
