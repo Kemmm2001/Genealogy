@@ -92,7 +92,7 @@ var addMember = async (req, res) => {
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("Đã có đủ các trường bắt buộc");
-        const action = ['AddFather', 'AddMother', 'AddChild', 'AddMarriage', 'AddNormal', 'AddFirst'];
+        const action = ['AddFather', 'AddMother', 'AddChild', 'AddHusband', 'AddWife', 'AddNormal', 'AddFirst'];
         if (!action.includes(req.body.Action)) {
             CoreFunction.deleteImage(req.file);
             return res.send(Response.badRequestResponse(null, "Action không hợp lệ"));
