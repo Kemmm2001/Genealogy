@@ -495,8 +495,7 @@ function getAllMarriage(CodeID) {
 }
 
 async function GetGenealogy(result, dataMarriage, MemberID, ListFamily = [], visitedMembers = new Set()) {
-    if (visitedMembers.has(MemberID)) {
-        // If MemberID has been visited, do nothing
+    if (visitedMembers.has(MemberID)) {  
         return ListFamily;
     }
 
