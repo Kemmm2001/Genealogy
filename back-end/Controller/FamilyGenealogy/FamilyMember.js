@@ -324,8 +324,7 @@ var updateMemberToGenealogy = async (req, res) => {
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
-        const action = ['AddParent', 'AddChild', 'AddMarriage'];
-        // Kiểm tra xem action có nằm trong 4 trường hợp AddParent, AddChild, AddMarriage không
+        const action = ['AddFather','AddMother', 'AddChild', 'AddHusband', 'AddWife'];
         if (!action.includes(req.body.Action)) {
             return res.send(Response.badRequestResponse(null, "Action không hợp lệ"));
         }
@@ -344,7 +343,7 @@ var updateMemberToGenealogy = async (req, res) => {
         }
         let dataRes = {};
         // trường hợp muốn thêm cha mẹ
-        if (req.body.Action == 'AddParent') {
+        if (req.body.Action == 'AddFather' || req.body.Action == 'AddMother') {
             await FamilyManagementService.setGeneration(inGenealogyMemeber[0].Generation - 1, outGenealogyMemeber[0].MemberID);
             await FamilyManagementService.insertParentIdToMember(outGenealogyMemeber[0].MemberID, inGenealogyMemeber[0].MemberID);
         }
@@ -360,10 +359,10 @@ var updateMemberToGenealogy = async (req, res) => {
                 }
             }
             await FamilyManagementService.setGeneration(inGenealogyMemeber[0].Generation + 1, outGenealogyMemeber[0].MemberID);
-            await FamilyManagementService.insertParentIdToMember(inGenealogyMemeber[0].MemberID, outGenealogyMemeber[0].MemberID);
+            // await FamilyManagementService.insertParentIdToMember(inGenealogyMemeber[0].MemberID, outGenealogyMemeber[0].MemberID);
         }
         // trường hợp muốn thêm vợ chồng
-        else if (req.body.Action == 'AddMarriage') {
+        else if (req.body.Action == 'AddHusband' || req.body.Action == 'AddWife') {
             await FamilyManagementService.setGeneration(inGenealogyMemeber[0].Generation, outGenealogyMemeber[0].MemberID);
             await FamilyManagementService.InsertMarriIdToMember(outGenealogyMemeber[0].MemberID, inGenealogyMemeber[0].MemberID);
             await FamilyManagementService.InsertMarriIdToMember(inGenealogyMemeber[0].MemberID, outGenealogyMemeber[0].MemberID);
