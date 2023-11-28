@@ -188,7 +188,7 @@ var addMember = async (req, res) => {
                     }
                 }
                 await FamilyManagementService.setGeneration(currentMember[0].Generation + 1, data.insertId);
-                await FamilyManagementService.insertParentIdToMember(req.body.CurrentMemberID, data.insertId);
+                // await FamilyManagementService.insertParentIdToMember(req.body.CurrentMemberID, data.insertId);
             }
             // trường hợp muốn thêm vợ chồng
             else if (req.body.Action == 'AddHusband' || req.body.Action == 'AddWife') {
@@ -345,7 +345,32 @@ var updateMemberToGenealogy = async (req, res) => {
         // trường hợp muốn thêm cha mẹ
         if (req.body.Action == 'AddFather' || req.body.Action == 'AddMother') {
             await FamilyManagementService.setGeneration(inGenealogyMemeber[0].Generation - 1, outGenealogyMemeber[0].MemberID);
-            await FamilyManagementService.insertParentIdToMember(outGenealogyMemeber[0].MemberID, inGenealogyMemeber[0].MemberID);
+            // nếu vào trường hợp thêm cha
+            if (req.body.Action == 'AddFather') {
+                // nếu đã có cha thì ko thêm
+                if (CoreFunction.isDataNumberExist(inGenealogyMemeber[0].FatherID)) {
+                    let errorMessage = 'Thành viên này đã có cha';
+                    return res.send(Response.badRequestResponse(null, errorMessage));
+                }
+                // nếu giới tính là nữ thì ko thêm
+                if(outGenealogyMemeber[0].Male == 0){
+                    let errorMessage = 'Bạn chỉ có thể thêm cha cho thành viên';
+                    return res.send(Response.badRequestResponse(null, errorMessage));
+                }
+                FamilyManagementService.insertFatherIDToMember(outGenealogyMemeber[0].MemberID,inGenealogyMemeber[0].MemberID);
+            }else if (req.body.Action == 'AddMother') {
+                // nếu đã có mẹ thì ko thêm
+                if (CoreFunction.isDataNumberExist(inGenealogyMemeber[0].MotherID)) {
+                    let errorMessage = 'Thành viên này đã có mẹ';
+                    return res.send(Response.badRequestResponse(null, errorMessage));
+                }
+                // nếu giới tính là nam thì ko thêm
+                if(outGenealogyMemeber[0].Male == 1){
+                    let errorMessage = 'Bạn chỉ có thể thêm mẹ cho thành viên';
+                    return res.send(Response.badRequestResponse(null, errorMessage));
+                }
+                FamilyManagementService.insertMotherIDToMember(outGenealogyMemeber[0].MemberID,inGenealogyMemeber[0].MemberID);
+            }
         }
         // trường hợp muốn thêm con cái
         else if (req.body.Action == 'AddChild') {

@@ -96,5 +96,12 @@ const deleteImage = async (file) => {
     });
 };
 
+const isDataStringExist  = (data) => {
+    return data != null && data != '';
+}
 
-module.exports = { missingFields, uploadImage, deleteImage, isEmptyOrNullOrSpaces };
+const isDataNumberExist = (data) => {
+    return data != null && data != '' && data != 0;
+}
+
+module.exports = { missingFields, uploadImage, deleteImage, isEmptyOrNullOrSpaces, isDataStringExist, isDataNumberExist };

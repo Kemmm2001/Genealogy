@@ -3,25 +3,34 @@
 const db = require("../../Models/ConnectDB");
 
 // Create a new marriage record
-const addMarriage = async (data) => {
-    try {
-        const { husbandID, wifeID, codeID } = data;
-        const query = "INSERT INTO Marriage (husbandID, wifeID, codeID) VALUES (?, ?, ?)";
-        const values = [husbandID, wifeID, codeID];
-        const result = db.connection.query(query, values);
-        return result;
-    } catch (error) {
-        throw error;
-    }
-};
+const addMarriage = (data) => {
+    return new Promise((resolve, reject) => {
+        try {
+            const { husbandID, wifeID, codeID } = data;
+            const query = "INSERT INTO marriage (husbandID, wifeID, codeID) VALUES (?, ?, ?)";
+            const values = [husbandID, wifeID, codeID];
+            db.connection.query(query, values, (err, result) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                }else{
+                    resolve(result);
+                }
+            });
+        } catch (error) {
+            console.log(error);
+            reject(error);
+        }
+    });
+}
 
 // Update a marriage record
 const updateMarriage = async (data) => {
     try {
         const { husbandID, wifeID, codeID, marriageID } = data;
-        const query = "UPDATE Marriage SET husbandID = ?, wifeID = ?, codeID = ? WHERE marriageID = ?";
+        const query = "UPDATE marriage SET husbandID = ?, wifeID = ?, codeID = ? WHERE marriageID = ?";
         const values = [husbandID, wifeID, codeID, marriageID];
-        const result =  db.connection.query(query, values);
+        const result = db.connection.query(query, values);
         return result;
     } catch (error) {
         throw error;
@@ -31,9 +40,9 @@ const updateMarriage = async (data) => {
 // Delete a marriage record
 const deleteMarriage = async (marriageID) => {
     try {
-        const query = "DELETE FROM Marriage WHERE marriageID = ?";
+        const query = "DELETE FROM marriage WHERE marriageID = ?";
         const values = [marriageID];
-        const result =  db.connection.query(query, values);
+        const result = db.connection.query(query, values);
         return result;
     } catch (error) {
         throw error;
@@ -43,8 +52,8 @@ const deleteMarriage = async (marriageID) => {
 // Get all marriage records
 const getAllMarriages = async () => {
     try {
-        const query = "SELECT * FROM Marriage";
-        const result =  db.connection.query(query);
+        const query = "SELECT * FROM marriage";
+        const result = db.connection.query(query);
         return result;
     } catch (error) {
         throw error;
@@ -54,9 +63,9 @@ const getAllMarriages = async () => {
 // Get a marriage record by husbandID
 const getMarriageByHusbandID = async (husbandID) => {
     try {
-        const query = "SELECT * FROM Marriage WHERE husbandID = ?";
+        const query = "SELECT * FROM marriage WHERE husbandID = ?";
         const values = [husbandID];
-        const result =  db.connection.query(query, values);
+        const result = db.connection.query(query, values);
         return result;
     } catch (error) {
         throw error;
@@ -66,9 +75,9 @@ const getMarriageByHusbandID = async (husbandID) => {
 // Get a marriage record by wifeID
 const getMarriageByWifeID = async (wifeID) => {
     try {
-        const query = "SELECT * FROM Marriage WHERE wifeID = ?";
+        const query = "SELECT * FROM marriage WHERE wifeID = ?";
         const values = [wifeID];
-        const result =  db.connection.query(query, values);
+        const result = db.connection.query(query, values);
         return result;
     } catch (error) {
         throw error;
@@ -78,9 +87,9 @@ const getMarriageByWifeID = async (wifeID) => {
 // Get a marriage record by codeID
 const getMarriageByCodeID = async (codeID) => {
     try {
-        const query = "SELECT * FROM Marriage WHERE codeID = ?";
+        const query = "SELECT * FROM marriage WHERE codeID = ?";
         const values = [codeID];
-        const result =  db.connection.query(query, values);
+        const result = db.connection.query(query, values);
         return result;
     } catch (error) {
         throw error;
@@ -90,9 +99,9 @@ const getMarriageByCodeID = async (codeID) => {
 // Get a marriage record by marriageID
 const getMarriageByMarriageID = async (marriageID) => {
     try {
-        const query = "SELECT * FROM Marriage WHERE marriageID = ?";
+        const query = "SELECT * FROM marriage WHERE marriageID = ?";
         const values = [marriageID];
-        const result =  db.connection.query(query, values);
+        const result = db.connection.query(query, values);
         return result;
     } catch (error) {
         throw error;
@@ -102,9 +111,9 @@ const getMarriageByMarriageID = async (marriageID) => {
 // Get a marriage record by husbandID and wifeID
 const getMarriageByHusbandIDAndWifeID = async (husbandID, wifeID) => {
     try {
-        const query = "SELECT * FROM Marriage WHERE husbandID = ? AND wifeID = ?";
+        const query = "SELECT * FROM marriage WHERE husbandID = ? AND wifeID = ?";
         const values = [husbandID, wifeID];
-        const result =  db.connection.query(query, values);
+        const result = db.connection.query(query, values);
         return result;
     } catch (error) {
         throw error;
