@@ -10,7 +10,7 @@
           </div>
         </div>
         <div class="col-md-6 d-flex align-items-center" style="justify-content: right;">
-          <button @click="removeAlbumPhotoByAlbumId()"
+          <button @click="removeAlbumPhotoByAlbumId(); showCfDel()"
             class="btn articlelist-item articlelist-item-button text-center my-4 mx-2">Xóa album</button>
           <button @click="openAddAlbumModal()"
             class="btn articlelist-item articlelist-item-button text-center my-4 mx-2">Tạo album</button>
@@ -192,6 +192,32 @@
         </div>
       </modal>
     </div>
+
+    <div class="cfdel-modal-container">
+      <modal name="cfdel-modal">
+        <div class="w-100 h-100 add-head-modal">
+          <div class="d-flex flex-row w-100 align-items-center position-relative">
+            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100 text-white" style="background-color: rgb(255, 8, 0);;">Quan trọng</div>
+            <div class="close-add-form" @click="closeCfDelModal()">
+              <svg class="close-add-form-icon" style="fill: #FFFFFF !important;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+              </svg>
+            </div>
+          </div>
+          <div class="w-100 d-flex flex-column align-items-center justify-content-center" style="height: calc(100% - 50px);">
+            <div class="d-flex align-items-center px-3" style="height: 70%; font-size: 19px;">Bạn có chắc chắn muốn xóa album AAAAA</div>
+            <div class="d-flex flex-row w-100" style="height: 30%;">
+              <div class="col-6 d-flex align-items-center justify-content-center">
+                <div class="btn bg-danger text-white">Có</div>
+              </div>
+              <div class="col-6 d-flex align-items-center justify-content-center">
+                <div class="btn bg-primary text-white">Không</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </modal>
+    </div>
   </div>
 </template>
   
@@ -240,6 +266,7 @@ export default {
       ListCheckBoxPhotoAdd: [],
 
       checkAddPhotoModal: false,
+      cfDel: false,
     };
   },
   methods: {
@@ -518,6 +545,12 @@ export default {
           console.log(e);
         });
       this.closeAddAlbumModal()
+    },
+    showCfDel() {
+      this.$modal.show("cfdel-modal");
+    },
+    closeCfDelModal() {
+      this.$modal.hide("cfdel-modal");
     },
   },
   mounted() {
