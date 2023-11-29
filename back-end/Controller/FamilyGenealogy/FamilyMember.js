@@ -295,6 +295,7 @@ var addMember = async (req, res) => {
 };
 
 var isBirthOrderExist = (memberID, birthOrder, listBirthOrderExist) => {
+    console.log("Vào hàm isBirthOrderExist");
     console.log("listBirthOrderExist length: ", listBirthOrderExist.length);
     for (let i = 0; i < listBirthOrderExist.length; i++) {
         console.log(`listBirthOrderExist[i].BirthOrder: ${listBirthOrderExist[i].BirthOrder}, member birthorder: ${birthOrder}`);
@@ -343,7 +344,7 @@ var updateMember = async (req, res) => {
              listChild = await FamilyManagementService.getMembersByParentID(dataMember[0].FatherID, dataMember[0].MotherID);
          }
          // nếu birthorder đã tồn tại thì ko thể add
-         if (isBirthOrderExist(data.insertId,req.body.BirthOrder, listChild)) {
+         if (isBirthOrderExist(dataMember.insertId,req.body.BirthOrder, listChild)) {
              let errorMessage = `Con thứ ${req.body.BirthOrder} đã tồn tại`;
              CoreFunction.deleteImage(req.file);
              return res.send(Response.badRequestResponse(null, errorMessage));
