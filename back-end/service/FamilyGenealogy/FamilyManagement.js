@@ -1,5 +1,7 @@
 const db = require("../../Models/ConnectDB")
 const CoreFunction = require("../../Utils/CoreFunction");
+const MarriageManagement = require("./MarriageManagement");
+// nguyễn anh tuấn
 function addMember(member) {
     return new Promise((resolve, reject) => {
         try {
@@ -10,9 +12,9 @@ function addMember(member) {
             NationalityID, ReligionID, 
             Dob, LunarDob, BirthPlace, 
             IsDead, Dod, LunarDod, PlaceOfDeath, 
-            GraveSite, Note, Generation, BloodType, CodeID, Male, Image)
+            GraveSite, Note, Generation, BloodType, CodeID, Male)
         VALUES 
-        (?, ?, ?, ?, ?, ?,?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
             const values = [
                 member.FatherID,
@@ -35,8 +37,7 @@ function addMember(member) {
                 member.Generation,
                 member.BloodType,
                 member.CodeID,
-                member.Male,
-                member.Image
+                member.Male
             ];
 
             db.connection.query(query, values, (err, result) => {
@@ -56,18 +57,13 @@ function addMember(member) {
     });
 }
 
+// nguyễn anh tuấn
 function updateMember(member) {
     return new Promise(async (resolve, reject) => {
         try {
-            if (member.Image == null || member.Image == "" || member.Image == undefined) {
-                console.log("Ảnh nhận được là null, \"\" hoặc undefined");
-                await removeMemberPhoto(member.MemberID);
-            }
             const query = `
         UPDATE familymember 
         SET 
-            FatherID = ?,
-            MotherID = ?,
           MemberName = ?,
           NickName = ?,
           BirthOrder = ?,
@@ -83,17 +79,12 @@ function updateMember(member) {
           PlaceOfDeath = ?,
           GraveSite = ?,
           Note = ?,
-          Generation = ?,
           BloodType = ?,
-          CodeID = ?,
-          Male = ?,
-            Image = ?
+          Male = ?
         WHERE MemberID = ?
       `;
 
             const values = [
-                member.ParentID,
-                member.MarriageID,
                 member.MemberName,
                 member.NickName,
                 member.BirthOrder,
@@ -109,11 +100,8 @@ function updateMember(member) {
                 member.PlaceOfDeath,
                 member.GraveSite,
                 member.Note,
-                member.Generation,
                 member.BloodType,
-                member.CodeID,
                 member.Male,
-                member.Image,
                 member.MemberID
             ];
 
@@ -134,9 +122,33 @@ function updateMember(member) {
 
 }
 
+// nguyên anh tuấn
+function updateMemberPhoto(memberPhotoUrl, memberId) {
+    return new Promise(async (resolve, reject) => {
+        console.log("Vào hàm updateMemberPhoto");
+        try {
+            let query = `UPDATE familymember SET Image = ? WHERE MemberID = ?`;
+            let values = [memberPhotoUrl, memberId];
+            db.connection.query(query, values, (err, result) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            });
+        } catch (err) {
+            console.log(err);
+            reject(err);
+        }
+    });
+}
+
+// nguyễn anh tuấn
 // hàm có chức năng xóa ảnh trong thư mục
 const removeMemberPhoto = async (MemberID) => {
     try {
+        console.log("Vào hàm removeMemberPhoto với MemberID: " + MemberID);
         let querySelect = `SELECT * FROM familymember where MemberID = ?`;
         let value = [MemberID];
         return await deleteImageBySelectQuery(querySelect, value);
@@ -145,10 +157,12 @@ const removeMemberPhoto = async (MemberID) => {
         return false; // Trả về false nếu có lỗi
     }
 }
+
+// nguyễn anh tuấn
 const deleteImageBySelectQuery = async (query, values) => {
     try {
-        console.log("query: " + query);
-        console.log("values: " + values);
+        console.log("Vào hàm deleteImageBySelectQuery với query: " + query);
+        console.log("Vào hàm deleteImageBySelectQuery với values: " + values);
         db.connection.query(query, values, async (err, result) => {
             if (err) {
                 console.error("Error in query: " + err);
@@ -167,9 +181,11 @@ const deleteImageBySelectQuery = async (query, values) => {
     }
 }
 
+// nguyễn anh tuấn
 function deleteMember(memberId) {
     return new Promise(async (resolve, reject) => {
         try {
+            console.log("Vào hàm deleteMember");
             console.log("memberId: " + memberId);
             const isDeleted = removeMemberPhoto(memberId);
             // Tìm và xóa tất cả các thành viên liên quan
@@ -193,6 +209,7 @@ function deleteMember(memberId) {
     });
 }
 
+// nguyễn anh tuấn
 async function deleteMemberRelated(memberId) {
     // Định nghĩa hàm async để có thể sử dụng await bên trong
 
@@ -208,47 +225,65 @@ async function deleteMemberRelated(memberId) {
     // Lấy thông tin member cần xóa
     let member = await getMember(memberId);
 
-    // nếu member đó khác đời 1 ( không phải tổ phụ ) và không có parentid thì return
-    if (member[0].Generation != 1 && member[0].ParentID == null) return;
-
     if (member[0].MarriageID != null || member[0].MarriageID != 0) {
         // Nếu member đó có MarriageID (có vợ/chồng)
         memberIdsToUpdate.push(member[0].MarriageID);
         // Thêm MarriageID vào danh sách cần update đời
     }
 
+
     let listParentIDToCheck = [];
     // Danh sách các ParentID cần kiểm tra  
 
     while (parentID != null) {
         // Vòng lặp kiểm tra cho tới khi parentID = null (không có cha/mẹ)
+        // lấy tất cả thông tin vợ chồng của người hiện tại
+        let listMarriages;
+        // nếu người hiện tại là nam thì lấy tất cả thông tin vợ
+        if (member[0].Male == 1) {
+            listMarriages = await MarriageManagement.getMarriageByHusbandID(parentID);
+            for (let index = 0; index < listMarriages.length; index++) {
+                let listChilds = await getMembersByFatherID(listMarriages[index].MarriageID);
+                for (let index = 0; index < listChilds.length; index++) {
+                    let listChilds = await getMembersByFatherID(listMarriages[index].MarriageID);
+                    memberIdsToUpdate.push(listMarriages[index].WifeID);
+                }
 
+                memberIdsToUpdate.push(listMarriages[index].WifeID);
+            }
+        // nếu người hiện tại là nữ thì lấy tất cả thông tin chồng
+        } else {
+            listMarriages = await MarriageManagement.getMarriageByWifeID(parentID);
+            for (let index = 0; index < listMarriages.length; index++) {
+                let listChilds = await getMembersByMotherID(listMarriages[index].MarriageID);
+
+
+                memberIdsToUpdate.push(listMarriages[index].HusbandID);
+            }
+        }
         console.log("parentID: " + parentID);
-
-        let membersChild = await getMembersByParentID(parentID);
         // Lấy danh sách con của parentID
 
-        if (membersChild.length == 0) {
+        if (listChilds.length == 0) {
             // Nếu không có con 
             parentID = null;
             // Thì đặt parentID = null để thoát vòng lặp
         } else {
             // Ngược lại nếu có con
-
-            for (let index = 0; index < membersChild.length; index++) {
+            for (let index = 0; index < listChilds.length; index++) {
                 // Lặp qua từng đứa con
 
-                if (membersChild[index].MarriageID != null && membersChild[index].MarriageID !== 0) {
+                if (listChilds[index].MarriageID != null && listChilds[index].MarriageID !== 0) {
                     // Nếu đứa con đó có vợ/chồng
-                    console.log("memberChild[index].MarriageID: " + membersChild[index].MarriageID);
-                    memberIdsToUpdate.push(membersChild[index].MarriageID);
+                    console.log("memberChild[index].MarriageID: " + listChilds[index].MarriageID);
+                    memberIdsToUpdate.push(listChilds[index].MarriageID);
                     // Thêm MarriageID vào danh sách cần update đời
                 }
 
-                memberIdsToUpdate.push(membersChild[index].MemberID);
+                memberIdsToUpdate.push(listChilds[index].MemberID);
                 // Thêm MemberID vào danh sách cần update đời           
 
-                listParentIDToCheck.push(membersChild[index].MemberID);
+                listParentIDToCheck.push(listChilds[index].MemberID);
                 // Thêm MemberID vào danh sách ParentID cần kiểm tra tiếp
             }
         }
@@ -327,7 +362,7 @@ function insertParentIdToMember(fatherID, motherID, memberID) {
     }
     )
 }
-
+// nguyễn anh tuấn
 function insertFatherIDToMember(fatherID, memberID) {
     let query = `UPDATE familymember SET FatherID = ? WHERE MemberID = ?;`
     let values = [fatherID, memberID];
@@ -341,6 +376,7 @@ function insertFatherIDToMember(fatherID, memberID) {
     )
 }
 
+// nguyễn anh tuấn
 function insertMotherIDToMember(motherID, memberID) {
     let query = `UPDATE familymember SET MotherID = ? WHERE MemberID = ?;`
     let values = [motherID, memberID];
@@ -354,21 +390,6 @@ function insertMotherIDToMember(motherID, memberID) {
     )
 }
 
-
-function getRelationship(relationshipFrom, relationshipTo) {
-    let relationshipName = [relationshipFrom, relationshipTo];
-    return new Promise((resolve, reject) => {
-        const query = 'SELECT * FROM relationship WHERE relationshipname = ?  OR relationshipname = ?';
-        db.connection.query(query, relationshipName, (err, result) => {
-            if (err) {
-                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-                reject(err);
-            } else {
-                resolve(result);
-            }
-        });
-    });
-}
 function setGeneration(generation, memberId) {
     return new Promise((resolve, reject) => {
         const query = 'UPDATE familymember SET Generation = ? WHERE MemberID = ?';
@@ -627,6 +648,7 @@ function getAllMemberID(codeID) {
 
 function getMemberByMemberID(memberID) {
     return new Promise((resolve, reject) => {
+        console.log("Vào hàm getMemberByMemberID với memberID: " + memberID);
         const query = `SELECT * FROM familymember WHERE MemberID = ?`;
         db.connection.query(query, memberID, (err, result) => {
             if (err) {
@@ -640,9 +662,9 @@ function getMemberByMemberID(memberID) {
 }
 
 module.exports = {
-    addMember, updateMember, deleteMember, getRelationship, getMember, createRelationship, searchMember, getMemberByMemberID,
+    addMember, updateMember, deleteMember, getMember, createRelationship, searchMember, getMemberByMemberID,
     setGeneration, queryContactMembers,
     getAllMember, InsertMarriIdToMember, queryFamilyMembers, getAllMemberInMemberRole, getAllMemberNotInMemberRole, GetCurrentParentMember,
     insertFatherIDToMember, insertMotherIDToMember, getMembersByFatherID, getMembersByMotherID, getMembersByParentID,
-    setBirthOrder, insertParentIdToMember, getAllMemberID
+    setBirthOrder, insertParentIdToMember, getAllMemberID,updateMemberPhoto
 };

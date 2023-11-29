@@ -62,36 +62,43 @@ const generateRandomFileName = (file) => {
     return fileName;
 }
 
-const deleteImage = async (file) => {
+const deleteImage = async (filePath) => {
     return new Promise(async (resolve, reject) => {
-        console.log("File : " + file);
-        if (!file) return resolve();
-        // Kiểm tra quyền truy cập vào tệp
-        fs.promises.access(file, fs.constants.F_OK)
-            .then(() => {
-                // Tệp tồn tại, tiến hành xóa
-                fs.unlink(file, (err) => {
-                    if (err) {
-                        console.error("Error deleting image: " + err);
-                        reject(err);
-                    } else {
-                        console.log("Image deleted successfully.");
+        try {
+            console.log("Vào hàm deleteImage");
+            console.log("File : " + filePath);
+            if (!isDataStringExist(filePath)) return resolve();
+
+            // Kiểm tra quyền truy cập vào tệp
+            fs.promises.access(filePath, fs.constants.F_OK)
+                .then(() => {
+                    // Tệp tồn tại, tiến hành xóa
+                    fs.unlink(filePath, (err) => {
+                        if (err) {
+                            console.error("Error deleting image: " + err);
+                            reject(err);
+                        } else {
+                            console.log("Image deleted successfully.");
+                            resolve();
+                        }
+                    });
+                })
+                .catch((accessErr) => {
+                    // Lỗi khi kiểm tra quyền truy cập, xem xét xóa tệp
+                    if (accessErr.code == 'ENOENT') {
+                        // Tệp không tồn tại, xem như đã xóa thành công
+                        console.log("Image does not exist. Skipping deletion.");
                         resolve();
+                    } else {
+                        // Lỗi khác, reject với lỗi gốc
+                        console.error("Error accessing image: " + accessErr);
+                        reject(accessErr);
                     }
                 });
-            })
-            .catch((accessErr) => {
-                // Lỗi khi kiểm tra quyền truy cập, xem xét xóa tệp
-                if (accessErr.code == 'ENOENT') {
-                    // Tệp không tồn tại, xem như đã xóa thành công
-                    console.log("Image does not exist. Skipping deletion.");
-                    resolve();
-                } else {
-                    // Lỗi khác, reject với lỗi gốc
-                    console.error("Error accessing image: " + accessErr);
-                    reject(accessErr);
-                }
-            });
+        } catch (error) {
+            console.log(error);
+            reject(error);
+        }
     });
 };
 

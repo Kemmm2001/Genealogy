@@ -344,6 +344,15 @@ input:focus~label.form-label-number {
     height: 30%;
 }
 
+.eventNoti-modal-container .vm--container, .expiredEvent-modal-container .vm--container{
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    width: 35%;
+    height: 30%;
+}
+
+
 .modal-bg{
     
     background-color: #FFFFFF;
@@ -351,6 +360,11 @@ input:focus~label.form-label-number {
 
 .addHead-container .vm--container{
     height: 73%;
+    inset: 0;
+    margin: auto;
+}
+
+.participant-container .vm--container{
     inset: 0;
     margin: auto;
 }

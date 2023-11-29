@@ -6,9 +6,9 @@ const db = require("../../Models/ConnectDB");
 const addMarriage = (data) => {
     return new Promise((resolve, reject) => {
         try {
-            const { husbandID, wifeID, codeID } = data;
-            const query = "INSERT INTO marriage (husbandID, wifeID, codeID) VALUES (?, ?, ?)";
-            const values = [husbandID, wifeID, codeID];
+            const { husbandID, wifeID, codeID, MarriageNumber } = data;
+            const query = "INSERT INTO marriage (husbandID, wifeID, codeID, MarriageNumber) VALUES (?,?, ?, ?)";
+            const values = [husbandID, wifeID, codeID, MarriageNumber];
             db.connection.query(query, values, (err, result) => {
                 if (err) {
                     console.log(err);
@@ -28,9 +28,9 @@ const addMarriage = (data) => {
 const updateMarriage = async (data) => {
     return new Promise((resolve, reject) => {
         try {
-            const { husbandID, wifeID, codeID, marriageID } = data;
-            const query = "UPDATE marriage SET husbandID = ?, wifeID = ?, codeID = ? WHERE marriageID = ?";
-            const values = [husbandID, wifeID, codeID, marriageID];
+            const { husbandID, wifeID, codeID, MarriageNumber, marriageID } = data;
+            const query = "UPDATE marriage SET husbandID = ?, wifeID = ?, codeID = ?, MarriageNumber = ? WHERE marriageID = ?";
+            const values = [husbandID, wifeID, codeID, MarriageNumber, marriageID];
             db.connection.query(query, values, (err, result) => {
                 if (err) {
                     console.log(err);

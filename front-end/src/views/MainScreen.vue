@@ -124,6 +124,7 @@
               <div class="list-group-item" @click="openMemberModal('AddMother', 'Mẹ')">Thêm Mẹ</div>
               <div class="list-group-item" @click="openMemberModal('AddHusband', 'Chồng')">Thêm Chồng</div>
               <div class="list-group-item" @click="openMemberModal('AddWife', 'Vợ')">Thêm Vợ</div>
+              <div v-for="list in ListMarriedMember" :key="list.id" class="list-group-item" @click="openMemberModal('AddChild', 'Con',list.id)">Thêm Con với vợ {{list.name}}</div>
               <div class="list-group-item" @click="openMemberModal('AddChild', 'Con')">Thêm Con</div>
               <div class="list-group-item" @click="openModalAddMemberFromList()">Thêm mối quan hệ từ Danh Sách</div>
               <div class="list-group-item" @click="openCfDelModal(false,null,TitleModal)">Xóa thành viên (*)</div>
@@ -185,22 +186,22 @@
                         <button class="btn btn-secondary" @click.stop="openCfDelModal(true,ResultRelationship.Mother.MemberID,ResultRelationship.Mother.MemberName,'RemoveParent')">Hủy mối quan hệ</button>
                       </td>
                     </tr>
-                    <tr v-if="ResultRelationship.Husband" class="headlist-item headlist-table-item" @click="getInforMember(ResultRelationship.Husband.MemberID)">
-                      <td style="text-align: center;">{{ ResultRelationship.Husband.MemberName }}</td>
-                      <td style="text-align: center;">{{ ResultRelationship.Husband.Male == 1 ? "Nam" : "Nữ" }}</td>
-                      <td style="text-align: center;">{{ formatDate(ResultRelationship.Husband.Dob) }}</td>
+                    <tr v-for="hus in ResultRelationship.Husband" :key="hus.MemberID" class="headlist-item headlist-table-item" @click="getInforMember(ResultRelationship.Husband.MemberID)">
+                      <td style="text-align: center;">{{ hus.MemberName }}</td>
+                      <td style="text-align: center;">Nam</td>
+                      <td style="text-align: center;">{{ formatDate(hus.Dob) }}</td>
                       <td style="text-align: center;">Chồng</td>
                       <td style="text-align: center;">
-                        <button class="btn btn-secondary" @click.stop="openCfDelModal(true,ResultRelationship.Husband.MemberID,ResultRelationship.Husband.MemberName,'RemoveMarried')">Hủy mối quan hệ</button>
+                        <button class="btn btn-secondary" @click.stop="openCfDelModal(true,hus.MemberID,hus.MemberName,'RemoveMarried')">Hủy mối quan hệ</button>
                       </td>
                     </tr>
-                    <tr v-if="ResultRelationship.Wife" class="headlist-item headlist-table-item" @click="getInforMember(ResultRelationship.Wife.MemberID)">
-                      <td style="text-align: center;">{{ ResultRelationship.Wife.MemberName }}</td>
-                      <td style="text-align: center;">{{ ResultRelationship.Wife.Male == 1 ? "Nam" : "Nữ" }}</td>
-                      <td style="text-align: center;">{{ formatDate(ResultRelationship.Wife.Dob) }}</td>
+                    <tr v-for="Wife in ResultRelationship.Wife" :key="Wife.MemberID" class="headlist-item headlist-table-item" @click="getInforMember(ResultRelationship.Wife.MemberID)">
+                      <td style="text-align: center;">{{ Wife.MemberName }}</td>
+                      <td style="text-align: center;">Nữ</td>
+                      <td style="text-align: center;">{{ formatDate(Wife.Dob) }}</td>
                       <td style="text-align: center;">Vợ</td>
                       <td style="text-align: center;">
-                        <button class="btn btn-secondary" @click.stop="openCfDelModal(true,ResultRelationship.Wife.MemberID,ResultRelationship.Wife.MemberName,'RemoveMarried')">Hủy mối quan hệ</button>
+                        <button class="btn btn-secondary" @click.stop="openCfDelModal(true,Wife.MemberID,Wife.MemberName,'RemoveMarried')">Hủy mối quan hệ</button>
                       </td>
                     </tr>
                     <tr v-for="(c,index) in ResultRelationship.child" :key="index" class="headlist-item headlist-table-item" @click="getInforMember(c.MemberID)">
@@ -911,7 +912,7 @@
           <div class="help-text" style="right: 0; top: 64px;">Có thể gửi mail và tin nhắn SMS về thông tin, sự kiện liên quan tới dòng họ.</div>
         </div>
       </div>
-    </div> -->
+    </div>-->
   </div>
 </template>
 
@@ -943,12 +944,8 @@ export default {
           phoneNumberLabel: "Nhập số điện thoại",
           example: "Example:",
         },
-      }, // phoneNumber: "",
-      // isDisabled: false,
-      // defaultCountry: "VN",
-      // validations: {
-      //   required: true,
-      // },
+      },
+      idParent: null,
       ResultRelationship: null,
       ListCity: null,
       ListDistrict: null,
@@ -994,6 +991,7 @@ export default {
       ListMemberJob: null,
       ListMemberEducation: null,
       memberRole: null,
+      ListMarriedMember: null,
 
       darkMode: true,
       togglehelp: false,
@@ -1057,6 +1055,7 @@ export default {
       ListReligion: null,
       nodes: [],
       formData: null,
+      isFather: true,
 
       extendedInfo: true,
       extendedContact: false,
@@ -1691,40 +1690,54 @@ export default {
       }
     },
     addMember() {
-      this.formData = new FormData();
+      let FatherID;
+      let MotherID;
       if (this.action == "AddNormal") {
         this.generationMember = 0;
       }
-      this.appendIfDefined("MemberName", this.objMemberInfor.MemberName);
-      this.appendIfDefined("NickName", this.objMemberInfor.NickName);
-      this.appendIfDefined("CurrentMemberID", this.CurrentIdMember);
-      this.appendIfDefined("BirthOrder", this.objMemberInfor.BirthOrder);
-      this.appendIfDefined("Origin", this.objMemberInfor.Origin);
-      this.appendIfDefined("NationalityID", this.objMemberInfor.NationalityID);
-      this.appendIfDefined("ReligionID", this.objMemberInfor.ReligionID);
-      this.appendIfDefined("Dob", this.objMemberInfor.Dob);
-      this.appendIfDefined("LunarDob", this.objMemberInfor.LunarDob);
-      this.appendIfDefined("bnirthPlace", this.objMemberInfor.BirthPlace);
-      this.appendIfDefined("IsDead", this.IsDead);
-      this.appendIfDefined("Dod", this.objMemberInfor.Dod);
-      this.appendIfDefined("LunarDod", this.objMemberInfor.LunarDod);
-      this.appendIfDefined("PlaceOfDeath", this.objMemberInfor.PlaceOfDeadth);
-      this.appendIfDefined("GraveSite", this.objMemberInfor.GraveSite);
-      this.appendIfDefined("Note", this.objMemberInfor.Note);
-      this.appendIfDefined("CurrentGeneration", this.generationMember);
-      this.appendIfDefined("BloodType", this.objMemberInfor.BloodType);
-      this.appendIfDefined("Male", this.objMemberInfor.Male);
-      this.appendIfDefined("CodeID", this.CodeID);
-      this.appendIfDefined("Action", this.action);
-      this.appendIfDefined("Image", this.UrlAvatar);
-      HTTP.post("member", this.formData)
+      if (this.action == "AddChild") {
+        if (this.isFather) {
+          FatherID = this.CurrentIdMember;
+          MotherID = this.idParent;
+        } else {
+          FatherID = this.idParent;
+          MotherID = this.CurrentIdMember;
+        }
+      }
+      HTTP.post("member", {
+        FatherID: FatherID,
+        MotherID: MotherID,
+        CurrentMemberID: this.CurrentIdMember,
+        MemberName: this.objMemberInfor.MemberName,
+        NickName: this.objMemberInfor.NickName,
+        BirthOrder: this.objMemberInfor.BirthOrder,
+        Origin: this.objMemberInfor.BirthOrder,
+        NationalityID: this.objMemberInfor.NationalityID,
+        ReligionID: this.objMemberInfor.ReligionID,
+        Dob: this.objMemberInfor.Dob,
+        LunarDob: this.objMemberInfor.LunarDob,
+        bnirthPlace: this.objMemberInfor.BirthPlace,
+        IsDead: this.IsDead,
+        Dod: this.objMemberInfor.Dod,
+        LunarDod: this.objMemberInfor.LunarDod,
+        PlaceOfDeath: this.objMemberInfor.PlaceOfDeadth,
+        GraveSite: this.objMemberInfor.GraveSite,
+        Note: this.objMemberInfor.Note,
+        CurrentGeneration: this.generationMember,
+        BloodType: this.objMemberInfor.BloodType,
+        Male: this.objMemberInfor.Male,
+        CodeID: this.CodeID,
+        Action: this.action,
+      })
         .then((response) => {
           if (this.action == "AddNormal") {
             this.getListUnspecifiedMembers();
           }
           if (response.data.success == true) {
             this.isUpdateAvatar = false;
-            this.nodes.length = this.nodes.length + 1;
+            if (this.action != "AddNormal") {
+              this.nodes.length = this.nodes.length + 1;
+            }
             this.NotificationsScuccess(response.data.message);
             this.$modal.hide("member-modal");
             this.$modal.hide("Select-option-Modal");
@@ -1805,38 +1818,33 @@ export default {
     },
 
     updateInformation() {
-      this.formData = new FormData();
-      if (!this.isUpdateAvatar) {
-        this.appendIfDefined("Image", this.avatarSrc);
-      } else {
-        this.appendIfDefined("Image", this.UrlAvatar);
-      }
-      this.appendIfDefined("MemberID", this.CurrentIdMember);
-      this.appendIfDefined("MemberName", this.objMemberInfor.MemberName);
-      this.appendIfDefined("NickName", this.objMemberInfor.NickName);
-      this.appendIfDefined("ParentID", this.objMemberInfor.ParentID);
-      this.appendIfDefined("MarriageID", this.objMemberInfor.MarriageID);
-      this.appendIfDefined("BirthOrder", this.objMemberInfor.BirthOrder);
-      this.appendIfDefined("Origin", this.objMemberInfor.Origin);
-      this.appendIfDefined("NationalityID", this.objMemberInfor.NationalityID);
-      this.appendIfDefined("ReligionID", this.objMemberInfor.ReligionID);
-      this.appendIfDefined("Dob", this.objMemberInfor.Dob);
-      this.appendIfDefined("LunarDob", this.objMemberInfor.LunarDob);
-      this.appendIfDefined("BirthPlace", this.objMemberInfor.BirthPlace);
-      this.appendIfDefined("IsDead", this.objMemberInfor.IsDead);
-      this.appendIfDefined("Dod", this.objMemberInfor.Dod);
-      this.appendIfDefined("LunarDod", this.objMemberInfor.LunarDod);
-      this.appendIfDefined("PlaceOfDeath", this.objMemberInfor.PlaceOfDeadth);
-      this.appendIfDefined("GraveSite", this.objMemberInfor.GraveSite);
-      this.appendIfDefined("Note", this.objMemberInfor.Note);
-      this.appendIfDefined("BloodType", this.objMemberInfor.BloodType);
-      this.appendIfDefined("Male", this.objMemberInfor.Male);
-
       if (this.selectDistrictMember != null) {
         this.objMemberContact.Address =
           this.objMemberContact.Address + "-" + this.selectDistrictMember;
       }
-      HTTP.put("member", this.formData)
+      HTTP.put("member", {
+        MemberID: this.CurrentIdMember,
+        MemberName: this.objMemberInfor.MemberName,
+        NickName: this.objMemberInfor.NickName,
+        BirthOrder: this.objMemberInfor.BirthOrder,
+        Origin: this.objMemberInfor.BirthOrder,
+        NationalityID: this.objMemberInfor.NationalityID,
+        ReligionID: this.objMemberInfor.ReligionID,
+        Dob: this.objMemberInfor.Dob,
+        LunarDob: this.objMemberInfor.LunarDob,
+        bnirthPlace: this.objMemberInfor.BirthPlace,
+        IsDead: this.IsDead,
+        Dod: this.objMemberInfor.Dod,
+        LunarDod: this.objMemberInfor.LunarDod,
+        PlaceOfDeath: this.objMemberInfor.PlaceOfDeadth,
+        GraveSite: this.objMemberInfor.GraveSite,
+        Note: this.objMemberInfor.Note,
+        CurrentGeneration: this.generationMember,
+        BloodType: this.objMemberInfor.BloodType,
+        Male: this.objMemberInfor.Male,
+        CodeID: this.CodeID,
+        Action: this.action,
+      })
         .then((response) => {
           if (response.data.success == true) {
             this.isUpdateAvatar = false;
@@ -1938,7 +1946,6 @@ export default {
       if (selectedNode) {
         nodeElement = this.family.getNodeElement(selectedNode.id);
         nodeElement.classList.add("selected");
-        console.log(this.selectedNodes);
         this.selectedNodes.push(selectedNode.id);
       } else {
         console.log("Nút không tồn tại:", SelectNode);
@@ -2039,7 +2046,8 @@ export default {
     closeCompareModal() {
       this.$modal.hide("compare-modal");
     },
-    openMemberModal(action, title) {
+    openMemberModal(action, title, idParent) {
+      this.idParent = idParent;
       this.IsDead = 0;
       this.isAdd = true;
       this.isEdit = false;
@@ -2082,6 +2090,10 @@ export default {
     },
     OnpenModal_SelectOption(id) {
       let foundNode = this.nodes.find((node) => node.id == id);
+      if (foundNode.gender == "female") {
+        this.isFather = false;
+      }
+      this.getAllMarriedInMember(foundNode.pids);
       this.setFunctionCanDo(foundNode);
       this.TitleModal = foundNode.name;
       this.generationMember = foundNode.generation;
@@ -2089,6 +2101,12 @@ export default {
       this.$modal.show("Select-option-Modal");
       this.CurrentIdMember = id;
     },
+    getAllMarriedInMember(membersArray) {
+      this.ListMarriedMember = this.nodes.filter((member) =>
+        membersArray.includes(member.id)
+      );
+    },
+
     closeSelectModal() {
       this.CurrentIdMember = 0;
       this.RemoveHightLight();
@@ -2137,10 +2155,14 @@ export default {
       this.$modal.show("modal-relationship");
       HTTP.get("relationship", {
         params: {
+          CodeID: this.CodeID,
           memberID: this.CurrentIdMember,
         },
       }).then((response) => {
-        this.ResultRelationship = response.data.data;
+        if (response.data.success == true) {
+          console.log(response.data.data);
+          this.ResultRelationship = response.data.data;
+        }
       });
     },
     closeModalRelationship() {

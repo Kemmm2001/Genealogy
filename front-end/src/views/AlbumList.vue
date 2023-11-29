@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex h-100 w-100" style="padding: 32px 120px">
+  <div class="d-flex h-100 w-100">
     <div class="info-pages-container h-100 w-100 d-flex flex-column">
       <div class="d-flex align-items-center w-100 my-2 mx-2" style="height: 50px; font-size: 20px; font-weight: bold;">
         Album dòng họ</div>
@@ -10,14 +10,14 @@
           </div>
         </div>
         <div class="col-md-6 d-flex align-items-center" style="justify-content: right;">
-          <button @click="removeAlbumPhotoByAlbumId()"
+          <button @click="removeAlbumPhotoByAlbumId(); showCfDel()"
             class="btn articlelist-item articlelist-item-button text-center my-4 mx-2">Xóa album</button>
           <button @click="openAddAlbumModal()"
             class="btn articlelist-item articlelist-item-button text-center my-4 mx-2">Tạo album</button>
         </div>
       </div>
       <div class="d-flex flex-row flex-wrap" style="height: calc(100% - 151px); overflow-y: auto;">
-        <div class="d-flex" v-for=" (album,index) in this.AlbumPhotoList" :key="album.AlbumID"
+        <div class="d-flex" v-for=" (album, index) in this.AlbumPhotoList" :key="album.AlbumID"
           @click="getAlbumCurrentId(album.AlbumID)">
           <div class="album mx-2 mb-3 d-flex flex-column">
             <div class="album-cover" @click="openEditAlbumModal()" v-if="album.BackGroundPhoto != null">
@@ -40,7 +40,8 @@
                   </svg>
                 </div>
                 <div style="height: 24px; width: 24px;">
-                  <input class="form-check h-100 w-100 p-0" type="checkbox" v-model="ListCheckBoxAlbum[index]" @change = "changeCheckAlbum(album.AlbumID,index)"/>
+                  <input class="form-check h-100 w-100 p-0" type="checkbox" v-model="ListCheckBoxAlbum[index]"
+                    @change="changeCheckAlbum(album.AlbumID, index)" />
                 </div>
               </div>
             </div>
@@ -61,20 +62,20 @@
             </div>
           </div>
           <div class="d-flex flex-column">
-            <div class="d-flex flex-row my-1 align-items-center">
+            <div class="d-flex flex-row my-2 align-items-center">
               <label class="col-3 d-flex justify-content-center" for="article-name" style="cursor: pointer;">Tên
                 album</label>
               <div class="mx-2 w-100">
                 <input id="article-name" type="text" v-model="albumPhoto.AlbumName" class="form-control" />
               </div>
             </div>
-            <div class="d-flex flex-row my-1 align-items-center">
+            <div class="d-flex flex-row my-2 align-items-center">
               <label class="col-3 d-flex justify-content-center" for="article-des" style="cursor: pointer;">Mô tả</label>
               <div class="mx-2 w-100">
                 <input id="article-des" type="text" v-model="albumPhoto.description" class="form-control" />
               </div>
             </div>
-            <div class="d-flex flex-row my-1 align-items-center">
+            <div class="d-flex flex-row my-2 align-items-center">
               <label class="col-3 d-flex justify-content-center" for="off-url" style="cursor: pointer;">Thêm ảnh
                 bìa</label>
               <div class="mx-2 w-100">
@@ -90,54 +91,58 @@
         </div>
       </div>
     </modal>
-    <modal name="addAlbum-modal">
-      <div class="form-group">
-        <div class="w-100 h-100 add-album-modal">
-          <div class="d-flex flex-row w-100 align-items-center position-relative">
-            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm album</div>
-            <div class="close-add-form" @click="closeAddAlbumModal()">
-              <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                <path
-                  d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-              </svg>
-            </div>
-          </div>
-          <div class="d-flex flex-column">
-            <div class="d-flex flex-row my-1 align-items-center">
-              <label class="col-3 d-flex justify-content-center" for="article-name" style="cursor: pointer;">Tên
-                album</label>
-              <div class="mx-2 w-100">
-                <input id="article-name" type="text" v-model="albumPhoto.AlbumName" class="form-control" />
+    <div class="addAlbum-container">
+      <modal name="addAlbum-modal">
+        <div class="form-group">
+          <div class="w-100 h-100 add-album-modal">
+            <div class="d-flex flex-row w-100 align-items-center position-relative">
+              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm album</div>
+              <div class="close-add-form" @click="closeAddAlbumModal()">
+                <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                  <path
+                    d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                </svg>
               </div>
             </div>
-            <div class="d-flex flex-row my-1 align-items-center">
-              <label class="col-3 d-flex justify-content-center" for="article-des" style="cursor: pointer;">Mô tả</label>
-              <div class="mx-2 w-100">
-                <input id="article-des" type="text" v-model="albumPhoto.description" class="form-control" />
+            <div class="d-flex flex-column">
+              <div class="d-flex flex-row my-2 align-items-center">
+                <label class="col-3 d-flex justify-content-center" for="article-name" style="cursor: pointer;">Tên
+                  album</label>
+                <div class="mx-2 w-100">
+                  <input id="article-name" type="text" v-model="albumPhoto.AlbumName" class="form-control" />
+                </div>
               </div>
-            </div>
-            <div class="d-flex flex-row my-1 align-items-center">
-              <label class="col-3 d-flex justify-content-center" for="off-url" style="cursor: pointer;">Thêm ảnh
-                bìa</label>
-              <div class="mx-2 w-100">
-                <input id="off-url" type="file" class="form-control input-file" @change="handleFileChangeBackGround" />
+              <div class="d-flex flex-row my-2 align-items-center">
+                <label class="col-3 d-flex justify-content-center" for="article-des" style="cursor: pointer;">Mô
+                  tả</label>
+                <div class="mx-2 w-100">
+                  <input id="article-des" type="text" v-model="albumPhoto.description" class="form-control" />
+                </div>
               </div>
-            </div>
-            <div class="d-flex flex-row m-3 align-items-center articlelist-button-container">
-              <div class>
-                <button class="articlelist-item-button form-control" @click="addAlbumPhoto()">Thêm</button>
+              <div class="d-flex flex-row my-2 align-items-center">
+                <label class="col-3 d-flex justify-content-center" for="off-url" style="cursor: pointer;">Thêm ảnh
+                  bìa</label>
+                <div class="mx-2 w-100">
+                  <input id="off-url" type="file" class="form-control input-file" @change="handleFileChangeBackGround" />
+                </div>
+              </div>
+              <div class="d-flex flex-row m-3 align-items-center articlelist-button-container">
+                <div class>
+                  <button class="articlelist-item-button form-control" @click="addAlbumPhoto()">Thêm</button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </modal>
+      </modal>
+    </div>
+
     <div class="addPhoto-container" style="z-index: 2;">
       <modal name="addPhoto-modal" style="height: ;">
-        <div class="form-group" style="height: 100%;">
+        <div class="form-group position-absolute" style="height: 85%; background-color: #FFFFFF; inset: 11% 0">
           <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm ảnh vào album
           </div>
-          <div class="add-photo-modal" style="background-color: white;height:700px">
+          <div class="add-photo-modal" style="background-color: white;">
             <div class="add-photo-layout">
               <button type="button" class="btn btn-primary mr-2" @click="triggerFileInput" style="margin: 10px;">Thêm
                 ảnh</button>
@@ -148,10 +153,13 @@
               <button class="btn btn-primary mr-2" @click="addFamilyPhotoByAlbumId()" style="margin: 10px;">Lưu</button>
             </div>
             <div class="add-photo-list d-flex">
-              <div class="add-photo" v-for="(photo, index) in FamilyPhotoListAddShow" :key="index"
+              <div class="add-photo d-flex flex-column" v-for="(photo, index) in FamilyPhotoListAddShow" :key="index"
                 :class="{ choose: index == indexClickPhotoAdd }" @click="clickPhotoAdd(index)">
                 <img :src="photo" style="width: 300px;">
-                <input class="form-check h-100 w-100 p-0" type="checkbox" v-model="ListCheckBoxPhotoAdd[index]" @change = "changeCheckPhotoAdd(index)"/>
+                <div class="w-100 d-flex justify-content-center pt-2">
+                  <input class="form-check p-0" style="height: 24px; width: 24px;" type="checkbox" v-model="ListCheckBoxPhotoAdd[index]"
+                    @change="changeCheckPhotoAdd(index)" />
+                </div>
               </div>
             </div>
           </div>
@@ -164,19 +172,51 @@
           <div class="form-group">
             <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">
               {{ albumPhoto.AlbumName }}</div>
-            <div class="edit-photo-modal" style="background-color: white;height:700px">
+            <div class="edit-photo-modal" style="background-color: white; height: 700px;">
               <div class="edit-photo-layout d-flex">
-                <button class="btn btn-primary mr-2" style="margin: 10px;" @click="checkAddPhotoModalOpen(),openAddPhotoModal()">Thêm ảnh</button>
+                <button class="btn btn-primary mr-2" style="margin: 10px;"
+                  @click="checkAddPhotoModalOpen(), openAddPhotoModal()">Thêm ảnh</button>
 
                 <button class="btn btn-danger mr-2" style="margin: 10px;" :disabled="isButtonDisabled"
                   @click="removeFamilyPhotoByPhotoId()">Xóa Ảnh</button>
               </div>
-              <div class="add-photo-list d-flex">
-                <div class="edit-photo" v-for="(photo, index) in FamilyPhotoList"
-                  :class="{ choose: index == indexClickPhoto }" :key="index"
-                  @click="clickPhoto(index), getPhotoCurrentId(photo.PhotoID)" style="margin-left:10px;">
-                  <img :src="photo.PhotoUrl" style="width: 300px;">
+              <div class="add-photo-list d-flex flex-row w-100 h-100" style="overflow-y: auto;">
+                <div class="edit-photo" v-for="(photo, index) in FamilyPhotoList" :key="index"
+                  @click="clickPhoto(index), getPhotoCurrentId(photo.PhotoID)" style="margin-left:10px;width: 20%;height: 20%;background-color: black;">
+                  <div class="d-flex flex-column" >
+                    <img src="https://cdn.diemnhangroup.com/seoulcenter/2022/11/gai-xinh-1.jpg" ref="imageRef" @load="adjustImageSize()" style="height: auto;width: auto; ">
+                    <div class="w-100 d-flex justify-content-center pt-2">
+                    <input class="form-check p-0" style="height: 24px; width: 24px;" type="checkbox" v-model="ListCheckBoxPhoto[index]"
+                      @change="changeCheckPhoto(photo.PhotoID,index)" />
+                     </div>
+                  </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </modal>
+    </div>
+
+    <div class="cfdel-modal-container">
+      <modal name="cfdel-modal">
+        <div class="w-100 h-100 add-head-modal">
+          <div class="d-flex flex-row w-100 align-items-center position-relative">
+            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100 text-white" style="background-color: rgb(255, 8, 0);;">Quan trọng</div>
+            <div class="close-add-form" @click="closeCfDelModal()">
+              <svg class="close-add-form-icon" style="fill: #FFFFFF !important;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+              </svg>
+            </div>
+          </div>
+          <div class="w-100 d-flex flex-column align-items-center justify-content-center" style="height: calc(100% - 50px);">
+            <div class="d-flex align-items-center px-3" style="height: 70%; font-size: 19px;">Bạn có chắc chắn muốn xóa album AAAAA</div>
+            <div class="d-flex flex-row w-100" style="height: 30%;">
+              <div class="col-6 d-flex align-items-center justify-content-center">
+                <div class="btn bg-danger text-white">Có</div>
+              </div>
+              <div class="col-6 d-flex align-items-center justify-content-center">
+                <div class="btn bg-primary text-white">Không</div>
               </div>
             </div>
           </div>
@@ -189,6 +229,7 @@
 <script>
 // import { EventBus } from "../assets/js/MyEventBus.js";
 import { HTTP } from "../assets/js/baseAPI.js";
+import Snackbar from "awesome-snackbar";
 export default {
   data() {
     return {
@@ -219,49 +260,67 @@ export default {
       indexClickPhotoAdd: null,
 
       isCheckAlbum: null,
-      isCheckPhoto:null,
-      isCheckPhotoAdd:null,
+      isCheckPhoto: null,
+      isCheckPhotoAdd: null,
 
-      ListAlbumRemove:[],
-      ListPhotoRemove:[],
-      ListPhotoAddRemove:[],
+      ListAlbumRemove: [],
+      ListPhotoRemove: [],
+      ListPhotoAddRemove: [],
 
-      ListCheckBoxAlbum:[],
-      ListCheckBoxPhoto:[],
-      ListCheckBoxPhotoAdd:[],
+      ListCheckBoxAlbum: [],
+      ListCheckBoxPhoto: [],
+      ListCheckBoxPhotoAdd: [],
 
-      checkAddPhotoModal : false,
+      checkAddPhotoModal: false,
+      cfDel: false,
     };
   },
   methods: {
-    changeCheckAlbum(id,index){
-      if(this.ListCheckBoxAlbum[index]){
-        this.listRemoveAlbum(id,'add')
-      }else{
-        this.listRemoveAlbum(id,'remove')
+    changeCheckAlbum(id, index) {
+      if (this.ListCheckBoxAlbum[index]) {
+        this.listRemoveAlbum(id, 'add')
+      } else {
+        this.listRemoveAlbum(id, 'remove')
       }
     },
-    listRemoveAlbum(id,type){
-      if(type == 'add'){
+    listRemoveAlbum(id, type) {
+      if (type == 'add') {
         this.ListAlbumRemove.push(id);
       }
-      if(type == 'remove'){
+      if (type == 'remove') {
         this.ListAlbumRemove = this.ListAlbumRemove.filter(album => album !== id);
       }
     },
-    changeCheckPhotoAdd(index){
-      if(this.ListCheckBoxPhotoAdd[index]){
-        this.listRemovePhotoAdd(index,'add')
-      }else{
-        this.listRemovePhotoAdd(index,'remove')
+    changeCheckPhotoAdd(index) {
+      if (this.ListCheckBoxPhotoAdd[index]) {
+        this.listRemovePhotoAdd(index, 'add')
+      } else {
+        this.listRemovePhotoAdd(index, 'remove')
       }
     },
-    listRemovePhotoAdd(index,type){
-      if(type == 'add'){
+    listRemovePhotoAdd(index, type) {
+      if (type == 'add') {
         this.ListPhotoAddRemove.push(index);
       }
-      if(type == 'remove'){
+      if (type == 'remove') {
         this.ListPhotoAddRemove.splice(index, 1);
+      }
+    },
+    changeCheckPhoto(id,index) {
+      if (this.ListCheckBoxPhoto[index]) {
+        this.listRemovePhoto(id, 'add')
+      } else {
+        this.listRemovePhoto(id, 'remove')
+      }
+    },
+    listRemovePhoto(id, type) {
+      console.log(type)
+      if (type == 'add') {
+        console.log(id)
+        this.ListPhotoRemove.push(id);
+      }
+      if (type == 'remove') {
+        this.ListPhotoRemove = this.ListPhotoRemove.filter(photo => photo !== id);
       }
     },
     clickPhoto(index) {
@@ -308,7 +367,7 @@ export default {
       this.isButtonDisabled = true;
     },
     openAddPhotoModal() {
-      if(!this.checkAddPhotoModal){
+      if (!this.checkAddPhotoModal) {
         this.FamilyPhotoListAdd = [];
         this.FamilyPhotoListAddShow = []
       }
@@ -318,7 +377,7 @@ export default {
     closeAddPhotoModal() {
       this.$modal.hide("addPhoto-modal");
     },
-    checkAddPhotoModalOpen(){
+    checkAddPhotoModalOpen() {
       this.checkAddPhotoModal = false;
     },
     handleFileChangePhoto(event) {
@@ -335,18 +394,18 @@ export default {
       }
       this.ListCheckBoxPhotoAdd.push(false)
       this.getAlbumPhotoByCodeId();
-      
+
     },
     handleFileChangeBackGround(event) {
       this.albumPhoto.BackGroundPhoto = event.target.files[0];
     },
     removeFamilyPhotoAdd() {
-      for(let i = 0 ;i < this.ListPhotoAddRemove.length;i++){
+      for (let i = 0; i < this.ListPhotoAddRemove.length; i++) {
         this.FamilyPhotoListAddShow.splice(this.ListPhotoAddRemove[i], 1);
         this.FamilyPhotoListAdd.splice(this.ListPhotoAddRemove[i], 1);
       }
-      this.ListCheckBoxPhotoAdd =[]
-      this.ListPhotoAddRemove =[]
+      this.ListCheckBoxPhotoAdd = []
+      this.ListPhotoAddRemove = []
       this.isButtonDisabled = true;
     },
     getFamilyPhotoByPhotoId() {
@@ -366,40 +425,49 @@ export default {
     },
     removeFamilyPhotoByPhotoId() {
       const isConfirmed = window.confirm("Bạn có chắc chắn muốn xóa ảnh này?");
+      console.log(this.ListPhotoRemove)
       if (isConfirmed) {
-        HTTP.get("delete-familyphoto", {
+        for(let i = 0 ;i < this.ListPhotoRemove.length;i++){
+          HTTP.get("delete-familyphoto", {
           params: {
-            PhotoID: this.photoCurrentId,
+            PhotoID: this.ListPhotoRemove[i],
           },
         })
           .then((response) => {
             if (response.data.success) {
               this.getFamilyPhotoByAlbumId()
+              this.NotificationsDelete(response.data.message)
             }
           })
           .catch((e) => {
             console.log(e);
           });
+          // if( i == this.ListCheckBoxPhoto.length - 1){
+          //   this.getFamilyPhotoByAlbumId()
+          // }
+        }
+        
       }
       this.isButtonDisabled = true;
     },
     removeAlbumPhotoByAlbumId() {
       const isConfirmed = window.confirm("Bạn có chắc chắn muốn xóa album này?");
       if (isConfirmed) {
-        for(let i = 0 ; i < this.ListAlbumRemove.length ;i++){
+        for (let i = 0; i < this.ListAlbumRemove.length; i++) {
           HTTP.get("delete-albumphoto", {
-          params: {
-            AlbumID: this.ListAlbumRemove[i],
-          },
-        })
-          .then((response) => {
-            if (response.data.success == true) {
-              this.getAlbumPhotoByCodeId();
-            }
+            params: {
+              AlbumID: this.ListAlbumRemove[i],
+            },
           })
-          .catch((e) => {
-            console.log(e);
-          });
+            .then((response) => {
+              if (response.data.success == true) {
+                this.getAlbumPhotoByCodeId();
+                this.NotificationsDelete(response.data.message)
+              }
+            })
+            .catch((e) => {
+              console.log(e);
+            });
         }
       }
     },
@@ -434,7 +502,7 @@ export default {
         .then((response) => {
           if (response.data.success == true) {
             this.AlbumPhotoList = response.data.data;
-            for(let i = 0 ; i < this.AlbumPhotoList.length;i++){
+            for (let i = 0; i < this.AlbumPhotoList.length; i++) {
               this.ListCheckBoxAlbum.push(false);
             }
           }
@@ -468,6 +536,9 @@ export default {
         .then((response) => {
           if (response.data.success == true) {
             this.FamilyPhotoList = response.data.data;
+            for (let i = 0; i < this.FamilyPhotoList.length; i++) {
+              this.ListCheckBoxPhoto.push(false);
+            }
           } else {
             this.FamilyPhotoList = [];
           }
@@ -485,6 +556,7 @@ export default {
           .then((response) => {
             if (response.data.success) {
               this.getFamilyPhotoByAlbumId()
+              this.NotificationsScuccess(response.data.message)
             }
           })
           .catch((e) => {
@@ -503,6 +575,7 @@ export default {
         .then((response) => {
           if (response.data.success == true) {
             this.getAlbumPhotoByCodeId()
+            this.NotificationsScuccess(response.data.message)
           }
         })
         .catch((e) => {
@@ -510,7 +583,39 @@ export default {
         });
       this.closeAddAlbumModal()
     },
+    showCfDel() {
+      this.$modal.show("cfdel-modal");
+    },
+    closeCfDelModal() {
+      this.$modal.hide("cfdel-modal");
+    },
   },
+  NotificationsDelete(messagee) {
+      new Snackbar(messagee, {
+        position: "bottom-right",
+        theme: "light",
+        style: {
+          container: [
+            ["background-color", "#ff4d4d"],
+            ["border-radius", "5px"],
+          ],
+          message: [["color", "#fff"]],
+        },
+      });
+    },
+    NotificationsScuccess(messagee) {
+      new Snackbar(messagee, {
+        position: "bottom-right",
+        theme: "light",
+        style: {
+          container: [
+            ["background-color", "#1abc9c"],
+            ["border-radius", "5px"],
+          ],
+          message: [["color", "#fff"]],
+        },
+      });
+    },
   mounted() {
     if (localStorage.getItem("CodeID") != null) {
       this.CodeID = localStorage.getItem("CodeID");
@@ -548,12 +653,14 @@ export default {
   right: 0;
 }
 
+/* 
 .vm--modal {
   margin-top: 6% !important;
     height: 600px !important;
     width: 85% !important;
-}
+} */
 
 .add-photo {
   margin: 10px;
-}</style>
+}
+</style>

@@ -54,6 +54,7 @@
                     <div v-if="day.solar.date != 1" class="cn" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.solar.date }}</div>
                     <div v-if="day.lunar.date == 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.lunar.date + "/" + (day.lunar.month + 1) }}</div>
                     <div v-if="day.lunar.date != 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.lunar.date }}</div>
+                    <div v-if="checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)" @click="getListEventByDate(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)">Có sự kiện</div>
                   </td>
                 </tr>
               </tbody>
@@ -66,13 +67,14 @@
       <div class="h-100 p-3 bg-colored" style="background-color: #f2f2f2;">
         <div class="search-filter d-flex flex-row position-relative">
           <div class="search d-flex">
-            <input v-model="keySearch" type="text" class="form-control h-100" placeholder="Nhập tên sự kiện..." @change="searchEvent()" />
+            <input v-model="keySearch" type="text" class="form-control h-100" placeholder="Nhập tên sự kiện..."
+              @change="searchEvent()" />
           </div>
           <div class="d-flex flex-row" style="justify-content: end;">
             <div class="item">
               <select v-model="filterRepeat" class="form-control h-100" @change="filterEvent()">
                 <option :value="null">Kiểu lặp lại</option>
-                <option v-for="list in listRepeat" :key="list.id" :value="list.RepeatID">{{list.RepeatName}}</option>
+                <option v-for="list in listRepeat" :key="list.id" :value="list.RepeatID">{{ list.RepeatName }}</option>
               </select>
             </div>
             <div class="item">
@@ -99,21 +101,26 @@
                   <th class="eventlist-list-th" scope="col">Thời gian bắt đầu</th>
                   <th class="eventlist-list-th" scope="col">Thời gian kết thúc</th>
                   <th class="eventlist-list-th" scope="col">Địa điểm</th>
+                  <th class="eventlist-list-th" scope="col"></th>
                 </tr>
               </thead>
               <tbody>
-                <tr class="eventlist-item eventlist-table-item odd" v-for="(event,index) in listEvent" :key="event.EventID" @click="showEditEventModal(event.EventID)">
-                  <td>{{index+1}}</td>
-                  <td>{{event.EventName}}</td>
-                  <td>
-                    <div>{{formattedCreatedAt(event.StartDate)}} (DL)</div>
-                    <div>02-01-2000 (AL)</div>
+                <tr style="cursor: pointer;" class="eventlist-item eventlist-table-item odd" v-for="(event, index) in listEvent"
+                  :key="event.EventID">
+                  <td @click="showEditEventModal(event.EventID)">{{ index + 1 }}</td>
+                  <td @click="showEditEventModal(event.EventID)">{{ event.EventName }}</td>
+                  <td @click="showEditEventModal(event.EventID)">
+                    <div>{{ formattedCreatedAt(event.StartDate) }} (DL)</div>
+                    <div>{{formattedCreatedAt(convertSolarToLunar(event.StartDate))}} (AL)</div>
                   </td>
-                  <td>
-                    <div>{{event.EndDate}} (DL)</div>
-                    <div>02-01-2000 (AL)</div>
+                  <td @click="showEditEventModal(event.EventID)">
+                    <div>{{ formattedCreatedAt(event.EndDate) }} (DL)</div>
+                    <div>{{formattedCreatedAt(convertSolarToLunar(event.EndDate))}} (AL)</div>
                   </td>
-                  <td>{{event.Place}}</td>
+                  <td @click="showEditEventModal(event.EventID)">{{ event.Place }}</td>
+                  <td @click="showParticipantList()">
+                    <div class="">Danh sách thành viên</div>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -121,15 +128,18 @@
         </div>
       </div>
     </div>
+
     <div class="add-event-container">
       <modal name="add-event-modal">
         <div class="form-group h-100">
           <div class="w-100 h-100 modal-bg position-relative">
             <div class="d-flex flex-row w-100 align-items-center position-relative">
-              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">{{titleModal}}</div>
+              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">{{ titleModal }}
+              </div>
               <div class="close-add-form" @click="closeAddEventModal()">
                 <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                  <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                  <path
+                    d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
                 </svg>
               </div>
             </div>
@@ -145,13 +155,15 @@
                   <div class="d-flex align-items-center px-2">Kiểu lặp lại</div>
                   <div>
                     <select v-model="eventFamily.RepeatID" class="form-control h-100">
-                      <option v-for="list in listRepeat" :key="list.id" :value="list.RepeatID">{{list.RepeatName}}</option>
+                      <option v-for="list in listRepeat" :key="list.id" :value="list.RepeatID">{{ list.RepeatName }}
+                      </option>
                     </select>
                   </div>
                 </div>
               </div>
               <div class="mt-2 px-2" style="height: 120px;">
-                <textarea v-model="eventFamily.Description" class="w-100 h-100 text-area description" placeholder="Mô tả"></textarea>
+                <textarea v-model="eventFamily.Description" class="w-100 h-100 text-area description"
+                  placeholder="Mô tả"></textarea>
               </div>
               <div class="item mt-2 px-2 d-flex flex-row">
                 <div class="d-flex align-items-center" style="width: 38px; margin-right: 8px;">Từ(*)</div>
@@ -196,6 +208,61 @@
         </div>
       </modal>
     </div>
+
+    <div class="participant-container">
+      <modal name="participant-list">
+        <div class="form-group h-100">
+          <div class="w-100 h-100 modal-bg position-relative">
+            <div class="d-flex flex-row w-100 align-items-center position-relative">
+              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Danh sách thành
+                viên gia tộc</div>
+              <div class="close-add-form" @click="closeParticipantList()">
+                <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                  <path
+                    d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                </svg>
+              </div>
+            </div>
+            <div class="d-flex flex-row" style="height: calc(100% - 50px);">
+              <div class="col-6 mt-2 d-flex flex-column" style="padding-left: 8px; padding-right: 4px;">
+                <div class="item d-flex justify-content-center" style="background-color: aliceblue;">Có tham gia</div>
+                <div class="" style="overflow-y: auto; height: 480px;">
+                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
+                  <div class="item even">BAAAAAAAAAAAAAAA</div>
+                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
+                  <div class="item even">BAAAAAAAAAAAAAAA</div>
+                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
+                  <div class="item even">BAAAAAAAAAAAAAAA</div>
+                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
+                  <div class="item even">BAAAAAAAAAAAAAAA</div>
+                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
+                  <div class="item even">BAAAAAAAAAAAAAAA</div>
+                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
+                  <div class="item even">BAAAAAAAAAAAAAAA</div>
+                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
+                  <div class="item even">BAAAAAAAAAAAAAAA</div>
+                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
+                  <div class="item even">BAAAAAAAAAAAAAAA</div>
+                </div>
+              </div>
+
+              <div class="col-6 mt-2 d-flex flex-column" style="padding-left: 4px; padding-right: 8px;">
+                <div class="item d-flex justify-content-center" style="background-color: aliceblue;">Không tham gia</div>
+                <div class="" style="overflow-y: auto; height: 480px;">
+                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
+                  <div class="item even">BAAAAAAAAAAAAAAA</div>
+                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
+                  <div class="item even">BAAAAAAAAAAAAAAA</div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer position-absolute w-100" style="bottom: 0;">
+              <div @click="closeParticipantList()" class="bg-secondary text-white btn mx-2">Đóng</div>
+            </div>
+          </div>
+        </div>
+      </modal>
+    </div>
   </div>
 </template>
 
@@ -203,6 +270,7 @@
 import Snackbar from "awesome-snackbar";
 import { Calendar } from "vietnamese-lunar-calendar";
 import { HTTP } from "../assets/js/baseAPI.js";
+import { LunarDate } from "vietnamese-lunar-calendar";
 export default {
   data() {
     return {
@@ -246,6 +314,7 @@ export default {
       currentEventId: null,
       listEvent: [],
       listRepeat: null,
+      listEventByDate:[],
     };
   },
   computed: {
@@ -253,11 +322,65 @@ export default {
       return (dateString) => {
         const date = new Date(dateString);
         //const options = { timeZone: 'Asia/Ho_Chi_Minh' };
-        return date.toLocaleString('vi-VN', ""+Intl.DateTimeFormat().resolvedOptions().timeZone);
+        return date.toLocaleString('vi-VN', "" + Intl.DateTimeFormat().resolvedOptions().timeZone);
       };
     },
   },
   methods: {
+    convertTZ(date, tzString) {
+      return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));
+    },
+
+    convertSolarToLunar(dateConvert) {
+      console.log(dateConvert)
+      let Dob = new Date(dateConvert);
+      let month = new LunarDate(Dob).getMonth();
+      let date = new LunarDate(Dob).getDate();
+      if (new LunarDate(Dob).getMonth() < 10) {
+        month = "0" + new LunarDate(Dob).getMonth();
+      }
+      if (new LunarDate(Dob).getDate() < 10) {
+        date = "0" + new LunarDate(Dob).getDate();
+      }
+      console.log(new LunarDate(Dob).getMonth())
+      console.log(month)
+      let result =new LunarDate(Dob).getYear() + "-" + month + "-" + date + "T"+new Date(dateConvert).getHours()+":"+new Date(dateConvert).getUTCMinutes()+":0"+new Date(dateConvert).getUTCSeconds()
+      console.log(result)
+      return result
+    },
+    getListEventByDate(dateCheck){
+      this.listEventByDate = [];
+      let startDate
+      let endDate
+      let selectedDate
+      for(let i = 0 ; i < this.listEvent.length;i++){
+        startDate = new Date(this.listEvent[i].StartDate);
+        startDate.setHours(0, 0, 0, 0);
+        endDate = new Date(this.listEvent[i].EndDate);
+        selectedDate = new Date(dateCheck);
+        let check = selectedDate >= startDate && selectedDate <= endDate;
+        if(check == true){
+          this.listEventByDate.push(this.listEvent[i])
+        }
+      }
+      console.log(this.listEventByDate);
+    },
+    checkDateEvent(dateCheck){
+      let startDate
+      let endDate
+      let selectedDate
+      for(let i = 0 ; i < this.listEvent.length;i++){
+        startDate = new Date(this.listEvent[i].StartDate);
+        startDate.setHours(0, 0, 0, 0);
+        endDate = new Date(this.listEvent[i].EndDate);
+        selectedDate = new Date(dateCheck);
+        let check = selectedDate >= startDate && selectedDate <= endDate;
+        return check;
+      }
+      return false
+      // Kiểm tra xem ngày được chọn có nằm trong khoảng hay không
+
+    },
     NotificationsDelete(messagee) {
       new Snackbar(messagee, {
         position: "bottom-right",
@@ -459,6 +582,7 @@ export default {
     },
     getDayOfMonth() {
       this.dayOfMonth = new Calendar(this.currentYear, this.currentMonth).weeks;
+      console.log(this.dayOfMonth)
     },
     showAddEventModal() {
       this.eventFamily = {};
@@ -512,6 +636,12 @@ export default {
     closeEditEventModal() {
       this.$modal.hide("edit-event-modal");
     },
+    showParticipantList() {
+      this.$modal.show("participant-list")
+    },
+    closeParticipantList() {
+      this.$modal.hide("participant-list")
+    }
   },
   mounted() {
     if (localStorage.getItem("CodeID") != null) {
@@ -544,11 +674,11 @@ td {
   padding: 8px;
   text-align: left;
 }
+
 td.ngaythang.choose {
   background-color: lightblue;
 }
 
 td.ngaythang:hover {
   cursor: pointer;
-}
-</style>
+}</style>

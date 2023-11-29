@@ -292,7 +292,7 @@ var forgetPassword = async (req, res) => {
       try {
         console.log(token)
         const data = await UserService.UpdateAccount(email, token)
-         const resetPasswordLink = `http://localhost:3003/api/v1/reset-password?token=${token}`;
+         const resetPasswordLink = `http://localhost:3006/reset-password?token=${token}`;
 
          const objData = {
            to: email,

@@ -1,6 +1,47 @@
 const CompareMemberService = require('../../service/FamilyGenealogy/CompareMemberService');
+const Response = require("../../Utils/Response");
+
 
 var compareMember = async (req, res) => {
+    try {
+        let idMember1;
+        let idMember2;
+        generationMember1 = await CompareMemberService.getGenerationByID(req.query.MemberID1);
+        generationMember2 = await CompareMemberService.getGenerationByID(req.query.MemberID2);
+
+        //Kiểm tra xem người đó có phải làm dâu hoặc làm rể không và gán id mới nhất
+        if (generationMember1[0].Generation != 1) {
+            newIdToCampereMember1 = await CompareMemberService.checkBrideOrGroom(req.query.MemberID1)
+            console.log('newId1: ' + newIdToCampereMember1)
+        }
+        if (generationMember2[0].Generation != 1) {
+            newIdToCampereMember2 = await CompareMemberService.checkBrideOrGroom(req.query.MemberID2)
+        }
+
+        let DefferenceGeneration = generationMember2[0].Generation - generationMember1[0].Generation;
+        if (DefferenceGeneration == 0) {
+            console.log("vào đây")
+        } else if (DefferenceGeneration < 0) {
+            idMember1 = await CompareMemberService.getIdToCompare(DefferenceGeneration, newIdToCampereMember1);
+            console.log('idMember1: ' + idMember1)
+            // data = await CompareMemberService.GetResultCompare(MemberID1, MemberID2, DefferenceGeneration, Flag1, Flag2, inforMember1[0].Male, inforMember2[0].Male)
+            // res.send(data)
+        } else {
+            idMember2 = await CompareMemberService.getIdToCompare(DefferenceGeneration, newIdToCampereMember2);
+            console.log('idMember2: ' + idMember2)
+            let data = await CompareMemberService.GetResultCompare(MemberID1, MemberID2, DefferenceGeneration, Flag1, Flag2, inforMember1[0].Male, inforMember2[0].Male)         
+            if (data) {
+                return res.send(Response.successResponse(data))
+            }
+        }
+
+
+
+    } catch (error) {
+
+    }
+}
+var compareMember1 = async (req, res) => {
     try {
         let data;
         let isInLaw1;
@@ -24,12 +65,7 @@ var compareMember = async (req, res) => {
         if (isInLaw2.ParentID == null && isInLaw2.MarriageID != null) {
             MemberID2 = isInLaw2.MarriageID
             Flag2 = true;
-        }    
-
-        console.log('MemberID1: ' + MemberID1)
-        console.log('MemberID2: ' + MemberID2)
-        console.log("inforMember1[0].Male: " + inforMember1[0].Male)
-        console.log("inforMember2[0].Male: " + inforMember2[0].Male)
+        }
 
         let DefferenceGeneration = inforMember2[0].Generation - inforMember1[0].Generation;
 
