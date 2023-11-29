@@ -352,117 +352,55 @@ function getListUnspecifiedMembers(CodeID) {
     })
 }
 
-async function RelationShipMember(memberId) {
-    return new Promise((resolve, reject) => {
+async function RelationShipMember(CodeID, memberId) {
+    return new Promise(async (resolve, reject) => {
         try {
             let objRelationship = {};
             // Lấy thông tin từ bảng familymember
-            let getMemberQuery = `SELECT * FROM familymember WHERE MemberID = ${memberId}`;
-            db.connection.query(getMemberQuery, async (err, memberResult) => {
-                if (err) return reject(err);
-                let member = memberResult[0];
-                // Lấy thông tin cha mẹ
-                if (member.ParentID) {
-                    let parentQuery = `SELECT * FROM familymember WHERE MemberID = ${member.ParentID}`;
-                    db.connection.query(parentQuery, async (err, parentResult) => {
-                        if (!err && parentResult.length > 0) {
-                            let parentMember = parentResult[0];
-                            if (parentMember.Male == 1) {
-                                objRelationship.Father = parentMember;
-                            } else {
-                                objRelationship.Mother = parentMember;
-                            }
-                            // Kiểm tra thông tin vợ/chồng
-                            if (parentMember.MarriageID) {
-                                let spouseQuery = `SELECT * FROM familymember WHERE MemberID = ${parentMember.MarriageID}`;
-                                db.connection.query(spouseQuery, async (err, spouseResult) => {
-                                    if (!err && spouseResult.length > 0) {
-                                        let spouseMember = spouseResult[0];
-                                        if (spouseMember.Male == 1) {
-                                            objRelationship.Father = spouseMember;
-                                        } else {
-                                            objRelationship.Mother = spouseMember;
-                                        }
-                                    }
-                                    // Lấy thông tin về con cái
-                                    let childQuery = `SELECT * FROM familymember WHERE ParentID = ${memberId}`;
-                                    db.connection.query(childQuery, async (err, result) => {
-                                        if (!err && result.length > 0) {
-                                            objRelationship.child = result;
-                                        }
-                                        resolve(objRelationship);
-                                    });
-                                });
-                            } else {
-                                let childQuery = `SELECT * FROM familymember WHERE ParentID = ${memberId}`;
-                                db.connection.query(childQuery, async (err, result) => {
-                                    if (!err && result.length > 0) {
-                                        objRelationship.child = result;
-                                    }
-                                    resolve(objRelationship);
-                                });
-                            }
-                            if (member.MarriageID) {
-                                let marriedQuery = `SELECT * FROM familymember WHERE MarriageID = ${memberId}`
-                                db.connection.query(marriedQuery, async (err, marriedResult) => {
-                                    if (!err && marriedResult.length > 0) {
-                                        if (marriedResult.Male === 1) {
-                                            objRelationship.Husband = marriedResult;
-                                        } else {
-                                            objRelationship.Wife = marriedResult;
-                                        }
-                                    }
-                                    let childQuery = `SELECT * FROM familymember WHERE ParentID = ${memberId}`;
-                                    db.connection.query(childQuery, async (err, result) => {
-                                        if (!err && result.length > 0) {
-                                            objRelationship.child = result;
-                                        }
-                                        resolve(objRelationship)
-                                    });
-                                    ;
-                                });
-                            }
-                        }
-                    });
-                } else {
-                    // Lấy thông tin về con cái
-                    let marriedQuery = `SELECT * FROM familymember WHERE MarriageID = ${memberId}`
-                    db.connection.query(marriedQuery, async (err, marriedResult) => {
-                        if (err) {
-                            // Xử lý lỗi nếu có
-                            console.error(err);
-                            return;
-                        }
-                        let objRelationship = {};
-                        if (marriedResult.length > 0) {
-                            if (marriedResult.Male === 1) {
-                                objRelationship.Husband = marriedResult[0];
-                            } else {
-                                objRelationship.Wife = marriedResult[0];
-                            }
-                            let childQuery = `SELECT * FROM familymember WHERE ParentID = ${marriedResult[0].MemberID}`;
-                            db.connection.query(childQuery, async (err, childResult) => {
-                                if (err) {
-                                    // Xử lý lỗi nếu có
-                                    console.error(err);
-                                    return;
-                                }
-                                if (childResult.length > 0) {
-                                    objRelationship.child = childResult;
-                                }
-                                resolve(objRelationship);
+            let getMemberQuery = `SELECT * FROM genealogy.familymember WHERE CodeID = '${CodeID}'`;
+            db.connection.query(getMemberQuery, async (err, result) => {
+                if (!err) {
+                    let dataMarriage = await getAllMarriage(CodeID);
+                    let data = result.find((element) => element.MemberID == memberId);
+                    if (data.FatherID) {
+                        objRelationship.Father = result.find((element) => element.MemberID == data.FatherID);
+                    }
+                    if (data.MotherID) {
+                        objRelationship.Mother = result.find((element) => element.MemberID == data.MotherID);
+                    }
+                    if (data.Male == 1) {
+                        let marriage = dataMarriage.filter((element) => element.husbandID == memberId);
+                        if (marriage.length > 0) {
+                            let wives = marriage.map((marriageElement) => {
+                                return result.find((element) => element.MemberID == marriageElement.wifeID);
                             });
-                        } else {
-                            resolve(objRelationship);
+                            objRelationship.Wife = wives;
                         }
-                    });
+                    } else {
+                        let marriage = dataMarriage.filter((element) => element.wifeID == memberId);
+                        if (marriage.length > 0) {
+                            let husbands = marriage.map((marriageElement) => {
+                                return result.find((element) => element.MemberID == marriageElement.husbandID);
+                            });
+                            objRelationship.Husband = husbands;
+                        }
+                    }
+                    let child = result.filter((element) => element.FatherID == memberId || element.MotherID == memberId);
+                    if (child.length > 0) {
+                        objRelationship.child = child;
+                    }
+
+                    resolve(objRelationship);
+                } else {
+                    reject(err);
                 }
             });
         } catch (error) {
-            console.log(error)
+            reject(error);
         }
     });
 }
+
 
 
 function GetIdPaternalAncestor(CodeID) {
@@ -625,7 +563,7 @@ async function ViewFamilyTree(CodeID) {
 }
 
 // Hàm tạo đối tượng familyData từ dữ liệu thành viên
-async function createFamilyData(member, result, marriedArray) {  
+async function createFamilyData(member, result, marriedArray) {
     try {
         if (member !== undefined) {
             let fid = '';

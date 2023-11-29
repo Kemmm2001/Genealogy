@@ -40,8 +40,8 @@ var getAllUnspecifiedMembers = async (req, res) => {
 var getRelationShipMember = async (req, res) => {
     try {
         let memberID = req.query.memberID;
-        console.log(memberID)
-        let data = await FamilyTreeService.RelationShipMember(memberID);
+        let CodeID = req.query.CodeID;
+        let data = await FamilyTreeService.RelationShipMember(CodeID, memberID);
         if (data == null || data.length == 0) {
             return res.send(Response.dataNotFoundResponse());
         }
