@@ -1,31 +1,33 @@
-// controllers/dataController.js
-const DataModel = require('../../Models/dataModel');
+const JsonService = require('../../service/Backup/JsonSevice')
 
-const DataController = {
-  createJSONFile: async (req, res) => {
-    try {
-      const data = req.body;
-     console.log(data)
-      const result = await DataModel.createJSONFile(data);
-      console.log(result);
-      res.status(200).json({ message: result });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Lỗi server' });
+var exportData = async function(req, res) {
+  try {
+    const { memberIDs } = req.body;
+    console.log(memberIDs)
+    const result = await JsonService.exportData(memberIDs);
+    if (result.success) { 
+      res.json({ message: 'Xuất dữ liệu thành công', fileName: result.fileName });
+    } else {
+      res.status(500).json({ error: 'Lỗi khi xuất dữ liệu' });
     }
-  },
+  } catch (error) {
+    res.status(500).json({ error: 'Lỗi khi xử lý xuất dữ liệu' });
+  }
+}
 
-  importJsonFile: (req, res) => {
-    const filePath = req.body.filePath;
+var importData =  async function (req, res) {
+  try {
+  
+      const result = await JsonService.importData(req.file);
 
-    if (!filePath) {
-      return res.status(400).json({ error: 'File path not provided' });
-    }
+      if (result.success) {
+          res.json({ message: 'Nhập dữ liệu thành công' });
+      } else {
+          res.status(500).json({ error: 'Lỗi khi nhập dữ liệu' });
+      }
+  } catch (error) {
+      res.status(500).json({ error: 'Lỗi khi xử lý nhập dữ liệu' });
+  }
+}
 
-    DataModel.readJsonFromFile(filePath)
-      .then(jsonData => res.status(200).json(jsonData))
-      .catch(error => res.status(500).json({ error: error.message }));
-  },
-};
-
-module.exports = DataController;
+module.exports = { exportData,importData };

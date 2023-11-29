@@ -26,6 +26,9 @@ const initWebRouter = (app) => {
 
     //API Nhật anh  
     router.post('/filter-event', EventManagementController.filterEvent);
+    router.post('/addAttendence', EventManagementController.addAttendence )
+    router.post('/inviteMail', EventManagementController.inviteMail)
+    router.post('/verify-invite',EventManagementController.verifyMail)
     //Tiền tố đứng trước route
     app.use('/api/v1', router);
 }

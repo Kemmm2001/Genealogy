@@ -604,6 +604,27 @@ function getAllMember(codeID) {
     });
 }
 
+function getAllMemberID(codeID) {
+    return new Promise((resolve, reject) => {
+        if (!codeID) {
+            reject('Invalid CodeID');
+            return;
+        }
+
+        const query = `SELECT MemberID FROM genealogy.familymember WHERE CodeID = '${codeID}'`;
+        db.connection.query(query, (err, result) => {
+            if (err) {
+                console.error('Error querying the database:', err);
+                reject('Error querying the database');
+            } else {
+                resolve(result);
+            }
+        });
+    });
+}
+
+
+
 function getMemberByMemberID(memberID) {
     return new Promise((resolve, reject) => {
         const query = `SELECT * FROM familymember WHERE MemberID = ?`;
@@ -623,5 +644,5 @@ module.exports = {
     setGeneration, queryContactMembers,
     getAllMember, InsertMarriIdToMember, queryFamilyMembers, getAllMemberInMemberRole, getAllMemberNotInMemberRole, GetCurrentParentMember,
     insertFatherIDToMember, insertMotherIDToMember, getMembersByFatherID, getMembersByMotherID, getMembersByParentID,
-    setBirthOrder, insertParentIdToMember
+    setBirthOrder, insertParentIdToMember, getAllMemberID
 };

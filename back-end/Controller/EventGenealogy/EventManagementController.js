@@ -1,6 +1,10 @@
 const EventManagementService = require('../../service/EventGenealogy/EventManagement');
+const FamilyMember = require('../../service/FamilyGenealogy/FamilyManagement');
+const EventAttendence = require('../../service/EventGenealogy/EventAttendence');
 const SystemAction = require('../../Utils/SystemOperation');
 const Response = require('../../Utils/Response');
+const { signInviteToken, verifyInviteToken } = require('../../helper/jwt_helper')
+
 
 var getAllEventGenealogy = async (req, res) => {
     try {
@@ -231,11 +235,11 @@ var sendEmailToMember = async (req, res) => {
         objData.subject = req.body.subject;
         objData.text = req.body.text;
         objData.html = req.body.html;
-        let CodeID = req.body.CodeID;      
-        let data = await EventManagementService.getListEmail(listID);    
-        
+        let CodeID = req.body.CodeID;
+        let data = await EventManagementService.getListEmail(listID);
+
         if (data) {
-            for (let i = 0; i < data.length; i++) {      
+            for (let i = 0; i < data.length; i++) {
                 ExecuteSendEmail(data[i], objData.subject, objData.text, objData.html, res);
             }
         } else {
@@ -323,8 +327,117 @@ var SendEmail = async (req, res) => {
     }
 };
 
+var addAttendence = async (req, res) => {
+    try {
+        let { eventID } = req.body
+
+        try {
+            let checkEventId = await EventAttendence.checkEventID(eventID)
+            if (checkEventId > 0) {
+                return res.send(Response.badRequestResponse(null, 'Đã có event ID'));
+            }
+        } catch (checkEventIdError) {
+            return res.send(Response.internalServerErrorResponse(error.message || error));
+        }
+        let codeID;
+        try {
+            codeID = await EventManagementService.getCodeID(eventID);
+        } catch (codeIDError) {
+            return res.send(Response.internalServerErrorResponse(error.message || error));
+        }
+
+        let memberIDs;
+        try {
+            memberIDs = await FamilyMember.getAllMemberID(codeID[0].CodeID);
+        } catch (memberIDsError) {
+            return res.send(Response.internalServerErrorResponse(error.message || error));
+        }
+
+        let memberIdNumbers = memberIDs.map(member => member.MemberID);
+
+        let successfulInsertions = 0;
+
+        for (let memberId of memberIdNumbers) {
+            try {
+                let data = await EventAttendence.insertMemberAttend(eventID, memberId);
+                if (data) {
+                    successfulInsertions++;
+                }
+            } catch (insertError) {
+                return res.send(Response.internalServerErrorResponse(error.message || error));
+            }
+        }
+
+        if (successfulInsertions === memberIdNumbers.length) {
+            return res.send(Response.successResponse(null, 'Thêm sự kiện thành công'));
+        } else {
+            return res.send(Response.internalServerErrorResponse());
+        }
+    } catch (error) {
+        return res.send(Response.internalServerErrorResponse(error.message || error));
+    }
+}
+
+var inviteMail = async (req, res) => {
+    try {
+        const requestBody = req.body;
+        const emails = requestBody.data.map(item => item.email);
+        const memberIds = requestBody.data.map(item => item.memberId);
+        const time = requestBody.time;
+
+        for (let i = 0; i < memberIds.length; i++) {
+            const memberId = memberIds[i];
+            const token = await signInviteToken(memberId, time);
+
+            const data = await EventAttendence.Update(memberId, token);
+            const link = `http://localhost:3003/api/v1/invite?token=${token}`;
+
+            if (data === true) {
+                const mailOptions = {
+                    to: emails[i], 
+                    subject: 'Your Invite Link',
+                    text: `Here is your invite link: ${link}`,
+                    html: `<p>Click <a href="${link}">here</a> to access your invite.</p>`,
+                };
+                SystemAction.SendEmailCore(mailOptions);
+                console.log(`Token generated for member ${memberId}: ${token}`);
+            } else {
+                return res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống'));
+            }
+        }
+        return res.send(Response.successResponse(null, 'Đã gửi mail mời mọi người'));
+
+    } catch (error) {
+        return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+    }
+}
+var verifyMail = async (req, res) => {
+    try {
+      const token = req.query.token;
+      const memberId = await verifyInviteToken(token)
+      const tokenData = EventAttendence.checkToken(token);
+      if (tokenData == 0) {
+        return res.send(Response.dataNotFoundResponse(null, 'không thấy token'));
+      }
+  
+        let data = await EventAttendence.UpdateIsGoing(memberId)
+
+        if (data == true) {
+          return res.send(Response.successResponse());
+        } else {
+        return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+        }
+      
+    } catch (error) {
+      return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+  
+    }
+  }
+
+
+
 module.exports = {
     getAllEventGenealogy, InsertEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth,
     SendSMS, SendEmail, searchEvent, filterEvent, SendSMSToMember, getAllEventRepetition, getInformationEvent, sendEmailToMember
-
+    , addAttendence, inviteMail, verifyMail
 }
