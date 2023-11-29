@@ -135,3 +135,16 @@ th{
     align-items: center;
     height: 56px;
 }
+
+.addAlbum-container .vm--container{
+    inset: 0;
+    margin: auto;
+    height: 35%;
+}
+
+.editAlbum-container .vm--container{
+    inset: 0;
+    margin: auto;
+    height: 70%;
+    width: 70%;
+}

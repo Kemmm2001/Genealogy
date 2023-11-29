@@ -52,8 +52,9 @@ const initWebRouter = (app) => {
 
     //API tuấn
     router.get('/member', FamilyMemberManagement.getMember);
-    router.post('/member', CoreFunction.uploadImage("member-photo").single('Image'), FamilyMemberManagement.addMember);
-    router.put('/member', CoreFunction.uploadImage("member-photo").single('Image'), FamilyMemberManagement.updateMember);
+    router.post('/member', FamilyMemberManagement.addMember);
+    router.put('/member', FamilyMemberManagement.updateMember);
+    router.put('/member-photo', CoreFunction.uploadImage("member-photo").single('Image'), FamilyMemberManagement.updateMemberPhoto);
     router.put('/memberToGenealogy', FamilyMemberManagement.updateMemberToGenealogy);
     router.get('/delete-member', FamilyMemberManagement.deleteMember)
     router.get('/getparent', FamilyMemberManagement.GetCurrentParentMember)

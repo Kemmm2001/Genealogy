@@ -60,7 +60,7 @@ const routes = [
     component: () => import("../views/FamilyHistory.vue"),
   },
   {
-    path: "/resetpwd",
+    path: "/reset-password",
     name: "resetpwd",
     component: () => import("../views/ResetPwd.vue"),
   },

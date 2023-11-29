@@ -5,7 +5,7 @@
                 style="font-size: 36px; font-weight: bold; margin-top: 51px;">Quên mật khẩu</div>
             <div class="d-flex flex-column" style="width: 420px;">
                 <div class="d-flex mb-2" style="position: relative;">
-                    <input type="text" class="form-control py-2 px-5 position-relative" placeholder="Email khôi phục" />
+                    <input type="text" class="form-control py-2 px-5 position-relative" v-model="emailReset" placeholder="Email khôi phục" />
                     <div class="position-absolute d-flex align-items-center justify-content-center h-100"
                         style="left: 0; width: 3rem;">
                         <svg class="login-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -15,9 +15,62 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-center align-items-center" style="height: auto; width: auto;">
-              <button class="btn bg-danger text-white register-button">Gửi mail xác nhận</button>
-            </div>
+                    <button class="btn bg-danger text-white register-button" @click="sendEmail()">Gửi mail xác nhận</button>
+                </div>
             </div>
         </div>
     </div>
 </template>
+<script>
+import { HTTP } from "../assets/js/baseAPI.js";
+import Snackbar from "awesome-snackbar";
+export default {
+    data() {
+        return {
+            emailReset:null,
+        };
+    },
+    methods: {
+        sendEmail(){
+            HTTP.post("forget-password", {
+                email: this.emailReset,
+            }).then((response) => {
+                if(response.data.success == true){
+                    this.NotificationsScuccess(response.data.message)
+                }else{
+                    this.NotificationsDelete(response.data.message)
+                }
+            })
+            .catch((e) => {
+                this.NotificationsDelete(e);
+            });
+        },
+        NotificationsDelete(messagee) {
+            new Snackbar(messagee, {
+                position: "bottom-right",
+                theme: "light",
+                style: {
+                container: [
+                    ["background-color", "#ff4d4d"],
+                    ["border-radius", "5px"],
+                ],
+                message: [["color", "#fff"]],
+                },
+            });
+            },
+        NotificationsScuccess(messagee) {
+            new Snackbar(messagee, {
+                position: "bottom-right",
+                theme: "light",
+                style: {
+                container: [
+                    ["background-color", "#1abc9c"],
+                    ["border-radius", "5px"],
+                ],
+                message: [["color", "#fff"]],
+                },
+            });
+        },
+    },
+}
+</script>
