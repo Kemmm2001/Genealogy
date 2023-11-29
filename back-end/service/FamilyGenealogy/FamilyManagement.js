@@ -13,7 +13,7 @@ function addMember(member) {
             IsDead, Dod, LunarDod, PlaceOfDeath, 
             GraveSite, Note, Generation, BloodType, CodeID, Male)
         VALUES 
-        (?, ?, ?, ?, ?, ?,?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
             const values = [
                 member.FatherID,
@@ -63,6 +63,8 @@ function updateMember(member) {
             const query = `
         UPDATE familymember 
         SET 
+            FatherID = ?,
+            MotherID = ?,
           MemberName = ?,
           NickName = ?,
           BirthOrder = ?,
@@ -80,13 +82,13 @@ function updateMember(member) {
           Note = ?,
           Generation = ?,
           BloodType = ?,
-          CodeID = ?,
-          Male = ?,
-            Image = ?
+          Male = ?
         WHERE MemberID = ?
       `;
 
             const values = [
+                member.FatherID,
+                member.MotherID,
                 member.MemberName,
                 member.NickName,
                 member.BirthOrder,
@@ -104,9 +106,7 @@ function updateMember(member) {
                 member.Note,
                 member.Generation,
                 member.BloodType,
-                member.CodeID,
                 member.Male,
-                member.Image,
                 member.MemberID
             ];
 

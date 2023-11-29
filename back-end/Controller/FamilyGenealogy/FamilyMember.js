@@ -371,16 +371,19 @@ var updateMember = async (req, res) => {
         }
         // bắt đầu kiểm tra birthorder
         let listChild;
-        // trường hợp có cha những ko có mẹ 
+        // trường hợp có cha nhưng ko có mẹ 
         if (CoreFunction.isDataNumberExist(dataMember[0].FatherID) && !CoreFunction.isDataNumberExist(dataMember[0].MotherID)) {
+            console.log("Đã vào trường hợp có cha những ko có mẹ");
             listChild = await FamilyManagementService.getMembersByFatherID(dataMember[0].FatherID);
         }
         // trường hợp có mẹ những ko có cha
         else if (!CoreFunction.isDataNumberExist(dataMember[0].FatherID) && CoreFunction.isDataNumberExist(dataMember[0].MotherID)) {
+            console.log("Đã vào trường hợp có mẹ những ko có cha");
             listChild = await FamilyManagementService.getMembersByMotherID(dataMember[0].MotherID);
         }
         // trường hợp có cả cha và mẹ
         else if (CoreFunction.isDataNumberExist(dataMember[0].FatherID) && CoreFunction.isDataNumberExist(dataMember[0].MotherID)) {
+            console.log("Đã vào trường hợp có cả cha và mẹ");
             listChild = await FamilyManagementService.getMembersByParentID(dataMember[0].FatherID, dataMember[0].MotherID);
         }
         // nếu birthorder đã tồn tại thì ko thể add
@@ -389,13 +392,7 @@ var updateMember = async (req, res) => {
 
             return res.send(Response.badRequestResponse(null, errorMessage));
         }
-        // kết thúc kiểm tra birthorder
-        if (req.file != null) {
-            console.log("Đã vào trường hợp có file ảnh");
-            req.body.Image = req.file.path;
-        }
         req.body.Generation = dataMember[0].Generation;
-        req.body.CodeID = dataMember[0].CodeID;
         // update member vào database
         let data = await FamilyManagementService.updateMember(req.body);
         dataRes = {
