@@ -186,22 +186,22 @@
                         <button class="btn btn-secondary" @click.stop="openCfDelModal(true,ResultRelationship.Mother.MemberID,ResultRelationship.Mother.MemberName,'RemoveParent')">Hủy mối quan hệ</button>
                       </td>
                     </tr>
-                    <tr v-if="ResultRelationship.Husband" class="headlist-item headlist-table-item" @click="getInforMember(ResultRelationship.Husband.MemberID)">
-                      <td style="text-align: center;">{{ ResultRelationship.Husband.MemberName }}</td>
-                      <td style="text-align: center;">{{ ResultRelationship.Husband.Male == 1 ? "Nam" : "Nữ" }}</td>
-                      <td style="text-align: center;">{{ formatDate(ResultRelationship.Husband.Dob) }}</td>
+                    <tr v-for="hus in ResultRelationship.Husband" :key="hus.MemberID" class="headlist-item headlist-table-item" @click="getInforMember(ResultRelationship.Husband.MemberID)">
+                      <td style="text-align: center;">{{ hus.MemberName }}</td>
+                      <td style="text-align: center;">Nam</td>
+                      <td style="text-align: center;">{{ formatDate(hus.Dob) }}</td>
                       <td style="text-align: center;">Chồng</td>
                       <td style="text-align: center;">
-                        <button class="btn btn-secondary" @click.stop="openCfDelModal(true,ResultRelationship.Husband.MemberID,ResultRelationship.Husband.MemberName,'RemoveMarried')">Hủy mối quan hệ</button>
+                        <button class="btn btn-secondary" @click.stop="openCfDelModal(true,hus.MemberID,hus.MemberName,'RemoveMarried')">Hủy mối quan hệ</button>
                       </td>
                     </tr>
-                    <tr v-if="ResultRelationship.Wife" class="headlist-item headlist-table-item" @click="getInforMember(ResultRelationship.Wife.MemberID)">
-                      <td style="text-align: center;">{{ ResultRelationship.Wife.MemberName }}</td>
-                      <td style="text-align: center;">{{ ResultRelationship.Wife.Male == 1 ? "Nam" : "Nữ" }}</td>
-                      <td style="text-align: center;">{{ formatDate(ResultRelationship.Wife.Dob) }}</td>
+                    <tr v-for="Wife in ResultRelationship.Wife" :key="Wife.MemberID" class="headlist-item headlist-table-item" @click="getInforMember(ResultRelationship.Wife.MemberID)">
+                      <td style="text-align: center;">{{ Wife.MemberName }}</td>
+                      <td style="text-align: center;">Nữ</td>
+                      <td style="text-align: center;">{{ formatDate(Wife.Dob) }}</td>
                       <td style="text-align: center;">Vợ</td>
                       <td style="text-align: center;">
-                        <button class="btn btn-secondary" @click.stop="openCfDelModal(true,ResultRelationship.Wife.MemberID,ResultRelationship.Wife.MemberName,'RemoveMarried')">Hủy mối quan hệ</button>
+                        <button class="btn btn-secondary" @click.stop="openCfDelModal(true,Wife.MemberID,Wife.MemberName,'RemoveMarried')">Hủy mối quan hệ</button>
                       </td>
                     </tr>
                     <tr v-for="(c,index) in ResultRelationship.child" :key="index" class="headlist-item headlist-table-item" @click="getInforMember(c.MemberID)">
@@ -2158,10 +2158,14 @@ export default {
       this.$modal.show("modal-relationship");
       HTTP.get("relationship", {
         params: {
+          CodeID: this.CodeID,
           memberID: this.CurrentIdMember,
         },
       }).then((response) => {
-        this.ResultRelationship = response.data.data;
+        if (response.data.success == true) {
+          console.log(response.data.data);
+          this.ResultRelationship = response.data.data;
+        }
       });
     },
     closeModalRelationship() {
