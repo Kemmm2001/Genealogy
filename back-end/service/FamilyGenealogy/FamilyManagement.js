@@ -230,54 +230,60 @@ async function deleteMemberRelated(memberId) {
         memberIdsToUpdate.push(member[0].MarriageID);
         // Thêm MarriageID vào danh sách cần update đời
     }
-    
-    // lấy tất cả thông tin vợ chồng của người cần xóa
-    let listMarriage;
-    if (member[0].Male == 1) {
-        listMarriage = await MarriageManagement.getMarriageByHusbandID(memberId);
-        for (let index = 0; index < listMarriage.length; index++) {
-            memberIdsToUpdate.push(listMarriage[index].WifeID);
-        }
-    } else {
-        listMarriage = await MarriageManagement.getMarriageByWifeID(memberId);
-        for (let index = 0; index < listMarriage.length; index++) {
-            memberIdsToUpdate.push(listMarriage[index].HusbandID);
-        }
-    }
-  
+
 
     let listParentIDToCheck = [];
     // Danh sách các ParentID cần kiểm tra  
 
     while (parentID != null) {
         // Vòng lặp kiểm tra cho tới khi parentID = null (không có cha/mẹ)
+        // lấy tất cả thông tin vợ chồng của người hiện tại
+        let listMarriages;
+        // nếu người hiện tại là nam thì lấy tất cả thông tin vợ
+        if (member[0].Male == 1) {
+            listMarriages = await MarriageManagement.getMarriageByHusbandID(parentID);
+            for (let index = 0; index < listMarriages.length; index++) {
+                let listChilds = await getMembersByFatherID(listMarriages[index].MarriageID);
+                for (let index = 0; index < listChilds.length; index++) {
+                    let listChilds = await getMembersByFatherID(listMarriages[index].MarriageID);
+                    memberIdsToUpdate.push(listMarriages[index].WifeID);
+                }
 
+                memberIdsToUpdate.push(listMarriages[index].WifeID);
+            }
+        // nếu người hiện tại là nữ thì lấy tất cả thông tin chồng
+        } else {
+            listMarriages = await MarriageManagement.getMarriageByWifeID(parentID);
+            for (let index = 0; index < listMarriages.length; index++) {
+                let listChilds = await getMembersByMotherID(listMarriages[index].MarriageID);
+
+
+                memberIdsToUpdate.push(listMarriages[index].HusbandID);
+            }
+        }
         console.log("parentID: " + parentID);
-
-        let membersChild = await getMembersByParentID(parentID);
         // Lấy danh sách con của parentID
 
-        if (membersChild.length == 0) {
+        if (listChilds.length == 0) {
             // Nếu không có con 
             parentID = null;
             // Thì đặt parentID = null để thoát vòng lặp
         } else {
             // Ngược lại nếu có con
-
-            for (let index = 0; index < membersChild.length; index++) {
+            for (let index = 0; index < listChilds.length; index++) {
                 // Lặp qua từng đứa con
 
-                if (membersChild[index].MarriageID != null && membersChild[index].MarriageID !== 0) {
+                if (listChilds[index].MarriageID != null && listChilds[index].MarriageID !== 0) {
                     // Nếu đứa con đó có vợ/chồng
-                    console.log("memberChild[index].MarriageID: " + membersChild[index].MarriageID);
-                    memberIdsToUpdate.push(membersChild[index].MarriageID);
+                    console.log("memberChild[index].MarriageID: " + listChilds[index].MarriageID);
+                    memberIdsToUpdate.push(listChilds[index].MarriageID);
                     // Thêm MarriageID vào danh sách cần update đời
                 }
 
-                memberIdsToUpdate.push(membersChild[index].MemberID);
+                memberIdsToUpdate.push(listChilds[index].MemberID);
                 // Thêm MemberID vào danh sách cần update đời           
 
-                listParentIDToCheck.push(membersChild[index].MemberID);
+                listParentIDToCheck.push(listChilds[index].MemberID);
                 // Thêm MemberID vào danh sách ParentID cần kiểm tra tiếp
             }
         }
