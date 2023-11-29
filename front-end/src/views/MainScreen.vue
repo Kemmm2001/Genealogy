@@ -1690,50 +1690,52 @@ export default {
       }
     },
     addMember() {
-      this.formData = new FormData();
+      let FatherID;
+      let MotherID;
       if (this.action == "AddNormal") {
         this.generationMember = 0;
       }
       if (this.action == "AddChild") {
         if (this.isFather) {
-          this.appendIfDefined("FatherID", this.CurrentIdMember);
-          this.appendIfDefined("MotherID", this.idParent);
+          FatherID = this.CurrentIdMember;
+          MotherID = this.idParent;
         } else {
-          this.appendIfDefined("MotherID", this.CurrentIdMember);
-          this.appendIfDefined("FatherID", this.idParent);
+          FatherID = this.idParent;
+          MotherID = this.CurrentIdMember;
         }
-      } else {
-        this.appendIfDefined("CurrentMemberID", this.CurrentIdMember);
       }
-      this.appendIfDefined("MemberName", this.objMemberInfor.MemberName);
-      this.appendIfDefined("NickName", this.objMemberInfor.NickName);
-      this.appendIfDefined("BirthOrder", this.objMemberInfor.BirthOrder);
-      this.appendIfDefined("Origin", this.objMemberInfor.Origin);
-      this.appendIfDefined("NationalityID", this.objMemberInfor.NationalityID);
-      this.appendIfDefined("ReligionID", this.objMemberInfor.ReligionID);
-      this.appendIfDefined("Dob", this.objMemberInfor.Dob);
-      this.appendIfDefined("LunarDob", this.objMemberInfor.LunarDob);
-      this.appendIfDefined("bnirthPlace", this.objMemberInfor.BirthPlace);
-      this.appendIfDefined("IsDead", this.IsDead);
-      this.appendIfDefined("Dod", this.objMemberInfor.Dod);
-      this.appendIfDefined("LunarDod", this.objMemberInfor.LunarDod);
-      this.appendIfDefined("PlaceOfDeath", this.objMemberInfor.PlaceOfDeadth);
-      this.appendIfDefined("GraveSite", this.objMemberInfor.GraveSite);
-      this.appendIfDefined("Note", this.objMemberInfor.Note);
-      this.appendIfDefined("CurrentGeneration", this.generationMember);
-      this.appendIfDefined("BloodType", this.objMemberInfor.BloodType);
-      this.appendIfDefined("Male", this.objMemberInfor.Male);
-      this.appendIfDefined("CodeID", this.CodeID);
-      this.appendIfDefined("Action", this.action);
-      this.appendIfDefined("Image", this.UrlAvatar);
-      HTTP.post("member", this.formData)
+      HTTP.post("member", {
+        FatherID: FatherID,
+        MotherID: MotherID,
+        CurrentMemberID: this.CurrentIdMember,
+        MemberName: this.objMemberInfor.MemberName,
+        NickName: this.objMemberInfor.NickName,
+        BirthOrder: this.objMemberInfor.BirthOrder,
+        Origin: this.objMemberInfor.BirthOrder,
+        NationalityID: this.objMemberInfor.NationalityID,
+        ReligionID: this.objMemberInfor.ReligionID,
+        Dob: this.objMemberInfor.Dob,
+        LunarDob: this.objMemberInfor.LunarDob,
+        bnirthPlace: this.objMemberInfor.BirthPlace,
+        IsDead: this.IsDead,
+        Dod: this.objMemberInfor.Dod,
+        LunarDod: this.objMemberInfor.LunarDod,
+        PlaceOfDeath: this.objMemberInfor.PlaceOfDeadth,
+        GraveSite: this.objMemberInfor.GraveSite,
+        Note: this.objMemberInfor.Note,
+        CurrentGeneration: this.generationMember,
+        BloodType: this.objMemberInfor.BloodType,
+        Male: this.objMemberInfor.Male,
+        CodeID: this.CodeID,
+        Action: this.action,
+      })
         .then((response) => {
           if (this.action == "AddNormal") {
             this.getListUnspecifiedMembers();
           }
           if (response.data.success == true) {
             this.isUpdateAvatar = false;
-            if(this.action != "AddNormal"){
+            if (this.action != "AddNormal") {
               this.nodes.length = this.nodes.length + 1;
             }
             this.NotificationsScuccess(response.data.message);
@@ -1816,38 +1818,33 @@ export default {
     },
 
     updateInformation() {
-      this.formData = new FormData();
-      if (!this.isUpdateAvatar) {
-        this.appendIfDefined("Image", this.avatarSrc);
-      } else {
-        this.appendIfDefined("Image", this.UrlAvatar);
-      }
-      this.appendIfDefined("MemberID", this.CurrentIdMember);
-      this.appendIfDefined("MemberName", this.objMemberInfor.MemberName);
-      this.appendIfDefined("NickName", this.objMemberInfor.NickName);
-      this.appendIfDefined("ParentID", this.objMemberInfor.ParentID);
-      this.appendIfDefined("MarriageID", this.objMemberInfor.MarriageID);
-      this.appendIfDefined("BirthOrder", this.objMemberInfor.BirthOrder);
-      this.appendIfDefined("Origin", this.objMemberInfor.Origin);
-      this.appendIfDefined("NationalityID", this.objMemberInfor.NationalityID);
-      this.appendIfDefined("ReligionID", this.objMemberInfor.ReligionID);
-      this.appendIfDefined("Dob", this.objMemberInfor.Dob);
-      this.appendIfDefined("LunarDob", this.objMemberInfor.LunarDob);
-      this.appendIfDefined("BirthPlace", this.objMemberInfor.BirthPlace);
-      this.appendIfDefined("IsDead", this.objMemberInfor.IsDead);
-      this.appendIfDefined("Dod", this.objMemberInfor.Dod);
-      this.appendIfDefined("LunarDod", this.objMemberInfor.LunarDod);
-      this.appendIfDefined("PlaceOfDeath", this.objMemberInfor.PlaceOfDeadth);
-      this.appendIfDefined("GraveSite", this.objMemberInfor.GraveSite);
-      this.appendIfDefined("Note", this.objMemberInfor.Note);
-      this.appendIfDefined("BloodType", this.objMemberInfor.BloodType);
-      this.appendIfDefined("Male", this.objMemberInfor.Male);
-
       if (this.selectDistrictMember != null) {
         this.objMemberContact.Address =
           this.objMemberContact.Address + "-" + this.selectDistrictMember;
       }
-      HTTP.put("member", this.formData)
+      HTTP.put("member", {
+        MemberID: this.CurrentIdMember,
+        MemberName: this.objMemberInfor.MemberName,
+        NickName: this.objMemberInfor.NickName,
+        BirthOrder: this.objMemberInfor.BirthOrder,
+        Origin: this.objMemberInfor.BirthOrder,
+        NationalityID: this.objMemberInfor.NationalityID,
+        ReligionID: this.objMemberInfor.ReligionID,
+        Dob: this.objMemberInfor.Dob,
+        LunarDob: this.objMemberInfor.LunarDob,
+        bnirthPlace: this.objMemberInfor.BirthPlace,
+        IsDead: this.IsDead,
+        Dod: this.objMemberInfor.Dod,
+        LunarDod: this.objMemberInfor.LunarDod,
+        PlaceOfDeath: this.objMemberInfor.PlaceOfDeadth,
+        GraveSite: this.objMemberInfor.GraveSite,
+        Note: this.objMemberInfor.Note,
+        CurrentGeneration: this.generationMember,
+        BloodType: this.objMemberInfor.BloodType,
+        Male: this.objMemberInfor.Male,
+        CodeID: this.CodeID,
+        Action: this.action,
+      })
         .then((response) => {
           if (response.data.success == true) {
             this.isUpdateAvatar = false;
