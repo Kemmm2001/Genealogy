@@ -1,5 +1,6 @@
 const db = require("../../Models/ConnectDB")
 const CoreFunction = require("../../Utils/CoreFunction");
+const MarriageManagement = require("./MarriageManagement");
 // nguyễn anh tuấn
 function addMember(member) {
     return new Promise((resolve, reject) => {
@@ -224,14 +225,26 @@ async function deleteMemberRelated(memberId) {
     // Lấy thông tin member cần xóa
     let member = await getMember(memberId);
 
-    // nếu member đó khác đời 1 ( không phải tổ phụ ) và không có parentid thì return
-    if (member[0].Generation != 1 && member[0].ParentID == null) return;
-
     if (member[0].MarriageID != null || member[0].MarriageID != 0) {
         // Nếu member đó có MarriageID (có vợ/chồng)
         memberIdsToUpdate.push(member[0].MarriageID);
         // Thêm MarriageID vào danh sách cần update đời
     }
+    
+    // lấy tất cả thông tin vợ chồng của người cần xóa
+    let listMarriage;
+    if (member[0].Male == 1) {
+        listMarriage = await MarriageManagement.getMarriageByHusbandID(memberId);
+        for (let index = 0; index < listMarriage.length; index++) {
+            memberIdsToUpdate.push(listMarriage[index].WifeID);
+        }
+    } else {
+        listMarriage = await MarriageManagement.getMarriageByWifeID(memberId);
+        for (let index = 0; index < listMarriage.length; index++) {
+            memberIdsToUpdate.push(listMarriage[index].HusbandID);
+        }
+    }
+  
 
     let listParentIDToCheck = [];
     // Danh sách các ParentID cần kiểm tra  
