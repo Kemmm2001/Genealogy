@@ -66,8 +66,6 @@ function updateMember(member) {
             const query = `
         UPDATE familymember 
         SET 
-            FatherID = ?,
-            MotherID = ?,
           MemberName = ?,
           NickName = ?,
           BirthOrder = ?,
@@ -92,8 +90,6 @@ function updateMember(member) {
       `;
 
             const values = [
-                member.ParentID,
-                member.MarriageID,
                 member.MemberName,
                 member.NickName,
                 member.BirthOrder,
