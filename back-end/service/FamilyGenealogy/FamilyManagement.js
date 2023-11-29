@@ -11,9 +11,9 @@ function addMember(member) {
             NationalityID, ReligionID, 
             Dob, LunarDob, BirthPlace, 
             IsDead, Dod, LunarDod, PlaceOfDeath, 
-            GraveSite, Note, Generation, BloodType, CodeID, Male, Image)
+            GraveSite, Note, Generation, BloodType, CodeID, Male)
         VALUES 
-        (?, ?, ?, ?, ?, ?,?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (?, ?, ?, ?, ?, ?,?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
             const values = [
                 member.FatherID,
@@ -36,8 +36,7 @@ function addMember(member) {
                 member.Generation,
                 member.BloodType,
                 member.CodeID,
-                member.Male,
-                member.Image
+                member.Male
             ];
 
             db.connection.query(query, values, (err, result) => {
@@ -61,10 +60,6 @@ function addMember(member) {
 function updateMember(member) {
     return new Promise(async (resolve, reject) => {
         try {
-            if (member.Image == null || member.Image == "" || member.Image == undefined) {
-                console.log("Ảnh nhận được là null, \"\" hoặc undefined");
-                await removeMemberPhoto(member.MemberID);
-            }
             const query = `
         UPDATE familymember 
         SET 
@@ -130,6 +125,28 @@ function updateMember(member) {
         }
     });
 
+}
+
+// nguyên anh tuấn
+function updateMemberPhoto(memberPhotoUrl, memberId) {
+    return new Promise(async (resolve, reject) => {
+        console.log("Vào hàm updateMemberPhoto");
+        try {
+            let query = `UPDATE familymember SET Image = ? WHERE MemberID = ?`;
+            let values = [memberPhotoUrl, memberId];
+            db.connection.query(query, values, (err, result) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            });
+        } catch (err) {
+            console.log(err);
+            reject(err);
+        }
+    });
 }
 
 // nguyễn anh tuấn
@@ -597,6 +614,7 @@ function getAllMember(codeID) {
 
 function getMemberByMemberID(memberID) {
     return new Promise((resolve, reject) => {
+        console.log("Vào hàm getMemberByMemberID với memberID: " + memberID);
         const query = `SELECT * FROM familymember WHERE MemberID = ?`;
         db.connection.query(query, memberID, (err, result) => {
             if (err) {
@@ -614,5 +632,5 @@ module.exports = {
     setGeneration, queryContactMembers,
     getAllMember, InsertMarriIdToMember, queryFamilyMembers, getAllMemberInMemberRole, getAllMemberNotInMemberRole, GetCurrentParentMember,
     insertFatherIDToMember, insertMotherIDToMember, getMembersByFatherID, getMembersByMotherID, getMembersByParentID,
-    setBirthOrder, insertParentIdToMember
+    setBirthOrder, insertParentIdToMember, updateMemberPhoto
 };
