@@ -625,8 +625,7 @@ async function ViewFamilyTree(CodeID) {
 }
 
 // Hàm tạo đối tượng familyData từ dữ liệu thành viên
-async function createFamilyData(member, result, marriedArray) {
-    console.log('marriedArray: ' + marriedArray);
+async function createFamilyData(member, result, marriedArray) {  
     try {
         if (member !== undefined) {
             let fid = '';

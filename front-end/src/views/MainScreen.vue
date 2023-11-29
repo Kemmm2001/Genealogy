@@ -124,7 +124,7 @@
               <div class="list-group-item" @click="openMemberModal('AddMother', 'Mẹ')">Thêm Mẹ</div>
               <div class="list-group-item" @click="openMemberModal('AddHusband', 'Chồng')">Thêm Chồng</div>
               <div class="list-group-item" @click="openMemberModal('AddWife', 'Vợ')">Thêm Vợ</div>
-              <div class="list-group-item" @click="openMemberModal('AddChild', 'Con')">Thêm Con</div>
+              <div v-for="list in ListMarriedMember" :key="list.id" class="list-group-item" @click="openMemberModal('AddChild', 'Con',list.id)">Thêm Con với vợ {{list.name}}</div>
               <div class="list-group-item" @click="openModalAddMemberFromList()">Thêm mối quan hệ từ Danh Sách</div>
               <div class="list-group-item" @click="openCfDelModal(false,null,TitleModal)">Xóa thành viên (*)</div>
               <div class="list-group-item feature-overview">Các chức năng Khác</div>
@@ -911,7 +911,7 @@
           <div class="help-text" style="right: 0; top: 64px;">Có thể gửi mail và tin nhắn SMS về thông tin, sự kiện liên quan tới dòng họ.</div>
         </div>
       </div>
-    </div> -->
+    </div>-->
   </div>
 </template>
 
@@ -943,12 +943,8 @@ export default {
           phoneNumberLabel: "Nhập số điện thoại",
           example: "Example:",
         },
-      }, // phoneNumber: "",
-      // isDisabled: false,
-      // defaultCountry: "VN",
-      // validations: {
-      //   required: true,
-      // },
+      },
+      idParent: null,
       ResultRelationship: null,
       ListCity: null,
       ListDistrict: null,
@@ -994,6 +990,7 @@ export default {
       ListMemberJob: null,
       ListMemberEducation: null,
       memberRole: null,
+      ListMarriedMember: null,
 
       darkMode: true,
       togglehelp: false,
@@ -1057,6 +1054,7 @@ export default {
       ListReligion: null,
       nodes: [],
       formData: null,
+      isFather: true,
 
       extendedInfo: true,
       extendedContact: false,
@@ -1695,9 +1693,19 @@ export default {
       if (this.action == "AddNormal") {
         this.generationMember = 0;
       }
+      if (this.action == "AddChild") {
+        if (this.isFather) {
+          this.appendIfDefined("FatherID", this.CurrentIdMember);
+          this.appendIfDefined("MotherID", this.idParent);
+        } else {
+          this.appendIfDefined("MotherID", this.CurrentIdMember);
+          this.appendIfDefined("FatherID", this.idParent);
+        }
+      } else {
+        this.appendIfDefined("CurrentMemberID", this.CurrentIdMember);
+      }
       this.appendIfDefined("MemberName", this.objMemberInfor.MemberName);
       this.appendIfDefined("NickName", this.objMemberInfor.NickName);
-      this.appendIfDefined("CurrentMemberID", this.CurrentIdMember);
       this.appendIfDefined("BirthOrder", this.objMemberInfor.BirthOrder);
       this.appendIfDefined("Origin", this.objMemberInfor.Origin);
       this.appendIfDefined("NationalityID", this.objMemberInfor.NationalityID);
@@ -1938,7 +1946,6 @@ export default {
       if (selectedNode) {
         nodeElement = this.family.getNodeElement(selectedNode.id);
         nodeElement.classList.add("selected");
-        console.log(this.selectedNodes);
         this.selectedNodes.push(selectedNode.id);
       } else {
         console.log("Nút không tồn tại:", SelectNode);
@@ -2039,7 +2046,8 @@ export default {
     closeCompareModal() {
       this.$modal.hide("compare-modal");
     },
-    openMemberModal(action, title) {
+    openMemberModal(action, title, idParent) {
+      this.idParent = idParent;
       this.IsDead = 0;
       this.isAdd = true;
       this.isEdit = false;
@@ -2082,6 +2090,10 @@ export default {
     },
     OnpenModal_SelectOption(id) {
       let foundNode = this.nodes.find((node) => node.id == id);
+      if (foundNode.gender == "female") {
+        this.isFather = false;
+      }
+      this.getAllMarriedInMember(foundNode.pids);
       this.setFunctionCanDo(foundNode);
       this.TitleModal = foundNode.name;
       this.generationMember = foundNode.generation;
@@ -2089,6 +2101,12 @@ export default {
       this.$modal.show("Select-option-Modal");
       this.CurrentIdMember = id;
     },
+    getAllMarriedInMember(membersArray) {
+      this.ListMarriedMember = this.nodes.filter((member) =>
+        membersArray.includes(member.id)
+      );
+    },
+
     closeSelectModal() {
       this.CurrentIdMember = 0;
       this.RemoveHightLight();
