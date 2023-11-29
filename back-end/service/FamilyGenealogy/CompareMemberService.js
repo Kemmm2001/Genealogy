@@ -16,36 +16,94 @@ function getGenerationByID(MemberId) {
     })
 }
 
-function GetParentId(MemberId) {
+function checkBrideOrGroom(MemberID) {
     return new Promise((resolve, reject) => {
-        let query = `SELECT ParentID FROM familymember WHERE MemberID = ${MemberId}`;
+        try {
+            let query = `SELECT * FROM familymember WHERE MemberID = ${db.connection.escape(MemberID)}`;
+            db.connection.query(query, (err, result) => {
+                if (err) {
+                    console.error(err);
+                    reject(err);
+                } else {
+                    if (result.length === 0) {
+                        reject("Member not found");
+                    } else {
+                        let member = result[0];
+                        if (member.FatherID !== null && member.MotherID !== null) {
+                            resolve(MemberID);
+                        } else {
+                            let getMarriedIDQuery = (member.Male === 1) ?
+                                `SELECT wifeID AS marriedID FROM genealogy.marriage WHERE husbandID = ${db.connection.escape(MemberID)}` :
+                                `SELECT husbandID AS marriedID FROM genealogy.marriage WHERE wifeID = ${db.connection.escape(MemberID)}`;
+
+
+                            console.log('getMarriedIDQuery: ' + getMarriedIDQuery)
+
+                            db.connection.query(getMarriedIDQuery, (err, marriedResult) => {
+                                if (err) {                                   
+                                    reject(err);
+                                } else {
+                                    if (marriedResult.length === 0) {
+                                        reject("Not married");
+                                    } else {
+                                        console.log('result' + marriedResult[0].marriedID)
+                                        resolve(marriedResult[0].marriedID);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+        } catch (error) {
+            console.error(error);
+            reject(error);
+        }
+    });
+}
+
+function getParentId(MemberId) {
+    return new Promise((resolve, reject) => {
+        let query = `SELECT FatherID, MotherID FROM familymember WHERE MemberID = ${MemberId}`;
         db.connection.query(query, (err, result) => {
             if (err) {
                 console.log(err);
                 reject(err);
             } else {
-                resolve(result);
+                resolve(result[0]); // Lấy cả FatherID và MotherID
             }
         });
     });
 }
 
-function getIdToCompare(NumberIterations, MemberId) {
+async function getIdToCompare(NumberIterations, MemberId) {
+    console.log("vào dây")
     if (NumberIterations < 0) NumberIterations = -NumberIterations;
-    return new Promise(async (resolve, reject) => {
+    try {
         let currentMemberId = MemberId;
+
         for (let i = 0; i < NumberIterations; i++) {
-            try {
-                const queryResult = await GetParentId(currentMemberId);
-                currentMemberId = queryResult[0].ParentID;
-            } catch (error) {
-                reject(error);
-                return;
+            const parentInfo = await getParentId(currentMemberId);
+
+            if (!parentInfo) {
+                // Không có thông tin về cha hoặc mẹ, có thể dừng lại
+                break;
+            }
+
+            // Lựa chọn FatherID hoặc MotherID tùy thuộc vào yêu cầu
+            currentMemberId = parentInfo.FatherID || parentInfo.MotherID;
+
+            if (!currentMemberId) {
+                // Không có FatherID hoặc MotherID, có thể dừng lại
+                break;
             }
         }
-        resolve(currentMemberId);
-    });
 
+        return currentMemberId;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
 }
 
 async function isInLaw(MemberID) {
@@ -154,9 +212,27 @@ PaternalFamily = [
     {
         name: "Con",
         id: 18
-    }
+    },
 
+    {
+        name: "Cậu",
+        id: 19
+    },
+    {
+        name: "Dì",
+        id: 20
+    },
+    {
+        name: "Mợ",
+        id: 21
+    },
+    {
+        name: "Chú",
+        id: 22
+    },
 ]
+
+
 
 function setResult(objResult, index1, index2) {
     objResult.result1 = PaternalFamily[index1].name;
@@ -344,5 +420,5 @@ async function GetResultCompare(MemberId1, MemberId2, DifferenceGeneration, Flag
 }
 
 module.exports = {
-    getGenerationByID, GetResultCompare, getIdToCompare, isInLaw
+    getGenerationByID, GetResultCompare, getIdToCompare, isInLaw, checkBrideOrGroom
 }
