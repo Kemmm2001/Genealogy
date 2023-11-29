@@ -180,11 +180,11 @@
                 <button class="btn btn-danger mr-2" style="margin: 10px;" :disabled="isButtonDisabled"
                   @click="removeFamilyPhotoByPhotoId()">Xóa Ảnh</button>
               </div>
-              <div class="add-photo-list d-flex flex-row w-100 h-100">
+              <div class="add-photo-list d-flex flex-row w-100 h-100" style="overflow-y: auto;">
                 <div class="edit-photo" v-for="(photo, index) in FamilyPhotoList" :key="index"
-                  @click="clickPhoto(index), getPhotoCurrentId(photo.PhotoID)" style="margin-left:10px">
+                  @click="clickPhoto(index), getPhotoCurrentId(photo.PhotoID)" style="margin-left:10px;width: 20%;height: 20%;background-color: black;">
                   <div class="d-flex flex-column" >
-                    <img src="https://cdn.diemnhangroup.com/seoulcenter/2022/11/gai-xinh-1.jpg" style="height: auto;width: 100%; ">
+                    <img src="https://cdn.diemnhangroup.com/seoulcenter/2022/11/gai-xinh-1.jpg" ref="imageRef" @load="adjustImageSize()" style="height: auto;width: auto; ">
                     <div class="w-100 d-flex justify-content-center pt-2">
                     <input class="form-check p-0" style="height: 24px; width: 24px;" type="checkbox" v-model="ListCheckBoxPhoto[index]"
                       @change="changeCheckPhoto(photo.PhotoID,index)" />
@@ -229,6 +229,7 @@
 <script>
 // import { EventBus } from "../assets/js/MyEventBus.js";
 import { HTTP } from "../assets/js/baseAPI.js";
+import Snackbar from "awesome-snackbar";
 export default {
   data() {
     return {
@@ -306,14 +307,16 @@ export default {
       }
     },
     changeCheckPhoto(id,index) {
-      if (this.ListCheckBoxPhotoAdd[index]) {
-        this.listRemovePhotoAdd(id, 'add')
+      if (this.ListCheckBoxPhoto[index]) {
+        this.listRemovePhoto(id, 'add')
       } else {
-        this.listRemovePhotoAdd(id, 'remove')
+        this.listRemovePhoto(id, 'remove')
       }
     },
     listRemovePhoto(id, type) {
+      console.log(type)
       if (type == 'add') {
+        console.log(id)
         this.ListPhotoRemove.push(id);
       }
       if (type == 'remove') {
@@ -422,24 +425,26 @@ export default {
     },
     removeFamilyPhotoByPhotoId() {
       const isConfirmed = window.confirm("Bạn có chắc chắn muốn xóa ảnh này?");
+      console.log(this.ListPhotoRemove)
       if (isConfirmed) {
-        for(let i = 0 ;i < this.ListCheckBoxPhoto.length;i++){
+        for(let i = 0 ;i < this.ListPhotoRemove.length;i++){
           HTTP.get("delete-familyphoto", {
           params: {
-            PhotoID: this.ListCheckBoxPhoto[i],
+            PhotoID: this.ListPhotoRemove[i],
           },
         })
-          .then(() => {
-            // if (response.data.success) {
-            //   this.getFamilyPhotoByAlbumId()
-            // }
+          .then((response) => {
+            if (response.data.success) {
+              this.getFamilyPhotoByAlbumId()
+              this.NotificationsDelete(response.data.message)
+            }
           })
           .catch((e) => {
             console.log(e);
           });
-          if( i == this.ListCheckBoxPhoto.length - 1){
-            this.getFamilyPhotoByAlbumId()
-          }
+          // if( i == this.ListCheckBoxPhoto.length - 1){
+          //   this.getFamilyPhotoByAlbumId()
+          // }
         }
         
       }
@@ -457,6 +462,7 @@ export default {
             .then((response) => {
               if (response.data.success == true) {
                 this.getAlbumPhotoByCodeId();
+                this.NotificationsDelete(response.data.message)
               }
             })
             .catch((e) => {
@@ -550,6 +556,7 @@ export default {
           .then((response) => {
             if (response.data.success) {
               this.getFamilyPhotoByAlbumId()
+              this.NotificationsScuccess(response.data.message)
             }
           })
           .catch((e) => {
@@ -568,6 +575,7 @@ export default {
         .then((response) => {
           if (response.data.success == true) {
             this.getAlbumPhotoByCodeId()
+            this.NotificationsScuccess(response.data.message)
           }
         })
         .catch((e) => {
@@ -582,6 +590,32 @@ export default {
       this.$modal.hide("cfdel-modal");
     },
   },
+  NotificationsDelete(messagee) {
+      new Snackbar(messagee, {
+        position: "bottom-right",
+        theme: "light",
+        style: {
+          container: [
+            ["background-color", "#ff4d4d"],
+            ["border-radius", "5px"],
+          ],
+          message: [["color", "#fff"]],
+        },
+      });
+    },
+    NotificationsScuccess(messagee) {
+      new Snackbar(messagee, {
+        position: "bottom-right",
+        theme: "light",
+        style: {
+          container: [
+            ["background-color", "#1abc9c"],
+            ["border-radius", "5px"],
+          ],
+          message: [["color", "#fff"]],
+        },
+      });
+    },
   mounted() {
     if (localStorage.getItem("CodeID") != null) {
       this.CodeID = localStorage.getItem("CodeID");

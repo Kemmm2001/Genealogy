@@ -50,10 +50,11 @@
               <tbody>
                 <tr class="normal" v-for="(week, weekIndex) in dayOfMonth" :key="weekIndex">
                   <td class="ngaythang" v-for="(day, dayIndex) in week" :key="dayIndex" :class="{ choose: dayIndex == indexClickDay && weekIndex == indexClickWeek }" @click="clickDate(dayIndex, weekIndex)" :style="{ color: day.solar.month != currentMonth ? '#bebebe' : 'black' }">
-                    <div v-if="day.solar.date == 1" class="cn" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.solar.date + "/" + (day.solar.month + 1) }}</div>
+                    <div v-if="day.solar.date == 1" class="cn" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.solar.date + "/" + (day.solar.month) }}</div>
                     <div v-if="day.solar.date != 1" class="cn" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.solar.date }}</div>
-                    <div v-if="day.lunar.date == 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.lunar.date + "/" + (day.lunar.month + 1) }}</div>
+                    <div v-if="day.lunar.date == 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.lunar.date + "/" + (day.lunar.month) }}</div>
                     <div v-if="day.lunar.date != 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.lunar.date }}</div>
+                    <div v-if="checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)">Có sự kiện</div>
                   </td>
                 </tr>
               </tbody>
@@ -258,6 +259,25 @@ export default {
     },
   },
   methods: {
+    checkDateEvent(dateCheck){
+      let startDate
+      let endDate
+      let selectedDate
+      console.log(dateCheck)
+      for(let i = 0 ; i < this.listEvent.length;i++){
+        startDate = new Date(this.listEvent[i].StartDate);
+        startDate.setHours(0, 0, 0, 0);
+        endDate = new Date(this.listEvent[i].EndDate);
+        selectedDate = new Date(dateCheck);
+        console.log(startDate)
+        let check = selectedDate >= startDate && selectedDate <= endDate;
+        return check;
+      }
+      
+      return false
+      // Kiểm tra xem ngày được chọn có nằm trong khoảng hay không
+      
+    },
     NotificationsDelete(messagee) {
       new Snackbar(messagee, {
         position: "bottom-right",
@@ -459,6 +479,7 @@ export default {
     },
     getDayOfMonth() {
       this.dayOfMonth = new Calendar(this.currentYear, this.currentMonth).weeks;
+      console.log(this.dayOfMonth)
     },
     showAddEventModal() {
       this.eventFamily = {};

@@ -827,7 +827,7 @@ export default {
               this.getListMember();
             });
           } else {
-            this.NotificationsDelete(response.data.message);
+            this.NotificationsScuccess(response.data.message)
           }
         })
         .catch((e) => {
@@ -1038,8 +1038,8 @@ export default {
         params: {
           MemberID: this.CurrentIdMember,
         },
-      }).catch(() => {
-        this.NotificationsDelete("Đã sảy ra lỗi, không thể xóa");
+      }).catch((response) => {
+        this.NotificationsDelete(response.data.message);
       });
 
       HTTP.get("RemoveListJob", {
