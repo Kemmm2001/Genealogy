@@ -62,25 +62,18 @@ const generateRandomFileName = (file) => {
     return fileName;
 }
 
-const deleteImage = async (file) => {
+const deleteImage = async (filePath) => {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log("File : " + file);
-            if(file == null || file == undefined) return resolve();
-            let filePath;
-            if (file.path) {
-                console.log("file path : " + file.path)
-                filePath = file.path;
-            } else {
-                filePath = file;
-            }
+            console.log("Vào hàm deleteImage");
+            console.log("File : " + filePath);
             if (!isDataStringExist(filePath)) return resolve();
 
             // Kiểm tra quyền truy cập vào tệp
-            fs.promises.access(file.path, fs.constants.F_OK)
+            fs.promises.access(filePath, fs.constants.F_OK)
                 .then(() => {
                     // Tệp tồn tại, tiến hành xóa
-                    fs.unlink(file.path, (err) => {
+                    fs.unlink(filePath, (err) => {
                         if (err) {
                             console.error("Error deleting image: " + err);
                             reject(err);
