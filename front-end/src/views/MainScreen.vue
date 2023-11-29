@@ -124,7 +124,10 @@
               <div class="list-group-item" @click="openMemberModal('AddMother', 'Mẹ')">Thêm Mẹ</div>
               <div class="list-group-item" @click="openMemberModal('AddHusband', 'Chồng')">Thêm Chồng</div>
               <div class="list-group-item" @click="openMemberModal('AddWife', 'Vợ')">Thêm Vợ</div>
-              <div v-for="list in ListMarriedMember" :key="list.id" class="list-group-item" @click="openMemberModal('AddChild', 'Con',list.id)">Thêm Con với vợ {{list.name}}</div>
+              <div v-if="ListMarriedMember && ListMarriedMember.length > 0">
+                <div v-for="list in ListMarriedMember" :key="list.id" class="list-group-item" @click="openMemberModal('AddChild', 'Con', list.id)">Thêm Con với vợ {{ list.name }}</div>
+              </div>
+              <div v-else @click="openMemberModal('AddChild', 'Con')">Thêm Con</div>
               <div class="list-group-item" @click="openModalAddMemberFromList()">Thêm mối quan hệ từ Danh Sách</div>
               <div class="list-group-item" @click="openCfDelModal(false,null,TitleModal)">Xóa thành viên (*)</div>
               <div class="list-group-item feature-overview">Các chức năng Khác</div>
