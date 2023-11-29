@@ -1733,7 +1733,9 @@ export default {
           }
           if (response.data.success == true) {
             this.isUpdateAvatar = false;
-            this.nodes.length = this.nodes.length + 1;
+            if(this.action != "AddNormal"){
+              this.nodes.length = this.nodes.length + 1;
+            }
             this.NotificationsScuccess(response.data.message);
             this.$modal.hide("member-modal");
             this.$modal.hide("Select-option-Modal");

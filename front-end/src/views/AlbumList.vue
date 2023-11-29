@@ -180,11 +180,16 @@
                 <button class="btn btn-danger mr-2" style="margin: 10px;" :disabled="isButtonDisabled"
                   @click="removeFamilyPhotoByPhotoId()">Xóa Ảnh</button>
               </div>
-              <div class="add-photo-list d-flex">
-                <div class="edit-photo" v-for="(photo, index) in FamilyPhotoList"
-                  :class="{ choose: index == indexClickPhoto }" :key="index"
-                  @click="clickPhoto(index), getPhotoCurrentId(photo.PhotoID)" style="margin-left:10px;">
-                  <img :src="photo.PhotoUrl" style="width: 300px;">
+              <div class="add-photo-list d-flex flex-row w-100 h-100">
+                <div class="edit-photo" v-for="(photo, index) in FamilyPhotoList" :key="index"
+                  @click="clickPhoto(index), getPhotoCurrentId(photo.PhotoID)" style="margin-left:10px">
+                  <div class="d-flex flex-column" >
+                    <img src="https://cdn.diemnhangroup.com/seoulcenter/2022/11/gai-xinh-1.jpg" style="height: auto;width: 100%; ">
+                    <div class="w-100 d-flex justify-content-center pt-2">
+                    <input class="form-check p-0" style="height: 24px; width: 24px;" type="checkbox" v-model="ListCheckBoxPhoto[index]"
+                      @change="changeCheckPhoto(photo.PhotoID,index)" />
+                     </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -300,6 +305,21 @@ export default {
         this.ListPhotoAddRemove.splice(index, 1);
       }
     },
+    changeCheckPhoto(id,index) {
+      if (this.ListCheckBoxPhotoAdd[index]) {
+        this.listRemovePhotoAdd(id, 'add')
+      } else {
+        this.listRemovePhotoAdd(id, 'remove')
+      }
+    },
+    listRemovePhoto(id, type) {
+      if (type == 'add') {
+        this.ListPhotoRemove.push(id);
+      }
+      if (type == 'remove') {
+        this.ListPhotoRemove = this.ListPhotoRemove.filter(photo => photo !== id);
+      }
+    },
     clickPhoto(index) {
       this.indexClickPhoto = index
     },
@@ -403,19 +423,25 @@ export default {
     removeFamilyPhotoByPhotoId() {
       const isConfirmed = window.confirm("Bạn có chắc chắn muốn xóa ảnh này?");
       if (isConfirmed) {
-        HTTP.get("delete-familyphoto", {
+        for(let i = 0 ;i < this.ListCheckBoxPhoto.length;i++){
+          HTTP.get("delete-familyphoto", {
           params: {
-            PhotoID: this.photoCurrentId,
+            PhotoID: this.ListCheckBoxPhoto[i],
           },
         })
-          .then((response) => {
-            if (response.data.success) {
-              this.getFamilyPhotoByAlbumId()
-            }
+          .then(() => {
+            // if (response.data.success) {
+            //   this.getFamilyPhotoByAlbumId()
+            // }
           })
           .catch((e) => {
             console.log(e);
           });
+          if( i == this.ListCheckBoxPhoto.length - 1){
+            this.getFamilyPhotoByAlbumId()
+          }
+        }
+        
       }
       this.isButtonDisabled = true;
     },
@@ -504,6 +530,9 @@ export default {
         .then((response) => {
           if (response.data.success == true) {
             this.FamilyPhotoList = response.data.data;
+            for (let i = 0; i < this.FamilyPhotoList.length; i++) {
+              this.ListCheckBoxPhoto.push(false);
+            }
           } else {
             this.FamilyPhotoList = [];
           }
