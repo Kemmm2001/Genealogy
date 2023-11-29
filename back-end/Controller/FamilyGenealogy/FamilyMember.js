@@ -316,7 +316,7 @@ var updateMemberPhoto = async (req, res) => {
         db.connection.beginTransaction();
         console.log('Request req.body: ', req.body);
         console.log("req.file: ", req.file);
-        if(!CoreFunction.isDataStringExist(req.file)){
+        if (!CoreFunction.isDataStringExist(req.file)) {
             return res.send(Response.badRequestResponse(null, "File ảnh không hợp lệ"));
         }
         // các trường bắt buộc phải có trong req.body
@@ -478,11 +478,9 @@ var updateMemberToGenealogy = async (req, res) => {
         else if (req.body.Action == 'AddChild') {
             // nếu birthorder đã tồn tại thì ko thể add
             let listChild = await FamilyManagementService.getMembersByParentID(inGenealogyMemeber[0].MemberID);
-            for (let i = 0; i < listChild.length; i++) {
-                if (listChild[i].BirthOrder == outGenealogyMemeber[0].BirthOrder && listChild[i].MemberID != outGenealogyMemeber[0].MemberID) {
-                    let errorMessage = `Con thứ ${outGenealogyMemeber[0].BirthOrder} đã tồn tại`;
-                    return res.send(Response.badRequestResponse(null, errorMessage));
-                }
+            if (isBirthOrderExist(outGenealogyMemeber[0].MemberID, outGenealogyMemeber[0].BirthOrder, listChild)) {
+                let errorMessage = `Con thứ ${outGenealogyMemeber[0].BirthOrder} đã tồn tại`;
+                return res.send(Response.badRequestResponse(null, errorMessage));
             }
             await FamilyManagementService.setGeneration(inGenealogyMemeber[0].Generation + 1, outGenealogyMemeber[0].MemberID);
             // await FamilyManagementService.insertParentIdToMember(inGenealogyMemeber[0].MemberID, outGenealogyMemeber[0].MemberID);
