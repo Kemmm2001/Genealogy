@@ -66,6 +66,7 @@ const deleteImage = async (file) => {
     return new Promise(async (resolve, reject) => {
         try {
             console.log("File : " + file);
+            if(file == null || file == undefined) return resolve();
             let filePath;
             if (file.path) {
                 console.log("file path : " + file.path)
