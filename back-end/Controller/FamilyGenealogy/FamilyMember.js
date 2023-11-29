@@ -301,9 +301,9 @@ var addMember = async (req, res) => {
 
 var isBirthOrderExist = (memberID, birthOrder, listBirthOrderExist) => {
     console.log("Vào hàm isBirthOrderExist");
-    console.log("listBirthOrderExist length: ", listBirthOrderExist.length);
+    console.log(`listBirthOrderExist length:  ${listBirthOrderExist.length}, memberID: ${memberID}, birthOrder: ${birthOrder}`);
     for (let i = 0; i < listBirthOrderExist.length; i++) {
-        console.log(`listBirthOrderExist[i].BirthOrder: ${listBirthOrderExist[i].BirthOrder}, member birthorder: ${birthOrder}`);
+        console.log(`listBirthOrderExist[i].BirthOrder: ${listBirthOrderExist[i].BirthOrder}, listBirthOrderExist[i].MemberID: ${listBirthOrderExist[i].MemberID}`);
         if (listBirthOrderExist[i].BirthOrder == birthOrder && listBirthOrderExist[i].MemberID != memberID) {
             return true;
         }
@@ -392,7 +392,6 @@ var updateMember = async (req, res) => {
 
             return res.send(Response.badRequestResponse(null, errorMessage));
         }
-        req.body.Generation = dataMember[0].Generation;
         // update member vào database
         let data = await FamilyManagementService.updateMember(req.body);
         dataRes = {
