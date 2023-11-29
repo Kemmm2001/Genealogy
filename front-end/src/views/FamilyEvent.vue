@@ -49,11 +49,20 @@
               </thead>
               <tbody>
                 <tr class="normal" v-for="(week, weekIndex) in dayOfMonth" :key="weekIndex">
-                  <td class="ngaythang" v-for="(day, dayIndex) in week" :key="dayIndex" :class="{ choose: dayIndex == indexClickDay && weekIndex == indexClickWeek }" @click="clickDate(dayIndex, weekIndex)" :style="{ color: day.solar.month != currentMonth ? '#bebebe' : 'black' }">
-                    <div v-if="day.solar.date == 1" class="cn" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.solar.date + "/" + (day.solar.month + 1) }}</div>
-                    <div v-if="day.solar.date != 1" class="cn" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.solar.date }}</div>
-                    <div v-if="day.lunar.date == 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.lunar.date + "/" + (day.lunar.month + 1) }}</div>
-                    <div v-if="day.lunar.date != 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.lunar.date }}</div>
+                  <td class="ngaythang" v-for="(day, dayIndex) in week" :key="dayIndex"
+                    :class="{ choose: dayIndex == indexClickDay && weekIndex == indexClickWeek }"
+                    @click="clickDate(dayIndex, weekIndex)"
+                    :style="{ color: day.solar.month != currentMonth ? '#bebebe' : 'black' }">
+                    <div v-if="day.solar.date == 1" class="cn"
+                      @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.solar.date + "/" +
+                        (day.solar.month + 1) }}</div>
+                    <div v-if="day.solar.date != 1" class="cn"
+                      @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.solar.date }}</div>
+                    <div v-if="day.lunar.date == 1" class="am"
+                      @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.lunar.date + "/" +
+                        (day.lunar.month + 1) }}</div>
+                    <div v-if="day.lunar.date != 1" class="am"
+                      @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.lunar.date }}</div>
                   </td>
                 </tr>
               </tbody>
@@ -66,13 +75,14 @@
       <div class="h-100 p-3 bg-colored" style="background-color: #f2f2f2;">
         <div class="search-filter d-flex flex-row position-relative">
           <div class="search d-flex">
-            <input v-model="keySearch" type="text" class="form-control h-100" placeholder="Nhập tên sự kiện..." @change="searchEvent()" />
+            <input v-model="keySearch" type="text" class="form-control h-100" placeholder="Nhập tên sự kiện..."
+              @change="searchEvent()" />
           </div>
           <div class="d-flex flex-row" style="justify-content: end;">
             <div class="item">
               <select v-model="filterRepeat" class="form-control h-100" @change="filterEvent()">
                 <option :value="null">Kiểu lặp lại</option>
-                <option v-for="list in listRepeat" :key="list.id" :value="list.RepeatID">{{list.RepeatName}}</option>
+                <option v-for="list in listRepeat" :key="list.id" :value="list.RepeatID">{{ list.RepeatName }}</option>
               </select>
             </div>
             <div class="item">
@@ -99,21 +109,26 @@
                   <th class="eventlist-list-th" scope="col">Thời gian bắt đầu</th>
                   <th class="eventlist-list-th" scope="col">Thời gian kết thúc</th>
                   <th class="eventlist-list-th" scope="col">Địa điểm</th>
+                  <th class="eventlist-list-th" scope="col"></th>
                 </tr>
               </thead>
               <tbody>
-                <tr class="eventlist-item eventlist-table-item odd" v-for="(event,index) in listEvent" :key="event.EventID" @click="showEditEventModal(event.EventID)">
-                  <td>{{index+1}}</td>
-                  <td>{{event.EventName}}</td>
-                  <td>
-                    <div>{{formattedCreatedAt(event.StartDate)}} (DL)</div>
+                <tr style="cursor: pointer;" class="eventlist-item eventlist-table-item odd" v-for="(event, index) in listEvent"
+                  :key="event.EventID">
+                  <td @click="showEditEventModal(event.EventID)">{{ index + 1 }}</td>
+                  <td @click="showEditEventModal(event.EventID)">{{ event.EventName }}</td>
+                  <td @click="showEditEventModal(event.EventID)">
+                    <div>{{ formattedCreatedAt(event.StartDate) }} (DL)</div>
                     <div>02-01-2000 (AL)</div>
                   </td>
-                  <td>
-                    <div>{{event.EndDate}} (DL)</div>
+                  <td @click="showEditEventModal(event.EventID)">
+                    <div>{{ event.EndDate }} (DL)</div>
                     <div>02-01-2000 (AL)</div>
                   </td>
-                  <td>{{event.Place}}</td>
+                  <td @click="showEditEventModal(event.EventID)">{{ event.Place }}</td>
+                  <td @click="showParticipantList()">
+                    <div class="">Danh sách thành viên</div>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -121,15 +136,18 @@
         </div>
       </div>
     </div>
+
     <div class="add-event-container">
       <modal name="add-event-modal">
         <div class="form-group h-100">
           <div class="w-100 h-100 modal-bg position-relative">
             <div class="d-flex flex-row w-100 align-items-center position-relative">
-              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">{{titleModal}}</div>
+              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">{{ titleModal }}
+              </div>
               <div class="close-add-form" @click="closeAddEventModal()">
                 <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                  <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                  <path
+                    d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
                 </svg>
               </div>
             </div>
@@ -145,13 +163,15 @@
                   <div class="d-flex align-items-center px-2">Kiểu lặp lại</div>
                   <div>
                     <select v-model="eventFamily.RepeatID" class="form-control h-100">
-                      <option v-for="list in listRepeat" :key="list.id" :value="list.RepeatID">{{list.RepeatName}}</option>
+                      <option v-for="list in listRepeat" :key="list.id" :value="list.RepeatID">{{ list.RepeatName }}
+                      </option>
                     </select>
                   </div>
                 </div>
               </div>
               <div class="mt-2 px-2" style="height: 120px;">
-                <textarea v-model="eventFamily.Description" class="w-100 h-100 text-area description" placeholder="Mô tả"></textarea>
+                <textarea v-model="eventFamily.Description" class="w-100 h-100 text-area description"
+                  placeholder="Mô tả"></textarea>
               </div>
               <div class="item mt-2 px-2 d-flex flex-row">
                 <div class="d-flex align-items-center" style="width: 38px; margin-right: 8px;">Từ(*)</div>
@@ -191,6 +211,61 @@
               <div v-if="isAdd" @click="addEvent()" class="bg-primary text-white btn mx-2">Thêm</div>
               <div v-else @click="updateEvent()" class="bg-primary text-white btn mx-2">Lưu</div>
               <div @click="removeEvent()" class="bg-danger text-white btn mx-2">Xóa sự kiện</div>
+            </div>
+          </div>
+        </div>
+      </modal>
+    </div>
+
+    <div class="participant-container">
+      <modal name="participant-list">
+        <div class="form-group h-100">
+          <div class="w-100 h-100 modal-bg position-relative">
+            <div class="d-flex flex-row w-100 align-items-center position-relative">
+              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Danh sách thành
+                viên gia tộc</div>
+              <div class="close-add-form" @click="closeParticipantList()">
+                <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                  <path
+                    d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                </svg>
+              </div>
+            </div>
+            <div class="d-flex flex-row" style="height: calc(100% - 50px);">
+              <div class="col-6 mt-2 d-flex flex-column" style="padding-left: 8px; padding-right: 4px;">
+                <div class="item d-flex justify-content-center" style="background-color: aliceblue;">Có tham gia</div>
+                <div class="" style="overflow-y: auto; height: 480px;">
+                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
+                  <div class="item even">BAAAAAAAAAAAAAAA</div>
+                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
+                  <div class="item even">BAAAAAAAAAAAAAAA</div>
+                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
+                  <div class="item even">BAAAAAAAAAAAAAAA</div>
+                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
+                  <div class="item even">BAAAAAAAAAAAAAAA</div>
+                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
+                  <div class="item even">BAAAAAAAAAAAAAAA</div>
+                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
+                  <div class="item even">BAAAAAAAAAAAAAAA</div>
+                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
+                  <div class="item even">BAAAAAAAAAAAAAAA</div>
+                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
+                  <div class="item even">BAAAAAAAAAAAAAAA</div>
+                </div>
+              </div>
+
+              <div class="col-6 mt-2 d-flex flex-column" style="padding-left: 4px; padding-right: 8px;">
+                <div class="item d-flex justify-content-center" style="background-color: aliceblue;">Không tham gia</div>
+                <div class="" style="overflow-y: auto; height: 480px;">
+                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
+                  <div class="item even">BAAAAAAAAAAAAAAA</div>
+                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
+                  <div class="item even">BAAAAAAAAAAAAAAA</div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer position-absolute w-100" style="bottom: 0;">
+              <div @click="closeParticipantList()" class="bg-secondary text-white btn mx-2">Đóng</div>
             </div>
           </div>
         </div>
@@ -253,7 +328,7 @@ export default {
       return (dateString) => {
         const date = new Date(dateString);
         //const options = { timeZone: 'Asia/Ho_Chi_Minh' };
-        return date.toLocaleString('vi-VN', ""+Intl.DateTimeFormat().resolvedOptions().timeZone);
+        return date.toLocaleString('vi-VN', "" + Intl.DateTimeFormat().resolvedOptions().timeZone);
       };
     },
   },
@@ -512,6 +587,12 @@ export default {
     closeEditEventModal() {
       this.$modal.hide("edit-event-modal");
     },
+    showParticipantList() {
+      this.$modal.show("participant-list")
+    },
+    closeParticipantList() {
+      this.$modal.hide("participant-list")
+    }
   },
   mounted() {
     if (localStorage.getItem("CodeID") != null) {
@@ -544,11 +625,11 @@ td {
   padding: 8px;
   text-align: left;
 }
+
 td.ngaythang.choose {
   background-color: lightblue;
 }
 
 td.ngaythang:hover {
   cursor: pointer;
-}
-</style>
+}</style>
