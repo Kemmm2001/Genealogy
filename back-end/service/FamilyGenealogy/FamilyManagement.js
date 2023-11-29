@@ -1,5 +1,6 @@
 const db = require("../../Models/ConnectDB")
 const CoreFunction = require("../../Utils/CoreFunction");
+// nguyễn anh tuấn
 function addMember(member) {
     return new Promise((resolve, reject) => {
         try {
@@ -56,6 +57,7 @@ function addMember(member) {
     });
 }
 
+// nguyễn anh tuấn
 function updateMember(member) {
     return new Promise(async (resolve, reject) => {
         try {
@@ -130,9 +132,11 @@ function updateMember(member) {
 
 }
 
+// nguyễn anh tuấn
 // hàm có chức năng xóa ảnh trong thư mục
 const removeMemberPhoto = async (MemberID) => {
     try {
+        console.log("Vào hàm removeMemberPhoto với MemberID: " + MemberID);
         let querySelect = `SELECT * FROM familymember where MemberID = ?`;
         let value = [MemberID];
         return await deleteImageBySelectQuery(querySelect, value);
@@ -141,10 +145,12 @@ const removeMemberPhoto = async (MemberID) => {
         return false; // Trả về false nếu có lỗi
     }
 }
+
+// nguyễn anh tuấn
 const deleteImageBySelectQuery = async (query, values) => {
     try {
-        console.log("query: " + query);
-        console.log("values: " + values);
+        console.log("Vào hàm deleteImageBySelectQuery với query: " + query);
+        console.log("Vào hàm deleteImageBySelectQuery với values: " + values);
         db.connection.query(query, values, async (err, result) => {
             if (err) {
                 console.error("Error in query: " + err);
@@ -163,9 +169,11 @@ const deleteImageBySelectQuery = async (query, values) => {
     }
 }
 
+// nguyễn anh tuấn
 function deleteMember(memberId) {
     return new Promise(async (resolve, reject) => {
         try {
+            console.log("Vào hàm deleteMember");
             console.log("memberId: " + memberId);
             const isDeleted = removeMemberPhoto(memberId);
             // Tìm và xóa tất cả các thành viên liên quan
@@ -189,6 +197,7 @@ function deleteMember(memberId) {
     });
 }
 
+// nguyễn anh tuấn
 async function deleteMemberRelated(memberId) {
     // Định nghĩa hàm async để có thể sử dụng await bên trong
 
@@ -323,7 +332,7 @@ function insertParentIdToMember(fatherID, motherID, memberID) {
     }
     )
 }
-
+// nguyễn anh tuấn
 function insertFatherIDToMember(fatherID, memberID) {
     let query = `UPDATE familymember SET FatherID = ? WHERE MemberID = ?;`
     let values = [fatherID, memberID];
@@ -337,6 +346,7 @@ function insertFatherIDToMember(fatherID, memberID) {
     )
 }
 
+// nguyễn anh tuấn
 function insertMotherIDToMember(motherID, memberID) {
     let query = `UPDATE familymember SET MotherID = ? WHERE MemberID = ?;`
     let values = [motherID, memberID];
@@ -350,21 +360,6 @@ function insertMotherIDToMember(motherID, memberID) {
     )
 }
 
-
-function getRelationship(relationshipFrom, relationshipTo) {
-    let relationshipName = [relationshipFrom, relationshipTo];
-    return new Promise((resolve, reject) => {
-        const query = 'SELECT * FROM relationship WHERE relationshipname = ?  OR relationshipname = ?';
-        db.connection.query(query, relationshipName, (err, result) => {
-            if (err) {
-                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-                reject(err);
-            } else {
-                resolve(result);
-            }
-        });
-    });
-}
 function setGeneration(generation, memberId) {
     return new Promise((resolve, reject) => {
         const query = 'UPDATE familymember SET Generation = ? WHERE MemberID = ?';
@@ -615,7 +610,7 @@ function getMemberByMemberID(memberID) {
 }
 
 module.exports = {
-    addMember, updateMember, deleteMember, getRelationship, getMember, createRelationship, searchMember, getMemberByMemberID,
+    addMember, updateMember, deleteMember, getMember, createRelationship, searchMember, getMemberByMemberID,
     setGeneration, queryContactMembers,
     getAllMember, InsertMarriIdToMember, queryFamilyMembers, getAllMemberInMemberRole, getAllMemberNotInMemberRole, GetCurrentParentMember,
     insertFatherIDToMember, insertMotherIDToMember, getMembersByFatherID, getMembersByMotherID, getMembersByParentID,
