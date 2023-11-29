@@ -68,10 +68,10 @@ var addMember = async (req, res) => {
         db.connection.beginTransaction();
         // nếu có file ảnh thì lưu đường dẫn vào req.body.Image, còn ko thì gán null
         if (req.file != null) {
+            console.log("Đã vào trường hợp có file ảnh");
+            console.log("req.file.path: ", req.file.path);
             req.body.Image = req.file.path;
-        } else {
-            req.body.Image = null;
-        }
+        } 
         console.log('Request req.body: ', req.body);
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
@@ -226,9 +226,9 @@ var addMember = async (req, res) => {
                     listChild = await FamilyManagementService.getMembersByParentID(req.body.FatherID, req.body.MotherID);
                     parentGeneration = fatherData[0].Generation;
                 }
+                // nếu birthorder đã tồn tại thì ko thể add
                 if (isBirthOrderExist(data.insertId,req.body.BirthOrder, listChild)) {
                     let errorMessage = `Con thứ ${req.body.BirthOrder} đã tồn tại`;
-                    console.log(errorMessage);
                     CoreFunction.deleteImage(req.file);
                     return res.send(Response.badRequestResponse(null, errorMessage));
                 }
@@ -328,17 +328,27 @@ var updateMember = async (req, res) => {
             CoreFunction.deleteImage(req.file);
             return res.send(Response.dataNotFoundResponse());
         }
-        // nếu birthorder đã tồn tại thì ko thể add
-        if (dataMember[0].ParentID != null) {
-            let listChild = await FamilyManagementService.getMembersByParentID(dataMember[0].ParentID);
-            for (let i = 0; i < listChild.length; i++) {
-                if (listChild[i].BirthOrder == req.body.BirthOrder && listChild[i].MemberID != req.body.MemberID) {
-                    let errorMessage = `Con thứ ${req.body.BirthOrder} đã tồn tại`;
-                    CoreFunction.deleteImage(req.file);
-                    return res.send(Response.badRequestResponse(null, errorMessage));
-                }
-            }
-        }
+         // bắt đầu kiểm tra birthorder
+         let listChild;
+         // trường hợp có cha những ko có mẹ 
+         if (CoreFunction.isDataNumberExist(dataMember[0].FatherID) && !CoreFunction.isDataNumberExist(dataMember[0].MotherID)) {
+             listChild = await FamilyManagementService.getMembersByFatherID(dataMember[0].FatherID);
+         }
+         // trường hợp có mẹ những ko có cha
+         else if (!CoreFunction.isDataNumberExist(dataMember[0].FatherID) && CoreFunction.isDataNumberExist(dataMember[0].MotherID)) {
+             listChild = await FamilyManagementService.getMembersByMotherID(dataMember[0].MotherID);
+         }
+         // trường hợp có cả cha và mẹ
+         else if (CoreFunction.isDataNumberExist(dataMember[0].FatherID) && CoreFunction.isDataNumberExist(dataMember[0].MotherID)) {
+             listChild = await FamilyManagementService.getMembersByParentID(dataMember[0].FatherID, dataMember[0].MotherID);
+         }
+         // nếu birthorder đã tồn tại thì ko thể add
+         if (isBirthOrderExist(data.insertId,req.body.BirthOrder, listChild)) {
+             let errorMessage = `Con thứ ${req.body.BirthOrder} đã tồn tại`;
+             CoreFunction.deleteImage(req.file);
+             return res.send(Response.badRequestResponse(null, errorMessage));
+         }
+         // kết thúc kiểm tra birthorder
         if (req.file != null) {
             console.log("Đã vào trường hợp có file ảnh");
             req.body.Image = req.file.path;
