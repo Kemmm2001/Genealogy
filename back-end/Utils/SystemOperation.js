@@ -5,6 +5,8 @@ const db = require('../Models/ConnectDB')
 const EmailUtils = require('./EmailUtils');
 const Mail = require('nodemailer/lib/mailer');
 const BrevoMail = require('./BrevoMail');
+const xlsx = require('xlsx');
+
 let SendSMSCore = (objData) => {
     try {
         require('dotenv').config();
@@ -103,4 +105,16 @@ schedule.scheduleJob('0 0 * * *', () => {
 
 });
 
-module.exports = { SendSMSCore, SendEmailCore, SetHistorySendEmailandSMS, SetHistorySendEmail };
+var ReadXLSX = (file) => {
+    try {
+        const workbook = xlsx.readFile(file);
+        const sheet_name_list = workbook.SheetNames;
+        const data = xlsx.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
+        return data;
+    } catch (error) {
+        console.log("error : " + error);
+        return false;
+    }
+}
+
+module.exports = { SendSMSCore, SendEmailCore, SetHistorySendEmailandSMS, SetHistorySendEmail, ReadXLSX };

@@ -27,6 +27,34 @@ const isEmptyOrNullOrSpaces = (str) => {
 }
 
 
+const uploadExcelFile = (destinationFolder) => {
+    return multer({
+        storage: multer.diskStorage({
+            destination: function (req, file, cb) {
+                cb(null, `/uploads/excel/${destinationFolder}`);
+            },
+            filename: (req, file, cb) => {
+                // Tạo tên file ngẫu nhiên
+                let fileName = generateRandomFileName(file);
+
+                // Kiểm tra tồn tại
+                if(!fs.existsSync(`/uploads/excel/${destinationFolder}`)){
+                    fs.mkdirSync(`/uploads/excel/${destinationFolder}`);
+                }
+
+                const destPath = `/uploads/excel/${destinationFolder}/${fileName}`;
+                while (fs.existsSync(destPath)) {
+                    // Nếu tồn tại, tạo tên mới
+                    console.log('File đã tồn tại, tạo tên mới');
+                    fileName = generateRandomFileName(file);
+                }
+                console.log('Tên file mới:', fileName);
+                // Tên chưa tồn tại, lưu file
+                cb(null, fileName);
+            }
+        })
+    });
+};
 
 
 const uploadImage = (destinationFolder) => {
@@ -40,6 +68,9 @@ const uploadImage = (destinationFolder) => {
                 let fileName = generateRandomFileName(file);
 
                 // Kiểm tra tồn tại
+                if(!fs.existsSync(`/uploads/images/${destinationFolder}`)){
+                    fs.mkdirSync(`/uploads/images/${destinationFolder}`);
+                }
                 const destPath = `/uploads/images/${destinationFolder}/${fileName}`;
                 while (fs.existsSync(destPath)) {
                     // Nếu tồn tại, tạo tên mới
@@ -110,4 +141,4 @@ const isDataNumberExist = (data) => {
     return data != null && data != undefined && data != '' && data != 0;
 }
 
-module.exports = { missingFields, uploadImage, deleteImage, isEmptyOrNullOrSpaces, isDataStringExist, isDataNumberExist };
+module.exports = { missingFields, uploadImage, deleteImage, isEmptyOrNullOrSpaces, isDataStringExist, isDataNumberExist, uploadExcelFile };

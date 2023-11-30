@@ -3,8 +3,8 @@ const FamilyMember = require('../../service/FamilyGenealogy/FamilyManagement');
 const EventAttendence = require('../../service/EventGenealogy/EventAttendence');
 const SystemAction = require('../../Utils/SystemOperation');
 const Response = require('../../Utils/Response');
+const xlsx = require('xlsx');
 const { signInviteToken, verifyInviteToken } = require('../../helper/jwt_helper')
-
 
 var getAllEventGenealogy = async (req, res) => {
     try {
@@ -327,6 +327,36 @@ var SendEmail = async (req, res) => {
     }
 };
 
+var ReadXLSX = async (req, res) => {
+    try {
+        console.log("Vào hàm ReadXLSX");
+        console.log("req.file: ", req.file);
+        const file = req.file.path;
+        console.log("file: ", file);
+        let spreadsheet = xlsx.readFile(file);
+        const sheets = spreadsheet.SheetNames;
+        for(let i = 0; i < sheets.length; i++){
+            console.log('Sheet ' + i + ' -- ' + sheets[i]);
+        }
+        const firstSheet = spreadsheet.Sheets[sheets[0]];
+
+        // Lấy ra dòng 1
+        const row1 = firstSheet['!ref'].split(':')[0] + ':' + firstSheet['!ref'].split(':')[0];
+        const row1Values = xlsx.utils.sheet_to_json(firstSheet, {header:1, range: row1})[0];
+        
+        // Lấy ra dòng 2
+        const row2 = firstSheet['!ref'].split(':')[0] + ':' + firstSheet['!ref'].split(':')[0]; 
+        const row2Values = xlsx.utils.sheet_to_json(firstSheet, {header:1, range: row2})[0];
+        
+        console.log('Row 1: ', row1Values); 
+        console.log('Row 2: ', row2Values);
+        return res.send(Response.successResponse());
+    } catch (error) {
+        console.log(error);
+        return res.send(Response.internalServerErrorResponse());
+    }
+};
+
 var addAttendence = async (req, res) => {
     try {
         let { eventID } = req.body
@@ -439,5 +469,5 @@ var verifyMail = async (req, res) => {
 module.exports = {
     getAllEventGenealogy, InsertEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth,
     SendSMS, SendEmail, searchEvent, filterEvent, SendSMSToMember, getAllEventRepetition, getInformationEvent, sendEmailToMember
-    , addAttendence, inviteMail, verifyMail
+    , addAttendence, inviteMail, verifyMail, ReadXLSX
 }
