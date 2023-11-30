@@ -117,4 +117,38 @@ module.exports = {
       });
     })
   }),
+
+  signInviteToken: (memberId, time ) => {
+    return new Promise((resolve, reject) => {
+      const payload = {
+        memberId
+      }
+      const secret = process.env.REPASS_TOKEN_SECRET
+      const options = {
+        expiresIn: time,
+      }
+      JWT.sign(payload, secret, options, (err, token) => {
+        if (err) {
+          console.log(err.message)
+          reject(createError.InternalServerError())
+        }
+        resolve(token)
+      })
+    })
+  },
+
+  verifyInviteToken: (token => {
+    return new Promise((resolve, reject) => {
+      JWT.verify(token, process.env.REPASS_TOKEN_SECRET, (err, payload) => {
+        if (err) {
+          if (err.name === 'TokenExpiredError') {
+            return resolve.json({ error: 'Token expired' });
+          } else {
+            return resolve.json({ error: 'Invalid token' });
+          }
+        }
+        resolve(payload);
+      });
+    })
+  })
 }

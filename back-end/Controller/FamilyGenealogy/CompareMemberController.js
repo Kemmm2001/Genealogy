@@ -4,39 +4,47 @@ const Response = require("../../Utils/Response");
 
 var compareMember = async (req, res) => {
     try {
-        let idMember1;
-        let idMember2;
-        generationMember1 = await CompareMemberService.getGenerationByID(req.query.MemberID1);
-        generationMember2 = await CompareMemberService.getGenerationByID(req.query.MemberID2);
+        let idMember1 = req.query.MemberID1;
+        let idMember2 = req.query.MemberID2;
+        let newIdToCampereMember1;
+        let newIdToCampereMember2;
+        let Flag1 = false;
+        let Flag2 = false;
+        let generationMember1 = await CompareMemberService.getGenerationByID(req.query.MemberID1);
+        let generationMember2 = await CompareMemberService.getGenerationByID(req.query.MemberID2);
 
         //Kiểm tra xem người đó có phải làm dâu hoặc làm rể không và gán id mới nhất
         if (generationMember1[0].Generation != 1) {
             newIdToCampereMember1 = await CompareMemberService.checkBrideOrGroom(req.query.MemberID1)
-            console.log('newId1: ' + newIdToCampereMember1)
+            if (newIdToCampereMember1 != req.query.MemberID1) {
+                Flag1 = true
+            }
         }
         if (generationMember2[0].Generation != 1) {
             newIdToCampereMember2 = await CompareMemberService.checkBrideOrGroom(req.query.MemberID2)
+            if (newIdToCampereMember2 != req.query.MemberID2) {
+                Flag2 = true
+            }
         }
 
         let DefferenceGeneration = generationMember2[0].Generation - generationMember1[0].Generation;
         if (DefferenceGeneration == 0) {
-            console.log("vào đây")
+            console.log("Vào đây")
         } else if (DefferenceGeneration < 0) {
+            let resultCheckMaternalOrPaternal = await CompareMemberService.checkMaternalOrPaternal(newIdToCampereMember1);
             idMember1 = await CompareMemberService.getIdToCompare(DefferenceGeneration, newIdToCampereMember1);
-            console.log('idMember1: ' + idMember1)
-            // data = await CompareMemberService.GetResultCompare(MemberID1, MemberID2, DefferenceGeneration, Flag1, Flag2, inforMember1[0].Male, inforMember2[0].Male)
-            // res.send(data)
+            let data = await CompareMemberService.GetResultCompare(idMember1, idMember2, DefferenceGeneration, Flag1, Flag2, generationMember1[0].Male, generationMember2[0].Male, resultCheckMaternalOrPaternal)
+            if (data) {
+                return res.send(Response.successResponse(data))
+            }
         } else {
+            let resultCheckMaternalOrPaternal = await CompareMemberService.checkMaternalOrPaternal(newIdToCampereMember2);
             idMember2 = await CompareMemberService.getIdToCompare(DefferenceGeneration, newIdToCampereMember2);
-            console.log('idMember2: ' + idMember2)
-            let data = await CompareMemberService.GetResultCompare(MemberID1, MemberID2, DefferenceGeneration, Flag1, Flag2, inforMember1[0].Male, inforMember2[0].Male)         
+            let data = await CompareMemberService.GetResultCompare(idMember1, idMember2, DefferenceGeneration, Flag1, Flag2, generationMember1[0].Male, generationMember2[0].Male, resultCheckMaternalOrPaternal)
             if (data) {
                 return res.send(Response.successResponse(data))
             }
         }
-
-
-
     } catch (error) {
 
     }

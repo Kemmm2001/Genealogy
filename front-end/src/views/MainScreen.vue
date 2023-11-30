@@ -539,8 +539,8 @@
                 </div>
               </div>
               <div class="col-9" style="padding-top: 15px" v-if="extendedInfo">
-                <div class="row">
-                  <div class="col-4">
+                <div class="d-flex flex-row">
+                  <div v-if="isEdit" class="col-4">
                     <img style="height:316px;width:100%;margin-bottom:20px" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" />
                     <svg v-else style="margin-bottom:36px" fill="#000000" height="275px" width="100%" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
                       <g>
@@ -560,7 +560,7 @@
                       <input type="file" class="form-control input-file" id="imageUpload" accept="image/*" @change="updateAvatar($event)" />
                     </div>
                   </div>
-                  <div class="col-8">
+                  <div class="d-flex flex-column justify-content-center" style="flex-grow: 1;">
                     <div style="position: relative; margin-right:10px">
                       <input v-model="objMemberInfor.MemberName" type="text" class="form-control modal-item" placeholder />
                       <label class="form-label" for="input" :class="{ 'active': objMemberInfor.MemberName }">Tên thành viên đầy đủ</label>
@@ -577,6 +577,18 @@
                     </div>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
+                        <!-- <select v-model="objMemberInfor.Male" class="form-select modal-item" v-if="action == 'AddFather'">
+                          <option value="1" selected>Nam</option>
+                        </select>
+                        <select v-model="objMemberInfor.Male" class="form-select modal-item" v-else-if="action == 'AddMother'">
+                          <option value="0" selected>Nữ</option>
+                        </select>
+                        <select v-model="objMemberInfor.Male" class="form-select modal-item" v-else-if="action == 'AddHusband'">
+                          <option value="1" selected>Nam</option>
+                        </select>
+                        <select v-model="objMemberInfor.Male" class="form-select modal-item" v-else-if="action == 'AddWife'">
+                          <option value="0" selected>Nữ</option>
+                        </select> -->
                         <select v-model="objMemberInfor.Male" class="form-select modal-item">
                           <option value="1">Nam</option>
                           <option value="0">Nữ</option>
@@ -1145,7 +1157,7 @@ export default {
           field_2: "generation",
           isGG: "isGG",
         },
-
+        sticky: false,
         // lazyLoading: false,
         nodeMouseClick: FamilyTree.action.none,
       });
@@ -1161,7 +1173,9 @@ export default {
             nodeElement = document.querySelector(
               '[data-n-id="' + this.selectedNodes[i] + '"]'
             );
-            nodeElement.classList.add("selected");
+            if (nodeElement != null) {
+              nodeElement.classList.add("selected");
+            }
           }
         }
         if (this.notSelectedNodes.length != 0) {
@@ -1169,7 +1183,9 @@ export default {
             nodeElement = document.querySelector(
               '[data-n-id="' + this.notSelectedNodes[i] + '"]'
             );
-            nodeElement.classList.add("notselected");
+            if (nodeElement != null) {
+              nodeElement.classList.add("notselected");
+            }
           }
         }
         if (
@@ -2060,6 +2076,10 @@ export default {
       this.objMemberContact = {};
       this.TitleModal = "Thêm Thông Tin " + title;
       this.action = action;
+      if(this.action == 'AddMother' || this.action == 'AddWife'){
+        this.objMemberInfor.Male = 0
+      }
+      console.log(this.action)
       this.$modal.show("member-modal");
     },
     closeMemberModal() {

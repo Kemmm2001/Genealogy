@@ -1,8 +1,7 @@
 <template>
     <div>
+        <!-- Modal thông báo event -->
         <div @click="showEventNoti()" class="btn bg-primary text-white mx-2">Show</div>
-        <div @click="showEventExpired()" class="btn bg-primary text-white mx-2">Show</div>
-
         <div class="eventNoti-modal-container">
             <modal name="eventNoti-modal">
                 <div class="w-100 h-100 add-head-modal">
@@ -36,7 +35,10 @@
                 </div>
             </modal>
         </div>
+        <!-- -------------- -->
 
+        <!-- Modal event hết hạn -->
+        <div @click="showEventExpired()" class="btn bg-primary text-white mx-2">Show</div>
         <div class="expiredEvent-modal-container">
             <modal name="expiredEvent-modal">
                 <div class="w-100 h-100 add-head-modal">
@@ -64,6 +66,13 @@
                 </div>
             </modal>
         </div>
+        <!-- ----------------- -->
+
+        <input type="file" @change="handleFileChange" />
+        <div v-if="imageInfo">
+            <p>Width: {{ imageInfo.width }} pixels</p>
+            <p>Height: {{ imageInfo.height }} pixels</p>
+        </div>
     </div>
 </template>
 
@@ -71,7 +80,7 @@
 export default {
     data() {
         return {
-
+            imageInfo: null,
         }
     },
     methods: {
@@ -86,6 +95,27 @@ export default {
         },
         closeEventExpired() {
             this.$modal.hide("expiredEvent-modal");
+        },
+
+        handleFileChange(event) {
+            const file = event.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.src = e.target.result;
+
+                    img.onload = () => {
+                        this.imageInfo = {
+                            width: img.width,
+                            height: img.height,
+                        };
+                    };
+                };
+                reader.readAsDataURL(file);
+            }
         },
     }
 }

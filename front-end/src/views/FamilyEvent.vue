@@ -50,11 +50,11 @@
               <tbody>
                 <tr class="normal" v-for="(week, weekIndex) in dayOfMonth" :key="weekIndex">
                   <td class="ngaythang" v-for="(day, dayIndex) in week" :key="dayIndex" :class="{ choose: dayIndex == indexClickDay && weekIndex == indexClickWeek }" @click="clickDate(dayIndex, weekIndex)" :style="{ color: day.solar.month != currentMonth ? '#bebebe' : 'black' }">
-                    <div v-if="day.solar.date == 1" class="cn" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.solar.date + "/" + (day.solar.month + 1) }}</div>
+                    <div v-if="day.solar.date == 1" class="cn" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.solar.date + "/" + (day.solar.month) }}</div>
                     <div v-if="day.solar.date != 1" class="cn" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.solar.date }}</div>
-                    <div v-if="day.lunar.date == 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.lunar.date + "/" + (day.lunar.month + 1) }}</div>
+                    <div v-if="day.lunar.date == 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.lunar.date + "/" + (day.lunar.month) }}</div>
                     <div v-if="day.lunar.date != 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.lunar.date }}</div>
-                    <div v-if="checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)" @click="getListEventByDate(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)">Có sự kiện</div>
+                    <div v-if="checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)" @click="getListEventByDate(`${day.solar.year}-${day.solar.month}-${day.solar.date}`),showEventModal()  ">Có sự kiện</div>
                   </td>
                 </tr>
               </tbody>
@@ -263,6 +263,50 @@
         </div>
       </modal>
     </div>
+
+    <div class="event-modal-container">
+      <modal name="event-modal">
+        <div class="w-100 h-100 add-head-modal">
+          <div class="d-flex flex-row w-100 align-items-center position-relative">
+            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Sự kiện trong ngày {{formatDate(dateSelected)}}</div>
+            <div class="close-add-form" @click="closeEventModal()">
+              <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+              </svg>
+            </div>
+          </div>
+          <div class="w-100 d-flex flex-column align-items-center justify-content-center" style="height: calc(100% - 50px);">
+            <div class="d-flex align-items-center px-3" style="font-size: 19px;">
+            <table class="table table-eventlist eventlist-list m-0">
+              <thead style="position: sticky; top: 0;">
+                <tr class="eventlist-item">
+                  <th class="eventlist-list-th" scope="col">#</th>
+                  <th class="eventlist-list-th" scope="col">Tên sự kiện</th>
+                  <th class="eventlist-list-th" scope="col">Thời gian bắt đầu</th>
+                  <th class="eventlist-list-th" scope="col">Thời gian kết thúc</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="cursor: pointer;" class="eventlist-item eventlist-table-item odd" v-for="(event, index) in listEventByDate"
+                  :key="event.EventID">
+                  <td @click="showEditEventModal(event.EventID)">{{ index + 1 }}</td>
+                  <td @click="showEditEventModal(event.EventID)">{{ event.EventName }}</td>
+                  <td @click="showEditEventModal(event.EventID)">
+                    <div>{{ formattedCreatedAt(event.StartDate) }} (DL)</div>
+                    <div>{{formattedCreatedAt(convertSolarToLunar(event.StartDate))}} (AL)</div>
+                  </td>
+                  <td @click="showEditEventModal(event.EventID)">
+                    <div>{{ formattedCreatedAt(event.EndDate) }} (DL)</div>
+                    <div>{{formattedCreatedAt(convertSolarToLunar(event.EndDate))}} (AL)</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+          </div>
+        </div>
+      </modal>
+    </div>
   </div>
 </template>
 
@@ -315,6 +359,7 @@ export default {
       listEvent: [],
       listRepeat: null,
       listEventByDate:[],
+      dateSelected:null,
     };
   },
   computed: {
@@ -327,12 +372,18 @@ export default {
     },
   },
   methods: {
+    formatDate(dateString) {
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${day}/${month}/${year}`;
+    },
     convertTZ(date, tzString) {
       return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));
     },
 
     convertSolarToLunar(dateConvert) {
-      console.log(dateConvert)
       let Dob = new Date(dateConvert);
       let month = new LunarDate(Dob).getMonth();
       let date = new LunarDate(Dob).getDate();
@@ -342,17 +393,15 @@ export default {
       if (new LunarDate(Dob).getDate() < 10) {
         date = "0" + new LunarDate(Dob).getDate();
       }
-      console.log(new LunarDate(Dob).getMonth())
-      console.log(month)
       let result =new LunarDate(Dob).getYear() + "-" + month + "-" + date + "T"+new Date(dateConvert).getHours()+":"+new Date(dateConvert).getUTCMinutes()+":0"+new Date(dateConvert).getUTCSeconds()
-      console.log(result)
       return result
     },
     getListEventByDate(dateCheck){
       this.listEventByDate = [];
-      let startDate
-      let endDate
-      let selectedDate
+      this.dateSelected = dateCheck;
+      let startDate;
+      let endDate;
+      let selectedDate;
       for(let i = 0 ; i < this.listEvent.length;i++){
         startDate = new Date(this.listEvent[i].StartDate);
         startDate.setHours(0, 0, 0, 0);
@@ -363,7 +412,6 @@ export default {
           this.listEventByDate.push(this.listEvent[i])
         }
       }
-      console.log(this.listEventByDate);
     },
     checkDateEvent(dateCheck){
       let startDate
@@ -641,7 +689,13 @@ export default {
     },
     closeParticipantList() {
       this.$modal.hide("participant-list")
-    }
+    },
+    showEventModal() {
+      this.$modal.show("event-modal")
+    },
+    closeEventModal() {
+      this.$modal.hide("event-modal")
+    },
   },
   mounted() {
     if (localStorage.getItem("CodeID") != null) {

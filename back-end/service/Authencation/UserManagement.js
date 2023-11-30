@@ -15,6 +15,7 @@ function checkMail(email) {
     });
   });
 }
+
 function checkToken(token) {
   return new Promise((resolve, reject) => {
     const query = `SELECT COUNT(*) AS count FROM genealogy.account WHERE RePassToken = ?`;
