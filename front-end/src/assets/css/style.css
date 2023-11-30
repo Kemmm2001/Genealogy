@@ -148,3 +148,8 @@ th{
     height: 70%;
     width: 70%;
 }
+
+.fitHeight{
+    height: 100% !important;
+    width: fit-content !important;
+}
