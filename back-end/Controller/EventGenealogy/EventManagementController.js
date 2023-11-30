@@ -1,7 +1,7 @@
 const EventManagementService = require('../../service/EventGenealogy/EventManagement');
 const SystemAction = require('../../Utils/SystemOperation');
 const Response = require('../../Utils/Response');
-
+const xlsx = require('xlsx');
 var getAllEventGenealogy = async (req, res) => {
     try {
         let CodeID = req.query.CodeID;
@@ -231,11 +231,11 @@ var sendEmailToMember = async (req, res) => {
         objData.subject = req.body.subject;
         objData.text = req.body.text;
         objData.html = req.body.html;
-        let CodeID = req.body.CodeID;      
-        let data = await EventManagementService.getListEmail(listID);    
-        
+        let CodeID = req.body.CodeID;
+        let data = await EventManagementService.getListEmail(listID);
+
         if (data) {
-            for (let i = 0; i < data.length; i++) {      
+            for (let i = 0; i < data.length; i++) {
                 ExecuteSendEmail(data[i], objData.subject, objData.text, objData.html, res);
             }
         } else {
@@ -323,8 +323,39 @@ var SendEmail = async (req, res) => {
     }
 };
 
+var ReadXLSX = async (req, res) => {
+    try {
+        console.log("Vào hàm ReadXLSX");
+        console.log("req.file: ", req.file);
+        const file = req.file.path;
+        console.log("file: ", file);
+        let spreadsheet = xlsx.readFile(file);
+        const sheets = spreadsheet.SheetNames;
+        for(let i = 0; i < sheets.length; i++){
+            console.log('Sheet ' + i + ' -- ' + sheets[i]);
+        }
+        const firstSheet = spreadsheet.Sheets[sheets[0]];
+
+        // Lấy ra dòng 1
+        const row1 = firstSheet['!ref'].split(':')[0] + ':' + firstSheet['!ref'].split(':')[0];
+        const row1Values = xlsx.utils.sheet_to_json(firstSheet, {header:1, range: row1})[0];
+        
+        // Lấy ra dòng 2
+        const row2 = firstSheet['!ref'].split(':')[0] + ':' + firstSheet['!ref'].split(':')[0]; 
+        const row2Values = xlsx.utils.sheet_to_json(firstSheet, {header:1, range: row2})[0];
+        
+        console.log('Row 1: ', row1Values); 
+        console.log('Row 2: ', row2Values);
+        return res.send(Response.successResponse());
+    } catch (error) {
+        console.log(error);
+        return res.send(Response.internalServerErrorResponse());
+    }
+};
+
 module.exports = {
     getAllEventGenealogy, InsertEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth,
-    SendSMS, SendEmail, searchEvent, filterEvent, SendSMSToMember, getAllEventRepetition, getInformationEvent, sendEmailToMember
+    SendSMS, SendEmail, searchEvent, filterEvent, SendSMSToMember, getAllEventRepetition, getInformationEvent, sendEmailToMember,
+    ReadXLSX
 
 }

@@ -1,5 +1,6 @@
 const express = require('express');
 const EventManagementController = require('../Controller/EventGenealogy/EventManagementController')
+const CoreFunction = require('../Utils/CoreFunction');
 var router = express.Router();
 
 
@@ -22,7 +23,7 @@ const initWebRouter = (app) => {
     // router.post('/send-email', EventManagementController.SendEmail)
     router.post('/send-email', EventManagementController.sendEmailToMember)
     router.post('/send-email-core', EventManagementController.SendEmail)
-
+    router.post('/read-xlsx', CoreFunction.uploadExcelFile('family-member-xlsx').single('xlsx'), EventManagementController.ReadXLSX)
 
     //API Nhật anh  
     router.post('/filter-event', EventManagementController.filterEvent);
