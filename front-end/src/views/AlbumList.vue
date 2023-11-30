@@ -154,17 +154,18 @@
             </div>
             <div class="add-photo-list d-flex" style="height: calc(100% - 50px);">
             <div class="d-flex flex-row w-100 h-100">
-              <div class="add-photo d-flex flex-row" v-for="(photo, index) in FamilyPhotoListAddShow" :key="index"
-                @click="clickPhotoAdd(index)">
-                <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background-color: #000;">
-                  <img style="width: 100%; height: fit-content;" :src="photo" :class="{fitHeight : listHeightLarger[index]}">
+              <div class="add-photo d-flex flex-column">
+                <div class="d-flex flex-column" style="height: 80%; width: 100%;" v-for="(photo, index) in FamilyPhotoListAddShow" :key="index"
+                  @click="clickPhotoAdd(index)">
+                  <div class="h-100 d-flex align-items-center justify-content-center" style="background-color: #000;">
+                    <img style="width: 100%; height: fit-content;" :src="photo" :class="{fitHeight : listHeightLarger[index]}">
+                </div>
                 </div>
                 <div class="w-100 d-flex justify-content-center pt-2">
                   <input class="form-check p-0" style="height: 24px; width: 24px;" type="checkbox" v-model="ListCheckBoxPhotoAdd[index]"
-                    @change="changeCheckPhotoAdd(index)" />
+                  @change="changeCheckPhotoAdd(index)" />
                 </div>
               </div>
-              
             </div>
             </div>
           </div>
@@ -185,7 +186,7 @@
                 <button class="btn btn-danger mr-2" style="margin: 10px;" :disabled="isButtonDisabled"
                   @click="removeFamilyPhotoByPhotoId()">Xóa Ảnh</button>
               </div>
-              <div class="add-photo-list d-flex flex-row w-100 h-100" style="overflow-y: auto;">
+              <div class="add-photo-list d-flex flex-column w-100 h-100" style="overflow-y: auto;">
                 <div class="edit-photo" v-for="(photo, index) in FamilyPhotoList" :key="index"
                   @click="clickPhoto(index), getPhotoCurrentId(photo.PhotoID)" style="margin-left:10px;width: 20%;height: 20%;background-color: black;">
                   <div class="d-flex flex-column" >
