@@ -10,8 +10,8 @@
           </div>
         </div>
         <div class="col-md-6 d-flex align-items-center" style="justify-content: right;">
-          <button @click=" showCfDel()"
-            class="btn articlelist-item articlelist-item-button text-center my-4 mx-2" :disabled="isButtonDisabledAlbum">Xóa album</button>
+          <button @click=" showCfDel()" class="btn articlelist-item articlelist-item-button text-center my-4 mx-2"
+            :disabled="isButtonDisabledAlbum">Xóa album</button>
           <button @click="openAddAlbumModal()"
             class="btn articlelist-item articlelist-item-button text-center my-4 mx-2">Tạo album</button>
         </div>
@@ -153,21 +153,20 @@
               <button class="btn btn-primary mr-2" @click="addFamilyPhotoByAlbumId()" style="margin: 10px;">Lưu</button>
             </div>
             <div class="add-photo-list d-flex" style="height: calc(100% - 50px);">
-            <div class="d-flex flex-row w-100 h-100">
-              <div class="add-photo d-flex flex-column">
-                <div class="d-flex flex-column" style="height: 80%; width: 100%;" v-for="(photo, index) in FamilyPhotoListAddShow" :key="index"
-                  @click="clickPhotoAdd(index)">
-                  <div class="h-100 d-flex align-items-center justify-content-center" style="background-color: #000;">
-                    <img style="width: 100%; height: fit-content;" :src="photo" :class="{fitHeight : listHeightLarger[index]}">
+              <div class="d-flex flex-row w-100 h-100">
+                <div class="add-photo d-flex flex-row position-relative" v-for="(photo, index) in FamilyPhotoListAddShow"
+                  :key="index" @click="clickPhotoAdd(index)">
+                  <div class="w-100 h-100 d-flex align-items-center justify-content-center"
+                    style="background-color: #000;">
+                    <img style="width: 100%; height: fit-content;" :src="photo"
+                      :class="{ fitHeight: listHeightLarger[index] }">
+                  </div>
+                  <div class="w-100 d-flex position-absolute" style="top: 0; right: 0;">
+                    <input class="form-check p-0" style="height: 24px; width: 24px;" type="checkbox"
+                      v-model="ListCheckBoxPhotoAdd[index]" @change="changeCheckPhotoAdd(index)" />
+                  </div>
                 </div>
-                </div>
-                <div class="w-100 d-flex justify-content-center pt-2">
-                  <input class="form-check p-0" style="height: 24px; width: 24px;" type="checkbox" v-model="ListCheckBoxPhotoAdd[index]"
-                  @change="changeCheckPhotoAdd(index)" />
-                </div>
-
               </div>
-            </div>
             </div>
           </div>
         </div>
@@ -187,7 +186,7 @@
                 <button class="btn btn-danger mr-2" style="margin: 10px;" :disabled="isButtonDisabledPhoto"
                   @click="removeFamilyPhotoByPhotoId()">Xóa Ảnh</button>
               </div>
-              <div class="add-photo-list d-flex flex-column w-100 h-100" style="overflow-y: auto;">
+              <div class="add-photo-list d-flex flex-row w-100 h-100" style="overflow-y: auto;">
                 <div class="edit-photo" v-for="(photo, index) in FamilyPhotoList" :key="index"
                   @click="clickPhoto(index), getPhotoCurrentId(photo.PhotoID)"
                   style="margin-left:10px;width: 20%;height: 20%;background-color: black;">
@@ -230,7 +229,7 @@
               album {{ albumPhoto.AlbumName }}</div>
             <div class="d-flex flex-row w-100" style="height: 30%;">
               <div class="col-6 d-flex align-items-center justify-content-center">
-                <div class="btn bg-danger text-white" @click="removeAlbumPhotoByAlbumId(),closeCfDelModal()">Có</div>
+                <div class="btn bg-danger text-white" @click="removeAlbumPhotoByAlbumId(), closeCfDelModal()">Có</div>
               </div>
               <div class="col-6 d-flex align-items-center justify-content-center">
                 <div class="btn bg-primary text-white" @click="closeCfDelModal()">Không</div>
@@ -306,9 +305,9 @@ export default {
         this.listRemoveAlbum(id, 'remove')
       }
       console.log(this.ListAlbumRemove.length)
-      if(this.ListAlbumRemove.length != 0){
+      if (this.ListAlbumRemove.length != 0) {
         this.isButtonDisabledAlbum = false
-      }else{
+      } else {
         this.isButtonDisabledAlbum = true
       }
     },
@@ -326,9 +325,9 @@ export default {
       } else {
         this.listRemovePhotoAdd(index, 'remove')
       }
-      if(this.ListPhotoAddRemove.length != 0){
+      if (this.ListPhotoAddRemove.length != 0) {
         this.isButtonDisabledPhotoAdd = false
-      }else{
+      } else {
         this.isButtonDisabledPhotoAdd = true
       }
     },
@@ -339,7 +338,7 @@ export default {
       if (type == 'remove') {
         this.ListPhotoAddRemove.splice(index, 1);
       }
-      
+
     },
     changeCheckPhoto(id, index) {
       if (this.ListCheckBoxPhoto[index]) {
@@ -347,9 +346,9 @@ export default {
       } else {
         this.listRemovePhoto(id, 'remove')
       }
-      if(this.ListPhotoRemove.length != 0){
+      if (this.ListPhotoRemove.length != 0) {
         this.isButtonDisabledPhoto = false
-      }else{
+      } else {
         this.isButtonDisabledPhoto = true
       }
     },
@@ -428,7 +427,7 @@ export default {
     },
     handleFileChangePhoto(event) {
       const file = event.target.files[0];
- //     let count = this.listHeightLarger+1;
+      //     let count = this.listHeightLarger+1;
       let check = 0;
       this.FamilyPhotoListAdd.push(file)
       if (this.FamilyPhotoListAdd[this.FamilyPhotoListAdd.length - 1]) {
@@ -440,7 +439,7 @@ export default {
           const img = new Image();
           img.src = e.target.result;
           img.onload = () => {
-            check +=1;
+            check += 1;
             console.log(check)
             if (img.width != 0 && img.height != 0) {
               this.checkPhotoSize(img.width, img.height)
@@ -453,7 +452,7 @@ export default {
       this.getAlbumPhotoByCodeId();
     },
     checkPhotoSize(width, height) {
-      console.log(width,height)
+      console.log(width, height)
       if (width > height) {
         this.heightLarger = false;
       } else {
@@ -747,6 +746,7 @@ export default {
 
 .add-photo {
   margin: 10px;
-  width: 30%;
+  width: 20%;
   height: 25%;
-}</style>
+}
+</style>
