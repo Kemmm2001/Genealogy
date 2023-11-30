@@ -539,8 +539,8 @@
                 </div>
               </div>
               <div class="col-9" style="padding-top: 15px" v-if="extendedInfo">
-                <div class="row">
-                  <div class="col-4">
+                <div class="d-flex flex-row">
+                  <div v-if="isEdit" class="col-4">
                     <img style="height:316px;width:100%;margin-bottom:20px" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" />
                     <svg v-else style="margin-bottom:36px" fill="#000000" height="275px" width="100%" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
                       <g>
@@ -560,7 +560,7 @@
                       <input type="file" class="form-control input-file" id="imageUpload" accept="image/*" @change="updateAvatar($event)" />
                     </div>
                   </div>
-                  <div class="col-8">
+                  <div class="d-flex flex-column justify-content-center" style="flex-grow: 1;">
                     <div style="position: relative; margin-right:10px">
                       <input v-model="objMemberInfor.MemberName" type="text" class="form-control modal-item" placeholder />
                       <label class="form-label" for="input" :class="{ 'active': objMemberInfor.MemberName }">Tên thành viên đầy đủ</label>

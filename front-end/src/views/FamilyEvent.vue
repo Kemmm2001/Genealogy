@@ -54,6 +54,7 @@
                     <div v-if="day.solar.date != 1" class="cn" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.solar.date }}</div>
                     <div v-if="day.lunar.date == 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.lunar.date + "/" + (day.lunar.month + 1) }}</div>
                     <div v-if="day.lunar.date != 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.lunar.date }}</div>
+                    <div v-if="checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)" @click="getListEventByDate(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)">Có sự kiện</div>
                   </td>
                 </tr>
               </tbody>
@@ -110,11 +111,11 @@
                   <td @click="showEditEventModal(event.EventID)">{{ event.EventName }}</td>
                   <td @click="showEditEventModal(event.EventID)">
                     <div>{{ formattedCreatedAt(event.StartDate) }} (DL)</div>
-                    <div>02-01-2000 (AL)</div>
+                    <div>{{formattedCreatedAt(convertSolarToLunar(event.StartDate))}} (AL)</div>
                   </td>
                   <td @click="showEditEventModal(event.EventID)">
-                    <div>{{ event.EndDate }} (DL)</div>
-                    <div>02-01-2000 (AL)</div>
+                    <div>{{ formattedCreatedAt(event.EndDate) }} (DL)</div>
+                    <div>{{formattedCreatedAt(convertSolarToLunar(event.EndDate))}} (AL)</div>
                   </td>
                   <td @click="showEditEventModal(event.EventID)">{{ event.Place }}</td>
                   <td @click="showParticipantList()">
@@ -269,6 +270,7 @@
 import Snackbar from "awesome-snackbar";
 import { Calendar } from "vietnamese-lunar-calendar";
 import { HTTP } from "../assets/js/baseAPI.js";
+import { LunarDate } from "vietnamese-lunar-calendar";
 export default {
   data() {
     return {
@@ -312,6 +314,7 @@ export default {
       currentEventId: null,
       listEvent: [],
       listRepeat: null,
+      listEventByDate:[],
     };
   },
   computed: {
@@ -324,24 +327,59 @@ export default {
     },
   },
   methods: {
-    checkDateEvent(dateCheck){
+    convertTZ(date, tzString) {
+      return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));
+    },
+
+    convertSolarToLunar(dateConvert) {
+      console.log(dateConvert)
+      let Dob = new Date(dateConvert);
+      let month = new LunarDate(Dob).getMonth();
+      let date = new LunarDate(Dob).getDate();
+      if (new LunarDate(Dob).getMonth() < 10) {
+        month = "0" + new LunarDate(Dob).getMonth();
+      }
+      if (new LunarDate(Dob).getDate() < 10) {
+        date = "0" + new LunarDate(Dob).getDate();
+      }
+      console.log(new LunarDate(Dob).getMonth())
+      console.log(month)
+      let result =new LunarDate(Dob).getYear() + "-" + month + "-" + date + "T"+new Date(dateConvert).getHours()+":"+new Date(dateConvert).getUTCMinutes()+":0"+new Date(dateConvert).getUTCSeconds()
+      console.log(result)
+      return result
+    },
+    getListEventByDate(dateCheck){
+      this.listEventByDate = [];
       let startDate
       let endDate
       let selectedDate
-      console.log(dateCheck)
       for(let i = 0 ; i < this.listEvent.length;i++){
         startDate = new Date(this.listEvent[i].StartDate);
         startDate.setHours(0, 0, 0, 0);
         endDate = new Date(this.listEvent[i].EndDate);
         selectedDate = new Date(dateCheck);
-        console.log(startDate)
+        let check = selectedDate >= startDate && selectedDate <= endDate;
+        if(check == true){
+          this.listEventByDate.push(this.listEvent[i])
+        }
+      }
+      console.log(this.listEventByDate);
+    },
+    checkDateEvent(dateCheck){
+      let startDate
+      let endDate
+      let selectedDate
+      for(let i = 0 ; i < this.listEvent.length;i++){
+        startDate = new Date(this.listEvent[i].StartDate);
+        startDate.setHours(0, 0, 0, 0);
+        endDate = new Date(this.listEvent[i].EndDate);
+        selectedDate = new Date(dateCheck);
         let check = selectedDate >= startDate && selectedDate <= endDate;
         return check;
       }
-      
       return false
       // Kiểm tra xem ngày được chọn có nằm trong khoảng hay không
-      
+
     },
     NotificationsDelete(messagee) {
       new Snackbar(messagee, {
