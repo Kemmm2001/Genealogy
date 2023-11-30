@@ -404,7 +404,6 @@ export default {
           if(img.width != 0 && img.height != 0){
             this.checkPhotoSize(img.width,img.height)
           }
-          
         };
         reader.readAsDataURL(this.FamilyPhotoListAdd[this.FamilyPhotoListAdd.length - 1]);
       }

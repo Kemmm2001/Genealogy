@@ -49,6 +49,13 @@
     height: 36px;
 }
 
+.event-screen .event-modal-container .vm--container{
+    height: 45%;
+    width: 45%;
+    inset: 0;
+    margin: auto;
+}
+
 .event-screen .text-area{
     resize: none;
     outline: none;
