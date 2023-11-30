@@ -128,7 +128,6 @@ const getMarriageByWifeID = async (wifeID) => {
         }
     });
 };
-
 // Get a marriage record by codeID
 const getMarriageByCodeID = async (codeID) => {
     return new Promise((resolve, reject) => {
@@ -171,6 +170,28 @@ const getMarriageByMarriageID = async (marriageID) => {
     });
 };
 
+// Get a marriage record by husbandID or wifeID
+const getMarriageByHusbandIDOrWifeID = async (husWifeID) => {
+    return new Promise((resolve, reject) => {
+        try {
+            const query = "SELECT * FROM marriage WHERE husbandID = ? OR wifeID = ?";
+            const values = [husWifeID, husWifeID];
+            db.connection.query(query, values, (err, result) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            });
+        } catch (error) {
+            console.log(error);
+            reject(error);
+        }
+    });
+};
+
+
 // Get a marriage record by husbandID and wifeID
 const getMarriageByHusbandIDAndWifeID = async (husbandID, wifeID) => {
     return new Promise((resolve, reject) => {
@@ -203,4 +224,5 @@ module.exports = {
     getMarriageByCodeID,
     getMarriageByMarriageID,
     getMarriageByHusbandIDAndWifeID,
+    getMarriageByHusbandIDOrWifeID
 };
