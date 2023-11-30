@@ -370,6 +370,12 @@ var updateMember = async (req, res) => {
 
             return res.send(Response.dataNotFoundResponse());
         }
+        // nễu đã có người liên quan như vợ chồng hay con cái thì không thể thay đổi giới tính
+        if (isHasRelatedPerson(dataMember[0]) == true) {
+            if(req.body.Male != dataMember[0].Male){
+                return res.send(Response.badRequestResponse(null, "Thành viên này đã có người liên quan, không thể thay đổi giới tính"));
+            }
+        }
         // bắt đầu kiểm tra birthorder
         let listChild;
         // trường hợp có cha nhưng ko có mẹ 
@@ -406,6 +412,26 @@ var updateMember = async (req, res) => {
 
         return res.send(Response.internalServerErrorResponse());
     }
+}
+
+var isHasRelatedPerson = (dataMember) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let listChild = await FamilyManagementService.getMembersByParentID(dataMember.MemberID);
+            console.log(`listChild: ${JSON.stringify(listChild)}`)
+            let listMarriage = await MarriageManagement.getMarriageByHusbandIDOrWifeID(dataMember.MemberID);
+            console.log(`listMarriage: ${JSON.stringify(listMarriage)}`)
+            if (listChild.length > 0 || listMarriage.length > 0) {
+                console.log("Có người liên quan");
+                resolve(true);
+            }
+            console.log("Không có người liên quan");
+            resolve(false);
+        } catch (error) {
+            console.log(error)
+            reject(error)
+        }
+    })
 }
 
 var updateMemberToGenealogy = async (req, res) => {
