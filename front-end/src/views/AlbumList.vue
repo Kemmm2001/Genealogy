@@ -158,7 +158,6 @@
                 @click="clickPhotoAdd(index)">
                 <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background-color: #000;">
                   <img style="width: 100%; height: fit-content;" :src="photo" :class="{fitHeight : listHeightLarger[index]}">
-                  <div>{{listHeightLarger[index]}}</div>
                 </div>
                 <div class="w-100 d-flex justify-content-center pt-2">
                   <input class="form-check p-0" style="height: 24px; width: 24px;" type="checkbox" v-model="ListCheckBoxPhotoAdd[index]"
@@ -442,6 +441,7 @@ export default {
     removeFamilyPhotoAdd() {
       for (let i = 0; i < this.ListPhotoAddRemove.length; i++) {
         this.FamilyPhotoListAddShow.splice(this.ListPhotoAddRemove[i], 1);
+        this.listHeightLarger.splice(this.ListPhotoAddRemove[i], 1);
         this.FamilyPhotoListAdd.splice(this.ListPhotoAddRemove[i], 1);
       }
       this.ListCheckBoxPhotoAdd = []
