@@ -156,15 +156,16 @@
             <div class="d-flex flex-row w-100 h-100">
               <div class="add-photo d-flex flex-row" v-for="(photo, index) in FamilyPhotoListAddShow" :key="index"
                 @click="clickPhotoAdd(index)">
-                <div v-for="(value, index) in listHeightLarger" :key="index" class="w-100 h-100 d-flex align-items-center justify-content-center" style="background-color: #000;">
-                  <!-- <img style="width: 100%; height: fit-content;" :src="photo" :class="{fitHeight : value}"> -->
-                  <div>{{value}}</div>
+                <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background-color: #000;">
+                  <img style="width: 100%; height: fit-content;" :src="photo" :class="{fitHeight : listHeightLarger[index]}">
+                  <div>{{listHeightLarger[index]}}</div>
                 </div>
-              </div>
-              <div class="w-100 d-flex justify-content-center pt-2">
+                <div class="w-100 d-flex justify-content-center pt-2">
                   <input class="form-check p-0" style="height: 24px; width: 24px;" type="checkbox" v-model="ListCheckBoxPhotoAdd[index]"
                     @change="changeCheckPhotoAdd(index)" />
                 </div>
+              </div>
+              
             </div>
             </div>
           </div>
@@ -189,7 +190,7 @@
                 <div class="edit-photo" v-for="(photo, index) in FamilyPhotoList" :key="index"
                   @click="clickPhoto(index), getPhotoCurrentId(photo.PhotoID)" style="margin-left:10px;width: 20%;height: 20%;background-color: black;">
                   <div class="d-flex flex-column" >
-                    <img src="https://cdn.diemnhangroup.com/seoulcenter/2022/11/gai-xinh-1.jpg" ref="imageRef" @load="adjustImageSize()" style="height: auto;width: auto; ">
+                    <img src="https://cdn.diemnhangroup.com/seoulcenter/2022/11/gai-xinh-1.jpg" ref="imageRef" style="height: auto;width: auto; ">
                     <div class="w-100 d-flex justify-content-center pt-2">
                     <input class="form-check p-0" style="height: 24px; width: 24px;" type="checkbox" v-model="ListCheckBoxPhoto[index]"
                       @change="changeCheckPhoto(photo.PhotoID,index)" />
@@ -405,8 +406,9 @@ export default {
             this.heightLarger = true;
           }
           this.listHeightLarger.push(this.heightLarger);
-          console.log(this.heightLarger)
+          
         };
+        console.log(this.listHeightLarger)
         reader.readAsDataURL(this.FamilyPhotoListAdd[this.FamilyPhotoListAdd.length - 1]);
       }
       this.ListCheckBoxPhotoAdd.push(false)
