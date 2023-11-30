@@ -49,12 +49,12 @@
               </thead>
               <tbody>
                 <tr class="normal" v-for="(week, weekIndex) in dayOfMonth" :key="weekIndex">
-                  <td class="ngaythang" v-for="(day, dayIndex) in week" :key="dayIndex" :class="{ choose: dayIndex == indexClickDay && weekIndex == indexClickWeek }" @click="clickDate(dayIndex, weekIndex); showEventModal()" :style="{ color: day.solar.month != currentMonth ? '#bebebe' : 'black' }">
-                    <div v-if="day.solar.date == 1" class="cn" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.solar.date + "/" + (day.solar.month + 1) }}</div>
+                  <td class="ngaythang" v-for="(day, dayIndex) in week" :key="dayIndex" :class="{ choose: dayIndex == indexClickDay && weekIndex == indexClickWeek }" @click="clickDate(dayIndex, weekIndex)" :style="{ color: day.solar.month != currentMonth ? '#bebebe' : 'black' }">
+                    <div v-if="day.solar.date == 1" class="cn" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.solar.date + "/" + (day.solar.month) }}</div>
                     <div v-if="day.solar.date != 1" class="cn" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.solar.date }}</div>
-                    <div v-if="day.lunar.date == 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.lunar.date + "/" + (day.lunar.month + 1) }}</div>
+                    <div v-if="day.lunar.date == 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.lunar.date + "/" + (day.lunar.month) }}</div>
                     <div v-if="day.lunar.date != 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.lunar.date }}</div>
-                    <div v-if="checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)" @click="getListEventByDate(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)">Có sự kiện</div>
+                    <div v-if="checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)" @click="getListEventByDate(`${day.solar.year}-${day.solar.month}-${day.solar.date}`),showEventModal()  ">Có sự kiện</div>
                   </td>
                 </tr>
               </tbody>

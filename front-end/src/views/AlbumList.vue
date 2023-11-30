@@ -10,8 +10,8 @@
           </div>
         </div>
         <div class="col-md-6 d-flex align-items-center" style="justify-content: right;">
-          <button @click="removeAlbumPhotoByAlbumId(); showCfDel()"
-            class="btn articlelist-item articlelist-item-button text-center my-4 mx-2">Xóa album</button>
+          <button @click=" showCfDel()"
+            class="btn articlelist-item articlelist-item-button text-center my-4 mx-2" :disabled="isButtonDisabledAlbum">Xóa album</button>
           <button @click="openAddAlbumModal()"
             class="btn articlelist-item articlelist-item-button text-center my-4 mx-2">Tạo album</button>
         </div>
@@ -148,24 +148,26 @@
                 ảnh</button>
               <input id="fileAdd" type="file" class="hidden-input form-control" @change="handleFileChangePhoto"
                 style="display: none;" />
-              <button class="btn btn-danger mr-2" :disabled="isButtonDisabled" @click="removeFamilyPhotoAdd()"
+              <button class="btn btn-danger mr-2" :disabled="isButtonDisabledPhotoAdd" @click="removeFamilyPhotoAdd()"
                 style="margin: 10px;">Xóa Ảnh</button>
               <button class="btn btn-primary mr-2" @click="addFamilyPhotoByAlbumId()" style="margin: 10px;">Lưu</button>
             </div>
             <div class="add-photo-list d-flex" style="height: calc(100% - 50px);">
-            <div class="d-flex flex-row w-100 h-100">
-              <div class="add-photo d-flex flex-row" v-for="(photo, index) in FamilyPhotoListAddShow" :key="index"
-                @click="clickPhotoAdd(index)">
-                <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background-color: #000;">
-                  <img style="width: 100%; height: fit-content;" :src="photo" :class="{fitHeight : listHeightLarger[index]}">
+              <div class="d-flex flex-row w-100 h-100">
+                <div class="add-photo d-flex flex-row" v-for="(photo, index) in FamilyPhotoListAddShow" :key="index"
+                  @click="clickPhotoAdd(index)">
+                  <div class="w-100 h-100 d-flex align-items-center justify-content-center"
+                    style="background-color: #000;">
+                    <img style="width: 100%; height: fit-content;" :src="photo"
+                      :class="{ fitHeight: listHeightLarger[index] }">
+                  </div>
+                  <div class="w-100 d-flex justify-content-center pt-2">
+                    <input class="form-check p-0" style="height: 24px; width: 24px;" type="checkbox"
+                      v-model="ListCheckBoxPhotoAdd[index]" @change="changeCheckPhotoAdd(index)" />
+                  </div>
                 </div>
-                <div class="w-100 d-flex justify-content-center pt-2">
-                  <input class="form-check p-0" style="height: 24px; width: 24px;" type="checkbox" v-model="ListCheckBoxPhotoAdd[index]"
-                    @change="changeCheckPhotoAdd(index)" />
-                </div>
+
               </div>
-              
-            </div>
             </div>
           </div>
         </div>
@@ -182,20 +184,23 @@
                 <button class="btn btn-primary mr-2" style="margin: 10px;"
                   @click="checkAddPhotoModalOpen(), openAddPhotoModal()">Thêm ảnh</button>
 
-                <button class="btn btn-danger mr-2" style="margin: 10px;" :disabled="isButtonDisabled"
+                <button class="btn btn-danger mr-2" style="margin: 10px;" :disabled="isButtonDisabledPhoto"
                   @click="removeFamilyPhotoByPhotoId()">Xóa Ảnh</button>
               </div>
               <div class="add-photo-list d-flex flex-row w-100 h-100" style="overflow-y: auto;">
                 <div class="edit-photo" v-for="(photo, index) in FamilyPhotoList" :key="index"
-                  @click="clickPhoto(index), getPhotoCurrentId(photo.PhotoID)" style="margin-left:10px;width: 20%;height: 20%;background-color: black;">
+                  @click="clickPhoto(index), getPhotoCurrentId(photo.PhotoID)"
+                  style="margin-left:10px;width: 20%;height: 20%;background-color: black;">
                   <div class="d-flex flex-column" style="width: 100%;height: 100%;">
-                    <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background-color: #000;">
-                      <img src="https://cdn.diemnhangroup.com/seoulcenter/2022/11/gai-xinh-1.jpg" ref="imageRef" :class="{fitHeight : listHeightLarger[index]}" style="height: 100% ;width: auto; ">
+                    <div class="w-100 h-100 d-flex align-items-center justify-content-center"
+                      style="background-color: #000;">
+                      <img src="https://cdn.diemnhangroup.com/seoulcenter/2022/11/gai-xinh-1.jpg" ref="imageRef"
+                        :class="{ fitHeight: listHeightLarger[index] }" style="height: 100% ;width: auto; ">
                     </div>
                     <div class="w-100 d-flex justify-content-center pt-2">
-                    <input class="form-check p-0" style="height: 24px; width: 24px;" type="checkbox" v-model="ListCheckBoxPhoto[index]"
-                      @change="changeCheckPhoto(photo.PhotoID,index)" />
-                     </div>
+                      <input class="form-check p-0" style="height: 24px; width: 24px;" type="checkbox"
+                        v-model="ListCheckBoxPhoto[index]" @change="changeCheckPhoto(photo.PhotoID, index)" />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -209,21 +214,26 @@
       <modal name="cfdel-modal">
         <div class="w-100 h-100 add-head-modal">
           <div class="d-flex flex-row w-100 align-items-center position-relative">
-            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100 text-white" style="background-color: rgb(255, 8, 0);;">Quan trọng</div>
+            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100 text-white"
+              style="background-color: rgb(255, 8, 0);;">Quan trọng</div>
             <div class="close-add-form" @click="closeCfDelModal()">
-              <svg class="close-add-form-icon" style="fill: #FFFFFF !important;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+              <svg class="close-add-form-icon" style="fill: #FFFFFF !important;" xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 384 512">
+                <path
+                  d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
               </svg>
             </div>
           </div>
-          <div class="w-100 d-flex flex-column align-items-center justify-content-center" style="height: calc(100% - 50px);">
-            <div class="d-flex align-items-center px-3" style="height: 70%; font-size: 19px;">Bạn có chắc chắn muốn xóa album AAAAA</div>
+          <div class="w-100 d-flex flex-column align-items-center justify-content-center"
+            style="height: calc(100% - 50px);">
+            <div class="d-flex align-items-center px-3" style="height: 70%; font-size: 19px;">Bạn có chắc chắn muốn xóa
+              album {{ albumPhoto.AlbumName }}</div>
             <div class="d-flex flex-row w-100" style="height: 30%;">
               <div class="col-6 d-flex align-items-center justify-content-center">
-                <div class="btn bg-danger text-white">Có</div>
+                <div class="btn bg-danger text-white" @click="removeAlbumPhotoByAlbumId(),closeCfDelModal()">Có</div>
               </div>
               <div class="col-6 d-flex align-items-center justify-content-center">
-                <div class="btn bg-primary text-white">Không</div>
+                <div class="btn bg-primary text-white" @click="closeCfDelModal()">Không</div>
               </div>
             </div>
           </div>
@@ -261,7 +271,9 @@ export default {
       FamilyPhotoList: [],
 
       trClicked: false,
-      isButtonDisabled: true,
+      isButtonDisabledAlbum: true,
+      isButtonDisabledPhoto: true,
+      isButtonDisabledPhotoAdd: true,
       imageSrc: null,
       indexClickPhoto: null,
       indexClickPhotoAdd: null,
@@ -283,7 +295,7 @@ export default {
 
       heightLarger: false,
       listHeightLarger: [],
-      img:null,
+      img: null,
     };
   },
   methods: {
@@ -292,6 +304,12 @@ export default {
         this.listRemoveAlbum(id, 'add')
       } else {
         this.listRemoveAlbum(id, 'remove')
+      }
+      console.log(this.ListAlbumRemove.length)
+      if(this.ListAlbumRemove.length != 0){
+        this.isButtonDisabledAlbum = false
+      }else{
+        this.isButtonDisabledAlbum = true
       }
     },
     listRemoveAlbum(id, type) {
@@ -308,6 +326,11 @@ export default {
       } else {
         this.listRemovePhotoAdd(index, 'remove')
       }
+      if(this.ListPhotoAddRemove.length != 0){
+        this.isButtonDisabledPhotoAdd = false
+      }else{
+        this.isButtonDisabledPhotoAdd = true
+      }
     },
     listRemovePhotoAdd(index, type) {
       if (type == 'add') {
@@ -316,12 +339,18 @@ export default {
       if (type == 'remove') {
         this.ListPhotoAddRemove.splice(index, 1);
       }
+      
     },
-    changeCheckPhoto(id,index) {
+    changeCheckPhoto(id, index) {
       if (this.ListCheckBoxPhoto[index]) {
         this.listRemovePhoto(id, 'add')
       } else {
         this.listRemovePhoto(id, 'remove')
+      }
+      if(this.ListPhotoRemove.length != 0){
+        this.isButtonDisabledPhoto = false
+      }else{
+        this.isButtonDisabledPhoto = true
       }
     },
     listRemovePhoto(id, type) {
@@ -373,6 +402,7 @@ export default {
     openEditAlbumModal() {
       this.listHeightLarger = [];
       this.$modal.show("editAlbum-modal");
+      this.isButtonDisabledPhoto = true;
     },
     closeEditAlbumModal() {
       this.$modal.hide("editAlbum-modal");
@@ -383,6 +413,7 @@ export default {
         this.FamilyPhotoListAdd = [];
         this.FamilyPhotoListAddShow = [];
         this.listHeightLarger = [];
+        this.isButtonDisabledPhotoAdd = true;
       }
       this.checkAddPhotoModal = true;
       this.$modal.show("addPhoto-modal");
@@ -404,8 +435,8 @@ export default {
           this.FamilyPhotoListAddShow.push(this.imageSrc);
           const img = new Image();
           img.src = e.target.result;
-          if(img.width != 0 && img.height != 0){
-            this.checkPhotoSize(img.width,img.height)
+          if (img.width != 0 && img.height != 0) {
+            this.checkPhotoSize(img.width, img.height)
           }
         };
         reader.readAsDataURL(this.FamilyPhotoListAdd[this.FamilyPhotoListAdd.length - 1]);
@@ -413,10 +444,10 @@ export default {
       this.ListCheckBoxPhotoAdd.push(false)
       this.getAlbumPhotoByCodeId();
     },
-    checkPhotoSize(width,height){
-      if(width > height){
+    checkPhotoSize(width, height) {
+      if (width > height) {
         this.heightLarger = false;
-      }else {
+      } else {
         this.heightLarger = true;
       }
       this.listHeightLarger.push(this.heightLarger);
@@ -471,11 +502,8 @@ export default {
         });
     },
     removeFamilyPhotoByPhotoId() {
-      const isConfirmed = window.confirm("Bạn có chắc chắn muốn xóa ảnh này?");
-      console.log(this.ListPhotoRemove)
-      if (isConfirmed) {
-        for(let i = 0 ;i < this.ListPhotoRemove.length;i++){
-          HTTP.get("delete-familyphoto", {
+      for (let i = 0; i < this.ListPhotoRemove.length; i++) {
+        HTTP.get("delete-familyphoto", {
           params: {
             PhotoID: this.ListPhotoRemove[i],
           },
@@ -489,33 +517,28 @@ export default {
           .catch((e) => {
             console.log(e);
           });
-          // if( i == this.ListCheckBoxPhoto.length - 1){
-          //   this.getFamilyPhotoByAlbumId()
-          // }
-        }
-        
+        // if( i == this.ListCheckBoxPhoto.length - 1){
+        //   this.getFamilyPhotoByAlbumId()
+        // }
       }
       this.isButtonDisabled = true;
     },
     removeAlbumPhotoByAlbumId() {
-      const isConfirmed = window.confirm("Bạn có chắc chắn muốn xóa album này?");
-      if (isConfirmed) {
-        for (let i = 0; i < this.ListAlbumRemove.length; i++) {
-          HTTP.get("delete-albumphoto", {
-            params: {
-              AlbumID: this.ListAlbumRemove[i],
-            },
+      for (let i = 0; i < this.ListAlbumRemove.length; i++) {
+        HTTP.get("delete-albumphoto", {
+          params: {
+            AlbumID: this.ListAlbumRemove[i],
+          },
+        })
+          .then((response) => {
+            if (response.data.success == true) {
+              this.getAlbumPhotoByCodeId();
+              this.NotificationsDelete(response.data.message)
+            }
           })
-            .then((response) => {
-              if (response.data.success == true) {
-                this.getAlbumPhotoByCodeId();
-                this.NotificationsDelete(response.data.message)
-              }
-            })
-            .catch((e) => {
-              console.log(e);
-            });
-        }
+          .catch((e) => {
+            console.log(e);
+          });
       }
     },
     updateAlbum() {
@@ -638,31 +661,31 @@ export default {
     },
   },
   NotificationsDelete(messagee) {
-      new Snackbar(messagee, {
-        position: "bottom-right",
-        theme: "light",
-        style: {
-          container: [
-            ["background-color", "#ff4d4d"],
-            ["border-radius", "5px"],
-          ],
-          message: [["color", "#fff"]],
-        },
-      });
-    },
-    NotificationsScuccess(messagee) {
-      new Snackbar(messagee, {
-        position: "bottom-right",
-        theme: "light",
-        style: {
-          container: [
-            ["background-color", "#1abc9c"],
-            ["border-radius", "5px"],
-          ],
-          message: [["color", "#fff"]],
-        },
-      });
-    },
+    new Snackbar(messagee, {
+      position: "bottom-right",
+      theme: "light",
+      style: {
+        container: [
+          ["background-color", "#ff4d4d"],
+          ["border-radius", "5px"],
+        ],
+        message: [["color", "#fff"]],
+      },
+    });
+  },
+  NotificationsScuccess(messagee) {
+    new Snackbar(messagee, {
+      position: "bottom-right",
+      theme: "light",
+      style: {
+        container: [
+          ["background-color", "#1abc9c"],
+          ["border-radius", "5px"],
+        ],
+        message: [["color", "#fff"]],
+      },
+    });
+  },
   mounted() {
     if (localStorage.getItem("CodeID") != null) {
       this.CodeID = localStorage.getItem("CodeID");
@@ -681,13 +704,13 @@ export default {
     // EventBus.$emit("AlbumList", true);
     // EventBus.$emit("ArticleList", false);
   },
-  watch:{
-    imageInfo(){
-      if(this.imageInfo.width < this.imageInfo.height){
+  watch: {
+    imageInfo() {
+      if (this.imageInfo.width < this.imageInfo.height) {
         this.heightLarger = false;
         console.log(this.imageInfo.width);
         console.log(this.imageInfo.height);
-      }else if(this.imageInfo.width >= this.imageInfo.height){
+      } else if (this.imageInfo.width >= this.imageInfo.height) {
         this.heightLarger = true;
         console.log(this.imageInfo.width);
         console.log(this.imageInfo.height);
@@ -717,5 +740,4 @@ export default {
   margin: 10px;
   width: 30%;
   height: 25%;
-}
-</style>
+}</style>
