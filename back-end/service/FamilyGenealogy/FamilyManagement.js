@@ -145,49 +145,11 @@ function updateMemberPhoto(memberPhotoUrl, memberId) {
 }
 
 // nguyễn anh tuấn
-// hàm có chức năng xóa ảnh trong thư mục
-const removeMemberPhoto = async (MemberID) => {
-    try {
-        console.log("Vào hàm removeMemberPhoto với MemberID: " + MemberID);
-        let querySelect = `SELECT * FROM familymember where MemberID = ?`;
-        let value = [MemberID];
-        return await deleteImageBySelectQuery(querySelect, value);
-    } catch (err) {
-        console.error("Error : " + err);
-        return false; // Trả về false nếu có lỗi
-    }
-}
-
-// nguyễn anh tuấn
-const deleteImageBySelectQuery = async (query, values) => {
-    try {
-        console.log("Vào hàm deleteImageBySelectQuery với query: " + query);
-        console.log("Vào hàm deleteImageBySelectQuery với values: " + values);
-        db.connection.query(query, values, async (err, result) => {
-            if (err) {
-                console.error("Error in query: " + err);
-                return false; // Trả về false nếu có lỗi
-            } else {
-                if (result[0].Image == null || result[0].Image == "") return true;
-                // Gọi hàm deleteImage để xóa ảnh
-                const isDeleted = await CoreFunction.deleteImage(result[0].Image);
-                console.log(`isDeleted: ${isDeleted}`);
-                return isDeleted;
-            }
-        });
-    } catch (err) {
-        console.error("Error: " + err);
-        return false; // Trả về false nếu có lỗi
-    }
-}
-
-// nguyễn anh tuấn
 function deleteMember(memberId) {
     return new Promise(async (resolve, reject) => {
         try {
             console.log("Vào hàm deleteMember");
             console.log("memberId: " + memberId);
-            const isDeleted = removeMemberPhoto(memberId);
             // Tìm và xóa tất cả các thành viên liên quan
             await deleteMemberRelated(memberId);
             // bắt đầu xóa member
@@ -234,37 +196,17 @@ async function deleteMemberRelated(memberId) {
 
     let listParentIDToCheck = [];
     // Danh sách các ParentID cần kiểm tra  
-
+    let listChilds = [];
     while (parentID != null) {
         // Vòng lặp kiểm tra cho tới khi parentID = null (không có cha/mẹ)
         // lấy tất cả thông tin vợ chồng của người hiện tại
         let listMarriages;
         // nếu người hiện tại là nam thì lấy tất cả thông tin vợ
-        if (member[0].Male == 1) {
-            listMarriages = await MarriageManagement.getMarriageByHusbandID(parentID);
-            for (let index = 0; index < listMarriages.length; index++) {
-                let listChilds = await getMembersByFatherID(listMarriages[index].MarriageID);
-                for (let index = 0; index < listChilds.length; index++) {
-                    let listChilds = await getMembersByFatherID(listMarriages[index].MarriageID);
-                    memberIdsToUpdate.push(listMarriages[index].WifeID);
-                }
-
-                memberIdsToUpdate.push(listMarriages[index].WifeID);
-            }
-        // nếu người hiện tại là nữ thì lấy tất cả thông tin chồng
-        } else {
-            listMarriages = await MarriageManagement.getMarriageByWifeID(parentID);
-            for (let index = 0; index < listMarriages.length; index++) {
-                let listChilds = await getMembersByMotherID(listMarriages[index].MarriageID);
-
-
-                memberIdsToUpdate.push(listMarriages[index].HusbandID);
-            }
-        }
+    
         console.log("parentID: " + parentID);
         // Lấy danh sách con của parentID
 
-        if (listChilds.length == 0) {
+        if (!CoreFunction.isEmptyOrNullOrSpaces(listChilds) && listChilds.length == 0) {
             // Nếu không có con 
             parentID = null;
             // Thì đặt parentID = null để thoát vòng lặp
@@ -462,7 +404,7 @@ function getMembersByMotherID(motherID) {
 
 function getMembersByParentID(fatherID, motherID) {
     return new Promise((resolve, reject) => {
-        const query = 'select * from familymember where fatherID = ? or motherID = ?';
+        const query = 'select * from familymember where fatherID = ? and motherID = ?';
         const values = [fatherID, motherID];
         db.connection.query(query, values, (err, result) => {
             if (err) {
