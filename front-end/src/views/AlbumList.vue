@@ -377,7 +377,8 @@ export default {
     openAddPhotoModal() {
       if (!this.checkAddPhotoModal) {
         this.FamilyPhotoListAdd = [];
-        this.FamilyPhotoListAddShow = []
+        this.FamilyPhotoListAddShow = [];
+        this.listHeightLarger = [];
       }
       this.checkAddPhotoModal = true;
       this.$modal.show("addPhoto-modal");
@@ -404,10 +405,10 @@ export default {
           }else {
             this.heightLarger = true;
           }
-          this.listHeightLarger.push(this.heightLarger);
-          
+          this.$nextTick(() => {
+            this.listHeightLarger.push(this.heightLarger);
+          });
         };
-        console.log(this.listHeightLarger)
         reader.readAsDataURL(this.FamilyPhotoListAdd[this.FamilyPhotoListAdd.length - 1]);
       }
       this.ListCheckBoxPhotoAdd.push(false)
