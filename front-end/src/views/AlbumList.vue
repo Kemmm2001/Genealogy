@@ -158,7 +158,7 @@
                   :key="index" @click="clickPhotoAdd(index)">
                   <div class="w-100 h-100 d-flex align-items-center justify-content-center"
                     style="background-color: #000;">
-                    <img style="width: 100%; height: fit-content;" :src="photo"
+                    <img style="max-width: 100%;height: fit-content;max-height: 100%;" :src="photo"
                       :class="{ fitHeight: listHeightLarger[index] }">
                   </div>
                   <div class="w-100 d-flex position-absolute" style="top: 0; right: 0;">
@@ -426,6 +426,8 @@ export default {
       this.checkAddPhotoModal = false;
     },
     handleFileChangePhoto(event) {
+      this.ListCheckBoxPhoto = []
+      this.ListPhotoRemove = []
       const file = event.target.files[0];
       //     let count = this.listHeightLarger+1;
       let check = 0;
@@ -459,6 +461,7 @@ export default {
         this.heightLarger = true;
       }
       this.listHeightLarger.push(this.heightLarger);
+      console.log(this.listHeightLarger)
     },
     // compareWidthHeight(event){
     //   const file = event.target.files[0];
@@ -529,6 +532,8 @@ export default {
         //   this.getFamilyPhotoByAlbumId()
         // }
       }
+      this.ListPhotoRemove = [];
+      this.ListCheckBoxPhoto = [];
       this.isButtonDisabled = true;
     },
     removeAlbumPhotoByAlbumId() {
@@ -541,6 +546,7 @@ export default {
           .then((response) => {
             if (response.data.success == true) {
               this.getAlbumPhotoByCodeId();
+              
               this.NotificationsDelete(response.data.message)
             }
           })
@@ -548,6 +554,8 @@ export default {
             console.log(e);
           });
       }
+      this.ListAlbumRemove = [];
+      this.ListCheckBoxAlbum = []
     },
     updateAlbum() {
       // formData.append("AlbumName", this.albumPhoto.AlbumName);
