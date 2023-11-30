@@ -401,6 +401,7 @@ export default {
     },
     openEditAlbumModal() {
       this.listHeightLarger = [];
+      this.ListCheckBoxPhoto = [];
       this.$modal.show("editAlbum-modal");
       this.isButtonDisabledPhoto = true;
     },
@@ -414,6 +415,7 @@ export default {
         this.FamilyPhotoListAddShow = [];
         this.listHeightLarger = [];
         this.isButtonDisabledPhotoAdd = true;
+        this.ListCheckBoxPhotoAdd = []
       }
       this.checkAddPhotoModal = true;
       this.$modal.show("addPhoto-modal");
@@ -426,6 +428,8 @@ export default {
     },
     handleFileChangePhoto(event) {
       const file = event.target.files[0];
+ //     let count = this.listHeightLarger+1;
+      let check = 0;
       this.FamilyPhotoListAdd.push(file)
       if (this.FamilyPhotoListAdd[this.FamilyPhotoListAdd.length - 1]) {
         // Đọc nội dung của tệp và chuyển thành URL
@@ -435,8 +439,12 @@ export default {
           this.FamilyPhotoListAddShow.push(this.imageSrc);
           const img = new Image();
           img.src = e.target.result;
-          if (img.width != 0 && img.height != 0) {
-            this.checkPhotoSize(img.width, img.height)
+          img.onload = () => {
+            check +=1;
+            console.log(check)
+            if (img.width != 0 && img.height != 0) {
+              this.checkPhotoSize(img.width, img.height)
+            }
           }
         };
         reader.readAsDataURL(this.FamilyPhotoListAdd[this.FamilyPhotoListAdd.length - 1]);
@@ -445,6 +453,7 @@ export default {
       this.getAlbumPhotoByCodeId();
     },
     checkPhotoSize(width, height) {
+      console.log(width,height)
       if (width > height) {
         this.heightLarger = false;
       } else {
