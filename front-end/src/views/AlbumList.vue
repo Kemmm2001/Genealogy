@@ -407,6 +407,7 @@ export default {
           }
           this.$nextTick(() => {
             this.listHeightLarger.push(this.heightLarger);
+            console.log(this.heightLarger)
           });
         };
         reader.readAsDataURL(this.FamilyPhotoListAdd[this.FamilyPhotoListAdd.length - 1]);
