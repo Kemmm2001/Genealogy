@@ -1173,10 +1173,9 @@ export default {
             nodeElement = document.querySelector(
               '[data-n-id="' + this.selectedNodes[i] + '"]'
             );
-            if(nodeElement != null){
+            if (nodeElement != null) {
               nodeElement.classList.add("selected");
             }
-            
           }
         }
         if (this.notSelectedNodes.length != 0) {
@@ -1184,10 +1183,9 @@ export default {
             nodeElement = document.querySelector(
               '[data-n-id="' + this.notSelectedNodes[i] + '"]'
             );
-            if(nodeElement != null){
+            if (nodeElement != null) {
               nodeElement.classList.add("notselected");
             }
-            
           }
         }
         if (

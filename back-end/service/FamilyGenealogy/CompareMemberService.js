@@ -57,6 +57,7 @@ function checkBrideOrGroom(MemberID) {
     return new Promise((resolve, reject) => {
         try {
             let query = `SELECT * FROM familymember WHERE MemberID = ${MemberID}`;
+            console.log('MemberID:MemberID' + MemberID)
             db.connection.query(query, (err, result) => {
                 if (err) {
                     console.error(err);
@@ -67,6 +68,8 @@ function checkBrideOrGroom(MemberID) {
                     } else {
                         let member = result[0];
                         if (member.FatherID !== null || member.MotherID !== null) {
+                            console.log('FatherID: ' + member.FatherID)
+                            console.log('MotherID: ' + member.MotherID)
                             resolve(MemberID);
                         } else {
                             let getMarriedIDQuery = (member.Male === 1) ?
@@ -268,72 +271,28 @@ function setResult(objResult, index1, index2) {
 }
 
 async function getResultCompareWithMemberID1SameID2(DefferenceGeneration, Gender1, Gender2) {
-    let objResult = {}
-    if (DefferenceGeneration == -1) {
-        if (Gender2 == 1) {
-            setResult(20, 8)
-        } else {
-            setResult(20, 9)
-        }
-        return objResult
-    } else if (DefferenceGeneration == 1) {
-        if (Gender1 == 1) {
-            setResult(8, 20)
-        } else {
-            setResult(9, 20)
-        }
-        return objResult
-    }
-    else if (DefferenceGeneration == -2) {
-        if (Gender2 == 1) {
-            setResult(21, 4)
-        } else {
-            setResult(21, 5)
-        }
-        return objResult
-    }
-    else if (DefferenceGeneration == 2) {
-        if (Gender1 == 1) {
-            setResult(4, 21)
-        } else {
-            setResult(21, 5)
-        }
-        return objResult
-    }
-    else if (DefferenceGeneration == -3) {
-        if (Gender2 == 1) {
-            setResult(21, 2)
-        } else {
-            setResult(21, 3)
-        }
-        return objResult
-    }
-    else if (DefferenceGeneration == 3) {
-        if (Gender1 == 1) {
-            setResult(2, 21)
-        } else {
-            setResult(3, 21)
-        }
-        return objResult
-    }
-    else if (DefferenceGeneration == -4) {
-        if (Gender2 == 1) {
-            setResult(21, 0)
-        } else {
-            setResult(21, 1)
-        }
-        return objResult
-    }
-    else if (DefferenceGeneration == 4) {
-        if (Gender1 == 1) {
-            setResult(0, 21)
-        } else {
-            setResult(1, 21)
-        }
-        return objResult
-    }
-}
+    let objResult = {};
 
+    let mapping = {
+        '-1': [20, Gender2 === 1 ? 8 : 9],
+        '1': [Gender1 === 1 ? 8 : 9, 20],
+        '-2': [21, Gender2 === 1 ? 4 : 5],
+        '2': [Gender1 === 1 ? 4 : 5, 21],
+        '-3': [21, Gender2 === 1 ? 2 : 3],
+        '3': [Gender1 === 1 ? 2 : 3, 21],
+        '-4': [21, Gender2 === 1 ? 0 : 1, 21],
+        '4': [Gender1 === 1 ? 0 : 1, 21],
+    };
+
+    if (mapping[DefferenceGeneration]) {
+        let [index1, index2] = mapping[DefferenceGeneration];
+        console.log('index1: ' + index1)
+        console.log('index2: ' + index2)
+        setResult(objResult, index1, index2);
+    }
+
+    return objResult;
+}
 const generationMappings = {
     '-4': [21, (gender) => gender === 1 ? 0 : 1], '4': [(gender) => gender === 1 ? 0 : 1, 21],
     '-3': [21, (gender) => gender === 1 ? 2 : 3], '3': [(gender) => gender === 1 ? 2 : 3, 21],
@@ -359,146 +318,7 @@ async function getResultCompareToMember(DefferenceGeneration, Generation1, Gener
     console.log('DefferenceGeneration: ' + DefferenceGeneration);
     console.log('Generation1: ' + Generation1.BirthOrder);
     console.log('Generation2: ' + Generation2.BirthOrder);
-    let objResult = {}
-    if (DefferenceGeneration === 0) {
-        if (Generation1.BirthOrder > Generation2.BirthOrder) {
-            if (Gender1 == 1) {
-                setResult(objResult, 16, 15);
-            } else {
-                setResult(objResult, 16, 14);
-            }
-            return objResult;
-        } else {
-            if (Gender1 == 1) {
-                setResult(objResult, 14, 16);
-            } else {
-                setResult(objResult, 15, 16);
-            }
-            return objResult;
-        }
-    } else if (DefferenceGeneration < 0) {
-        if (DefferenceGeneration == 1 || DefferenceGeneration == -1) {
-            if (Generation1.BirthOrder > Generation2.BirthOrder) {
-                if (Gender2 == 1) {
-                    setResult(objResult, 17, 6);
-                } else {
-                    setResult(objResult, 17, 7);
-                }
-                return objResult;
-            } else if (Generation1.BirthOrder < Generation2.BirthOrder) {
-                if (Flag2 == true) {
-                    if (Gender2 == 1) {
-                        setResult(objResult, 17, 13);
-                    } else {
-                        setResult(objResult, 17, 11);
-                    }
-                } else {
-                    if (Gender2 == 1) {
-                        setResult(objResult, 17, 12);
-                    } else {
-                        setResult(objResult, 17, 10);
-                    }
-                }
-                return objResult;
-            } else if (Generation1.BirthOrder == Generation2.BirthOrder) {
-                if (Gender2 == 1) {
-                    setResult(objResult, 18, 8);
-                } else {
-                    setResult(objResult, 18, 9);
-                }
-                return objResult;
-            }
-        }
-        if (DefferenceGeneration == 2 || DefferenceGeneration == -2) {
-            if (Generation1.BirthOrder > Generation2.BirthOrder) {
-                if (Gender2 == 1) {
-                    setResult(objResult, 17, 3);
-                } else {
-                    setResult(objResult, 17, 2);
-                }
-                return objResult;
-            } else if (Generation1.BirthOrder < Generation2.BirthOrder) {
-                if (Gender2 == 1) {
-                    setResult(objResult, 17, 5);
-                } else {
-                    setResult(objResult, 17, 4);
-                }
-                return objResult;
-            }
-            else if (Generation1.BirthOrder == Generation2.BirthOrder) {
-                if (Gender2 == 1) {
-                    setResult(objResult, 17, 1);
-                } else {
-                    setResult(objResult, 17, 0);
-                }
-                return objResult;
-            }
-        }
-    }
-    else if (DefferenceGeneration > 0) {
-        if (DefferenceGeneration == 1 || DefferenceGeneration == -1) {
-            if (Generation1.BirthOrder > Generation2.BirthOrder) {
-                if (Flag1 == true) {
-                    if (Gender1 == 1) {
-                        objResult.result1 = PaternalFamily[13].name;
-                        objResult.result2 = PaternalFamily[17].name;
-                    } else {
-                        objResult.result1 = PaternalFamily[10].name;
-                        objResult.result2 = PaternalFamily[17].name;
-                    }
-                }
-                return objResult;
-            } else if (Generation1.BirthOrder < Generation2.BirthOrder) {
-                if (Gender1 == 1) {
-                    objResult.result1 = PaternalFamily[6].name;
-                    objResult.result2 = PaternalFamily[17].name;
-                }
-                else {
-                    objResult.result1 = PaternalFamily[7].name;
-                    objResult.result2 = PaternalFamily[17].name;
-                }
-                return objResult;
-            } else if (Generation1.BirthOrder == Generation2.BirthOrder) {
-                if (Gender1 == 1) {
-                    setResult(objResult, 18, 8);
-                } else {
-                    setResult(objResult, 18, 9);
-                }
-                return objResult;
-            }
-        }
-        if (DefferenceGeneration == 2 || DefferenceGeneration == -2) {
-            if (Generation1.BirthOrder > Generation2.BirthOrder) {
-                if (Gender1 == 1) {
-                    objResult.result1 = PaternalFamily[5].name;
-                    objResult.result2 = PaternalFamily[17].name;
-                } else {
-                    objResult.result1 = PaternalFamily[4].name;
-                    objResult.result2 = PaternalFamily[17].name;
-                }
-                return objResult;
-            } else if (Generation1.BirthOrder < Generation2.BirthOrder) {
-                if (Gender1 == 1) {
-                    objResult.result1 = PaternalFamily[3].name;
-                    objResult.result2 = PaternalFamily[17].name;
-                } else {
-                    objResult.result1 = PaternalFamily[2].name;
-                    objResult.result2 = PaternalFamily[17].name;
-                }
-                return objResult;
-            }
-            else if (Generation1.BirthOrder == Generation2.BirthOrder) {
-                if (Gender1 == 1) {
-                    console.log("vao day")
-                    setResult(objResult, 0, 17);
-                } else {
-                    setResult(objResult, 1, 17);
-                }
-                return objResult;
-            }
-        }
-    }
-    return "Không xác định";
+
 }
 async function checkMarriageRelationship(memberId1, memberId2) {
     const query = `SELECT * FROM genealogy.marriage WHERE (husbandID = ${memberId1} AND wifeID = ${memberId2}) 
@@ -519,11 +339,11 @@ async function GetResultCompare(MemberId1, MemberId2, DifferenceGeneration, Flag
     console.log("MemberId1: " + MemberId1);
     console.log("MemberId2: " + MemberId2);
     console.log('DifferenceGeneration: ' + DifferenceGeneration);
-    // console.log("Gender1: " + Gender1);
-    // console.log("Gender2: " + Gender2);
-    // console.log("Flag1: " + Flag1);
-    // console.log("Flag2: " + Flag2);
-    // console.log("resultCheck: " + resultCheck);
+    console.log('Flag1: ' + Flag1)
+    console.log('Flag2: ' + Flag2)
+    console.log('Gender1: ' + Gender1)
+    console.log('Gender2: ' + Gender2)
+    console.log('resultCheck: ' + resultCheck)
     try {
         if (MemberId1 == MemberId2) {
             let result = await getResultCompareWithMemberID1SameID2(DifferenceGeneration, Gender1, Gender2);
@@ -556,19 +376,18 @@ async function GetResultCompare(MemberId1, MemberId2, DifferenceGeneration, Flag
             if (resultCheck === undefined) {
                 resultCheck = true; // Đánh dấu đã lên đời
             }
-            console.log('father1:' + result1.FatherID)
-            console.log('Mother1:' + result1.MotherID)
-
-            console.log('father2:' + result2.FatherID)
-            console.log('Mother2:' + result2.MotherID)
-
             let getGeneration1 = await getBirthOrderByID(MemberId1);
             let getGeneration2 = await getBirthOrderByID(MemberId2);
-
+            console.log('getGeneration1: ' + getGeneration1.BirthOrder)
+            console.log('getGeneration2: ' + getGeneration2.BirthOrder)
             if (resultCheck && getGeneration1 !== getGeneration2) {
-                // Đã lên đời và hai người có sự chênh lệch về đời
+                if (result1.FatherID != null && result2.FatherID != null && result1.MotherID != null && result2.MotherID) {
+
+                } else {
+                    console.log("Đã vào đây else");
+                }
                 // const result = await getResultCompareToMember(DifferenceGeneration, getGeneration1, getGeneration2, Flag1, Flag2, Gender1, Gender2);
-                // console.log("Kết quả:", result);
+
                 // return result;
             } else {
                 // Chưa lên đời hoặc đã lên đời nhưng hai người cùng đời
