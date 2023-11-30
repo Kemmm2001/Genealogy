@@ -281,6 +281,7 @@ export default {
 
       heightLarger: false,
       listHeightLarger: [],
+      img:null,
     };
   },
   methods: {
@@ -400,21 +401,24 @@ export default {
           this.FamilyPhotoListAddShow.push(this.imageSrc);
           const img = new Image();
           img.src = e.target.result;
-          if(img.width > img.height){
-            this.heightLarger = false;
-          }else {
-            this.heightLarger = true;
+          if(img.width != 0 && img.height != 0){
+            this.checkPhotoSize(img.width,img.height)
           }
-          this.$nextTick(() => {
-            this.listHeightLarger.push(this.heightLarger);
-          });
+          
         };
         reader.readAsDataURL(this.FamilyPhotoListAdd[this.FamilyPhotoListAdd.length - 1]);
       }
       this.ListCheckBoxPhotoAdd.push(false)
       this.getAlbumPhotoByCodeId();
     },
-
+    checkPhotoSize(width,height){
+      if(width > height){
+        this.heightLarger = false;
+      }else {
+        this.heightLarger = true;
+      }
+      this.listHeightLarger.push(this.heightLarger);
+    },
     // compareWidthHeight(event){
     //   const file = event.target.files[0];
     //   if (file) {
