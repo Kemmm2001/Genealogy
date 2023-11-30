@@ -577,7 +577,19 @@
                     </div>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
-                        <select v-model="objMemberInfor.Male" class="form-select modal-item">
+                        <select v-model="objMemberInfor.Male" class="form-select modal-item" v-if="action == 'AddFather'">
+                          <option value="1" selected>Nam</option>
+                        </select>
+                        <select v-model="objMemberInfor.Male" class="form-select modal-item" v-else-if="action == 'AddMother'">
+                          <option value="0" selected>Nữ</option>
+                        </select>
+                        <select v-model="objMemberInfor.Male" class="form-select modal-item" v-else-if="action == 'AddHusband'">
+                          <option value="1" selected>Nam</option>
+                        </select>
+                        <select v-model="objMemberInfor.Male" class="form-select modal-item" v-else-if="action == 'AddWife'">
+                          <option value="0" selected>Nữ</option>
+                        </select>
+                        <select v-model="objMemberInfor.Male" class="form-select modal-item" v-else>
                           <option value="1">Nam</option>
                           <option value="0">Nữ</option>
                         </select>
@@ -2066,6 +2078,10 @@ export default {
       this.objMemberContact = {};
       this.TitleModal = "Thêm Thông Tin " + title;
       this.action = action;
+      if(this.action == 'AddMother' || this.action == 'AddWife'){
+        this.objMemberInfor.Male = 0
+      }
+      console.log(this.action)
       this.$modal.show("member-modal");
     },
     closeMemberModal() {

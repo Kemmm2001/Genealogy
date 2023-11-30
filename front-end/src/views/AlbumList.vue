@@ -188,8 +188,10 @@
               <div class="add-photo-list d-flex flex-row w-100 h-100" style="overflow-y: auto;">
                 <div class="edit-photo" v-for="(photo, index) in FamilyPhotoList" :key="index"
                   @click="clickPhoto(index), getPhotoCurrentId(photo.PhotoID)" style="margin-left:10px;width: 20%;height: 20%;background-color: black;">
-                  <div class="d-flex flex-column" >
-                    <img src="https://cdn.diemnhangroup.com/seoulcenter/2022/11/gai-xinh-1.jpg" ref="imageRef" style="height: auto;width: auto; ">
+                  <div class="d-flex flex-column" style="width: 100%;height: 100%;">
+                    <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background-color: #000;">
+                      <img src="https://cdn.diemnhangroup.com/seoulcenter/2022/11/gai-xinh-1.jpg" ref="imageRef" :class="{fitHeight : listHeightLarger[index]}" style="height: 100% ;width: auto; ">
+                    </div>
                     <div class="w-100 d-flex justify-content-center pt-2">
                     <input class="form-check p-0" style="height: 24px; width: 24px;" type="checkbox" v-model="ListCheckBoxPhoto[index]"
                       @change="changeCheckPhoto(photo.PhotoID,index)" />
@@ -369,6 +371,7 @@ export default {
       this.$modal.hide("Album-modal");
     },
     openEditAlbumModal() {
+      this.listHeightLarger = [];
       this.$modal.show("editAlbum-modal");
     },
     closeEditAlbumModal() {
