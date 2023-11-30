@@ -301,6 +301,7 @@ var addMember = async (req, res) => {
 
 var isBirthOrderExist = (memberID, birthOrder, listBirthOrderExist) => {
     console.log("Vào hàm isBirthOrderExist");
+    console.log(`listBirthOrderExist: ${listBirthOrderExist}`)
     console.log(`listBirthOrderExist length:  ${listBirthOrderExist.length}, memberID: ${memberID}, birthOrder: ${birthOrder}`);
     for (let i = 0; i < listBirthOrderExist.length; i++) {
         console.log(`listBirthOrderExist[i].BirthOrder: ${listBirthOrderExist[i].BirthOrder}, listBirthOrderExist[i].MemberID: ${listBirthOrderExist[i].MemberID}`);
@@ -501,11 +502,6 @@ var updateMemberToGenealogy = async (req, res) => {
 var deleteMember = async (req, res) => {
     try {
         db.connection.beginTransaction();
-        // Log ra thông tin trong req.query      
-        let dataMember = await FamilyManagementService.getMemberByMemberID(req.query.MemberID);
-        if (dataMember == null || dataMember.length == 0) {
-            return res.send(Response.dataNotFoundResponse());
-        }
         // các trường bắt buộc phải có trong req.query
         const requiredFields = [
             'MemberID'
@@ -518,7 +514,15 @@ var deleteMember = async (req, res) => {
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
+        let dataMember = await FamilyManagementService.getMemberByMemberID(req.query.MemberID);
+        if (dataMember == null || dataMember.length == 0) {
+            return res.send(Response.dataNotFoundResponse());
+        }
+        console.log("dataMember: ", dataMember[0].MemberID);
+        await FamilyManagementService.deleteMemberRelated(dataMember[0]);
         await FamilyManagementService.deleteMember(req.query.MemberID);
+        // xóa ảnh cũ
+        await CoreFunction.deleteImage(dataMember[0].Image);
         dataRes = {
             MemberID: req.query.MemberID,
         }
