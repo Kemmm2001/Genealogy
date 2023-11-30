@@ -315,6 +315,8 @@ import Snackbar from "awesome-snackbar";
 import { Calendar } from "vietnamese-lunar-calendar";
 import { HTTP } from "../assets/js/baseAPI.js";
 import { LunarDate } from "vietnamese-lunar-calendar";
+//import moment from 'moment-timezone';
+require('moment-timezone');
 export default {
   data() {
     return {
@@ -365,9 +367,8 @@ export default {
   computed: {
     formattedCreatedAt() {
       return (dateString) => {
-        const date = new Date(dateString);
-        //const options = { timeZone: 'Asia/Ho_Chi_Minh' };
-        return date.toLocaleString('vi-VN', "" + Intl.DateTimeFormat().resolvedOptions().timeZone);
+        const moment = require('moment-timezone');
+        return moment(dateString).format("HH:mm:ss DD/MM/YYYY");
       };
     },
   },
@@ -387,13 +388,25 @@ export default {
       let Dob = new Date(dateConvert);
       let month = new LunarDate(Dob).getMonth();
       let date = new LunarDate(Dob).getDate();
+      let hour = new Date(dateConvert).getHours();
+      let minute = new Date(dateConvert).getUTCMinutes();
+      let second = new Date(dateConvert).getUTCSeconds();
       if (new LunarDate(Dob).getMonth() < 10) {
         month = "0" + new LunarDate(Dob).getMonth();
       }
       if (new LunarDate(Dob).getDate() < 10) {
         date = "0" + new LunarDate(Dob).getDate();
       }
-      let result =new LunarDate(Dob).getYear() + "-" + month + "-" + date + "T"+new Date(dateConvert).getHours()+":"+new Date(dateConvert).getUTCMinutes()+":0"+new Date(dateConvert).getUTCSeconds()
+      if (new Date(dateConvert).getHours() < 10) {
+        hour = "0" + new Date(dateConvert).getHours();
+      }
+      if (new Date(dateConvert).getUTCMinutes() < 10) {
+        minute = "0" + new Date(dateConvert).getUTCMinutes();
+      }
+      if (new Date(dateConvert).getUTCSeconds() < 10) {
+        second = "0" + new Date(dateConvert).getUTCSeconds();
+      }
+      let result =new LunarDate(Dob).getYear() + "-" + month + "-" + date + "T"+hour+":"+minute+":"+second;
       return result
     },
     getListEventByDate(dateCheck){
@@ -412,20 +425,31 @@ export default {
           this.listEventByDate.push(this.listEvent[i])
         }
       }
+      if(dateCheck == '30/11/2023'){
+        console.log(1)
+      }
     },
     checkDateEvent(dateCheck){
-      let startDate
-      let endDate
-      let selectedDate
+      let startDate;
+      let endDate;
+      let selectedDate;
+      let check = false;
       for(let i = 0 ; i < this.listEvent.length;i++){
         startDate = new Date(this.listEvent[i].StartDate);
         startDate.setHours(0, 0, 0, 0);
         endDate = new Date(this.listEvent[i].EndDate);
         selectedDate = new Date(dateCheck);
-        let check = selectedDate >= startDate && selectedDate <= endDate;
-        return check;
+        selectedDate.setHours(0, 0, 0, 0)
+        console.log(startDate)
+        console.log(dateCheck)
+        console.log(selectedDate)
+        console.log(endDate)
+        check = selectedDate >= startDate && selectedDate <= endDate;
+        if(check == true){
+          return true;
+        }
       }
-      return false
+      return check;
       // Kiểm tra xem ngày được chọn có nằm trong khoảng hay không
 
     },
@@ -630,7 +654,6 @@ export default {
     },
     getDayOfMonth() {
       this.dayOfMonth = new Calendar(this.currentYear, this.currentMonth).weeks;
-      console.log(this.dayOfMonth)
     },
     showAddEventModal() {
       this.eventFamily = {};
