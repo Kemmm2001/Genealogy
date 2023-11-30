@@ -150,8 +150,6 @@ function deleteMember(memberId) {
         try {
             console.log("Vào hàm deleteMember");
             console.log("memberId: " + memberId);
-            // Tìm và xóa tất cả các thành viên liên quan
-            await deleteMemberRelated(memberId);
             // bắt đầu xóa member
             const query = 'DELETE FROM familymember WHERE MemberID = ?';
             db.connection.query(query, [memberId], (err, result) => {
@@ -172,92 +170,76 @@ function deleteMember(memberId) {
 }
 
 // nguyễn anh tuấn
-async function deleteMemberRelated(memberId) {
-    // Định nghĩa hàm async để có thể sử dụng await bên trong
+async function deleteMemberRelated(member) {
+    console.log(`chạy vào hàm deleteMemberRelated với member: ${JSON.stringify(member.MemberID)}`);
 
-    console.log("chạy vào hàm deleteMemberAndRelated");
-    // In log khi vào hàm
-
-    let parentID = memberId;
-    // Khởi tạo biến parentID = memberId truyền vào
-
-    // Danh sách các memberId cần update đời
-    const memberIdsToUpdate = [];
-
-    // Lấy thông tin member cần xóa
-    let member = await getMember(memberId);
-
-    if (member[0].MarriageID != null || member[0].MarriageID != 0) {
-        // Nếu member đó có MarriageID (có vợ/chồng)
-        memberIdsToUpdate.push(member[0].MarriageID);
-        // Thêm MarriageID vào danh sách cần update đời
-    }
-
-
-    let listParentIDToCheck = [];
-    // Danh sách các ParentID cần kiểm tra  
-    let listChilds = [];
-    while (parentID != null) {
-        // Vòng lặp kiểm tra cho tới khi parentID = null (không có cha/mẹ)
-        // lấy tất cả thông tin vợ chồng của người hiện tại
-        let listMarriages;
-        // nếu người hiện tại là nam thì lấy tất cả thông tin vợ
-    
-        console.log("parentID: " + parentID);
-        // Lấy danh sách con của parentID
-
-        if (!CoreFunction.isEmptyOrNullOrSpaces(listChilds) && listChilds.length == 0) {
-            // Nếu không có con 
-            parentID = null;
-            // Thì đặt parentID = null để thoát vòng lặp
+    // tìm tất cả người có fatherID hoặc motherID là memberId
+    let children = await getMembersByParentID(member.MemberID);
+    if (!Array.isArray(children)) {
+        console.log("children không phải array");
+    } else {
+        if (children.length == 0) {
+            console.log("children null");
+            return;
         } else {
-            // Ngược lại nếu có con
-            for (let index = 0; index < listChilds.length; index++) {
-                // Lặp qua từng đứa con
-
-                if (listChilds[index].MarriageID != null && listChilds[index].MarriageID !== 0) {
-                    // Nếu đứa con đó có vợ/chồng
-                    console.log("memberChild[index].MarriageID: " + listChilds[index].MarriageID);
-                    memberIdsToUpdate.push(listChilds[index].MarriageID);
-                    // Thêm MarriageID vào danh sách cần update đời
-                }
-
-                memberIdsToUpdate.push(listChilds[index].MemberID);
-                // Thêm MemberID vào danh sách cần update đời           
-
-                listParentIDToCheck.push(listChilds[index].MemberID);
-                // Thêm MemberID vào danh sách ParentID cần kiểm tra tiếp
+            for (let child of children) {
+                console.log("child: " + child.MemberID);
+                UpdateMemberRelated(child);
             }
         }
 
-        parentID = listParentIDToCheck.shift();
-        // Cập nhật lại parentID để kiểm tra tiếp ở vòng lặp kế
-    }
-
-    // nếu có cái memberId nào = null ở trong memberIdsToUpdate thì xóa nó đi
-    for (let index = 0; index < memberIdsToUpdate.length; index++) {
-        if (memberIdsToUpdate[index] == null) {
-            memberIdsToUpdate.splice(index, 1);
-        }
-    }
-    // nếu mảng khác rỗng thì mới thực hiện tiếp
-    if (memberIdsToUpdate.length != 0) {
-        // Cập nhật generation = 0 , parentID = null, marriageID = null cho các member liên quan
-        const queryUpdateRelatedMember = `
-    UPDATE familymember 
-    SET Generation = 0, ParentID = null, MarriageID = null
-    WHERE MemberID IN (${memberIdsToUpdate.join(',')}) 
-  `;
-        console.log('queryUpdateRelatedMember: ', queryUpdateRelatedMember);
-        db.connection.query(queryUpdateRelatedMember, (err, result) => {
-            if (err) {
-                console.error('Error updating generation: ', err);
-            }
-            console.log('Generation updated for members: ', memberIdsToUpdate);
-        });
     }
 
 }
+
+function UpdateMemberRelated(member) {
+    return new Promise((resolve, reject) => {
+        console.log("Vào hàm UpdateMemberRelated với member: " + JSON.stringify(member.MemberID));
+        if (CoreFunction.isEmptyOrNullOrSpaces(member)) {
+            console.log("member null");
+            resolve();
+        }
+        // Nếu là con trai, tìm các con có fatherID = memberId
+        let children = getMembersByParentID(member.MemberID);
+        console.log("children: " + JSON.stringify(children));
+
+        // kiểm tra xem children có phải array ko 
+        if (!Array.isArray(children)) {
+            console.log("children không phải array");
+        } else {
+            if (children.length == 0) {
+                console.log("children null");
+                resolve();
+            } else {
+                for (let child of children) {
+                    console.log("child: " + JSON.stringify(child));
+                    UpdateMemberRelated(child);
+                }
+            }
+
+        }
+        // update đời cho thành viên hiện tại
+        UpdateMemberGenerationToZero(member.MemberID);
+
+    });
+}
+
+
+function UpdateMemberGenerationToZero(memberId) {
+    return new Promise((resolve, reject) => {
+        console.log("Vào hàm UpdateMemberGenerationToZero với memberId: " + memberId);
+        const query = 'UPDATE familymember SET Generation = 0, FatherID = null, MotherID = null WHERE MemberID = ?';
+        db.connection.query(query, memberId, (err, result) => {
+            if (err) {
+                console.log(err);
+                reject(err)
+            } else {
+                resolve(result)
+            }
+        })
+    })
+}
+
 
 function InsertMarriIdToMember(memberId, marriageID) {
     return new Promise((resolve, reject) => {
@@ -404,8 +386,24 @@ function getMembersByMotherID(motherID) {
 
 function getMembersByParentID(fatherID, motherID) {
     return new Promise((resolve, reject) => {
+        console.log("Vào hàm getMembersByParentID với fatherID: " + fatherID + " và motherID: " + motherID);
         const query = 'select * from familymember where fatherID = ? and motherID = ?';
         const values = [fatherID, motherID];
+        db.connection.query(query, values, (err, result) => {
+            if (err) {
+                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+}
+function getMembersByParentID(parentID) {
+    return new Promise((resolve, reject) => {
+        console.log("Vào hàm getMembersByParentID với parentID: " + parentID);
+        const query = 'select * from familymember where fatherID = ? or motherID = ?';
+        const values = [parentID, parentID];
         db.connection.query(query, values, (err, result) => {
             if (err) {
                 console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
@@ -608,5 +606,5 @@ module.exports = {
     setGeneration, queryContactMembers,
     getAllMember, InsertMarriIdToMember, queryFamilyMembers, getAllMemberInMemberRole, getAllMemberNotInMemberRole, GetCurrentParentMember,
     insertFatherIDToMember, insertMotherIDToMember, getMembersByFatherID, getMembersByMotherID, getMembersByParentID,
-    setBirthOrder, insertParentIdToMember, getAllMemberID,updateMemberPhoto
+    setBirthOrder, insertParentIdToMember, getAllMemberID, updateMemberPhoto, deleteMemberRelated
 };
