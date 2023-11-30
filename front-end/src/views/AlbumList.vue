@@ -142,7 +142,7 @@
         <div class="form-group position-absolute" style="height: 85%; background-color: #FFFFFF; inset: 11% 0">
           <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm ảnh vào album
           </div>
-          <div class="add-photo-modal" style="background-color: white;">
+          <div class="add-photo-modal" style="background-color: white; height: calc(100% - 50px);">
             <div class="add-photo-layout">
               <button type="button" class="btn btn-primary mr-2" @click="triggerFileInput" style="margin: 10px;">Thêm
                 ảnh</button>
@@ -152,15 +152,20 @@
                 style="margin: 10px;">Xóa Ảnh</button>
               <button class="btn btn-primary mr-2" @click="addFamilyPhotoByAlbumId()" style="margin: 10px;">Lưu</button>
             </div>
-            <div class="add-photo-list d-flex">
-              <div class="add-photo d-flex flex-column" v-for="(photo, index) in FamilyPhotoListAddShow" :key="index"
-                :class="{ choose: index == indexClickPhotoAdd }" @click="clickPhotoAdd(index)">
-                <img :src="photo" style="width: 300px;">
-                <div class="w-100 d-flex justify-content-center pt-2">
+            <div class="add-photo-list d-flex" style="height: calc(100% - 50px);">
+            <div class="d-flex flex-row w-100 h-100">
+              <div class="add-photo d-flex flex-row" v-for="(photo, index) in FamilyPhotoListAddShow" :key="index"
+                @click="clickPhotoAdd(index)">
+                <div v-for="(value, index) in listHeightLarger" :key="index" class="w-100 h-100 d-flex align-items-center justify-content-center" style="background-color: #000;">
+                  <!-- <img style="width: 100%; height: fit-content;" :src="photo" :class="{fitHeight : value}"> -->
+                  <div>{{value}}</div>
+                </div>
+              </div>
+              <div class="w-100 d-flex justify-content-center pt-2">
                   <input class="form-check p-0" style="height: 24px; width: 24px;" type="checkbox" v-model="ListCheckBoxPhotoAdd[index]"
                     @change="changeCheckPhotoAdd(index)" />
                 </div>
-              </div>
+            </div>
             </div>
           </div>
         </div>
@@ -273,6 +278,9 @@ export default {
 
       checkAddPhotoModal: false,
       cfDel: false,
+
+      heightLarger: false,
+      listHeightLarger: [],
     };
   },
   methods: {
@@ -386,16 +394,46 @@ export default {
       if (this.FamilyPhotoListAdd[this.FamilyPhotoListAdd.length - 1]) {
         // Đọc nội dung của tệp và chuyển thành URL
         const reader = new FileReader();
-        reader.onload = () => {
+        reader.onload = (e) => {
           this.imageSrc = reader.result;
           this.FamilyPhotoListAddShow.push(this.imageSrc);
+          const img = new Image();
+          img.src = e.target.result;
+          if(img.width > img.height){
+            this.heightLarger = false;
+          }else {
+            this.heightLarger = true;
+          }
+          this.listHeightLarger.push(this.heightLarger);
+          console.log(this.heightLarger)
         };
         reader.readAsDataURL(this.FamilyPhotoListAdd[this.FamilyPhotoListAdd.length - 1]);
       }
       this.ListCheckBoxPhotoAdd.push(false)
       this.getAlbumPhotoByCodeId();
-
     },
+
+    // compareWidthHeight(event){
+    //   const file = event.target.files[0];
+    //   if (file) {
+    //     const reader = new FileReader();
+    //     reader.onload = (e) => {
+    //       const img = new Image();
+    //       img.src = e.target.result;
+    //       console.log(img.width);
+    //       console.log(img.height);
+    //       img.onload = () => {
+    //         if(img.width > img.height){
+    //           this.heightLarger = false;
+    //         }else {
+    //           this.heightLarger = true;
+    //         }
+    //       };
+    //     };
+    //     reader.readAsDataURL(file);
+    //   }
+    // },
+
     handleFileChangeBackGround(event) {
       this.albumPhoto.BackGroundPhoto = event.target.files[0];
     },
@@ -634,6 +672,19 @@ export default {
     // EventBus.$emit("AlbumList", true);
     // EventBus.$emit("ArticleList", false);
   },
+  watch:{
+    imageInfo(){
+      if(this.imageInfo.width < this.imageInfo.height){
+        this.heightLarger = false;
+        console.log(this.imageInfo.width);
+        console.log(this.imageInfo.height);
+      }else if(this.imageInfo.width >= this.imageInfo.height){
+        this.heightLarger = true;
+        console.log(this.imageInfo.width);
+        console.log(this.imageInfo.height);
+      }
+    }
+  }
 };
 </script>
 <style>
@@ -653,14 +704,9 @@ export default {
   right: 0;
 }
 
-/* 
-.vm--modal {
-  margin-top: 6% !important;
-    height: 600px !important;
-    width: 85% !important;
-} */
-
 .add-photo {
   margin: 10px;
+  width: 30%;
+  height: 25%;
 }
 </style>
