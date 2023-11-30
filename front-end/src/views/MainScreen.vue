@@ -1145,7 +1145,7 @@ export default {
           field_2: "generation",
           isGG: "isGG",
         },
-
+        sticky: false,
         // lazyLoading: false,
         nodeMouseClick: FamilyTree.action.none,
       });
