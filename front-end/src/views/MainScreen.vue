@@ -1079,6 +1079,7 @@ export default {
       helpTree: false,
 
       numberDeath: 0,
+      listMember:[],
     };
   },
   methods: {
@@ -1160,13 +1161,16 @@ export default {
         }
         if (
           this.CoordinatesNode != null &&
-          this.nodeLength != this.nodes.length
+          this.nodeLength != this.listMember.length
         ) {
           this.family.setViewBox(this.CoordinatesNode);
+          console.log(1111)
         }
         setTimeout(() => {
-          if (this.nodeLength != this.nodes.length) {
-            this.nodeLength = this.nodes.length;
+          console.log(this.nodeLength)
+          console.log(this.listMember.length)
+          if (this.nodeLength != this.listMember.length) {
+            this.nodeLength = this.listMember.length;
           }
         }, 3000);
       });
@@ -1576,6 +1580,7 @@ export default {
           this.$modal.hide("Select-option-Modal");
           this.$modal.hide("member-modal");
           this.getListMember();
+          this.getAllListMember();
           this.closeCfDelModal();
         } else {
           this.NotificationsDelete(response.data.message);
@@ -2193,6 +2198,20 @@ export default {
       this.$modal.hide("modal-relationship");
     },
 
+    getAllListMember(){
+      HTTP.get("members", {
+        params:{
+          codeID: this.CodeID
+        }
+        
+      }).then((response) => {
+        console.log(response.data.data)
+        if (response.data.success == true) {
+          this.listMember = response.data.data;
+        }
+      });
+    },
+
     getListMember() {
       HTTP.get("viewTree", {
         params: {
@@ -2471,6 +2490,7 @@ export default {
     this.getMemberRole();
     this.getListHistoryEmail();
     this.getListMember();
+    this.getAllListMember();
   },
 };
 </script>
