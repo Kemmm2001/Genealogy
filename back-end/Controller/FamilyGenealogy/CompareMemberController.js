@@ -6,6 +6,7 @@ var compareMember = async (req, res) => {
     try {
         let idMember1 = req.query.MemberID1;
         let idMember2 = req.query.MemberID2;
+        console.log('idMember1: ' + idMember1)
         let newIdToCampereMember1;
         let newIdToCampereMember2;
         let Flag = false;
@@ -36,7 +37,7 @@ var compareMember = async (req, res) => {
 
         } else if (DefferenceGeneration < 0) {
             let resultCheckMaternalOrPaternal = await CompareMemberService.checkMaternalOrPaternal(newIdToCampereMember1);
-            idMember1 = await CompareMemberService.getIdToCompare(DefferenceGeneration, newIdToCampereMember1);
+            idMember1 = await CompareMemberService.getIdToCompare(DefferenceGeneration, newIdToCampereMember1);     
             let data = await CompareMemberService.GetResultCompare(idMember1, newIdToCampereMember2, DefferenceGeneration, Flag, generationMember1[0].Male, generationMember2[0].Male, resultCheckMaternalOrPaternal)
             if (data) {
                 return res.send(Response.successResponse(data))

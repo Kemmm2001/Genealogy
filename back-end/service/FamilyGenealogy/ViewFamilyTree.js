@@ -61,16 +61,17 @@ async function RemoveRelationshipChild(id) {
         return false;
     }
 }
-async function removeMarried(memberID, RemoveID) {
+async function removeMarried(husbandID, wifeID, idRemove) {
     try {
-        let queryRemoveMarried = `UPDATE familymember SET MarriageID = null WHERE MemberID = ${memberID}`;
+        let queryRemoveMarried = `delete from marriage where husbandID = ${husbandID} and wifeID = ${wifeID}`;
+        console.log('queryRemoveMarried: ' + queryRemoveMarried)
         db.connection.query(queryRemoveMarried, (err) => {
             if (err) {
                 console.log(err)
             }
         });
 
-        let queryRemoveMarriedAndGeneration = `UPDATE familymember SET MarriageID = null,Generation = 0 WHERE MemberID = ${RemoveID}`;
+        let queryRemoveMarriedAndGeneration = `UPDATE familymember SET Generation = 0 WHERE MemberID = ${idRemove}`;
         db.connection.query(queryRemoveMarriedAndGeneration, (err) => {
             if (err) {
                 console.log(err)
@@ -85,13 +86,21 @@ async function removeMarried(memberID, RemoveID) {
 async function RemoveRelationshipMarried(currentID, RemoveID) {
     return new Promise((resolve, reject) => {
         try {
-            let queryFindParent = `SELECT FatherID,MotherID FROM genealogy.familymember WHERE MemberID = ${currentID}`;
+            let queryFindParent = `SELECT FatherID,MotherID,Male FROM genealogy.familymember WHERE MemberID = ${currentID}`;
             db.connection.query(queryFindParent, (err, result) => {
-                if (!err && result[0].FatherID != null || result[0].MotherID != null) {
-                    removeMarried(RemoveID, currentID);
+                if (!err && result.length > 0) {
+                    if (result[0].Male == 1) {
+                        removeMarried(currentID, RemoveID, currentID);
+                    } else {
+                        removeMarried(RemoveID, currentID, currentID);
+                    }
                     resolve(true);
                 } else {
-                    removeMarried(currentID, RemoveID);
+                    if (result[0].Male == 1) {
+                        removeMarried(currentID, RemoveID, RemoveID);
+                    } else {
+                        removeMarried(RemoveID, currentID, RemoveID);
+                    }
                     resolve(true);
                 }
             });

@@ -18,11 +18,10 @@ const initWebRouter = (app) => {
     router.get('/religion', ManagerFamilyTree.AllReligion)
     router.get('/agegroup', FamilyMemberManagement.getListAgeGroup)
     router.get('/bloodtype', FamilyMemberManagement.getListBloodTypeGroup)
-
-    // router.get('/', ManagerFamilyTree.AllReligion)
+   
     router.get('/memberRole', ManagerFamilyTree.AllMemberRole)
     router.get('/InforMember', ManagerFamilyTree.informationMember)
-    router.post('/setRole', ManagerFamilyTree.setRole)    
+    router.post('/setRole', ManagerFamilyTree.setRole)
     router.get('/viewTree', ManagerFamilyTree.AllMemberInGenelogy)
     router.get('/relationship', ManagerFamilyTree.getRelationShipMember)
     router.put('/removeRelationship', ManagerFamilyTree.removeRelationship)
