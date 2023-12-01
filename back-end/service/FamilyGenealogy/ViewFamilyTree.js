@@ -85,9 +85,9 @@ async function removeMarried(memberID, RemoveID) {
 async function RemoveRelationshipMarried(currentID, RemoveID) {
     return new Promise((resolve, reject) => {
         try {
-            let queryFindParent = `SELECT ParentID FROM genealogy.familymember WHERE MemberID = ${currentID}`;
+            let queryFindParent = `SELECT FatherID,MotherID FROM genealogy.familymember WHERE MemberID = ${currentID}`;
             db.connection.query(queryFindParent, (err, result) => {
-                if (!err && result.length > 0) {
+                if (!err && result[0].FatherID != null || result[0].MotherID != null) {
                     removeMarried(RemoveID, currentID);
                     resolve(true);
                 } else {

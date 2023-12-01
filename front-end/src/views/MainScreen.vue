@@ -1068,7 +1068,7 @@ export default {
       resultCompare1: null,
       resultCompare2: null,
       selectedRowIndex: null,
-      UrlAvatar: null,
+
       nodeLength: null,
       CoordinatesNode: null,
       isUpdateAvatar: false,
@@ -1399,7 +1399,9 @@ export default {
         : [];
     },
     toggleSelectWithFilter() {
-      this.ListPhoneToSendMessage =  this.checkWithFilter ? this.listFilterMember.map((node) => node.MemberID) : [];
+      this.ListPhoneToSendMessage = this.checkWithFilter
+        ? this.listFilterMember.map((node) => node.MemberID)
+        : [];
     },
     toggleSelection(id) {
       let index = this.ListPhoneToSendMessage.indexOf(id);
@@ -1675,17 +1677,19 @@ export default {
       }
     },
     updateAvatar(event) {
-      const formData = new FormData();
+      let formData = new FormData();
       this.isUpdateAvatar = true;
-      const file = event.target.files[0];
-      this.UrlAvatar = file;
-      formData.append("path", file);
+      let file = event.target.files[0];
+      formData.append("Image", file);
       formData.append("MemberID", this.CurrentIdMember);
-      console.log(this.UrlAvatar);
-      console.log(this.CurrentIdMember);
       HTTP.put("member-photo", formData)
         .then((response) => {
-          console.log(response.data.data);
+          if (response.data.success == true) {
+            this.getListMember(); 
+            this.NotificationsScuccess(response.data.message);
+          } else {
+            this.NotificationsScuccess(response.data.message);
+          }
         })
         .catch((e) => {
           console.log(e);
