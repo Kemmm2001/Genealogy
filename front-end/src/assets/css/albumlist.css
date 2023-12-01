@@ -9,8 +9,7 @@
     background-image: url(../no-picture.png);
     background-repeat: no-repeat;
     background-position: center;
-    background-size: cover;    
-    border: 1px solid lightgray;
+    background-size: cover;
     border-radius: 0.175rem 0.175rem 0 0;
 }
 
