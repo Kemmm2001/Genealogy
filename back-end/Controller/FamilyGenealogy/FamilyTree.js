@@ -56,9 +56,7 @@ var removeRelationship = async (req, res) => {
     try {
         let currentID = req.body.CurrentID;
         let memberToRemove = req.body.RemoveID;
-        let action = req.body.action;
-        console.log('currentID: ' + currentID)
-        console.log('memberToRemove: ' + memberToRemove)
+        let action = req.body.action;      
         if (action == 'RemoveChild') {
             let data = await FamilyTreeService.RemoveRelationshipChild(memberToRemove);
             if (data == true) {

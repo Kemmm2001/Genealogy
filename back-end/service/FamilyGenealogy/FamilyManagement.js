@@ -155,6 +155,7 @@ async function RemoveAllRelationshipChild(id) {
                 for (let i = 0; i < result.length; i++) {
                     let child = result[i];
                     let childID = child.MemberID;
+                    console.log('childID: ' + childID)
 
                     let queryFindMarried = `SELECT * FROM marriage WHERE husbandID = ${id} OR wifeID = ${id}`;
                     db.connection.query(queryFindMarried, async (err, marriedResult) => {
@@ -185,6 +186,8 @@ async function RemoveAllRelationshipChild(id) {
                     db.connection.query(updateQuery, (err) => {
                         if (err) {
                             console.log(err);
+                        }else{
+                            
                         }
                     });
 
@@ -206,7 +209,7 @@ function deleteMember(memberId) {
         try {
             console.log("Vào hàm deleteMember");
             console.log("memberId: " + memberId);
-            await RemoveAllRelationshipChild(memberId)
+            // await RemoveAllRelationshipChild(memberId)
             // bắt đầu xóa member
             const query = 'DELETE FROM familymember WHERE MemberID = ?';
             db.connection.query(query, [memberId], async (err, result) => {

@@ -16,7 +16,7 @@
       <div v-if="memberRole != 3" class="w-100 d-flex flex-row" style="padding-top: 8px">
         <div class="col-6" style="padding-left: 8px; padding-right: 6px">
           <div class="w-100 h-100">
-            <button style="width:100%;color:white" type="button" class="btn btn-secondary h-100">Lưu trữ dữ liệu</button>
+            <button @click="BackUpdata()" style="width:100%;color:white" type="button" class="btn btn-secondary h-100">Lưu trữ dữ liệu</button>
           </div>
         </div>
         <div class="col-6" style="padding-left: 6px; padding-right: 8px">
@@ -163,11 +163,6 @@
               </div>
             </div>
             <div class="d-flex flex-column" style="height: calc(100% - 50px);">
-              <div class="d-flex flex-row">
-                <div class="col-md-4 m-2">
-                  <input type="text" class="form-control modal-item m-0" placeholder="Nhập tên thành viên..." />
-                </div>
-              </div>
               <div class="d-flex flex-column headlist-list-container w-100">
                 <table class="table table-member headlist-list m-0">
                   <thead>
@@ -1079,7 +1074,7 @@ export default {
       helpTree: false,
 
       numberDeath: 0,
-      listMember:[],
+      listMember: [],
     };
   },
   methods: {
@@ -1164,11 +1159,11 @@ export default {
           this.nodeLength != this.listMember.length
         ) {
           this.family.setViewBox(this.CoordinatesNode);
-          console.log(1111)
+          console.log(1111);
         }
         setTimeout(() => {
-          console.log(this.nodeLength)
-          console.log(this.listMember.length)
+          console.log(this.nodeLength);
+          console.log(this.listMember.length);
           if (this.nodeLength != this.listMember.length) {
             this.nodeLength = this.listMember.length;
           }
@@ -1215,6 +1210,15 @@ export default {
 
     getViewBox() {
       return this.family.getViewBox();
+    },
+    BackUpdata() {
+      let id = this.nodes.map((item) => item.id);
+      console.log(id);
+      HTTP.post("back-up", {
+        memberIDs: id,
+      }).then((response) => {
+        console.log(response);
+      });
     },
     getResultMember(id) {
       let objdata = {};
@@ -1328,7 +1332,6 @@ export default {
       this.IsDead = this.objMemberInfor.IsDead;
     },
     sendEmailToMember() {
-      console.log("vào đây");
       if (
         this.subjectEmail != null &&
         this.subjectEmail != "" &&
@@ -2198,14 +2201,13 @@ export default {
       this.$modal.hide("modal-relationship");
     },
 
-    getAllListMember(){
+    getAllListMember() {
       HTTP.get("members", {
-        params:{
-          codeID: this.CodeID
-        }
-        
+        params: {
+          codeID: this.CodeID,
+        },
       }).then((response) => {
-        console.log(response.data.data)
+        console.log(response.data.data);
         if (response.data.success == true) {
           this.listMember = response.data.data;
         }
