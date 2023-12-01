@@ -9,7 +9,19 @@
         </div>
         <div class="col-6" style="padding-left: 6px; padding-right: 8px">
           <div class="w-100 h-100">
-            <button @click="openCompareModal()" style="width:100%" type="button" :class="{ 'btn': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">So sánh</button>
+            <button @click="openCompareModal()" style="width:100%" type="button" :class="{ 'btn': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">Xác định quan hệ</button>
+          </div>
+        </div>
+      </div>
+      <div v-if="memberRole != 3" class="w-100 d-flex flex-row" style="padding-top: 8px">
+        <div class="col-6" style="padding-left: 8px; padding-right: 6px">
+          <div class="w-100 h-100">
+            <button style="width:100%" type="button" class="btn btn-primary h-100">Lưu trữ dữ liệu</button>
+          </div>
+        </div>
+        <div class="col-6" style="padding-left: 6px; padding-right: 8px">
+          <div class="w-100 h-100">
+            <button style="width:100%" type="button" class="btn btn-primary h-100">Xuất dữ liệu vào</button>
           </div>
         </div>
       </div>
@@ -364,7 +376,7 @@
     <modal name="compare-modal">
       <div class="h-100 d-flex flex-column position-relative">
         <div class="modal-title d-flex flex-row align-items-center justify-content-center">
-          <div class="col-12 d-flex align-items-center justify-content-center">So sánh 2 thành viên</div>
+          <div class="col-12 d-flex align-items-center justify-content-center">Xác định mối quan hệ giữa 2 thành viên</div>
           <div class="close-add-form" @click="closeCompareModal()">
             <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
               <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -375,7 +387,9 @@
           <div class="col-6" style="padding: 0px 4px 48px 8px;">
             <div class="h-100 d-flex flex-column p-2" style="background-color: #FFFFFF; border-radius: 0.375rem;">
               <div class="d-flex flex-row pb-2" style="height: 220px">
-                <div class="h-100 col-4" style="background-color: gray; border-radius: 0.375rem;">Ảnh</div>
+                <div class="h-100 col-4" style="background-color: gray; border-radius: 0.375rem;">
+                  <img style="width: 100%; height: 100%" :src="objCompareMember1.img" alt />
+                </div>
                 <div class="d-flex flex-column" style="flex-grow: 1; padding-left: 8px;">
                   <input type="text" class="compare-modal-item form-control" :value="objCompareMember1.name" disabled />
                   <div class="d-flex flex-row pt-2">
@@ -396,10 +410,10 @@
               </div>
               <div class="d-flex flex-column" style="flex-grow: 1; background-color: #f2f2f2;">
                 <div class="compare-modal-item mx-2 mt-2">
-                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember1.father !== undefined ? objCompareMember1.father + ' (Bố)' : 'Bố: Không có trên phả đồ'" disabled />
+                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember1.father !== undefined ? 'Bố: ' + objCompareMember1.father : 'Bố: Không có trên phả đồ'" disabled />
                 </div>
                 <div class="compare-modal-item mx-2 mt-2">
-                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember1.mother !== undefined ? objCompareMember1.mother + ' (Mẹ)' : 'Mẹ: Không có trên phả đồ'" disabled />
+                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember1.mother !== undefined ? 'Mẹ: ' + objCompareMember1.mother : 'Mẹ: Không có trên phả đồ'" disabled />
                 </div>
                 <div class="compare-modal-item mx-2 mt-2">
                   <input type="text" class="w-100 h-100 form-control" :value="resultCompare1 !== undefined ? 'Mối quan hệ: ' + resultCompare1 : 'Không xác định'" disabled />
@@ -410,7 +424,9 @@
           <div class="col-6" style="padding: 0px 8px 48px 4px;">
             <div class="h-100 d-flex flex-column p-2" style="background-color: #FFFFFF; border-radius: 0.375rem;">
               <div class="d-flex flex-row pb-2" style="height: 220px">
-                <div class="h-100 col-4" style="background-color: gray; border-radius: 0.375rem;">Ảnh</div>
+                <div class="h-100 col-4" style="background-color: gray; border-radius: 0.375rem;">
+                  <img style="width: 100%; height: 100%" :src="objCompareMember2.img" alt />
+                </div>
                 <div class="d-flex flex-column" style="flex-grow: 1; padding-left: 8px;">
                   <input type="text" class="compare-modal-item form-control" :value="objCompareMember2.name" disabled />
                   <div class="d-flex flex-row pt-2">
@@ -431,10 +447,10 @@
               </div>
               <div class="d-flex flex-column" style="flex-grow: 1; background-color: #f2f2f2;">
                 <div class="compare-modal-item mx-2 mt-2">
-                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember2.father !== undefined ? objCompareMember2.father + ' (Bố)' : 'Không có trên phả đồ'" disabled />
+                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember2.father !== undefined ? 'Bố: ' + objCompareMember2.father : 'Không có trên phả đồ'" disabled />
                 </div>
                 <div class="compare-modal-item mx-2 mt-2">
-                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember2.mother !== undefined ? objCompareMember2.mother + ' (Mẹ)' : 'Không có trên phả đồ'" disabled />
+                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember2.mother !== undefined ? 'Mẹ: ' +  objCompareMember2.mother : 'Không có trên phả đồ'" disabled />
                 </div>
                 <div class="compare-modal-item mx-2 mt-2">
                   <input type="text" class="w-100 h-100 form-control" :value="resultCompare2 !== undefined ? 'Mối quan hệ: ' + resultCompare2 : 'Mối quan hệ: Không xác định'" disabled />
@@ -442,9 +458,6 @@
               </div>
             </div>
           </div>
-        </div>
-        <div class="modal-footer">
-          <div class="compare-modal-btn btn position-absolute">Đổi vị trí trên phả đồ</div>
         </div>
       </div>
     </modal>
@@ -588,7 +601,7 @@
                         </select>
                         <select v-model="objMemberInfor.Male" class="form-select modal-item" v-else-if="action == 'AddWife'">
                           <option value="0" selected>Nữ</option>
-                        </select> -->
+                        </select>-->
                         <select v-model="objMemberInfor.Male" class="form-select modal-item">
                           <option value="1">Nam</option>
                           <option value="0">Nữ</option>
@@ -872,59 +885,6 @@
       <div class="d-flex align-items-center" style="height: 64px;" v-show="togglehelp">Nhấp chuột trái vào thành viên trên phả đồ để xem và thay đổi thông tin thành viên</div>
       <div class="d-flex align-items-center" style="height: 64px;" v-show="togglehelp">Nhấp chuột phải để mở danh sách những chức năng tương tác với thành viên</div>
     </div>
-
-    <!-- Đây là div hướng dẫn -->
-    <!-- <div v-show="togglehelp" class="help-div w-100 h-100 position-absolute" style="z-index: 2;">
-      <div class="h-100 w-100 position-relative">
-        <div style="width: 19%; left: 0; z-index: 2;" class="h-100 p-1 d-flex flex-column position-absolute">
-          <div class="pt-2 d-flex flex-row">
-            <div class="col-6" style="padding-left: 8px; padding-right: 6px;">
-              <div class="w-100 h-100">
-                <button @click="selectHelpNoti()" type="button" :class="{shadowed : !helpNoti, chosen: helpNoti}" class="btn h-100 w-100 bg-secondary text-white">Tạo thông báo</button>
-              </div>
-            </div>
-            <div class="col-6" style="padding-left: 6px; padding-right: 8px;">
-              <div class="w-100 h-100">
-                <button @click="selectHelpCompare()" type="button" :class="{shadowed : !helpCompare, chosen: helpCompare}" class="btn h-100 w-100 bg-secondary text-white">So sánh</button>
-              </div>
-            </div>
-          </div>
-          <div class="d-flex flex-column h-100 w-100 px-2" style="padding-top: 12px; font-family: QuicksandBold, sans-serif;">
-            <div @click="selectHelpExist()" :class="{shadowed : !helpExist, chosen: helpExist}" class="mb-1 w-100 d-flex flex-column" style="height: 50%; border-radius: 0.375rem 0.375rem 0 0;">
-              <div class="d-flex align-items-center justify-content-center px-2 py-1 list-title">Thành viên có trên phả đồ</div>
-              <div class="d-flex flex-column w-100" style="overflow-y: auto; flex-grow: 1; cursor: pointer; background-color: #FFFFFF;">
-                <div v-for="(n, index) in nodes" :key="n.id">
-                  <div style="height: 32px; padding: 4px 0 4px 8px; cursor: auto !important" :class="{ 'selected-list': n.id == CurrentIdMember, 'list-item ancestor-member': index === 0 }">{{ n.name }}</div>
-                </div>
-              </div>
-            </div>
-            <div @click="selectHelpNonExist()" :class="{shadowed : !helpNonExist, chosen: helpNonExist}" class="my-2 w-100 d-flex flex-column" style="height: 50%; border-radius: 0.375rem 0.375rem 0 0;">
-              <div class="d-flex flex-row px-2 py-1 list-title">
-                <div class="d-flex align-items-center justify-content-center">Thành viên không có trên phả đồ</div>
-                <div v-if="memberRole != 3" class="d-flex align-items-center justify-content-center" style="padding-left: 12px;cursor:pointer">
-                  <svg class="add-member-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                    <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />
-                  </svg>
-                </div>
-              </div>
-              <div class="d-flex flex-column w-100" style="overflow-y: auto; flex-grow: 1; cursor: pointer; background-color: #FFFFFF">
-                <div v-for="list in ListUnspecifiedMembers" :key="list.id" class="list-item">{{ list.MemberName }}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div style="width: 81%; right: 0" class="h-100 position-absolute">
-          <div class="h-100 w-100 position-relative">
-            <div @click="selectHelpTree()" :class="{shadowed : !helpTree, chosen: helpTree}" class="position-absolute" style="width: 950px; height: 600px; inset: 0; margin: auto; box-shadow: 0 0 0 99999px rgba(0, 0, 0, .8); cursor: pointer;"></div>
-          </div>
-        </div>
-
-        <div v-show="helpNoti" class="position-relative h-100 w-100">
-          <div class="help-text" style="right: 0">Đây là chức năng tạo thông báo, trưởng họ là người duy nhất trong gia tộc có thể sử dụng chức năng này.</div>
-          <div class="help-text" style="right: 0; top: 64px;">Có thể gửi mail và tin nhắn SMS về thông tin, sự kiện liên quan tới dòng họ.</div>
-        </div>
-      </div>
-    </div>-->
   </div>
 </template>
 
@@ -1158,7 +1118,6 @@ export default {
           isGG: "isGG",
         },
         sticky: false,
-        // lazyLoading: false,
         nodeMouseClick: FamilyTree.action.none,
       });
       this.family.onInit(() => {
@@ -1246,6 +1205,8 @@ export default {
       let objdata = {};
       let result = this.nodes.find((node) => node.id == id);
 
+      objdata.img = result.img;
+
       objdata.name = result.name;
       objdata.gender = result.gender === "male" ? "Nam" : "Nữ";
 
@@ -1271,6 +1232,8 @@ export default {
       this.lastClickedNodeId = null;
       this.objCompareMember1 = this.getResultMember(memberId1);
       this.objCompareMember2 = this.getResultMember(memberId2);
+      console.log(this.objCompareMember1);
+      console.log(this.objCompareMember2);
       HTTP.get("compare", {
         params: {
           MemberID1: memberId1,
@@ -1278,9 +1241,13 @@ export default {
         },
       })
         .then((response) => {
-          this.resultCompare1 = response.data.result1;
-          this.resultCompare2 = response.data.result2;
-          this.$modal.show("compare-modal");
+          if (response.data.success == true) {
+            this.resultCompare1 = response.data.data.result1;
+            this.resultCompare2 = response.data.data.result2;
+            this.$modal.show("compare-modal");
+          } else {
+            this.NotificationsDelete(response.data.message);
+          }
         })
         .catch((e) => {
           console.log(e);
@@ -1331,6 +1298,9 @@ export default {
       });
     },
     formatDate(dateString) {
+      if (dateString == null) {
+        return null;
+      }
       const date = new Date(dateString);
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -1686,9 +1656,22 @@ export default {
       }
     },
     updateAvatar(event) {
+      const formData = new FormData();
       this.isUpdateAvatar = true;
       const file = event.target.files[0];
       this.UrlAvatar = file;
+      formData.append("path", file);
+      formData.append("MemberID", this.CurrentIdMember);
+      console.log(this.UrlAvatar);
+      console.log(this.CurrentIdMember);
+      HTTP.put("member-photo", formData)
+        .then((response) => {
+          console.log(response.data.data);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+
       if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -2076,10 +2059,10 @@ export default {
       this.objMemberContact = {};
       this.TitleModal = "Thêm Thông Tin " + title;
       this.action = action;
-      if(this.action == 'AddMother' || this.action == 'AddWife'){
-        this.objMemberInfor.Male = 0
+      if (this.action == "AddMother" || this.action == "AddWife") {
+        this.objMemberInfor.Male = 0;
       }
-      console.log(this.action)
+      console.log(this.action);
       this.$modal.show("member-modal");
     },
     closeMemberModal() {

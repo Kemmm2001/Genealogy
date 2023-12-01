@@ -27,13 +27,21 @@ var compareMember = async (req, res) => {
         }
         let DefferenceGeneration = generationMember2[0].Generation - generationMember1[0].Generation;
         if (DefferenceGeneration == 0) {
-            console.log("Vào đây")
+            let data = await CompareMemberService.GetResultCompare(newIdToCampereMember1, newIdToCampereMember2, DefferenceGeneration, Flag, generationMember1[0].Male, generationMember2[0].Male)
+            if (data) {
+                return res.send(Response.successResponse(data))
+            } else {
+                return res.send(Response.badRequestResponse(null, 'Lỗi hệ thống'))
+            }
+
         } else if (DefferenceGeneration < 0) {
             let resultCheckMaternalOrPaternal = await CompareMemberService.checkMaternalOrPaternal(newIdToCampereMember1);
             idMember1 = await CompareMemberService.getIdToCompare(DefferenceGeneration, newIdToCampereMember1);
             let data = await CompareMemberService.GetResultCompare(idMember1, newIdToCampereMember2, DefferenceGeneration, Flag, generationMember1[0].Male, generationMember2[0].Male, resultCheckMaternalOrPaternal)
             if (data) {
                 return res.send(Response.successResponse(data))
+            } else {
+                return res.send(Response.badRequestResponse(null, 'Lỗi hệ thống'))
             }
         } else {
             let resultCheckMaternalOrPaternal = await CompareMemberService.checkMaternalOrPaternal(newIdToCampereMember2);
@@ -41,10 +49,12 @@ var compareMember = async (req, res) => {
             let data = await CompareMemberService.GetResultCompare(newIdToCampereMember1, idMember2, DefferenceGeneration, Flag, generationMember1[0].Male, generationMember2[0].Male, resultCheckMaternalOrPaternal)
             if (data) {
                 return res.send(Response.successResponse(data))
+            } else {
+                return res.send(Response.badRequestResponse(null, 'Lỗi hệ thống'))
             }
         }
     } catch (error) {
-
+        return res.send(Response.badRequestResponse(error, 'Lỗi hệ thống'))
     }
 }
 var compareMember1 = async (req, res) => {
