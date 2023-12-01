@@ -67,8 +67,7 @@ var removeRelationship = async (req, res) => {
                 return res.send(Response.internalServerErrorResponse());
             }
         } else if (action == 'RemoveMarried') {
-            let data = await FamilyTreeService.RemoveRelationshipMarried(currentID, memberToRemove)
-            console.log(data)
+            let data = await FamilyTreeService.RemoveRelationshipMarried(currentID, memberToRemove)            
             if (data == true) {
                 return res.send(Response.successResponse());
             } else {

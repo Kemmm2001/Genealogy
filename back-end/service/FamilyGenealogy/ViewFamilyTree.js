@@ -17,12 +17,12 @@ function getAllReligion() {
 
 async function RemoveAllRelationshipChild(id) {
     try {
-        let queryFindParent = `SELECT * FROM familymember WHERE ParentID = ${id}`;
+        let queryFindParent = `SELECT * FROM familymember WHERE FatherID = ${id} Or MotherID = ${id}`;
         db.connection.query(queryFindParent, (err, result) => {
             if (!err && result.length > 0) {
                 result.forEach(async (child) => {
                     let childID = child.MemberID;
-                    let updateQuery = `UPDATE familymember SET Generation = 0 WHERE MemberID = ${childID}`;
+                    let updateQuery = `UPDATE familymember SET FatherID = null,MotherID = null, Generation = 0 WHERE MemberID = ${childID}`;
                     db.connection.query(updateQuery, (err) => {
                         if (err) {
                             console.log(err)
@@ -41,7 +41,7 @@ async function RemoveAllRelationshipChild(id) {
 
 async function RemoveRelationshipChild(id) {
     try {
-        let updateQuery = `UPDATE familymember SET ParentID = null, Generation = 0 WHERE MemberID = ${id}`;
+        let updateQuery = `UPDATE familymember SET FatherID = null,MotherID = null, Generation = 0 WHERE MemberID = ${id}`;
 
         await new Promise((resolve, reject) => {
             db.connection.query(updateQuery, (err, result) => {
@@ -85,9 +85,9 @@ async function removeMarried(memberID, RemoveID) {
 async function RemoveRelationshipMarried(currentID, RemoveID) {
     return new Promise((resolve, reject) => {
         try {
-            let queryFindParent = `SELECT ParentID FROM genealogy.familymember WHERE MemberID = ${currentID}`;
+            let queryFindParent = `SELECT FatherID,MotherID FROM genealogy.familymember WHERE MemberID = ${currentID}`;
             db.connection.query(queryFindParent, (err, result) => {
-                if (!err && result.length > 0) {
+                if (!err && result[0].FatherID != null || result[0].MotherID != null) {
                     removeMarried(RemoveID, currentID);
                     resolve(true);
                 } else {

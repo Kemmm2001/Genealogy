@@ -38,20 +38,6 @@ async function checkMaternalOrPaternal(MemberID) {
     }
 }
 
-function getMarriageNumber(husbandID, wifeID) {
-    return new Promise((resolve, reject) => {
-        try {
-            let query = ` select MarriageNumber from marriage where husbandID = ${husbandID} and wifeID = ${wifeID}`;
-            db.connection.query(query, (err, result) => {
-                if (!err) {
-                    resolve(result[0].MarriageNumber)
-                }
-            })
-        } catch (error) {
-            console.log(error)
-        }
-    })
-}
 
 function checkBrideOrGroom(MemberID) {
     return new Promise((resolve, reject) => {
@@ -258,10 +244,16 @@ PaternalFamily = [
         name: "Cháu",
         id: 21
     },
+    {
+        name: "Em",
+        id: 22
+    },
 ]
+
 
 async function getResultCompareToMember(DefferenceGeneration, Generation1, Generation2, Flag, Gender1, Gender2, resultCheck) {
     let objResult = {};
+
 
     if (DefferenceGeneration == -1) {
         let index1 = 21;
@@ -359,6 +351,22 @@ async function getResultCompareToMember(DefferenceGeneration, Generation1, Gener
         }
         setResult(objResult, index1, index2);
         return objResult;
+
+    } else if (DefferenceGeneration == 0) {
+        if (Generation1 < Generation2) {
+            if (Gender1 == 1) {
+                setResult(objResult, 18, 22);
+            } else {
+                setResult(objResult, 19, 22);
+            }
+        } else {
+            if (Gender2 == 1) {
+                setResult(objResult, 22, 18);
+            } else {
+                setResult(objResult, 22, 19);
+            }
+        }
+        return objResult;
     }
 }
 
@@ -437,6 +445,24 @@ async function checkMarriageRelationship(memberId1, memberId2) {
         });
     });
 }
+async function getMarriageNumber(husbandID, wifeID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `select MarriageNumber from marriage where husbandID = ${husbandID} and wifeID = ${wifeID}`
+            console.log('query: ' + query)
+            db.connection.query(query, (err, result) => {
+                if (!err) {
+                    resolve(result[0].MarriageNumber)
+                } else {
+                    reject(err)
+                }
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    })
+}
+
 
 async function GetResultCompare(MemberId1, MemberId2, DifferenceGeneration, Flag, Gender1, Gender2, resultCheck) {
     console.log('MemberId1: ' + MemberId1)
@@ -474,22 +500,27 @@ async function GetResultCompare(MemberId1, MemberId2, DifferenceGeneration, Flag
             let getGeneration2 = await getBirthOrderByID(MemberId2);
             getGeneration1 = getGeneration1.BirthOrder
             getGeneration2 = getGeneration2.BirthOrder
-            console.log('getGeneration1: ' + getGeneration1)
-            console.log('getGeneration2: ' + getGeneration2)
 
-            if (getGeneration1 !== getGeneration2) {
-                if (result1.FatherID != null && result2.FatherID != null && result1.MotherID != null && result2.MotherID) {
-                    console.log("Vào phần nàyyyyyyyyyy")
-                } else {
-                    console.log("Vào phần này")
+            if (result1.FatherID != null && result2.FatherID != null && result1.MotherID != null && result2.MotherID != null) {
+                if (result1.FatherID == result2.FatherID && result1.MotherID == result2.MotherID) {
                     let result = await getResultCompareToMember(DifferenceGeneration, getGeneration1, getGeneration2, Flag, Gender1, Gender2, resultCheck);
+                    console.log("Kết quả:", result);
+                    return result;
+                } else {
+                    let MarriageNumber1 = await getMarriageNumber(result1.FatherID, result1.MotherID);
+                    let MarriageNumber2 = await getMarriageNumber(result2.FatherID, result2.MotherID)
+                    console.log('MarriageNumber1: ' + MarriageNumber1)
+                    console.log('MarriageNumber2: ' + MarriageNumber2)
+                    let result = await getResultCompareToMember(DifferenceGeneration, MarriageNumber1, MarriageNumber2, Flag, Gender1, Gender2, resultCheck);
                     console.log("Kết quả:", result);
                     return result;
                 }
             } else {
-                // Chưa lên đời hoặc đã lên đời nhưng hai người cùng đời
-                return "Không có sự chênh lệch đời hoặc đã lên đời nhưng cùng đời.";
+                let result = await getResultCompareToMember(DifferenceGeneration, getGeneration1, getGeneration2, Flag, Gender1, Gender2, resultCheck);
+                console.log("Kết quả:", result);
+                return result;
             }
+
         }
 
     } catch (error) {
