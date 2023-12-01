@@ -332,11 +332,14 @@ export default {
       }
     },
     listRemovePhotoAdd(index, type) {
+      console.log(index)
       if (type == 'add') {
         this.ListPhotoAddRemove.push(index);
+        console.log('add'+this.ListPhotoAddRemove)
       }
       if (type == 'remove') {
-        this.ListPhotoAddRemove.splice(index, 1);
+        this.ListPhotoAddRemove = this.ListPhotoAddRemove.filter(photo => photo !== index);
+        console.log('remove'+this.ListPhotoAddRemove)
       }
 
     },
@@ -488,6 +491,7 @@ export default {
       this.albumPhoto.BackGroundPhoto = event.target.files[0];
     },
     removeFamilyPhotoAdd() {
+      console.log(this.ListPhotoAddRemove);
       for (let i = 0; i < this.ListPhotoAddRemove.length; i++) {
         this.FamilyPhotoListAddShow.splice(this.ListPhotoAddRemove[i], 1);
         this.listHeightLarger.splice(this.ListPhotoAddRemove[i], 1);

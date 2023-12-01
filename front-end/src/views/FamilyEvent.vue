@@ -289,13 +289,13 @@
               <tbody>
                 <tr style="cursor: pointer;" class="eventlist-item eventlist-table-item odd" v-for="(event, index) in listEventByDate"
                   :key="event.EventID">
-                  <td @click="showEditEventModal(event.EventID)">{{ index + 1 }}</td>
-                  <td @click="showEditEventModal(event.EventID)">{{ event.EventName }}</td>
-                  <td @click="showEditEventModal(event.EventID)">
+                  <td>{{ index + 1 }}</td>
+                  <td>{{ event.EventName }}</td>
+                  <td>
                     <div>{{ formattedCreatedAt(event.StartDate) }} (DL)</div>
                     <div>{{formattedCreatedAt(convertSolarToLunar(event.StartDate))}} (AL)</div>
                   </td>
-                  <td @click="showEditEventModal(event.EventID)">
+                  <td>
                     <div>{{ formattedCreatedAt(event.EndDate) }} (DL)</div>
                     <div>{{formattedCreatedAt(convertSolarToLunar(event.EndDate))}} (AL)</div>
                   </td>
@@ -440,10 +440,6 @@ export default {
         endDate = new Date(this.listEvent[i].EndDate);
         selectedDate = new Date(dateCheck);
         selectedDate.setHours(0, 0, 0, 0)
-        console.log(startDate)
-        console.log(dateCheck)
-        console.log(selectedDate)
-        console.log(endDate)
         check = selectedDate >= startDate && selectedDate <= endDate;
         if(check == true){
           return true;
@@ -683,23 +679,28 @@ export default {
         },
       }).then((respone) => {
         if (respone.data.success == true) {
+          let year;
+          let month;
+          let day;
           this.eventFamily = respone.data.data;
           this.eventFamily = this.eventFamily[0];
           console.log(this.eventFamily);
-          this.startHour = new Date(this.eventFamily.StartDate).getUTCHours();
+          this.startHour =  new Date(this.eventFamily.StartDate).getHours();
+          console.log(this.startHour)
           this.startMinute = new Date(
             this.eventFamily.StartDate
-          ).getUTCMinutes();
-          this.startDate = new Date(this.eventFamily.StartDate)
-            .toISOString()
-            .split("T")[0];
+          ).getMinutes();
+          year = new Date(this.eventFamily.StartDate).getFullYear();
+          month = String(new Date(this.eventFamily.StartDate).getMonth() + 1).padStart(2, "0");
+          day = String(new Date(this.eventFamily.StartDate).getDate()).padStart(2, "0");
+          this.startDate = `${year}-${month}-${day}`
 
-          this.endHour = new Date(this.eventFamily.EndDate).getUTCHours();
-          this.endMinute = new Date(this.eventFamily.EndDate).getUTCMinutes();
-          this.endDate = new Date(this.eventFamily.EndDate)
-            .toISOString()
-            .split("T")[0];
-
+          this.endHour = new Date(this.eventFamily.EndDate).getHours();
+          this.endMinute = new Date(this.eventFamily.EndDate).getMinutes();
+          year = new Date(this.eventFamily.EndDate).getFullYear();
+          month = String(new Date(this.eventFamily.EndDate).getMonth() + 1).padStart(2, "0");
+          day = String(new Date(this.eventFamily.EndDate).getDate()).padStart(2, "0");
+          this.endDate = `${year}-${month}-${day}`
           this.$modal.show("add-event-modal");
         }
       });
