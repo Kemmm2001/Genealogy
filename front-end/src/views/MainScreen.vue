@@ -2229,6 +2229,9 @@ export default {
             console.log(this.nodes);
             for (let i = 0; i < this.nodes.length; i++) {
               this.nodes[i].tags = [];
+              if(this.nodes[i].name.length > 15){
+                this.nodes[i].name = this.nodes[i].name.substring(0, 16)+'...';
+              }
               if (this.nodes[i].isDead == 1) {
                 this.numberDeath += 1;
                 this.nodes[i].tags.push("died");
