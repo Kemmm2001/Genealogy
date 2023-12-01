@@ -1761,6 +1761,7 @@ export default {
             this.getListUnspecifiedMembers();
           }
           if (response.data.success == true) {
+            this.getAllListMember()
             this.isUpdateAvatar = false;
             if (this.action != "AddNormal") {
               this.nodes.length = this.nodes.length + 1;

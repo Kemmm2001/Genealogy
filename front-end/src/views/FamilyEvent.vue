@@ -419,7 +419,7 @@ export default {
         startDate = new Date(this.listEvent[i].StartDate);
         startDate.setHours(0, 0, 0, 0);
         endDate = new Date(this.listEvent[i].EndDate);
-        selectedDate = new Date(dateCheck);
+        selectedDate = new Date(dateCheck).setHours(0, 0, 0, 0);
         let check = selectedDate >= startDate && selectedDate <= endDate;
         if(check == true){
           this.listEventByDate.push(this.listEvent[i])
