@@ -105,7 +105,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr style="cursor: pointer;" class="eventlist-item eventlist-table-item odd" v-for="(event, index) in listEvent"
+                <tr style="cursor: pointer;" class="eventlist-item eventlist-table-item odd" v-for="(event, index) in listEventFilter"
                   :key="event.EventID">
                   <td @click="showEditEventModal(event.EventID)">{{ index + 1 }}</td>
                   <td @click="showEditEventModal(event.EventID)">{{ event.EventName }}</td>
@@ -359,6 +359,7 @@ export default {
 
       currentEventId: null,
       listEvent: [],
+      listEventFilter:[],
       listRepeat: null,
       listEventByDate:[],
       dateSelected:null,
@@ -419,7 +420,7 @@ export default {
         startDate = new Date(this.listEvent[i].StartDate);
         startDate.setHours(0, 0, 0, 0);
         endDate = new Date(this.listEvent[i].EndDate);
-        selectedDate = new Date(dateCheck);
+        selectedDate = new Date(dateCheck).setHours(0, 0, 0, 0);
         let check = selectedDate >= startDate && selectedDate <= endDate;
         if(check == true){
           this.listEventByDate.push(this.listEvent[i])
@@ -484,6 +485,7 @@ export default {
         .then((response) => {
           if (response.data.success == true) {
             this.listEvent = response.data.data;
+            this.listEventFilter = this.listEvent;
           }
         })
         .catch((e) => {
@@ -513,7 +515,7 @@ export default {
         })
           .then((respone) => {
             if (respone.data.success == true) {
-              this.listEvent = respone.data.data;
+              this.listEventFilter = respone.data.data;
             }
           })
           .catch((e) => {
@@ -528,7 +530,7 @@ export default {
       })
         .then((respone) => {
           if (respone.data.success == true) {
-            this.listEvent = respone.data.data;
+            this.listEventFilter = respone.data.data;
           }
         })
         .catch((e) => {
