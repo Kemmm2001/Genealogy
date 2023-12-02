@@ -256,13 +256,13 @@
             </div>
             <div class="position-relative d-flex" style="height: 48px;">
               <div v-if="numberDeath != nodes.length" class="d-flex flex-row align-items-center p-2">
-                <input v-model="checkAll" type="checkbox" class="form-check-input" @change="toggleSelectAll()" />
+                <input v-model="checkAll" type="checkbox" class="m-0 form-check-input" @change="toggleSelectAll()" />
                 <div style="padding-left: 8px">Chọn tất cả mọi người</div>
               </div>
             </div>
             <div class="position-relative d-flex" style="height: 48px;">
               <div v-if="numberDeath != nodes.length" class="d-flex flex-row align-items-center p-2">
-                <input v-model="checkWithFilter" type="checkbox" class="form-check-input" @change="toggleSelectWithFilter()" />
+                <input v-model="checkWithFilter" type="checkbox" class="m-0 form-check-input" @change="toggleSelectWithFilter()" />
                 <div style="padding-left: 8px">Chọn theo bộ lọc</div>
               </div>
             </div>
@@ -304,16 +304,20 @@
             </div>
             <div class="position-absolute w-100" style="bottom: 8px">
               <div v-if="smsSelected" class="w-100 px-3 d-flex flex-row">
-                <input type="text" class="form-control" style="height: 48px;" placeholder="..." v-model="contentMessage" />
+                <div style="height: 42px; flex-grow: 1;">
+                  <input type="text" class="h-100 w-100 form-control" placeholder="..." v-model="contentMessage" />
+                </div>
                 <div class="d-flex align-items-center" style="padding-left: 12px; cursor: pointer;" @click="sendMessageToMember()">
                   <svg class="noti-send-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                     <path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z" />
                   </svg>
                 </div>
+                <div style="padding-left: 12px;">
+                  <div @click="expandEventListSMS = !expandEventListSMS" class="btn bg-primary text-white">Sự kiện</div>
+                </div>
               </div>
               <div v-if="emailSelected" class="w-100 btn px-3 position-relative" style="height: 48px;">
                 <div @click="expandCreateEmail = !expandCreateEmail" class="btn btn-primary px-2 py-1 position-absolute" style="right: 16px">Tạo email mới</div>
-                <div @click="expandEventList = !expandEventList" class="btn btn-primary px-2 py-1 position-absolute" style="right: 153px">Thông báo sự kiện</div>
               </div>
             </div>
             <div class="position-absolute create-mail" :class="{ expanded: expandCreateEmail }">
@@ -335,9 +339,16 @@
                   <textarea v-model="contentEmail" style="resize: none; outline: none; border: none;" class="h-100 w-100 p-2" placeholder="Viết gì đó..."></textarea>
                 </div>
                 <div class="create-mail-footer d-flex flex-row px-3 py-2 w-100" style="justify-content: end;">
-                  <div style="border-radius: 50% 0 0 50%; background: #007bff; width: 25px;"></div>
-                  <div class="btn d-flex align-items-center justify-content-center" style="padding: 4px 12px; background: #007bff; color: #FFFFFF; border-radius: 0" @click="sendEmailToMember()">Gửi</div>
-                  <div style="border-radius: 0 50% 50% 0; background: #007bff; width: 25px;"></div>
+                  <div class="d-flex flex-row px-2" @click="expandEventList = !expandEventList">
+                    <div style="border-radius: 50% 0 0 50%; background: #007bff; width: 25px;"></div>
+                    <div class="btn d-flex align-items-center justify-content-center" style="padding: 4px 12px; background: #007bff; color: #FFFFFF; border-radius: 0; outline: none; border: none;">Sự kiện</div>
+                    <div style="border-radius: 0 50% 50% 0; background: #007bff; width: 25px;"></div>
+                  </div>
+                  <div class="d-flex flex-row"  @click="sendEmailToMember()">
+                    <div style="border-radius: 50% 0 0 50%; background: #007bff; width: 25px;"></div>
+                    <div class="btn d-flex align-items-center justify-content-center" style="padding: 4px 12px; background: #007bff; color: #FFFFFF; border-radius: 0; outline: none; border: none;">Gửi</div>
+                    <div style="border-radius: 0 50% 50% 0; background: #007bff; width: 25px;"></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -353,7 +364,35 @@
                     </div>
                   </div>
                 </div>
-                <div class="pt-3 px-2 w-100" style="height: calc(100% - 100px)">
+                <div class="pt-3 px-2 w-100" style="height: calc(100% - 100px); overflow-y: auto;">
+                  <div v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row">
+                    <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Chủ đề: {{e.EmailSubject}}</div>
+                    <div class="col-6 h-100 d-flex align-items-center position-relative">
+                      <div class="mail-content-prev">{{e.EmailContent}}</div>
+                    </div>
+                    <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">1/1/2000</div>
+                  </div>
+                </div>
+                <div class="create-mail-footer d-flex flex-row px-3 py-2 w-100" style="justify-content: end;">
+                  <div style="border-radius: 50% 0 0 50%; background: #007bff; width: 25px;"></div>
+                  <div class="btn d-flex align-items-center justify-content-center" style="padding: 4px 12px; background: #007bff; color: #FFFFFF; border-radius: 0" @click="sendEmailToMember()">Gửi</div>
+                  <div style="border-radius: 0 50% 50% 0; background: #007bff; width: 25px;"></div>
+                </div>
+              </div>
+            </div>
+            <div class="position-absolute create-mail" :class="{ expanded: expandEventListSMS }">
+              <div class="w-100 h-100 d-flex flex-column">
+                <div class="create-mail-title d-flex align-items-center justify-content-center position-relative">
+                  <div>Danh sách sự kiện</div>
+                  <div class="create-mail-close position-absolute" @click="expandEventListSMS = !expandEventListSMS">
+                    <div class="position-relative h-100 w-100">
+                      <svg class="create-mail-close-icon position-absolute" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                        <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div class="pt-3 px-2 w-100" style="height: calc(100% - 100px); overflow-y: auto;">
                   <div v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row">
                     <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Chủ đề: {{e.EmailSubject}}</div>
                     <div class="col-6 h-100 d-flex align-items-center position-relative">
@@ -1054,6 +1093,7 @@ export default {
       smsSelected: true,
       expandCreateEmail: false,
       expandEventList: false,
+      expandEventListSMS: false,
       advancedFilterDown: false,
       selectNodeHighLight: [],
       resultCompare1: null,
@@ -2432,11 +2472,13 @@ export default {
     selectEmail() {
       this.emailSelected = true;
       this.smsSelected = false;
+      this.expandEventListSMS = false;
     },
     selectSMS() {
       this.smsSelected = true;
       this.emailSelected = false;
       this.expandCreateEmail = false;
+      this.expandEventList = false;
     },
     selectHelpNoti() {
       this.helpNoti = true;
