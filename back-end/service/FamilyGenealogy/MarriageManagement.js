@@ -1,7 +1,6 @@
-
-// Import the database connection
 const db = require("../../Models/ConnectDB");
 
+// nguyễn anh tuấn
 // Create a new marriage record
 const addMarriage = (data) => {
     return new Promise((resolve, reject) => {
@@ -24,6 +23,7 @@ const addMarriage = (data) => {
     });
 }
 
+// nguyễn anh tuấn
 // Update a marriage record
 const updateMarriage = async (data) => {
     return new Promise((resolve, reject) => {
@@ -46,6 +46,7 @@ const updateMarriage = async (data) => {
     });
 };
 
+// nguyễn anh tuấn
 // Delete a marriage record
 const deleteMarriage = async (marriageID) => {
     return new Promise((resolve, reject) => {
@@ -57,6 +58,7 @@ const deleteMarriage = async (marriageID) => {
                     console.log(err);
                     reject(err);
                 } else {
+                    console.log(`Deleted successfully a marriage with id = ${marriageID}`);
                     resolve(result);
                 }
             });
@@ -67,6 +69,7 @@ const deleteMarriage = async (marriageID) => {
     });
 };
 
+// nguyễn anh tuấn
 // Get all marriage records
 const getAllMarriages = async () => {
     return new Promise((resolve, reject) => {
@@ -87,6 +90,7 @@ const getAllMarriages = async () => {
     });
 };
 
+// nguyễn anh tuấn
 // Get a marriage record by husbandID
 const getMarriageByHusbandID = async (husbandID) => {
     return new Promise((resolve, reject) => {
@@ -108,6 +112,7 @@ const getMarriageByHusbandID = async (husbandID) => {
     });
 };
 
+// nguyễn anh tuấn
 // Get a marriage record by wifeID
 const getMarriageByWifeID = async (wifeID) => {
     return new Promise((resolve, reject) => {
@@ -128,6 +133,8 @@ const getMarriageByWifeID = async (wifeID) => {
         }
     });
 };
+
+// nguyễn anh tuấn
 // Get a marriage record by codeID
 const getMarriageByCodeID = async (codeID) => {
     return new Promise((resolve, reject) => {
@@ -149,6 +156,7 @@ const getMarriageByCodeID = async (codeID) => {
     });
 };
 
+// nguyễn anh tuấn
 // Get a marriage record by marriageID
 const getMarriageByMarriageID = async (marriageID) => {
     return new Promise((resolve, reject) => {
@@ -170,6 +178,7 @@ const getMarriageByMarriageID = async (marriageID) => {
     });
 };
 
+// nguyễn anh tuấn
 // Get a marriage record by husbandID or wifeID
 const getMarriageByHusbandIDOrWifeID = async (husbandID, wifeID) => {
     return new Promise((resolve, reject) => {
@@ -192,6 +201,7 @@ const getMarriageByHusbandIDOrWifeID = async (husbandID, wifeID) => {
 };
 
 
+// nguyễn anh tuấn
 // Get a marriage record by husbandID and wifeID
 const getMarriageByHusbandIDAndWifeID = async (husbandID, wifeID) => {
     return new Promise((resolve, reject) => {

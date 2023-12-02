@@ -572,10 +572,11 @@ var deleteMember = async (req, res) => {
             return res.send(Response.dataNotFoundResponse());
         }
         console.log("dataMember: ", dataMember[0].MemberID);
-        await FamilyManagementService.deleteMemberRelated(dataMember[0]);
-        await FamilyManagementService.deleteMember(req.query.MemberID);
         // xóa ảnh cũ
         await CoreFunction.deleteImage(dataMember[0].Image);
+        await FamilyManagementService.UpdateMemberRelated(req.query.MemberID);
+        await FamilyManagementService.deleteMember(req.query.MemberID);
+        
         dataRes = {
             MemberID: req.query.MemberID,
         }
