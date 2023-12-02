@@ -25,7 +25,7 @@
           </div>
         </div>
       </div>
-      <div class="h-100 w-100 d-flex flex-column px-2" style="padding: 12px; flex-grow: 1; font-family: 'QuicksandBold', sans-serif;">
+      <div class="w-100 d-flex flex-column px-2" style="padding: 12px; flex-grow: 1; font-family: 'QuicksandBold', sans-serif;">
         <div class="existing-members d-flex flex-column w-100">
           <div class="d-flex align-items-center justify-content-center px-2 py-1 list-title">Thành viên có trên phả đồ</div>
           <div class="d-flex flex-column w-100" style="overflow-y: auto;cursor: pointer">
