@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex h-100 w-100">
     <div class="info-pages-container h-100 w-100 d-flex flex-column">
-      <div class="h-100 px-2" style="border-radius: 0.2rem; background-color: #6c757d59;">
+      <div class="h-100 px-2" style="border-radius: 0.2rem; background-color: #D0D2D6;">
         <div class="d-flex align-items-center w-100 p-2" style="height: 50px; font-size: 20px; font-weight: bold;">
           Album dòng họ</div>
         <div class="d-flex flex-row">
@@ -11,17 +11,20 @@
             </div>
           </div>
           <div class="col-md-6 d-flex align-items-center" style="justify-content: right;">
-            <button @click=" showCfDel()" class="btn articlelist-item articlelist-item-button text-center my-4 mx-2"
-              :disabled="isButtonDisabledAlbum">Xóa album</button>
+            <button @click=" showCfDel()"
+              class="btn bg-primary text-white articlelist-item articlelist-item-button text-center my-4 mx-2"
+              :disabled="isButtonDisabledAlbum" style="outline: none; border: none;">Xóa album</button>
             <button @click="openAddAlbumModal()"
-              class="btn articlelist-item articlelist-item-button text-center my-4 mx-2">Tạo album</button>
+              class="btn bg-primary text-white articlelist-item articlelist-item-button text-center my-4 mx-2">Tạo
+              album</button>
           </div>
         </div>
         <div class="d-flex flex-row flex-wrap" style="height: calc(100% - 151px); overflow-y: auto;">
           <div class="d-flex" v-for=" (album, index) in this.AlbumPhotoList" :key="album.AlbumID"
             @click="getAlbumCurrentId(album.AlbumID)">
             <div class="album mx-2 mb-3 d-flex flex-column">
-              <div class="album-cover" @click="openEditAlbumModal()" v-if="album.BackGroundPhoto != null" style="background-image: url();">
+              <div class="album-cover" @click="openEditAlbumModal()" v-if="album.BackGroundPhoto != null"
+                style="background-image: url();">
                 <!-- <img :src="album.BackGroundPhoto" /> -->
                 <img class="h-100 w-100" style="object-fit: cover;" src="../assets/starrynight.jpg" />
               </div>
@@ -52,48 +55,51 @@
         </div>
       </div>
     </div>
-    <modal name="Album-modal">
-      <div class="form-group">
-        <div class="w-100 h-100 add-album-modal">
-          <div class="d-flex flex-row w-100 align-items-center position-relative">
-            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm album</div>
-            <div class="close-add-form" @click="closeAlbumModal()">
-              <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                <path
-                  d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-              </svg>
-            </div>
-          </div>
-          <div class="d-flex flex-column">
-            <div class="d-flex flex-row my-2 align-items-center">
-              <label class="col-3 d-flex justify-content-center" for="article-name" style="cursor: pointer;">Tên
-                album</label>
-              <div class="mx-2 w-100">
-                <input id="article-name" type="text" v-model="albumPhoto.AlbumName" class="form-control" />
+    <div class="albumModal-container">
+      <modal name="Album-modal">
+        <div class="form-group">
+          <div class="w-100 h-100 add-album-modal">
+            <div class="d-flex flex-row w-100 align-items-center position-relative">
+              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm album</div>
+              <div class="close-add-form" @click="closeAlbumModal()">
+                <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                  <path
+                    d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                </svg>
               </div>
             </div>
-            <div class="d-flex flex-row my-2 align-items-center">
-              <label class="col-3 d-flex justify-content-center" for="article-des" style="cursor: pointer;">Mô tả</label>
-              <div class="mx-2 w-100">
-                <input id="article-des" type="text" v-model="albumPhoto.description" class="form-control" />
+            <div class="d-flex flex-column">
+              <div class="d-flex flex-row my-2 align-items-center">
+                <label class="col-3 d-flex justify-content-center" for="article-name" style="cursor: pointer;">Tên
+                  album</label>
+                <div class="mx-2 w-100">
+                  <input id="article-name" type="text" v-model="albumPhoto.AlbumName" class="form-control" />
+                </div>
               </div>
-            </div>
-            <div class="d-flex flex-row my-2 align-items-center">
-              <label class="col-3 d-flex justify-content-center" for="off-url" style="cursor: pointer;">Thêm ảnh
-                bìa</label>
-              <div class="mx-2 w-100">
-                <input id="off-url" type="file" class="form-control input-file" @change="handleFileChangeBackGround" />
+              <div class="d-flex flex-row my-2 align-items-center">
+                <label class="col-3 d-flex justify-content-center" for="article-des" style="cursor: pointer;">Mô
+                  tả</label>
+                <div class="mx-2 w-100">
+                  <input id="article-des" type="text" v-model="albumPhoto.description" class="form-control" />
+                </div>
               </div>
-            </div>
-            <div class="d-flex flex-row m-3 align-items-center articlelist-button-container">
-              <div class>
-                <button class="articlelist-item-button form-control" @click="updateAlbum()">Cập nhật</button>
+              <div class="d-flex flex-row my-2 align-items-center">
+                <label class="col-3 d-flex justify-content-center" for="off-url" style="cursor: pointer;">Thêm ảnh
+                  bìa</label>
+                <div class="mx-2 w-100">
+                  <input id="off-url" type="file" class="form-control input-file" @change="handleFileChangeBackGround" />
+                </div>
+              </div>
+              <div class="d-flex flex-row m-3 align-items-center articlelist-button-container">
+                <div class>
+                  <button class="articlelist-item-button form-control" @click="updateAlbum()">Cập nhật</button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </modal>
+      </modal>
+    </div>
     <div class="addAlbum-container">
       <modal name="addAlbum-modal">
         <div class="form-group">
@@ -203,20 +209,22 @@
                 <button class="btn btn-danger mr-2" style="margin: 10px;" :disabled="isButtonDisabledPhoto"
                   @click="removeFamilyPhotoByPhotoId()">Xóa Ảnh</button>
               </div>
-              <div class="add-photo-list d-flex flex-row w-100 h-100" style="overflow-y: auto;">
-                <div class="edit-photo" v-for="(photo, index) in FamilyPhotoList" :key="index"
-                  @click="clickPhoto(index), getPhotoCurrentId(photo.PhotoID)"
-                  style="margin-left:10px;width: 20%;height: 20%;background-color: black;">
-                  <div class="d-flex flex-column" style="width: 100%;height: 100%;">
-                    <div class="w-100 h-100 d-flex align-items-center justify-content-center"
-                      style="background-color: #000;">
-                      <img src="https://cdn.diemnhangroup.com/seoulcenter/2022/11/gai-xinh-1.jpg" ref="imageRef"
-                        :class="{ fitHeight: listHeightLarger[index] }" style="height: 100% ;width: auto; ">
-                    </div>
-                    <div class="w-100 d-flex justify-content-center pt-2">
-                      <input class="form-check p-0" style="height: 24px; width: 24px; outline: none; border:none;"
-                        type="checkbox" v-model="ListCheckBoxPhoto[index]"
-                        @change="changeCheckPhoto(photo.PhotoID, index)" />
+              <div class="add-photo-list d-flex flex-row w-100 h-100" style="height: calc(100% - 50px);">
+                <div style="flex-wrap: wrap; overflow-y: auto; justify-content: center; align-items: center;">
+                  <div class="edit-photo d-flex flex-row position-relative" v-for="(photo, index) in FamilyPhotoList"
+                    :key="index" @click="clickPhoto(index), getPhotoCurrentId(photo.PhotoID)"
+                    style="margin-left:10px;width: 20%;height: 20%;background-color: black;">
+                    <div class="d-flex flex-column" style="width: 100%;height: 100%;">
+                      <div class="w-100 h-100 d-flex align-items-center justify-content-center"
+                        style="background-color: #000;">
+                        <img src="https://cdn.diemnhangroup.com/seoulcenter/2022/11/gai-xinh-1.jpg" ref="imageRef"
+                          :class="{ fitHeight: listHeightLarger[index] }" style="height: 100% ;width: auto; ">
+                      </div>
+                      <div class="w-100 d-flex position-absolute" style="top: 0; right: 0;">
+                        <input class="form-check p-0" style="height: 24px; width: 24px; outline: none; border:none;"
+                          type="checkbox" v-model="ListCheckBoxPhoto[index]"
+                          @change="changeCheckPhoto(photo.PhotoID, index)" />
+                      </div>
                     </div>
                   </div>
                 </div>

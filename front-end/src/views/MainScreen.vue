@@ -25,7 +25,7 @@
           </div>
         </div>
       </div>
-      <div class="h-100 w-100 d-flex flex-column px-2" style="padding-top: 12px; font-family: 'QuicksandBold', sans-serif;">
+      <div class="h-100 w-100 d-flex flex-column px-2" style="padding: 12px; flex-grow: 1; font-family: 'QuicksandBold', sans-serif;">
         <div class="existing-members d-flex flex-column w-100">
           <div class="d-flex align-items-center justify-content-center px-2 py-1 list-title">Thành viên có trên phả đồ</div>
           <div class="d-flex flex-column w-100" style="overflow-y: auto;cursor: pointer">
@@ -565,7 +565,7 @@
               </div>
               <div class="col-9" style="padding-top: 15px" v-if="extendedInfo">
                 <div class="d-flex flex-row">
-                  <div v-if="isEdit" class="col-4">
+                  <div v-if="isEdit" class="col-4" style="padding-right: 8px;">
                     <img style="height:316px;width:100%;margin-bottom:20px" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" />
                     <svg v-else style="margin-bottom:36px" fill="#000000" height="275px" width="100%" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
                       <g>
