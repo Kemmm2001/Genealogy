@@ -52,6 +52,7 @@ const initWebRouter = (app) => {
     router.put('/albumphoto', CoreFunction.uploadImage("album-photo").single('BackGroundPhoto'), AlbumPhotoController.updateAlbumPhoto);
     // Delete an AlbumPhoto with id
     router.get('/delete-albumphoto', AlbumPhotoController.deleteAlbumPhoto);
+    router.get('/searchAlbum',AlbumPhotoController.searchAlbumPhoto)
 
     // Create a new FamilyPhoto
     router.post('/familyphoto', CoreFunction.uploadImage("family-photo").single('Photo'), FamilyPhotoController.addFamilyPhoto);

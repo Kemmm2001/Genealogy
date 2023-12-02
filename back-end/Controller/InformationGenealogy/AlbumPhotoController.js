@@ -80,7 +80,7 @@ var updateAlbumPhoto = async (req, res) => {
         if (req.file != null) {
             console.log("Đã vào trường hợp có file ảnh");
             req.body.BackGroundPhoto = req.file.path;
-        }else{
+        } else {
             console.log("Đã vào trường hợp không có file ảnh");
         }
         // cập nhật AlbumPhoto vào database
@@ -149,6 +149,22 @@ var checkFamilyTreeExist = async (req) => {
         return Response.internalServerErrorResponse();
     }
 }
+//Nguyễn Lê Hùng
+var searchAlbumPhoto = async (req, res) => {
+    try {
+        let CodeID = req.query.CodeID;
+        let keySearch = req.query.keySearch;
+        let data = await AlbumPhotoManagementService.searchAlbumPhoto(CodeID, keySearch);
+        if (data) {
+            return res.send(Response.successResponse(data))
+        } else {
+            return res.send(Response.dataNotFoundResponse())
+        }
+    } catch (error) {
+        return res.send(Response.dataNotFoundResponse(error))
+    }
+}
+
 var deleteAlbumPhoto = async (req, res) => {
     try {
         // Log ra thông tin trong req.query
@@ -231,4 +247,4 @@ var getAllAlbumPhotos = async (req, res) => {
 
 
 
-module.exports = { addAlbumPhoto, updateAlbumPhoto, deleteAlbumPhoto, getAlbumPhoto, getAllAlbumPhotos };
+module.exports = { addAlbumPhoto, updateAlbumPhoto, deleteAlbumPhoto, getAlbumPhoto, getAllAlbumPhotos, searchAlbumPhoto };
