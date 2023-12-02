@@ -1,7 +1,8 @@
+<!-- phùng việt khôi -->
 <template>
   <div class="d-flex h-100 w-100 position-relative">
     <div class="list h-100 d-flex flex-column align-items-center">
-      <div v-if="memberRole != 3" class="w-100 d-flex flex-column" style="height: 20%">
+      <div v-if="memberRole != 3" class="w-100 d-flex flex-column" style="height: 15%">
       <div class="w-100 d-flex flex-row" style="padding-top: 8px">
         <div class="col-6" style="padding-left: 8px; padding-right: 6px">
           <div class="w-100 h-100">
@@ -27,7 +28,7 @@
         </div>
       </div>
       </div>
-      <div class="w-100 d-flex flex-column px-2" :class="{height100 : memberRole == 3}" style="padding: 12px; height: 80%; font-family: 'QuicksandBold', sans-serif;">
+      <div class="w-100 d-flex flex-column px-2" :class="{height100 : memberRole == 3}" style="padding: 12px; height: 85%; font-family: 'QuicksandBold', sans-serif;">
         <div class="existing-members d-flex flex-column w-100">
           <div class="d-flex align-items-center justify-content-center px-2 py-1 list-title">Thành viên có trên phả đồ</div>
           <div class="d-flex flex-column w-100" style="overflow-y: auto;cursor: pointer">
