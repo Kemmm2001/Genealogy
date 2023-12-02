@@ -63,6 +63,7 @@ var getListBloodTypeGroup = async (req, res) => {
     res.send(ListBloodTypeGroup)
 }
 
+// nguyễn anh tuấn
 var addMember = async (req, res) => {
     try {
         db.connection.beginTransaction();
@@ -190,15 +191,6 @@ var addMember = async (req, res) => {
 
                         return res.send(Response.badRequestResponse(null, errorMessage));
                     }
-                    /*  // nếu muốn add con cái mà thành viên hiện tại là nữ hoặc là chồng của người trong gia phả thì sẽ không được phép
-                    if (
-                        (currentMember[0].FatherID != null && currentMember[0].Male == 0) ||
-                        (currentMember[0].FatherID == null && currentMember[0].Male == 1 && memberRole[0].RoleID != 1)
-                    ) {
-                        let errorMessage = 'Không thể thêm con cái cho thành viên này';
-                        
-                        return res.send(Response.badRequestResponse(null, errorMessage));
-                    } */
                     // thêm cha vào FatherID của con
                     FamilyManagementService.insertFatherIDToMember(fatherData[0].MemberID, data.insertId);
                 }
@@ -248,12 +240,6 @@ var addMember = async (req, res) => {
             // trường hợp muốn thêm vợ chồng
             else if (req.body.Action == 'AddHusband' || req.body.Action == 'AddWife') {
                 console.log("Đã vào trường hợp thêm vợ chồng");
-                // nếu không có parentid và có marriageid thì không thể thêm vợ chồng
-                if (currentMember[0].ParentID == null && currentMember[0].MarriageID != null) {
-                    let errorMessage = 'Thành viên này đã cưới rồi';
-
-                    return res.send(Response.badRequestResponse(null, errorMessage));
-                }
                 let objData = {};
                 // nếu vào trường hợp thêm chồng 
                 if (req.body.Action == 'AddHusband') {
@@ -287,8 +273,6 @@ var addMember = async (req, res) => {
                 }
                 await FamilyManagementService.setGeneration(currentMember[0].Generation, data.insertId);
                 await MarriageManagement.addMarriage(objData);
-                // await FamilyManagementService.InsertMarriIdToMember(data.insertId, req.body.CurrentMemberID);
-                // await FamilyManagementService.InsertMarriIdToMember(req.body.CurrentMemberID, data.insertId);
             }
         }
         // kết thúc phần thêm member theo action
@@ -302,6 +286,7 @@ var addMember = async (req, res) => {
     }
 };
 
+// nguyễn anh tuấn
 var isBirthOrderExist = (memberID, birthOrder, listBirthOrderExist) => {
     console.log("Vào hàm isBirthOrderExist");
     console.log(`listBirthOrderExist: ${listBirthOrderExist}`)
@@ -315,6 +300,7 @@ var isBirthOrderExist = (memberID, birthOrder, listBirthOrderExist) => {
     return false;
 }
 
+// nguyễn anh tuấn
 var updateMemberPhoto = async (req, res) => {
     try {
         console.log("vào đây")
@@ -350,6 +336,8 @@ var updateMemberPhoto = async (req, res) => {
         return res.send(Response.internalServerErrorResponse());
     }
 }
+
+// nguyễn anh tuấn
 var updateMember = async (req, res) => {
     try {
         db.connection.beginTransaction();
@@ -443,6 +431,7 @@ var updateMember = async (req, res) => {
     }
 }
 
+// nguyễn anh tuấn
 var isHasRelatedPerson = (dataMember) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -464,6 +453,7 @@ var isHasRelatedPerson = (dataMember) => {
     })
 }
 
+// nguyễn anh tuấn
 var updateMemberToGenealogy = async (req, res) => {
     try {
         db.connection.beginTransaction();
@@ -544,9 +534,32 @@ var updateMemberToGenealogy = async (req, res) => {
         }
         // trường hợp muốn thêm vợ chồng
         else if (req.body.Action == 'AddHusband' || req.body.Action == 'AddWife') {
+            console.log("Đã vào trường hợp thêm vợ chồng");
+            // nếu cùng giới tính thì không cho add
+            if(inGenealogyMemeber[0].Male == outGenealogyMemeber[0].Male){
+                return res.send(Response.badRequestResponse(null, "Không thể thêm mối quan hệ vợ chồng cho hai thành viên cùng giới tính"));
+            }
+            let objData = {};
+            // nếu vào trường hợp thêm chồng 
+            if (req.body.Action == 'AddHusband') {
+                console.log("Đã vào trường hợp thêm chồng");
+                objData = {
+                    husbandID: req.body.OutGenealogyID,
+                    wifeID: req.body.InGenealogyID,
+                    codeID: req.body.CodeID
+                }
+            }
+            // nếu vào trường hợp thêm vợ
+            else if (req.body.Action == 'AddWife') {
+                console.log("Đã vào trường hợp thêm vợ");
+                objData = {
+                    husbandID: req.body.InGenealogyID,
+                    wifeID: req.body.OutGenealogyID,
+                    codeID: req.body.CodeID
+                }
+            }
             await FamilyManagementService.setGeneration(inGenealogyMemeber[0].Generation, outGenealogyMemeber[0].MemberID);
-            await FamilyManagementService.InsertMarriIdToMember(outGenealogyMemeber[0].MemberID, inGenealogyMemeber[0].MemberID);
-            await FamilyManagementService.InsertMarriIdToMember(inGenealogyMemeber[0].MemberID, outGenealogyMemeber[0].MemberID);
+            await MarriageManagement.addMarriage(objData);
         }
         return res.send(Response.successResponse(null, "Thêm thành viên vào trong gia phả thành công"));
     } catch (e) {
@@ -555,6 +568,7 @@ var updateMemberToGenealogy = async (req, res) => {
     }
 }
 
+// nguyễn anh tuấn
 var deleteMember = async (req, res) => {
     try {
         db.connection.beginTransaction();
