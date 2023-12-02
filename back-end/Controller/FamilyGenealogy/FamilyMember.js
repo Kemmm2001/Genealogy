@@ -97,10 +97,10 @@ var addMember = async (req, res) => {
             return res.send(Response.badRequestResponse(null, "Con thứ không hợp lệ, phải là số và >= 1"));
         }
         // kiểm tra xem Dob, LunarDob, Dod, LunarDod có phải là ngày tháng không
-        if (!CoreFunction.isDataDateExist(req.body.Dob) 
-        || !CoreFunction.isDataDateExist(req.body.LunarDob) 
-    || !CoreFunction.isDataDateExist(req.body.Dod) 
-    || !CoreFunction.isDataDateExist(req.body.LunarDod)) {
+        if ((CoreFunction.isDataStringExist(req.body.Dob) && !CoreFunction.isDataDateExist(req.body.Dob))
+            || (CoreFunction.isDataStringExist(req.body.LunarDob) && !CoreFunction.isDataDateExist(req.body.LunarDob))
+            || (CoreFunction.isDataStringExist(req.body.Dod) && !CoreFunction.isDataDateExist(req.body.Dod))
+            || (CoreFunction.isDataStringExist(req.body.LunarDod) && !CoreFunction.isDataDateExist(req.body.LunarDod))) {
             return res.send(Response.badRequestResponse(null, "Ngày tháng không hợp lệ"));
         }
         let dataRes = {};
@@ -537,7 +537,7 @@ var updateMemberToGenealogy = async (req, res) => {
         else if (req.body.Action == 'AddHusband' || req.body.Action == 'AddWife') {
             console.log("Đã vào trường hợp thêm vợ chồng");
             // nếu cùng giới tính thì không cho add
-            if(inGenealogyMemeber[0].Male == outGenealogyMemeber[0].Male){
+            if (inGenealogyMemeber[0].Male == outGenealogyMemeber[0].Male) {
                 return res.send(Response.badRequestResponse(null, "Không thể thêm mối quan hệ vợ chồng cho hai thành viên cùng giới tính"));
             }
             let objData = {};
@@ -731,6 +731,9 @@ var getMember = async (req, res) => {
         console.log(dataMember)
         if (dataMember == null || dataMember.length == 0) {
             return res.send(Response.dataNotFoundResponse());
+        }
+        if (CoreFunction.isDataStringExist(dataMember[0].Image)) {
+            dataMember[0].Image = process.env.DNS_SERVER + dataMember[0].Image;
         }
         return res.send(Response.successResponse(dataMember));
     } catch (e) {
