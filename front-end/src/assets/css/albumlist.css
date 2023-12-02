@@ -49,3 +49,7 @@
     inset: 0 !important;
     margin: auto;
 }
+
+.albumModal-container .vm--modal{
+    justify-content: center;
+}
