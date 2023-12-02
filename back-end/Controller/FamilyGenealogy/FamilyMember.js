@@ -66,12 +66,6 @@ var getListBloodTypeGroup = async (req, res) => {
 var addMember = async (req, res) => {
     try {
         db.connection.beginTransaction();
-        // nếu có file ảnh thì lưu đường dẫn vào req.body.Image, còn ko thì gán null
-        if (req.file != null) {
-            console.log("Đã vào trường hợp có file ảnh");
-            console.log("req.file.path: ", req.file.path);
-            req.body.Image = req.file.path;
-        }
         console.log('Request req.body: ', req.body);
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
@@ -82,13 +76,11 @@ var addMember = async (req, res) => {
             'Male',
             'Action'
         ];
-
         // Kiểm tra xem có đủ các trường của FamilyMember không
         const missingFields = CoreFunction.missingFields(requiredFields, req.body);
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
-
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("Đã có đủ các trường bắt buộc");
@@ -98,6 +90,17 @@ var addMember = async (req, res) => {
             return res.send(Response.badRequestResponse(null, "Action không hợp lệ"));
         }
         console.log("Action hợp lệ");
+        // kiểm tra xem birthorder có phải là số không và có >= 1 không
+        if (!CoreFunction.isDataNumberExist(req.body.BirthOrder) || req.body.BirthOrder < 1) {
+            return res.send(Response.badRequestResponse(null, "Con thứ không hợp lệ, phải là số và >= 1"));
+        }
+        // kiểm tra xem Dob, LunarDob, Dod, LunarDod có phải là ngày tháng không
+        if (!CoreFunction.isDataDateExist(req.body.Dob) 
+        || !CoreFunction.isDataDateExist(req.body.LunarDob) 
+    || !CoreFunction.isDataDateExist(req.body.Dod) 
+    || !CoreFunction.isDataDateExist(req.body.LunarDod)) {
+            return res.send(Response.badRequestResponse(null, "Ngày tháng không hợp lệ"));
+        }
         let dataRes = {};
         let data = await FamilyManagementService.addMember(req.body);
         // trường hợp muốn thêm thành viên mà không có trong cây gia phả
@@ -375,9 +378,9 @@ var updateMember = async (req, res) => {
         if (await isHasRelatedPerson(dataMember[0]) == true) {
             console.log("Đã vào trường hợp có người liên quan");
             if (req.body.Male != dataMember[0].Male) {
-                if(dataMember[0].Male == 1){
+                if (dataMember[0].Male == 1) {
                     return res.send(Response.badRequestResponse(null, "Thành viên này đã có vợ, không thể thay đổi giới tính"));
-                }else{
+                } else {
                     return res.send(Response.badRequestResponse(null, "Thành viên này đã có chồng, không thể thay đổi giới tính"));
                 }
             }
@@ -417,10 +420,10 @@ var updateMember = async (req, res) => {
                 for (let i = 0; i < listChilds.length; i++) {
                     listChildsID.push(listChilds[i].MemberID);
                 }
-                if(req.body.Male == 1){
-                    await FamilyManagementService.updateMotherIDToFatherID(dataMember[0].MemberID,listChildsID);
-                }else{
-                    await FamilyManagementService.updateFatherIDToMotherID(dataMember[0].MemberID,listChildsID);
+                if (req.body.Male == 1) {
+                    await FamilyManagementService.updateMotherIDToFatherID(dataMember[0].MemberID, listChildsID);
+                } else {
+                    await FamilyManagementService.updateFatherIDToMotherID(dataMember[0].MemberID, listChildsID);
                 }
             }
         }
@@ -576,7 +579,7 @@ var deleteMember = async (req, res) => {
         await CoreFunction.deleteImage(dataMember[0].Image);
         await FamilyManagementService.UpdateMemberRelated(req.query.MemberID);
         await FamilyManagementService.deleteMember(req.query.MemberID);
-        
+
         dataRes = {
             MemberID: req.query.MemberID,
         }
