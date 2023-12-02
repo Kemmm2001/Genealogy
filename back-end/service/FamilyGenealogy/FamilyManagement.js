@@ -186,8 +186,8 @@ async function RemoveAllRelationshipChild(id) {
                     db.connection.query(updateQuery, (err) => {
                         if (err) {
                             console.log(err);
-                        }else{
-                            
+                        } else {
+
                         }
                     });
 

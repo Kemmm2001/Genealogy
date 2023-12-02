@@ -141,7 +141,6 @@
               <div class="list-group-item" @click="openModalAddMemberFromList()">Thêm mối quan hệ từ Danh Sách</div>
               <div class="list-group-item" @click="openCfDelModal(false,null,TitleModal)">Xóa thành viên (*)</div>
               <div class="list-group-item feature-overview">Các chức năng Khác</div>
-              <div class="list-group-item" style="border-top: none;" @click="setPaternalAncestor(2)">Set làm tộc trưởng</div>
               <div class="list-group-item" @click="setPaternalAncestor(1)">Set làm tổ phụ</div>
             </div>
           </div>
@@ -1038,6 +1037,7 @@ export default {
       extendedJob: false,
       extendedEdu: false,
       extendedNote: false,
+      idFamilyHead: null,
 
       canAddFather: true,
       canAddMother: true,
@@ -1162,8 +1162,6 @@ export default {
           console.log(1111);
         }
         setTimeout(() => {
-          console.log(this.nodeLength);
-          console.log(this.listMember.length);
           if (this.nodeLength != this.listMember.length) {
             this.nodeLength = this.listMember.length;
           }
@@ -1760,7 +1758,7 @@ export default {
             this.getListUnspecifiedMembers();
           }
           if (response.data.success == true) {
-            this.getAllListMember()
+            this.getAllListMember();
             this.isUpdateAvatar = false;
             if (this.action != "AddNormal") {
               this.nodes.length = this.nodes.length + 1;
@@ -2229,8 +2227,9 @@ export default {
             console.log(this.nodes);
             for (let i = 0; i < this.nodes.length; i++) {
               this.nodes[i].tags = [];
-              if(this.nodes[i].name.length > 15){
-                this.nodes[i].name = this.nodes[i].name.substring(0, 16)+'...';
+              if (this.nodes[i].name.length > 15) {
+                this.nodes[i].name =
+                  this.nodes[i].name.substring(0, 16) + "...";
               }
               if (this.nodes[i].isDead == 1) {
                 this.numberDeath += 1;
@@ -2360,6 +2359,18 @@ export default {
       }).then((response) => {
         if (response.data.success == true) {
           this.memberRole = response.data.data;
+        }
+      });
+    },
+    getFamilyHead() {
+      HTTP.get("getFamilyHead", {
+        params: {
+          CodeID: this.CodeID,
+        },
+      }).then((response) => {
+        if (response.data.success == true) {
+          this.idFamilyHead = response.data.data;
+          console.log(this.idFamilyHead);
         }
       });
     },
@@ -2497,6 +2508,7 @@ export default {
     this.getListHistoryEmail();
     this.getListMember();
     this.getAllListMember();
+    this.getFamilyHead();
   },
 };
 </script>

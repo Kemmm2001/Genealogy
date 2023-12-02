@@ -56,7 +56,7 @@ var removeRelationship = async (req, res) => {
     try {
         let currentID = req.body.CurrentID;
         let memberToRemove = req.body.RemoveID;
-        let action = req.body.action;      
+        let action = req.body.action;
         if (action == 'RemoveChild') {
             let data = await FamilyTreeService.RemoveRelationshipChild(memberToRemove);
             if (data == true) {
@@ -65,7 +65,7 @@ var removeRelationship = async (req, res) => {
                 return res.send(Response.internalServerErrorResponse());
             }
         } else if (action == 'RemoveMarried') {
-            let data = await FamilyTreeService.RemoveRelationshipMarried(currentID, memberToRemove)            
+            let data = await FamilyTreeService.RemoveRelationshipMarried(currentID, memberToRemove)
             if (data == true) {
                 return res.send(Response.successResponse());
             } else {
@@ -111,7 +111,21 @@ var getListHistoryEmail = async (req, res) => {
 }
 
 
-
+var getFamilyHead = async (req, res) => {
+    try {
+        
+        console.log("đã vào api")
+        let CodeID = req.query.CodeID;
+        let data = await FamilyTreeService.getFamilyHeadInGenealogy(CodeID);
+        if (data) {
+            return res.send(Response.successResponse(data))
+        } else {
+            return res.send(Response.dataNotFoundResponse())
+        }
+    } catch (error) {
+        return res.send(Response.dataNotFoundResponse(error))
+    }
+}
 
 var AllMemberInGenelogy = async (req, res) => {
     try {
@@ -198,5 +212,5 @@ var informationMember = async (req, res) => {
 
 module.exports = {
     AllReligion, informationMember, AllNationality, AllMemberRole, setRole, AllMemberInGenelogy, getAllUnspecifiedMembers,
-    GetIdPaternalAncestor, getRelationShipMember, getListMessage, removeRelationship, getListHistoryEmail
+    GetIdPaternalAncestor, getRelationShipMember, getListMessage, removeRelationship, getListHistoryEmail, getFamilyHead
 };
