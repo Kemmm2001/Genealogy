@@ -1,7 +1,7 @@
 const { get, set } = require('mongoose');
 const db = require('../../Models/ConnectDB');
 
-
+//Nguyễn Lê Hùng
 function getGenerationByID(MemberId) {
     return new Promise((resolve, reject) => {
         let query = `select Generation,Male from familymember
@@ -17,7 +17,7 @@ function getGenerationByID(MemberId) {
     })
 }
 
-
+//Nguyễn Lê Hùng
 async function checkMaternalOrPaternal(MemberID) {
     try {
         let getParent = await getParentId(MemberID);
@@ -38,7 +38,7 @@ async function checkMaternalOrPaternal(MemberID) {
     }
 }
 
-
+//Nguyễn Lê Hùng
 function checkBrideOrGroom(MemberID) {
     return new Promise((resolve, reject) => {
         try {
@@ -80,7 +80,7 @@ function checkBrideOrGroom(MemberID) {
         }
     });
 }
-
+//Nguyễn Lê Hùng
 function getParentId(MemberId) {
     return new Promise((resolve, reject) => {
         let query = `SELECT FatherID, MotherID FROM familymember WHERE MemberID = ${MemberId}`;
@@ -94,7 +94,7 @@ function getParentId(MemberId) {
         });
     });
 }
-
+//Nguyễn Lê Hùng
 async function getIdToCompare(NumberIterations, MemberId) {
     if (NumberIterations < 0) NumberIterations = -NumberIterations;
     try {
@@ -123,7 +123,7 @@ async function getIdToCompare(NumberIterations, MemberId) {
         throw error;
     }
 }
-
+//Nguyễn Lê Hùng
 async function isInLaw(MemberID) {
     return new Promise((resolve, reject) => {
         let query = `select ParentID,MarriageID from familymember WHERE MemberID = ${MemberID}`;
@@ -138,7 +138,7 @@ async function isInLaw(MemberID) {
     })
 }
 
-
+//Nguyễn Lê Hùng
 function getBirthOrderByID(MemberId) {
     return new Promise((resolve, reject) => {
         let query = `select BirthOrder from familymember
@@ -153,7 +153,7 @@ function getBirthOrderByID(MemberId) {
         })
     })
 }
-
+//Nguyễn Lê Hùng
 PaternalFamily = [
     {
         name: "Kị Ông",
@@ -250,7 +250,7 @@ PaternalFamily = [
     },
 ]
 
-
+//Nguyễn Lê Hùng
 async function getResultCompareToMember(DefferenceGeneration, Generation1, Generation2, Flag, Gender1, Gender2, resultCheck) {
     let objResult = {};
 
@@ -369,7 +369,7 @@ async function getResultCompareToMember(DefferenceGeneration, Generation1, Gener
         return objResult;
     }
 }
-
+//Nguyễn Lê Hùng
 function calculateIndex(Generation1, Generation2, Flag, lessFlag, lessNoFlag, greaterFlag, greaterNoFlag) {
     if (Generation1 < Generation2) {
         console.log("Vào nhỏ hơn")
@@ -381,12 +381,12 @@ function calculateIndex(Generation1, Generation2, Flag, lessFlag, lessNoFlag, gr
 }
 
 
-
+//Nguyễn Lê Hùng
 function setResult(objResult, index1, index2) {
     objResult.result1 = PaternalFamily[index1].name;
     objResult.result2 = PaternalFamily[index2].name;
 }
-
+//Nguyễn Lê Hùng
 async function getResultCompareWithMemberID1SameID2(DefferenceGeneration, Gender1, Gender2) {
     let objResult = {};
 
@@ -407,9 +407,11 @@ async function getResultCompareWithMemberID1SameID2(DefferenceGeneration, Gender
         console.log('index2: ' + index2)
         setResult(objResult, index1, index2);
     }
+    //Nguyễn Lê Hùng
 
     return objResult;
 }
+//Nguyễn Lê Hùng
 const generationMappings = {
     '-4': [21, (gender) => gender === 1 ? 0 : 1], '4': [(gender) => gender === 1 ? 0 : 1, 21],
     '-3': [21, (gender) => gender === 1 ? 2 : 3], '3': [(gender) => gender === 1 ? 2 : 3, 21],
@@ -417,7 +419,7 @@ const generationMappings = {
     '-1': [20, (gender) => gender === 1 ? 8 : 9], '1': [(gender) => gender === 1 ? 8 : 9, 20],
     '0': [16, 15],
 };
-
+//Nguyễn Lê Hùng
 async function getResultCompareInFamily(DefferenceGeneration, Gender1, Gender2) {
     let objResult = {};
 
@@ -430,7 +432,7 @@ async function getResultCompareInFamily(DefferenceGeneration, Gender1, Gender2) 
 
     return objResult;
 }
-
+//Nguyễn Lê Hùng
 async function checkMarriageRelationship(memberId1, memberId2) {
     const query = `SELECT * FROM genealogy.marriage WHERE (husbandID = ${memberId1} AND wifeID = ${memberId2}) 
     OR (wifeID = ${memberId1} AND husbandID = ${memberId2})`;
@@ -445,6 +447,7 @@ async function checkMarriageRelationship(memberId1, memberId2) {
         });
     });
 }
+//Nguyễn Lê Hùng
 async function getMarriageNumber(husbandID, wifeID) {
     return new Promise((resolve, reject) => {
         try {
@@ -463,7 +466,7 @@ async function getMarriageNumber(husbandID, wifeID) {
     })
 }
 
-
+//Nguyễn Lê Hùng
 async function GetResultCompare(MemberId1, MemberId2, DifferenceGeneration, Flag, Gender1, Gender2, resultCheck) {
     console.log('MemberId1: ' + MemberId1)
     console.log('MemberId2: ' + MemberId2)

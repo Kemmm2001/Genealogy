@@ -1,7 +1,7 @@
 const { Code } = require("mongodb");
 const db = require("../../Models/ConnectDB");
 
-
+//Nguyễn Lê Hùng
 function getAllReligion() {
     return new Promise((resolve, reject) => {
         let query = "SELECT * FROM religion";
@@ -15,7 +15,7 @@ function getAllReligion() {
         });
     });
 }
-
+//Nguyễn Lê Hùng
 async function RemoveAllRelationshipChild(id) {
     try {
         let queryFindParent = `SELECT * FROM familymember WHERE FatherID = ${id} Or MotherID = ${id}`;
@@ -39,7 +39,7 @@ async function RemoveAllRelationshipChild(id) {
         console.log(error);
     }
 }
-
+//Nguyễn Lê Hùng
 async function RemoveRelationshipChild(id) {
     try {
         let updateQuery = `UPDATE familymember SET FatherID = null,MotherID = null, Generation = 0 WHERE MemberID = ${id}`;
@@ -62,6 +62,7 @@ async function RemoveRelationshipChild(id) {
         return false;
     }
 }
+//Nguyễn Lê Hùng
 async function removeMarried(husbandID, wifeID, idRemove) {
     try {
         let queryRemoveMarried = `delete from marriage where husbandID = ${husbandID} and wifeID = ${wifeID}`;
@@ -82,7 +83,7 @@ async function removeMarried(husbandID, wifeID, idRemove) {
         console.log(error)
     }
 }
-
+//Nguyễn Lê Hùng
 
 async function RemoveRelationshipMarried(currentID, RemoveID) {
     return new Promise((resolve, reject) => {
@@ -111,7 +112,7 @@ async function RemoveRelationshipMarried(currentID, RemoveID) {
         }
     });
 }
-
+//Nguyễn Lê Hùng
 async function RemoveParent(RemoveChild) {
     try {
         let queryRemove = `UPDATE familymember SET MarriageID = null, Generation = 0 WHERE MemberID = ${RemoveChild}`;
@@ -135,7 +136,7 @@ async function RemoveParent(RemoveChild) {
         console.log(error)
     }
 }
-
+//Nguyễn Lê Hùng
 async function RemoveRelationshipParent(currentID, RemoveID) {
     return new Promise((resolve, reject) => {
         try {
@@ -159,7 +160,7 @@ async function RemoveRelationshipParent(currentID, RemoveID) {
     })
 
 }
-
+//Nguyễn Lê Hùng
 function getAllMemberRole(id) {
     return new Promise((resolve, reject) => {
         let query = `SELECT * FROM memberrole where MemberID = '${id}'`;
@@ -173,7 +174,7 @@ function getAllMemberRole(id) {
         });
     });
 }
-
+//Nguyễn Lê Hùng
 function getAllNationality() {
     return new Promise((resolve, reject) => {
         let query = "select * from nationality";
@@ -189,7 +190,7 @@ function getAllNationality() {
 }
 
 
-
+//Nguyễn Lê Hùng
 function getInforMember(id) {
     return new Promise((resolve, reject) => {
         let query = `select * from familymember where MemberID = '${id}'`;
@@ -203,6 +204,7 @@ function getInforMember(id) {
         });
     });
 }
+//Nguyễn Lê Hùng
 function getContactMember(id) {
     return new Promise((resolve, reject) => {
         let query = `select * from contact where MemberID = '${id}'`;
@@ -216,7 +218,7 @@ function getContactMember(id) {
         });
     });
 }
-
+//Nguyễn Lê Hùng
 function getJobMember(id) {
     return new Promise((resolve, reject) => {
         let query = `select * from job where MemberID = '${id}'`;
@@ -230,7 +232,7 @@ function getJobMember(id) {
         });
     });
 }
-
+//Nguyễn Lê Hùng
 function getEducationMember(id) {
     return new Promise((resolve, reject) => {
         let query = `select * from education where MemberID = '${id}'`;
@@ -245,6 +247,7 @@ function getEducationMember(id) {
     });
 }
 
+//Nguyễn Lê Hùng
 function getEventMember(id) {
     return new Promise((resolve, reject) => {
         let query = `select * from eventmember where MemberID = '${id}'`;
@@ -260,7 +263,7 @@ function getEventMember(id) {
 }
 
 
-
+//Nguyễn Lê Hùng
 function getRoleExist(MemberID, Role) {
     return new Promise((resolve, reject) => {
         let query = `SELECT * FROM memberrole
@@ -275,7 +278,7 @@ function getRoleExist(MemberID, Role) {
         });
     });
 }
-
+//Nguyễn Lê Hùng
 function turnOffSQL_SAFE_UPDATES() {
     let query = "SET SQL_SAFE_UPDATES = 0";
     db.connection.query(query, (err, result) => {
@@ -286,7 +289,7 @@ function turnOffSQL_SAFE_UPDATES() {
         }
     })
 }
-
+//Nguyễn Lê Hùng
 function turnOnSQL_SAFE_UPDATES() {
     let query = "SET SQL_SAFE_UPDATES = 1";
     db.connection.query(query, (err, result) => {
