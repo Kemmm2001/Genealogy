@@ -1,5 +1,6 @@
 const FamilyTreeService = require("../../service/FamilyGenealogy/ViewFamilyTree");
 const Response = require("../../Utils/Response");
+const CoreFunction = require("../../Utils/CoreFunction");
 
 // Ví dụ
 var AllReligion = async (req, res) => {
@@ -139,7 +140,11 @@ var AllMemberInGenelogy = async (req, res) => {
                 if (item.dob === '1-1-1970') {
                     item.dob = null;
                 }
+                if (CoreFunction.isDataStringExist(item.img)) {
+                    item.img = CoreFunction.loadImage(item.img);
+                }
             });
+           
             return res.send(Response.successResponse(data));
         } else {
             return res.send(Response.dataNotFoundResponse());
