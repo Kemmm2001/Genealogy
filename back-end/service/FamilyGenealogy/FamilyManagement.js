@@ -246,6 +246,7 @@ async function deleteMemberRelated(member) {
     }
 }
 
+// nguyễn anh tuấn
 function UpdateMemberRelated(memberID) {
     return new Promise(async (resolve, reject) => {
         console.log("Vào hàm UpdateMemberRelated với member: " + JSON.stringify(memberID));
@@ -306,7 +307,7 @@ function UpdateMemberRelated(memberID) {
     });
 }
 
-
+// nguyễn anh tuấn
 function UpdateMemberGenerationToZero(memberId) {
     return new Promise((resolve, reject) => {
         console.log("Vào hàm UpdateMemberGenerationToZero với memberId: " + memberId);
@@ -438,6 +439,7 @@ function getMember(memberId) {
     });
 }
 
+// nguyễn anh tuấn
 function getMembersByFatherID(fatherID) {
     return new Promise((resolve, reject) => {
         const query = 'select * from familymember where fatherID = ?';
@@ -452,6 +454,7 @@ function getMembersByFatherID(fatherID) {
     });
 }
 
+// nguyễn anh tuấn
 function getMembersByMotherID(motherID) {
     return new Promise((resolve, reject) => {
         const query = 'select * from familymember where motherID = ?';
@@ -466,7 +469,7 @@ function getMembersByMotherID(motherID) {
     });
 }
 
-
+// nguyễn anh tuấn
 function getMembersByFatherIDAndMotherID(fatherID, motherID) {
     return new Promise((resolve, reject) => {
         console.log("Vào hàm getMembersByFatherIDAndMotherID với fatherID: " + fatherID + " và motherID: " + motherID);
