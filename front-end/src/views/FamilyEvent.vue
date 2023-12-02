@@ -50,11 +50,19 @@
               <tbody>
                 <tr class="normal" v-for="(week, weekIndex) in dayOfMonth" :key="weekIndex">
                   <td class="ngaythang" v-for="(day, dayIndex) in week" :key="dayIndex" :class="{ choose: dayIndex == indexClickDay && weekIndex == indexClickWeek }" @click="clickDate(dayIndex, weekIndex)" :style="{ color: day.solar.month != currentMonth ? '#bebebe' : 'black' }">
-                    <div v-if="day.solar.date == 1" class="cn" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.solar.date + "/" + (day.solar.month) }}</div>
-                    <div v-if="day.solar.date != 1" class="cn" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.solar.date }}</div>
-                    <div v-if="day.lunar.date == 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.lunar.date + "/" + (day.lunar.month) }}</div>
-                    <div v-if="day.lunar.date != 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">{{ day.lunar.date }}</div>
-                    <div v-if="checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)" @click="getListEventByDate(`${day.solar.year}-${day.solar.month}-${day.solar.date}`),showEventModal()  ">Có sự kiện</div>
+                    <div  v-if="!checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)">
+                      <div v-if="day.solar.date == 1" class="cn" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.solar.date + "/" + (day.solar.month) }}</a></div>
+                      <div v-if="day.solar.date != 1" class="cn" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.solar.date }}</a></div>
+                      <div v-if="day.lunar.date == 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.lunar.date + "/" + (day.lunar.month) }}</a></div>
+                      <div v-if="day.lunar.date != 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.lunar.date }}</a></div>
+                    </div>
+                    <div v-if="checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)" @click="getListEventByDate(`${day.solar.year}-${day.solar.month}-${day.solar.date}`),showEventModal()">
+                      <div v-if="day.solar.date == 1" class="cn" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.solar.date + "/" + (day.solar.month) }}</a></div>
+                      <div v-if="day.solar.date != 1" class="cn" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.solar.date }}</a></div>
+                      <div v-if="day.lunar.date == 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.lunar.date + "/" + (day.lunar.month) }}</a></div>
+                      <div v-if="day.lunar.date != 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.lunar.date }}</a></div>
+                      <div>Có sự kiện</div>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -105,7 +113,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr style="cursor: pointer;" class="eventlist-item eventlist-table-item odd" v-for="(event, index) in listEvent"
+                <tr style="cursor: pointer;" class="eventlist-item eventlist-table-item odd" v-for="(event, index) in listEventFilter"
                   :key="event.EventID">
                   <td @click="showEditEventModal(event.EventID)">{{ index + 1 }}</td>
                   <td @click="showEditEventModal(event.EventID)">{{ event.EventName }}</td>
@@ -289,13 +297,13 @@
               <tbody>
                 <tr style="cursor: pointer;" class="eventlist-item eventlist-table-item odd" v-for="(event, index) in listEventByDate"
                   :key="event.EventID">
-                  <td @click="showEditEventModal(event.EventID)">{{ index + 1 }}</td>
-                  <td @click="showEditEventModal(event.EventID)">{{ event.EventName }}</td>
-                  <td @click="showEditEventModal(event.EventID)">
+                  <td>{{ index + 1 }}</td>
+                  <td>{{ event.EventName }}</td>
+                  <td>
                     <div>{{ formattedCreatedAt(event.StartDate) }} (DL)</div>
                     <div>{{formattedCreatedAt(convertSolarToLunar(event.StartDate))}} (AL)</div>
                   </td>
-                  <td @click="showEditEventModal(event.EventID)">
+                  <td>
                     <div>{{ formattedCreatedAt(event.EndDate) }} (DL)</div>
                     <div>{{formattedCreatedAt(convertSolarToLunar(event.EndDate))}} (AL)</div>
                   </td>
@@ -315,6 +323,8 @@ import Snackbar from "awesome-snackbar";
 import { Calendar } from "vietnamese-lunar-calendar";
 import { HTTP } from "../assets/js/baseAPI.js";
 import { LunarDate } from "vietnamese-lunar-calendar";
+//import moment from 'moment-timezone';
+require('moment-timezone');
 export default {
   data() {
     return {
@@ -357,6 +367,7 @@ export default {
 
       currentEventId: null,
       listEvent: [],
+      listEventFilter:[],
       listRepeat: null,
       listEventByDate:[],
       dateSelected:null,
@@ -365,9 +376,8 @@ export default {
   computed: {
     formattedCreatedAt() {
       return (dateString) => {
-        const date = new Date(dateString);
-        //const options = { timeZone: 'Asia/Ho_Chi_Minh' };
-        return date.toLocaleString('vi-VN', "" + Intl.DateTimeFormat().resolvedOptions().timeZone);
+        const moment = require('moment-timezone');
+        return moment(dateString).format("HH:mm:ss DD/MM/YYYY");
       };
     },
   },
@@ -387,13 +397,25 @@ export default {
       let Dob = new Date(dateConvert);
       let month = new LunarDate(Dob).getMonth();
       let date = new LunarDate(Dob).getDate();
+      let hour = new Date(dateConvert).getHours();
+      let minute = new Date(dateConvert).getUTCMinutes();
+      let second = new Date(dateConvert).getUTCSeconds();
       if (new LunarDate(Dob).getMonth() < 10) {
         month = "0" + new LunarDate(Dob).getMonth();
       }
       if (new LunarDate(Dob).getDate() < 10) {
         date = "0" + new LunarDate(Dob).getDate();
       }
-      let result =new LunarDate(Dob).getYear() + "-" + month + "-" + date + "T"+new Date(dateConvert).getHours()+":"+new Date(dateConvert).getUTCMinutes()+":0"+new Date(dateConvert).getUTCSeconds()
+      if (new Date(dateConvert).getHours() < 10) {
+        hour = "0" + new Date(dateConvert).getHours();
+      }
+      if (new Date(dateConvert).getUTCMinutes() < 10) {
+        minute = "0" + new Date(dateConvert).getUTCMinutes();
+      }
+      if (new Date(dateConvert).getUTCSeconds() < 10) {
+        second = "0" + new Date(dateConvert).getUTCSeconds();
+      }
+      let result =new LunarDate(Dob).getYear() + "-" + month + "-" + date + "T"+hour+":"+minute+":"+second;
       return result
     },
     getListEventByDate(dateCheck){
@@ -406,26 +428,33 @@ export default {
         startDate = new Date(this.listEvent[i].StartDate);
         startDate.setHours(0, 0, 0, 0);
         endDate = new Date(this.listEvent[i].EndDate);
-        selectedDate = new Date(dateCheck);
+        selectedDate = new Date(dateCheck).setHours(0, 0, 0, 0);
         let check = selectedDate >= startDate && selectedDate <= endDate;
         if(check == true){
           this.listEventByDate.push(this.listEvent[i])
         }
       }
+      if(dateCheck == '30/11/2023'){
+        console.log(1)
+      }
     },
     checkDateEvent(dateCheck){
-      let startDate
-      let endDate
-      let selectedDate
+      let startDate;
+      let endDate;
+      let selectedDate;
+      let check = false;
       for(let i = 0 ; i < this.listEvent.length;i++){
         startDate = new Date(this.listEvent[i].StartDate);
         startDate.setHours(0, 0, 0, 0);
         endDate = new Date(this.listEvent[i].EndDate);
         selectedDate = new Date(dateCheck);
-        let check = selectedDate >= startDate && selectedDate <= endDate;
-        return check;
+        selectedDate.setHours(0, 0, 0, 0)
+        check = selectedDate >= startDate && selectedDate <= endDate;
+        if(check == true){
+          return true;
+        }
       }
-      return false
+      return check;
       // Kiểm tra xem ngày được chọn có nằm trong khoảng hay không
 
     },
@@ -464,6 +493,7 @@ export default {
         .then((response) => {
           if (response.data.success == true) {
             this.listEvent = response.data.data;
+            this.listEventFilter = this.listEvent;
           }
         })
         .catch((e) => {
@@ -493,7 +523,7 @@ export default {
         })
           .then((respone) => {
             if (respone.data.success == true) {
-              this.listEvent = respone.data.data;
+              this.listEventFilter = respone.data.data;
             }
           })
           .catch((e) => {
@@ -508,7 +538,7 @@ export default {
       })
         .then((respone) => {
           if (respone.data.success == true) {
-            this.listEvent = respone.data.data;
+            this.listEventFilter = respone.data.data;
           }
         })
         .catch((e) => {
@@ -630,7 +660,6 @@ export default {
     },
     getDayOfMonth() {
       this.dayOfMonth = new Calendar(this.currentYear, this.currentMonth).weeks;
-      console.log(this.dayOfMonth)
     },
     showAddEventModal() {
       this.eventFamily = {};
@@ -660,23 +689,28 @@ export default {
         },
       }).then((respone) => {
         if (respone.data.success == true) {
+          let year;
+          let month;
+          let day;
           this.eventFamily = respone.data.data;
           this.eventFamily = this.eventFamily[0];
           console.log(this.eventFamily);
-          this.startHour = new Date(this.eventFamily.StartDate).getUTCHours();
+          this.startHour =  new Date(this.eventFamily.StartDate).getHours();
+          console.log(this.startHour)
           this.startMinute = new Date(
             this.eventFamily.StartDate
-          ).getUTCMinutes();
-          this.startDate = new Date(this.eventFamily.StartDate)
-            .toISOString()
-            .split("T")[0];
+          ).getMinutes();
+          year = new Date(this.eventFamily.StartDate).getFullYear();
+          month = String(new Date(this.eventFamily.StartDate).getMonth() + 1).padStart(2, "0");
+          day = String(new Date(this.eventFamily.StartDate).getDate()).padStart(2, "0");
+          this.startDate = `${year}-${month}-${day}`
 
-          this.endHour = new Date(this.eventFamily.EndDate).getUTCHours();
-          this.endMinute = new Date(this.eventFamily.EndDate).getUTCMinutes();
-          this.endDate = new Date(this.eventFamily.EndDate)
-            .toISOString()
-            .split("T")[0];
-
+          this.endHour = new Date(this.eventFamily.EndDate).getHours();
+          this.endMinute = new Date(this.eventFamily.EndDate).getMinutes();
+          year = new Date(this.eventFamily.EndDate).getFullYear();
+          month = String(new Date(this.eventFamily.EndDate).getMonth() + 1).padStart(2, "0");
+          day = String(new Date(this.eventFamily.EndDate).getDate()).padStart(2, "0");
+          this.endDate = `${year}-${month}-${day}`
           this.$modal.show("add-event-modal");
         }
       });
@@ -727,6 +761,10 @@ td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
+}
+
+.am a {
+  font-size: 12px;
 }
 
 td.ngaythang.choose {

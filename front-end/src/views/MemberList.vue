@@ -1,6 +1,6 @@
 <!-- Lâm -->
 <template>
-  <div class="container-fluid position-relative" style="padding: 32px 120px;">
+  <div class="container-fluid position-relative" style="padding: 32px 120px;overflow-y: auto;">
     <div class="d-flex flex-row position-absolute" style="width: calc(100% - 240px); height: calc(100% - 32px);">
       <div class="col-10 column m-0" style="height: calc(100% - 32px);">
         <div class="filter-member d-flex flex-row w-100">
@@ -8,6 +8,16 @@
             <a>Tổng số thành viên: {{ this.memberList.length }} người</a>
             <br />
             <a>Dòng họ có: {{ this.numberGeneration }} đời</a>
+            <br />
+            <a>Đời nhiều thành viên nhất: {{ this.maxMemberGeneration }}</a>
+            <br />
+            <a>Còn sống: {{ this.numberAlive }} người ({{ (this.numberAlive/this.memberList.length * 100).toFixed(1) }}%)</a>
+            <br />
+            <a>Đã mất: {{ this.numberDied }} người ({{ (this.numberDied/this.memberList.length * 100).toFixed(1) }}%)</a>
+            <br />
+            <a>Còn sống: {{ this.numberAlive }} người</a>
+            <br />
+            <a>Đã mất: {{ this.numberDied }} người</a>
           </div>
           <div class="filter-option col-3">
             <a>Nam: {{ this.numberMale }} người</a>
@@ -15,9 +25,20 @@
             <a>Nữ: {{ this.numberFemale }} người</a>
           </div>
           <div class="filter-option col-3">
-            <a>Còn sống: {{ this.numberAlive }} người</a>
+            <a>Rể: {{ this.numberSonInLaw }} người ({{ (this.numberSonInLaw/this.memberList.length * 100).toFixed(1) }}%)</a>
             <br />
-            <a>Đã mất: {{ this.numberDied }} người</a>
+            <a>Dâu: {{ this.numberDaughterInLaw }} người ({{ (this.numberDaughterInLaw/this.memberList.length * 100).toFixed(1) }}%)</a>
+          </div>
+          <div class="filter-option col-3">
+            <a>Từ 0-5: {{ this.age0to5 }} người ({{ (this.age0to5/this.memberList.length * 100).toFixed(1) }}%)</a>
+            <br />
+            <a>Từ 6-17: {{ this.age61up }} người ({{ (this.age61up/this.memberList.length * 100).toFixed(1) }}%)</a>
+            <br />
+            <a>Từ 18-40: {{ this.age18to40 }} người ({{ (this.age18to40/this.memberList.length * 100).toFixed(1) }}%)</a>
+            <br />
+            <a>Từ 41-60: {{ this.age41to60 }} người ({{ (this.age41to60/this.memberList.length * 100).toFixed(1) }}%)</a>
+            <br />
+            <a>Trên 61: {{ this.age61up }} người ({{ (this.age61up/this.memberList.length * 100).toFixed(1) }}%)</a>
           </div>
         </div>
         <div class="list-member w-100">
@@ -86,10 +107,9 @@
           </div>
           <div class="input-control">
             <a>Đời</a>
-            <select @change="filter()" v-model="generationSearch" class="form-select">
+            <select v-model="generationSearch" @change="filter()" class="form-select">
               <option value="0">Toàn bộ</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
+              <option :value="index" v-for="index in this.numberGeneration" :key="index">{{index}}</option>
             </select>
           </div>
           <div class="input-control">
@@ -539,6 +559,17 @@ export default {
       numberGeneration: 0,
       numberAlive: 0,
       numberDied: 0,
+      numberSonInLaw: 0,
+      numberDaughterInLaw: 0,
+      age0to5: 0,
+      age6to17: 0,
+      age18to40: 0,
+      age41to60: 0,
+      age61up: 0,
+      maxMemberGeneration: 0,
+
+      monthDob: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+
       CodeID: null,
 
       objMemberInfor: {
@@ -954,7 +985,6 @@ export default {
       this.$modal.hide("cfdel-modal");
     },
     filter() {
-      console.log(1)
       this.memberFilter = this.memberList;
       this.sortListMember();
       if (this.genderSearch != "all") {
@@ -1043,27 +1073,109 @@ export default {
       var age = Math.floor((now - dob) / (365.25 * 24 * 60 * 60 * 1000));
       return age;
     },
-
+    getNumberMemberByGeneration(generation) {
+      let count = 0;
+      for (let i = 0; i < this.memberList.length; i++) {
+        if (this.memberList[i].generation == generation) {
+          count += 1;
+        }
+      }
+      return count;
+    },
     takeInforList() {
-      this.numberMale = 0;
-      this.numberFemale = 0;
-      this.numberAlive = 0;
-      this.numberDied = 0;
-      for (let i = 0; i < this.memberFilter.length; i++) {
-        if (this.memberFilter[i].gender == "male") {
+      (this.numberMale = 0),
+        (this.numberFemale = 0),
+        (this.totalMember = 0),
+        (this.numberGeneration = 0),
+        (this.numberAlive = 0),
+        (this.numberDied = 0),
+        (this.numberSonInLaw = 0),
+        (this.numberDaughterInLaw = 0),
+        (this.age0to5 = 0),
+        (this.age6to17 = 0),
+        (this.age18to40 = 0),
+        (this.age41to60 = 0),
+        (this.age61up = 0),
+        (this.memberOldest = {}),
+        (this.memberOldestAlive = {});
+      this.totalMember = this.memberList.length;
+
+      let max = 0;
+      for (let i = 0; i < this.memberList.length; i++) {
+        this.memberOldest.age = 0;
+        this.memberOldestAlive.age = 0;
+        if (
+          this.getNumberMemberByGeneration(this.memberList[i].generation) > max
+        ) {
+          max = this.getNumberMemberByGeneration(this.memberList[i]);
+          this.maxMemberGeneration = this.memberList[i].generation;
+        }
+        if (this.memberList[i].gender == "male") {
           this.numberMale += 1;
+          if (this.memberList[i].fid == null || this.memberList[i].fid == "") {
+            this.numberSonInLaw += 1;
+          }
         }
-        if (this.memberFilter[i].gender == "female") {
+        if (this.memberList[i].gender == "female") {
           this.numberFemale += 1;
+          if (this.memberList[i].fid == null || this.memberList[i].fid == "") {
+            this.numberDaughterInLaw += 1;
+          }
         }
-        if (this.memberFilter[i].generation > this.numberGeneration) {
-          this.numberGeneration = this.memberFilter[i].generation;
+        if (this.memberList[i].generation > this.numberGeneration) {
+          this.numberGeneration = this.memberList[i].generation;
         }
-        if (this.memberFilter[i].isDead == 0) {
+        if (this.memberList[i].isDead == 0) {
           this.numberAlive += 1;
         }
-        if (this.memberFilter[i].isDead == 1) {
+        if (this.memberList[i].isDead == 1) {
           this.numberDied += 1;
+        }
+        if (
+          this.ageMember(this.memberList[i].dob) >= 0 &&
+          this.ageMember(this.memberList[i].dob) <= 5
+        ) {
+          this.age0to5 += 1;
+        }
+        if (
+          this.ageMember(this.memberList[i].dob) >= 6 &&
+          this.ageMember(this.memberList[i].dob) <= 17
+        ) {
+          this.age6to17 += 1;
+        }
+        if (
+          this.ageMember(this.memberList[i].dob) >= 18 &&
+          this.ageMember(this.memberList[i].dob) <= 40
+        ) {
+          this.age18to40 += 1;
+        }
+        if (
+          this.ageMember(this.memberList[i].dob) >= 41 &&
+          this.ageMember(this.memberList[i].dob) <= 60
+        ) {
+          this.age41to60 += 1;
+        }
+        if (this.ageMember(this.memberList[i].dob) >= 61) {
+          this.age61up += 1;
+        }
+        let month = 1;
+        while (
+          new Date(this.formatDate(this.memberList[i].dob)).getMonth() + 1 !=
+          month
+        ) {
+          month += 1;
+        }
+        this.monthDob[month - 1] += 1;
+        if (this.ageMember(this.memberList[i].dob) > this.memberOldest.age) {
+          this.memberOldest.age = this.ageMember(this.memberList[i].dob);
+          this.memberOldest.name = this.memberList[i].name;
+        }
+        if (
+          this.ageMember(this.memberList[i].dob) > this.memberOldestAlive.age ||
+          this.memberList[i].isDead == 0
+        ) {
+          this.memberOldestAlive.age = this.ageMember(this.memberList[i].dob);
+          this.memberOldest.name = this.memberList[i].name;
         }
       }
     },

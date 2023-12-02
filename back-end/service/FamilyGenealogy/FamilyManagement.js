@@ -144,15 +144,75 @@ function updateMemberPhoto(memberPhotoUrl, memberId) {
     });
 }
 
+
+//Nguyễn Lê Hùng
+async function RemoveAllRelationshipChild(id) {
+    try {
+        let queryFindParent = `SELECT * FROM familymember WHERE FatherID = ${id} OR MotherID = ${id}`;
+        console.log('queryFindParent: ' + queryFindParent)
+        db.connection.query(queryFindParent, async (err, result) => {
+            if (!err && result.length > 0) {
+                for (let i = 0; i < result.length; i++) {
+                    let child = result[i];
+                    let childID = child.MemberID;
+                    console.log('childID: ' + childID)
+
+                    let queryFindMarried = `SELECT * FROM marriage WHERE husbandID = ${id} OR wifeID = ${id}`;
+                    db.connection.query(queryFindMarried, async (err, marriedResult) => {
+                        if (!err && marriedResult.length > 0) {
+                            // Update tất cả Generation của vợ chồng = 0 ở đây
+                            for (let j = 0; j < marriedResult.length; j++) {
+                                let marriage = marriedResult[j];
+                                let marriedChildID = marriage.MemberID;
+                                let updateMarriedQuery = `UPDATE familymember SET FatherID = null, MotherID = null, Generation = 0 WHERE MemberID = ${marriedChildID}`;
+                                db.connection.query(updateMarriedQuery, (err) => {
+                                    if (err) {
+                                        console.log(err);
+                                    }
+                                });
+                            }
+
+                            // Tiếp tục xóa vợ quan hệ ở bảng vợ chồng ở đây
+                            let removeMarried = `DELETE FROM marriage WHERE husbandID = ${id} OR wifeID = ${id}`;
+                            db.connection.query(removeMarried, (err) => {
+                                if (err) {
+                                    console.log(err);
+                                }
+                            });
+                        }
+                    });
+
+                    let updateQuery = `UPDATE familymember SET FatherID = null, MotherID = null, Generation = 0 WHERE MemberID = ${childID}`;
+                    db.connection.query(updateQuery, (err) => {
+                        if (err) {
+                            console.log(err);
+                        }else{
+                            
+                        }
+                    });
+
+                    // Gọi đệ quy để xóa tất cả các mối quan hệ của các con cái
+                    await RemoveAllRelationshipChild(childID);
+                }
+            }
+        });
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
 // nguyễn anh tuấn
 function deleteMember(memberId) {
     return new Promise(async (resolve, reject) => {
         try {
             console.log("Vào hàm deleteMember");
             console.log("memberId: " + memberId);
+            // await RemoveAllRelationshipChild(memberId)
             // bắt đầu xóa member
             const query = 'DELETE FROM familymember WHERE MemberID = ?';
-            db.connection.query(query, [memberId], (err, result) => {
+            db.connection.query(query, [memberId], async (err, result) => {
                 if (err) {
                     console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
                     db.connection.rollback();
