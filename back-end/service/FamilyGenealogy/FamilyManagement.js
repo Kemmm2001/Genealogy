@@ -234,7 +234,7 @@ async function deleteMemberRelated(member) {
     console.log(`chạy vào hàm deleteMemberRelated với member: ${JSON.stringify(member.MemberID)}`);
 
     // tìm tất cả người có fatherID hoặc motherID là memberId
-    let children = await getMembersByParentID(member.MemberID);
+    let children = await getMembersByFatherIDOrMotherID(member.MemberID,member.MemberID);
     if (!Array.isArray(children)) {
         console.log("children không phải array");
     } else {
@@ -260,7 +260,7 @@ function UpdateMemberRelated(member) {
             resolve();
         }
         // Nếu là con trai, tìm các con có fatherID = memberId
-        let children = getMembersByParentID(member.MemberID);
+        let children = getMembersByFatherIDOrMotherID(member.MemberID,member.MemberID);
         console.log("children: " + JSON.stringify(children));
 
         // kiểm tra xem children có phải array ko 
@@ -444,35 +444,38 @@ function getMembersByMotherID(motherID) {
     });
 }
 
-function getMembersByParentID(fatherID, motherID) {
+
+function getMembersByFatherIDAndMotherID(fatherID, motherID) {
     return new Promise((resolve, reject) => {
-        console.log("Vào hàm getMembersByParentID với fatherID: " + fatherID + " và motherID: " + motherID);
+        console.log("Vào hàm getMembersByFatherIDAndMotherID với fatherID: " + fatherID + " và motherID: " + motherID);
         const query = 'select * from familymember where fatherID = ? and motherID = ?';
         const values = [fatherID, motherID];
         db.connection.query(query, values, (err, result) => {
             if (err) {
-                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-                reject(err);
+                console.log(err);
+                reject(err)
             } else {
-                resolve(result);
+                resolve(result)
             }
-        });
-    });
+        })
+    })
 }
-function getMembersByParentID(parentID) {
+
+
+function getMembersByFatherIDOrMotherID(fatherID, motherID) {
     return new Promise((resolve, reject) => {
-        console.log("Vào hàm getMembersByParentID với parentID: " + parentID);
+        console.log("Vào hàm getMembersByFatherIDOrMotherID với fatherID: " + fatherID + " và motherID: " + motherID);
         const query = 'select * from familymember where fatherID = ? or motherID = ?';
-        const values = [parentID, parentID];
+        const values = [fatherID, motherID];
         db.connection.query(query, values, (err, result) => {
             if (err) {
-                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-                reject(err);
+                console.log(err);
+                reject(err)
             } else {
-                resolve(result);
+                resolve(result)
             }
-        });
-    });
+        })
+    })
 }
 function createRelationship(member1Id, member2Id, relationship1Id, relationship2Id) {
     let relationship1 = [member1Id, member2Id, relationship1Id, relationship2Id];
@@ -665,6 +668,7 @@ module.exports = {
     addMember, updateMember, deleteMember, getMember, createRelationship, searchMember, getMemberByMemberID,
     setGeneration, queryContactMembers,
     getAllMember, InsertMarriIdToMember, queryFamilyMembers, getAllMemberInMemberRole, getAllMemberNotInMemberRole, GetCurrentParentMember,
-    insertFatherIDToMember, insertMotherIDToMember, getMembersByFatherID, getMembersByMotherID, getMembersByParentID,
-    setBirthOrder, insertParentIdToMember, getAllMemberID, updateMemberPhoto, deleteMemberRelated
+    insertFatherIDToMember, insertMotherIDToMember, getMembersByFatherID, getMembersByMotherID,
+    setBirthOrder, insertParentIdToMember, getAllMemberID, updateMemberPhoto, deleteMemberRelated, 
+    getMembersByFatherIDAndMotherID, getMembersByFatherIDOrMotherID
 };

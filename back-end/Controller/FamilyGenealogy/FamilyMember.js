@@ -228,7 +228,7 @@ var addMember = async (req, res) => {
                 }
                 // trường hợp có cả cha và mẹ
                 else if (CoreFunction.isDataNumberExist(req.body.FatherID) && CoreFunction.isDataNumberExist(req.body.MotherID)) {
-                    listChild = await FamilyManagementService.getMembersByParentID(req.body.FatherID, req.body.MotherID);
+                    listChild = await FamilyManagementService.getMembersByFatherIDAndMotherID(req.body.FatherID, req.body.MotherID);
                     parentGeneration = fatherData[0].Generation;
                 }
                 // nếu birthorder đã tồn tại thì ko thể add
@@ -393,14 +393,18 @@ var updateMember = async (req, res) => {
         // trường hợp có cả cha và mẹ
         else if (CoreFunction.isDataNumberExist(dataMember[0].FatherID) && CoreFunction.isDataNumberExist(dataMember[0].MotherID)) {
             console.log("Đã vào trường hợp có cả cha và mẹ");
-            listChild = await FamilyManagementService.getMembersByParentID(dataMember[0].FatherID, dataMember[0].MotherID);
+            listChild = await FamilyManagementService.getMembersByFatherIDAndMotherID(dataMember[0].FatherID, dataMember[0].MotherID);
         }
-        // nếu birthorder đã tồn tại thì ko thể add
-        if (isBirthOrderExist(dataMember[0].MemberID, req.body.BirthOrder, listChild)) {
-            let errorMessage = `Con thứ ${req.body.BirthOrder} đã tồn tại`;
+        // nếu birthorder đã tồn tại thì ko thể add và là người trong gia phả, tức là phải có bố mẹ
+        if (CoreFunction.isDataNumberExist(dataMember[0].FatherID)
+            || CoreFunction.isDataNumberExist(dataMember[0].MotherID)) {
+            if (isBirthOrderExist(dataMember[0].MemberID, req.body.BirthOrder, listChild)) {
+                let errorMessage = `Con thứ ${req.body.BirthOrder} đã tồn tại`;
 
-            return res.send(Response.badRequestResponse(null, errorMessage));
+                return res.send(Response.badRequestResponse(null, errorMessage));
+            }
         }
+
         // update member vào database
         let data = await FamilyManagementService.updateMember(req.body);
         dataRes = {
@@ -420,9 +424,9 @@ var isHasRelatedPerson = (dataMember) => {
     return new Promise(async (resolve, reject) => {
         try {
             console.log("Vào hàm isHasRelatedPerson với dataMember: ", dataMember.MemberID);
-            let listChild = await FamilyManagementService.getMembersByParentID(dataMember.MemberID);
+            let listChild = await FamilyManagementService.getMembersByFatherIDOrMotherID(dataMember.MemberID, dataMember.MemberID);
             // console.log(`listChild: ${JSON.stringify(listChild)}`)
-            let listMarriage = await MarriageManagement.getMarriageByHusbandIDOrWifeID(dataMember.MemberID);
+            let listMarriage = await MarriageManagement.getMarriageByHusbandIDOrWifeID(dataMember.MemberID, dataMember.MemberID);
             // console.log(`listMarriage: ${JSON.stringify(listMarriage)}`)
             if (listChild.length > 0 || listMarriage.length > 0) {
                 console.log("Có người liên quan");
@@ -509,7 +513,7 @@ var updateMemberToGenealogy = async (req, res) => {
         // trường hợp muốn thêm con cái
         else if (req.body.Action == 'AddChild') {
             // nếu birthorder đã tồn tại thì ko thể add
-            let listChild = await FamilyManagementService.getMembersByParentID(inGenealogyMemeber[0].MemberID);
+            let listChild = await FamilyManagementService.getMembersByFatherIDOrMotherID(inGenealogyMemeber[0].MemberID, inGenealogyMemeber[0].MemberID);
             if (isBirthOrderExist(outGenealogyMemeber[0].MemberID, outGenealogyMemeber[0].BirthOrder, listChild)) {
                 let errorMessage = `Con thứ ${outGenealogyMemeber[0].BirthOrder} đã tồn tại`;
                 return res.send(Response.badRequestResponse(null, errorMessage));
