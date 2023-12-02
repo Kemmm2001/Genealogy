@@ -375,7 +375,11 @@ var updateMember = async (req, res) => {
         if (await isHasRelatedPerson(dataMember[0]) == true) {
             console.log("Đã vào trường hợp có người liên quan");
             if (req.body.Male != dataMember[0].Male) {
-                return res.send(Response.badRequestResponse(null, "Thành viên này đã có người liên quan, không thể thay đổi giới tính"));
+                if(dataMember[0].Male == 1){
+                    return res.send(Response.badRequestResponse(null, "Thành viên này đã có vợ, không thể thay đổi giới tính"));
+                }else{
+                    return res.send(Response.badRequestResponse(null, "Thành viên này đã có chồng, không thể thay đổi giới tính"));
+                }
             }
         }
         // bắt đầu kiểm tra birthorder
@@ -404,6 +408,22 @@ var updateMember = async (req, res) => {
                 return res.send(Response.badRequestResponse(null, errorMessage));
             }
         }
+        // nếu trong trường hợp thay đổi giới tính
+        if (req.body.Male != dataMember[0].Male) {
+            // update lại những đứa con có cha hoặc mẹ là thành viên này
+            let listChilds = await FamilyManagementService.getMembersByFatherIDOrMotherID(dataMember[0].MemberID, dataMember[0].MemberID);
+            let listChildsID = [];
+            if (Array.isArray(listChilds) && listChilds.length > 0) {
+                for (let i = 0; i < listChilds.length; i++) {
+                    listChildsID.push(listChilds[i].MemberID);
+                }
+                if(req.body.Male == 1){
+                    await FamilyManagementService.updateMotherIDToFatherID(dataMember[0].MemberID,listChildsID);
+                }else{
+                    await FamilyManagementService.updateFatherIDToMotherID(dataMember[0].MemberID,listChildsID);
+                }
+            }
+        }
 
         // update member vào database
         let data = await FamilyManagementService.updateMember(req.body);
@@ -424,11 +444,9 @@ var isHasRelatedPerson = (dataMember) => {
     return new Promise(async (resolve, reject) => {
         try {
             console.log("Vào hàm isHasRelatedPerson với dataMember: ", dataMember.MemberID);
-            let listChild = await FamilyManagementService.getMembersByFatherIDOrMotherID(dataMember.MemberID, dataMember.MemberID);
-            // console.log(`listChild: ${JSON.stringify(listChild)}`)
             let listMarriage = await MarriageManagement.getMarriageByHusbandIDOrWifeID(dataMember.MemberID, dataMember.MemberID);
             // console.log(`listMarriage: ${JSON.stringify(listMarriage)}`)
-            if (listChild.length > 0 || listMarriage.length > 0) {
+            if (listMarriage.length > 0) {
                 console.log("Có người liên quan");
                 resolve(true);
             } else {
@@ -644,7 +662,7 @@ var getAllMember = async (req, res) => {
         // Gọi hàm từ dịch vụ để lấy tất cả thành viên
         const codeID = req.query.codeID
         const members = await FamilyManagementService.getAllMember(codeID);
-        
+
         // Trả về danh sách thành viên trong phản hồi
         res.json({ success: true, data: members });
     } catch (error) {

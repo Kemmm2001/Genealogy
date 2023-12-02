@@ -461,7 +461,7 @@ function getMembersByFatherIDAndMotherID(fatherID, motherID) {
     })
 }
 
-
+// nguyễn anh tuấn
 function getMembersByFatherIDOrMotherID(fatherID, motherID) {
     return new Promise((resolve, reject) => {
         console.log("Vào hàm getMembersByFatherIDOrMotherID với fatherID: " + fatherID + " và motherID: " + motherID);
@@ -477,20 +477,46 @@ function getMembersByFatherIDOrMotherID(fatherID, motherID) {
         })
     })
 }
-function createRelationship(member1Id, member2Id, relationship1Id, relationship2Id) {
-    let relationship1 = [member1Id, member2Id, relationship1Id, relationship2Id];
-    let relationship2 = [member2Id, member1Id, relationship2Id, relationship1Id];
-    let values = relationship1.concat(relationship2);
+
+// nguyễn anh tuấn
+function updateFatherIDToMotherID(fatherID,memberList) {
     return new Promise((resolve, reject) => {
-        const query = 'insert into familyrelationship (member1id, member2id, relationship1id, relationship2id) values (?,?,?,?),(?,?,?,?)';
+        console.log("Vào hàm updateFatherIDToMotherID với memberList: " + JSON.stringify(memberList));
+        if (CoreFunction.isEmptyOrNullOrSpaces(memberList)) {
+            console.log("memberList null");
+            resolve();
+        }
+        const query = 'UPDATE familymember SET FatherID = null, MotherID = ? WHERE MemberID in (?)';
+        const values = [fatherID, memberList];
         db.connection.query(query, values, (err, result) => {
             if (err) {
-                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-                reject(err);
+                console.log(err);
+                reject(err)
             } else {
-                resolve(result);
+                resolve(result)
             }
-        });
+        })
+    });
+}
+
+// nguyễn anh tuấn
+function updateMotherIDToFatherID(motherID,memberList) {
+    return new Promise((resolve, reject) => {
+        console.log("Vào hàm updateMotherIDToFatherID với memberList: " + JSON.stringify(memberList));
+        if (CoreFunction.isEmptyOrNullOrSpaces(memberList)) {
+            console.log("memberList null");
+            resolve();
+        }
+        const query = 'UPDATE familymember SET FatherID = ?, MotherID = null WHERE MemberID in (?)';
+        const values = [motherID, memberList];
+        db.connection.query(query, values, (err, result) => {
+            if (err) {
+                console.log(err);
+                reject(err)
+            } else {
+                resolve(result)
+            }
+        })
     });
 }
 
@@ -665,10 +691,10 @@ function getMemberByMemberID(memberID) {
 }
 
 module.exports = {
-    addMember, updateMember, deleteMember, getMember, createRelationship, searchMember, getMemberByMemberID,
+    addMember, updateMember, deleteMember, getMember, searchMember, getMemberByMemberID,
     setGeneration, queryContactMembers,
     getAllMember, InsertMarriIdToMember, queryFamilyMembers, getAllMemberInMemberRole, getAllMemberNotInMemberRole, GetCurrentParentMember,
     insertFatherIDToMember, insertMotherIDToMember, getMembersByFatherID, getMembersByMotherID,
     setBirthOrder, insertParentIdToMember, getAllMemberID, updateMemberPhoto, deleteMemberRelated, 
-    getMembersByFatherIDAndMotherID, getMembersByFatherIDOrMotherID
+    getMembersByFatherIDAndMotherID, getMembersByFatherIDOrMotherID, updateFatherIDToMotherID, updateMotherIDToFatherID
 };
