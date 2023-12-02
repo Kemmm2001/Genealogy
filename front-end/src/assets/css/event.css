@@ -75,6 +75,7 @@
     background-color: #90CAF9 !important;
     text-align: center;
     vertical-align: middle;
+    border: none;
 }
 
 .event-screen .participant-container .item{
