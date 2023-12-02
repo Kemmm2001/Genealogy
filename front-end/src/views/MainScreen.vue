@@ -3,30 +3,30 @@
   <div class="d-flex h-100 w-100 position-relative">
     <div class="list h-100 d-flex flex-column align-items-center">
       <div v-if="memberRole != 3" class="w-100 d-flex flex-column" style="height: 15%">
-      <div class="w-100 d-flex flex-row" style="padding-top: 8px">
-        <div class="col-6" style="padding-left: 8px; padding-right: 6px">
-          <div class="w-100 h-100">
-            <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary h-100">Tạo thông báo</button>
+        <div class="w-100 d-flex flex-row" style="padding-top: 8px">
+          <div class="col-6" style="padding-left: 8px; padding-right: 6px">
+            <div class="w-100 h-100">
+              <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary h-100">Tạo thông báo</button>
+            </div>
+          </div>
+          <div class="col-6" style="padding-left: 6px; padding-right: 8px">
+            <div class="w-100 h-100">
+              <button @click="openCompareModal()" style="width:100%" type="button" :class="{ 'btn': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">Xác định quan hệ</button>
+            </div>
           </div>
         </div>
-        <div class="col-6" style="padding-left: 6px; padding-right: 8px">
-          <div class="w-100 h-100">
-            <button @click="openCompareModal()" style="width:100%" type="button" :class="{ 'btn': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">Xác định quan hệ</button>
+        <div class="w-100 d-flex flex-row" style="padding-top: 8px">
+          <div class="col-6" style="padding-left: 8px; padding-right: 6px">
+            <div class="w-100 h-100">
+              <button @click="BackUpdata()" style="width:100%;color:white" type="button" class="btn btn-secondary h-100">Lưu trữ dữ liệu</button>
+            </div>
+          </div>
+          <div class="col-6" style="padding-left: 6px; padding-right: 8px">
+            <div class="w-100 h-100">
+              <button style="width:100%;color:white" type="button" class="btn btn-secondary h-100">Xuất dữ liệu vào</button>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="w-100 d-flex flex-row" style="padding-top: 8px">
-        <div class="col-6" style="padding-left: 8px; padding-right: 6px">
-          <div class="w-100 h-100">
-            <button @click="BackUpdata()" style="width:100%;color:white" type="button" class="btn btn-secondary h-100">Lưu trữ dữ liệu</button>
-          </div>
-        </div>
-        <div class="col-6" style="padding-left: 6px; padding-right: 8px">
-          <div class="w-100 h-100">
-            <button style="width:100%;color:white" type="button" class="btn btn-secondary h-100">Xuất dữ liệu vào</button>
-          </div>
-        </div>
-      </div>
       </div>
       <div class="w-100 d-flex flex-column px-2" :class="{height100 : memberRole == 3}" style="padding: 12px; height: 85%; font-family: 'QuicksandBold', sans-serif;">
         <div class="existing-members d-flex flex-column w-100">
@@ -347,7 +347,7 @@
                     <div class="btn d-flex align-items-center justify-content-center" style="padding: 4px 12px; background: #007bff; color: #FFFFFF; border-radius: 0; outline: none; border: none;">Sự kiện</div>
                     <div style="border-radius: 0 50% 50% 0; background: #007bff; width: 25px;"></div>
                   </div>
-                  <div class="d-flex flex-row"  @click="sendEmailToMember()">
+                  <div class="d-flex flex-row" @click="sendEmailToMember()">
                     <div style="border-radius: 50% 0 0 50%; background: #007bff; width: 25px;"></div>
                     <div class="btn d-flex align-items-center justify-content-center" style="padding: 4px 12px; background: #007bff; color: #FFFFFF; border-radius: 0; outline: none; border: none;">Gửi</div>
                     <div style="border-radius: 0 50% 50% 0; background: #007bff; width: 25px;"></div>
