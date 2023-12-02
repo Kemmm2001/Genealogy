@@ -324,23 +324,6 @@ function UpdateMemberGenerationToZero(memberId) {
 }
 
 
-function InsertMarriIdToMember(memberId, marriageID) {
-    return new Promise((resolve, reject) => {
-        const query = 'UPDATE familymember SET MarriageID = ? WHERE MemberID = ?;';
-        const values = [
-            marriageID, memberId
-        ]
-        db.connection.query(query, values, (err, result) => {
-            if (err) {
-                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-                reject(err);
-            } else {
-                console.log('Result: ', result);
-                resolve(result);
-            }
-        });
-    });
-}
 
 function GetCurrentParentMember(memberID) {
     return new Promise((resolve, reject) => {
@@ -718,7 +701,7 @@ function getMemberByMemberID(memberID) {
 module.exports = {
     addMember, updateMember, deleteMember, getMember, searchMember, getMemberByMemberID,
     setGeneration, queryContactMembers,
-    getAllMember, InsertMarriIdToMember, queryFamilyMembers, getAllMemberInMemberRole, getAllMemberNotInMemberRole, GetCurrentParentMember,
+    getAllMember, queryFamilyMembers, getAllMemberInMemberRole, getAllMemberNotInMemberRole, GetCurrentParentMember,
     insertFatherIDToMember, insertMotherIDToMember, getMembersByFatherID, getMembersByMotherID,
     setBirthOrder, insertParentIdToMember, getAllMemberID, updateMemberPhoto, deleteMemberRelated,
     getMembersByFatherIDAndMotherID, getMembersByFatherIDOrMotherID, updateFatherIDToMotherID, updateMotherIDToFatherID, UpdateMemberRelated

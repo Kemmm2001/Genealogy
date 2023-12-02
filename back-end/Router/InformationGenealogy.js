@@ -4,7 +4,6 @@ const GeneralInformation = require('../Controller/InformationGenealogy/GeneralIn
 const FamilyHistoryController = require('../Controller/InformationGenealogy/FamilyHistory');
 const StatisticsController = require('../Controller/InformationGenealogy/StatisticsController')
 const AlbumPhotoController = require('../Controller/InformationGenealogy/AlbumPhotoController');
-const ArticleController = require('../Controller/FamilyGenealogy/ArticleController')
 const FamilyPhotoController = require('../Controller/InformationGenealogy/FamilyPhotoController');
 const AddressController = require('../Controller/InformationGenealogy/AddressController');
 const CoreFunction = require('../Utils/CoreFunction');
@@ -63,13 +62,9 @@ const initWebRouter = (app) => {
     // Delete a FamilyPhoto with id
     router.get('/delete-familyphoto', FamilyPhotoController.deleteFamilyPhoto);
     // End API tuấn
-    //API Nhật anh
 
-    router.get('/article', ArticleController.getAllArticle);
-    router.post('/article', ArticleController.getArticle);
-    router.post('/add-article', ArticleController.addArticle);
-    router.put('/update-article', ArticleController.updateArticle);
-    router.delete('/delete-article', ArticleController.deleteArticle);
+
+   
 
     router.get('/province', AddressController.getProvince);
     router.get('/district', AddressController.getDistrict);

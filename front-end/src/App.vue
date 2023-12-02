@@ -1,3 +1,4 @@
+<!-- phùng việt khôi -->
 <template>
   <div class="container-fluid p-0" :class="{dark : darkMode}" style="overflow: hidden;">
     <div class="d-flex flex-column h-100" style="min-height: inherit;">
@@ -9,6 +10,7 @@
   </div>
 </template>
 
+<!-- phùng việt khôi -->
 <script>
 // import Sidebar from "./components/SidebarComponent.vue";
 import Header from "./components/HeaderComponent.vue";

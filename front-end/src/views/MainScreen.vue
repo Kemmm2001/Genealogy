@@ -1,7 +1,9 @@
+<!-- phùng việt khôi -->
 <template>
   <div class="d-flex h-100 w-100 position-relative">
     <div class="list h-100 d-flex flex-column align-items-center">
-      <div v-if="memberRole != 3" class="w-100 d-flex flex-row" style="padding-top: 8px">
+      <div v-if="memberRole != 3" class="w-100 d-flex flex-column" style="height: 15%">
+      <div class="w-100 d-flex flex-row" style="padding-top: 8px">
         <div class="col-6" style="padding-left: 8px; padding-right: 6px">
           <div class="w-100 h-100">
             <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary h-100">Tạo thông báo</button>
@@ -13,7 +15,7 @@
           </div>
         </div>
       </div>
-      <div v-if="memberRole != 3" class="w-100 d-flex flex-row" style="padding-top: 8px">
+      <div class="w-100 d-flex flex-row" style="padding-top: 8px">
         <div class="col-6" style="padding-left: 8px; padding-right: 6px">
           <div class="w-100 h-100">
             <button @click="BackUpdata()" style="width:100%;color:white" type="button" class="btn btn-secondary h-100">Lưu trữ dữ liệu</button>
@@ -25,7 +27,8 @@
           </div>
         </div>
       </div>
-      <div class="w-100 d-flex flex-column px-2" style="padding: 12px; flex-grow: 1; font-family: 'QuicksandBold', sans-serif;">
+      </div>
+      <div class="w-100 d-flex flex-column px-2" :class="{height100 : memberRole == 3}" style="padding: 12px; height: 85%; font-family: 'QuicksandBold', sans-serif;">
         <div class="existing-members d-flex flex-column w-100">
           <div class="d-flex align-items-center justify-content-center px-2 py-1 list-title">Thành viên có trên phả đồ</div>
           <div class="d-flex flex-column w-100" style="overflow-y: auto;cursor: pointer">
@@ -1199,7 +1202,6 @@ export default {
           this.nodeLength != this.listMember.length
         ) {
           this.family.setViewBox(this.CoordinatesNode);
-          console.log(1111);
         }
         setTimeout(() => {
           if (this.nodeLength != this.listMember.length) {
@@ -1589,25 +1591,44 @@ export default {
         params: {
           MemberID: this.CurrentIdMember,
         },
-      }).catch(() => {
-        this.NotificationsDelete("Đã sảy ra lỗi, không thể xóa");
-      });
+      })
+        .then((response) => {
+          if (response.data.success == false) {
+            console.log("Xẩy ra lỗi khi xóa contact");
+          }
+        })
+        .catch(() => {
+          this.NotificationsDelete("Đã sảy ra lỗi, không thể xóa");
+        });
 
       HTTP.get("RemoveListJob", {
         params: {
           MemberID: this.CurrentIdMember,
         },
-      }).catch((e) => {
-        console.log(e);
-      });
+      })
+        .then((response) => {
+          if (response.data.success == false) {
+            console.log("Xẩy ra lỗi khi xóa Job");
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
 
       HTTP.get("deleteListEducation", {
         params: {
           MemberID: this.CurrentIdMember,
         },
-      }).catch((e) => {
-        console.log(e);
-      });
+      })
+        .then((response) => {
+          if (response.data.success == false) {
+            console.log("Xẩy ra lỗi khi xóa education");
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+
       HTTP.get("delete-member", {
         params: {
           MemberID: this.CurrentIdMember,
