@@ -168,7 +168,7 @@
                 style="margin: 10px;">Xóa Ảnh</button>
               <button class="btn btn-primary mr-2" @click="addFamilyPhotoByAlbumId()" style="margin: 10px;">Lưu</button>
             </div>
-            <div class="add-photo-list d-flex" style="height: calc(100% - 50px);">
+            <div class="add-photo-list d-flex" style="height: calc(100% - 58px);">
               <div class="d-flex flex-row w-100 h-100"
                 style="flex-wrap: wrap; overflow-y: auto; justify-content: center; align-items: center;">
                 <div class="add-photo d-flex flex-row position-relative" v-for="(photo, index) in FamilyPhotoListAddShow"
@@ -191,25 +191,24 @@
     </div>
     <div class="editAlbum-container" style="z-index: 1;">
       <modal name="editAlbum-modal">
-        <div class="form-group">
-          <div class="form-group">
-            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100 position-relative">
-              {{ albumPhoto.AlbumName }}</div>
-            <div class="close-add-form" style="top: 8px; right: 8px;" @click="closeEditAlbumModal()">
-              <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                <path
-                  d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-              </svg>
-            </div>
-            <div class="edit-photo-modal" style="background-color: white; height: 700px;">
-              <div class="edit-photo-layout d-flex">
-                <button class="btn btn-primary mr-2" style="margin: 10px;"
-                  @click="checkAddPhotoModalOpen(), openAddPhotoModal()">Thêm ảnh</button>
+        <div class="form-group h-100">
+          <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100 position-relative">
+            {{ albumPhoto.AlbumName }}</div>
+          <div class="close-add-form" style="top: 8px; right: 8px;" @click="closeEditAlbumModal()">
+            <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+              <path
+                d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+            </svg>
+          </div>
+          <div class="edit-photo-modal" style="background-color: white; height: calc(100% - 50px);">
+            <div class="edit-photo-layout d-flex">
+              <button class="btn btn-primary mr-2" style="margin: 10px;"
+                @click="checkAddPhotoModalOpen(), openAddPhotoModal()">Thêm ảnh</button>
 
-                <button class="btn btn-danger mr-2" style="margin: 10px;" :disabled="isButtonDisabledPhoto"
-                  @click="removeFamilyPhotoByPhotoId()">Xóa Ảnh</button>
-              </div>
-              <div class="add-photo-list d-flex flex-row w-100 h-100" style="height: calc(100% - 50px);">
+              <button class="btn btn-danger mr-2" style="margin: 10px;" :disabled="isButtonDisabledPhoto"
+                @click="removeFamilyPhotoByPhotoId()">Xóa Ảnh</button>
+            </div>
+            <!-- <div class="add-photo-list d-flex flex-row w-100 h-100" style="height: calc(100% - 50px);">
                 <div style="flex-wrap: wrap; overflow-y: auto; justify-content: center; align-items: center;">
                   <div class="edit-photo d-flex flex-row position-relative" v-for="(photo, index) in FamilyPhotoList"
                     :key="index" @click="clickPhoto(index), getPhotoCurrentId(photo.PhotoID)"
@@ -226,6 +225,24 @@
                           @change="changeCheckPhoto(photo.PhotoID, index)" />
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div> -->
+
+            <div class="add-photo-list d-flex" style="height: calc(100% - 58px);">
+              <div class="d-flex flex-row w-100 h-100"
+                style="flex-wrap: wrap; overflow-y: auto; justify-content: center; align-items: center;">
+                <div class="add-photo d-flex flex-row position-relative" v-for="(photo, index) in FamilyPhotoList"
+                  :key="index" @click="clickPhoto(index), getPhotoCurrentId(photo.PhotoID)">
+                  <div class="w-100 h-100 d-flex align-items-center justify-content-center"
+                    style="background-color: #000;">
+                    <img src="https://cdn.diemnhangroup.com/seoulcenter/2022/11/gai-xinh-1.jpg" ref="imageRef" style="max-width: 100%;height: fit-content;max-height: 100%;"
+                      :class="{ fitHeight: listHeightLarger[index] }">
+                  </div>
+                  <div class="w-100 d-flex position-absolute" style="top: 0; right: 0;">
+                    <input class="form-check p-0" style="height: 24px; width: 24px; outline: none; border:none;"
+                      type="checkbox" v-model="ListCheckBoxPhoto[index]"
+                      @change="changeCheckPhoto(photo.PhotoID, index)" />
                   </div>
                 </div>
               </div>
