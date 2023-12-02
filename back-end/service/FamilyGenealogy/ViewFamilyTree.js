@@ -1,5 +1,6 @@
 const { Code } = require("mongodb");
-const db = require("../../Models/ConnectDB")
+const db = require("../../Models/ConnectDB");
+
 
 function getAllReligion() {
     return new Promise((resolve, reject) => {
@@ -297,6 +298,7 @@ function turnOnSQL_SAFE_UPDATES() {
     })
 }
 
+//Nguyễn Lê Hùng
 function ResetAllGenerationMember(CodeID) {
     let query = `UPDATE familymember
     SET Generation = 0
@@ -310,7 +312,7 @@ function ResetAllGenerationMember(CodeID) {
     })
 }
 
-
+//Nguyễn Lê Hùng
 function setAllGenerationMember(memberId, generation) {
     const updateQuery = `update familymember Set Generation =  ${generation}  where MemberID = ${memberId}`;
     db.connection.query(updateQuery, (err, results) => {
@@ -340,6 +342,7 @@ function setAllGenerationMember(memberId, generation) {
     });
 }
 
+//Nguyễn Lê Hùng
 function getListUnspecifiedMembers(CodeID) {
     return new Promise((resolve, reject) => {
         try {
@@ -361,6 +364,105 @@ function getListUnspecifiedMembers(CodeID) {
     })
 }
 
+
+//Nguyễn Lê Hùng
+async function getLivingFamilyMember(memberID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let queryGetFamilyHead = `SELECT * FROM familymember WHERE MemberID = ${memberID}`;
+            db.connection.query(queryGetFamilyHead, async (err, results) => {
+                if (!err) {
+                    if (results.length > 0) {
+                        let familyHead = results[0];
+
+                        if (familyHead.IsDead == 0) {
+                            resolve(familyHead.MemberID);
+                        } else {
+                            let queryGetSons = `SELECT MemberID FROM familymember WHERE FatherID = ${memberID} AND Male = 1 ORDER BY BirthOrder`;
+                            db.connection.query(queryGetSons, async (err, resultGetSon) => {
+                                if (!err && resultGetSon.length > 0) {
+                                    for (let son of resultGetSon) {
+                                        let livingSonID = await getLivingFamilyMember(son.MemberID);
+                                        if (livingSonID) {
+                                            resolve(livingSonID);
+                                            return;
+                                        }
+                                    }
+                                }
+                                resolve(null);
+                            });
+                        }
+                    } else {
+                        // Không tìm thấy thông tin cho MemberID
+                        resolve(null);
+                    }
+                } else {
+                    reject(err);
+                }
+            });
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+
+//Nguyễn Lê Hùng
+async function getListChildWithWifeID(husbandID, wifeID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let queryListChild = `select *  from familymember where FatherID = ${husbandID} and MotherID = ${wifeID} and Male = 1 order by BirthOrder`;
+            db.connection.query(queryListChild, async (err, result) => {
+                if (!err && result.length > 0) {
+                    for (let i = 0; i < result.length; i++) {
+                        let resultFamilyHead = await getLivingFamilyMember(result[i].MemberID)
+                        if (resultFamilyHead != null) {
+                            resolve(resultFamilyHead)
+                            return
+                        }
+                    }
+                    resolve(null);
+                } else {
+                    reject(err)
+                }
+            })
+        } catch (error) {
+
+        }
+    })
+}
+
+//Nguyễn Lê Hùng
+async function getFamilyHeadInGenealogy(CodeID) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let IdPaternal = await GetIdPaternalAncestor(CodeID);
+            IdPaternal = IdPaternal.MemberID;
+            if (IdPaternal) {
+                let queryGetFirstWife = `select wifeID from marriage where husbandID = ${IdPaternal} order by MarriageNumber`;
+                db.connection.query(queryGetFirstWife, async (err, result) => {
+                    if (!err && result.length > 0) {
+                        for (let i = 0; i < result.length; i++) {
+                            let resultFamilyHead = await getListChildWithWifeID(IdPaternal, result[i].wifeID);
+                            if (resultFamilyHead != null) {
+                                resolve(resultFamilyHead)
+                                return
+                            }
+                            resolve(null)
+                        }
+                    } else {
+                        reject(err)
+                    }
+                })
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    })
+}
+
+
+//Nguyễn Lê Hùng
 async function RelationShipMember(CodeID, memberId) {
     return new Promise(async (resolve, reject) => {
         try {
@@ -411,7 +513,7 @@ async function RelationShipMember(CodeID, memberId) {
 }
 
 
-
+//Nguyễn Lê Hùng
 function GetIdPaternalAncestor(CodeID) {
     return new Promise((resolve, reject) => {
         let query = `select MemberID from memberrole
@@ -494,18 +596,22 @@ function isMemberInList(list, member) {
     return list.some(existingMember => existingMember.id === member.MemberID);
 }
 
-
+//Nguyễn Lê Hùng
 function getListMessage(CodeID) {
     return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM genealogy.notificationhistory where CodeID = '${CodeID}'`;
-        db.connection.query(query, (err, result) => {
-            if (err) {
-                console.log(err)
-                reject(err);
-            } else {
-                resolve(result)
-            }
-        })
+        try {
+            let query = `SELECT * FROM genealogy.notificationhistory where CodeID = '${CodeID}'`;
+            db.connection.query(query, (err, result) => {
+                if (err) {
+                    console.log(err)
+                    reject(err);
+                } else {
+                    resolve(result)
+                }
+            })
+        } catch (error) {
+            console.log(error)
+        }
     })
 }
 
@@ -526,28 +632,8 @@ function getListNotificationEmail(CodeId) {
     })
 }
 
-async function getFamilyHead(MemberID) {
-    return new Promise((resolve, reject) => {
-        try {
-            let queryGetAllMember = `SELECT *
-            FROM genealogy.familymember
-            WHERE ParentID = 500 AND Male = 1
-            ORDER BY BirthOrder
-            LIMIT 1`;
-            db.connection.query(queryGetAllMember, async (err, result) => {
-                if (!err) {
 
-                } else {
-                    reject(err)
-                }
-            })
-        } catch (e) {
-            console.log(e);
-            reject(false)
-        }
-    })
-}
-
+//Nguyễn Lê Hùng
 async function ViewFamilyTree(CodeID) {
     return new Promise((resolve, reject) => {
         try {
@@ -671,5 +757,5 @@ module.exports = {
     getAllReligion, getInforMember, getContactMember, getEducationMember, getJobMember, getEventMember, getAllNationality, getAllMemberRole,
     getRoleExist, setRoleMember, removePaternalAncestor, turnOnSQL_SAFE_UPDATES, turnOffSQL_SAFE_UPDATES, getListMessage,
     setAllGenerationMember, ResetAllGenerationMember, ViewFamilyTree, getListUnspecifiedMembers, GetIdPaternalAncestor, RelationShipMember,
-    RemoveRelationshipChild, RemoveRelationshipMarried, RemoveRelationshipParent, getListNotificationEmail, getAllMarriage
+    RemoveRelationshipChild, RemoveRelationshipMarried, RemoveRelationshipParent, getListNotificationEmail, getAllMarriage, getFamilyHeadInGenealogy
 }

@@ -100,7 +100,7 @@
           <div class="btn bg-primary text-white d-flex align-items-center item">Xuất excel</div>
         </div>
         <div class="pt-3" style="height: calc(100% - 96px);">
-          <div style="overflow-y: auto;">
+          <div class="h-100" style="overflow-y: auto;">
             <table class="table table-eventlist eventlist-list m-0">
               <thead style="position: sticky; top: 0;">
                 <tr class="eventlist-item">
@@ -284,7 +284,7 @@
             </div>
           </div>
           <div class="w-100 d-flex flex-column align-items-center justify-content-center" style="height: calc(100% - 50px);">
-            <div class="d-flex align-items-center px-3" style="font-size: 19px;">
+            <div class="d-flex h-100 align-items-center px-3" style="overflow-y: auto; font-size: 19px;">
             <table class="table table-eventlist eventlist-list m-0">
               <thead style="position: sticky; top: 0;">
                 <tr class="eventlist-item">

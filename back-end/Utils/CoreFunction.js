@@ -2,8 +2,9 @@ const multer = require("multer");
 const crypto = require('crypto');
 const fs = require('fs');
 const db = require('../Models/ConnectDB');
+const moment = require('moment');
 
-
+// nguyễn anh tuấn
 const missingFields = (requiredFields, data) => {
     const missing = [];
     for (let i = 0; i < requiredFields.length; i++) {
@@ -21,12 +22,14 @@ const missingFields = (requiredFields, data) => {
 
     return missing;
 }
+
+// nguyễn anh tuấn
 const isEmptyOrNullOrSpaces = (str) => {
     const isNull = str == null || (typeof str == 'string' && str.trim() == '') || typeof str == 'undefined';
     return isNull;
 }
 
-
+// nguyễn anh tuấn
 const uploadExcelFile = (destinationFolder) => {
     return multer({
         storage: multer.diskStorage({
@@ -56,7 +59,7 @@ const uploadExcelFile = (destinationFolder) => {
     });
 };
 
-
+// nguyễn anh tuấn
 const uploadImage = (destinationFolder) => {
     return multer({
         storage: multer.diskStorage({
@@ -85,6 +88,7 @@ const uploadImage = (destinationFolder) => {
     });
 };
 
+// nguyễn anh tuấn
 const generateRandomFileName = (file) => {
     // Tạo tên file ngẫu nhiên
     const randomName = crypto.randomBytes(15).toString('hex');
@@ -93,6 +97,7 @@ const generateRandomFileName = (file) => {
     return fileName;
 }
 
+// nguyễn anh tuấn
 const deleteImage = async (filePath) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -133,12 +138,19 @@ const deleteImage = async (filePath) => {
     });
 };
 
+// nguyễn anh tuấn
 const isDataStringExist = (data) => {
     return data != null && data != undefined && data != '';
 }
 
+// nguyễn anh tuấn
 const isDataNumberExist = (data) => {
     return data != null && data != undefined && data != '' && data != 0;
 }
 
-module.exports = { missingFields, uploadImage, deleteImage, isEmptyOrNullOrSpaces, isDataStringExist, isDataNumberExist, uploadExcelFile };
+// nguyễn anh tuấn
+const isDataDateExist = (data) => {
+    return moment(data, "yyyy-MM-dd").isValid();
+}
+module.exports = { missingFields, uploadImage, deleteImage, isEmptyOrNullOrSpaces, isDataStringExist, 
+    isDataNumberExist, uploadExcelFile, isDataDateExist };
