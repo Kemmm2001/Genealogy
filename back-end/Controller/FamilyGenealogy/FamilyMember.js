@@ -32,7 +32,7 @@ const ListAgeGroup = [
         id: 4,
     },
 ]
-
+//Nguyễn Lê Hùng
 const ListBloodTypeGroup = [
     {
         BloodType: "Nhóm máu",
@@ -55,10 +55,11 @@ const ListBloodTypeGroup = [
         id: "O"
     }
 ]
-
+//Nguyễn Lê Hùng
 var getListAgeGroup = async (req, res) => {
     res.send(ListAgeGroup)
 }
+//Nguyễn Lê Hùng
 var getListBloodTypeGroup = async (req, res) => {
     res.send(ListBloodTypeGroup)
 }
@@ -375,9 +376,9 @@ var updateMember = async (req, res) => {
         if (await isHasRelatedPerson(dataMember[0]) == true) {
             console.log("Đã vào trường hợp có người liên quan");
             if (req.body.Male != dataMember[0].Male) {
-                if(dataMember[0].Male == 1){
+                if (dataMember[0].Male == 1) {
                     return res.send(Response.badRequestResponse(null, "Thành viên này đã có vợ, không thể thay đổi giới tính"));
-                }else{
+                } else {
                     return res.send(Response.badRequestResponse(null, "Thành viên này đã có chồng, không thể thay đổi giới tính"));
                 }
             }
@@ -417,10 +418,10 @@ var updateMember = async (req, res) => {
                 for (let i = 0; i < listChilds.length; i++) {
                     listChildsID.push(listChilds[i].MemberID);
                 }
-                if(req.body.Male == 1){
-                    await FamilyManagementService.updateMotherIDToFatherID(dataMember[0].MemberID,listChildsID);
-                }else{
-                    await FamilyManagementService.updateFatherIDToMotherID(dataMember[0].MemberID,listChildsID);
+                if (req.body.Male == 1) {
+                    await FamilyManagementService.updateMotherIDToFatherID(dataMember[0].MemberID, listChildsID);
+                } else {
+                    await FamilyManagementService.updateFatherIDToMotherID(dataMember[0].MemberID, listChildsID);
                 }
             }
         }
@@ -554,6 +555,7 @@ var updateMemberToGenealogy = async (req, res) => {
 
 var deleteMember = async (req, res) => {
     try {
+        console.log("Vào hàm delete member")
         db.connection.beginTransaction();
         // các trường bắt buộc phải có trong req.query
         const requiredFields = [

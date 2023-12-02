@@ -1,5 +1,8 @@
 const ContactManagementService = require('../../service/FamilyGenealogy/ContactManagement');
+const Response = require("../../Utils/Response");
 
+
+//Nguyễn Lê Hùng
 var ViewContactMember = async (req, res) => {
     try {
         let memberId = req.query.memberId;
@@ -10,7 +13,7 @@ var ViewContactMember = async (req, res) => {
         console.log(e)
     }
 }
-
+//Nguyễn Lê Hùng
 var InsertContactMember = async (req, res) => {
     try {
         let objData = {};
@@ -27,7 +30,7 @@ var InsertContactMember = async (req, res) => {
     }
 
 }
-
+//Nguyễn Lê Hùng
 var updateContactMember = async (req, res) => {
     try {
         let objData = {};
@@ -48,14 +51,18 @@ var updateContactMember = async (req, res) => {
         console.log(e)
     }
 }
-
+//Nguyễn Lê Hùng
 var removeContactMember = async (req, res) => {
     try {
         let memberID = req.query.MemberID;
-        await ContactManagementService.RemoveContactByID(memberID);
-        res.send("remove successfully");
+        let data = await ContactManagementService.RemoveContactByID(memberID);
+        if (data) {
+            return res.send(Response.successResponse())
+        } else {
+            return res.send(Response.dataNotFoundResponse())
+        }
     } catch (e) {
-        console.log(e)
+        return res.send(Response.dataNotFoundResponse(e))
     }
 }
 

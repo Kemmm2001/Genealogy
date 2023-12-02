@@ -1159,7 +1159,6 @@ export default {
           this.nodeLength != this.listMember.length
         ) {
           this.family.setViewBox(this.CoordinatesNode);
-          console.log(1111);
         }
         setTimeout(() => {
           if (this.nodeLength != this.listMember.length) {
@@ -1549,25 +1548,44 @@ export default {
         params: {
           MemberID: this.CurrentIdMember,
         },
-      }).catch(() => {
-        this.NotificationsDelete("Đã sảy ra lỗi, không thể xóa");
-      });
+      })
+        .then((response) => {
+          if (response.data.success == false) {
+            console.log("Xẩy ra lỗi khi xóa contact");
+          }
+        })
+        .catch(() => {
+          this.NotificationsDelete("Đã sảy ra lỗi, không thể xóa");
+        });
 
       HTTP.get("RemoveListJob", {
         params: {
           MemberID: this.CurrentIdMember,
         },
-      }).catch((e) => {
-        console.log(e);
-      });
+      })
+        .then((response) => {
+          if (response.data.success == false) {
+            console.log("Xẩy ra lỗi khi xóa Job");
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
 
       HTTP.get("deleteListEducation", {
         params: {
           MemberID: this.CurrentIdMember,
         },
-      }).catch((e) => {
-        console.log(e);
-      });
+      })
+        .then((response) => {
+          if (response.data.success == false) {
+            console.log("Xẩy ra lỗi khi xóa education");
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+
       HTTP.get("delete-member", {
         params: {
           MemberID: this.CurrentIdMember,

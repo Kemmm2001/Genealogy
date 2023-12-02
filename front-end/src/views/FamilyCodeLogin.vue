@@ -2,26 +2,20 @@
   <div class="w-100 h-100 position-relative familycode-background" style="min-height: inherit;">
     <div class="position-absolute login-form-container" style="opacity: 93%;">
       <div class="d-flex flex-row w-100 h-100 position-relative">
-        <div :class="{ rightPos: right, leftPos: !right, enlarged: enlarge }"
-          class="h-100 position-absolute codelogin-background" style="z-index: 1;">
+        <div :class="{ rightPos: right, leftPos: !right, enlarged: enlarge }" class="h-100 position-absolute codelogin-background" style="z-index: 1;">
           <div v-if="loggingin" class="d-flex flex-column align-items-center justify-content-center h-100 w-100">
-            <div class="my-3" style="font-size: 20px !important; font-weight: bold; color: #FFFFFF; text-align: center;">
-              Đăng kí gia tộc mới</div>
-            <button @click="moveToRight(); enlargeBackground()" class="btn my-3 change-form-button"
-              :class="{ changeToLoginBtn: loggingin }">Đăng kí</button>
+            <div class="my-3" style="font-size: 20px !important; font-weight: bold; color: #FFFFFF; text-align: center;">Đăng kí gia tộc mới</div>
+            <button @click="moveToRight(); enlargeBackground()" class="btn my-3 change-form-button" :class="{ changeToLoginBtn: loggingin }">Đăng kí</button>
           </div>
           <div v-if="!loggingin" class="d-flex flex-column align-items-center justify-content-center h-100 w-100">
-            <div class="my-3" style="font-size: 20px !important; font-weight: bold; color: #FFFFFF; text-align: center;">
-              Nhập mã để vào gia tộc đã đăng kí</div>
-            <button @click="moveToLeft(); enlargeBackground()" class="btn my-3 change-form-button"
-              :class="{ changeToRegisterBtn: !loggingin }">Đăng nhập</button>
+            <div class="my-3" style="font-size: 20px !important; font-weight: bold; color: #FFFFFF; text-align: center;">Nhập mã để vào gia tộc đã đăng kí</div>
+            <button @click="moveToLeft(); enlargeBackground()" class="btn my-3 change-form-button" :class="{ changeToRegisterBtn: !loggingin }">Đăng nhập</button>
           </div>
         </div>
 
         <div v-if="!right" class="login-form h-100 d-flex flex-column align-items-center">
           <div class="d-flex flex-column align-items-center" style="margin-top: 35px;">
-            <div class="d-flex justify-content-center mt-3 mb-2"
-              style="font-size: 36px; font-weight: bold; color: #fea94e;">Mã gia tộc</div>
+            <div class="d-flex justify-content-center mt-3 mb-2" style="font-size: 36px; font-weight: bold; color: #fea94e;">Mã gia tộc</div>
             <div class="d-flex flex-column" style="width: 420px;">
               <div class="d-flex flex-row mb-3">
                 <div class="w-100 h-100 d-flex flex-row">
@@ -35,9 +29,7 @@
                 </router-link>
               </div>
               <div class="d-flex justify-content-center">
-                <button @click="showLoginHistoryModal()" class="btn login-button">
-                  Lịch sử đăng nhập
-                </button>
+                <button @click="showLoginHistoryModal()" class="btn login-button">Lịch sử đăng nhập</button>
               </div>
             </div>
           </div>
@@ -45,8 +37,7 @@
 
         <div v-if="right" class="login-form h-100 d-flex flex-column align-items-center" style="left: 0;">
           <div class="d-flex flex-column align-items-center" style="margin-top: 35px;">
-            <div class="d-flex justify-content-center mt-3 mb-2"
-              style="font-size: 36px; font-weight: bold; color: #84e9c0;">Đăng kí gia tộc</div>
+            <div class="d-flex justify-content-center mt-3 mb-2" style="font-size: 36px; font-weight: bold; color: #84e9c0;">Đăng kí gia tộc</div>
             <div class="d-flex flex-column" style="width: 420px;">
               <div class="d-flex flex-row mb-2">
                 <div class="d-flex align-items-center" style="padding-right: 30.79px;">Gia tộc họ</div>
@@ -67,10 +58,12 @@
                 </div>
               </div>
               <div class="d-flex justify-content-center align-items-center" style="height: auto; width: auto;">
-                <button @click="registerFamilyTree()" class="btn register-button" style="margin-right: 36px;">Đăng
-                  kí</button>
+                <button @click="registerFamilyTree()" class="btn register-button" style="margin-right: 36px;">
+                  Đăng
+                  kí
+                </button>
                 <router-link to="/login">
-                  <button class="btn bg-danger text-white">Đăng xuất tài khoản</button>
+                  <button @click="LogoutAccount()" class="btn bg-danger text-white">Đăng xuất tài khoản</button>
                 </router-link>
               </div>
             </div>
@@ -81,8 +74,7 @@
     <div class="position-absolute familycode-noti" :class="{ appear: showCode }">
       <div class="w-100 h-100 position-relative">
         <div class="position-absolute familycode-noti-timer" :class="{ timerStart: showCode }"></div>
-        <div v-if="showCode" class="w-100 h-100 d-flex align-items-center justify-content-content px-3"
-          style="font-size: 20px;">Đăng kí thành công! Mã gia tộc của bạn là {{ this.familycode }}</div>
+        <div v-if="showCode" class="w-100 h-100 d-flex align-items-center justify-content-content px-3" style="font-size: 20px;">Đăng kí thành công! Mã gia tộc của bạn là {{ this.familycode }}</div>
       </div>
     </div>
 
@@ -90,12 +82,13 @@
       <modal name="loginhistory-modal">
         <div class="w-100 h-100 add-album-modal">
           <div class="d-flex flex-row w-100 align-items-center position-relative">
-            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Lịch sử đăng nhập
-              code gia tộc</div>
+            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">
+              Lịch sử đăng nhập
+              code gia tộc
+            </div>
             <div class="close-add-form" @click="closeLoginHistoryModal()">
               <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                <path
-                  d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
               </svg>
             </div>
           </div>
@@ -118,8 +111,7 @@
           </div>
           <div class="modal-footer w-100 position-absolute" style="bottom: 0;">
             <div class="d-flex h-100 align-items-center justify-content-end" style="padding-right: 12px;">
-              <button style="margin-left:10px" type="button" class="btn btn-secondary"
-                @click="closeLoginHistoryModal()">Cancel</button>
+              <button style="margin-left:10px" type="button" class="btn btn-secondary" @click="closeLoginHistoryModal()">Cancel</button>
             </div>
           </div>
         </div>
@@ -189,6 +181,11 @@ export default {
         },
       });
     },
+    LogoutAccount() {
+      localStorage.removeItem("CodeID");
+      localStorage.removeItem("accountID");
+      this.$router.push("/login");
+    },
     NotificationsScuccess(messagee) {
       new Snackbar(messagee, {
         position: "bottom-right",
@@ -225,7 +222,7 @@ export default {
     },
     LoginFastCodeID(CodeID) {
       this.codeIdLogin = CodeID;
-      this.loginWithCode()
+      this.loginWithCode();
     },
     loginWithCode() {
       HTTP.post("check-codeId", {
@@ -234,6 +231,7 @@ export default {
       })
         .then((response) => {
           if (response.data.success == true) {
+            console.log(response.data)
             localStorage.setItem("CodeID", this.codeIdLogin);
             this.$router.push("/");
           } else {

@@ -437,8 +437,8 @@ async function getFamilyHeadInGenealogy(CodeID) {
     return new Promise(async (resolve, reject) => {
         try {
             let IdPaternal = await GetIdPaternalAncestor(CodeID);
-            IdPaternal = IdPaternal.MemberID;
             if (IdPaternal) {
+                IdPaternal = IdPaternal.MemberID;
                 let queryGetFirstWife = `select wifeID from marriage where husbandID = ${IdPaternal} order by MarriageNumber`;
                 db.connection.query(queryGetFirstWife, async (err, result) => {
                     if (!err && result.length > 0) {
