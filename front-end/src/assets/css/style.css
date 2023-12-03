@@ -157,3 +157,14 @@ th{
 .height100{
     height: 100% !important;
 }
+
+#tree text{
+    cursor: pointer;
+}
+
+.ellipsis-text{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block !important;
+}

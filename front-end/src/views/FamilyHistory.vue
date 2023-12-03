@@ -27,9 +27,9 @@
       </div>
     </div>
     <div class="h-100 position-absolute p-2" style="top: 0; right: 0; width: 80%; background-color: #f2f2f2;">
-      <draggable :list="listHistory" :disabled="!enabled" class="list-group" ghost-class="ghost" :move="checkMove" @start="dragging = true" @end="dragging = false" @update="onUpdate">
-        <div v-for="element in listHistory" :key="element.HistoryID" class="w-100" :style="{ 'min-height': '60px','float': element.HistoryID % 2 === 0 ? 'right' : 'left'} ">
-          <div @click="getInforHistory(element.HistoryID)" class="list-group-item position-relative" :style="{'min-height': 'inherit','width': '49%','float': element.HistoryID % 2 === 0 ? 'right' : 'left'}">
+      <draggable :list="listHistory" :disabled="!enabled" class="list-group h-100" style="overflow-y: auto;" ghost-class="ghost" :move="checkMove" @start="dragging = true" @end="dragging = false" @update="onUpdate">
+        <div v-for="element in listHistory" :key="element.HistoryID" class="w-100" :style="{ 'min-height': '72px', 'float': element.HistoryID % 2 === 0 ? 'right' : 'left'} ">
+          <div @click="getInforHistory(element.HistoryID)" class="list-group-item position-relative h-100" :style="{'width': '49%','float': element.HistoryID % 2 === 0 ? 'right' : 'left'}">
             <div class="position-absolute history-start">{{ formatDate(element.startDate) }}</div>
             <div class="position-absolute history-end">{{ formatDate(element.endDate)}}</div>
             <div class="d-flex align-items-center" style="min-height: inherit; padding-top: 12px;">{{ element.Description }}</div>

@@ -3,30 +3,30 @@
   <div class="d-flex h-100 w-100 position-relative">
     <div class="list h-100 d-flex flex-column align-items-center">
       <div v-if="memberRole != 3" class="w-100 d-flex flex-column" style="height: 15%">
-      <div class="w-100 d-flex flex-row" style="padding-top: 8px">
-        <div class="col-6" style="padding-left: 8px; padding-right: 6px">
-          <div class="w-100 h-100">
-            <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary h-100">Tạo thông báo</button>
+        <div class="w-100 d-flex flex-row" style="padding-top: 8px">
+          <div class="col-6" style="padding-left: 8px; padding-right: 6px">
+            <div class="w-100 h-100">
+              <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary h-100">Tạo thông báo</button>
+            </div>
+          </div>
+          <div class="col-6" style="padding-left: 6px; padding-right: 8px">
+            <div class="w-100 h-100">
+              <button @click="openCompareModal()" style="width:100%" type="button" :class="{ 'btn': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">Xác định quan hệ</button>
+            </div>
           </div>
         </div>
-        <div class="col-6" style="padding-left: 6px; padding-right: 8px">
-          <div class="w-100 h-100">
-            <button @click="openCompareModal()" style="width:100%" type="button" :class="{ 'btn': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">Xác định quan hệ</button>
+        <div class="w-100 d-flex flex-row" style="padding-top: 8px">
+          <div class="col-6" style="padding-left: 8px; padding-right: 6px">
+            <div class="w-100 h-100">
+              <button @click="BackUpdata()" style="width:100%;color:white" type="button" class="btn btn-secondary h-100">Lưu trữ dữ liệu</button>
+            </div>
+          </div>
+          <div class="col-6" style="padding-left: 6px; padding-right: 8px">
+            <div class="w-100 h-100">
+              <button style="width:100%;color:white" type="button" class="btn btn-secondary h-100">Xuất dữ liệu vào</button>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="w-100 d-flex flex-row" style="padding-top: 8px">
-        <div class="col-6" style="padding-left: 8px; padding-right: 6px">
-          <div class="w-100 h-100">
-            <button @click="BackUpdata()" style="width:100%;color:white" type="button" class="btn btn-secondary h-100">Lưu trữ dữ liệu</button>
-          </div>
-        </div>
-        <div class="col-6" style="padding-left: 6px; padding-right: 8px">
-          <div class="w-100 h-100">
-            <button style="width:100%;color:white" type="button" class="btn btn-secondary h-100">Xuất dữ liệu vào</button>
-          </div>
-        </div>
-      </div>
       </div>
       <div class="w-100 d-flex flex-column px-2" :class="{height100 : memberRole == 3}" style="padding: 12px; height: 85%; font-family: 'QuicksandBold', sans-serif;">
         <div class="existing-members d-flex flex-column w-100">
@@ -283,12 +283,12 @@
             </div>
           </div>
           <div class="col-9 h-100 position-relative" style="background: #ebebeb">
-            <div class="position-absolute w-100 d-flex flex-column" style="height: calc(100% - 64px); top: 0;">
+            <div class="position-absolute w-100 d-flex flex-column h-100" style="top: 0;">
               <div class="d-flex flex-row" style="height: 48px; background-color: #FFFFFF">
                 <div @click="selectSMS()" :class="{ notiSelected: smsSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0 0.375rem 0 0; cursor: pointer;">SMS</div>
                 <div @click="selectEmail()" :class="{ notiSelected: emailSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0.375rem 0 0 0; cursor: pointer;">Email</div>
               </div>
-              <div v-if="emailSelected" class="d-flex flex-column mt-2" style="height: calc(100% - 48px); overflow-y: auto;">
+              <div v-if="emailSelected" class="d-flex flex-column mt-2" style="height: calc(100% - 116px); overflow-y: auto;">
                 <div v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row">
                   <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Chủ đề: {{e.EmailSubject}}</div>
                   <div class="col-6 h-100 d-flex align-items-center position-relative">
@@ -298,7 +298,7 @@
                 </div>
               </div>
 
-              <div v-if="smsSelected" class="d-flex flex-column" style="height: calc(100% - 48px); align-items: flex-end; padding-top: 6px; overflow-y: auto">
+              <div v-if="smsSelected" class="d-flex flex-column" style="height: calc(100% - 108px); align-items: flex-end; padding-top: 6px; overflow-y: auto">
                 <div v-for="m in ListMessage" :key="m.id" class="position-relative d-flex flex-row">
                   <div class="position-absolute sent-time">{{ formatDate(m.NotificationDate) }}</div>
                   <div class="sent-sms">{{ m.NotificationContent }}</div>
@@ -314,9 +314,6 @@
                   <svg class="noti-send-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                     <path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z" />
                   </svg>
-                </div>
-                <div style="padding-left: 12px;">
-                  <div @click="expandEventListSMS = !expandEventListSMS" class="btn bg-primary text-white">Sự kiện</div>
                 </div>
               </div>
               <div v-if="emailSelected" class="w-100 btn px-3 position-relative" style="height: 48px;">
@@ -342,12 +339,7 @@
                   <textarea v-model="contentEmail" style="resize: none; outline: none; border: none;" class="h-100 w-100 p-2" placeholder="Viết gì đó..."></textarea>
                 </div>
                 <div class="create-mail-footer d-flex flex-row px-3 py-2 w-100" style="justify-content: end;">
-                  <div class="d-flex flex-row px-2" @click="expandEventList = !expandEventList">
-                    <div style="border-radius: 50% 0 0 50%; background: #007bff; width: 25px;"></div>
-                    <div class="btn d-flex align-items-center justify-content-center" style="padding: 4px 12px; background: #007bff; color: #FFFFFF; border-radius: 0; outline: none; border: none;">Sự kiện</div>
-                    <div style="border-radius: 0 50% 50% 0; background: #007bff; width: 25px;"></div>
-                  </div>
-                  <div class="d-flex flex-row"  @click="sendEmailToMember()">
+                  <div class="d-flex flex-row" @click="sendEmailToMember()">
                     <div style="border-radius: 50% 0 0 50%; background: #007bff; width: 25px;"></div>
                     <div class="btn d-flex align-items-center justify-content-center" style="padding: 4px 12px; background: #007bff; color: #FFFFFF; border-radius: 0; outline: none; border: none;">Gửi</div>
                     <div style="border-radius: 0 50% 50% 0; background: #007bff; width: 25px;"></div>
@@ -543,10 +535,10 @@
                     <td class="d-flex justify-content-center">
                       <select v-model="m.relationship" class="form-control" style="text-align: center; width: 150px;">
                         <option selected :value="undefined">Mối quan hệ</option>
-                        <option value="AddParent">Cha</option>
-                        <option value="AddParent">Mẹ</option>
-                        <option value="AddMarriage">Vợ</option>
-                        <option value="AddMarriage">Chồng</option>
+                        <option value="AddFather">Cha</option>
+                        <option value="AddMother">Mẹ</option>
+                        <option value="AddWife">Vợ</option>
+                        <option value="AddHusband">Chồng</option>
                         <option value="AddChild">Con</option>
                       </select>
                     </td>
@@ -578,7 +570,7 @@
           </div>
           <div class="card-body" style="padding: 0; height: 675px">
             <div class="row" style="padding: 0;height: 100%;">
-              <div class="col-3 select-menu">
+              <div class="col-2 select-menu">
                 <div class="custom-info" :class="{ selected: extendedInfo }" @click="selectedInfor()">
                   <h5>Thông tin</h5>
                 </div>
@@ -595,11 +587,11 @@
                   <h5>Ghi chú</h5>
                 </div>
               </div>
-              <div class="col-9" style="padding-top: 15px" v-if="extendedInfo">
+              <div class="col-10" style="padding-top: 15px" v-if="extendedInfo">
                 <div class="d-flex flex-row">
                   <div v-if="isEdit" class="col-4" style="padding-right: 8px;">
-                    <img style="height:316px;width:100%;margin-bottom:20px" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" />
-                    <svg v-else style="margin-bottom:36px" fill="#000000" height="275px" width="100%" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
+                    <img style="height:316px;width:100%;margin-bottom:61px" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" @click="triggerFileInputClick()" />
+                    <svg v-else @click="triggerFileInputClick()" style="margin-bottom:61px" fill="#000000" height="275px" width="100%" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
                       <g>
                         <g>
                           <circle cx="256" cy="114.526" r="114.526" />
@@ -611,10 +603,10 @@
                         </g>
                       </g>
                     </svg>
-                    <div class="form-group">
+                    <div class="form-group" style="display:none">
                       <label style="margin-bottom:10px" v-if="objMemberInfor.Image" for="imageUpload">Thay đổi ảnh</label>
                       <label style="margin-bottom:10px" v-else for="imageUpload">Tải ảnh lên</label>
-                      <input type="file" class="form-control input-file" id="imageUpload" accept="image/*" @change="updateAvatar($event)" />
+                      <input ref="fileInputRef" type="file" class="form-control input-file" id="imageUpload" accept="image/*" @change="updateAvatar($event)" />
                     </div>
                   </div>
                   <div class="d-flex flex-column justify-content-center" style="flex-grow: 1;">
@@ -682,7 +674,7 @@
                       <label class="form-label" for="input" :class="{ 'active': objMemberInfor.Origin }">Nguyên Quán</label>
                     </div>
                     <div class="form-group">
-                      <h6 style="margin-bottom:20px">Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược lại)</h6>
+                      <h6 style="margin-bottom:20px; height: 20px">Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược lại)</h6>
                       <div style="display:flex">
                         <div style="position: relative; width: 50%;margin-right: 10px;">
                           <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar()" />
@@ -1121,6 +1113,7 @@ export default {
     };
   },
   methods: {
+    //lưu tùng lâm
     mytree: function (domEl, x) {
       FamilyTree.templates.tommy_male.img_0 =
         '<image preserveAspectRatio="xMidYMid slice" xlink:href="{val}" x="10" y="20" width="70" height="70"></image>';
@@ -1141,11 +1134,14 @@ export default {
       FamilyTree.templates.tommy_female.field_2 =
         '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="90" y="80">Đời: {val}</text>';
 
-      var callIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-tree-fill" viewBox="0 0 16 16">
+      var iconGG = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-tree-fill" viewBox="0 0 16 16">
   <path d="M8.416.223a.5.5 0 0 0-.832 0l-3 4.5A.5.5 0 0 0 5 5.5h.098L3.076 8.735A.5.5 0 0 0 3.5 9.5h.191l-1.638 3.276a.5.5 0 0 0 .447.724H7V16h2v-2.5h4.5a.5.5 0 0 0 .447-.724L12.31 9.5h.191a.5.5 0 0 0 .424-.765L10.902 5.5H11a.5.5 0 0 0 .416-.777l-3-4.5z"/>
 </svg>`;
       FamilyTree.templates.tommy_male.isGG =
-        '<g transform="translate(220,10)";>' + callIcon + "</g>";
+        '<g transform="translate(220,10)";>' + iconGG + "</g>";
+        var iconFH = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>'
+      FamilyTree.templates.tommy_male.isFH =
+        '<g transform="translate(220,10)";>' + iconFH + "</g>";
 
       FamilyTree.elements._textbox = FamilyTree.elements.textbox;
       FamilyTree.elements.textbox = function (param1, param2, param3) {
@@ -1166,6 +1162,7 @@ export default {
           field_1: "dob",
           field_2: "generation",
           isGG: "isGG",
+          isFH: "isFH",
         },
         sticky: false,
         nodeMouseClick: FamilyTree.action.none,
@@ -1251,6 +1248,7 @@ export default {
     getViewBox() {
       return this.family.getViewBox();
     },
+    //Nguyễn Lê Hùng
     BackUpdata() {
       let id = this.nodes.map((item) => item.id);
       console.log(id);
@@ -1260,6 +1258,7 @@ export default {
         console.log(response);
       });
     },
+    //Nguyễn Lê Hùng
     getResultMember(id) {
       let objdata = {};
       let result = this.nodes.find((node) => node.id == id);
@@ -1285,6 +1284,7 @@ export default {
 
       return objdata;
     },
+    //Nguyễn Lê Hùng
     compareMember(memberId1, memberId2) {
       this.RemoveHightLight();
       this.selectNodeHighLight = [];
@@ -1312,6 +1312,7 @@ export default {
           console.log(e);
         });
     },
+    //Nguyễn Lê Hùng
     async setPaternalAncestor(roleId) {
       HTTP.post("setRole", {
         memberId: this.CurrentIdMember,
@@ -1330,6 +1331,7 @@ export default {
           this.NotificationsDelete("Có lỗi hệ thống");
         });
     },
+    //Nguyễn Lê Hùng
     NotificationsDelete(messagee) {
       new Snackbar(messagee, {
         position: "bottom-right",
@@ -1343,6 +1345,7 @@ export default {
         },
       });
     },
+    //Nguyễn Lê Hùng
     NotificationsScuccess(messagee) {
       new Snackbar(messagee, {
         position: "bottom-right",
@@ -1356,6 +1359,7 @@ export default {
         },
       });
     },
+    //Nguyễn Lê Hùng
     formatDate(dateString) {
       if (dateString == null) {
         return null;
@@ -1366,11 +1370,13 @@ export default {
       const day = String(date.getDate()).padStart(2, "0");
       return `${year}-${month}-${day}`;
     },
+    //Nguyễn Lê Hùng
     takeDataMember() {
       this.CurrentIdMember = this.objMemberInfor.MemberID;
       this.generationMember = this.objMemberInfor.Generation;
       this.IsDead = this.objMemberInfor.IsDead;
     },
+    //Nguyễn Lê Hùng
     sendEmailToMember() {
       if (
         this.subjectEmail != null &&
@@ -1405,6 +1411,7 @@ export default {
         this.NotificationsDelete("Không có thông báo gì để gửi ");
       }
     },
+    //Nguyễn Lê Hùng
     sendMessageToMember() {
       if (
         this.contentMessage != null &&
@@ -1430,22 +1437,26 @@ export default {
         this.NotificationsDelete("Không có thông báo gì để gửi ");
       }
     },
+    //Nguyễn Lê Hùng
     searchMember() {
       this.ListPhoneToSendMessage = this.nodes.filter((node) =>
         node.name.toLowerCase().includes(this.searchKeyword.toLowerCase())
       );
       console.log(this.searchKeyword);
     },
+    //Nguyễn Lê Hùng
     toggleSelectAll() {
       this.ListPhoneToSendMessage = this.checkAll
         ? this.nodes.map((node) => node.id)
         : [];
     },
+    //Nguyễn Lê Hùng
     toggleSelectWithFilter() {
       this.ListPhoneToSendMessage = this.checkWithFilter
         ? this.listFilterMember.map((node) => node.MemberID)
         : [];
     },
+    //Nguyễn Lê Hùng
     toggleSelection(id) {
       let index = this.ListPhoneToSendMessage.indexOf(id);
       if (index !== -1) {
@@ -1455,6 +1466,7 @@ export default {
         this.ListPhoneToSendMessage.push(id);
       }
     },
+    //Lưu tùng lâm
     convertLunarToSolar() {
       let LunarDob = new Date(this.objMemberInfor.LunarDob);
       let timezone = (0, getLocalTimezone)();
@@ -1479,6 +1491,7 @@ export default {
         "" + dob.getFullYear() + "-" + month + "-" + date
       );
     },
+    //Lưu tùng lâm
     convertSolarToLunar() {
       let Dob = new Date(this.objMemberInfor.Dob);
       let month = new LunarDate(Dob).getMonth();
@@ -1495,6 +1508,7 @@ export default {
         "" + new LunarDate(Dob).getYear() + "-" + month + "-" + date
       );
     },
+    //Nguyễn Lê Hùng
     getAdressMember(addressString) {
       let addressParts = addressString.split("-");
       let SelectCityName = addressParts[0].trim();
@@ -1520,6 +1534,7 @@ export default {
           });
       }
     },
+    //Nguyễn Lê Hùng
     getInforMember(id) {
       this.isAdd = false;
       this.isEdit = true;
@@ -1567,10 +1582,12 @@ export default {
       this.selectedInfor();
       this.setDefauValueInModal();
     },
+    //Nguyễn Lê Hùng
     refreshInputJobAndEducation() {
       this.objMemberJob = {};
       this.objMemberEducation = {};
     },
+    //Nguyễn Lê Hùng
     removeJobMember() {
       HTTP.delete("removeJob", {
         params: {
@@ -1586,6 +1603,7 @@ export default {
           this.NotificationsDelete("Đã sảy ra lỗi, không thể xóa");
         });
     },
+    //Nguyễn Lê Hùng
     removeMember() {
       HTTP.get("deleteContact", {
         params: {
@@ -1649,6 +1667,7 @@ export default {
         }
       });
     },
+    //Nguyễn Lê Hùng
     removeFromSelectedNodes(memberid) {
       for (let i = 0; i < this.selectedNodes.length; i++) {
         if (this.selectedNodes[i] == memberid) {
@@ -1656,6 +1675,7 @@ export default {
         }
       }
     },
+    //Nguyễn Lê Hùng
     getListJobMember() {
       HTTP.get("getJob", {
         params: {
@@ -1665,6 +1685,7 @@ export default {
         this.ListMemberJob = response.data;
       });
     },
+    //Nguyễn Lê Hùng
     addNewJobMember() {
       HTTP.post("addJob", {
         memberId: this.CurrentIdMember,
@@ -1684,6 +1705,7 @@ export default {
           console.log(err);
         });
     },
+    //Nguyễn Lê Hùng
     getListEducationMember() {
       HTTP.get("education", {
         params: {
@@ -1697,6 +1719,7 @@ export default {
           console.log(err);
         });
     },
+    //Nguyễn Lê Hùng
     addNewEducationMember() {
       HTTP.post("addEducation", {
         MemberID: this.CurrentIdMember,
@@ -1714,6 +1737,13 @@ export default {
           console.log(e);
         });
     },
+    //Nguyễn Lê Hùng
+    setDefautAction() {
+      this.CurrentIdMember = null;
+      this.newIdMember = null;
+      this.action = null;
+    },
+    //Nguyễn Lê Hùng
     addMemberFromList() {
       if (this.action == undefined) {
         this.NotificationsDelete("Bạn chưa chọn mối quan hệ");
@@ -1727,6 +1757,7 @@ export default {
             if (response.data.success == true) {
               this.NotificationsScuccess(response.data.message);
               this.family.load(this.nodes);
+              this.setDefautAction();
               this.getListMember();
               this.getListUnspecifiedMembers();
               this.closeModalAddMemberFromList();
@@ -1739,6 +1770,7 @@ export default {
           });
       }
     },
+    //Nguyễn Lê Hùng
     updateAvatar(event) {
       let formData = new FormData();
       this.isUpdateAvatar = true;
@@ -1768,12 +1800,7 @@ export default {
         this.avatarSrc = null;
       }
     },
-    appendIfDefined(key, value) {
-      if (value !== undefined && value !== null) {
-        let appendedValue = value === true ? 1 : value === false ? 0 : value;
-        this.formData.append(key, appendedValue);
-      }
-    },
+    //Nguyễn Lê Hùng
     addMember() {
       let FatherID;
       let MotherID;
@@ -1856,11 +1883,16 @@ export default {
           console.log(e);
         });
     },
+    triggerFileInputClick() {
+      this.$refs.fileInputRef.click();
+    },
+    //Nguyễn Lê Hùng
     selectMemberFromTable(member, index) {
       this.selectedRowIndex = index;
       this.action = member.relationship;
       this.newIdMember = member.MemberID;
     },
+    //Nguyễn Lê Hùng
     setDefauValueInModal() {
       this.objMemberContact = {};
       this.objMemberInfor = {};
@@ -1874,6 +1906,7 @@ export default {
       this.ListMemberEducation = null;
       this.objMemberEducation = {};
     },
+    //Nguyễn Lê Hùng
     updateEducationMember() {
       HTTP.put("updateEducation", {
         School: this.objMemberEducation.School,
@@ -1887,6 +1920,7 @@ export default {
         this.refreshInputJobAndEducation();
       });
     },
+    //Nguyễn Lê Hùng
     updateJobMember() {
       HTTP.put("updateJob", {
         JobID: this.JobIDToUpdate,
@@ -1902,7 +1936,7 @@ export default {
         this.refreshInputJobAndEducation();
       });
     },
-
+    //Nguyễn Lê Hùng
     updateInformation() {
       if (this.selectDistrictMember != null) {
         this.objMemberContact.Address =
@@ -1959,6 +1993,7 @@ export default {
           console.log(e);
         });
     },
+    //Nguyễn Lê Hùng
     selectRowJob(job) {
       this.JobIDToUpdate = job.JobID;
       this.objMemberJob = job;
@@ -1967,6 +2002,7 @@ export default {
       );
       this.objMemberJob.EndDate = this.formatDate(this.objMemberJob.EndDate);
     },
+    //Nguyễn Lê Hùng
     selectRowEducation(education) {
       this.EducationIdToUpdate = education.EducationID;
       this.objMemberEducation = education;
@@ -1977,6 +2013,7 @@ export default {
         this.objMemberEducation.EndDate
       );
     },
+    //Nguyễn Lê Hùng
     GetListFilterMember() {
       if (this.selectDistrict != null) {
         this.selectAdress = this.selectAdress + "-" + this.selectDistrict;
@@ -1995,6 +2032,7 @@ export default {
           console.log(e);
         });
     },
+    //Lưu tùng lâm
     RemoveHightLight() {
       this.selectedNodes = [];
       this.notSelectedNodes = [];
@@ -2275,46 +2313,60 @@ export default {
     },
 
     getListMember() {
-      HTTP.get("viewTree", {
+      HTTP.get("getFamilyHead", {
         params: {
           CodeID: this.CodeID,
         },
-      })
-        .then((response) => {
-          this.nodes = [];
-          this.numberDeath = 0;
-          if (response.data.success == true) {
-            this.nodes = response.data.data;
-            console.log(this.nodes);
-            for (let i = 0; i < this.nodes.length; i++) {
-              this.nodes[i].tags = [];
-              if (this.nodes[i].name.length > 15) {
-                this.nodes[i].name =
-                  this.nodes[i].name.substring(0, 16) + "...";
-              }
-              if (this.nodes[i].isDead == 1) {
-                this.numberDeath += 1;
-                this.nodes[i].tags.push("died");
-              }
-              if (this.nodes[i].img == null || this.nodes[i].img == "") {
-                if (this.nodes[i].gender == "male") {
-                  this.nodes[i].img =
-                    "data:image/jpeg;base64,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";
-                } else if (this.nodes[i].gender == "female") {
-                  this.nodes[i].img =
-                    "data:image/jpeg;base64,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";
+      }).then((response) => {
+        if (response.data.success == true) {
+          this.idFamilyHead = response.data.data;
+          console.log(this.idFamilyHead)
+          HTTP.get("viewTree", {
+            params: {
+              CodeID: this.CodeID,
+            },
+          })
+            .then((response) => {
+              this.nodes = [];
+              this.numberDeath = 0;
+              if (response.data.success == true) {
+                this.nodes = response.data.data;
+                console.log(this.nodes);
+                for (let i = 0; i < this.nodes.length; i++) {
+                  this.nodes[i].tags = [];
+                  if (this.nodes[i].name.length > 15) {
+                    this.nodes[i].name =
+                      this.nodes[i].name.substring(0, 16) + "...";
+                  }
+                  if (this.nodes[i].id == this.idFamilyHead){
+                    this.nodes[i].isFH = "true";
+                  }
+                  if (this.nodes[i].isDead == 1) {
+                    this.numberDeath += 1;
+                    this.nodes[i].tags.push("died");
+                  }
+                  if (this.nodes[i].img == null || this.nodes[i].img == "") {
+                    if (this.nodes[i].gender == "male") {
+                      this.nodes[i].img =
+                        "data:image/jpeg;base64,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";
+                    } else if (this.nodes[i].gender == "female") {
+                      this.nodes[i].img =
+                        "data:image/jpeg;base64,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";
+                    }
+                  }
                 }
+                this.nodes[0].tags.push("great-grandfather");
+                this.nodes[0].isGG = "true";
+                this.mytree(this.$refs.tree, this.nodes);
               }
-            }
-            this.nodes[0].tags.push("great-grandfather");
-            this.nodes[0].isGG = "true";
-            this.mytree(this.$refs.tree, this.nodes);
+              // this.family.load(this.nodes);
+            })
+            .catch((e) => {
+              console.log(e);
+            });
           }
-          // this.family.load(this.nodes);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+      });
+      
     },
     getListAgeGroup() {
       HTTP.get("agegroup")
@@ -2424,16 +2476,7 @@ export default {
       });
     },
     getFamilyHead() {
-      HTTP.get("getFamilyHead", {
-        params: {
-          CodeID: this.CodeID,
-        },
-      }).then((response) => {
-        if (response.data.success == true) {
-          this.idFamilyHead = response.data.data;
-          console.log(this.idFamilyHead);
-        }
-      });
+      
     },
     getListCity() {
       HTTP.get("province")

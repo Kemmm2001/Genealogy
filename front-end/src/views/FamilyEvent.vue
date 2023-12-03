@@ -50,20 +50,43 @@
               </thead>
               <tbody>
                 <tr class="normal" v-for="(week, weekIndex) in dayOfMonth" :key="weekIndex">
-                  <td class="ngaythang" v-for="(day, dayIndex) in week" :key="dayIndex" :class="{ choose: dayIndex == indexClickDay && weekIndex == indexClickWeek }" @click="clickDate(dayIndex, weekIndex)" :style="{ color: day.solar.month != currentMonth ? '#bebebe' : 'black' }">
-                    <div  v-if="!checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)">
-                      <div v-if="day.solar.date == 1" class="cn" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.solar.date + "/" + (day.solar.month) }}</a></div>
-                      <div v-if="day.solar.date != 1" class="cn" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.solar.date }}</a></div>
-                      <div v-if="day.lunar.date == 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.lunar.date + "/" + (day.lunar.month) }}</a></div>
-                      <div v-if="day.lunar.date != 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.lunar.date }}</a></div>
-                    </div>
-                    <div v-if="checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)" @click="getListEventByDate(`${day.solar.year}-${day.solar.month}-${day.solar.date}`),showEventModal()">
-                      <div v-if="day.solar.date == 1" class="cn" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.solar.date + "/" + (day.solar.month) }}</a></div>
-                      <div v-if="day.solar.date != 1" class="cn" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.solar.date }}</a></div>
-                      <div v-if="day.lunar.date == 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.lunar.date + "/" + (day.lunar.month) }}</a></div>
-                      <div v-if="day.lunar.date != 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.lunar.date }}</a></div>
-                      <div>Có sự kiện</div>
-                    </div>
+                  <td class="ngaythang p-0" v-for="(day, dayIndex) in week" :key="dayIndex"
+                    :class="{ choose: dayIndex == indexClickDay && weekIndex == indexClickWeek }"
+                    @click="checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`) ? getListEventByDate(`${day.solar.year}-${day.solar.month}-${day.solar.date}`) : null"
+                    :style="{ color: day.solar.month != currentMonth ? '#bebebe' : 'black' }">
+                      <div v-if="day.solar.date == 1" class="cn"
+                        @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.solar.date + "/"
+                          + (day.solar.month) }}</a></div>
+                      <div v-if="day.solar.date != 1" class="cn"
+                        @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.solar.date
+                        }}</a></div>
+                      <div v-if="day.lunar.date == 1" class="am"
+                        @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.lunar.date + "/"
+                          + (day.lunar.month) }}</a></div>
+                      <div v-if="day.lunar.date != 1" class="am"
+                        @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.lunar.date
+                        }}</a></div>
+                      <div class="event-icon" v-if="checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-event-fill" viewBox="0 0 16 16">
+                          <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2m-3.5-7h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5"/>
+                        </svg>
+                      </div>
+                    <!-- <div v-if="checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)"
+                      @click="getListEventByDate(`${day.solar.year}-${day.solar.month}-${day.solar.date}`), showEventModal()">
+                      <div v-if="day.solar.date == 1" class="cn"
+                        @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.solar.date + "/"
+                          + (day.solar.month) }}</a></div>
+                      <div v-if="day.solar.date != 1" class="cn"
+                        @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.solar.date
+                        }}</a></div>
+                      <div v-if="day.lunar.date == 1" class="am"
+                        @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.lunar.date + "/"
+                          + (day.lunar.month) }}</a></div>
+                      <div v-if="day.lunar.date != 1" class="am"
+                        @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.lunar.date
+                        }}</a></div>
+                      
+                    </div> -->
                   </td>
                 </tr>
               </tbody>
@@ -98,10 +121,13 @@
         </div>
         <div class="button-list d-flex flex-row pt-3 mt-2">
           <div @click="showAddEventModal()" class="btn bg-primary text-white d-flex align-items-center">Thêm sự kiện</div>
-          <div class="btn bg-primary text-white d-flex align-items-center item">Xuất excel</div>
+          <div @click="exportExcel()" class="btn bg-primary text-white d-flex align-items-center item">Xuất excel</div>
+          <div @click="mailSelected = false; notiSelected = true"
+            class="btn bg-primary text-white d-flex align-items-center item">
+            Thông báo</div>
         </div>
         <div class="pt-3" style="height: calc(100% - 96px);">
-          <div class="h-100" style="overflow-y: auto;">
+          <div v-if="!notiSelected && !mailSelected" class="h-100" style="overflow-y: auto;">
             <table class="table table-eventlist eventlist-list m-0">
               <thead style="position: sticky; top: 0;">
                 <tr class="eventlist-item">
@@ -114,17 +140,17 @@
                 </tr>
               </thead>
               <tbody>
-                <tr style="cursor: pointer;" class="eventlist-item eventlist-table-item odd" v-for="(event, index) in listEventFilter"
-                  :key="event.EventID">
+                <tr style="cursor: pointer;" class="eventlist-item eventlist-table-item odd"
+                  v-for="(event, index) in listEventFilter" :key="event.EventID">
                   <td @click="showEditEventModal(event.EventID)">{{ index + 1 }}</td>
                   <td @click="showEditEventModal(event.EventID)">{{ event.EventName }}</td>
                   <td @click="showEditEventModal(event.EventID)">
                     <div>{{ formattedCreatedAt(event.StartDate) }} (DL)</div>
-                    <div>{{formattedCreatedAt(convertSolarToLunar(event.StartDate))}} (AL)</div>
+                    <div>{{ formattedCreatedAt(convertSolarToLunar(event.StartDate)) }} (AL)</div>
                   </td>
                   <td @click="showEditEventModal(event.EventID)">
                     <div>{{ formattedCreatedAt(event.EndDate) }} (DL)</div>
-                    <div>{{formattedCreatedAt(convertSolarToLunar(event.EndDate))}} (AL)</div>
+                    <div>{{ formattedCreatedAt(convertSolarToLunar(event.EndDate)) }} (AL)</div>
                   </td>
                   <td @click="showEditEventModal(event.EventID)">{{ event.Place }}</td>
                   <td @click="showParticipantList()">
@@ -133,6 +159,76 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+          <div v-if="notiSelected && !mailSelected" class="h-100">
+            <div class="d-flex flex-column mt-2" style="height: 100%; overflow-y: auto;">
+              <div class="sent-mail d-flex flex-row">
+                <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Sự kiện</div>
+                <div class="col-6 h-100 d-flex align-items-center position-relative">
+                  <div class="mail-content-prev">Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div>
+                </div>
+                <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">1/1/2000
+                </div>
+              </div>
+              <div class="sent-mail d-flex flex-row">
+                <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Sự kiện</div>
+                <div class="col-6 h-100 d-flex align-items-center position-relative">
+                  <div class="mail-content-prev">Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div>
+                </div>
+                <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">1/1/2000
+                </div>
+              </div>
+              <div class="sent-mail d-flex flex-row">
+                <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Sự kiện</div>
+                <div class="col-6 h-100 d-flex align-items-center position-relative">
+                  <div class="mail-content-prev">Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div>
+                </div>
+                <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">1/1/2000
+                </div>
+              </div>
+              <div class="sent-mail d-flex flex-row">
+                <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Sự kiện</div>
+                <div class="col-6 h-100 d-flex align-items-center position-relative">
+                  <div class="mail-content-prev">Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div>
+                </div>
+                <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">1/1/2000
+                </div>
+              </div>
+            </div>
+          </div>
+          <div v-if="!notiSelected && mailSelected" class="h-100">
+            <div class="create-mail" :class="{ expanded: mailSelected }">
+              <div class="w-100 h-100 d-flex flex-column">
+                <div class="create-mail-title d-flex align-items-center justify-content-center position-relative">
+                  <div>Email mới</div>
+                  <div class="create-mail-close position-absolute" @click="mailSelected = false; notiSelected = true">
+                    <div class="position-relative h-100 w-100">
+                      <svg class="create-mail-close-icon position-absolute" xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 384 512">
+                        <path
+                          d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div class="create-mail-topic px-2 w-100">
+                  <input v-model="subjectEmail" type="text" class="mail-topic w-100 p-2" placeholder="Chủ đề email" />
+                </div>
+                <div class="create-mail-content px-2 w-100">
+                  <textarea v-model="contentEmail" style="resize: none; outline: none; border: none;"
+                    class="h-100 w-100 p-2" placeholder="Viết gì đó..."></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="create-mail-footer d-flex flex-row px-3 py-2 w-100" style="justify-content: end;">
+              <div class="d-flex flex-row" @click="sendEmailToMember()">
+                <div style="border-radius: 50% 0 0 50%; background: #007bff; width: 25px;"></div>
+                <div class="btn d-flex align-items-center justify-content-center"
+                  style="padding: 4px 12px; background: #007bff; color: #FFFFFF; border-radius: 0; outline: none; border: none;">
+                  Gửi</div>
+                <div style="border-radius: 0 50% 50% 0; background: #007bff; width: 25px;"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -277,40 +373,43 @@
       <modal name="event-modal">
         <div class="w-100 h-100 add-head-modal">
           <div class="d-flex flex-row w-100 align-items-center position-relative">
-            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Sự kiện trong ngày {{formatDate(dateSelected)}}</div>
+            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Sự kiện trong ngày
+              {{ formatDate(dateSelected) }}</div>
             <div class="close-add-form" @click="closeEventModal()">
               <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                <path
+                  d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
               </svg>
             </div>
           </div>
-          <div class="w-100 d-flex flex-column align-items-center justify-content-center" style="height: calc(100% - 50px);">
+          <div class="w-100 d-flex flex-column align-items-center justify-content-center"
+            style="height: calc(100% - 50px);">
             <div class="d-flex h-100 align-items-center px-3" style="overflow-y: auto; font-size: 19px;">
-            <table class="table table-eventlist eventlist-list m-0">
-              <thead style="position: sticky; top: 0;">
-                <tr class="eventlist-item">
-                  <th class="eventlist-list-th" scope="col">#</th>
-                  <th class="eventlist-list-th" scope="col">Tên sự kiện</th>
-                  <th class="eventlist-list-th" scope="col">Thời gian bắt đầu</th>
-                  <th class="eventlist-list-th" scope="col">Thời gian kết thúc</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style="cursor: pointer;" class="eventlist-item eventlist-table-item odd" v-for="(event, index) in listEventByDate"
-                  :key="event.EventID">
-                  <td>{{ index + 1 }}</td>
-                  <td>{{ event.EventName }}</td>
-                  <td>
-                    <div>{{ formattedCreatedAt(event.StartDate) }} (DL)</div>
-                    <div>{{formattedCreatedAt(convertSolarToLunar(event.StartDate))}} (AL)</div>
-                  </td>
-                  <td>
-                    <div>{{ formattedCreatedAt(event.EndDate) }} (DL)</div>
-                    <div>{{formattedCreatedAt(convertSolarToLunar(event.EndDate))}} (AL)</div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+              <table class="table table-eventlist eventlist-list m-0">
+                <thead style="position: sticky; top: 0;">
+                  <tr class="eventlist-item">
+                    <th class="eventlist-list-th" scope="col">#</th>
+                    <th class="eventlist-list-th" scope="col">Tên sự kiện</th>
+                    <th class="eventlist-list-th" scope="col">Thời gian bắt đầu</th>
+                    <th class="eventlist-list-th" scope="col">Thời gian kết thúc</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="cursor: pointer;" class="eventlist-item eventlist-table-item odd"
+                    v-for="(event, index) in listEventByDate" :key="event.EventID">
+                    <td>{{ index + 1 }}</td>
+                    <td>{{ event.EventName }}</td>
+                    <td>
+                      <div>{{ formattedCreatedAt(event.StartDate) }} (DL)</div>
+                      <div>{{ formattedCreatedAt(convertSolarToLunar(event.StartDate)) }} (AL)</div>
+                    </td>
+                    <td>
+                      <div>{{ formattedCreatedAt(event.EndDate) }} (DL)</div>
+                      <div>{{ formattedCreatedAt(convertSolarToLunar(event.EndDate)) }} (AL)</div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -368,10 +467,12 @@ export default {
 
       currentEventId: null,
       listEvent: [],
-      listEventFilter:[],
+      listEventFilter: [],
       listRepeat: null,
-      listEventByDate:[],
-      dateSelected:null,
+      listEventByDate: [],
+      dateSelected: null,
+      notiSelected: false,
+      mailSelected: false,
     };
   },
   computed: {
@@ -391,7 +492,7 @@ export default {
       return `${day}/${month}/${year}`;
     },
     convertTZ(date, tzString) {
-      return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));
+      return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", { timeZone: tzString }));
     },
 
     convertSolarToLunar(dateConvert) {
@@ -416,42 +517,43 @@ export default {
       if (new Date(dateConvert).getUTCSeconds() < 10) {
         second = "0" + new Date(dateConvert).getUTCSeconds();
       }
-      let result =new LunarDate(Dob).getYear() + "-" + month + "-" + date + "T"+hour+":"+minute+":"+second;
+      let result = new LunarDate(Dob).getYear() + "-" + month + "-" + date + "T" + hour + ":" + minute + ":" + second;
       return result
     },
-    getListEventByDate(dateCheck){
+    getListEventByDate(dateCheck) {
       this.listEventByDate = [];
       this.dateSelected = dateCheck;
       let startDate;
       let endDate;
       let selectedDate;
-      for(let i = 0 ; i < this.listEvent.length;i++){
+      for (let i = 0; i < this.listEvent.length; i++) {
         startDate = new Date(this.listEvent[i].StartDate);
         startDate.setHours(0, 0, 0, 0);
         endDate = new Date(this.listEvent[i].EndDate);
         selectedDate = new Date(dateCheck).setHours(0, 0, 0, 0);
         let check = selectedDate >= startDate && selectedDate <= endDate;
-        if(check == true){
+        if (check == true) {
           this.listEventByDate.push(this.listEvent[i])
         }
       }
-      if(dateCheck == '30/11/2023'){
+      if (dateCheck == '30/11/2023') {
         console.log(1)
       }
+      this.showEventModal();
     },
-    checkDateEvent(dateCheck){
+    checkDateEvent(dateCheck) {
       let startDate;
       let endDate;
       let selectedDate;
       let check = false;
-      for(let i = 0 ; i < this.listEvent.length;i++){
+      for (let i = 0; i < this.listEvent.length; i++) {
         startDate = new Date(this.listEvent[i].StartDate);
         startDate.setHours(0, 0, 0, 0);
         endDate = new Date(this.listEvent[i].EndDate);
         selectedDate = new Date(dateCheck);
         selectedDate.setHours(0, 0, 0, 0)
         check = selectedDate >= startDate && selectedDate <= endDate;
-        if(check == true){
+        if (check == true) {
           return true;
         }
       }
@@ -621,6 +723,24 @@ export default {
         this.NotificationsDelete("bạn nhập thiếu trường (*)");
       }
     },
+    exportExcel(){
+      HTTP.get("export-excle", {
+        params: {
+          CodeID: this.CodeID,
+        },
+      })
+        .then((respone) => {
+          console.log(this.CodeID)
+          if (respone.data.success == true) {
+            this.NotificationsScuccess(respone.data.message);
+          } else {
+            this.NotificationsDelete(respone.data.message);
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     removeEvent() {
       HTTP.delete("removeEvent", {
         params: {
@@ -640,10 +760,6 @@ export default {
           console.log(e);
         });
     },
-    clickDate(indexDay, indexWeek) {
-      this.indexClickDay = indexDay;
-      this.indexClickWeek = indexWeek;
-    },
     setChooseDate(day, month, year) {
       this.chooseDate = new Date();
       this.chooseDate.setFullYear(year);
@@ -661,6 +777,7 @@ export default {
     },
     getDayOfMonth() {
       this.dayOfMonth = new Calendar(this.currentYear, this.currentMonth).weeks;
+      console.log(this.dayOfMonth)
     },
     showAddEventModal() {
       this.eventFamily = {};
@@ -696,7 +813,7 @@ export default {
           this.eventFamily = respone.data.data;
           this.eventFamily = this.eventFamily[0];
           console.log(this.eventFamily);
-          this.startHour =  new Date(this.eventFamily.StartDate).getHours();
+          this.startHour = new Date(this.eventFamily.StartDate).getHours();
           console.log(this.startHour)
           this.startMinute = new Date(
             this.eventFamily.StartDate
@@ -757,21 +874,39 @@ table {
   color: black;
 }
 
-th,
-td {
+th,td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
 }
-
+td.ngaythang {
+    position: relative;
+    height: 5pc;
+    width: 5pc;
+}
+.cn {
+  padding: 5px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.am {
+  padding: 5px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
 .am a {
   font-size: 12px;
 }
-
-td.ngaythang.choose {
-  background-color: lightblue;
+.event-icon{
+  padding: 5px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
 }
-
 td.ngaythang:hover {
   cursor: pointer;
-}</style>
+  background-color: lightblue;
+}
+</style>

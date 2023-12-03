@@ -44,7 +44,7 @@ function getAlbumPhotoById(albumId) {
         try {
             let query = `SELECT * FROM albumphoto where AlbumID  = ?`
             let values = [albumId]
-            db.connection.query(query,values, (err, result) => {
+            db.connection.query(query, values, (err, result) => {
                 if (err) {
                     console.log("Have err : " + err);
                     reject()
@@ -170,6 +170,23 @@ function updateAlbumPhoto(ObjData) {
     });
 
 }
+//Nguyễn Lê Hùng
+function searchAlbumPhoto(CodeID, keySearch) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `SELECT * FROM genealogy.albumphoto where CodeID = ${CodeID} and AlbumName like '%${keySearch}%'`
+            db.connection.query(query, (err, result) => {
+                if (!err && result.length > 0) {
+                    resolve(result)
+                } else {
+                    reject(err)
+                }
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
 
 function removeAlbumPhoto(albumId) {
     return new Promise((resolve, reject) => {
@@ -246,5 +263,6 @@ module.exports = {
     getFamilyTreeData,
     insertAlbumPhoto,
     updateAlbumPhoto,
-    removeAlbumPhoto
+    removeAlbumPhoto,
+    searchAlbumPhoto
 }
