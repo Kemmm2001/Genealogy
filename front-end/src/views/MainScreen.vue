@@ -283,12 +283,12 @@
             </div>
           </div>
           <div class="col-9 h-100 position-relative" style="background: #ebebeb">
-            <div class="position-absolute w-100 d-flex flex-column" style="height: calc(100% - 64px); top: 0;">
+            <div class="position-absolute w-100 d-flex flex-column h-100" style="top: 0;">
               <div class="d-flex flex-row" style="height: 48px; background-color: #FFFFFF">
                 <div @click="selectSMS()" :class="{ notiSelected: smsSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0 0.375rem 0 0; cursor: pointer;">SMS</div>
                 <div @click="selectEmail()" :class="{ notiSelected: emailSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0.375rem 0 0 0; cursor: pointer;">Email</div>
               </div>
-              <div v-if="emailSelected" class="d-flex flex-column mt-2" style="height: calc(100% - 48px); overflow-y: auto;">
+              <div v-if="emailSelected" class="d-flex flex-column mt-2 h-100" style="overflow-y: auto;">
                 <div v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row">
                   <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Chủ đề: {{e.EmailSubject}}</div>
                   <div class="col-6 h-100 d-flex align-items-center position-relative">
@@ -298,29 +298,11 @@
                 </div>
               </div>
 
-              <div v-if="smsSelected" class="d-flex flex-column" style="height: calc(100% - 48px); align-items: flex-end; padding-top: 6px; overflow-y: auto">
+              <div v-if="smsSelected" class="d-flex flex-column h-100" style="align-items: flex-end; padding-top: 6px; overflow-y: auto">
                 <div v-for="m in ListMessage" :key="m.id" class="position-relative d-flex flex-row">
                   <div class="position-absolute sent-time">{{ formatDate(m.NotificationDate) }}</div>
                   <div class="sent-sms">{{ m.NotificationContent }}</div>
                 </div>
-              </div>
-            </div>
-            <div class="position-absolute w-100" style="bottom: 8px">
-              <div v-if="smsSelected" class="w-100 px-3 d-flex flex-row">
-                <div style="height: 42px; flex-grow: 1;">
-                  <input type="text" class="h-100 w-100 form-control" placeholder="..." v-model="contentMessage" />
-                </div>
-                <div class="d-flex align-items-center" style="padding-left: 12px; cursor: pointer;" @click="sendMessageToMember()">
-                  <svg class="noti-send-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                    <path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z" />
-                  </svg>
-                </div>
-                <div style="padding-left: 12px;">
-                  <div @click="expandEventListSMS = !expandEventListSMS" class="btn bg-primary text-white">Sự kiện</div>
-                </div>
-              </div>
-              <div v-if="emailSelected" class="w-100 btn px-3 position-relative" style="height: 48px;">
-                <div @click="expandCreateEmail = !expandCreateEmail" class="btn btn-primary px-2 py-1 position-absolute" style="right: 16px">Tạo email mới</div>
               </div>
             </div>
             <div class="position-absolute create-mail" :class="{ expanded: expandCreateEmail }">
@@ -578,7 +560,7 @@
           </div>
           <div class="card-body" style="padding: 0; height: 675px">
             <div class="row" style="padding: 0;height: 100%;">
-              <div class="col-3 select-menu">
+              <div class="col-2 select-menu">
                 <div class="custom-info" :class="{ selected: extendedInfo }" @click="selectedInfor()">
                   <h5>Thông tin</h5>
                 </div>
@@ -595,11 +577,11 @@
                   <h5>Ghi chú</h5>
                 </div>
               </div>
-              <div class="col-9" style="padding-top: 15px" v-if="extendedInfo">
+              <div class="col-10" style="padding-top: 15px" v-if="extendedInfo">
                 <div class="d-flex flex-row">
                   <div v-if="isEdit" class="col-4" style="padding-right: 8px;">
-                    <img style="height:316px;width:100%;margin-bottom:20px" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" />
-                    <svg v-else style="margin-bottom:36px" fill="#000000" height="275px" width="100%" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
+                    <img style="height:316px;width:100%;margin-bottom:61px" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" />
+                    <svg v-else style="margin-bottom:61px" fill="#000000" height="275px" width="100%" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
                       <g>
                         <g>
                           <circle cx="256" cy="114.526" r="114.526" />
@@ -682,7 +664,7 @@
                       <label class="form-label" for="input" :class="{ 'active': objMemberInfor.Origin }">Nguyên Quán</label>
                     </div>
                     <div class="form-group">
-                      <h6 style="margin-bottom:20px">Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược lại)</h6>
+                      <h6 style="margin-bottom:20px; height: 20px">Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược lại)</h6>
                       <div style="display:flex">
                         <div style="position: relative; width: 50%;margin-right: 10px;">
                           <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar()" />
