@@ -24,7 +24,7 @@
               </div>
               <div class="album-cover" @click="openEditAlbumModal()" v-if="album.BackGroundPhoto == null"></div>
               <div class="album-general-info d-flex align-items-center">
-                <div class="d-flex justify-content-center w-100">{{ album.AlbumName }}</div>
+                <div class="d-flex justify-content-center w-100 ellipsis-text">{{ album.AlbumName }}</div>
                 <div class="d-flex w-100" style="justify-content: space-around;">
                   <div @click="openAlbumModal()">
                     <svg class="edit-album-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
