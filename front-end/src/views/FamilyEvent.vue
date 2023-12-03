@@ -161,7 +161,7 @@
             </table>
           </div>
           <div v-if="notiSelected && !mailSelected" class="h-100">
-            <div class="d-flex flex-column mt-2" style="height: calc(100% - 48px); overflow-y: auto;">
+            <div class="d-flex flex-column mt-2" style="height: 100%; overflow-y: auto;">
               <div class="sent-mail d-flex flex-row">
                 <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Sự kiện</div>
                 <div class="col-6 h-100 d-flex align-items-center position-relative">
@@ -194,10 +194,6 @@
                 <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">1/1/2000
                 </div>
               </div>
-            </div>
-            <div class="w-100 position-relative d-flex" style="height: 48px; justify-content: end;">
-              <div @click="mailSelected = true; notiSelected = false" class="btn btn-primary py-1 position-absolute">Tạo
-                email mới</div>
             </div>
           </div>
           <div v-if="!notiSelected && mailSelected" class="h-100">
