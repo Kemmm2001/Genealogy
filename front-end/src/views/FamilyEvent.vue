@@ -50,11 +50,10 @@
               </thead>
               <tbody>
                 <tr class="normal" v-for="(week, weekIndex) in dayOfMonth" :key="weekIndex">
-                  <td class="ngaythang" v-for="(day, dayIndex) in week" :key="dayIndex"
+                  <td class="ngaythang p-0" v-for="(day, dayIndex) in week" :key="dayIndex"
                     :class="{ choose: dayIndex == indexClickDay && weekIndex == indexClickWeek }"
-                    @click="clickDate(dayIndex, weekIndex)"
+                    @click="checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`) ? getListEventByDate(`${day.solar.year}-${day.solar.month}-${day.solar.date}`) : null"
                     :style="{ color: day.solar.month != currentMonth ? '#bebebe' : 'black' }">
-                    <div v-if="!checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)">
                       <div v-if="day.solar.date == 1" class="cn"
                         @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.solar.date + "/"
                           + (day.solar.month) }}</a></div>
@@ -67,8 +66,12 @@
                       <div v-if="day.lunar.date != 1" class="am"
                         @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.lunar.date
                         }}</a></div>
-                    </div>
-                    <div v-if="checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)"
+                      <div class="event-icon" v-if="checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-event-fill" viewBox="0 0 16 16">
+                          <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2m-3.5-7h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5"/>
+                        </svg>
+                      </div>
+                    <!-- <div v-if="checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)"
                       @click="getListEventByDate(`${day.solar.year}-${day.solar.month}-${day.solar.date}`), showEventModal()">
                       <div v-if="day.solar.date == 1" class="cn"
                         @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.solar.date + "/"
@@ -82,8 +85,8 @@
                       <div v-if="day.lunar.date != 1" class="am"
                         @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.lunar.date
                         }}</a></div>
-                      <div>Có sự kiện</div>
-                    </div>
+                      
+                    </div> -->
                   </td>
                 </tr>
               </tbody>
@@ -118,7 +121,7 @@
         </div>
         <div class="button-list d-flex flex-row pt-3 mt-2">
           <div @click="showAddEventModal()" class="btn bg-primary text-white d-flex align-items-center">Thêm sự kiện</div>
-          <div class="btn bg-primary text-white d-flex align-items-center item">Xuất excel</div>
+          <div @click="exportExcel()" class="btn bg-primary text-white d-flex align-items-center item">Xuất excel</div>
           <div @click="mailSelected = false; notiSelected = true"
             class="btn bg-primary text-white d-flex align-items-center item">
             Thông báo</div>
@@ -540,6 +543,7 @@ export default {
       if (dateCheck == '30/11/2023') {
         console.log(1)
       }
+      this.showEventModal();
     },
     checkDateEvent(dateCheck) {
       let startDate;
@@ -723,6 +727,24 @@ export default {
         this.NotificationsDelete("bạn nhập thiếu trường (*)");
       }
     },
+    exportExcel(){
+      HTTP.get("export-excle", {
+        params: {
+          CodeID: this.CodeID,
+        },
+      })
+        .then((respone) => {
+          console.log(this.CodeID)
+          if (respone.data.success == true) {
+            this.NotificationsScuccess(respone.data.message);
+          } else {
+            this.NotificationsDelete(respone.data.message);
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     removeEvent() {
       HTTP.delete("removeEvent", {
         params: {
@@ -742,10 +764,6 @@ export default {
           console.log(e);
         });
     },
-    clickDate(indexDay, indexWeek) {
-      this.indexClickDay = indexDay;
-      this.indexClickWeek = indexWeek;
-    },
     setChooseDate(day, month, year) {
       this.chooseDate = new Date();
       this.chooseDate.setFullYear(year);
@@ -763,6 +781,7 @@ export default {
     },
     getDayOfMonth() {
       this.dayOfMonth = new Calendar(this.currentYear, this.currentMonth).weeks;
+      console.log(this.dayOfMonth)
     },
     showAddEventModal() {
       this.eventFamily = {};
@@ -859,22 +878,39 @@ table {
   color: black;
 }
 
-th,
-td {
+th,td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
 }
-
+td.ngaythang {
+    position: relative;
+    height: 5pc;
+    width: 5pc;
+}
+.cn {
+  padding: 5px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.am {
+  padding: 5px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
 .am a {
   font-size: 12px;
 }
-
-td.ngaythang.choose {
-  background-color: lightblue;
+.event-icon{
+  padding: 5px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
 }
-
 td.ngaythang:hover {
   cursor: pointer;
+  background-color: lightblue;
 }
 </style>
