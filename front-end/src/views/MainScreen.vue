@@ -288,7 +288,7 @@
                 <div @click="selectSMS()" :class="{ notiSelected: smsSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0 0.375rem 0 0; cursor: pointer;">SMS</div>
                 <div @click="selectEmail()" :class="{ notiSelected: emailSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0.375rem 0 0 0; cursor: pointer;">Email</div>
               </div>
-              <div v-if="emailSelected" class="d-flex flex-column mt-2 h-100" style="overflow-y: auto;">
+              <div v-if="emailSelected" class="d-flex flex-column mt-2" style="height: calc(100% - 116px); overflow-y: auto;">
                 <div v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row">
                   <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Chủ đề: {{e.EmailSubject}}</div>
                   <div class="col-6 h-100 d-flex align-items-center position-relative">
@@ -316,6 +316,9 @@
                   </svg>
                 </div>
               </div>
+              <div v-if="emailSelected" class="w-100 btn px-3 position-relative" style="height: 48px;">
+                <div @click="expandCreateEmail = !expandCreateEmail" class="btn btn-primary px-2 py-1 position-absolute" style="right: 16px">Tạo email mới</div>
+              </div>
             </div>
             <div class="position-absolute create-mail" :class="{ expanded: expandCreateEmail }">
               <div class="w-100 h-100 d-flex flex-column">
@@ -336,11 +339,6 @@
                   <textarea v-model="contentEmail" style="resize: none; outline: none; border: none;" class="h-100 w-100 p-2" placeholder="Viết gì đó..."></textarea>
                 </div>
                 <div class="create-mail-footer d-flex flex-row px-3 py-2 w-100" style="justify-content: end;">
-                  <div class="d-flex flex-row px-2" @click="expandEventList = !expandEventList">
-                    <div style="border-radius: 50% 0 0 50%; background: #007bff; width: 25px;"></div>
-                    <div class="btn d-flex align-items-center justify-content-center" style="padding: 4px 12px; background: #007bff; color: #FFFFFF; border-radius: 0; outline: none; border: none;">Sự kiện</div>
-                    <div style="border-radius: 0 50% 50% 0; background: #007bff; width: 25px;"></div>
-                  </div>
                   <div class="d-flex flex-row" @click="sendEmailToMember()">
                     <div style="border-radius: 50% 0 0 50%; background: #007bff; width: 25px;"></div>
                     <div class="btn d-flex align-items-center justify-content-center" style="padding: 4px 12px; background: #007bff; color: #FFFFFF; border-radius: 0; outline: none; border: none;">Gửi</div>
