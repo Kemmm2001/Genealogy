@@ -156,9 +156,6 @@ var AllMemberInGenelogy = async (req, res) => {
                 if (item.dob === '1-1-1970') {
                     item.dob = null;
                 }
-                if (CoreFunction.isDataStringExist(item.img)) {
-                    item.img = CoreFunction.loadImage(item.img);
-                }
             });
 
             return res.send(Response.successResponse(data));

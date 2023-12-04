@@ -216,11 +216,6 @@ var getAlbumPhoto = async (req, res) => {
         if (data == null || data.length == 0) {
             return res.send(Response.dataNotFoundResponse());
         } else {
-            for (let i = 0; i < data.length; i++) {
-                if (CoreFunction.isDataStringExist(data[i].BackGroundPhoto)) {
-                    data[i].BackGroundPhoto = CoreFunction.loadImage(data[i].BackGroundPhoto);
-                }
-            }
             return res.send(Response.successResponse(data));
         }
     } catch (e) {
@@ -233,11 +228,6 @@ var getAllAlbumPhotos = async (req, res) => {
     try {
         // lấy thông tin tất cả AlbumPhoto từ database
         let data = await AlbumPhotoManagementService.getAllAlbumPhoto();
-        for (let i = 0; i < data.length; i++) {
-            if (CoreFunction.isDataStringExist(data[i].BackGroundPhoto)) {
-                data[i].BackGroundPhoto = CoreFunction.loadImage(data[i].BackGroundPhoto);
-            }
-        }
         return res.send(Response.successResponse(data));
     } catch (e) {
         console.log("Error: " + e);
