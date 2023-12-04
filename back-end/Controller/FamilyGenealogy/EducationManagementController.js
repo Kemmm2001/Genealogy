@@ -1,5 +1,6 @@
 const EducationManagementService = require('../../service/FamilyGenealogy/EducationManagement')
-
+const Response = require("../../Utils/Response");
+//Nguyễn Lê Hùng
 var ViewEducation = async (req, res) => {
     try {
         let memberId = req.query.memberId;
@@ -9,6 +10,7 @@ var ViewEducation = async (req, res) => {
         console.log(e)
     }
 }
+//Nguyễn Lê Hùng
 var InsertEducationMember = async (req, res) => {
     try {
         let ObjData = {}
@@ -24,6 +26,8 @@ var InsertEducationMember = async (req, res) => {
     }
 }
 
+
+//Nguyễn Lê Hùng
 var UpdateEducationMember = async (req, res) => {
     try {
         let ObjData = {}
@@ -39,6 +43,7 @@ var UpdateEducationMember = async (req, res) => {
     }
 }
 
+//Nguyễn Lê Hùng
 var RemoveEducationMember = async (req, res) => {
     try {
         let EducationID = req.query.EducationID;
@@ -48,17 +53,23 @@ var RemoveEducationMember = async (req, res) => {
     }
 }
 
+//Nguyễn Lê Hùng
 var RemoveListEducationMember = async (req, res) => {
     try {
         let memberID = req.query.MemberID;
-        await EducationManagementService.RemoveListEducation(memberID);
+        let data = await EducationManagementService.RemoveListEducation(memberID);
+        if (data) {
+            return res.send(Response.successResponse())
+        } else {
+            return res.send(Response.dataNotFoundResponse())
+        }
     } catch (error) {
-        console.log(error)
+        return res.send(Response.dataNotFoundResponse(error))
     }
 }
 
 
 
 module.exports = {
-    ViewEducation, InsertEducationMember, UpdateEducationMember, RemoveEducationMember,RemoveListEducationMember
+    ViewEducation, InsertEducationMember, UpdateEducationMember, RemoveEducationMember, RemoveListEducationMember
 }

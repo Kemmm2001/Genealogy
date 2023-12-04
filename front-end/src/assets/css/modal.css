@@ -328,19 +328,19 @@ input:focus~label.form-label-number {
     font-size: 12px;
 }
 
-.sent-mail{
-    height: 48px;
-    background-color: #f2f6fc;
-    border-radius: 0.375rem;
-    margin: 0 8px;
-    border-bottom: 1px solid lightgray;
-}
-
 .cfdel-modal-container .vm--container{
     right: 0;
     bottom: 0;
     margin: auto;
-    width: 35%;
+    width: 45%;
+    height: 30%;
+}
+
+.eventNoti-modal-container .vm--container, .expiredEvent-modal-container .vm--container{
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    width: 45%;
     height: 30%;
 }
 
@@ -353,4 +353,16 @@ input:focus~label.form-label-number {
     height: 73%;
     inset: 0;
     margin: auto;
+}
+
+.participant-container .vm--container{
+    inset: 0;
+    margin: auto;
+}
+
+.member-container .vm--container{
+    inset: 0;
+    margin: auto;
+    width: 50%;
+    height: 80%;
 }

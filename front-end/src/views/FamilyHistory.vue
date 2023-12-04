@@ -1,3 +1,4 @@
+<!-- phùng việt khôi -->
 <template>
   <div class="history-screen d-flex h-100 w-100 p-0 position-relative" style="overflow-y: auto;">
     <div class="h-100 position-absolute" style="top: 0; left: 0; width: 20%;">
@@ -26,9 +27,9 @@
       </div>
     </div>
     <div class="h-100 position-absolute p-2" style="top: 0; right: 0; width: 80%; background-color: #f2f2f2;">
-      <draggable :list="listHistory" :disabled="!enabled" class="list-group" ghost-class="ghost" :move="checkMove" @start="dragging = true" @end="dragging = false" @update="onUpdate">
-        <div v-for="element in listHistory" :key="element.HistoryID" class="w-100" :style="{ 'min-height': '60px','float': element.HistoryID % 2 === 0 ? 'right' : 'left'} ">
-          <div @click="getInforHistory(element.HistoryID)" class="list-group-item position-relative" :style="{'min-height': 'inherit','width': '49%','float': element.HistoryID % 2 === 0 ? 'right' : 'left'}">
+      <draggable :list="listHistory" :disabled="!enabled" class="list-group h-100" style="overflow-y: auto;" ghost-class="ghost" :move="checkMove" @start="dragging = true" @end="dragging = false" @update="onUpdate">
+        <div v-for="element in listHistory" :key="element.HistoryID" class="w-100" :style="{ 'min-height': '72px', 'float': element.HistoryID % 2 === 0 ? 'right' : 'left'} ">
+          <div @click="getInforHistory(element.HistoryID)" class="list-group-item position-relative h-100" :style="{'width': '49%','float': element.HistoryID % 2 === 0 ? 'right' : 'left'}">
             <div class="position-absolute history-start">{{ formatDate(element.startDate) }}</div>
             <div class="position-absolute history-end">{{ formatDate(element.endDate)}}</div>
             <div class="d-flex align-items-center" style="min-height: inherit; padding-top: 12px;">{{ element.Description }}</div>
@@ -99,6 +100,7 @@ export default {
     };
   },
   methods: {
+    //nguyễn lê hùng
     NotificationsDelete(messagee) {
       new Snackbar(messagee, {
         position: "bottom-right",
@@ -112,6 +114,7 @@ export default {
         },
       });
     },
+    //nguyễn lê hùng
     NotificationsScuccess(messagee) {
       new Snackbar(messagee, {
         position: "bottom-right",
@@ -125,7 +128,7 @@ export default {
         },
       });
     },
-
+    //nguyễn lê hùng
     filterHistory() {
       if (this.filterEndDate != null && this.filterStartDate != null) {
         HTTP.post("filterHistory", {
@@ -144,6 +147,7 @@ export default {
           });
       }
     },
+    //nguyễn lê hùng
     searchHistory() {
       HTTP.post("searchHistory", {
         CodeID: this.CodeID,
@@ -160,6 +164,7 @@ export default {
           console.log(e);
         });
     },
+    //nguyễn lê hùng
     onUpdate(event) {
       let draggedElement = this.listHistory[event.oldIndex];
       let targetElement = this.listHistory[event.newIndex];
@@ -181,6 +186,7 @@ export default {
           console.log(e);
         });
     },
+    //nguyễn lê hùng
     removeHistory() {
       HTTP.get("delete-familyhistory", {
         params: {
@@ -200,11 +206,13 @@ export default {
           console.log(e);
         });
     },
+    //nguyễn lê hùng
     resertHistory() {
       (this.filterEndDate = null),
         (this.filterStartDate = null),
         this.getListHistory();
     },
+    //nguyễn lê hùng
     getInforHistory(historyID) {
       this.isAdd = false;
       this.historyID = historyID;
@@ -223,6 +231,7 @@ export default {
         }
       });
     },
+    //nguyễn lê hùng
     updateHistory() {
       if (
         this.endDate != null &&
@@ -252,6 +261,7 @@ export default {
         this.NotificationsDelete("bạn chưa điền hết thông tin");
       }
     },
+    //nguyễn lê hùng
     addHistory() {
       if (
         this.endDate != null &&

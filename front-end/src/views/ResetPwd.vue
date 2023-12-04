@@ -1,10 +1,11 @@
+<!-- phùng việt khôi -->
 <template>
     <div class="resetpwd-screen d-flex flex-row h-100 w-100">
         <div class="resetpwd-container d-flex flex-column p-3">
             <div class="func-detail-item">
                 <div class="pb-2" style="font-weight: bold;">Mật khẩu mới</div>
                 <div class="d-flex flex-row position-relative">
-                    <input v-bind:type="newPwdVisibilityType" class="form-control" />
+                    <input v-bind:type="newPwdVisibilityType" v-model="newPwd" class="form-control" />
                     <div @click="toggleNewPwdVisibility()"
                         class="position-absolute visibility-icon d-flex align-items-center">
                         <svg v-if="!newPwdVisibility" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
@@ -21,7 +22,7 @@
             <div class="func-detail-item mt-4">
                 <div class="pb-2" style="font-weight: bold;">Nhập lại mật khẩu mới</div>
                 <div class="d-flex flex-row position-relative">
-                    <input v-bind:type="newPwd2VisibilityType" class="form-control" />
+                    <input v-bind:type="newPwd2VisibilityType" v-model="reNewPwd" class="form-control" />
                     <div @click="toggleNewPwd2Visibility()"
                         class="position-absolute visibility-icon d-flex align-items-center">
                         <svg v-if="!newPwd2Visibility" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
@@ -35,14 +36,16 @@
                     </div>
                 </div>
             </div>
-            <div class="w-100 d-flex mt-4" style="justify-content: end;">
-                <div class="btn bg-primary text-white">Lưu thay đổi</div>
+            <div class="w-100 d-flex mt-4" style="justify-content: end;" >
+                <div class="btn bg-primary text-white" @click="changePassWord()">Lưu thay đổi</div>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import { HTTP } from "../assets/js/baseAPI.js";
+import Snackbar from "awesome-snackbar";
 export default {
     data() {
         return {
@@ -50,9 +53,34 @@ export default {
             newPwd2Visibility: false,
             newPwdVisibilityType: "password",
             newPwd2VisibilityType: "password",
+
+            newPwd:null,
+            reNewPwd:null,
+            token:null,
         };
     },
     methods: {
+        changePassWord(){
+            console.log(this.token)
+            HTTP.post("reset-password", {
+                password: this.newPwd,
+                repassword: this.reNewPwd,
+            },{
+                params: {
+                    token: this.token,
+                },
+            }).then((response) => {
+                if(response.data.success == true){
+                    this.$router.push("/login");
+                    this.NotificationsScuccess(response.data.message)
+                }else{
+                    this.NotificationsDelete(response.data.message)
+                }
+            })
+            .catch((e) => {
+                this.NotificationsDelete(e);
+            });
+        },
         toggleNewPwdVisibility() {
             this.newPwdVisibility = !this.newPwdVisibility;
             this.newPwdVisibilityType =
@@ -63,15 +91,41 @@ export default {
             this.newPwd2VisibilityType =
                 this.newPwd2VisibilityType === "text" ? "password" : "text";
         },
+        NotificationsDelete(messagee) {
+            new Snackbar(messagee, {
+                position: "bottom-right",
+                theme: "light",
+                style: {
+                container: [
+                    ["background-color", "#ff4d4d"],
+                    ["border-radius", "5px"],
+                ],
+                message: [["color", "#fff"]],
+                },
+            });
+            },
+        NotificationsScuccess(messagee) {
+            new Snackbar(messagee, {
+                position: "bottom-right",
+                theme: "light",
+                style: {
+                container: [
+                    ["background-color", "#1abc9c"],
+                    ["border-radius", "5px"],
+                ],
+                message: [["color", "#fff"]],
+                },
+            });
+        },
     },
     mounted() {
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString)
 
         // Lấy giá trị của tham số 'token'
-        const token = urlParams.get("token");
-
-        console.log(token); 
+        let takeToken = urlParams.get("token");
+        takeToken = takeToken.replace('token=', '');
+        this.token = takeToken;
         // const query = this.$route.query;
 
         // // Check if the "token" parameter is present

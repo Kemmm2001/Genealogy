@@ -1,19 +1,34 @@
+<!-- phùng việt khôi -->
 <template>
   <div class="d-flex h-100 w-100 position-relative">
     <div class="list h-100 d-flex flex-column align-items-center">
-      <div v-if="memberRole != 3" class="w-100 d-flex flex-row" style="padding-top: 8px">
-        <div class="col-6" style="padding-left: 8px; padding-right: 6px">
-          <div class="w-100 h-100">
-            <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary h-100">Tạo thông báo</button>
+      <div v-if="memberRole != 3" class="w-100 d-flex flex-column" style="height: 15%">
+        <div class="w-100 d-flex flex-row" style="padding-top: 8px">
+          <div class="col-6" style="padding-left: 8px; padding-right: 6px">
+            <div class="w-100 h-100">
+              <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary h-100">Tạo thông báo</button>
+            </div>
+          </div>
+          <div class="col-6" style="padding-left: 6px; padding-right: 8px">
+            <div class="w-100 h-100">
+              <button @click="openCompareModal()" style="width:100%" type="button" :class="{ 'btn': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">Xác định quan hệ</button>
+            </div>
           </div>
         </div>
-        <div class="col-6" style="padding-left: 6px; padding-right: 8px">
-          <div class="w-100 h-100">
-            <button @click="openCompareModal()" style="width:100%" type="button" :class="{ 'btn': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">So sánh</button>
+        <div class="w-100 d-flex flex-row" style="padding-top: 8px">
+          <div class="col-6" style="padding-left: 8px; padding-right: 6px">
+            <div class="w-100 h-100">
+              <button @click="BackUpdata()" style="width:100%;color:white" type="button" class="btn btn-secondary h-100">Lưu trữ dữ liệu</button>
+            </div>
+          </div>
+          <div class="col-6" style="padding-left: 6px; padding-right: 8px">
+            <div class="w-100 h-100">
+              <button style="width:100%;color:white" type="button" class="btn btn-secondary h-100">Xuất dữ liệu vào</button>
+            </div>
           </div>
         </div>
       </div>
-      <div class="h-100 w-100 d-flex flex-column px-2" style="padding-top: 12px; font-family: 'QuicksandBold', sans-serif;">
+      <div class="w-100 d-flex flex-column px-2" :class="{height100 : memberRole == 3}" style="padding: 12px; height: 85%; font-family: 'QuicksandBold', sans-serif;">
         <div class="existing-members d-flex flex-column w-100">
           <div class="d-flex align-items-center justify-content-center px-2 py-1 list-title">Thành viên có trên phả đồ</div>
           <div class="d-flex flex-column w-100" style="overflow-y: auto;cursor: pointer">
@@ -82,8 +97,8 @@
           </div>
         </div>
       </div>
-      <div class="d-flex flex-row" style="position: absolute; bottom: 0; right: 0; align-items: end;">
-        <svg @click="togglehelp = !togglehelp" :class="{expandHelp : togglehelp}" class="help-icon p-1" style="z-index: 101;" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF">
+      <div class="d-flex flex-row" style="position: absolute; bottom: 0; right: 0; align-items: end; z-index: 999;">
+        <svg @click="togglehelp = !togglehelp" :class="{expandHelp : togglehelp}" class="help-icon p-1" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF">
           <g>
             <path d="M0,0h24v24H0V0z" fill="none" />
             <path d="M11,7h2v2h-2V7z M11,11h2v6h-2V11z M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,20 c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8S16.41,20,12,20z" />
@@ -120,15 +135,15 @@
               <div class="list-group-item feature-overview">Các chức năng chính</div>
               <div class="list-group-item" @click="getInforMember(CurrentIdMember)">Thông tin chi tiết</div>
               <div class="list-group-item" @click="openModalRelationship()">Xem các mối quan hệ</div>
-              <div class="list-group-item" @click="openMemberModal('AddParent', 'Cha')">Thêm Cha</div>
-              <div class="list-group-item" @click="openMemberModal('AddParent', 'Mẹ')">Thêm Mẹ</div>
-              <div class="list-group-item" @click="openMemberModal('AddMarriage', 'Chồng')">Thêm Chồng</div>
-              <div class="list-group-item" @click="openMemberModal('AddMarriage', 'Vợ')">Thêm Vợ</div>
+              <div class="list-group-item" @click="openMemberModal('AddFather', 'Cha')">Thêm Cha</div>
+              <div class="list-group-item" @click="openMemberModal('AddMother', 'Mẹ')">Thêm Mẹ</div>
+              <div class="list-group-item" @click="openMemberModal('AddHusband', 'Chồng')">Thêm Chồng</div>
+              <div class="list-group-item" @click="openMemberModal('AddWife', 'Vợ')">Thêm Vợ</div>
+              <div v-for="list in ListMarriedMember" :key="list.id" class="list-group-item" @click="openMemberModal('AddChild', 'Con',list.id)">Thêm Con với vợ {{list.name}}</div>
               <div class="list-group-item" @click="openMemberModal('AddChild', 'Con')">Thêm Con</div>
               <div class="list-group-item" @click="openModalAddMemberFromList()">Thêm mối quan hệ từ Danh Sách</div>
               <div class="list-group-item" @click="openCfDelModal(false,null,TitleModal)">Xóa thành viên (*)</div>
               <div class="list-group-item feature-overview">Các chức năng Khác</div>
-              <div class="list-group-item" style="border-top: none;" @click="setPaternalAncestor(2)">Set làm tộc trưởng</div>
               <div class="list-group-item" @click="setPaternalAncestor(1)">Set làm tổ phụ</div>
             </div>
           </div>
@@ -150,11 +165,6 @@
               </div>
             </div>
             <div class="d-flex flex-column" style="height: calc(100% - 50px);">
-              <div class="d-flex flex-row">
-                <div class="col-md-4 m-2">
-                  <input type="text" class="form-control modal-item m-0" placeholder="Nhập tên thành viên..." />
-                </div>
-              </div>
               <div class="d-flex flex-column headlist-list-container w-100">
                 <table class="table table-member headlist-list m-0">
                   <thead>
@@ -185,22 +195,22 @@
                         <button class="btn btn-secondary" @click.stop="openCfDelModal(true,ResultRelationship.Mother.MemberID,ResultRelationship.Mother.MemberName,'RemoveParent')">Hủy mối quan hệ</button>
                       </td>
                     </tr>
-                    <tr v-if="ResultRelationship.Husband" class="headlist-item headlist-table-item" @click="getInforMember(ResultRelationship.Husband.MemberID)">
-                      <td style="text-align: center;">{{ ResultRelationship.Husband.MemberName }}</td>
-                      <td style="text-align: center;">{{ ResultRelationship.Husband.Male == 1 ? "Nam" : "Nữ" }}</td>
-                      <td style="text-align: center;">{{ formatDate(ResultRelationship.Husband.Dob) }}</td>
+                    <tr v-for="hus in ResultRelationship.Husband" :key="hus.MemberID" class="headlist-item headlist-table-item" @click="getInforMember(ResultRelationship.Husband.MemberID)">
+                      <td style="text-align: center;">{{ hus.MemberName }}</td>
+                      <td style="text-align: center;">Nam</td>
+                      <td style="text-align: center;">{{ formatDate(hus.Dob) }}</td>
                       <td style="text-align: center;">Chồng</td>
                       <td style="text-align: center;">
-                        <button class="btn btn-secondary" @click.stop="openCfDelModal(true,ResultRelationship.Husband.MemberID,ResultRelationship.Husband.MemberName,'RemoveMarried')">Hủy mối quan hệ</button>
+                        <button class="btn btn-secondary" @click.stop="openCfDelModal(true,hus.MemberID,hus.MemberName,'RemoveMarried')">Hủy mối quan hệ</button>
                       </td>
                     </tr>
-                    <tr v-if="ResultRelationship.Wife" class="headlist-item headlist-table-item" @click="getInforMember(ResultRelationship.Wife.MemberID)">
-                      <td style="text-align: center;">{{ ResultRelationship.Wife.MemberName }}</td>
-                      <td style="text-align: center;">{{ ResultRelationship.Wife.Male == 1 ? "Nam" : "Nữ" }}</td>
-                      <td style="text-align: center;">{{ formatDate(ResultRelationship.Wife.Dob) }}</td>
+                    <tr v-for="Wife in ResultRelationship.Wife" :key="Wife.MemberID" class="headlist-item headlist-table-item" @click="getInforMember(ResultRelationship.Wife.MemberID)">
+                      <td style="text-align: center;">{{ Wife.MemberName }}</td>
+                      <td style="text-align: center;">Nữ</td>
+                      <td style="text-align: center;">{{ formatDate(Wife.Dob) }}</td>
                       <td style="text-align: center;">Vợ</td>
                       <td style="text-align: center;">
-                        <button class="btn btn-secondary" @click.stop="openCfDelModal(true,ResultRelationship.Wife.MemberID,ResultRelationship.Wife.MemberName,'RemoveMarried')">Hủy mối quan hệ</button>
+                        <button class="btn btn-secondary" @click.stop="openCfDelModal(true,Wife.MemberID,Wife.MemberName,'RemoveMarried')">Hủy mối quan hệ</button>
                       </td>
                     </tr>
                     <tr v-for="(c,index) in ResultRelationship.child" :key="index" class="headlist-item headlist-table-item" @click="getInforMember(c.MemberID)">
@@ -248,29 +258,37 @@
               </div>
             </div>
             <div class="position-relative d-flex" style="height: 48px;">
-              <div class="d-flex flex-row align-items-center p-2">
-                <input v-model="checkAll" type="checkbox" class="form-check-input" @change="toggleSelectAll()" />
+              <div v-if="numberDeath != nodes.length" class="d-flex flex-row align-items-center p-2">
+                <input v-model="checkAll" type="checkbox" class="m-0 form-check-input" @change="toggleSelectAll()" />
                 <div style="padding-left: 8px">Chọn tất cả mọi người</div>
               </div>
             </div>
+            <div class="position-relative d-flex" style="height: 48px;">
+              <div v-if="numberDeath != nodes.length" class="d-flex flex-row align-items-center p-2">
+                <input v-model="checkWithFilter" type="checkbox" class="m-0 form-check-input" @change="toggleSelectWithFilter()" />
+                <div style="padding-left: 8px">Chọn theo bộ lọc</div>
+              </div>
+            </div>
             <div>
-              <div v-for="(n, index) in nodes" :key="n.id" :tabindex="index" class="noti-modal-member d-flex flex-row align-items-center px-2" :class="{ chosen: ListPhoneToSendMessage.includes(n.id) }" @click="toggleSelection(n.id)">
-                <div>
-                  <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                    <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
-                  </svg>
+              <div v-for="(n, index) in ListMemberCanSendMessage" :key="n.id">
+                <div v-if="n.isDead != 1" :tabindex="index" class="noti-modal-member d-flex flex-row align-items-center px-2" :class="{ chosen: ListPhoneToSendMessage.includes(n.id) }" @click="toggleSelection(n.id)">
+                  <div>
+                    <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                      <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
+                    </svg>
+                  </div>
+                  <div class="d-flex justify-content-center" style="flex-grow: 1;">{{ n.name }}</div>
                 </div>
-                <div class="d-flex justify-content-center" style="flex-grow: 1;">{{ n.name }}</div>
               </div>
             </div>
           </div>
           <div class="col-9 h-100 position-relative" style="background: #ebebeb">
-            <div class="position-absolute w-100 d-flex flex-column" style="height: calc(100% - 64px); top: 0;">
+            <div class="position-absolute w-100 d-flex flex-column h-100" style="top: 0;">
               <div class="d-flex flex-row" style="height: 48px; background-color: #FFFFFF">
                 <div @click="selectSMS()" :class="{ notiSelected: smsSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0 0.375rem 0 0; cursor: pointer;">SMS</div>
                 <div @click="selectEmail()" :class="{ notiSelected: emailSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0.375rem 0 0 0; cursor: pointer;">Email</div>
               </div>
-              <div v-if="emailSelected" class="d-flex flex-column mt-2" style="height: calc(100% - 48px); overflow-y: auto;">
+              <div v-if="emailSelected" class="d-flex flex-column mt-2" style="height: calc(100% - 116px); overflow-y: auto;">
                 <div v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row">
                   <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Chủ đề: {{e.EmailSubject}}</div>
                   <div class="col-6 h-100 d-flex align-items-center position-relative">
@@ -280,7 +298,7 @@
                 </div>
               </div>
 
-              <div v-if="smsSelected" class="d-flex flex-column" style="height: calc(100% - 48px); align-items: flex-end; padding-top: 6px; overflow-y: auto">
+              <div v-if="smsSelected" class="d-flex flex-column" style="height: calc(100% - 108px); align-items: flex-end; padding-top: 6px; overflow-y: auto">
                 <div v-for="m in ListMessage" :key="m.id" class="position-relative d-flex flex-row">
                   <div class="position-absolute sent-time">{{ formatDate(m.NotificationDate) }}</div>
                   <div class="sent-sms">{{ m.NotificationContent }}</div>
@@ -289,7 +307,9 @@
             </div>
             <div class="position-absolute w-100" style="bottom: 8px">
               <div v-if="smsSelected" class="w-100 px-3 d-flex flex-row">
-                <input type="text" class="form-control" style="height: 48px;" placeholder="..." v-model="contentMessage" />
+                <div style="height: 42px; flex-grow: 1;">
+                  <input type="text" class="h-100 w-100 form-control" placeholder="..." v-model="contentMessage" />
+                </div>
                 <div class="d-flex align-items-center" style="padding-left: 12px; cursor: pointer;" @click="sendMessageToMember()">
                   <svg class="noti-send-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                     <path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z" />
@@ -298,7 +318,6 @@
               </div>
               <div v-if="emailSelected" class="w-100 btn px-3 position-relative" style="height: 48px;">
                 <div @click="expandCreateEmail = !expandCreateEmail" class="btn btn-primary px-2 py-1 position-absolute" style="right: 16px">Tạo email mới</div>
-                <div @click="expandEventList = !expandEventList" class="btn btn-primary px-2 py-1 position-absolute" style="right: 153px">Thông báo sự kiện</div>
               </div>
             </div>
             <div class="position-absolute create-mail" :class="{ expanded: expandCreateEmail }">
@@ -320,9 +339,11 @@
                   <textarea v-model="contentEmail" style="resize: none; outline: none; border: none;" class="h-100 w-100 p-2" placeholder="Viết gì đó..."></textarea>
                 </div>
                 <div class="create-mail-footer d-flex flex-row px-3 py-2 w-100" style="justify-content: end;">
-                  <div style="border-radius: 50% 0 0 50%; background: #007bff; width: 25px;"></div>
-                  <div class="btn d-flex align-items-center justify-content-center" style="padding: 4px 12px; background: #007bff; color: #FFFFFF; border-radius: 0" @click="sendEmailToMember()">Gửi</div>
-                  <div style="border-radius: 0 50% 50% 0; background: #007bff; width: 25px;"></div>
+                  <div class="d-flex flex-row" @click="sendEmailToMember()">
+                    <div style="border-radius: 50% 0 0 50%; background: #007bff; width: 25px;"></div>
+                    <div class="btn d-flex align-items-center justify-content-center" style="padding: 4px 12px; background: #007bff; color: #FFFFFF; border-radius: 0; outline: none; border: none;">Gửi</div>
+                    <div style="border-radius: 0 50% 50% 0; background: #007bff; width: 25px;"></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -338,7 +359,35 @@
                     </div>
                   </div>
                 </div>
-                <div class="pt-3 px-2 w-100" style="height: calc(100% - 100px)">
+                <div class="pt-3 px-2 w-100" style="height: calc(100% - 100px); overflow-y: auto;">
+                  <div v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row">
+                    <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Chủ đề: {{e.EmailSubject}}</div>
+                    <div class="col-6 h-100 d-flex align-items-center position-relative">
+                      <div class="mail-content-prev">{{e.EmailContent}}</div>
+                    </div>
+                    <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">1/1/2000</div>
+                  </div>
+                </div>
+                <div class="create-mail-footer d-flex flex-row px-3 py-2 w-100" style="justify-content: end;">
+                  <div style="border-radius: 50% 0 0 50%; background: #007bff; width: 25px;"></div>
+                  <div class="btn d-flex align-items-center justify-content-center" style="padding: 4px 12px; background: #007bff; color: #FFFFFF; border-radius: 0" @click="sendEmailToMember()">Gửi</div>
+                  <div style="border-radius: 0 50% 50% 0; background: #007bff; width: 25px;"></div>
+                </div>
+              </div>
+            </div>
+            <div class="position-absolute create-mail" :class="{ expanded: expandEventListSMS }">
+              <div class="w-100 h-100 d-flex flex-column">
+                <div class="create-mail-title d-flex align-items-center justify-content-center position-relative">
+                  <div>Danh sách sự kiện</div>
+                  <div class="create-mail-close position-absolute" @click="expandEventListSMS = !expandEventListSMS">
+                    <div class="position-relative h-100 w-100">
+                      <svg class="create-mail-close-icon position-absolute" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                        <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div class="pt-3 px-2 w-100" style="height: calc(100% - 100px); overflow-y: auto;">
                   <div v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row">
                     <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Chủ đề: {{e.EmailSubject}}</div>
                     <div class="col-6 h-100 d-flex align-items-center position-relative">
@@ -363,7 +412,7 @@
     <modal name="compare-modal">
       <div class="h-100 d-flex flex-column position-relative">
         <div class="modal-title d-flex flex-row align-items-center justify-content-center">
-          <div class="col-12 d-flex align-items-center justify-content-center">So sánh 2 thành viên</div>
+          <div class="col-12 d-flex align-items-center justify-content-center">Xác định mối quan hệ giữa 2 thành viên</div>
           <div class="close-add-form" @click="closeCompareModal()">
             <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
               <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -374,7 +423,9 @@
           <div class="col-6" style="padding: 0px 4px 48px 8px;">
             <div class="h-100 d-flex flex-column p-2" style="background-color: #FFFFFF; border-radius: 0.375rem;">
               <div class="d-flex flex-row pb-2" style="height: 220px">
-                <div class="h-100 col-4" style="background-color: gray; border-radius: 0.375rem;">Ảnh</div>
+                <div class="h-100 col-4" style="background-color: gray; border-radius: 0.375rem;">
+                  <img style="width: 100%; height: 100%" :src="objCompareMember1.img" alt />
+                </div>
                 <div class="d-flex flex-column" style="flex-grow: 1; padding-left: 8px;">
                   <input type="text" class="compare-modal-item form-control" :value="objCompareMember1.name" disabled />
                   <div class="d-flex flex-row pt-2">
@@ -395,10 +446,10 @@
               </div>
               <div class="d-flex flex-column" style="flex-grow: 1; background-color: #f2f2f2;">
                 <div class="compare-modal-item mx-2 mt-2">
-                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember1.father !== undefined ? objCompareMember1.father + ' (Bố)' : 'Bố: Không có trên phả đồ'" disabled />
+                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember1.father !== undefined ? 'Bố: ' + objCompareMember1.father : 'Bố: Không có trên phả đồ'" disabled />
                 </div>
                 <div class="compare-modal-item mx-2 mt-2">
-                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember1.mother !== undefined ? objCompareMember1.mother + ' (Mẹ)' : 'Mẹ: Không có trên phả đồ'" disabled />
+                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember1.mother !== undefined ? 'Mẹ: ' + objCompareMember1.mother : 'Mẹ: Không có trên phả đồ'" disabled />
                 </div>
                 <div class="compare-modal-item mx-2 mt-2">
                   <input type="text" class="w-100 h-100 form-control" :value="resultCompare1 !== undefined ? 'Mối quan hệ: ' + resultCompare1 : 'Không xác định'" disabled />
@@ -409,7 +460,9 @@
           <div class="col-6" style="padding: 0px 8px 48px 4px;">
             <div class="h-100 d-flex flex-column p-2" style="background-color: #FFFFFF; border-radius: 0.375rem;">
               <div class="d-flex flex-row pb-2" style="height: 220px">
-                <div class="h-100 col-4" style="background-color: gray; border-radius: 0.375rem;">Ảnh</div>
+                <div class="h-100 col-4" style="background-color: gray; border-radius: 0.375rem;">
+                  <img style="width: 100%; height: 100%" :src="objCompareMember2.img" alt />
+                </div>
                 <div class="d-flex flex-column" style="flex-grow: 1; padding-left: 8px;">
                   <input type="text" class="compare-modal-item form-control" :value="objCompareMember2.name" disabled />
                   <div class="d-flex flex-row pt-2">
@@ -430,10 +483,10 @@
               </div>
               <div class="d-flex flex-column" style="flex-grow: 1; background-color: #f2f2f2;">
                 <div class="compare-modal-item mx-2 mt-2">
-                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember2.father !== undefined ? objCompareMember2.father + ' (Bố)' : 'Không có trên phả đồ'" disabled />
+                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember2.father !== undefined ? 'Bố: ' + objCompareMember2.father : 'Không có trên phả đồ'" disabled />
                 </div>
                 <div class="compare-modal-item mx-2 mt-2">
-                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember2.mother !== undefined ? objCompareMember2.mother + ' (Mẹ)' : 'Không có trên phả đồ'" disabled />
+                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember2.mother !== undefined ? 'Mẹ: ' +  objCompareMember2.mother : 'Không có trên phả đồ'" disabled />
                 </div>
                 <div class="compare-modal-item mx-2 mt-2">
                   <input type="text" class="w-100 h-100 form-control" :value="resultCompare2 !== undefined ? 'Mối quan hệ: ' + resultCompare2 : 'Mối quan hệ: Không xác định'" disabled />
@@ -441,9 +494,6 @@
               </div>
             </div>
           </div>
-        </div>
-        <div class="modal-footer">
-          <div class="compare-modal-btn btn position-absolute">Đổi vị trí trên phả đồ</div>
         </div>
       </div>
     </modal>
@@ -485,10 +535,10 @@
                     <td class="d-flex justify-content-center">
                       <select v-model="m.relationship" class="form-control" style="text-align: center; width: 150px;">
                         <option selected :value="undefined">Mối quan hệ</option>
-                        <option value="AddParent">Cha</option>
-                        <option value="AddParent">Mẹ</option>
-                        <option value="AddMarriage">Vợ</option>
-                        <option value="AddMarriage">Chồng</option>
+                        <option value="AddFather">Cha</option>
+                        <option value="AddMother">Mẹ</option>
+                        <option value="AddWife">Vợ</option>
+                        <option value="AddHusband">Chồng</option>
                         <option value="AddChild">Con</option>
                       </select>
                     </td>
@@ -520,7 +570,7 @@
           </div>
           <div class="card-body" style="padding: 0; height: 675px">
             <div class="row" style="padding: 0;height: 100%;">
-              <div class="col-3 select-menu">
+              <div class="col-2 select-menu">
                 <div class="custom-info" :class="{ selected: extendedInfo }" @click="selectedInfor()">
                   <h5>Thông tin</h5>
                 </div>
@@ -537,11 +587,11 @@
                   <h5>Ghi chú</h5>
                 </div>
               </div>
-              <div class="col-9" style="padding-top: 15px" v-if="extendedInfo">
-                <div class="row">
-                  <div class="col-4">
-                    <img style="height:316px;width:100%;margin-bottom:20px" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" />
-                    <svg v-else style="margin-bottom:36px" fill="#000000" height="275px" width="100%" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
+              <div class="col-10" style="padding-top: 15px" v-if="extendedInfo">
+                <div class="d-flex flex-row">
+                  <div v-if="isEdit" class="col-4" style="padding-right: 8px;">
+                    <img style="height:316px;width:100%;margin-bottom:61px" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" @click="triggerFileInputClick()" />
+                    <svg v-else @click="triggerFileInputClick()" style="margin-bottom:61px" fill="#000000" height="275px" width="100%" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
                       <g>
                         <g>
                           <circle cx="256" cy="114.526" r="114.526" />
@@ -553,13 +603,13 @@
                         </g>
                       </g>
                     </svg>
-                    <div class="form-group">
+                    <div class="form-group" style="display:none">
                       <label style="margin-bottom:10px" v-if="objMemberInfor.Image" for="imageUpload">Thay đổi ảnh</label>
                       <label style="margin-bottom:10px" v-else for="imageUpload">Tải ảnh lên</label>
-                      <input type="file" class="form-control input-file" id="imageUpload" accept="image/*" @change="updateAvatar($event)" />
+                      <input ref="fileInputRef" type="file" class="form-control input-file" id="imageUpload" accept="image/*" @change="updateAvatar($event)" />
                     </div>
                   </div>
-                  <div class="col-8">
+                  <div class="d-flex flex-column justify-content-center" style="flex-grow: 1;">
                     <div style="position: relative; margin-right:10px">
                       <input v-model="objMemberInfor.MemberName" type="text" class="form-control modal-item" placeholder />
                       <label class="form-label" for="input" :class="{ 'active': objMemberInfor.MemberName }">Tên thành viên đầy đủ</label>
@@ -576,6 +626,18 @@
                     </div>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
+                        <!-- <select v-model="objMemberInfor.Male" class="form-select modal-item" v-if="action == 'AddFather'">
+                          <option value="1" selected>Nam</option>
+                        </select>
+                        <select v-model="objMemberInfor.Male" class="form-select modal-item" v-else-if="action == 'AddMother'">
+                          <option value="0" selected>Nữ</option>
+                        </select>
+                        <select v-model="objMemberInfor.Male" class="form-select modal-item" v-else-if="action == 'AddHusband'">
+                          <option value="1" selected>Nam</option>
+                        </select>
+                        <select v-model="objMemberInfor.Male" class="form-select modal-item" v-else-if="action == 'AddWife'">
+                          <option value="0" selected>Nữ</option>
+                        </select>-->
                         <select v-model="objMemberInfor.Male" class="form-select modal-item">
                           <option value="1">Nam</option>
                           <option value="0">Nữ</option>
@@ -612,14 +674,14 @@
                       <label class="form-label" for="input" :class="{ 'active': objMemberInfor.Origin }">Nguyên Quán</label>
                     </div>
                     <div class="form-group">
-                      <h6 style="margin-bottom:20px">Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược lại)</h6>
+                      <h6 style="margin-bottom:20px; height: 20px">Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược lại)</h6>
                       <div style="display:flex">
                         <div style="position: relative; width: 50%;margin-right: 10px;">
-                          <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar()" />
+                          <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar('live')" />
                           <label class="form-label" for="input">Dương Lịch</label>
                         </div>
                         <div style="position: relative;width: 50%; margin-right: 10px;">
-                          <input v-model="objMemberInfor.LunarDob" type="date" class="form-control modal-item" placeholder @change="convertLunarToSolar()" />
+                          <input v-model="objMemberInfor.LunarDob" type="date" class="form-control modal-item" placeholder @change="convertLunarToSolar('live')" />
                           <label class="form-label-number" min="0" for="input">Âm lịch</label>
                         </div>
                       </div>
@@ -636,11 +698,11 @@
                       <h6 style="margin-bottom:20px">Ngày Mất (*)</h6>
                       <div style="display:flex">
                         <div style="position: relative; width: 50%;margin-right: 10px;">
-                          <input v-model="objMemberInfor.Dod" type="date" class="form-control modal-item" placeholder />
+                          <input v-model="objMemberInfor.Dod" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar('died')" />
                           <label class="form-label" for="input">Dương Lịch</label>
                         </div>
                         <div style="position: relative;width: 50%; margin-right: 10px;">
-                          <input v-model="objMemberInfor.LunarDod" type="date" class="form-control modal-item" placeholder />
+                          <input v-model="objMemberInfor.LunarDod" type="date" class="form-control modal-item" placeholder @change="convertLunarToSolar('died')" />
                           <label class="form-label-number" min="0" for="input">Âm lịch</label>
                         </div>
                       </div>
@@ -854,60 +916,10 @@
       </modal>
     </div>
     <div class="help-note text-white position-absolute align-items-center justify-content-center" :class="{expandHelp : togglehelp}">
-      <div v-show="togglehelp">Hãy bấm vào chức năng cần hướng dẫn</div>
-    </div>
-    
-    <!-- Đây là div hướng dẫn -->
-    <div v-show="togglehelp" class="help-div w-100 h-100 position-absolute" style="z-index: 2;">
-      <div class="h-100 w-100 position-relative">
-        <div style="width: 19%; left: 0; z-index: 2;" class="h-100 p-1 d-flex flex-column position-absolute">
-          <div class="pt-2 d-flex flex-row">
-            <div class="col-6" style="padding-left: 8px; padding-right: 6px;">
-              <div class="w-100 h-100">
-                <button @click="selectHelpNoti()" type="button" :class="{shadowed : !helpNoti, chosen: helpNoti}" class="btn h-100 w-100 bg-secondary text-white">Tạo thông báo</button>
-              </div>
-            </div>
-            <div class="col-6" style="padding-left: 6px; padding-right: 8px;">
-              <div class="w-100 h-100">
-                <button @click="selectHelpCompare()" type="button" :class="{shadowed : !helpCompare, chosen: helpCompare}" class="btn h-100 w-100 bg-secondary text-white">So sánh</button>
-              </div>
-            </div>
-          </div>
-          <div class="d-flex flex-column h-100 w-100 px-2" style="padding-top: 12px; font-family: QuicksandBold, sans-serif;">
-            <div @click="selectHelpExist()" :class="{shadowed : !helpExist, chosen: helpExist}" class="mb-1 w-100 d-flex flex-column" style="height: 50%; border-radius: 0.375rem 0.375rem 0 0;">
-              <div class="d-flex align-items-center justify-content-center px-2 py-1 list-title">Thành viên có trên phả đồ</div>
-              <div class="d-flex flex-column w-100" style="overflow-y: auto; flex-grow: 1; cursor: pointer; background-color: #FFFFFF;">
-                <div v-for="(n, index) in nodes" :key="n.id">
-                  <div style="height: 32px; padding: 4px 0 4px 8px; cursor: auto !important" :class="{ 'selected-list': n.id == CurrentIdMember, 'list-item ancestor-member': index === 0 }">{{ n.name }}</div>
-                </div>
-              </div>
-            </div>
-            <div @click="selectHelpNonExist()" :class="{shadowed : !helpNonExist, chosen: helpNonExist}" class="my-2 w-100 d-flex flex-column" style="height: 50%; border-radius: 0.375rem 0.375rem 0 0;">
-              <div class="d-flex flex-row px-2 py-1 list-title">
-                <div class="d-flex align-items-center justify-content-center">Thành viên không có trên phả đồ</div>
-                <div v-if="memberRole != 3" class="d-flex align-items-center justify-content-center" style="padding-left: 12px;cursor:pointer">
-                  <svg class="add-member-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                    <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />
-                  </svg>
-                </div>
-              </div>
-              <div class="d-flex flex-column w-100" style="overflow-y: auto; flex-grow: 1; cursor: pointer; background-color: #FFFFFF">
-                <div v-for="list in ListUnspecifiedMembers" :key="list.id" class="list-item">{{ list.MemberName }}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div style="width: 81%; right: 0" class="h-100 position-absolute">
-          <div class="h-100 w-100 position-relative">
-            <div @click="selectHelpTree()" :class="{shadowed : !helpTree, chosen: helpTree}" class="position-absolute" style="width: 950px; height: 600px; inset: 0; margin: auto; box-shadow: 0 0 0 99999px rgba(0, 0, 0, .8); cursor: pointer;"></div>
-          </div>
-        </div>
-
-        <div v-show="helpNoti" class="position-relative h-100 w-100">
-          <div class="help-text" style="right: 0">Đây là chức năng tạo thông báo, trưởng họ là người duy nhất trong gia tộc có thể sử dụng chức năng này.</div>
-          <div class="help-text" style="right: 0; top: 64px;">Có thể gửi mail và tin nhắn SMS về thông tin, sự kiện liên quan tới dòng họ.</div>
-        </div>
-      </div>
+      <div class="d-flex align-items-center" style="height: 64px;" v-show="togglehelp">Thông báo: Gửi mail và tin nhắn SMS về thông tin, sự kiện liên quan tới dòng họ.</div>
+      <div class="d-flex align-items-center" style="height: 64px;" v-show="togglehelp">Xác định quan hệ: Chọn 2 thành viên để xác định quan hệ giữa họ.</div>
+      <div class="d-flex align-items-center" style="height: 64px;" v-show="togglehelp">Nhấp chuột trái vào thành viên trên phả đồ để xem và thay đổi thông tin thành viên</div>
+      <div class="d-flex align-items-center" style="height: 64px;" v-show="togglehelp">Nhấp chuột phải để mở danh sách những chức năng tương tác với thành viên</div>
     </div>
   </div>
 </template>
@@ -931,7 +943,7 @@ export default {
     return {
       props: {
         clearable: true,
-        fetchCountry: true,
+        // fetchCountry: true,
         preferredCountries: ["US", "GB"],
         noExample: false,
         translations: {
@@ -940,12 +952,8 @@ export default {
           phoneNumberLabel: "Nhập số điện thoại",
           example: "Example:",
         },
-      }, // phoneNumber: "",
-      // isDisabled: false,
-      // defaultCountry: "VN",
-      // validations: {
-      //   required: true,
-      // },
+      },
+      idParent: null,
       ResultRelationship: null,
       ListCity: null,
       ListDistrict: null,
@@ -974,6 +982,7 @@ export default {
       isAdd: false,
       isEdit: false,
       checkAll: false,
+      checkWithFilter: false,
       newIdMember: null,
       CurrentIdMember: null,
       ListHistoryEmail: null,
@@ -991,6 +1000,7 @@ export default {
       ListMemberJob: null,
       ListMemberEducation: null,
       memberRole: null,
+      ListMarriedMember: null,
 
       darkMode: true,
       togglehelp: false,
@@ -1054,17 +1064,20 @@ export default {
       ListReligion: null,
       nodes: [],
       formData: null,
+      isFather: true,
 
       extendedInfo: true,
       extendedContact: false,
       extendedJob: false,
       extendedEdu: false,
       extendedNote: false,
+      idFamilyHead: null,
 
       canAddFather: true,
       canAddMother: true,
       canAddhusband: true,
       canAddWife: true,
+      ListMemberCanSendMessage: null,
 
       lastClickedNodeId: null,
       isCompare: false,
@@ -1076,12 +1089,13 @@ export default {
       smsSelected: true,
       expandCreateEmail: false,
       expandEventList: false,
+      expandEventListSMS: false,
       advancedFilterDown: false,
       selectNodeHighLight: [],
       resultCompare1: null,
       resultCompare2: null,
       selectedRowIndex: null,
-      UrlAvatar: null,
+
       nodeLength: null,
       CoordinatesNode: null,
       isUpdateAvatar: false,
@@ -1094,9 +1108,13 @@ export default {
       helpExist: false,
       helpNonExist: false,
       helpTree: false,
+
+      numberDeath: 0,
+      listMember: [],
     };
   },
   methods: {
+    //lưu tùng lâm
     mytree: function (domEl, x) {
       FamilyTree.templates.tommy_male.img_0 =
         '<image preserveAspectRatio="xMidYMid slice" xlink:href="{val}" x="10" y="20" width="70" height="70"></image>';
@@ -1117,10 +1135,15 @@ export default {
       FamilyTree.templates.tommy_female.field_2 =
         '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="90" y="80">Đời: {val}</text>';
 
-      var callIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-tree-fill" viewBox="0 0 16 16">
+      var iconGG = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-tree-fill" viewBox="0 0 16 16">
   <path d="M8.416.223a.5.5 0 0 0-.832 0l-3 4.5A.5.5 0 0 0 5 5.5h.098L3.076 8.735A.5.5 0 0 0 3.5 9.5h.191l-1.638 3.276a.5.5 0 0 0 .447.724H7V16h2v-2.5h4.5a.5.5 0 0 0 .447-.724L12.31 9.5h.191a.5.5 0 0 0 .424-.765L10.902 5.5H11a.5.5 0 0 0 .416-.777l-3-4.5z"/>
 </svg>`;
-      FamilyTree.templates.tommy_male.isGG = '<g transform="translate(220,10)";>' + callIcon + '</g>';
+      FamilyTree.templates.tommy_male.isGG =
+        '<g transform="translate(220,10)";>' + iconGG + "</g>";
+      var iconFH =
+        '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>';
+      FamilyTree.templates.tommy_male.isFH =
+        '<g transform="translate(220,10)";>' + iconFH + "</g>";
 
       FamilyTree.elements._textbox = FamilyTree.elements.textbox;
       FamilyTree.elements.textbox = function (param1, param2, param3) {
@@ -1140,10 +1163,10 @@ export default {
           img_0: "img",
           field_1: "dob",
           field_2: "generation",
-          isGG:"isGG"
+          isGG: "isGG",
+          isFH: "isFH",
         },
-
-        // lazyLoading: false,
+        sticky: false,
         nodeMouseClick: FamilyTree.action.none,
       });
       this.family.onInit(() => {
@@ -1158,7 +1181,9 @@ export default {
             nodeElement = document.querySelector(
               '[data-n-id="' + this.selectedNodes[i] + '"]'
             );
-            nodeElement.classList.add("selected");
+            if (nodeElement != null) {
+              nodeElement.classList.add("selected");
+            }
           }
         }
         if (this.notSelectedNodes.length != 0) {
@@ -1166,18 +1191,20 @@ export default {
             nodeElement = document.querySelector(
               '[data-n-id="' + this.notSelectedNodes[i] + '"]'
             );
-            nodeElement.classList.add("notselected");
+            if (nodeElement != null) {
+              nodeElement.classList.add("notselected");
+            }
           }
         }
         if (
           this.CoordinatesNode != null &&
-          this.nodeLength != this.nodes.length
+          this.nodeLength != this.listMember.length
         ) {
           this.family.setViewBox(this.CoordinatesNode);
         }
         setTimeout(() => {
-          if (this.nodeLength != this.nodes.length) {
-            this.nodeLength = this.nodes.length;
+          if (this.nodeLength != this.listMember.length) {
+            this.nodeLength = this.listMember.length;
           }
         }, 3000);
       });
@@ -1223,9 +1250,22 @@ export default {
     getViewBox() {
       return this.family.getViewBox();
     },
+    //Nguyễn Lê Hùng
+    BackUpdata() {
+      let id = this.nodes.map((item) => item.id);
+      console.log(id);
+      HTTP.post("back-up", {
+        memberIDs: id,
+      }).then((response) => {
+        console.log(response);
+      });
+    },
+    //Nguyễn Lê Hùng
     getResultMember(id) {
       let objdata = {};
       let result = this.nodes.find((node) => node.id == id);
+
+      objdata.img = result.img;
 
       objdata.name = result.name;
       objdata.gender = result.gender === "male" ? "Nam" : "Nữ";
@@ -1246,12 +1286,15 @@ export default {
 
       return objdata;
     },
+    //Nguyễn Lê Hùng
     compareMember(memberId1, memberId2) {
       this.RemoveHightLight();
       this.selectNodeHighLight = [];
       this.lastClickedNodeId = null;
       this.objCompareMember1 = this.getResultMember(memberId1);
       this.objCompareMember2 = this.getResultMember(memberId2);
+      console.log(this.objCompareMember1);
+      console.log(this.objCompareMember2);
       HTTP.get("compare", {
         params: {
           MemberID1: memberId1,
@@ -1259,14 +1302,19 @@ export default {
         },
       })
         .then((response) => {
-          this.resultCompare1 = response.data.result1;
-          this.resultCompare2 = response.data.result2;
-          this.$modal.show("compare-modal");
+          if (response.data.success == true) {
+            this.resultCompare1 = response.data.data.result1;
+            this.resultCompare2 = response.data.data.result2;
+            this.$modal.show("compare-modal");
+          } else {
+            this.NotificationsDelete(response.data.message);
+          }
         })
         .catch((e) => {
           console.log(e);
         });
     },
+    //Nguyễn Lê Hùng
     async setPaternalAncestor(roleId) {
       HTTP.post("setRole", {
         memberId: this.CurrentIdMember,
@@ -1285,6 +1333,7 @@ export default {
           this.NotificationsDelete("Có lỗi hệ thống");
         });
     },
+    //Nguyễn Lê Hùng
     NotificationsDelete(messagee) {
       new Snackbar(messagee, {
         position: "bottom-right",
@@ -1298,6 +1347,7 @@ export default {
         },
       });
     },
+    //Nguyễn Lê Hùng
     NotificationsScuccess(messagee) {
       new Snackbar(messagee, {
         position: "bottom-right",
@@ -1311,20 +1361,25 @@ export default {
         },
       });
     },
+    //Nguyễn Lê Hùng
     formatDate(dateString) {
+      if (dateString == null) {
+        return null;
+      }
       const date = new Date(dateString);
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, "0");
       const day = String(date.getDate()).padStart(2, "0");
       return `${year}-${month}-${day}`;
     },
+    //Nguyễn Lê Hùng
     takeDataMember() {
       this.CurrentIdMember = this.objMemberInfor.MemberID;
       this.generationMember = this.objMemberInfor.Generation;
       this.IsDead = this.objMemberInfor.IsDead;
     },
+    //Nguyễn Lê Hùng
     sendEmailToMember() {
-      console.log("vào đây");
       if (
         this.subjectEmail != null &&
         this.subjectEmail != "" &&
@@ -1358,6 +1413,7 @@ export default {
         this.NotificationsDelete("Không có thông báo gì để gửi ");
       }
     },
+    //Nguyễn Lê Hùng
     sendMessageToMember() {
       if (
         this.contentMessage != null &&
@@ -1383,65 +1439,144 @@ export default {
         this.NotificationsDelete("Không có thông báo gì để gửi ");
       }
     },
+    //Nguyễn Lê Hùng
     searchMember() {
-      this.ListPhoneToSendMessage = this.nodes.filter((node) =>
-        node.name.toLowerCase().includes(this.searchKeyword.toLowerCase())
-      );
-      console.log(this.searchKeyword);
+      if (this.searchKeyword == "" || this.searchKeyword == null) {
+        this.ListMemberCanSendMessage = this.nodes;
+      } else {
+        HTTP.get("searchMemberSendMessage", {
+          params: {
+            CodeID: this.CodeID,
+            keySearch: this.searchKeyword,
+          },
+        })
+          .then((response) => {
+            if (response.data.success == true) {
+              console.log(response.data.data);
+              let result = response.data.data;
+              this.ListMemberCanSendMessage =
+                this.ListMemberCanSendMessage.filter((element) =>
+                  result.some(
+                    (resultElement) => resultElement.MemberID === element.id
+                  )
+                );
+              console.log(this.ListMemberCanSendMessage);
+            } else {
+              this.NotificationsDelete(response.data.message);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
     },
+    //Nguyễn Lê Hùng
     toggleSelectAll() {
       this.ListPhoneToSendMessage = this.checkAll
         ? this.nodes.map((node) => node.id)
         : [];
     },
+    //Nguyễn Lê Hùng
+    toggleSelectWithFilter() {
+      this.ListPhoneToSendMessage = this.checkWithFilter
+        ? this.listFilterMember.map((node) => node.MemberID)
+        : [];
+    },
+    //Nguyễn Lê Hùng
     toggleSelection(id) {
       let index = this.ListPhoneToSendMessage.indexOf(id);
       if (index !== -1) {
         this.ListPhoneToSendMessage.splice(index, 1);
+        this.checkAll = false;
       } else {
         this.ListPhoneToSendMessage.push(id);
       }
     },
-    convertLunarToSolar() {
-      let LunarDob = new Date(this.objMemberInfor.LunarDob);
-      let timezone = (0, getLocalTimezone)();
-      const dob = convertLunar2Solar(
-        LunarDob.getDate(),
-        LunarDob.getMonth() + 1,
-        LunarDob.getFullYear(),
-        false,
-        timezone
-      );
-      let month = dob.getMonth() + 1;
-      let date = dob.getDate();
-      if (month < 10) {
-        month = "0" + (dob.getMonth() + 1);
+    //Lưu tùng lâm
+    convertLunarToSolar(type) {
+      if (type == "died") {
+        let LunarDod = new Date(this.objMemberInfor.LunarDod);
+        let timezone = (0, getLocalTimezone)();
+        const dod = convertLunar2Solar(
+          LunarDod.getDate(),
+          LunarDod.getMonth() + 1,
+          LunarDod.getFullYear(),
+          false,
+          timezone
+        );
+        let month = dod.getMonth() + 1;
+        let date = dod.getDate();
+        if (month < 10) {
+          month = "0" + (dod.getMonth() + 1);
+        }
+        if (date < 10) {
+          date = "0" + dod.getDate();
+        }
+        this.$set(
+          this.objMemberInfor,
+          "Dod",
+          "" + dod.getFullYear() + "-" + month + "-" + date
+        );
+      } else if (type == "live") {
+        let LunarDob = new Date(this.objMemberInfor.LunarDob);
+        let timezone = (0, getLocalTimezone)();
+        const dob = convertLunar2Solar(
+          LunarDob.getDate(),
+          LunarDob.getMonth() + 1,
+          LunarDob.getFullYear(),
+          false,
+          timezone
+        );
+        let month = dob.getMonth() + 1;
+        let date = dob.getDate();
+        if (month < 10) {
+          month = "0" + (dob.getMonth() + 1);
+        }
+        if (date < 10) {
+          date = "0" + dob.getDate();
+        }
+        this.$set(
+          this.objMemberInfor,
+          "Dob",
+          "" + dob.getFullYear() + "-" + month + "-" + date
+        );
       }
-      if (date < 10) {
-        date = "0" + dob.getDate();
-      }
-      this.$set(
-        this.objMemberInfor,
-        "Dob",
-        "" + dob.getFullYear() + "-" + month + "-" + date
-      );
     },
-    convertSolarToLunar() {
-      let Dob = new Date(this.objMemberInfor.Dob);
-      let month = new LunarDate(Dob).getMonth();
-      let date = new LunarDate(Dob).getDate();
-      if (new LunarDate(Dob).getMonth() < 10) {
-        month = "0" + new LunarDate(Dob).getMonth();
+    //Lưu tùng lâm
+    convertSolarToLunar(type) {
+      if (type == "live") {
+        let Dob = new Date(this.objMemberInfor.Dob);
+        let month = new LunarDate(Dob).getMonth();
+        let date = new LunarDate(Dob).getDate();
+        if (new LunarDate(Dob).getMonth() < 10) {
+          month = "0" + new LunarDate(Dob).getMonth();
+        }
+        if (new LunarDate(Dob).getDate() < 10) {
+          date = "0" + new LunarDate(Dob).getDate();
+        }
+        this.$set(
+          this.objMemberInfor,
+          "LunarDob",
+          "" + new LunarDate(Dob).getYear() + "-" + month + "-" + date
+        );
+      } else if (type == "died") {
+        let Dod = new Date(this.objMemberInfor.Dod);
+        let month = new LunarDate(Dod).getMonth();
+        let date = new LunarDate(Dod).getDate();
+        if (new LunarDate(Dod).getMonth() < 10) {
+          month = "0" + new LunarDate(Dod).getMonth();
+        }
+        if (new LunarDate(Dod).getDate() < 10) {
+          date = "0" + new LunarDate(Dod).getDate();
+        }
+        this.$set(
+          this.objMemberInfor,
+          "LunarDod",
+          "" + new LunarDate(Dod).getYear() + "-" + month + "-" + date
+        );
       }
-      if (new LunarDate(Dob).getDate() < 10) {
-        date = "0" + new LunarDate(Dob).getDate();
-      }
-      this.$set(
-        this.objMemberInfor,
-        "LunarDob",
-        "" + new LunarDate(Dob).getYear() + "-" + month + "-" + date
-      );
     },
+    //Nguyễn Lê Hùng
     getAdressMember(addressString) {
       let addressParts = addressString.split("-");
       let SelectCityName = addressParts[0].trim();
@@ -1467,6 +1602,7 @@ export default {
           });
       }
     },
+    //Nguyễn Lê Hùng
     getInforMember(id) {
       this.isAdd = false;
       this.isEdit = true;
@@ -1514,10 +1650,12 @@ export default {
       this.selectedInfor();
       this.setDefauValueInModal();
     },
+    //Nguyễn Lê Hùng
     refreshInputJobAndEducation() {
       this.objMemberJob = {};
       this.objMemberEducation = {};
     },
+    //Nguyễn Lê Hùng
     removeJobMember() {
       HTTP.delete("removeJob", {
         params: {
@@ -1533,30 +1671,50 @@ export default {
           this.NotificationsDelete("Đã sảy ra lỗi, không thể xóa");
         });
     },
+    //Nguyễn Lê Hùng
     removeMember() {
       HTTP.get("deleteContact", {
         params: {
           MemberID: this.CurrentIdMember,
         },
-      }).catch(() => {
-        this.NotificationsDelete("Đã sảy ra lỗi, không thể xóa");
-      });
+      })
+        .then((response) => {
+          if (response.data.success == false) {
+            console.log("Xẩy ra lỗi khi xóa contact");
+          }
+        })
+        .catch(() => {
+          this.NotificationsDelete("Đã sảy ra lỗi, không thể xóa");
+        });
 
       HTTP.get("RemoveListJob", {
         params: {
           MemberID: this.CurrentIdMember,
         },
-      }).catch((e) => {
-        console.log(e);
-      });
+      })
+        .then((response) => {
+          if (response.data.success == false) {
+            console.log("Xẩy ra lỗi khi xóa Job");
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
 
       HTTP.get("deleteListEducation", {
         params: {
           MemberID: this.CurrentIdMember,
         },
-      }).catch((e) => {
-        console.log(e);
-      });
+      })
+        .then((response) => {
+          if (response.data.success == false) {
+            console.log("Xẩy ra lỗi khi xóa education");
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+
       HTTP.get("delete-member", {
         params: {
           MemberID: this.CurrentIdMember,
@@ -1570,12 +1728,14 @@ export default {
           this.$modal.hide("Select-option-Modal");
           this.$modal.hide("member-modal");
           this.getListMember();
+          this.getAllListMember();
           this.closeCfDelModal();
         } else {
           this.NotificationsDelete(response.data.message);
         }
       });
     },
+    //Nguyễn Lê Hùng
     removeFromSelectedNodes(memberid) {
       for (let i = 0; i < this.selectedNodes.length; i++) {
         if (this.selectedNodes[i] == memberid) {
@@ -1583,6 +1743,7 @@ export default {
         }
       }
     },
+    //Nguyễn Lê Hùng
     getListJobMember() {
       HTTP.get("getJob", {
         params: {
@@ -1592,6 +1753,7 @@ export default {
         this.ListMemberJob = response.data;
       });
     },
+    //Nguyễn Lê Hùng
     addNewJobMember() {
       HTTP.post("addJob", {
         memberId: this.CurrentIdMember,
@@ -1611,6 +1773,7 @@ export default {
           console.log(err);
         });
     },
+    //Nguyễn Lê Hùng
     getListEducationMember() {
       HTTP.get("education", {
         params: {
@@ -1624,6 +1787,7 @@ export default {
           console.log(err);
         });
     },
+    //Nguyễn Lê Hùng
     addNewEducationMember() {
       HTTP.post("addEducation", {
         MemberID: this.CurrentIdMember,
@@ -1641,6 +1805,13 @@ export default {
           console.log(e);
         });
     },
+    //Nguyễn Lê Hùng
+    setDefautAction() {
+      this.CurrentIdMember = null;
+      this.newIdMember = null;
+      this.action = null;
+    },
+    //Nguyễn Lê Hùng
     addMemberFromList() {
       if (this.action == undefined) {
         this.NotificationsDelete("Bạn chưa chọn mối quan hệ");
@@ -1654,6 +1825,7 @@ export default {
             if (response.data.success == true) {
               this.NotificationsScuccess(response.data.message);
               this.family.load(this.nodes);
+              this.setDefautAction();
               this.getListMember();
               this.getListUnspecifiedMembers();
               this.closeModalAddMemberFromList();
@@ -1666,10 +1838,26 @@ export default {
           });
       }
     },
+    //Nguyễn Lê Hùng
     updateAvatar(event) {
+      let formData = new FormData();
       this.isUpdateAvatar = true;
-      const file = event.target.files[0];
-      this.UrlAvatar = file;
+      let file = event.target.files[0];
+      formData.append("Image", file);
+      formData.append("MemberID", this.CurrentIdMember);
+      HTTP.put("member-photo", formData)
+        .then((response) => {
+          if (response.data.success == true) {
+            this.getListMember();
+            this.NotificationsScuccess(response.data.message);
+          } else {
+            this.NotificationsScuccess(response.data.message);
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+
       if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -1680,47 +1868,57 @@ export default {
         this.avatarSrc = null;
       }
     },
-    appendIfDefined(key, value) {
-      if (value !== undefined && value !== null) {
-        let appendedValue = value === true ? 1 : value === false ? 0 : value;
-        this.formData.append(key, appendedValue);
-      }
-    },
+    //Nguyễn Lê Hùng
     addMember() {
-      this.formData = new FormData();
+      let FatherID;
+      let MotherID;
       if (this.action == "AddNormal") {
         this.generationMember = 0;
       }
-      this.appendIfDefined("MemberName", this.objMemberInfor.MemberName);
-      this.appendIfDefined("NickName", this.objMemberInfor.NickName);
-      this.appendIfDefined("CurrentMemberID", this.CurrentIdMember);
-      this.appendIfDefined("BirthOrder", this.objMemberInfor.BirthOrder);
-      this.appendIfDefined("Origin", this.objMemberInfor.Origin);
-      this.appendIfDefined("NationalityID", this.objMemberInfor.NationalityID);
-      this.appendIfDefined("ReligionID", this.objMemberInfor.ReligionID);
-      this.appendIfDefined("Dob", this.objMemberInfor.Dob);
-      this.appendIfDefined("LunarDob", this.objMemberInfor.LunarDob);
-      this.appendIfDefined("bnirthPlace", this.objMemberInfor.BirthPlace);
-      this.appendIfDefined("IsDead", this.IsDead);
-      this.appendIfDefined("Dod", this.objMemberInfor.Dod);
-      this.appendIfDefined("LunarDod", this.objMemberInfor.LunarDod);
-      this.appendIfDefined("PlaceOfDeath", this.objMemberInfor.PlaceOfDeadth);
-      this.appendIfDefined("GraveSite", this.objMemberInfor.GraveSite);
-      this.appendIfDefined("Note", this.objMemberInfor.Note);
-      this.appendIfDefined("CurrentGeneration", this.generationMember);
-      this.appendIfDefined("BloodType", this.objMemberInfor.BloodType);
-      this.appendIfDefined("Male", this.objMemberInfor.Male);
-      this.appendIfDefined("CodeID", this.CodeID);
-      this.appendIfDefined("Action", this.action);
-      this.appendIfDefined("Image", this.UrlAvatar);
-      HTTP.post("member", this.formData)
+      if (this.action == "AddChild") {
+        if (this.isFather) {
+          FatherID = this.CurrentIdMember;
+          MotherID = this.idParent;
+        } else {
+          FatherID = this.idParent;
+          MotherID = this.CurrentIdMember;
+        }
+      }
+      HTTP.post("member", {
+        FatherID: FatherID,
+        MotherID: MotherID,
+        CurrentMemberID: this.CurrentIdMember,
+        MemberName: this.objMemberInfor.MemberName,
+        NickName: this.objMemberInfor.NickName,
+        BirthOrder: this.objMemberInfor.BirthOrder,
+        Origin: this.objMemberInfor.BirthOrder,
+        NationalityID: this.objMemberInfor.NationalityID,
+        ReligionID: this.objMemberInfor.ReligionID,
+        Dob: this.objMemberInfor.Dob,
+        LunarDob: this.objMemberInfor.LunarDob,
+        bnirthPlace: this.objMemberInfor.BirthPlace,
+        IsDead: this.IsDead,
+        Dod: this.objMemberInfor.Dod,
+        LunarDod: this.objMemberInfor.LunarDod,
+        PlaceOfDeath: this.objMemberInfor.PlaceOfDeadth,
+        GraveSite: this.objMemberInfor.GraveSite,
+        Note: this.objMemberInfor.Note,
+        CurrentGeneration: this.generationMember,
+        BloodType: this.objMemberInfor.BloodType,
+        Male: this.objMemberInfor.Male,
+        CodeID: this.CodeID,
+        Action: this.action,
+      })
         .then((response) => {
           if (this.action == "AddNormal") {
             this.getListUnspecifiedMembers();
           }
           if (response.data.success == true) {
+            this.getAllListMember();
             this.isUpdateAvatar = false;
-            this.nodes.length = this.nodes.length + 1;
+            if (this.action != "AddNormal") {
+              this.nodes.length = this.nodes.length + 1;
+            }
             this.NotificationsScuccess(response.data.message);
             this.$modal.hide("member-modal");
             this.$modal.hide("Select-option-Modal");
@@ -1744,6 +1942,11 @@ export default {
               Email: this.objMemberContact.Email,
               FacebookUrl: this.objMemberContact.FacebookUrl,
               Zalo: this.objMemberContact.Zalo,
+            }).then((response) => {
+              if(response.data.success == true){
+           //     this.setDefauValueInModal();
+                this.selectDistrictMember = null;
+              }
             }).catch((e) => {
               console.log(e);
             });
@@ -1753,11 +1956,16 @@ export default {
           console.log(e);
         });
     },
+    triggerFileInputClick() {
+      this.$refs.fileInputRef.click();
+    },
+    //Nguyễn Lê Hùng
     selectMemberFromTable(member, index) {
       this.selectedRowIndex = index;
       this.action = member.relationship;
       this.newIdMember = member.MemberID;
     },
+    //Nguyễn Lê Hùng
     setDefauValueInModal() {
       this.objMemberContact = {};
       this.objMemberInfor = {};
@@ -1771,6 +1979,7 @@ export default {
       this.ListMemberEducation = null;
       this.objMemberEducation = {};
     },
+    //Nguyễn Lê Hùng
     updateEducationMember() {
       HTTP.put("updateEducation", {
         School: this.objMemberEducation.School,
@@ -1784,6 +1993,7 @@ export default {
         this.refreshInputJobAndEducation();
       });
     },
+    //Nguyễn Lê Hùng
     updateJobMember() {
       HTTP.put("updateJob", {
         JobID: this.JobIDToUpdate,
@@ -1799,40 +2009,35 @@ export default {
         this.refreshInputJobAndEducation();
       });
     },
-
+    //Nguyễn Lê Hùng
     updateInformation() {
-      this.formData = new FormData();
-      if (!this.isUpdateAvatar) {
-        this.appendIfDefined("Image", this.avatarSrc);
-      } else {
-        this.appendIfDefined("Image", this.UrlAvatar);
-      }
-      this.appendIfDefined("MemberID", this.CurrentIdMember);
-      this.appendIfDefined("MemberName", this.objMemberInfor.MemberName);
-      this.appendIfDefined("NickName", this.objMemberInfor.NickName);
-      this.appendIfDefined("ParentID", this.objMemberInfor.ParentID);
-      this.appendIfDefined("MarriageID", this.objMemberInfor.MarriageID);
-      this.appendIfDefined("BirthOrder", this.objMemberInfor.BirthOrder);
-      this.appendIfDefined("Origin", this.objMemberInfor.Origin);
-      this.appendIfDefined("NationalityID", this.objMemberInfor.NationalityID);
-      this.appendIfDefined("ReligionID", this.objMemberInfor.ReligionID);
-      this.appendIfDefined("Dob", this.objMemberInfor.Dob);
-      this.appendIfDefined("LunarDob", this.objMemberInfor.LunarDob);
-      this.appendIfDefined("BirthPlace", this.objMemberInfor.BirthPlace);
-      this.appendIfDefined("IsDead", this.objMemberInfor.IsDead);
-      this.appendIfDefined("Dod", this.objMemberInfor.Dod);
-      this.appendIfDefined("LunarDod", this.objMemberInfor.LunarDod);
-      this.appendIfDefined("PlaceOfDeath", this.objMemberInfor.PlaceOfDeadth);
-      this.appendIfDefined("GraveSite", this.objMemberInfor.GraveSite);
-      this.appendIfDefined("Note", this.objMemberInfor.Note);
-      this.appendIfDefined("BloodType", this.objMemberInfor.BloodType);
-      this.appendIfDefined("Male", this.objMemberInfor.Male);
-
       if (this.selectDistrictMember != null) {
         this.objMemberContact.Address =
           this.objMemberContact.Address + "-" + this.selectDistrictMember;
       }
-      HTTP.put("member", this.formData)
+      HTTP.put("member", {
+        MemberID: this.CurrentIdMember,
+        MemberName: this.objMemberInfor.MemberName,
+        NickName: this.objMemberInfor.NickName,
+        BirthOrder: this.objMemberInfor.BirthOrder,
+        Origin: this.objMemberInfor.BirthOrder,
+        NationalityID: this.objMemberInfor.NationalityID,
+        ReligionID: this.objMemberInfor.ReligionID,
+        Dob: this.objMemberInfor.Dob,
+        LunarDob: this.objMemberInfor.LunarDob,
+        bnirthPlace: this.objMemberInfor.BirthPlace,
+        IsDead: this.IsDead,
+        Dod: this.objMemberInfor.Dod,
+        LunarDod: this.objMemberInfor.LunarDod,
+        PlaceOfDeath: this.objMemberInfor.PlaceOfDeadth,
+        GraveSite: this.objMemberInfor.GraveSite,
+        Note: this.objMemberInfor.Note,
+        CurrentGeneration: this.generationMember,
+        BloodType: this.objMemberInfor.BloodType,
+        Male: this.objMemberInfor.Male,
+        CodeID: this.CodeID,
+        Action: this.action,
+      })
         .then((response) => {
           if (response.data.success == true) {
             this.isUpdateAvatar = false;
@@ -1861,6 +2066,7 @@ export default {
           console.log(e);
         });
     },
+    //Nguyễn Lê Hùng
     selectRowJob(job) {
       this.JobIDToUpdate = job.JobID;
       this.objMemberJob = job;
@@ -1869,6 +2075,7 @@ export default {
       );
       this.objMemberJob.EndDate = this.formatDate(this.objMemberJob.EndDate);
     },
+    //Nguyễn Lê Hùng
     selectRowEducation(education) {
       this.EducationIdToUpdate = education.EducationID;
       this.objMemberEducation = education;
@@ -1879,6 +2086,7 @@ export default {
         this.objMemberEducation.EndDate
       );
     },
+    //Nguyễn Lê Hùng
     GetListFilterMember() {
       if (this.selectDistrict != null) {
         this.selectAdress = this.selectAdress + "-" + this.selectDistrict;
@@ -1897,6 +2105,7 @@ export default {
           console.log(e);
         });
     },
+    //Lưu tùng lâm
     RemoveHightLight() {
       this.selectedNodes = [];
       this.notSelectedNodes = [];
@@ -1934,7 +2143,6 @@ export default {
       if (selectedNode) {
         nodeElement = this.family.getNodeElement(selectedNode.id);
         nodeElement.classList.add("selected");
-        console.log(this.selectedNodes);
         this.selectedNodes.push(selectedNode.id);
       } else {
         console.log("Nút không tồn tại:", SelectNode);
@@ -2035,7 +2243,8 @@ export default {
     closeCompareModal() {
       this.$modal.hide("compare-modal");
     },
-    openMemberModal(action, title) {
+    openMemberModal(action, title, idParent) {
+      this.idParent = idParent;
       this.IsDead = 0;
       this.isAdd = true;
       this.isEdit = false;
@@ -2048,6 +2257,10 @@ export default {
       this.objMemberContact = {};
       this.TitleModal = "Thêm Thông Tin " + title;
       this.action = action;
+      if (this.action == "AddMother" || this.action == "AddWife") {
+        this.objMemberInfor.Male = 0;
+      }
+      console.log(this.action);
       this.$modal.show("member-modal");
     },
     closeMemberModal() {
@@ -2077,7 +2290,12 @@ export default {
       }
     },
     OnpenModal_SelectOption(id) {
+      this.selectedInfor();
       let foundNode = this.nodes.find((node) => node.id == id);
+      if (foundNode.gender == "female") {
+        this.isFather = false;
+      }
+      this.getAllMarriedInMember(foundNode.pids);
       this.setFunctionCanDo(foundNode);
       this.TitleModal = foundNode.name;
       this.generationMember = foundNode.generation;
@@ -2085,12 +2303,20 @@ export default {
       this.$modal.show("Select-option-Modal");
       this.CurrentIdMember = id;
     },
+    getAllMarriedInMember(membersArray) {
+      this.ListMarriedMember = this.nodes.filter((member) =>
+        membersArray.includes(member.id)
+      );
+    },
+
     closeSelectModal() {
       this.CurrentIdMember = 0;
       this.RemoveHightLight();
       this.$modal.hide("Select-option-Modal");
     },
     removeRelationship() {
+      console.log(this.CurrentIdMember);
+      console.log(this.newIdMember);
       HTTP.put("removeRelationship", {
         CurrentID: this.CurrentIdMember,
         RemoveID: this.newIdMember,
@@ -2133,51 +2359,96 @@ export default {
       this.$modal.show("modal-relationship");
       HTTP.get("relationship", {
         params: {
+          CodeID: this.CodeID,
           memberID: this.CurrentIdMember,
         },
       }).then((response) => {
-        this.ResultRelationship = response.data.data;
+        if (response.data.success == true) {
+          console.log(response.data.data);
+          this.ResultRelationship = response.data.data;
+        }
       });
     },
     closeModalRelationship() {
       this.$modal.hide("modal-relationship");
     },
 
+    getAllListMember() {
+      HTTP.get("members", {
+        params: {
+          codeID: this.CodeID,
+        },
+      }).then((response) => {
+        console.log(response.data.data);
+        if (response.data.success == true) {
+          this.listMember = response.data.data;
+        }
+      });
+    },
+
     getListMember() {
-      HTTP.get("viewTree", {
+      HTTP.get("getFamilyHead", {
         params: {
           CodeID: this.CodeID,
         },
-      })
-        .then((response) => {
-          this.nodes = [];
-          if (response.data.success == true) {
-            this.nodes = response.data.data;
-            console.log(this.nodes);
-            for (let i = 0; i < this.nodes.length; i++) {
-              this.nodes[i].tags = [];
-              if (this.nodes[i].isDead == 1) {
-                this.nodes[i].tags.push("died");
-              }
-              if (this.nodes[i].img == null || this.nodes[i].img == "") {
-                if (this.nodes[i].gender == "male") {
-                  this.nodes[i].img =
-                    "data:image/jpeg;base64,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";
-                } else if (this.nodes[i].gender == "female") {
-                  this.nodes[i].img =
-                    "data:image/jpeg;base64,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";
+      }).then((response) => {
+        if (response.data.success == true) {
+          this.idFamilyHead = response.data.data;
+          console.log(this.idFamilyHead);
+        }
+        HTTP.get("viewTree", {
+          params: {
+            CodeID: this.CodeID,
+          },
+        })
+          .then((response) => {
+            this.nodes = [];
+            this.numberDeath = 0;
+            if (response.data.success == true) {
+              this.nodes = response.data.data;
+              console.log(this.nodes);
+              for (let i = 0; i < this.nodes.length; i++) {
+                if (this.nodes[i].pids.length > 1) {
+                  let listPid = [];
+                  for (let j = this.nodes[i].pids.length - 1; j >= 0; j--) {
+                    listPid.push(this.nodes[i].pids[j]);
+                  }
+                  this.nodes[i].pids = listPid;
+                }
+                this.nodes[i].tags = [];
+                if (this.nodes[i].name.length > 15) {
+                  this.nodes[i].name =
+                    this.nodes[i].name.substring(0, 16) + "...";
+                }
+                if (this.idFamilyHead != null) {
+                  if (this.nodes[i].id == this.idFamilyHead) {
+                    this.nodes[i].isFH = "true";
+                  }
+                }
+                if (this.nodes[i].isDead == 1) {
+                  this.numberDeath += 1;
+                  this.nodes[i].tags.push("died");
+                }
+                if (this.nodes[i].img == null || this.nodes[i].img == "") {
+                  if (this.nodes[i].gender == "male") {
+                    this.nodes[i].img =
+                      "data:image/jpeg;base64,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";
+                  } else if (this.nodes[i].gender == "female") {
+                    this.nodes[i].img =
+                      "data:image/jpeg;base64,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";
+                  }
                 }
               }
+              this.nodes[0].tags.push("great-grandfather");
+              this.nodes[0].isGG = "true";
+              this.mytree(this.$refs.tree, this.nodes);
             }
-            this.nodes[0].tags.push("great-grandfather");
-            this.nodes[0].isGG = "true";
-            this.mytree(this.$refs.tree, this.nodes);
-          }
-          // this.family.load(this.nodes);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+            // this.family.load(this.nodes);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      });
     },
     getListAgeGroup() {
       HTTP.get("agegroup")
@@ -2344,41 +2615,43 @@ export default {
     selectEmail() {
       this.emailSelected = true;
       this.smsSelected = false;
+      this.expandEventListSMS = false;
     },
     selectSMS() {
       this.smsSelected = true;
       this.emailSelected = false;
       this.expandCreateEmail = false;
+      this.expandEventList = false;
     },
-    selectHelpNoti(){
+    selectHelpNoti() {
       this.helpNoti = true;
       this.helpCompare = false;
       this.helpExist = false;
       this.helpNonExist = false;
       this.helpTree = false;
     },
-    selectHelpCompare(){
+    selectHelpCompare() {
       this.helpNoti = false;
       this.helpCompare = true;
       this.helpExist = false;
       this.helpNonExist = false;
       this.helpTree = false;
     },
-    selectHelpExist(){
+    selectHelpExist() {
       this.helpNoti = false;
       this.helpCompare = false;
       this.helpExist = true;
       this.helpNonExist = false;
       this.helpTree = false;
     },
-    selectHelpNonExist(){
+    selectHelpNonExist() {
       this.helpNoti = false;
       this.helpCompare = false;
       this.helpExist = false;
       this.helpNonExist = true;
       this.helpTree = false;
     },
-    selectHelpTree(){
+    selectHelpTree() {
       this.helpNoti = false;
       this.helpCompare = false;
       this.helpExist = false;
@@ -2408,6 +2681,7 @@ export default {
         this.$router.push("/login");
       }
     }
+    console.log(this.CodeID);
     this.getListMessage();
     this.getListCity();
     this.getListNationality();
@@ -2418,6 +2692,7 @@ export default {
     this.getMemberRole();
     this.getListHistoryEmail();
     this.getListMember();
+    this.getAllListMember();
   },
 };
 </script>

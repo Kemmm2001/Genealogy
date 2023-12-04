@@ -77,7 +77,7 @@ tr{
 
 .info-pages-container{
     background-color: #f2f2f2 !important;
-    padding: 15px 100px 35px 100px;
+    padding: 25px 100px;
     border-radius: 0.575rem;
     position: relative;
 }
@@ -105,13 +105,13 @@ th{
 
 .help-note{
     background-color: #000;
-    right: 48px;
+    color: #FFFFFF;
+    right: 0;
     bottom: 0;
     margin: auto;
-    height: 48px;
+    height: 0;
     width: 0;
-    z-index: 999;
-    padding: 12px 0;
+    z-index: 998;
     text-align: center;
     border-radius: 0.2rem 0 0 0.2rem;
     transition: 0.3s;
@@ -119,7 +119,9 @@ th{
 }
 
 .help-note.expandHelp{
-    width: 330px;
+    height: 45%;
+    width: 50%;
+    padding: 0 12px;
     opacity: 1;
 }
 
@@ -132,4 +134,37 @@ th{
     display: flex;
     align-items: center;
     height: 56px;
+}
+
+.addAlbum-container .vm--container{
+    inset: 0;
+    margin: auto;
+    height: 45%;
+}
+
+.editAlbum-container .vm--container{
+    inset: 0;
+    margin: auto;
+    height: 70%;
+    width: 70%;
+}
+
+.fitHeight{
+    height: 100% !important;
+    width: fit-content !important;
+}
+
+.height100{
+    height: 100% !important;
+}
+
+#tree text{
+    cursor: pointer;
+}
+
+.ellipsis-text{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block !important;
 }

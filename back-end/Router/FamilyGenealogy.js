@@ -12,18 +12,20 @@ var router = express.Router();
 
 
 const initWebRouter = (app) => {
-    //API Hùng
-    //Get Nationality and Religion
+
+    //API Nguyễn Lê Hùng   
     router.get('/nationality', ManagerFamilyTree.AllNationality)
     router.get('/religion', ManagerFamilyTree.AllReligion)
     router.get('/agegroup', FamilyMemberManagement.getListAgeGroup)
     router.get('/bloodtype', FamilyMemberManagement.getListBloodTypeGroup)
 
-    // router.get('/', ManagerFamilyTree.AllReligion)
     router.get('/memberRole', ManagerFamilyTree.AllMemberRole)
     router.get('/InforMember', ManagerFamilyTree.informationMember)
-    router.post('/setRole', ManagerFamilyTree.setRole)    
+    router.get('/searchMemberSendMessage', ManagerFamilyTree.searchMemberCanSendMessage)
+    router.post('/setRole', ManagerFamilyTree.setRole)
     router.get('/viewTree', ManagerFamilyTree.AllMemberInGenelogy)
+    router.get('/getFamilyHead', ManagerFamilyTree.getFamilyHead)
+
     router.get('/relationship', ManagerFamilyTree.getRelationShipMember)
     router.put('/removeRelationship', ManagerFamilyTree.removeRelationship)
     router.get('/idPaternal', ManagerFamilyTree.GetIdPaternalAncestor)
@@ -52,8 +54,9 @@ const initWebRouter = (app) => {
 
     //API tuấn
     router.get('/member', FamilyMemberManagement.getMember);
-    router.post('/member', CoreFunction.uploadImage("member-photo").single('Image'), FamilyMemberManagement.addMember);
-    router.put('/member', CoreFunction.uploadImage("member-photo").single('Image'), FamilyMemberManagement.updateMember);
+    router.post('/member', FamilyMemberManagement.addMember);
+    router.put('/member', FamilyMemberManagement.updateMember);
+    router.put('/member-photo', CoreFunction.uploadImage("member-photo").single('Image'), FamilyMemberManagement.updateMemberPhoto);
     router.put('/memberToGenealogy', FamilyMemberManagement.updateMemberToGenealogy);
     router.get('/delete-member', FamilyMemberManagement.deleteMember)
     router.get('/getparent', FamilyMemberManagement.GetCurrentParentMember)

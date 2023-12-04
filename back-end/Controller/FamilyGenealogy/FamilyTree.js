@@ -1,5 +1,6 @@
 const FamilyTreeService = require("../../service/FamilyGenealogy/ViewFamilyTree");
 const Response = require("../../Utils/Response");
+const CoreFunction = require("../../Utils/CoreFunction");
 
 // Ví dụ
 var AllReligion = async (req, res) => {
@@ -27,7 +28,7 @@ var GetIdPaternalAncestor = async (req, res) => {
         console.log(error)
     }
 }
-
+//Nguyễn Lê Hùng
 var getAllUnspecifiedMembers = async (req, res) => {
     try {
         let CodeID = req.query.CodeID;
@@ -37,11 +38,28 @@ var getAllUnspecifiedMembers = async (req, res) => {
         res.send(err);
     }
 }
+
+//Nguyễn Lê Hùng
+var searchMemberCanSendMessage = async (req, res) => {
+    try {
+        let CodeID = req.query.CodeID;
+        let keySearch = req.query.keySearch;
+        let data = await FamilyTreeService.searchMemberCanSendMessage(CodeID, keySearch);
+        if (data) {
+            return res.send(Response.successResponse(data))
+        } else {
+            return res.send(Response.dataNotFoundResponse())
+        }
+    } catch (error) {
+        return res.send(Response.dataNotFoundResponse(error))
+    }
+}
+//Nguyễn Lê Hùng
 var getRelationShipMember = async (req, res) => {
     try {
         let memberID = req.query.memberID;
-        console.log(memberID)
-        let data = await FamilyTreeService.RelationShipMember(memberID);
+        let CodeID = req.query.CodeID;
+        let data = await FamilyTreeService.RelationShipMember(CodeID, memberID);
         if (data == null || data.length == 0) {
             return res.send(Response.dataNotFoundResponse());
         }
@@ -57,8 +75,6 @@ var removeRelationship = async (req, res) => {
         let currentID = req.body.CurrentID;
         let memberToRemove = req.body.RemoveID;
         let action = req.body.action;
-        console.log('currentID: ' + currentID)
-        console.log('memberToRemove: ' + memberToRemove)
         if (action == 'RemoveChild') {
             let data = await FamilyTreeService.RemoveRelationshipChild(memberToRemove);
             if (data == true) {
@@ -68,7 +84,6 @@ var removeRelationship = async (req, res) => {
             }
         } else if (action == 'RemoveMarried') {
             let data = await FamilyTreeService.RemoveRelationshipMarried(currentID, memberToRemove)
-            console.log(data)
             if (data == true) {
                 return res.send(Response.successResponse());
             } else {
@@ -112,10 +127,27 @@ var getListHistoryEmail = async (req, res) => {
         return res.send(Response.dataNotFoundResponse(error));
     }
 }
+
+
+var getFamilyHead = async (req, res) => {
+    try {
+        console.log("đã vào api")
+        let CodeID = req.query.CodeID;
+        let data = await FamilyTreeService.getFamilyHeadInGenealogy(CodeID);
+        if (data) {
+            return res.send(Response.successResponse(data))
+        } else {
+            return res.send(Response.dataNotFoundResponse())
+        }
+    } catch (error) {
+        return res.send(Response.dataNotFoundResponse(error))
+    }
+}
+
 var AllMemberInGenelogy = async (req, res) => {
     try {
         let CodeID = req.query.CodeID;
-        let data = await FamilyTreeService.ViewFamilyTree(CodeID);
+        let data = await FamilyTreeService.ViewFamilyTree(CodeID);       
         if (data) {
             data.forEach((item) => {
                 if (item.dod === '1-1-1970') {
@@ -125,6 +157,7 @@ var AllMemberInGenelogy = async (req, res) => {
                     item.dob = null;
                 }
             });
+
             return res.send(Response.successResponse(data));
         } else {
             return res.send(Response.dataNotFoundResponse());
@@ -197,5 +230,6 @@ var informationMember = async (req, res) => {
 
 module.exports = {
     AllReligion, informationMember, AllNationality, AllMemberRole, setRole, AllMemberInGenelogy, getAllUnspecifiedMembers,
-    GetIdPaternalAncestor, getRelationShipMember, getListMessage, removeRelationship, getListHistoryEmail
+    GetIdPaternalAncestor, getRelationShipMember, getListMessage, removeRelationship, getListHistoryEmail, getFamilyHead,
+    searchMemberCanSendMessage
 };

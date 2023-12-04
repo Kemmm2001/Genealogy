@@ -265,7 +265,27 @@ async function filterEvent(filterOptions) {
     })
 }
 
+function getCodeID(eventID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `SELECT CodeID FROM genealogy.eventfamily WHERE EventID = ${eventID}`;
+            db.connection.query(query, (err, result) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            });
+        } catch (error) {
+            console.log(error);
+            reject(error);
+        }
+    });
+}
+
+
 module.exports = {
     getAllEvent, InsertNewEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth,
-    GetDeadDayInMonth, searchEvent, filterEvent, getListPhone, getListEventRepetition, getInformationEvent, getListEmail
+    GetDeadDayInMonth, searchEvent, filterEvent, getListPhone, getListEventRepetition, getInformationEvent, getListEmail, getCodeID
 }

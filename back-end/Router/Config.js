@@ -9,10 +9,11 @@ var router = express.Router();
 const initWebRouter = (app) => {
 
     router.post('/export-pdf', PdfController.exportPDF);
-    router.get('/export-excle', ExcelController.exportExcel);
+    router.post('/export-excle', ExcelController.exportExcel);
+    router.post('/back-up', JsonController.exportData)
+    router.post('/import', JsonController.importData)
+
     //Tiền tố đứng trước route
-    router.post('/export-json', JsonController.createJSONFile)
-    router.post('/import-json', JsonController.importJsonFile);
     app.use('/api/v1', router);
 }
 

@@ -4,7 +4,6 @@ const GeneralInformation = require('../Controller/InformationGenealogy/GeneralIn
 const FamilyHistoryController = require('../Controller/InformationGenealogy/FamilyHistory');
 const StatisticsController = require('../Controller/InformationGenealogy/StatisticsController')
 const AlbumPhotoController = require('../Controller/InformationGenealogy/AlbumPhotoController');
-const ArticleController = require('../Controller/FamilyGenealogy/ArticleController')
 const FamilyPhotoController = require('../Controller/InformationGenealogy/FamilyPhotoController');
 const AddressController = require('../Controller/InformationGenealogy/AddressController');
 const CoreFunction = require('../Utils/CoreFunction');
@@ -53,6 +52,7 @@ const initWebRouter = (app) => {
     router.put('/albumphoto', CoreFunction.uploadImage("album-photo").single('BackGroundPhoto'), AlbumPhotoController.updateAlbumPhoto);
     // Delete an AlbumPhoto with id
     router.get('/delete-albumphoto', AlbumPhotoController.deleteAlbumPhoto);
+    router.get('/searchAlbum',AlbumPhotoController.searchAlbumPhoto)
 
     // Create a new FamilyPhoto
     router.post('/familyphoto', CoreFunction.uploadImage("family-photo").single('Photo'), FamilyPhotoController.addFamilyPhoto);
@@ -63,13 +63,9 @@ const initWebRouter = (app) => {
     // Delete a FamilyPhoto with id
     router.get('/delete-familyphoto', FamilyPhotoController.deleteFamilyPhoto);
     // End API tuấn
-    //API Nhật anh
 
-    router.get('/article', ArticleController.getAllArticle);
-    router.post('/article', ArticleController.getArticle);
-    router.post('/add-article', ArticleController.addArticle);
-    router.put('/update-article', ArticleController.updateArticle);
-    router.delete('/delete-article', ArticleController.deleteArticle);
+
+   
 
     router.get('/province', AddressController.getProvince);
     router.get('/district', AddressController.getDistrict);

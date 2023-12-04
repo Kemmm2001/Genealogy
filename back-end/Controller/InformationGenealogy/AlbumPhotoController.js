@@ -22,13 +22,13 @@ var addAlbumPhoto = async (req, res) => {
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
-            CoreFunction.deleteImage(req.file);
+            CoreFunction.deleteImage(req.file.path);
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
         let checkCodeIDExistResponse = await checkFamilyTreeExist(req);
         if (checkCodeIDExistResponse.success == false) {
-            CoreFunction.deleteImage(req.file);
+            CoreFunction.deleteImage(req.file.path);
             return res.send(checkCodeIDExistResponse);
         }
         // Thêm thông tin vào bảng albumphoto
@@ -40,7 +40,7 @@ var addAlbumPhoto = async (req, res) => {
         return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
-        CoreFunction.deleteImage(req.file);
+        CoreFunction.deleteImage(req.file.path);
         return res.send(Response.internalServerErrorResponse());
     }
 };
@@ -62,25 +62,25 @@ var updateAlbumPhoto = async (req, res) => {
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
-            CoreFunction.deleteImage(req.file);
+            CoreFunction.deleteImage(req.file.path);
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
         let checkAlbumIDExistResponse = await checkAlbumIDExist(req.body.AlbumID);
         if (checkAlbumIDExistResponse.success == false) {
-            CoreFunction.deleteImage(req.file);
+            CoreFunction.deleteImage(req.file.path);
             return res.send(checkAlbumIDExistResponse);
         }
         let checkCodeIDExistResponse = await checkCodeIDExist(req.body.CodeID);
         if (checkCodeIDExistResponse.success == false) {
-            CoreFunction.deleteImage(req.file);
+            CoreFunction.deleteImage(req.file.path);
             return res.send(checkCodeIDExistResponse);
         }
         // nếu có file ảnh thì lưu đường dẫn vào req.body.BackGroundPhoto
         if (req.file != null) {
             console.log("Đã vào trường hợp có file ảnh");
             req.body.BackGroundPhoto = req.file.path;
-        }else{
+        } else {
             console.log("Đã vào trường hợp không có file ảnh");
         }
         // cập nhật AlbumPhoto vào database
@@ -91,7 +91,7 @@ var updateAlbumPhoto = async (req, res) => {
         return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
-        CoreFunction.deleteImage(req.file);
+        CoreFunction.deleteImage(req.file.path);
         return res.send(Response.internalServerErrorResponse());
     }
 };
@@ -149,6 +149,22 @@ var checkFamilyTreeExist = async (req) => {
         return Response.internalServerErrorResponse();
     }
 }
+//Nguyễn Lê Hùng
+var searchAlbumPhoto = async (req, res) => {
+    try {
+        let CodeID = req.query.CodeID;
+        let keySearch = req.query.keySearch;
+        let data = await AlbumPhotoManagementService.searchAlbumPhoto(CodeID, keySearch);
+        if (data) {
+            return res.send(Response.successResponse(data))
+        } else {
+            return res.send(Response.dataNotFoundResponse())
+        }
+    } catch (error) {
+        return res.send(Response.dataNotFoundResponse(error))
+    }
+}
+
 var deleteAlbumPhoto = async (req, res) => {
     try {
         // Log ra thông tin trong req.query
@@ -221,4 +237,4 @@ var getAllAlbumPhotos = async (req, res) => {
 
 
 
-module.exports = { addAlbumPhoto, updateAlbumPhoto, deleteAlbumPhoto, getAlbumPhoto, getAllAlbumPhotos };
+module.exports = { addAlbumPhoto, updateAlbumPhoto, deleteAlbumPhoto, getAlbumPhoto, getAllAlbumPhotos, searchAlbumPhoto };

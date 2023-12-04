@@ -1,52 +1,61 @@
 const CompareMemberService = require('../../service/FamilyGenealogy/CompareMemberService');
+const Response = require("../../Utils/Response");
 
+//Nguyễn Lê Hùng
 var compareMember = async (req, res) => {
     try {
-        let data;
-        let isInLaw1;
-        let isInLaw2;
-        let Flag1 = false;
-        let Flag2 = false;
-        let inforMember1;
-        let inforMember2;
-        let MemberID1 = req.query.MemberID1;
-        let MemberID2 = req.query.MemberID2;
+        let idMember1 = req.query.MemberID1;
+        let idMember2 = req.query.MemberID2;
+        console.log('idMember1: ' + idMember1)
+        let newIdToCampereMember1;
+        let newIdToCampereMember2;
+        let Flag = false;
+        let generationMember1 = await CompareMemberService.getGenerationByID(req.query.MemberID1);
+        let generationMember2 = await CompareMemberService.getGenerationByID(req.query.MemberID2);
 
-        inforMember1 = await CompareMemberService.getGenerationByID(MemberID1);
-        inforMember2 = await CompareMemberService.getGenerationByID(MemberID2);
-
-        isInLaw1 = await CompareMemberService.isInLaw(MemberID1);
-        if (isInLaw1.ParentID == null && isInLaw1.MarriageID != null) {
-            MemberID1 = isInLaw1.MarriageID
-            Flag1 = true;
+        //Kiểm tra xem người đó có phải làm dâu hoặc làm rể không và gán id mới nhất
+        if (generationMember1[0].Generation != 1) {
+            newIdToCampereMember1 = await CompareMemberService.checkBrideOrGroom(req.query.MemberID1)
+            if (newIdToCampereMember1 != req.query.MemberID1) {
+                Flag = true
+            }
         }
-        isInLaw2 = await CompareMemberService.isInLaw(MemberID2);
-        if (isInLaw2.ParentID == null && isInLaw2.MarriageID != null) {
-            MemberID2 = isInLaw2.MarriageID
-            Flag2 = true;
-        }    
-
-        console.log('MemberID1: ' + MemberID1)
-        console.log('MemberID2: ' + MemberID2)
-        console.log("inforMember1[0].Male: " + inforMember1[0].Male)
-        console.log("inforMember2[0].Male: " + inforMember2[0].Male)
-
-        let DefferenceGeneration = inforMember2[0].Generation - inforMember1[0].Generation;
-
+        if (generationMember2[0].Generation != 1) {
+            newIdToCampereMember2 = await CompareMemberService.checkBrideOrGroom(req.query.MemberID2)
+            if (newIdToCampereMember2 != req.query.MemberID2) {
+                Flag = true
+            }
+        }
+        let DefferenceGeneration = generationMember2[0].Generation - generationMember1[0].Generation;
         if (DefferenceGeneration == 0) {
-            data = await CompareMemberService.GetResultCompare(MemberID1, MemberID2, DefferenceGeneration, Flag1, Flag2, inforMember1[0].Male, inforMember2[0].Male)
-            res.send(data)
+            let data = await CompareMemberService.GetResultCompare(newIdToCampereMember1, newIdToCampereMember2, DefferenceGeneration, Flag, generationMember1[0].Male, generationMember2[0].Male)
+            if (data) {
+                return res.send(Response.successResponse(data))
+            } else {
+                return res.send(Response.badRequestResponse(null, 'Lỗi hệ thống'))
+            }
+
         } else if (DefferenceGeneration < 0) {
-            MemberID1 = await CompareMemberService.getIdToCompare(DefferenceGeneration, MemberID1);
-            data = await CompareMemberService.GetResultCompare(MemberID1, MemberID2, DefferenceGeneration, Flag1, Flag2, inforMember1[0].Male, inforMember2[0].Male)
-            res.send(data)
+            let resultCheckMaternalOrPaternal = await CompareMemberService.checkMaternalOrPaternal(newIdToCampereMember1);
+            idMember1 = await CompareMemberService.getIdToCompare(DefferenceGeneration, newIdToCampereMember1);     
+            let data = await CompareMemberService.GetResultCompare(idMember1, newIdToCampereMember2, DefferenceGeneration, Flag, generationMember1[0].Male, generationMember2[0].Male, resultCheckMaternalOrPaternal)
+            if (data) {
+                return res.send(Response.successResponse(data))
+            } else {
+                return res.send(Response.badRequestResponse(null, 'Lỗi hệ thống'))
+            }
         } else {
-            MemberID2 = await CompareMemberService.getIdToCompare(DefferenceGeneration, MemberID2);
-            data = await CompareMemberService.GetResultCompare(MemberID1, MemberID2, DefferenceGeneration, Flag1, Flag2, inforMember1[0].Male, inforMember2[0].Male)
-            res.send(data)
+            let resultCheckMaternalOrPaternal = await CompareMemberService.checkMaternalOrPaternal(newIdToCampereMember2);
+            idMember2 = await CompareMemberService.getIdToCompare(DefferenceGeneration, newIdToCampereMember2);
+            let data = await CompareMemberService.GetResultCompare(newIdToCampereMember1, idMember2, DefferenceGeneration, Flag, generationMember1[0].Male, generationMember2[0].Male, resultCheckMaternalOrPaternal)
+            if (data) {
+                return res.send(Response.successResponse(data))
+            } else {
+                return res.send(Response.badRequestResponse(null, 'Lỗi hệ thống'))
+            }
         }
     } catch (error) {
-        console.log(error)
+        return res.send(Response.badRequestResponse(error, 'Lỗi hệ thống'))
     }
 }
 

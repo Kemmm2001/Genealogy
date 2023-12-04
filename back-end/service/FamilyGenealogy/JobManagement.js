@@ -1,6 +1,6 @@
 const db = require("../../Models/ConnectDB")
 
-
+//Nguyễn Lê Hùng
 function GetAllJobByMemberID(memberId) {
     return new Promise((resolve, reject) => {
         let query = `SELECT * FROM job where MemberID = ${memberId}`
@@ -14,6 +14,7 @@ function GetAllJobByMemberID(memberId) {
         })
     })
 }
+//Nguyễn Lê Hùng
 async function AddJobByMemberID(ObjData) {
     let query = `INSERT INTO job (MemberID, Organization, OrganizationAddress, Role, JobName, StartDate, EndDate) 
                    VALUES (?, ?, ?, ?, ?, ?, ?)`;
@@ -36,7 +37,7 @@ async function AddJobByMemberID(ObjData) {
         }
     });
 }
-
+//Nguyễn Lê Hùng
 async function UpdateJobByID(ObjData) {
     const query = `UPDATE job 
                    SET Organization = ?, OrganizationAddress = ?, Role = ?, JobName = ?, StartDate = ?, EndDate = ? 
@@ -61,7 +62,7 @@ async function UpdateJobByID(ObjData) {
         }
     });
 }
-
+//Nguyễn Lê Hùng
 async function DeleteJobByID(JobID) {
     let query = `DELETE FROM job WHERE JobID = ${JobID}`
     db.connection.query(query, (err, result) => {
@@ -74,21 +75,33 @@ async function DeleteJobByID(JobID) {
         }
     });
 }
-
+//Nguyễn Lê Hùng
 async function DeleteListJobByID(memberId) {
-    let query = `DELETE FROM job WHERE MemberID = ${memberId}`
-    db.connection.query(query, (err, result) => {
-        if (err) {
-            console.error(err);
-
-            return;
-        } else {
-            console.log('Delete Successfully');
+    return new Promise((resolve, reject) => {
+        try {
+            let findMember = `SELECT * FROM genealogy.job where MemberID = ${memberId};`
+            db.connection.query(findMember, (err, result) => {
+                if (!err && result.length > 0) {
+                    let query = `DELETE FROM job WHERE MemberID = ${memberId}`
+                    db.connection.query(query, (err) => {
+                        if (err) {
+                            reject(false)
+                        } else {
+                            resolve(true)
+                        }
+                    });
+                } else {
+                    resolve(true)
+                }
+            })
+        } catch (error) {
+            reject(false)
         }
-    });
+    })
+
 }
 
 
 module.exports = {
-    GetAllJobByMemberID, AddJobByMemberID, UpdateJobByID, DeleteJobByID,DeleteListJobByID
+    GetAllJobByMemberID, AddJobByMemberID, UpdateJobByID, DeleteJobByID, DeleteListJobByID
 }

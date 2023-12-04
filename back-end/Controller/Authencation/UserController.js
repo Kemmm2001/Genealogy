@@ -125,9 +125,9 @@ var loginUser = async (req, res) => {
       return res.send(Response.dataNotFoundResponse(null, 'Mật khẩu không đúng'));
     }
     let accessToken = await signAccessToken(data.accountID)
-    let refreshToken = await signRefreshToken(data.accountID)
+    // let refreshToken = await signRefreshToken(data.accountID)
     console.log(refreshToken)
-    return res.send({ accessToken, refreshToken })
+    return res.send({ accessToken })
 
   } catch (error) {
     if (error.isJoi === true) {
@@ -253,10 +253,15 @@ var checkCodeID = async (req, res) => {
     let CodeID = req.body.codeID;
     let accountID = req.body.accountID;
     let doesExist = await UserService.checkCodeID(CodeID);
+    console.log('CodeID: ' + CodeID)
+    console.log('accountID: ' + accountID)
+    console.log('doesExist: ' + doesExist)
     if (doesExist > 0) {
-      let checkCodeIdCreator = await UserService.checkCodeIdCreator(accountID, CodeID, 1);
-      console.log('checkCodeIdCreator: ' + checkCodeIdCreator)
-      if (checkCodeIdCreator > 0) {
+      let checkCodeIdCreator1 = await UserService.checkCodeIdCreator(accountID, CodeID, 1);
+      let checkCodeIdCreator2 = await UserService.checkCodeIdCreator(accountID, CodeID, 2);
+      let checkCodeIdCreator3 = await UserService.checkCodeIdCreator(accountID, CodeID, 3);
+      console.log('checkCodeIdCreator: ' + checkCodeIdCreator1)
+      if (checkCodeIdCreator1 > 0 || checkCodeIdCreator2 || checkCodeIdCreator3) {
         return res.send(Response.successResponse())
       }
       else {
@@ -292,14 +297,14 @@ var forgetPassword = async (req, res) => {
       try {
         console.log(token)
         const data = await UserService.UpdateAccount(email, token)
-         const resetPasswordLink = `http://localhost:3003/api/v1/reset-password?token=${token}`;
+        const resetPasswordLink = `http://localhost:3006/reset-password?token=${token}`;
 
-         const objData = {
-           to: email,
-           subject: "For reset password",
-           html: `<p> Hii, Please click the link to <a href="${resetPasswordLink}">reset your password</a></p>`
-         };
-         sendMail.SendEmailCore(objData)
+        const objData = {
+          to: email,
+          subject: "For reset password",
+          html: `<p> Hii, Please click the link to <a href="${resetPasswordLink}">reset your password</a></p>`
+        };
+        sendMail.SendEmailCore(objData)
         if (data == true) {
           return res.send(Response.successResponse(null, 'Vui lòng kiểm tra hộp thư đến trong gmail của bạn'));
         }
