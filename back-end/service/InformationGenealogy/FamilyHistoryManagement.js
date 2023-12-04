@@ -71,9 +71,9 @@ function getAllFamilyHistory() {
     })
 }
 
-async function getMaxOrder_position() {
+async function getMaxOrder_position(CodeID) {
     return new Promise((resolve, reject) => {
-        let query = "SELECT MAX(order_position) AS max_order_position FROM familyhistory where CodeID = 258191";
+        let query = `SELECT MAX(order_position) AS max_order_position FROM familyhistory where CodeID = ${CodeID}`;
         db.connection.query(query, (err, result) => {
             if (err) {
                 console.log("Error while fetching max order_position: " + err);

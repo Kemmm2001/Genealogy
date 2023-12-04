@@ -410,15 +410,15 @@ async function getLivingFamilyMember(memberID) {
                                         }
                                     }
                                 }
-                                resolve(null);
+                                reject(false);
                             });
                         }
                     } else {
                         // Không tìm thấy thông tin cho MemberID
-                        resolve(null);
+                        reject(false);
                     }
                 } else {
-                    reject(err);
+                    reject(false);
                 }
             });
         } catch (error) {
@@ -437,14 +437,14 @@ async function getListChildWithWifeID(husbandID, wifeID) {
                 if (!err && result.length > 0) {
                     for (let i = 0; i < result.length; i++) {
                         let resultFamilyHead = await getLivingFamilyMember(result[i].MemberID)
-                        if (resultFamilyHead != null) {
+                        if (resultFamilyHead != false) {
                             resolve(resultFamilyHead)
                             return
                         }
                     }
-                    resolve(null);
+                    reject(false);
                 } else {
-                    reject(err)
+                    reject(false)
                 }
             })
         } catch (error) {
@@ -464,23 +464,32 @@ async function getFamilyHeadInGenealogy(CodeID) {
                 db.connection.query(queryGetFirstWife, async (err, result) => {
                     if (!err && result.length > 0) {
                         for (let i = 0; i < result.length; i++) {
-                            let resultFamilyHead = await getListChildWithWifeID(IdPaternal, result[i].wifeID);
-                            if (resultFamilyHead != null) {
-                                resolve(resultFamilyHead)
-                                return
+                            try {
+                                let resultFamilyHead = await getListChildWithWifeID(IdPaternal, result[i].wifeID);
+                                if (resultFamilyHead !== false) {
+                                    resolve(resultFamilyHead);
+                                    return;
+                                }
+                            } catch (errorInGetListChild) {
+                                console.error(`Error in getListChildWithWifeID: ${errorInGetListChild}`);
                             }
-                            resolve(null)
                         }
+                        // Nếu không tìm thấy kết quả, gọi reject ở đây
+                        console.log("Không tìm thấy Family Head");
+                        reject(false);
                     } else {
-                        reject(err)
+                        console.log("Lỗi truy vấn");
+                        reject(err);
                     }
                 })
             }
         } catch (error) {
-            console.log(error)
+            console.log(error);
+            reject(false); // Gọi reject nếu có lỗi trong try-catch
         }
     })
 }
+
 
 
 //Nguyễn Lê Hùng
@@ -577,6 +586,7 @@ async function GetGenealogy(result, dataMarriage, MemberID, ListFamily = [], vis
 
     if (Member.Male == 1) {
         marriages = dataMarriage.filter(member => member.husbandID == MemberID);
+        console.log(marriages)
     } else {
         marriages = dataMarriage.filter(member => member.wifeID == MemberID);
     }

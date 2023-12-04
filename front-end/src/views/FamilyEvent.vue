@@ -727,11 +727,9 @@ export default {
         this.NotificationsDelete("bạn nhập thiếu trường (*)");
       }
     },
-    exportExcel() {
-      HTTP.get("export-excle", {
-        params: {
-          CodeID: this.CodeID,
-        },
+    exportExcel(){
+      HTTP.post("export-excle", {
+        CodeID: this.CodeID,
       })
         .then((respone) => {
           console.log(this.CodeID)

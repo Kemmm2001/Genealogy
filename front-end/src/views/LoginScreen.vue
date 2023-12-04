@@ -104,14 +104,14 @@ export default {
       loggingin: true,
 
       accountLogin: {
-        email: null,
-        password: null,
+        email: "",
+        password: "",
       },
       accountRegister: {
-        username: null,
-        password: null,
-        rePassword: null,
-        email: null,
+        username: "",
+        password: "",
+        rePassword: "",
+        email: "",
       },
       accountIdToken: null,
     };
@@ -145,12 +145,13 @@ export default {
     },
     register() {
       if (
-        this.accountRegister.email != null &&
-        this.accountRegister.username != null &&
-        this.accountRegister.password != null &&
-        this.accountRegister.rePassword != null
+        this.accountRegister.email != "" &&
+        this.accountRegister.username != "" &&
+        this.accountRegister.password != "" &&
+        this.accountRegister.rePassword != ""
       ) {
         if (this.accountRegister.rePassword == this.accountRegister.password) {
+          this.accountRegister.email = this.accountRegister.email.replace(/\s+/g, "");
           HTTP.post("register", {
             email: this.accountRegister.email,
             username: this.accountRegister.username,
@@ -180,14 +181,11 @@ export default {
       }
     },
     login() {
-      console.log(this.accountLogin.password);
+      console.log(this.accountLogin.password.replace(/\s+/g, ""));
       console.log(SHA256(this.accountLogin.password).toString());
-      if (
-        this.accountLogin.email != null &&
-        this.accountLogin.password != null
-      ) {
+      if (this.accountLogin.email != "" && this.accountLogin.password != "") {
         HTTP.post("login", {
-          email: this.accountLogin.email,
+          email: this.accountLogin.email.replace(/\s+/g, ""),
           // password: SHA256(this.accountLogin.password).toString(),
           password: this.accountLogin.password,
         })

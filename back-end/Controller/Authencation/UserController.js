@@ -125,9 +125,9 @@ var loginUser = async (req, res) => {
       return res.send(Response.dataNotFoundResponse(null, 'Mật khẩu không đúng'));
     }
     let accessToken = await signAccessToken(data.accountID)
-    let refreshToken = await signRefreshToken(data.accountID)
+    // let refreshToken = await signRefreshToken(data.accountID)
     console.log(refreshToken)
-    return res.send({ accessToken, refreshToken })
+    return res.send({ accessToken })
 
   } catch (error) {
     if (error.isJoi === true) {
