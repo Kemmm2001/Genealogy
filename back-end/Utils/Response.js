@@ -1,50 +1,78 @@
 const db = require('../Models/ConnectDB');
 
 let coreResponse = (success, status_code, message, data) => {
-    console.log(`success: ${success}, status_code: ${status_code}, message: ${message}`);
-    return {
-        success: success,
-        status_code: status_code,
-        message: message,
-        data: data
-    };
+    try {
+        console.log(`success: ${success}, status_code: ${status_code}, message: ${message}`);
+        return {
+            success: success,
+            status_code: status_code,
+            message: message,
+            data: data
+        };
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 let coreErrorResponse = (status_code, message, data) => {
-    db.connection.rollback();
-    return coreResponse(false, status_code, message, data);
+    try {
+        // db.connection.rollback();
+        return coreResponse(false, status_code, message, data);
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 let badRequestResponse = (data, message) => {
-    if (message == null) message = "Yêu cầu không hợp lệ, vui lòng kiểm tra lại";
-    if (data == null) return coreErrorResponse(400, message);
-    return coreErrorResponse(400, message, data);
+    try {
+        if (message == null) message = "Yêu cầu không hợp lệ, vui lòng kiểm tra lại";
+        if (data == null) return coreErrorResponse(400, message);
+        return coreErrorResponse(400, message, data);
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 let dataNotFoundResponse = (data, message) => {
-    if (message == null) message = "Không tìm thấy dữ liệu phù hợp";
-    if (data == null) return coreErrorResponse( 404, message);
-    return coreErrorResponse(404, message, data);
+    try {
+        if (message == null) message = "Không tìm thấy dữ liệu phù hợp";
+        if (data == null) return coreErrorResponse(404, message);
+        return coreErrorResponse(404, message, data);
+    } catch (error) {
+        console.log(error)
+    }
 }
 let successResponse = (data, message) => {
-    if (message == null) message = "Thành công";
-    if (data == null) return coreResponse(true, 200, message);
-    db.connection.commit();
-    return coreResponse(true, 200, message, data);
+    try {
+        if (message == null) message = "Thành công";
+        if (data == null) return coreResponse(true, 200, message);
+        db.connection.commit();
+        return coreResponse(true, 200, message, data);
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 let internalServerErrorResponse = (data, message) => {
-    if (message == null) message = "Lỗi hệ thống";
-    if (data == null) return coreErrorResponse(500, message);
-    return coreErrorResponse(500, message, data);
+    try {
+        if (message == null) message = "Lỗi hệ thống";
+        if (data == null) return coreErrorResponse(500, message);
+        return coreErrorResponse(500, message, data);
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 let missingFieldsErrorResponse = (missingFields) => {
-    message = "Thiếu dữ liệu bắt buộc";
-    data = {
-        missing_fields: missingFields
+    try {
+        message = "Thiếu dữ liệu bắt buộc";
+        data = {
+            missing_fields: missingFields
+        }
+        return badRequestResponse(data, message);
+    } catch (error) {
+        console.log(error)
     }
-    return badRequestResponse(data, message);
 }
 
 module.exports = {

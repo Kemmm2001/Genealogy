@@ -346,6 +346,24 @@ function setAllGenerationMember(memberId, generation) {
 }
 
 //Nguyễn Lê Hùng
+function searchMemberCanSendMessage(CodeID, keySearch) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `SELECT * FROM genealogy.familymember WHERE CodeID = ${CodeID} and IsDead = 0 and Generation != 0 and MemberName like '%${keySearch}%'`;
+            db.connection.query(query, (err, result) => {
+                if (!err && result.length > 0) {
+                    resolve(result)
+                } else {
+                    reject(err)
+                }
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+//Nguyễn Lê Hùng
 function getListUnspecifiedMembers(CodeID) {
     return new Promise((resolve, reject) => {
         try {
@@ -392,15 +410,15 @@ async function getLivingFamilyMember(memberID) {
                                         }
                                     }
                                 }
-                                resolve(null);
+                                reject(false);
                             });
                         }
                     } else {
                         // Không tìm thấy thông tin cho MemberID
-                        resolve(null);
+                        reject(false);
                     }
                 } else {
-                    reject(err);
+                    reject(false);
                 }
             });
         } catch (error) {
@@ -419,14 +437,14 @@ async function getListChildWithWifeID(husbandID, wifeID) {
                 if (!err && result.length > 0) {
                     for (let i = 0; i < result.length; i++) {
                         let resultFamilyHead = await getLivingFamilyMember(result[i].MemberID)
-                        if (resultFamilyHead != null) {
+                        if (resultFamilyHead != false) {
                             resolve(resultFamilyHead)
                             return
                         }
                     }
-                    resolve(null);
+                    reject(false);
                 } else {
-                    reject(err)
+                    reject(false)
                 }
             })
         } catch (error) {
@@ -446,23 +464,32 @@ async function getFamilyHeadInGenealogy(CodeID) {
                 db.connection.query(queryGetFirstWife, async (err, result) => {
                     if (!err && result.length > 0) {
                         for (let i = 0; i < result.length; i++) {
-                            let resultFamilyHead = await getListChildWithWifeID(IdPaternal, result[i].wifeID);
-                            if (resultFamilyHead != null) {
-                                resolve(resultFamilyHead)
-                                return
+                            try {
+                                let resultFamilyHead = await getListChildWithWifeID(IdPaternal, result[i].wifeID);
+                                if (resultFamilyHead !== false) {
+                                    resolve(resultFamilyHead);
+                                    return;
+                                }
+                            } catch (errorInGetListChild) {
+                                console.error(`Error in getListChildWithWifeID: ${errorInGetListChild}`);
                             }
-                            resolve(null)
                         }
+                        // Nếu không tìm thấy kết quả, gọi reject ở đây
+                        console.log("Không tìm thấy Family Head");
+                        reject(false);
                     } else {
-                        reject(err)
+                        console.log("Lỗi truy vấn");
+                        reject(err);
                     }
                 })
             }
         } catch (error) {
-            console.log(error)
+            console.log(error);
+            reject(false); // Gọi reject nếu có lỗi trong try-catch
         }
     })
 }
+
 
 
 //Nguyễn Lê Hùng
@@ -559,9 +586,13 @@ async function GetGenealogy(result, dataMarriage, MemberID, ListFamily = [], vis
 
     if (Member.Male == 1) {
         marriages = dataMarriage.filter(member => member.husbandID == MemberID);
+
     } else {
         marriages = dataMarriage.filter(member => member.wifeID == MemberID);
     }
+
+    marriages.sort((a, b) => b.MarriageNumber - a.MarriageNumber);
+
 
     let spouseIDs = marriages.map(marriage => Member.Male == 1 ? marriage.wifeID : marriage.husbandID);
     let spouses = result.filter(member => spouseIDs.includes(member.MemberID));
@@ -587,7 +618,7 @@ async function GetGenealogy(result, dataMarriage, MemberID, ListFamily = [], vis
     for (let child of children) {
 
         await GetGenealogy(result, dataMarriage, child.MemberID, ListFamily, visitedMembers);
-    }
+    }   
 
     return ListFamily;
 }
@@ -760,5 +791,5 @@ module.exports = {
     getAllReligion, getInforMember, getContactMember, getEducationMember, getJobMember, getEventMember, getAllNationality, getAllMemberRole,
     getRoleExist, setRoleMember, removePaternalAncestor, turnOnSQL_SAFE_UPDATES, turnOffSQL_SAFE_UPDATES, getListMessage,
     setAllGenerationMember, ResetAllGenerationMember, ViewFamilyTree, getListUnspecifiedMembers, GetIdPaternalAncestor, RelationShipMember,
-    RemoveRelationshipChild, RemoveRelationshipMarried, RemoveRelationshipParent, getListNotificationEmail, getAllMarriage, getFamilyHeadInGenealogy
+    RemoveRelationshipChild, RemoveRelationshipMarried, RemoveRelationshipParent, getListNotificationEmail, getAllMarriage, getFamilyHeadInGenealogy, searchMemberCanSendMessage
 }

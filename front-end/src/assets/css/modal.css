@@ -359,3 +359,10 @@ input:focus~label.form-label-number {
     inset: 0;
     margin: auto;
 }
+
+.member-container .vm--container{
+    inset: 0;
+    margin: auto;
+    width: 50%;
+    height: 80%;
+}

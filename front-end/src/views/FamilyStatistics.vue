@@ -9,26 +9,26 @@
           <p class="d-block">Tổng số thành viên: {{ this.totalMember }} người</p>
           <p class="d-block">Số đời: {{ this.numberGeneration }}</p>
           <p class="d-block">Đời nhiều thành viên nhất: {{ this.maxMemberGeneration }}</p>
-          <p class="d-block">Còn sống: {{ this.numberAlive }} người (100%)</p>
-          <p class="d-block">Đã mất: {{ this.numberDied }} người (0%)</p>
+          <p class="d-block">Còn sống: {{ this.numberAlive }} người ({{ (this.numberAlive / this.totalMember*100).toFixed(1) }}%)</p>
+          <p class="d-block">Đã mất: {{ this.numberDied }} người ({{ (this.numberDied / this.totalMember*100).toFixed(1) }}%)</p>
         </div>
         <div class="col-2 filter">
           <p class="d-block text-decoration-underline">Thống kê giới tính</p>
-          <p class="d-block">Nam: {{ this.numberMale }} người (100%)</p>
-          <p class="d-block">Nữ: {{ this.numberFemale }} người (0%)</p>
+          <p class="d-block">Nam: {{ this.numberMale }} người ({{ (this.numberMale / this.totalMember*100).toFixed(1) }}%)</p>
+          <p class="d-block">Nữ: {{ this.numberFemale }} người ({{ (this.numberFemale / this.totalMember*100).toFixed(1) }}%)</p>
         </div>
         <div class="col-2 filter">
           <p class="d-block text-decoration-underline">Thống kê dâu rể</p>
-          <p class="d-block">Rể: {{ this.numberSonInLaw }} người (0%)</p>
-          <p class="d-block">Dâu: {{ this.numberDaughterInLaw }} người (0%)</p>
+          <p class="d-block">Rể: {{ this.numberSonInLaw }} người ({{ (this.numberSonInLaw / this.totalMember*100).toFixed(1) }}%)</p>
+          <p class="d-block">Dâu: {{ this.numberDaughterInLaw }} người ({{ (this.numberDaughterInLaw / this.totalMember*100).toFixed(1) }}%)</p>
         </div>
         <div class="col-2 filter">
           <p class="d-block text-decoration-underline">Thống kê độ tuổi</p>
-          <p class="d-block">Từ 0-5: {{ this.age0to5 }} người (0%)</p>
-          <p class="d-block">Từ 6-17: {{ this.age61up }} người (0%)</p>
-          <p class="d-block">Từ 18-40: {{ this.age18to40 }} người (0%)</p>
-          <p class="d-block">Từ 41-60: {{ this.age41to60 }} người (0%)</p>
-          <p class="d-block">Trên 61: {{ this.age61up }} người (0%)</p>
+          <p class="d-block">Từ 0-5: {{ this.age0to5 }} người ({{ (this.age0to5 / this.totalMember*100).toFixed(1) }}%)</p>
+          <p class="d-block">Từ 6-17: {{ this.age61up }} người ({{ (this.age61up / this.totalMember*100).toFixed(1) }}%)</p>
+          <p class="d-block">Từ 18-40: {{ this.age18to40 }} người ({{ (this.age18to40 / this.totalMember*100).toFixed(1) }}%)</p>
+          <p class="d-block">Từ 41-60: {{ this.age41to60 }} người ({{ (this.age41to60 / this.totalMember*100).toFixed(1) }}%)</p>
+          <p class="d-block">Trên 61: {{ this.age61up }} người ({{ (this.age61up / this.totalMember*100).toFixed(1) }}%)</p>
         </div>
         <div class="col-2 filter">
           <p class="d-block text-decoration-underline">Thống kê đặc biệt</p>

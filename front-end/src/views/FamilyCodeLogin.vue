@@ -26,7 +26,7 @@
               <div class="d-flex justify-content-center align-items-center mb-3" style="height: auto; width: auto;">
                 <button @click="loginWithCode()" class="btn login-button" style="margin-right: 36px;">Đăng nhập gia tộc</button>
                 <router-link to="/login">
-                  <button class="btn bg-danger text-white">Đăng xuất tài khoản</button>
+                  <button @click="LogoutAccount()" class="btn bg-danger text-white">Đăng xuất tài khoản</button>
                 </router-link>
               </div>
               <div class="d-flex justify-content-center">
@@ -43,13 +43,13 @@
               <div class="d-flex flex-row mb-2">
                 <div class="d-flex align-items-center" style="padding-right: 30.79px;">Gia tộc họ</div>
                 <div class="h-100" style="flex-grow: 1;">
-                  <input v-model="familyTree.treeName" type="text" class="form-control" placeholder="Nguyễn" />
+                  <input v-model="familyTree.treeName" type="text" class="form-control" placeholder="VD: Nguyễn" />
                 </div>
               </div>
               <div class="d-flex flex-row mb-2">
                 <div class="d-flex align-items-center" style="padding-right: 48.15px;">Dân tộc</div>
                 <div class="h-100" style="flex-grow: 1;">
-                  <input v-model="familyTree.ethnicity" type="text" class="form-control" placeholder="Kinh" />
+                  <input v-model="familyTree.ethnicity" type="text" class="form-control" placeholder="VD: Kinh" />
                 </div>
               </div>
               <div class="d-flex flex-row mb-3">
@@ -70,12 +70,6 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="position-absolute familycode-noti" :class="{ appear: showCode }">
-      <div class="w-100 h-100 position-relative">
-        <div class="position-absolute familycode-noti-timer" :class="{ timerStart: showCode }"></div>
-        <div v-if="showCode" class="w-100 h-100 d-flex align-items-center justify-content-content px-3" style="font-size: 20px;">Đăng kí thành công! Mã gia tộc của bạn là {{ this.familycode }}</div>
       </div>
     </div>
 
@@ -134,15 +128,14 @@ export default {
       right: false,
       enlarge: false,
       loggingin: true,
-      showCode: false,
       familycode: null,
 
       familyTree: {
-        treeName: null,
-        ethnicity: null,
-        deathAnniersary: null,
+        treeName: "",
+        ethnicity: "",
+        deathAnniersary: "",
       },
-      codeIdLogin: null,
+      codeIdLogin: "",
       accountID: null,
       HistoryCode: null,
     };
@@ -183,7 +176,6 @@ export default {
       });
     },
     LogoutAccount() {
-      localStorage.removeItem("CodeID");
       localStorage.removeItem("accountID");
       this.$router.push("/login");
     },
@@ -201,47 +193,59 @@ export default {
       });
     },
     registerFamilyTree() {
-      HTTP.post("register-genealogy", {
-        accountID: this.accountID,
-        treeName: this.familyTree.treeName,
-        ethnicity: this.familyTree.ethnicity,
-        deathAnniversary: this.familyTree.deathAnniersary,
-      })
-        .then((response) => {
-          console.log(response.data);
-          if (response.data.success == true) {
-            this.NotificationsScuccess(response.data.message);
-            this.showFamilyCode();
-            this.familycode = response.data.data;
-          } else {
-            this.NotificationsDelete(response.data.message);
-          }
+      if (
+        this.familyTree.treeName != "" &&
+        this.this.familyTree.ethnicity != ""
+      ) {
+        HTTP.post("register-genealogy", {
+          accountID: this.accountID,
+          treeName: this.familyTree.treeName,
+          ethnicity: this.familyTree.ethnicity,
+          deathAnniversary: this.familyTree.deathAnniersary,
         })
-        .catch((e) => {
-          console.log(e);
-        });
+          .then((response) => {
+            console.log(response.data);
+            if (response.data.success == true) {
+              this.NotificationsScuccess(response.data.message);
+              this.showFamilyCode();
+              this.familycode = response.data.data;
+            } else {
+              this.NotificationsDelete(response.data.message);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } else {
+        this.NotificationsDelete("Bạn chưa điền đủ thông tin");
+      }
     },
     LoginFastCodeID(CodeID) {
       this.codeIdLogin = CodeID;
       this.loginWithCode();
     },
     loginWithCode() {
-      HTTP.post("check-codeId", {
-        codeID: this.codeIdLogin,
-        accountID: this.accountID,
-      })
-        .then((response) => {
-          if (response.data.success == true) {
-            console.log(response.data)
-            localStorage.setItem("CodeID", this.codeIdLogin);
-            this.$router.push("/");
-          } else {
-            this.NotificationsDelete(response.data.message);
-          }
+      if (this.codeIdLogin != "") {
+        HTTP.post("check-codeId", {
+          codeID: this.codeIdLogin,
+          accountID: this.accountID,
         })
-        .catch((e) => {
-          console.log(e);
-        });
+          .then((response) => {
+            if (response.data.success == true) {
+              console.log(response.data);
+              localStorage.setItem("CodeID", this.codeIdLogin);
+              this.$router.push("/");
+              this.NotificationsScuccess("Đăng nhập thành công");
+            } else {
+              this.NotificationsDelete(response.data.message);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } else {
+        this.NotificationsDelete("Bạn chưa điền code gia phả");
+      }
     },
     enlargeBackground() {
       this.enlarge = true;
@@ -266,12 +270,6 @@ export default {
       setTimeout(() => {
         this.right = false;
       }, 300);
-    },
-    showFamilyCode() {
-      this.showCode = true;
-      setTimeout(() => {
-        this.showCode = false;
-      }, 15000);
     },
     showLoginHistoryModal() {
       this.$modal.show("loginhistory-modal");

@@ -22,7 +22,7 @@ var addFamilyHistory = async (req, res) => {
         }
         console.log("No missing fields");
 
-        let maxPositon = await FamilyHistoryManagementService.getMaxOrder_position();
+        let maxPositon = await FamilyHistoryManagementService.getMaxOrder_position(req.body.CodeID);
         if (!maxPositon) {
             return res.send(Response.internalServerErrorResponse());
         }

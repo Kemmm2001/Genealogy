@@ -100,6 +100,7 @@ export default {
     };
   },
   methods: {
+    //nguyễn lê hùng
     NotificationsDelete(messagee) {
       new Snackbar(messagee, {
         position: "bottom-right",
@@ -113,6 +114,7 @@ export default {
         },
       });
     },
+    //nguyễn lê hùng
     NotificationsScuccess(messagee) {
       new Snackbar(messagee, {
         position: "bottom-right",
@@ -126,7 +128,7 @@ export default {
         },
       });
     },
-
+    //nguyễn lê hùng
     filterHistory() {
       if (this.filterEndDate != null && this.filterStartDate != null) {
         HTTP.post("filterHistory", {
@@ -145,6 +147,7 @@ export default {
           });
       }
     },
+    //nguyễn lê hùng
     searchHistory() {
       HTTP.post("searchHistory", {
         CodeID: this.CodeID,
@@ -161,6 +164,7 @@ export default {
           console.log(e);
         });
     },
+    //nguyễn lê hùng
     onUpdate(event) {
       let draggedElement = this.listHistory[event.oldIndex];
       let targetElement = this.listHistory[event.newIndex];
@@ -182,6 +186,7 @@ export default {
           console.log(e);
         });
     },
+    //nguyễn lê hùng
     removeHistory() {
       HTTP.get("delete-familyhistory", {
         params: {
@@ -201,11 +206,13 @@ export default {
           console.log(e);
         });
     },
+    //nguyễn lê hùng
     resertHistory() {
       (this.filterEndDate = null),
         (this.filterStartDate = null),
         this.getListHistory();
     },
+    //nguyễn lê hùng
     getInforHistory(historyID) {
       this.isAdd = false;
       this.historyID = historyID;
@@ -224,6 +231,7 @@ export default {
         }
       });
     },
+    //nguyễn lê hùng
     updateHistory() {
       if (
         this.endDate != null &&
@@ -253,6 +261,7 @@ export default {
         this.NotificationsDelete("bạn chưa điền hết thông tin");
       }
     },
+    //nguyễn lê hùng
     addHistory() {
       if (
         this.endDate != null &&

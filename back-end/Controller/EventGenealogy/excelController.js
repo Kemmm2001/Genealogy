@@ -3,25 +3,18 @@ const Excel = require('exceljs');
 
 const exportExcel = async (req, res) => {
     try {
-        let CodeID = req.body.CodeID;
-        if (!CodeID) {
-            throw new Error('CodeID is missing or invalid.');
-        }
-
-        let data = await EventManagementService.getAllEvent(CodeID);
-
+       
+        let data = await EventManagementService.getAllEvent(req.body.CodeID);
+        console.log(data)
         const workbook = new Excel.Workbook();
+        await addDataToSheet(workbook, 'Event Data', data);
 
-        await addDataToSheet(workbook, 'Family Member Data', data);
-
-        const fileName = `event.xlsx`;
+        const fileName = 'event.xlsx';
         await workbook.xlsx.writeFile(fileName);
-        
 
-        return { success: true };
+        return res.send({sucess: true})
     } catch (error) {
-        console.error('Error while processing data:', error.message);
-        throw error;
+        return res.send({sucess: false})
     }
 };
 

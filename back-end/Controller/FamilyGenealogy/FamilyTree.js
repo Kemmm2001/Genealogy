@@ -28,7 +28,7 @@ var GetIdPaternalAncestor = async (req, res) => {
         console.log(error)
     }
 }
-
+//Nguyễn Lê Hùng
 var getAllUnspecifiedMembers = async (req, res) => {
     try {
         let CodeID = req.query.CodeID;
@@ -38,6 +38,23 @@ var getAllUnspecifiedMembers = async (req, res) => {
         res.send(err);
     }
 }
+
+//Nguyễn Lê Hùng
+var searchMemberCanSendMessage = async (req, res) => {
+    try {
+        let CodeID = req.query.CodeID;
+        let keySearch = req.query.keySearch;
+        let data = await FamilyTreeService.searchMemberCanSendMessage(CodeID, keySearch);
+        if (data) {
+            return res.send(Response.successResponse(data))
+        } else {
+            return res.send(Response.dataNotFoundResponse())
+        }
+    } catch (error) {
+        return res.send(Response.dataNotFoundResponse(error))
+    }
+}
+//Nguyễn Lê Hùng
 var getRelationShipMember = async (req, res) => {
     try {
         let memberID = req.query.memberID;
@@ -114,7 +131,6 @@ var getListHistoryEmail = async (req, res) => {
 
 var getFamilyHead = async (req, res) => {
     try {
-        
         console.log("đã vào api")
         let CodeID = req.query.CodeID;
         let data = await FamilyTreeService.getFamilyHeadInGenealogy(CodeID);
@@ -131,7 +147,7 @@ var getFamilyHead = async (req, res) => {
 var AllMemberInGenelogy = async (req, res) => {
     try {
         let CodeID = req.query.CodeID;
-        let data = await FamilyTreeService.ViewFamilyTree(CodeID);
+        let data = await FamilyTreeService.ViewFamilyTree(CodeID);       
         if (data) {
             data.forEach((item) => {
                 if (item.dod === '1-1-1970') {
@@ -140,11 +156,8 @@ var AllMemberInGenelogy = async (req, res) => {
                 if (item.dob === '1-1-1970') {
                     item.dob = null;
                 }
-                if (CoreFunction.isDataStringExist(item.img)) {
-                    item.img = CoreFunction.loadImage(item.img);
-                }
             });
-           
+
             return res.send(Response.successResponse(data));
         } else {
             return res.send(Response.dataNotFoundResponse());
@@ -217,5 +230,6 @@ var informationMember = async (req, res) => {
 
 module.exports = {
     AllReligion, informationMember, AllNationality, AllMemberRole, setRole, AllMemberInGenelogy, getAllUnspecifiedMembers,
-    GetIdPaternalAncestor, getRelationShipMember, getListMessage, removeRelationship, getListHistoryEmail, getFamilyHead
+    GetIdPaternalAncestor, getRelationShipMember, getListMessage, removeRelationship, getListHistoryEmail, getFamilyHead,
+    searchMemberCanSendMessage
 };
