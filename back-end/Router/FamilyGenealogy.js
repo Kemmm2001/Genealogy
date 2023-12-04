@@ -26,6 +26,7 @@ const initWebRouter = (app) => {
     router.get('/viewTree', ManagerFamilyTree.AllMemberInGenelogy)
     router.get('/getFamilyHead', ManagerFamilyTree.getFamilyHead)
 
+    router.get('/listMemberMessage',ManagerFamilyTree.getlistMemberToSendMessage)
     router.get('/relationship', ManagerFamilyTree.getRelationShipMember)
     router.put('/removeRelationship', ManagerFamilyTree.removeRelationship)
     router.get('/idPaternal', ManagerFamilyTree.GetIdPaternalAncestor)

@@ -2,6 +2,26 @@ const { Code } = require("mongodb");
 const db = require("../../Models/ConnectDB");
 
 //Nguyễn Lê Hùng
+function getlistMemberToSendMessage(CodeID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `select *  from genealogy.familymember where CodeID = ${CodeID} and Generation != 0 and IsDead = 0`;
+            db.connection.query(query, (err, results) => {
+                if (!err && results.length > 0) {
+                    resolve(results)
+                } else {
+                    reject(err)
+                }
+
+            })
+
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+//Nguyễn Lê Hùng
 function getAllReligion() {
     return new Promise((resolve, reject) => {
         let query = "SELECT * FROM religion";
@@ -618,7 +638,7 @@ async function GetGenealogy(result, dataMarriage, MemberID, ListFamily = [], vis
     for (let child of children) {
 
         await GetGenealogy(result, dataMarriage, child.MemberID, ListFamily, visitedMembers);
-    }   
+    }
 
     return ListFamily;
 }
@@ -791,5 +811,6 @@ module.exports = {
     getAllReligion, getInforMember, getContactMember, getEducationMember, getJobMember, getEventMember, getAllNationality, getAllMemberRole,
     getRoleExist, setRoleMember, removePaternalAncestor, turnOnSQL_SAFE_UPDATES, turnOffSQL_SAFE_UPDATES, getListMessage,
     setAllGenerationMember, ResetAllGenerationMember, ViewFamilyTree, getListUnspecifiedMembers, GetIdPaternalAncestor, RelationShipMember,
-    RemoveRelationshipChild, RemoveRelationshipMarried, RemoveRelationshipParent, getListNotificationEmail, getAllMarriage, getFamilyHeadInGenealogy, searchMemberCanSendMessage
+    RemoveRelationshipChild, RemoveRelationshipMarried, RemoveRelationshipParent, getListNotificationEmail, getAllMarriage, getFamilyHeadInGenealogy,
+    searchMemberCanSendMessage, getlistMemberToSendMessage
 }

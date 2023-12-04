@@ -11,6 +11,21 @@ var AllReligion = async (req, res) => {
         res.send(e);
     }
 };
+
+var getlistMemberToSendMessage = async (req, res) => {
+    try {
+        let CodeID = req.query.CodeID;
+        let data = await FamilyTreeService.getlistMemberToSendMessage(CodeID);
+        console.log('data: ' + req.query.CodeID)
+        if (data) {
+            return res.send(Response.successResponse(data));
+        } else {
+            return res.send(Response.dataNotFoundResponse())
+        }
+    } catch (error) {
+        return res.send(Response.dataNotFoundResponse(error))
+    }
+}
 var AllNationality = async (req, res) => {
     try {
         let data = await FamilyTreeService.getAllNationality();
@@ -147,7 +162,7 @@ var getFamilyHead = async (req, res) => {
 var AllMemberInGenelogy = async (req, res) => {
     try {
         let CodeID = req.query.CodeID;
-        let data = await FamilyTreeService.ViewFamilyTree(CodeID);       
+        let data = await FamilyTreeService.ViewFamilyTree(CodeID);
         if (data) {
             data.forEach((item) => {
                 if (item.dod === '1-1-1970') {
@@ -231,5 +246,5 @@ var informationMember = async (req, res) => {
 module.exports = {
     AllReligion, informationMember, AllNationality, AllMemberRole, setRole, AllMemberInGenelogy, getAllUnspecifiedMembers,
     GetIdPaternalAncestor, getRelationShipMember, getListMessage, removeRelationship, getListHistoryEmail, getFamilyHead,
-    searchMemberCanSendMessage
+    searchMemberCanSendMessage, getlistMemberToSendMessage
 };

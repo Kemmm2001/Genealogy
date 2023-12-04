@@ -411,6 +411,7 @@ var addAttendence = async (req, res) => {
 var inviteMail = async (req, res) => {
     try {
         const requestBody = req.body;
+        console.log(requestBody)
         const emails = requestBody.data.map(item => item.email);
         const memberIds = requestBody.data.map(item => item.memberId);
         const time = requestBody.time;
