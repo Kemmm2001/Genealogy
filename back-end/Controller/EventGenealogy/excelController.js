@@ -3,7 +3,7 @@ const Excel = require('exceljs');
 
 const exportExcel = async (req, res) => {
     try {
-        let CodeID = req.body.CodeID;
+        let CodeID = req.query.CodeID;
         if (!CodeID) {
             throw new Error('CodeID is missing or invalid.');
         }
@@ -14,9 +14,8 @@ const exportExcel = async (req, res) => {
 
         await addDataToSheet(workbook, 'Family Member Data', data);
 
-        const fileName = `event.xlsx`;
+        const fileName = 'event.xlsx';
         await workbook.xlsx.writeFile(fileName);
-        
 
         return { success: true };
     } catch (error) {

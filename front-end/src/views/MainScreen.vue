@@ -2344,9 +2344,10 @@ export default {
           CodeID: this.CodeID,
         },
       }).then((response) => {
-        if (response.data.success == true) {
+        if(response.data.success == true){
           this.idFamilyHead = response.data.data;
           console.log(this.idFamilyHead);
+        }
           HTTP.get("viewTree", {
             params: {
               CodeID: this.CodeID,
@@ -2364,8 +2365,10 @@ export default {
                     this.nodes[i].name =
                       this.nodes[i].name.substring(0, 16) + "...";
                   }
-                  if (this.nodes[i].id == this.idFamilyHead) {
-                    this.nodes[i].isFH = "true";
+                  if(this.idFamilyHead != null){
+                    if (this.nodes[i].id == this.idFamilyHead) {
+                      this.nodes[i].isFH = "true";
+                    }
                   }
                   if (this.nodes[i].isDead == 1) {
                     this.numberDeath += 1;
@@ -2390,7 +2393,6 @@ export default {
             .catch((e) => {
               console.log(e);
             });
-        }
       });
     },
     getListAgeGroup() {
