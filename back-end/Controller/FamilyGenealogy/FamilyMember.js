@@ -716,6 +716,17 @@ var deleteMember = async (req, res) => {
                     }
                 }
             }
+            // nếu có vợ chồng thì những đứa con của vợ chồng đó sẽ được thêm vào vợ hoặc chồng của người được xóa
+            let listMarriage = await MarriageManagement.getMarriageByHusbandIDOrWifeID(dataMember[0].MemberID, dataMember[0].MemberID);
+            // vì là người ngoài gia phả nên marriage chỉ có 1 dòng
+            // tìm kiếm tất cả con có cha hoặc mẹ là chồng hoặc vợ của người được xóa
+            let MaxBirthOrder = 0;
+            if(dataMember[0].Male == 0){
+                 MaxBirthOrder = await FamilyManagementService.getMaxBirthOrderByFatherID(listMarriage[0].HusbandID);
+            }else if (dataMember[0].Male == 1){
+                 MaxBirthOrder = await FamilyManagementService.getMaxBirthOrderByMotherID(listMarriage[0].WifeID);
+            }
+            
         }
         // nếu người được xóa là người trong gia phả, tức là có cha mẹ
         else {
