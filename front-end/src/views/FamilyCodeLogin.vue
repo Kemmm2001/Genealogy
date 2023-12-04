@@ -59,10 +59,7 @@
                 </div>
               </div>
               <div class="d-flex justify-content-center align-items-center" style="height: auto; width: auto;">
-                <button @click="registerFamilyTree()" class="btn register-button" style="margin-right: 36px;">
-                  Đăng
-                  kí
-                </button>
+                <button @click="registerFamilyTree()" class="btn register-button" style="margin-right: 36px;">Đăng kí</button>
                 <router-link to="/login">
                   <button @click="LogoutAccount()" class="btn bg-danger text-white">Đăng xuất tài khoản</button>
                 </router-link>

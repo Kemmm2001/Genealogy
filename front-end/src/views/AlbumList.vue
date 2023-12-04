@@ -641,33 +641,33 @@ export default {
     },
     addAlbumPhoto() {
       console.log("vào đây");
-      // let formData = new FormData();
+      let formData = new FormData();
       console.log(this.albumPhoto.AlbumName);
-      // if (
-      //   this.albumPhoto.AlbumName != "" &&
-      //   this.albumPhoto.description != "" &&
-      //   this.albumPhoto.BackGroundPhoto != ""
-      // ) {
-      //   formData.append("AlbumName", this.albumPhoto.AlbumName);
-      //   formData.append("CodeID", this.CodeID);
-      //   formData.append("Description", this.albumPhoto.description);
-      //   formData.append("BackGroundPhoto", this.albumPhoto.BackGroundPhoto);
-      //   HTTP.post("albumphoto", formData)
-      //     .then((response) => {
-      //       if (response.data.success == true) {
-      //         this.NotificationsScuccess(response.data.message);
-      //         this.getAlbumPhotoByCodeId();
-      //         this.closeAddAlbumModal();
-      //       } else {
-      //         this.NotificationsDelete(response.data.message);
-      //       }
-      //     })
-      //     .catch((e) => {
-      //       console.log(e);
-      //     });
-      // } else {
-      //   this.NotificationsDelete("Bạn chưa nhập đủ thông tin của album");
-      // }
+      if (
+        this.albumPhoto.AlbumName != "" &&
+        this.albumPhoto.description != "" &&
+        this.albumPhoto.BackGroundPhoto != ""
+      ) {
+        formData.append("AlbumName", this.albumPhoto.AlbumName);
+        formData.append("CodeID", this.CodeID);
+        formData.append("Description", this.albumPhoto.description);
+        formData.append("BackGroundPhoto", this.albumPhoto.BackGroundPhoto);
+        HTTP.post("albumphoto", formData)
+          .then((response) => {
+            if (response.data.success == true) {
+              this.NotificationsScuccess(response.data.message);
+              this.getAlbumPhotoByCodeId();
+              this.closeAddAlbumModal();
+            } else {
+              this.NotificationsDelete(response.data.message);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } else {
+        this.NotificationsDelete("Bạn chưa nhập đủ thông tin của album");
+      }
     },
     showCfDel() {
       this.$modal.show("cfdel-modal");
