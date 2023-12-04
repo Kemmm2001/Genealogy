@@ -1944,6 +1944,11 @@ export default {
               Email: this.objMemberContact.Email,
               FacebookUrl: this.objMemberContact.FacebookUrl,
               Zalo: this.objMemberContact.Zalo,
+            }).then((response) => {
+              if(response.data.success == true){
+           //     this.setDefauValueInModal();
+                this.selectDistrictMember = null;
+              }
             }).catch((e) => {
               console.log(e);
             });
