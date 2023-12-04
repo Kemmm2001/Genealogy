@@ -54,20 +54,51 @@ async function queryDatabase(tableName, memberIDs) {
     });
 }
 
+function queryWithPromise(query, params = []) {
+    return new Promise((resolve, reject) => {
+        db.connection.query(query, params, (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        });
+    });
+}
+
+async function truncateTablesForMember(memberID) {
+    const tableNames = ['familymember', 'contact', 'education', 'job'];
+    for (const tableName of tableNames) {
+        await queryWithPromise(`DELETE FROM ${tableName} WHERE memberID = ?`, [memberID]);
+    }
+}
+
 async function importData(file) {
     try {
         // Mở file excel
         const workbook = new Excel.Workbook();
-        await workbook.xlsx.readFile(file.path);
-
-        // Xóa dữ liệu hiện có từ các bảng
-        await truncateTables(['familymember', 'contact', 'education', 'job']);
+        await workbook.xlsx.readFile(file);
 
         // Đọc dữ liệu từ file excel và insert vào các bảng
-        await insertDataToTable(workbook.getWorksheet('Family Member Data'), 'familymember');
-        await insertDataToTable(workbook.getWorksheet('Contact Data'), 'contact');
-        await insertDataToTable(workbook.getWorksheet('Education Data'), 'education');
-        await insertDataToTable(workbook.getWorksheet('Job Data'), 'job');
+        const familyWorksheet = workbook.getWorksheet('Family Member Data');
+        const contactWorksheet = workbook.getWorksheet('Contact Data');
+        const educationWorksheet = workbook.getWorksheet('Education Data');
+        const jobWorksheet = workbook.getWorksheet('Job Data');
+
+        familyWorksheet.eachRow(async (row, rowNumber) => {
+            if (rowNumber > 1) {
+                const values = row.values;
+                const memberID = values[1];
+                await truncateTablesForMember(memberID);
+
+               
+            }
+        });
+
+        //  await insertDataToTable(familyWorksheet, 'familymember');
+        //  await insertDataToTable(contactWorksheet, 'contact');
+        //  await insertDataToTable(educationWorksheet, 'education');
+        //  await insertDataToTable(jobWorksheet, 'job');
 
         return { success: true };
     } catch (error) {
@@ -76,11 +107,6 @@ async function importData(file) {
     }
 }
 
-async function truncateTables(tableNames) {
-    for (const tableName of tableNames) {
-         db.connection.query(`TRUNCATE TABLE ${tableName}`);
-    }
-}
 
 async function insertDataToTable(worksheet, tableName) {
     const headers = worksheet.getRow(1).values; // Assumed headers are in the first row

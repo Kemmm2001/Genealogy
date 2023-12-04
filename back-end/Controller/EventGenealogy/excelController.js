@@ -1,20 +1,26 @@
 const EventManagementService = require('../../service/EventGenealogy/EventManagement');
 const Excel = require('exceljs');
+const Response = require('../../Utils/Response');
 
 const exportExcel = async (req, res) => {
     try {
+        let codeID = req.body.codeID
+        let data = await EventManagementService.getAllEvent(codeID);
+        if(data == true){
+            const workbook = new Excel.Workbook();
+            await addDataToSheet(workbook, 'Event Data', data);
+    
+            const fileName = `event.xlsx`;
+            await workbook.xlsx.writeFile(fileName);
+    
+            return res.send(Response.successResponse(nul, 'Export thành công'));
+
+        }
+        return res.send(Response.internalServerErrorResponse)
        
-        let data = await EventManagementService.getAllEvent(req.body.CodeID);
-        console.log(data)
-        const workbook = new Excel.Workbook();
-        await addDataToSheet(workbook, 'Event Data', data);
-
-        const fileName = 'event.xlsx';
-        await workbook.xlsx.writeFile(fileName);
-
-        return res.send({sucess: true})
     } catch (error) {
-        return res.send({sucess: false})
+        return res.send(Response.internalServerErrorResponse)
+
     }
 };
 

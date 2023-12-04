@@ -3,7 +3,7 @@ const FamilyMember = require('../../service/FamilyGenealogy/FamilyManagement');
 const EventAttendence = require('../../service/EventGenealogy/EventAttendence');
 const SystemAction = require('../../Utils/SystemOperation');
 const Response = require('../../Utils/Response');
-const xlsx = require('xlsx');
+
 const { signInviteToken, verifyInviteToken } = require('../../helper/jwt_helper')
 
 var getAllEventGenealogy = async (req, res) => {
@@ -421,7 +421,7 @@ var inviteMail = async (req, res) => {
             const token = await signInviteToken(memberId, time);
 
             const data = await EventAttendence.Update(memberId, token);
-            const link = `http://localhost:3003/api/v1/invite?token=${token}`;
+            const link = `http://localhost:3003/api/v1/verify-invite?token=${token}`;
 
             if (data === true) {
                 const mailOptions = {
@@ -445,13 +445,14 @@ var inviteMail = async (req, res) => {
 var verifyMail = async (req, res) => {
     try {
       const token = req.query.token;
+      const IsGoing = req.body.IsGoing;
       const memberId = await verifyInviteToken(token)
       const tokenData = EventAttendence.checkToken(token);
       if (tokenData == 0) {
         return res.send(Response.dataNotFoundResponse(null, 'không thấy token'));
       }
   
-        let data = await EventAttendence.UpdateIsGoing(memberId)
+        let data = await EventAttendence.UpdateIsGoing(memberId,IsGoing)
 
         if (data == true) {
           return res.send(Response.successResponse());

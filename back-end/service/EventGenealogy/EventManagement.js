@@ -10,7 +10,7 @@ function getAllEvent(CodeID) {
                     console.log(err)
                     reject(err)
                 } else {
-                    resolve(result)
+                    resolve(true)
                 }
             })
         } catch (error) {

@@ -66,10 +66,10 @@ function checkToken(token) {
   });
 }
 
-function UpdateIsGoing(memberId) {
+function UpdateIsGoing(memberId, IsGoing) {
   return new Promise((resolve, reject) => {
     try {
-      let query = `UPDATE genealogy.eventattendance as a SET a.IsGoing = 1 WHERE MemberID = '${memberId};'`;
+      let query = `UPDATE genealogy.eventattendance as a SET a.IsGoing = '${IsGoing}' WHERE MemberID = '${memberId};'`;
       db.connection.query(query, (err) => {
         if (!err) {
           resolve(true)

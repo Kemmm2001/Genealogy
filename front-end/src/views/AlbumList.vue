@@ -55,7 +55,7 @@
             </div>
             <div class="d-flex flex-row" style="height: calc(100% - 50px);">
               <div class="col-3 h-100 p-2">
-                <img class="h-100 w-100" src="../assets/starrynight.jpg" style="object-fit: cover;" />
+                <img class="h-100 w-100" :src="albumPhoto.BackGroundPhoto" style="object-fit: cover;"/>
               </div>
               <div class="col-9 d-flex flex-column">
                 <div class="d-flex flex-row mt-2 align-items-center">
@@ -93,28 +93,37 @@
                 </svg>
               </div>
             </div>
-            <div class="d-flex flex-column">
-              <div class="d-flex flex-row my-2 align-items-center">
-                <label class="col-3 d-flex justify-content-center" for="article-name" style="cursor: pointer;">Tên album</label>
-                <div class="mx-2 w-100">
-                  <input id="article-name" type="text" v-model="albumPhoto.AlbumName" class="form-control" />
-                </div>
+            <div class="d-flex flex-row" style="height: calc(100% - 50px);">
+              <div class="col-3 h-100 p-2">
+                <img class="h-100 w-100" :src="albumPhoto.BackGroundPhoto" style="object-fit: cover;"/>
               </div>
-              <div class="d-flex flex-row my-2 align-items-center">
-                <label class="col-3 d-flex justify-content-center" for="article-des" style="cursor: pointer;">Mô tả</label>
-                <div class="mx-2 w-100">
-                  <input id="article-des" type="text" v-model="albumPhoto.description" class="form-control" />
+              <div class="col-9 d-flex flex-column">
+                <div class="d-flex flex-row mt-2 align-items-center">
+                  <label class="col-2 d-flex justify-content-center" for="article-name" style="cursor: pointer;">Sửa
+                    album</label>
+                  <div class="mx-2 w-100">
+                    <input id="article-name" type="text" v-model="albumPhoto.AlbumName" class="form-control" />
+                  </div>
                 </div>
-              </div>
-              <div class="d-flex flex-row my-2 align-items-center">
-                <label class="col-3 d-flex justify-content-center" for="off-url" style="cursor: pointer;">Thêm ảnh bìa</label>
-                <div class="mx-2 w-100">
-                  <input id="off-url" type="file" class="form-control input-file" @change="handleFileChangeBackGround" />
+                <div class="d-flex flex-row mt-2 align-items-center">
+                  <label class="col-2 d-flex justify-content-center" for="article-des" style="cursor: pointer;">Mô
+                    tả</label>
+                  <div class="mx-2 w-100">
+                    <input id="article-des" type="text" v-model="albumPhoto.description" class="form-control" />
+                  </div>
                 </div>
-              </div>
-              <div class="d-flex flex-row m-3 align-items-center articlelist-button-container">
-                <div class>
-                  <button class="articlelist-item-button form-control" @click="addAlbumPhoto()">Thêm</button>
+                <!-- <div class="d-flex flex-row my-2 align-items-center">
+                  <label class="col-3 d-flex justify-content-center" for="off-url" style="cursor: pointer;">Thêm ảnh
+                    bìa</label>
+                  <div class="mx-2 w-100">
+                    <input id="off-url" type="file" class="form-control input-file"
+                      @change="handleFileChangeBackGround" />
+                  </div>
+                </div> -->
+                <div class="d-flex flex-row m-3 align-items-center articlelist-button-container">
+                  <div class>
+                    <button class="articlelist-item-button form-control" @click="updateAlbum()">Cập nhật</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -640,14 +649,9 @@ export default {
       this.closeAddPhotoModal();
     },
     addAlbumPhoto() {
-      console.log("vào đây");
-      let formData = new FormData();
-      console.log(this.albumPhoto.AlbumName);
-      if (
-        this.albumPhoto.AlbumName != "" &&
-        this.albumPhoto.description != "" &&
-        this.albumPhoto.BackGroundPhoto != ""
-      ) {
+      
+      if(this.albumPhoto.AlbumName != null && this.albumPhoto.AlbumName != '' ){
+        let formData = new FormData();
         formData.append("AlbumName", this.albumPhoto.AlbumName);
         formData.append("CodeID", this.CodeID);
         formData.append("Description", this.albumPhoto.description);
@@ -657,7 +661,6 @@ export default {
             if (response.data.success == true) {
               this.NotificationsScuccess(response.data.message);
               this.getAlbumPhotoByCodeId();
-              this.closeAddAlbumModal();
             } else {
               this.NotificationsDelete(response.data.message);
             }
@@ -665,9 +668,11 @@ export default {
           .catch((e) => {
             console.log(e);
           });
-      } else {
-        this.NotificationsDelete("Bạn chưa nhập đủ thông tin của album");
+          this.closeAddAlbumModal();
+      }else{
+        this.NotificationsDelete("Tên album không được để trống");
       }
+      
     },
     showCfDel() {
       this.$modal.show("cfdel-modal");
