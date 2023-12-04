@@ -528,6 +528,66 @@ function updateMotherIDToFatherID(motherID, memberList) {
     });
 }
 
+// nguyễn anh tuấn
+function getMaxBirthOrderByFatherIdOrMotherId(fatherId, motherId) {
+    return new Promise((resolve, reject) => {
+        const query = `
+        SELECT MAX(BirthOrder) AS MaxBirthOrder FROM familymember
+        WHERE FatherID = ? OR MotherID = ?
+        `;
+
+        const values = [fatherId, motherId];
+
+        db.connection.query(query, values, (err, result) => {
+            if (err) {
+                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                reject(err);
+            } else {
+                resolve(result[0].MaxBirthOrder);
+            }
+        });
+    });
+}
+
+// nguyễn anh tuấn
+function getMaxBirthOrderByFatherID(fatherId) {
+    return new Promise((resolve, reject) => {
+        const query = `
+        SELECT MAX(BirthOrder) AS MaxBirthOrder FROM familymember
+        WHERE FatherID = ? and (MotherID = null or MotherID = 0);
+        `;
+        const values = [fatherId];
+
+        db.connection.query(query, values, (err, result) => {
+            if (err) {
+                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                reject(err);
+            } else {
+                resolve(result[0].MaxBirthOrder);
+            }
+        });
+    });
+}
+
+// nguyễn anh tuấn
+function getMaxBirthOrderByMotherID(motherId) {
+    return new Promise((resolve, reject) => {
+        const query = `
+        SELECT MAX(BirthOrder) AS MaxBirthOrder FROM familymember
+        WHERE MotherID = ? and (FatherID = null or FatherID = 0);
+        `;
+        const values = [motherId];
+        db.connection.query(query, values, (err, result) => {
+            if (err) {
+                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                reject(err);
+            } else {
+                resolve(result[0].MaxBirthOrder);
+            }
+        });
+    });
+}
+
 function searchMember(searchTerm) {
     return new Promise((resolve, reject) => {
         const query = `
@@ -704,5 +764,7 @@ module.exports = {
     getAllMember, queryFamilyMembers, getAllMemberInMemberRole, getAllMemberNotInMemberRole, GetCurrentParentMember,
     insertFatherIDToMember, insertMotherIDToMember, getMembersByFatherID, getMembersByMotherID,
     setBirthOrder, insertParentIdToMember, getAllMemberID, updateMemberPhoto, deleteMemberRelated,
-    getMembersByFatherIDAndMotherID, getMembersByFatherIDOrMotherID, updateFatherIDToMotherID, updateMotherIDToFatherID, UpdateMemberRelated
+    getMembersByFatherIDAndMotherID, getMembersByFatherIDOrMotherID, updateFatherIDToMotherID, 
+    updateMotherIDToFatherID, UpdateMemberRelated, getMaxBirthOrderByFatherIdOrMotherId, getMaxBirthOrderByFatherID,
+    getMaxBirthOrderByMotherID
 };
