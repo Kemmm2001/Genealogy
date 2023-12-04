@@ -2403,12 +2403,12 @@ export default {
               this.nodes = response.data.data;
               console.log(this.nodes);
               for (let i = 0; i < this.nodes.length; i++) {
-                if(this.nodes[i].pids.length > 1){
+                if (this.nodes[i].pids.length > 1) {
                   let listPid = [];
-                  for(let j = this.nodes[i].pids.length - 1; j >= 0 ; j--){
+                  for (let j = this.nodes[i].pids.length - 1; j >= 0; j--) {
                     listPid.push(this.nodes[i].pids[j]);
                   }
-                  this.nodes[i].pids = listPid
+                  this.nodes[i].pids = listPid;
                 }
                 this.nodes[i].tags = [];
                 if (this.nodes[i].name.length > 15) {
