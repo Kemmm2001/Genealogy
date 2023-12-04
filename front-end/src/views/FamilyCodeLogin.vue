@@ -175,7 +175,7 @@ export default {
         },
       });
     },
-    LogoutAccount() {      
+    LogoutAccount() {
       localStorage.removeItem("accountID");
       this.$router.push("/login");
     },
@@ -235,6 +235,7 @@ export default {
               console.log(response.data);
               localStorage.setItem("CodeID", this.codeIdLogin);
               this.$router.push("/");
+              this.NotificationsScuccess("Đăng nhập thành công");
             } else {
               this.NotificationsDelete(response.data.message);
             }
