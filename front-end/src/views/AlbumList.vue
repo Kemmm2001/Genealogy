@@ -67,7 +67,7 @@
             </div>
             <div class="d-flex flex-row" style="height: calc(100% - 50px);">
               <div class="col-3 h-100 p-2">
-                <img class="h-100 w-100" src="../assets/starrynight.jpg" style="object-fit: cover;"/>
+                <img class="h-100 w-100" :src="albumPhoto.BackGroundPhoto" style="object-fit: cover;"/>
               </div>
               <div class="col-9 d-flex flex-column">
                 <div class="d-flex flex-row mt-2 align-items-center">
@@ -695,24 +695,32 @@ export default {
       this.closeAddPhotoModal();
     },
     addAlbumPhoto() {
-      let formData = new FormData();
-      formData.append("AlbumName", this.albumPhoto.AlbumName);
-      formData.append("CodeID", this.CodeID);
-      formData.append("Description", this.albumPhoto.description);
-      formData.append("BackGroundPhoto", this.albumPhoto.BackGroundPhoto);
-      HTTP.post("albumphoto", formData)
-        .then((response) => {
-          if (response.data.success == true) {
-            this.NotificationsScuccess(response.data.message);
-            this.getAlbumPhotoByCodeId();
-          } else {
-            this.NotificationsDelete(response.data.message);
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-      this.closeAddAlbumModal();
+      
+      if(this.albumPhoto.AlbumName != null && this.albumPhoto.AlbumName != '' ){
+        console.log(1111)
+        let formData = new FormData();
+        formData.append("AlbumName", this.albumPhoto.AlbumName);
+        formData.append("CodeID", this.CodeID);
+        formData.append("Description", this.albumPhoto.description);
+        formData.append("BackGroundPhoto", this.albumPhoto.BackGroundPhoto);
+        HTTP.post("albumphoto", formData)
+          .then((response) => {
+            if (response.data.success == true) {
+              this.NotificationsScuccess(response.data.message);
+              this.getAlbumPhotoByCodeId();
+            } else {
+              this.NotificationsDelete(response.data.message);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+          this.closeAddAlbumModal();
+      }else{
+        console.log(2222)
+        this.NotificationsDelete("Tên album không được để trống");
+      }
+      
     },
     showCfDel() {
       this.$modal.show("cfdel-modal");
