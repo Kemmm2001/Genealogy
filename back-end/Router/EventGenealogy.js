@@ -14,7 +14,7 @@ const initWebRouter = (app) => {
     router.get('/listRepeat', EventManagementController.getAllEventRepetition)
     router.get('/inforEvent', EventManagementController.getInformationEvent)
     router.post('/searchEvent', EventManagementController.searchEvent)
-    router.get('/getEmail',EventManagementController)
+    // router.get('/getEmail',EventManagementController)
 
     router.get('/birthday', EventManagementController.GetBirthDayInMonth)
     router.get('/deadDay', EventManagementController.GetDeadDayInMonth)
