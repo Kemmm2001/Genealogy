@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '12345678',
+  password: 'AXeTFQW7pC3cxSFg9a7Q8JfwtXkMmy3PSbnG2NgLXASbWhps6x9dBLG',
   database: 'genealogy'
 });
 
