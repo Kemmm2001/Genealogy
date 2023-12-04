@@ -99,7 +99,7 @@
             </div>
             <div class="d-flex flex-row" style="height: calc(100% - 50px);">
               <div class="col-3 h-100 p-2">
-                <input type="file" ref="fileInput" style="display: none" @change="updateAvatar($event)" />
+                <input type="file" ref="fileInput" style="display: none" @change="updateAvatar($event)"/>
                 <img @click="triggerFileInputClick()" v-if="avatarSrc" class="h-100 w-100" :src="avatarSrc" style="object-fit: cover;" />
                 <svg @click="triggerFileInputClick()" v-else fill="#000000" height="100%" width="250px" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 350" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 350 350">
                   <path d="M5,350h340V0H5V350z M25,330v-62.212h300V330H25z M179.509,247.494H60.491L120,171.253L179.509,247.494z   M176.443,211.061l33.683-32.323l74.654,69.05h-79.67L176.443,211.061z M325,96.574c-6.384,2.269-13.085,3.426-20,3.426  c-33.084,0-60-26.916-60-60c0-6.911,1.156-13.612,3.422-20H325V96.574z M25,20h202.516C225.845,26.479,225,33.166,225,40  c0,44.112,35.888,80,80,80c6.837,0,13.523-0.846,20-2.518v130.306h-10.767l-104.359-96.526l-45.801,43.951L120,138.748  l-85.109,109.04H25V20z" />
@@ -439,30 +439,33 @@ export default {
       console.log("Tại sao lại như thế");
       this.ListCheckBoxPhoto = [];
       this.ListPhotoRemove = [];
-      const file = event.target.files[0];
+      const file = event.target.files;
       //     let count = this.listHeightLarger+1;
       let check = 0;
-      this.FamilyPhotoListAdd.push(file);
-      if (this.FamilyPhotoListAdd[this.FamilyPhotoListAdd.length - 1]) {
-        // Đọc nội dung của tệp và chuyển thành URL
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.imageSrc = reader.result;
-          this.FamilyPhotoListAddShow.push(this.imageSrc);
-          const img = new Image();
-          img.src = e.target.result;
-          img.onload = () => {
-            check += 1;
-            console.log(check);
-            if (img.width != 0 && img.height != 0) {
-              this.checkPhotoSize(img.width, img.height);
-            }
+      this.FamilyPhotoListAdd = file;
+      for(let i = 0 ; i < this.FamilyPhotoListAdd.length;i++){
+        if (this.FamilyPhotoListAdd[i]) {
+          // Đọc nội dung của tệp và chuyển thành URL
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            this.imageSrc = reader.result;
+            this.FamilyPhotoListAddShow.push(this.imageSrc);
+            const img = new Image();
+            img.src = e.target.result;
+            img.onload = () => {
+              check += 1;
+              console.log(check);
+              if (img.width != 0 && img.height != 0) {
+                this.checkPhotoSize(img.width, img.height);
+              }
+            };
           };
-        };
-        reader.readAsDataURL(
-          this.FamilyPhotoListAdd[this.FamilyPhotoListAdd.length - 1]
-        );
+          reader.readAsDataURL(
+            this.FamilyPhotoListAdd[i]
+          );
+        }
       }
+      
       this.ListCheckBoxPhotoAdd.push(false);
       this.getAlbumPhotoByCodeId();
     },
