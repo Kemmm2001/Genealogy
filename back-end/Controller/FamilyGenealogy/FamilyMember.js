@@ -151,6 +151,22 @@ var addMember = async (req, res) => {
 
                         return res.send(Response.badRequestResponse(null, errorMessage));
                     }
+                    // nếu con đã có mẹ thì thêm mối quan hệ vợ chồng cho mẹ và cha của con
+                    if (CoreFunction.isDataNumberExist(currentMember[0].MotherID)) {
+                        // tìm số lần kết hôn của mẹ
+                        let countMarriage = await MarriageManagement.getWifeMaxMarriageNumber(currentMember[0].MotherID, currentMember[0].CodeID);
+                        console.log("countMarriage: ", countMarriage);
+                        if (!CoreFunction.isDataNumberExist(countMarriage)) {
+                            countMarriage = 0;
+                        }
+                        let objData = {
+                            husbandID: data.insertId,
+                            wifeID: currentMember[0].MotherID,
+                            codeID: currentMember[0].CodeID,
+                            marriageNumber: countMarriage + 1
+                        }
+                        await MarriageManagement.addMarriage(objData);
+                    }
                     FamilyManagementService.insertFatherIDToMember(data.insertId, req.body.CurrentMemberID);
                 }
                 // nếu vào trường hợp thêm mẹ
@@ -167,6 +183,22 @@ var addMember = async (req, res) => {
                         let errorMessage = 'Bạn chỉ có thể thêm mẹ cho thành viên';
 
                         return res.send(Response.badRequestResponse(null, errorMessage));
+                    }
+                    // nếu con đã có cha thì thêm mối quan hệ vợ chồng cho mẹ và cha của con
+                    if (CoreFunction.isDataNumberExist(currentMember[0].FatherID)) {
+                        // tìm số lần kết hôn của cha
+                        let countMarriage = await MarriageManagement.getHusbandMaxMarriageNumber(currentMember[0].FatherID, currentMember[0].CodeID);
+                        console.log("countMarriage: ", countMarriage);
+                        if (!CoreFunction.isDataNumberExist(countMarriage)) {
+                            countMarriage = 0;
+                        }
+                        let objData = {
+                            husbandID: currentMember[0].FatherID,
+                            wifeID: data.insertId,
+                            codeID: currentMember[0].CodeID,
+                            marriageNumber: countMarriage + 1
+                        }
+                        await MarriageManagement.addMarriage(objData);
                     }
                     FamilyManagementService.insertMotherIDToMember(data.insertId, req.body.CurrentMemberID);
                 }
@@ -248,13 +280,19 @@ var addMember = async (req, res) => {
                     // nếu giới tính là nữ thì ko thêm
                     if (req.body.Male == 0) {
                         let errorMessage = 'Bạn chỉ có thể thêm chồng là nam cho thành viên này';
-
                         return res.send(Response.badRequestResponse(null, errorMessage));
+                    }
+                    // tìm số lần kết hôn của vợ
+                    let countMarriage = await MarriageManagement.getWifeMaxMarriageNumber(req.body.CurrentMemberID, currentMember[0].CodeID);
+                    console.log("countMarriage: ", countMarriage);
+                    if (!CoreFunction.isDataNumberExist(countMarriage)) {
+                        countMarriage = 0;
                     }
                     objData = {
                         husbandID: data.insertId,
                         wifeID: req.body.CurrentMemberID,
-                        codeID: req.body.CodeID
+                        codeID: req.body.CodeID,
+                        marriageNumber: countMarriage + 1
                     }
                 }
                 // nếu vào trường hợp thêm vợ
@@ -266,10 +304,17 @@ var addMember = async (req, res) => {
 
                         return res.send(Response.badRequestResponse(null, errorMessage));
                     }
+                    // tìm số lần kết hôn của chồng
+                    let countMarriage = await MarriageManagement.getHusbandMaxMarriageNumber(req.body.CurrentMemberID, currentMember[0].CodeID);
+                    console.log("countMarriage: ", countMarriage);
+                    if (!CoreFunction.isDataNumberExist(countMarriage)) {
+                        countMarriage = 0;
+                    }
                     objData = {
                         husbandID: req.body.CurrentMemberID,
                         wifeID: data.insertId,
-                        codeID: req.body.CodeID
+                        codeID: req.body.CodeID,
+                        marriageNumber: countMarriage + 1
                     }
                 }
                 await FamilyManagementService.setGeneration(currentMember[0].Generation, data.insertId);
@@ -507,6 +552,22 @@ var updateMemberToGenealogy = async (req, res) => {
                     let errorMessage = 'Bạn chỉ có thể thêm cha là nam cho thành viên';
                     return res.send(Response.badRequestResponse(null, errorMessage));
                 }
+                // nếu con đã có mẹ thì thêm mối quan hệ vợ chồng cho mẹ và cha của con
+                if (CoreFunction.isDataNumberExist(inGenealogyMemeber[0].MotherID)) {
+                    // tìm số lần kết hôn của mẹ
+                    let countMarriage = await MarriageManagement.getWifeMaxMarriageNumber(inGenealogyMemeber[0].MotherID, inGenealogyMemeber[0].CodeID);
+                    console.log("countMarriage: ", countMarriage);
+                    if (!CoreFunction.isDataNumberExist(countMarriage)) {
+                        countMarriage = 0;
+                    }
+                    let objData = {
+                        husbandID: outGenealogyMemeber[0].MemberID,
+                        wifeID: inGenealogyMemeber[0].MotherID,
+                        codeID: inGenealogyMemeber[0].CodeID,
+                        marriageNumber: countMarriage + 1
+                    }
+                    await MarriageManagement.addMarriage(objData);
+                }
                 FamilyManagementService.insertFatherIDToMember(outGenealogyMemeber[0].MemberID, inGenealogyMemeber[0].MemberID);
             } else if (req.body.Action == 'AddMother') {
                 // nếu đã có mẹ thì ko thêm
@@ -518,6 +579,22 @@ var updateMemberToGenealogy = async (req, res) => {
                 if (outGenealogyMemeber[0].Male == 1) {
                     let errorMessage = 'Bạn chỉ có thể thêm mẹ là nữ cho thành viên';
                     return res.send(Response.badRequestResponse(null, errorMessage));
+                }
+                // nếu con đã có cha thì thêm mối quan hệ vợ chồng cho mẹ và cha của con
+                if (CoreFunction.isDataNumberExist(inGenealogyMemeber[0].FatherID)) {
+                    // tìm số lần kết hôn của cha
+                    let countMarriage = await MarriageManagement.getHusbandMaxMarriageNumber(inGenealogyMemeber[0].FatherID, inGenealogyMemeber[0].CodeID);
+                    console.log("countMarriage: ", countMarriage);
+                    if (!CoreFunction.isDataNumberExist(countMarriage)) {
+                        countMarriage = 0;
+                    }
+                    let objData = {
+                        husbandID: inGenealogyMemeber[0].FatherID,
+                        wifeID: outGenealogyMemeber[0].MemberID,
+                        codeID: inGenealogyMemeber[0].CodeID,
+                        marriageNumber: countMarriage + 1
+                    }
+                    await MarriageManagement.addMarriage(objData);
                 }
                 FamilyManagementService.insertMotherIDToMember(outGenealogyMemeber[0].MemberID, inGenealogyMemeber[0].MemberID);
             }
@@ -552,10 +629,17 @@ var updateMemberToGenealogy = async (req, res) => {
                 if (outGenealogyMemeber[0].Male == 0) {
                     return res.send(Response.badRequestResponse(null, "Bạn chỉ có thể thêm chồng là nam cho thành viên này"));
                 }
+                // tìm số lần kết hôn của vợ
+                let countMarriage = await MarriageManagement.getWifeMaxMarriageNumber(inGenealogyMemeber[0].MemberID, inGenealogyMemeber[0].CodeID);
+                console.log("countMarriage: ", countMarriage);
+                if (!CoreFunction.isDataNumberExist(countMarriage)) {
+                    countMarriage = 0;
+                }
                 objData = {
                     husbandID: req.body.OutGenealogyID,
                     wifeID: req.body.InGenealogyID,
-                    codeID: inGenealogyMemeber[0].CodeID
+                    codeID: inGenealogyMemeber[0].CodeID,
+                    marriageNumber: countMarriage + 1
                 }
             }
             // nếu vào trường hợp thêm vợ
@@ -564,10 +648,17 @@ var updateMemberToGenealogy = async (req, res) => {
                 if (outGenealogyMemeber[0].Male == 1) {
                     return res.send(Response.badRequestResponse(null, "Bạn chỉ có thể thêm vợ là nữ cho thành viên này"));
                 }
+                // tìm số lần kết hôn của chồng
+                let countMarriage = await MarriageManagement.getHusbandMaxMarriageNumber(inGenealogyMemeber[0].MemberID, inGenealogyMemeber[0].CodeID);
+                console.log("countMarriage: ", countMarriage);
+                if (!CoreFunction.isDataNumberExist(countMarriage)) {
+                    countMarriage = 0;
+                }
                 objData = {
                     husbandID: req.body.InGenealogyID,
                     wifeID: req.body.OutGenealogyID,
-                    codeID: inGenealogyMemeber[0].CodeID
+                    codeID: inGenealogyMemeber[0].CodeID,
+                    marriageNumber: countMarriage + 1
                 }
             }
             await FamilyManagementService.setGeneration(inGenealogyMemeber[0].Generation, outGenealogyMemeber[0].MemberID);
@@ -604,7 +695,32 @@ var deleteMember = async (req, res) => {
         console.log("dataMember: ", dataMember[0].MemberID);
         // xóa ảnh cũ
         await CoreFunction.deleteImage(dataMember[0].Image);
-        await FamilyManagementService.UpdateMemberRelated(req.query.MemberID);
+        // nếu người được xóa là người ngoài gia phả, tức là ko có cha mẹ
+        if (!CoreFunction.isDataNumberExist(dataMember[0].FatherID) && !CoreFunction.isDataNumberExist(dataMember[0].MotherID)) {
+            console.log("Đã vào trường hợp người ngoài gia phả");
+            // nếu là nam thì bỏ fatherID của những người có fatherID là memberID của người được xóa
+            if (dataMember[0].Male == 1) {
+                let listMember = await FamilyManagementService.getMembersByFatherID(dataMember[0].MemberID);
+                if (listMember.length > 0) {
+                    for (let i = 0; i < listMember.length; i++) {
+                        FamilyManagementService.insertFatherIDToMember(null, listMember[i].MemberID);
+                    }
+                }
+            }
+            // nếu là nữ thì bỏ motherID của những người có motherID là memberID của người được xóa
+            else if (dataMember[0].Male == 0) {
+                let listMember = await FamilyManagementService.getMembersByMotherID(dataMember[0].MemberID);
+                if (listMember.length > 0) {
+                    for (let i = 0; i < listMember.length; i++) {
+                        FamilyManagementService.insertMotherIDToMember(null, listMember[i].MemberID);
+                    }
+                }
+            }
+        }
+        // nếu người được xóa là người trong gia phả, tức là có cha mẹ
+        else {
+            await FamilyManagementService.UpdateMemberRelated(req.query.MemberID);
+        }
         await FamilyManagementService.deleteMember(req.query.MemberID);
 
         dataRes = {
