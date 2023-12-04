@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const Response = require('../../Utils/Response')
 
 async function exportPDF(req, res) {
   try {
@@ -22,7 +23,8 @@ async function exportPDF(req, res) {
     res.send(pdfBuffer);
   } catch (error) {
     console.error('Lỗi khi export PDF:', error);
-    res.status(500).json({ success: false, message: 'Lỗi khi export PDF' });
+    return res.send(Response.BadRequest(null, error.message));
+
   }
 }
 

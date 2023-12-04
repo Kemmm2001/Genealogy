@@ -1,4 +1,6 @@
 const JsonService = require('../../service/Backup/JsonSevice')
+const Response = require('../../Utils/Response')
+const xlsx = require('xlsx');
 
 var exportData = async function(req, res) {
   try {
@@ -6,19 +8,20 @@ var exportData = async function(req, res) {
     console.log(memberIDs)
     const result = await JsonService.exportData(memberIDs);
     if (result.success) { 
-      res.json({ message: 'Xuất dữ liệu thành công', fileName: result.fileName });
+      return res.send(Response.successResponse(null, 'Export thành công'));
     } else {
-      res.status(500).json({ error: 'Lỗi khi xuất dữ liệu' });
+      return res.send(Response.dataNotFoundResponse());
     }
   } catch (error) {
-    res.status(500).json({ error: 'Lỗi khi xử lý xuất dữ liệu' });
+    return res.send(Response.BadRequest());
   }
 }
 
+
 var importData =  async function (req, res) {
   try {
-  
-      const result = await JsonService.importData(req.file);
+      const file = req.file.path;
+      const result = await JsonService.importData(file);
 
       if (result.success) {
           res.json({ message: 'Nhập dữ liệu thành công' });

@@ -63,9 +63,6 @@
                   Đăng
                   kí
                 </button>
-                <router-link to="/login">
-                  <button @click="LogoutAccount()" class="btn bg-danger text-white">Đăng xuất tài khoản</button>
-                </router-link>
               </div>
             </div>
           </div>
@@ -193,10 +190,9 @@ export default {
       });
     },
     registerFamilyTree() {
-      if (
-        this.familyTree.treeName != "" &&
-        this.this.familyTree.ethnicity != ""
-      ) {
+      console.log(this.familyTree.treeName)
+      console.log(this.familyTree.ethnicity)
+      if ( this.familyTree.treeName != "" && this.familyTree.ethnicity != "") {
         HTTP.post("register-genealogy", {
           accountID: this.accountID,
           treeName: this.familyTree.treeName,
