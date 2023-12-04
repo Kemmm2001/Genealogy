@@ -504,7 +504,7 @@ var updateMemberToGenealogy = async (req, res) => {
                 }
                 // nếu giới tính là nữ thì ko thêm
                 if (outGenealogyMemeber[0].Male == 0) {
-                    let errorMessage = 'Bạn chỉ có thể thêm cha cho thành viên';
+                    let errorMessage = 'Bạn chỉ có thể thêm cha là nam cho thành viên';
                     return res.send(Response.badRequestResponse(null, errorMessage));
                 }
                 FamilyManagementService.insertFatherIDToMember(outGenealogyMemeber[0].MemberID, inGenealogyMemeber[0].MemberID);
@@ -516,7 +516,7 @@ var updateMemberToGenealogy = async (req, res) => {
                 }
                 // nếu giới tính là nam thì ko thêm
                 if (outGenealogyMemeber[0].Male == 1) {
-                    let errorMessage = 'Bạn chỉ có thể thêm mẹ cho thành viên';
+                    let errorMessage = 'Bạn chỉ có thể thêm mẹ là nữ cho thành viên';
                     return res.send(Response.badRequestResponse(null, errorMessage));
                 }
                 FamilyManagementService.insertMotherIDToMember(outGenealogyMemeber[0].MemberID, inGenealogyMemeber[0].MemberID);
@@ -529,6 +529,11 @@ var updateMemberToGenealogy = async (req, res) => {
             if (isBirthOrderExist(outGenealogyMemeber[0].MemberID, outGenealogyMemeber[0].BirthOrder, listChild)) {
                 let errorMessage = `Con thứ ${outGenealogyMemeber[0].BirthOrder} đã tồn tại`;
                 return res.send(Response.badRequestResponse(null, errorMessage));
+            }
+            if (inGenealogyMemeber[0].Male == 1) {
+                FamilyManagementService.insertFatherIDToMember(inGenealogyMemeber[0].MemberID, outGenealogyMemeber[0].MemberID);
+            } else if (inGenealogyMemeber[0].Male == 0) {
+                FamilyManagementService.insertMotherIDToMember(inGenealogyMemeber[0].MemberID, outGenealogyMemeber[0].MemberID);
             }
             await FamilyManagementService.setGeneration(inGenealogyMemeber[0].Generation + 1, outGenealogyMemeber[0].MemberID);
             // await FamilyManagementService.insertParentIdToMember(inGenealogyMemeber[0].MemberID, outGenealogyMemeber[0].MemberID);
@@ -544,19 +549,25 @@ var updateMemberToGenealogy = async (req, res) => {
             // nếu vào trường hợp thêm chồng 
             if (req.body.Action == 'AddHusband') {
                 console.log("Đã vào trường hợp thêm chồng");
+                if (outGenealogyMemeber[0].Male == 0) {
+                    return res.send(Response.badRequestResponse(null, "Bạn chỉ có thể thêm chồng là nam cho thành viên này"));
+                }
                 objData = {
                     husbandID: req.body.OutGenealogyID,
                     wifeID: req.body.InGenealogyID,
-                    codeID: req.body.CodeID
+                    codeID: inGenealogyMemeber[0].CodeID
                 }
             }
             // nếu vào trường hợp thêm vợ
             else if (req.body.Action == 'AddWife') {
                 console.log("Đã vào trường hợp thêm vợ");
+                if (outGenealogyMemeber[0].Male == 1) {
+                    return res.send(Response.badRequestResponse(null, "Bạn chỉ có thể thêm vợ là nữ cho thành viên này"));
+                }
                 objData = {
                     husbandID: req.body.InGenealogyID,
                     wifeID: req.body.OutGenealogyID,
-                    codeID: req.body.CodeID
+                    codeID: inGenealogyMemeber[0].CodeID
                 }
             }
             await FamilyManagementService.setGeneration(inGenealogyMemeber[0].Generation, outGenealogyMemeber[0].MemberID);

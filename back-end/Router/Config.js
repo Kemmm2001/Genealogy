@@ -9,7 +9,7 @@ var router = express.Router();
 const initWebRouter = (app) => {
 
     router.post('/export-pdf', PdfController.exportPDF);
-    router.get('/export-excle', ExcelController.exportExcel);
+    router.post('/export-excle', ExcelController.exportExcel);
     router.post('/back-up', JsonController.exportData)
     router.post('/import', JsonController.importData)
 
