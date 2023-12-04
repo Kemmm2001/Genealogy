@@ -677,11 +677,11 @@
                       <h6 style="margin-bottom:20px; height: 20px">Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược lại)</h6>
                       <div style="display:flex">
                         <div style="position: relative; width: 50%;margin-right: 10px;">
-                          <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar()" />
+                          <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar('live')" />
                           <label class="form-label" for="input">Dương Lịch</label>
                         </div>
                         <div style="position: relative;width: 50%; margin-right: 10px;">
-                          <input v-model="objMemberInfor.LunarDob" type="date" class="form-control modal-item" placeholder @change="convertLunarToSolar()" />
+                          <input v-model="objMemberInfor.LunarDob" type="date" class="form-control modal-item" placeholder @change="convertLunarToSolar('live')" />
                           <label class="form-label-number" min="0" for="input">Âm lịch</label>
                         </div>
                       </div>
@@ -698,11 +698,11 @@
                       <h6 style="margin-bottom:20px">Ngày Mất (*)</h6>
                       <div style="display:flex">
                         <div style="position: relative; width: 50%;margin-right: 10px;">
-                          <input v-model="objMemberInfor.Dod" type="date" class="form-control modal-item" placeholder />
+                          <input v-model="objMemberInfor.Dod" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar('died')" />
                           <label class="form-label" for="input">Dương Lịch</label>
                         </div>
                         <div style="position: relative;width: 50%; margin-right: 10px;">
-                          <input v-model="objMemberInfor.LunarDod" type="date" class="form-control modal-item" placeholder />
+                          <input v-model="objMemberInfor.LunarDod" type="date" class="form-control modal-item" placeholder @change="convertLunarToSolar('died')" />
                           <label class="form-label-number" min="0" for="input">Âm lịch</label>
                         </div>
                       </div>
@@ -1493,46 +1493,90 @@ export default {
       }
     },
     //Lưu tùng lâm
-    convertLunarToSolar() {
-      let LunarDob = new Date(this.objMemberInfor.LunarDob);
-      let timezone = (0, getLocalTimezone)();
-      const dob = convertLunar2Solar(
-        LunarDob.getDate(),
-        LunarDob.getMonth() + 1,
-        LunarDob.getFullYear(),
-        false,
-        timezone
-      );
-      let month = dob.getMonth() + 1;
-      let date = dob.getDate();
-      if (month < 10) {
-        month = "0" + (dob.getMonth() + 1);
+    convertLunarToSolar(type) {
+      if(type == 'died'){
+        let LunarDod = new Date(this.objMemberInfor.LunarDod);
+        let timezone = (0, getLocalTimezone)();
+        const dod = convertLunar2Solar(
+          LunarDod.getDate(),
+          LunarDod.getMonth() + 1,
+          LunarDod.getFullYear(),
+          false,
+          timezone
+        );
+        let month = dod.getMonth() + 1;
+        let date = dod.getDate();
+        if (month < 10) {
+          month = "0" + (dod.getMonth() + 1);
+        }
+        if (date < 10) {
+          date = "0" + dod.getDate();
+        }
+        this.$set(
+          this.objMemberInfor,
+          "Dod",
+          "" + dod.getFullYear() + "-" + month + "-" + date
+        );
+      }else if(type == 'live'){
+        let LunarDob = new Date(this.objMemberInfor.LunarDob);
+        let timezone = (0, getLocalTimezone)();
+        const dob = convertLunar2Solar(
+          LunarDob.getDate(),
+          LunarDob.getMonth() + 1,
+          LunarDob.getFullYear(),
+          false,
+          timezone
+        );
+        let month = dob.getMonth() + 1;
+        let date = dob.getDate();
+        if (month < 10) {
+          month = "0" + (dob.getMonth() + 1);
+        }
+        if (date < 10) {
+          date = "0" + dob.getDate();
+        }
+        this.$set(
+          this.objMemberInfor,
+          "Dob",
+          "" + dob.getFullYear() + "-" + month + "-" + date
+        );
       }
-      if (date < 10) {
-        date = "0" + dob.getDate();
-      }
-      this.$set(
-        this.objMemberInfor,
-        "Dob",
-        "" + dob.getFullYear() + "-" + month + "-" + date
-      );
+      
     },
     //Lưu tùng lâm
-    convertSolarToLunar() {
-      let Dob = new Date(this.objMemberInfor.Dob);
-      let month = new LunarDate(Dob).getMonth();
-      let date = new LunarDate(Dob).getDate();
-      if (new LunarDate(Dob).getMonth() < 10) {
-        month = "0" + new LunarDate(Dob).getMonth();
+    convertSolarToLunar(type) {
+      if(type =='live'){
+        let Dob = new Date(this.objMemberInfor.Dob);
+        let month = new LunarDate(Dob).getMonth();
+        let date = new LunarDate(Dob).getDate();
+        if (new LunarDate(Dob).getMonth() < 10) {
+          month = "0" + new LunarDate(Dob).getMonth();
+        }
+        if (new LunarDate(Dob).getDate() < 10) {
+          date = "0" + new LunarDate(Dob).getDate();
+        }
+        this.$set(
+          this.objMemberInfor,
+          "LunarDob",
+          "" + new LunarDate(Dob).getYear() + "-" + month + "-" + date
+        );
+      }else if(type =='died'){
+        let Dod = new Date(this.objMemberInfor.Dod);
+        let month = new LunarDate(Dod).getMonth();
+        let date = new LunarDate(Dod).getDate();
+        if (new LunarDate(Dod).getMonth() < 10) {
+          month = "0" + new LunarDate(Dod).getMonth();
+        }
+        if (new LunarDate(Dod).getDate() < 10) {
+          date = "0" + new LunarDate(Dod).getDate();
+        }
+        this.$set(
+          this.objMemberInfor,
+          "LunarDod",
+          "" + new LunarDate(Dod).getYear() + "-" + month + "-" + date
+        );
       }
-      if (new LunarDate(Dob).getDate() < 10) {
-        date = "0" + new LunarDate(Dob).getDate();
-      }
-      this.$set(
-        this.objMemberInfor,
-        "LunarDob",
-        "" + new LunarDate(Dob).getYear() + "-" + month + "-" + date
-      );
+      
     },
     //Nguyễn Lê Hùng
     getAdressMember(addressString) {
