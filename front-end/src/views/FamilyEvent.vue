@@ -398,7 +398,6 @@ export default {
         IsImportant: null,
         Note: null,
         Place: null,
-        RepeatID: 1,
       },
       startHour: null,
       startMinute: null,
@@ -598,6 +597,7 @@ export default {
         },
       })
         .then((response) => {
+          console.log(response);
           if (response.data.success == true) {
             this.listEvent = response.data.data;
             this.listEventFilter = this.listEvent;
@@ -614,7 +614,6 @@ export default {
       } else {
         HTTP.post("filter-event", {
           Status: this.filterStatus,
-          RepeatID: this.filterRepeat,
           CodeID: this.CodeID,
         })
           .then((respone) => {
@@ -660,7 +659,6 @@ export default {
           Note: this.eventFamily.Note,
           Place: this.eventFamily.Place,
           IsImportant: this.eventFamily.Description ? 1 : 0,
-          RepeatID: this.eventFamily.RepeatID,
           isAdd: true,
         })
           .then((respone) => {
@@ -697,7 +695,6 @@ export default {
           Note: this.eventFamily.Note,
           Place: this.eventFamily.Place,
           IsImportant: this.eventFamily.IsImportant,
-          RepeatID: this.eventFamily.RepeatID,
           Status: this.eventFamily.Status,
         })
           .then((respone) => {
@@ -742,7 +739,7 @@ export default {
           if (respone.data.success == true) {
             this.NotificationsDelete(respone.data.message);
             this.closeAddEventModal();
-            this.listEvent();
+            this.getListEvent();
           } else {
             this.NotificationsDelete(respone.data.message);
           }
@@ -773,7 +770,6 @@ export default {
     showAddEventModal() {
       this.eventFamily = {};
       this.eventFamily.Status = 1;
-      this.eventFamily.RepeatID = 1;
       this.startHour = null;
       this.startMinute = null;
       this.startDate = null;

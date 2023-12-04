@@ -625,19 +625,7 @@
                       </div>
                     </div>
                     <div style="display:flex">
-                      <div style="position: relative; width: 50%;margin-right: 10px;">
-                        <!-- <select v-model="objMemberInfor.Male" class="form-select modal-item" v-if="action == 'AddFather'">
-                          <option value="1" selected>Nam</option>
-                        </select>
-                        <select v-model="objMemberInfor.Male" class="form-select modal-item" v-else-if="action == 'AddMother'">
-                          <option value="0" selected>Nữ</option>
-                        </select>
-                        <select v-model="objMemberInfor.Male" class="form-select modal-item" v-else-if="action == 'AddHusband'">
-                          <option value="1" selected>Nam</option>
-                        </select>
-                        <select v-model="objMemberInfor.Male" class="form-select modal-item" v-else-if="action == 'AddWife'">
-                          <option value="0" selected>Nữ</option>
-                        </select>-->
+                      <div style="position: relative; width: 50%;margin-right: 10px;">                
                         <select v-model="objMemberInfor.Male" class="form-select modal-item">
                           <option value="1">Nam</option>
                           <option value="0">Nữ</option>

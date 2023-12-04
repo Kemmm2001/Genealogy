@@ -10,7 +10,7 @@ function getAllEvent(CodeID) {
                     console.log(err)
                     reject(err)
                 } else {
-                    resolve(true)
+                    resolve(result)
                 }
             })
         } catch (error) {
@@ -19,22 +19,6 @@ function getAllEvent(CodeID) {
     })
 }
 
-function getListEventRepetition() {
-    return new Promise((resolve, reject) => {
-        try {
-            let query = 'SELECT * FROM genealogy.eventrepetition';
-            db.connection.query(query, (err, result) => {
-                if (!err && result.length > 0) {
-                    resolve(result)
-                } else {
-                    reject(err)
-                }
-            })
-        } catch (error) {
-            reject(error)
-        }
-    })
-}
 
 async function getListPhone(ListMemberID) {
     let ListPhone = [];
@@ -92,8 +76,8 @@ async function getListEmail(ListMemberID) {
 async function InsertNewEvent(objData) {
     return new Promise((resolve, reject) => {
         try {
-            let query = `INSERT INTO eventfamily (EventName,CodeID,Status,StartDate,EndDate, Description, IsImportant, Note,Place, RepeatID)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            let query = `INSERT INTO eventfamily (EventName,CodeID,Status,StartDate,EndDate, Description, IsImportant, Note,Place)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
             let values = [
                 objData.EventName,
                 objData.CodeID,
@@ -104,7 +88,6 @@ async function InsertNewEvent(objData) {
                 objData.IsImportant,
                 objData.Note,
                 objData.Place,
-                objData.RepeatID,
 
             ]
             db.connection.query(query, values, (err) => {
@@ -155,8 +138,8 @@ function searchEvent(CodeID, keySearch) {
 async function UpdateEvent(objData) {
     return new Promise((resolve, reject) => {
         try {
-            let query = `UPDATE eventfamily SET EventName = ?, Status = ?, StartDate = ?, EndDate = ?, Description = ?,IsImportant = ?, Note = ?, Place = ?, 
-        RepeatID = ? WHERE EventID = ?`;
+            let query = `UPDATE eventfamily SET EventName = ?, Status = ?, StartDate = ?, EndDate = ?, Description = ?,IsImportant = ?, Note = ?, Place = ?
+        WHERE EventID = ?`;
             let values = [
                 objData.EventName,
                 objData.Status,
@@ -166,7 +149,6 @@ async function UpdateEvent(objData) {
                 objData.IsImportant,
                 objData.Note,
                 objData.Place,
-                objData.RepeatID,
                 objData.EventID,
             ]
             db.connection.query(query, values, (err) => {
@@ -287,5 +269,5 @@ function getCodeID(eventID) {
 
 module.exports = {
     getAllEvent, InsertNewEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth,
-    GetDeadDayInMonth, searchEvent, filterEvent, getListPhone, getListEventRepetition, getInformationEvent, getListEmail, getCodeID
+    GetDeadDayInMonth, searchEvent, filterEvent, getListPhone, getInformationEvent, getListEmail, getCodeID
 }
