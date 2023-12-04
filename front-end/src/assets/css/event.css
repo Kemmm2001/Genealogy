@@ -92,3 +92,18 @@
     padding: 0 8px;
     border-bottom: 1px solid lightgray;
 }
+
+.cfevent-screen{
+    background-image: url(../cfevent.jpg);
+    background-size: cover;
+}
+
+.cfevent-screen .cfevent-container{
+    height: 30%;
+    width: 35%;
+    inset: 0;
+    margin: auto;
+    border-radius: 0.2rem;
+    background-color: #fff;
+    position: absolute;
+}
