@@ -116,7 +116,6 @@
               <option value="all">Toàn bộ</option>
               <option value="trongdongho">Trong dòng họ</option>
               <option value="ngoaidongho">Ngoài dòng họ</option>
-              <option value="contrai">Con trai</option>
             </select>
           </div>
           <div class="input-control">
@@ -1000,11 +999,6 @@ export default {
         if (this.statusSearch == "ngoaidongho") {
           this.memberFilter = this.memberFilter.filter(
             (member) => member.fid == ""
-          );
-        }
-        if (this.statusSearch == "contrai") {
-          this.memberFilter = this.memberFilter.filter(
-            (member) => member.fid != "" && member.gender == "male"
           );
         }
       }
