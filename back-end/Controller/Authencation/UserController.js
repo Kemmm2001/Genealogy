@@ -24,7 +24,7 @@ var registerUser = async (req, res) => {
     if (error.isJoi === true) {
       error.status = 422;
     }
-    res.status(error.status || 500).json({ error: error.message });
+    return res.send(Response.BadRequest(null, error.message));
   }
 }
 

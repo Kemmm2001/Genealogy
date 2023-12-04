@@ -1,4 +1,5 @@
 const JsonService = require('../../service/Backup/JsonSevice')
+const Response = require('../../Utils/Response')
 
 var exportData = async function(req, res) {
   try {
@@ -6,12 +7,12 @@ var exportData = async function(req, res) {
     console.log(memberIDs)
     const result = await JsonService.exportData(memberIDs);
     if (result.success) { 
-      res.json({ message: 'Xuất dữ liệu thành công', fileName: result.fileName });
+      return res.send(Response.successResponse(null, 'Đăng ký thành công'));
     } else {
-      res.status(500).json({ error: 'Lỗi khi xuất dữ liệu' });
+      return res.send(Response.dataNotFoundResponse());
     }
   } catch (error) {
-    res.status(500).json({ error: 'Lỗi khi xử lý xuất dữ liệu' });
+    return res.send(Response.BadRequest(null, error.message));
   }
 }
 
@@ -30,4 +31,4 @@ var importData =  async function (req, res) {
   }
 }
 
-module.exports = { exportData,importData };
+module.exports = { exportData, importData };
