@@ -18,7 +18,7 @@
           <div class="d-flex justify-content-center mt-3 mb-2" style="font-size: 36px; font-weight: bold; color: #fea94e;">Đăng nhập</div>
           <div class="d-flex flex-column" style="width: 420px;">
             <div class="d-flex mb-2" style="position: relative;">
-              <input v-model="accountLogin.email" id="username" type="text" class="form-control py-2 px-5 position-relative" placeholder="Tên tài khoản" />
+              <input v-model="accountLogin.email" id="username" type="text" class="form-control py-2 px-5 position-relative" placeholder="Nhập email" />
               <div class="position-absolute d-flex align-items-center justify-content-center h-100" style="left: 0; width: 3rem;">
                 <svg class="login-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                   <path style="fill: gray;" d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
@@ -91,7 +91,7 @@
 
 <script>
 import { HTTP } from "../assets/js/baseAPI.js";
-import SHA256 from 'crypto-js/sha256';
+import SHA256 from "crypto-js/sha256";
 import Vue from "vue";
 import VueCookies from "vue-cookies";
 Vue.use(VueCookies);
@@ -189,7 +189,7 @@ export default {
         HTTP.post("login", {
           email: this.accountLogin.email,
           // password: SHA256(this.accountLogin.password).toString(),
-          password:this.accountLogin.password,
+          password: this.accountLogin.password,
         })
           .then((response) => {
             if (response.data.success == false) {
@@ -250,7 +250,7 @@ export default {
       localStorage.getItem("accountID") != null &&
       localStorage.getItem("CodeID") != null
     ) {
-      this.$router.push("/");  
+      this.$router.push("/");
     } else {
       if (localStorage.getItem("accountID") != null) {
         this.$router.push("/familycode");

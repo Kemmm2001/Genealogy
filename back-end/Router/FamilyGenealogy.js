@@ -12,18 +12,19 @@ var router = express.Router();
 
 
 const initWebRouter = (app) => {
-    //API Hùng
-    //Get Nationality and Religion
+
+    //API Nguyễn Lê Hùng   
     router.get('/nationality', ManagerFamilyTree.AllNationality)
     router.get('/religion', ManagerFamilyTree.AllReligion)
     router.get('/agegroup', FamilyMemberManagement.getListAgeGroup)
     router.get('/bloodtype', FamilyMemberManagement.getListBloodTypeGroup)
-   
+
     router.get('/memberRole', ManagerFamilyTree.AllMemberRole)
     router.get('/InforMember', ManagerFamilyTree.informationMember)
+    router.get('/searchMemberSendMessage', ManagerFamilyTree.searchMemberCanSendMessage)
     router.post('/setRole', ManagerFamilyTree.setRole)
     router.get('/viewTree', ManagerFamilyTree.AllMemberInGenelogy)
-    router.get('/getFamilyHead',ManagerFamilyTree.getFamilyHead)
+    router.get('/getFamilyHead', ManagerFamilyTree.getFamilyHead)
 
     router.get('/relationship', ManagerFamilyTree.getRelationShipMember)
     router.put('/removeRelationship', ManagerFamilyTree.removeRelationship)

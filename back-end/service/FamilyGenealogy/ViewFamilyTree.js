@@ -346,6 +346,24 @@ function setAllGenerationMember(memberId, generation) {
 }
 
 //Nguyễn Lê Hùng
+function searchMemberCanSendMessage(CodeID, keySearch) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `SELECT * FROM genealogy.familymember WHERE CodeID = ${CodeID} and IsDead = 0 and Generation != 0 and MemberName like '%${keySearch}%'`;
+            db.connection.query(query, (err, result) => {
+                if (!err && result.length > 0) {
+                    resolve(result)
+                } else {
+                    reject(err)
+                }
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+//Nguyễn Lê Hùng
 function getListUnspecifiedMembers(CodeID) {
     return new Promise((resolve, reject) => {
         try {
@@ -760,5 +778,5 @@ module.exports = {
     getAllReligion, getInforMember, getContactMember, getEducationMember, getJobMember, getEventMember, getAllNationality, getAllMemberRole,
     getRoleExist, setRoleMember, removePaternalAncestor, turnOnSQL_SAFE_UPDATES, turnOffSQL_SAFE_UPDATES, getListMessage,
     setAllGenerationMember, ResetAllGenerationMember, ViewFamilyTree, getListUnspecifiedMembers, GetIdPaternalAncestor, RelationShipMember,
-    RemoveRelationshipChild, RemoveRelationshipMarried, RemoveRelationshipParent, getListNotificationEmail, getAllMarriage, getFamilyHeadInGenealogy
+    RemoveRelationshipChild, RemoveRelationshipMarried, RemoveRelationshipParent, getListNotificationEmail, getAllMarriage, getFamilyHeadInGenealogy, searchMemberCanSendMessage
 }

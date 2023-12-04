@@ -270,7 +270,7 @@
               </div>
             </div>
             <div>
-              <div v-for="(n, index) in nodes" :key="n.id">
+              <div v-for="(n, index) in ListMemberCanSendMessage" :key="n.id">
                 <div v-if="n.isDead != 1" :tabindex="index" class="noti-modal-member d-flex flex-row align-items-center px-2" :class="{ chosen: ListPhoneToSendMessage.includes(n.id) }" @click="toggleSelection(n.id)">
                   <div>
                     <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -1079,6 +1079,7 @@ export default {
       canAddMother: true,
       canAddhusband: true,
       canAddWife: true,
+      ListMemberCanSendMessage: null,
 
       lastClickedNodeId: null,
       isCompare: false,
@@ -1437,10 +1438,34 @@ export default {
     },
     //Nguyễn Lê Hùng
     searchMember() {
-      this.ListPhoneToSendMessage = this.nodes.filter((node) =>
-        node.name.toLowerCase().includes(this.searchKeyword.toLowerCase())
-      );
-      console.log(this.searchKeyword);
+      if (this.searchKeyword == "" || this.searchKeyword == null) {
+        this.ListMemberCanSendMessage = this.nodes;
+      } else {
+        HTTP.get("searchMemberSendMessage", {
+          params: {
+            CodeID: this.CodeID,
+            keySearch: this.searchKeyword,
+          },
+        })
+          .then((response) => {
+            if (response.data.success == true) {
+              console.log(response.data.data);
+              let result = response.data.data;
+              this.ListMemberCanSendMessage =
+                this.ListMemberCanSendMessage.filter((element) =>
+                  result.some(
+                    (resultElement) => resultElement.MemberID === element.id
+                  )
+                );
+              console.log(this.ListMemberCanSendMessage);
+            } else {
+              this.NotificationsDelete(response.data.message);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
     },
     //Nguyễn Lê Hùng
     toggleSelectAll() {
@@ -2321,6 +2346,7 @@ export default {
           this.numberDeath = 0;
           if (response.data.success == true) {
             this.nodes = response.data.data;
+            this.ListMemberCanSendMessage = this.nodes;
             console.log(this.nodes);
             for (let i = 0; i < this.nodes.length; i++) {
               this.nodes[i].tags = [];
