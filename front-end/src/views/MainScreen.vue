@@ -1494,7 +1494,7 @@ export default {
     },
     //Lưu tùng lâm
     convertLunarToSolar(type) {
-      if(type == 'died'){
+      if (type == "died") {
         let LunarDod = new Date(this.objMemberInfor.LunarDod);
         let timezone = (0, getLocalTimezone)();
         const dod = convertLunar2Solar(
@@ -1517,7 +1517,7 @@ export default {
           "Dod",
           "" + dod.getFullYear() + "-" + month + "-" + date
         );
-      }else if(type == 'live'){
+      } else if (type == "live") {
         let LunarDob = new Date(this.objMemberInfor.LunarDob);
         let timezone = (0, getLocalTimezone)();
         const dob = convertLunar2Solar(
@@ -1541,11 +1541,10 @@ export default {
           "" + dob.getFullYear() + "-" + month + "-" + date
         );
       }
-      
     },
     //Lưu tùng lâm
     convertSolarToLunar(type) {
-      if(type =='live'){
+      if (type == "live") {
         let Dob = new Date(this.objMemberInfor.Dob);
         let month = new LunarDate(Dob).getMonth();
         let date = new LunarDate(Dob).getDate();
@@ -1560,7 +1559,7 @@ export default {
           "LunarDob",
           "" + new LunarDate(Dob).getYear() + "-" + month + "-" + date
         );
-      }else if(type =='died'){
+      } else if (type == "died") {
         let Dod = new Date(this.objMemberInfor.Dod);
         let month = new LunarDate(Dod).getMonth();
         let date = new LunarDate(Dod).getDate();
@@ -1576,7 +1575,6 @@ export default {
           "" + new LunarDate(Dod).getYear() + "-" + month + "-" + date
         );
       }
-      
     },
     //Nguyễn Lê Hùng
     getAdressMember(addressString) {
@@ -2547,7 +2545,6 @@ export default {
         }
       });
     },
-    getFamilyHead() {},
     getListCity() {
       HTTP.get("province")
         .then((response) => {
@@ -2684,7 +2681,6 @@ export default {
     this.getListHistoryEmail();
     this.getListMember();
     this.getAllListMember();
-    this.getFamilyHead();
   },
 };
 </script>

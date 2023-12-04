@@ -133,7 +133,7 @@ var getFamilyHead = async (req, res) => {
     try {
         console.log("đã vào api")
         let CodeID = req.query.CodeID;
-        let data = await FamilyTreeService.getFamilyHeadInGenealogy(CodeID);        
+        let data = await FamilyTreeService.getFamilyHeadInGenealogy(CodeID);
         if (data) {
             return res.send(Response.successResponse(data))
         } else {
@@ -147,7 +147,7 @@ var getFamilyHead = async (req, res) => {
 var AllMemberInGenelogy = async (req, res) => {
     try {
         let CodeID = req.query.CodeID;
-        let data = await FamilyTreeService.ViewFamilyTree(CodeID);
+        let data = await FamilyTreeService.ViewFamilyTree(CodeID);       
         if (data) {
             data.forEach((item) => {
                 if (item.dod === '1-1-1970') {
