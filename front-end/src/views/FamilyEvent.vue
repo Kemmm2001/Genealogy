@@ -1,7 +1,7 @@
 <!-- phùng việt khôi -->
 <template>
   <div class="event-screen d-flex flex-row w-100 p-0" style="overflow-y: auto;background-color: #bf831526">
-    <div class="col-6 h-100 calendar">
+    <div class="col-5 h-100 calendar">
       <div class="h-100 p-3 bg-colored" style="background-color: #f2f2f2;">
         <div class="d-flex flex-row" style="height: 48px;">
           <div class="h-100 w-100" style="padding-right: 4px;">
@@ -54,23 +54,26 @@
                     :class="{ choose: dayIndex == indexClickDay && weekIndex == indexClickWeek }"
                     @click="checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`) ? getListEventByDate(`${day.solar.year}-${day.solar.month}-${day.solar.date}`) : null"
                     :style="{ color: day.solar.month != currentMonth ? '#bebebe' : 'black' }">
-                      <div v-if="day.solar.date == 1" class="cn"
-                        @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.solar.date + "/"
-                          + (day.solar.month) }}</a></div>
-                      <div v-if="day.solar.date != 1" class="cn"
-                        @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.solar.date
-                        }}</a></div>
-                      <div v-if="day.lunar.date == 1" class="am"
-                        @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.lunar.date + "/"
-                          + (day.lunar.month) }}</a></div>
-                      <div v-if="day.lunar.date != 1" class="am"
-                        @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.lunar.date
-                        }}</a></div>
-                      <div class="event-icon" v-if="checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-event-fill" viewBox="0 0 16 16">
-                          <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2m-3.5-7h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5"/>
-                        </svg>
-                      </div>
+                    <div v-if="day.solar.date == 1" class="cn"
+                      @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.solar.date + "/"
+                        + (day.solar.month) }}</a></div>
+                    <div v-if="day.solar.date != 1" class="cn"
+                      @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.solar.date
+                      }}</a></div>
+                    <div v-if="day.lunar.date == 1" class="am"
+                      @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.lunar.date + "/"
+                        + (day.lunar.month) }}</a></div>
+                    <div v-if="day.lunar.date != 1" class="am"
+                      @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.lunar.date
+                      }}</a></div>
+                    <div class="event-icon"
+                      v-if="checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-calendar-event-fill" viewBox="0 0 16 16">
+                        <path
+                          d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2m-3.5-7h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5" />
+                      </svg>
+                    </div>
                     <!-- <div v-if="checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)"
                       @click="getListEventByDate(`${day.solar.year}-${day.solar.month}-${day.solar.date}`), showEventModal()">
                       <div v-if="day.solar.date == 1" class="cn"
@@ -95,7 +98,7 @@
         </div>
       </div>
     </div>
-    <div class="col-6 h-100 event-list">
+    <div class="col-7 h-100 event-list">
       <div class="h-100 p-3 bg-colored" style="background-color: #f2f2f2;">
         <div class="search-filter d-flex flex-row position-relative">
           <div class="search d-flex">
@@ -122,20 +125,19 @@
         <div class="button-list d-flex flex-row pt-3 mt-2">
           <div @click="showAddEventModal()" class="btn bg-primary text-white d-flex align-items-center">Thêm sự kiện</div>
           <div @click="exportExcel()" class="btn bg-primary text-white d-flex align-items-center item">Xuất excel</div>
-          <div @click="mailSelected = false; notiSelected = true"
-            class="btn bg-primary text-white d-flex align-items-center item">
-            Thông báo</div>
         </div>
         <div class="pt-3" style="height: calc(100% - 96px);">
-          <div v-if="!notiSelected && !mailSelected" class="h-100" style="overflow-y: auto;">
+          <div class="h-100" style="overflow-y: auto;">
             <table class="table table-eventlist eventlist-list m-0">
               <thead style="position: sticky; top: 0;">
                 <tr class="eventlist-item">
                   <th class="eventlist-list-th" scope="col">#</th>
                   <th class="eventlist-list-th" scope="col">Tên sự kiện</th>
                   <th class="eventlist-list-th" scope="col">Thời gian bắt đầu</th>
-                  <th class="eventlist-list-th" scope="col">Thời gian kết thúc</th>
+                  <!-- <th class="eventlist-list-th" scope="col">Thời gian kết thúc</th> -->
+                  <th class="eventlist-list-th" scope="col">Trạng thái</th>
                   <th class="eventlist-list-th" scope="col">Địa điểm</th>
+                  <th class="eventlist-list-th" scope="col"></th>
                   <th class="eventlist-list-th" scope="col"></th>
                 </tr>
               </thead>
@@ -143,92 +145,26 @@
                 <tr style="cursor: pointer;" class="eventlist-item eventlist-table-item odd"
                   v-for="(event, index) in listEventFilter" :key="event.EventID">
                   <td @click="showEditEventModal(event.EventID)">{{ index + 1 }}</td>
-                  <td @click="showEditEventModal(event.EventID)">{{ event.EventName }}</td>
+                  <td style="width: 20%;;" @click="showEditEventModal(event.EventID)">{{ event.EventName }}</td>
                   <td @click="showEditEventModal(event.EventID)">
                     <div>{{ formattedCreatedAt(event.StartDate) }} (DL)</div>
                     <div>{{ formattedCreatedAt(convertSolarToLunar(event.StartDate)) }} (AL)</div>
                   </td>
-                  <td @click="showEditEventModal(event.EventID)">
+                  <!-- <td @click="showEditEventModal(event.EventID)">
                     <div>{{ formattedCreatedAt(event.EndDate) }} (DL)</div>
                     <div>{{ formattedCreatedAt(convertSolarToLunar(event.EndDate)) }} (AL)</div>
-                  </td>
+                  </td> -->
+                  <td>Đã kết thúc</td>
                   <td @click="showEditEventModal(event.EventID)">{{ event.Place }}</td>
-                  <td @click="showParticipantList()">
-                    <div class="">Danh sách thành viên</div>
+                  <td>
+                    <div @click="showParticipantList()" class="btn bg-primary text-white">Danh sách thành viên</div>
+                  </td>
+                  <td>
+                    <div @click="showMemberList()" class="btn bg-primary text-white">Thông báo</div>
                   </td>
                 </tr>
               </tbody>
             </table>
-          </div>
-          <div v-if="notiSelected && !mailSelected" class="h-100">
-            <div class="d-flex flex-column mt-2" style="height: 100%; overflow-y: auto;">
-              <div class="sent-mail d-flex flex-row">
-                <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Sự kiện</div>
-                <div class="col-6 h-100 d-flex align-items-center position-relative">
-                  <div class="mail-content-prev">Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div>
-                </div>
-                <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">1/1/2000
-                </div>
-              </div>
-              <div class="sent-mail d-flex flex-row">
-                <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Sự kiện</div>
-                <div class="col-6 h-100 d-flex align-items-center position-relative">
-                  <div class="mail-content-prev">Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div>
-                </div>
-                <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">1/1/2000
-                </div>
-              </div>
-              <div class="sent-mail d-flex flex-row">
-                <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Sự kiện</div>
-                <div class="col-6 h-100 d-flex align-items-center position-relative">
-                  <div class="mail-content-prev">Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div>
-                </div>
-                <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">1/1/2000
-                </div>
-              </div>
-              <div class="sent-mail d-flex flex-row">
-                <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Sự kiện</div>
-                <div class="col-6 h-100 d-flex align-items-center position-relative">
-                  <div class="mail-content-prev">Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div>
-                </div>
-                <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">1/1/2000
-                </div>
-              </div>
-            </div>
-          </div>
-          <div v-if="!notiSelected && mailSelected" class="h-100">
-            <div class="create-mail" :class="{ expanded: mailSelected }">
-              <div class="w-100 h-100 d-flex flex-column">
-                <div class="create-mail-title d-flex align-items-center justify-content-center position-relative">
-                  <div>Email mới</div>
-                  <div class="create-mail-close position-absolute" @click="mailSelected = false; notiSelected = true">
-                    <div class="position-relative h-100 w-100">
-                      <svg class="create-mail-close-icon position-absolute" xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 384 512">
-                        <path
-                          d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-                <div class="create-mail-topic px-2 w-100">
-                  <input v-model="subjectEmail" type="text" class="mail-topic w-100 p-2" placeholder="Chủ đề email" />
-                </div>
-                <div class="create-mail-content px-2 w-100">
-                  <textarea v-model="contentEmail" style="resize: none; outline: none; border: none;"
-                    class="h-100 w-100 p-2" placeholder="Viết gì đó..."></textarea>
-                </div>
-              </div>
-            </div>
-            <div class="create-mail-footer d-flex flex-row px-3 py-2 w-100" style="justify-content: end;">
-              <div class="d-flex flex-row" @click="sendEmailToMember()">
-                <div style="border-radius: 50% 0 0 50%; background: #007bff; width: 25px;"></div>
-                <div class="btn d-flex align-items-center justify-content-center"
-                  style="padding: 4px 12px; background: #007bff; color: #FFFFFF; border-radius: 0; outline: none; border: none;">
-                  Gửi</div>
-                <div style="border-radius: 0 50% 50% 0; background: #007bff; width: 25px;"></div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -331,7 +267,7 @@
             <div class="d-flex flex-row" style="height: calc(100% - 50px);">
               <div class="col-6 mt-2 d-flex flex-column" style="padding-left: 8px; padding-right: 4px;">
                 <div class="item d-flex justify-content-center" style="background-color: aliceblue;">Có tham gia</div>
-                <div class="" style="overflow-y: auto; height: 480px;">
+                <div class="" style="overflow-y: auto; height: calc(100% - 106px);">
                   <div class="item odd">AAAAAAAAAAAAAAAA</div>
                   <div class="item even">BAAAAAAAAAAAAAAA</div>
                   <div class="item odd">AAAAAAAAAAAAAAAA</div>
@@ -353,7 +289,7 @@
 
               <div class="col-6 mt-2 d-flex flex-column" style="padding-left: 4px; padding-right: 8px;">
                 <div class="item d-flex justify-content-center" style="background-color: aliceblue;">Không tham gia</div>
-                <div class="" style="overflow-y: auto; height: 480px;">
+                <div class="" style="overflow-y: auto; height: calc(100% -106px);">
                   <div class="item odd">AAAAAAAAAAAAAAAA</div>
                   <div class="item even">BAAAAAAAAAAAAAAA</div>
                   <div class="item odd">AAAAAAAAAAAAAAAA</div>
@@ -415,6 +351,76 @@
         </div>
       </modal>
     </div>
+
+    <div class="member-container">
+      <modal name="member-list">
+        <div class="form-group h-100">
+          <div class="w-100 h-100 modal-bg position-relative">
+            <div class="d-flex flex-row w-100 align-items-center position-relative">
+              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Danh sách thành
+                viên</div>
+              <div class="close-add-form" @click="closeMemberList()">
+                <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                  <path
+                    d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                </svg>
+              </div>
+            </div>
+            <div class="d-flex flex-column p-3" style="height: calc(100% - 100px);">
+              <div class="d-flex flex-row">
+                <div class="col-3" style="padding-bottom: 4px; padding-right: 4px;">
+                  <input type="text" class="form-control h-100 w-100" placeholder="Tên thành viên" />
+                </div>
+                <div class="col-3" style="padding-bottom: 4px; padding-right: 4px;">
+                  <select class="form-select h-100 w-100">
+                    <option selected>Độ tuổi</option>
+                    <option>1</option>
+                    <option>1</option>
+                    <option>1</option>
+                    <option>1</option>
+                  </select>
+                </div>
+                <div class="col-3" style="padding-bottom: 4px; padding-right: 4px;">
+                  <select class="form-select h-100 w-100">
+                    <option selected>Độ tuổi</option>
+                    <option>1</option>
+                    <option>1</option>
+                    <option>1</option>
+                    <option>1</option>
+                  </select>
+                </div>
+              </div>
+              <div class="w-100" style="overflow-y: auto; height: 100%;">
+                <div class="item">AAAAAAAAAAAAAAAA</div>
+                <div class="item">AAAAAAAAAAAAAAAA</div>
+                <div class="item">AAAAAAAAAAAAAAAA</div>
+                <div class="item">AAAAAAAAAAAAAAAA</div>
+                <div class="item">AAAAAAAAAAAAAAAA</div>
+                <div class="item">AAAAAAAAAAAAAAAA</div>
+                <div class="item">AAAAAAAAAAAAAAAA</div>
+                <div class="item">AAAAAAAAAAAAAAAA</div>
+                <div class="item">AAAAAAAAAAAAAAAA</div>
+                <div class="item">AAAAAAAAAAAAAAAA</div>
+                <div class="item">AAAAAAAAAAAAAAAA</div>
+                <div class="item">AAAAAAAAAAAAAAAA</div>
+                <div class="item">AAAAAAAAAAAAAAAA</div>
+                <div class="item">AAAAAAAAAAAAAAAA</div>
+                <div class="item">AAAAAAAAAAAAAAAA</div>
+                <div class="item">AAAAAAAAAAAAAAAA</div>
+                <div class="item">AAAAAAAAAAAAAAAA</div>
+                <div class="item">AAAAAAAAAAAAAAAA</div>
+                <div class="item">AAAAAAAAAAAAAAAA</div>
+                <div class="item">AAAAAAAAAAAAAAAA</div>
+              </div>
+            </div>
+            <div class="modal-footer position-absolute w-100" style="bottom: 0;">
+              <div @click="closeParticipantList()" class="bg-primary text-white btn mx-2">Gửi</div>
+              <div @click="closeParticipantList()" class="bg-primary text-white btn mx-2">Gửi cho tất cả</div>
+            </div>
+          </div>
+        </div>
+      </modal>
+    </div>
   </div>
 </template>
 
@@ -471,8 +477,6 @@ export default {
       listRepeat: null,
       listEventByDate: [],
       dateSelected: null,
-      notiSelected: false,
-      mailSelected: false,
     };
   },
   computed: {
@@ -723,7 +727,7 @@ export default {
         this.NotificationsDelete("bạn nhập thiếu trường (*)");
       }
     },
-    exportExcel(){
+    exportExcel() {
       HTTP.get("export-excle", {
         params: {
           CodeID: this.CodeID,
@@ -848,6 +852,12 @@ export default {
     closeEventModal() {
       this.$modal.hide("event-modal")
     },
+    showMemberList() {
+      this.$modal.show("member-list")
+    },
+    closeMemberList() {
+      this.$modal.hide("member-list")
+    },
   },
   mounted() {
     if (localStorage.getItem("CodeID") != null) {
@@ -874,37 +884,44 @@ table {
   color: black;
 }
 
-th,td {
+th,
+td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
 }
+
 td.ngaythang {
-    position: relative;
-    height: 5pc;
-    width: 5pc;
+  position: relative;
+  height: 5pc;
+  width: 5pc;
 }
+
 .cn {
   padding: 5px;
   position: absolute;
   top: 0;
   left: 0;
 }
+
 .am {
   padding: 5px;
   position: absolute;
   bottom: 0;
   right: 0;
 }
+
 .am a {
   font-size: 12px;
 }
-.event-icon{
+
+.event-icon {
   padding: 5px;
   position: absolute;
   bottom: 0;
   left: 0;
 }
+
 td.ngaythang:hover {
   cursor: pointer;
   background-color: lightblue;
