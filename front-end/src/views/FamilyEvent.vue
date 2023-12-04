@@ -724,10 +724,8 @@ export default {
       }
     },
     exportExcel(){
-      HTTP.get("export-excle", {
-        params: {
-          CodeID: this.CodeID,
-        },
+      HTTP.post("export-excle", {
+        CodeID: this.CodeID,
       })
         .then((respone) => {
           console.log(this.CodeID)
