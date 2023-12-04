@@ -52,4 +52,5 @@
 
 .albumModal-container .vm--modal{
     justify-content: center;
+    width: 70%;
 }
