@@ -44,7 +44,7 @@ var searchMemberCanSendMessage = async (req, res) => {
     try {
         let CodeID = req.query.CodeID;
         let keySearch = req.query.keySearch;
-        let data = await FamilyTreeService.searchMemberCanSendMessage(CodeID, keySearch);        
+        let data = await FamilyTreeService.searchMemberCanSendMessage(CodeID, keySearch);
         if (data) {
             return res.send(Response.successResponse(data))
         } else {
@@ -131,10 +131,9 @@ var getListHistoryEmail = async (req, res) => {
 
 var getFamilyHead = async (req, res) => {
     try {
-
         console.log("đã vào api")
         let CodeID = req.query.CodeID;
-        let data = await FamilyTreeService.getFamilyHeadInGenealogy(CodeID);
+        let data = await FamilyTreeService.getFamilyHeadInGenealogy(CodeID);        
         if (data) {
             return res.send(Response.successResponse(data))
         } else {
