@@ -71,6 +71,7 @@ export default {
                 },
             }).then((response) => {
                 if(response.data.success == true){
+                    this.$router.push("/login");
                     this.NotificationsScuccess(response.data.message)
                 }else{
                     this.NotificationsDelete(response.data.message)

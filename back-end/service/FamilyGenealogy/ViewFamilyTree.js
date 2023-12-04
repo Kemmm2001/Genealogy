@@ -586,10 +586,13 @@ async function GetGenealogy(result, dataMarriage, MemberID, ListFamily = [], vis
 
     if (Member.Male == 1) {
         marriages = dataMarriage.filter(member => member.husbandID == MemberID);
-        console.log(marriages)
+
     } else {
         marriages = dataMarriage.filter(member => member.wifeID == MemberID);
     }
+
+    marriages.sort((a, b) => b.MarriageNumber - a.MarriageNumber);
+
 
     let spouseIDs = marriages.map(marriage => Member.Male == 1 ? marriage.wifeID : marriage.husbandID);
     let spouses = result.filter(member => spouseIDs.includes(member.MemberID));
@@ -615,7 +618,7 @@ async function GetGenealogy(result, dataMarriage, MemberID, ListFamily = [], vis
     for (let child of children) {
 
         await GetGenealogy(result, dataMarriage, child.MemberID, ListFamily, visitedMembers);
-    }
+    }   
 
     return ListFamily;
 }

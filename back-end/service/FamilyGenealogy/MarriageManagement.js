@@ -5,9 +5,9 @@ const db = require("../../Models/ConnectDB");
 const addMarriage = (data) => {
     return new Promise((resolve, reject) => {
         try {
-            const { husbandID, wifeID, codeID, MarriageNumber } = data;
+            const { husbandID, wifeID, codeID, marriageNumber } = data;
             const query = "INSERT INTO marriage (husbandID, wifeID, codeID, MarriageNumber) VALUES (?,?, ?, ?)";
-            const values = [husbandID, wifeID, codeID, MarriageNumber];
+            const values = [husbandID, wifeID, codeID, marriageNumber];
             db.connection.query(query, values, (err, result) => {
                 if (err) {
                     console.log(err);
@@ -223,6 +223,51 @@ const getMarriageByHusbandIDAndWifeID = async (husbandID, wifeID) => {
     });
 };
 
+// nguyễn anh tuấn
+// lấy số lần kết hôn của chồng
+const getHusbandMaxMarriageNumber = async (husbandID, codeID) => {
+    return new Promise((resolve, reject) => {
+        try {
+            const query = "SELECT MAX(MarriageNumber) AS MaxMarriageNumber FROM marriage WHERE husbandID = ? AND codeID = ?";
+            const values = [husbandID, codeID];
+            db.connection.query(query, values, (err, result) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                } else {
+                    resolve(result[0].MaxMarriageNumber);
+                }
+            });
+        } catch (error) {
+            console.log(error);
+            reject(error);
+        }
+    });
+};
+
+// nguyễn anh tuấn
+// lấy số lần kết hôn của vợ
+const getWifeMaxMarriageNumber = async (wifeID, codeID) => {
+    return new Promise((resolve, reject) => {
+        try {
+            const query = "SELECT MAX(MarriageNumber) AS MaxMarriageNumber FROM marriage WHERE wifeID = ? AND codeID = ?";
+            const values = [wifeID, codeID];
+            db.connection.query(query, values, (err, result) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                } else {
+                    resolve(result[0].MaxMarriageNumber);
+                }
+            });
+        } catch (error) {
+            console.log(error);
+            reject(error);
+        }
+    });
+};
+
+
 // Export the CRUD operations
 module.exports = {
     addMarriage,
@@ -234,5 +279,7 @@ module.exports = {
     getMarriageByCodeID,
     getMarriageByMarriageID,
     getMarriageByHusbandIDAndWifeID,
-    getMarriageByHusbandIDOrWifeID
+    getMarriageByHusbandIDOrWifeID,
+    getHusbandMaxMarriageNumber,
+    getWifeMaxMarriageNumber
 };

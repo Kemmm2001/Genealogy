@@ -142,11 +142,6 @@ var getFamilyPhoto = async (req, res) => {
         if (data == null || data.length == 0) {
             return res.send(Response.dataNotFoundResponse());
         } else {
-            for (let i = 0; i < data.length; i++) {
-                if (CoreFunction.isDataStringExist(data[i].PhotoUrl)) {
-                    data[i].PhotoUrl = CoreFunction.loadImage(data[i].PhotoUrl);
-                }
-            }
             return res.send(Response.successResponse(data));
         }
 
