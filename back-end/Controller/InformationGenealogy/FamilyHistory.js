@@ -22,12 +22,8 @@ var addFamilyHistory = async (req, res) => {
         }
         console.log("No missing fields");
 
-        let maxPositon = await FamilyHistoryManagementService.getMaxOrder_position(req.body.CodeID);
-        if (!maxPositon) {
-            return res.send(Response.internalServerErrorResponse());
-        }
         // thêm FamilyHistory vào database
-        let data = await FamilyHistoryManagementService.insertFamilyHistory(req.body, maxPositon)
+        let data = await FamilyHistoryManagementService.insertFamilyHistory(req.body)
         dataRes = {
             familyHistoryId: data.insertId,
             affectedRows: data.affectedRows
@@ -73,25 +69,6 @@ var updateFamilyHistory = async (req, res) => {
     }
 };
 
-var swapOrder_position = async (req, res) => {
-    try {
-        console.log("vào đây")
-        let HistoryID1 = req.body.HistoryID1;
-        let HistoryID2 = req.body.HistoryID2;
-        let Position1 = req.body.Position1;
-        let Position2 = req.body.Position2;
-        console.log(req.body)
-        let data = await FamilyHistoryManagementService.updateOrder_positionHistory(Position1, HistoryID2);
-        let data1 = await FamilyHistoryManagementService.updateOrder_positionHistory(Position2, HistoryID1);
-        if (data && data1) {
-            return res.send(Response.successResponse(null, 'Thay đổi thứ tự lịch sử thành công'));
-        } else {
-            return res.send(Response.internalServerErrorResponse());
-        }
-    } catch (error) {
-        return res.send(Response.internalServerErrorResponse(error));
-    }
-}
 
 var searchHistory = async (req, res) => {
     try {
@@ -202,5 +179,5 @@ var getAllFamilyHistories = async (req, res) => {
 
 module.exports = {
     addFamilyHistory, updateFamilyHistory, deleteFamilyHistory, getFamilyHistory, getAllFamilyHistories,
-    searchHistory, swapOrder_position, filterHistory
+    searchHistory, filterHistory
 };
