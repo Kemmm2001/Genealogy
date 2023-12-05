@@ -126,7 +126,7 @@
                     <div @click="showParticipantList(event.EventID)" class="btn bg-primary text-white">Thành viên tham gia sự kiện</div>
                   </td>
                   <td>
-                    <div @click="showMemberList()" class="btn bg-primary text-white" v-if="event.Status == 1">Thông báo</div>
+                    <div @click="showMemberList(event.EventID)" class="btn bg-primary text-white" v-if="event.Status == 1">Thông báo</div>
                   </td>
                 </tr>
               </tbody>
@@ -607,8 +607,8 @@ export default {
     },
     addEvent() {
       this.eventFamily.StartDate = `${this.startDate} ${this.startHour}:${this.startMinute}`;
-      this.eventFamily.EndDate = `${this.endDate} ${this.endHour}:${this.endMinute}`;
-      if (this.eventFamily.StartDate > this.eventFamily.EventName) {
+      this.eventFamily.EndDate = `${this.endDate} ${this.endHour}:${this.endMinute}`;     
+      if (this.eventFamily.StartDate > this.eventFamily.EndDate) {
         this.NotificationsDelete("Ngày bắt đầu đang lớn hơn ngày kết thúc");
       } else {
         if (
@@ -805,6 +805,7 @@ export default {
       this.$modal.hide("edit-event-modal");
     },
     showParticipantList(EventID) {
+      console.log(EventID);
       this.currentEventID = EventID;
       this.listEventAttendance = null;
       this.title = this.listEventFilter.find(
@@ -824,6 +825,7 @@ export default {
       });
     },
     sendMessageToConfirmEvent() {
+      console.log(this.currentEventID);
       if (this.numberExpire != null) {
         HTTP.get("getIdAndEmail", {
           params: {
@@ -833,7 +835,7 @@ export default {
           HTTP.post("inviteMail", {
             data: respone.data.data,
             time: this.numberExpire + "d",
-            EventId: this.currentEventID,
+            eventId: this.currentEventID,
           }).then((respone) => {
             if (respone.data.success == true) {
               this.NotificationsScuccess("Gửi thông báo thành công");
@@ -857,7 +859,8 @@ export default {
     closeEventModal() {
       this.$modal.hide("event-modal");
     },
-    showMemberList() {
+    showMemberList(EventID) {
+      this.currentEventID = EventID;
       this.$modal.show("member-list");
     },
     closeMemberList() {

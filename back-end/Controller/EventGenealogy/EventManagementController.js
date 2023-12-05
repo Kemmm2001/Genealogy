@@ -40,12 +40,6 @@ var getListMemberIDAndEmail = async (req, res) => {
         let ListMemberID = req.query.ListMemberID;
         console.log('ListMember: ' + ListMemberID)
         if (ListMemberID) {
-            for (let i = 0; i < ListMemberID.length; i++) {
-                let data = await EventAttendence.insertMemberAttend()
-                if (!data) {
-                    return res.send(Response.dataNotFoundResponse())
-                }
-            }
             let data = await EventManagementService.getListEmailAndMemberID(ListMemberID);
             if (data) {
                 return res.send(Response.successResponse(data))
@@ -464,17 +458,23 @@ var inviteMail = async (req, res) => {
         const memberIds = requestBody.data.map(item => item.MemberID);
         const eventId = requestBody.eventId;
         const time = requestBody.time;
+
         console.log(requestBody)
         console.log('time: ' + time)
-
         console.log('memberIds: ' + memberIds)
-        for (let i = 0; i < memberIds.length; i++) {
+        console.log('eventId: ' + eventId)
+        for (let i = 0; i < memberIds.length; i++) {           
             const memberId = memberIds[i];
+            console.log(memberId + memberId)
+            console.log('memberId: ' + memberId)
             const token = await signInviteToken(memberId, eventId, time);
 
             const data = await EventAttendence.Update(memberId, token);
             const link = `http://localhost:3006/CfEvent?token=${token}`;
-
+            let result = await EventAttendence.insertMemberAttend(eventId, memberIds[i], token)
+            if (!result) {
+                return res.send(Response.internalServerErrorResponse())
+            }
             if (data === true) {
                 const mailOptions = {
                     to: emails[i],
@@ -500,7 +500,7 @@ var getEventByToken = async (req, res) => {
         let token = req.query.token;
         console.log('token: ' + token)
         let payload = await verifyInviteToken(token);
-        console.log('payload: ' + payload)
+        console.log('payload: ' + payload.memberId)
         console.log('Result:', JSON.stringify(payload, null, 2));
         if (payload.error === 'Token expired') {
             return res.send(Response.internalServerErrorResponse(null, "Link đã hết hạn"));
@@ -509,7 +509,7 @@ var getEventByToken = async (req, res) => {
         if (tokenData == 0) {
             return res.send(Response.dataNotFoundResponse(null, 'Link không đúng'));
         }
-        return res.send(Response.successResponse(payload.eventId))
+        return res.send(Response.successResponse(payload))
     } catch (error) {
         return res.send(Response.dataNotFoundResponse());
     }

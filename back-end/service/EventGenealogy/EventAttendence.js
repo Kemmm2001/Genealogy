@@ -1,10 +1,14 @@
 const db = require('../../Models/ConnectDB')
 
-function insertMemberAttend(eventID, memberID) {
+function insertMemberAttend(eventID, memberID, token) {
+  console.log('eventID: ' + eventID)
+  console.log('memberID:' + memberID)
+  console.log('token: ' + token)
+
   return new Promise((resolve, reject) => {
     try {
-      let query = 'INSERT INTO genealogy.eventattendance (EventId, MemberID, IsGoing) VALUES (?,?, 0)';
-      db.connection.query(query, [eventID, memberID], (err, result) => {
+      let query = 'INSERT INTO genealogy.eventattendance (EventId, MemberID, IsGoing,Token) VALUES (?,?, 0,?)';
+      db.connection.query(query, [eventID, memberID, token], (err, result) => {
         if (err) {
           console.log(err);
           reject(err);
@@ -100,4 +104,4 @@ function UpdateIsGoing(memberId, eventId, IsGoing) {
   });
 }
 
-module.exports = { insertMemberAttend, checkEventID, Update, checkToken,checkTokenEvent, UpdateIsGoing }
+module.exports = { insertMemberAttend, checkEventID, Update, checkToken, checkTokenEvent, UpdateIsGoing }
