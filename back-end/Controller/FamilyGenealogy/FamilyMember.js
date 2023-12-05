@@ -359,10 +359,7 @@ var addChild = async (req, res) => {
 // nguyễn anh tuấn
 var isBirthOrderExist = (memberID, birthOrder, listBirthOrderExist) => {
     console.log("Vào hàm isBirthOrderExist");
-    console.log("memberID: ", memberID);
-    console.log("birthOrder: ", birthOrder);
     for (let i = 0; i < listBirthOrderExist.length; i++) {
-        console.log("listBirthOrderExist[i].BirthOrder: ", listBirthOrderExist[i].BirthOrder);
         if (listBirthOrderExist[i].BirthOrder == birthOrder && listBirthOrderExist[i].MemberID != memberID) {
             return true;
         }
@@ -710,12 +707,13 @@ var deleteMember = async (req, res) => {
             console.log("Đã vào trường hợp người ngoài gia phả");
             // nếu có vợ chồng thì những đứa con của vợ chồng đó sẽ được thêm vào vợ hoặc chồng của người được xóa
             let listMarriage = await MarriageManagement.getMarriageByHusbandIDOrWifeID(dataMember[0].MemberID, dataMember[0].MemberID);
+            console.log("listMarriage: ", listMarriage);
             // vì là người ngoài gia phả nên marriage chỉ có 1 dòng
             // tìm kiếm tất cả con có cha hoặc mẹ là chồng hoặc vợ của người được xóa
-            let listChilds;
-            if (dataMember[0].Male == 0) {
+            let listChilds = [];
+            if (dataMember[0].Male == 0 && listMarriage.length > 0) {
                 listChilds = await FamilyManagementService.getMembersByOnlyFatherID(listMarriage[0].HusbandID);
-            } else if (dataMember[0].Male == 1) {
+            } else if (dataMember[0].Male == 1 && listMarriage.length > 0) {
                 listChilds = await FamilyManagementService.getMembersByOnlyMotherID(listMarriage[0].WifeID);
             }
             let maxBirthOrder = 0;
