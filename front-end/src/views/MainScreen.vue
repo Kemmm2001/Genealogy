@@ -1941,10 +1941,10 @@ export default {
             this.action = null;
             this.getAllListMember();
             this.isUpdateAvatar = false;
-            this.NotificationsScuccess(response.data.message);
             this.$modal.hide("member-modal");
             this.$modal.hide("Select-option-Modal");
             this.getListMember();
+            this.NotificationsScuccess(response.data.message);
             this.getListMemberToSendMessage();
           } else {
             this.NotificationsDelete(response.data.message);
@@ -2033,11 +2033,11 @@ export default {
               this.getAllListMember();
               this.isUpdateAvatar = false;
               this.action = null;
-   //           this.NotificationsScuccess(response.data.message);
               this.$modal.hide("member-modal");
               this.$modal.hide("Select-option-Modal");
               console.log('getlist')
               this.getListMember();
+              this.NotificationsScuccess(response.data.message);
               this.getListMemberToSendMessage();
             } else {
               this.NotificationsDelete(response.data.message);
