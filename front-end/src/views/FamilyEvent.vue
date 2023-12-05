@@ -303,7 +303,10 @@
                 <div class="col-3" style="padding-bottom: 4px; padding-right: 4px;">
                   <input type="text" class="form-control h-100 w-100" placeholder="Tên thành viên" />
                 </div>
-                <div class="col-3" style="padding-bottom: 4px; padding-right: 4px;">
+                <div class="col-6" style="padding-bottom: 4px; padding-right: 4px;">
+                  <input v-model="numberExpire" min="0" type="number" class="form-control" placeholder="Thời gian lời mời hết hạn" />
+                </div>
+                <!-- <div class="col-3" style="padding-bottom: 4px; padding-right: 4px;">
                   <select class="form-select h-100 w-100">
                     <option selected>Độ tuổi</option>
                     <option>1</option>
@@ -311,16 +314,7 @@
                     <option>1</option>
                     <option>1</option>
                   </select>
-                </div>
-                <div class="col-3" style="padding-bottom: 4px; padding-right: 4px;">
-                  <select class="form-select h-100 w-100">
-                    <option selected>Độ tuổi</option>
-                    <option>1</option>
-                    <option>1</option>
-                    <option>1</option>
-                    <option>1</option>
-                  </select>
-                </div>
+                </div>-->
               </div>
               <div class="w-100" style="overflow-y: auto; height: 100%;">
                 <div v-for="list in listMember" :key="list.id" class="noti-modal-member d-flex flex-row align-items-center px-2" :class="{ chosen: ListMemberToSendEmail.includes(list.MemberID)}" @click="toggleSelection(list.MemberID)">
@@ -355,6 +349,7 @@ require("moment-timezone");
 export default {
   data() {
     return {
+      numberExpire: null,
       title: null,
       eventFamily: {
         EventID: null,
@@ -454,7 +449,6 @@ export default {
       } else {
         this.ListMemberToSendEmail.push(id);
       }
-      
     },
 
     convertSolarToLunar(dateConvert) {
