@@ -64,7 +64,10 @@ svg.tommy .node.choose.female rect {
   stroke: #EDF048;
   stroke-width: 5px;
 }
-
+.selected-compare>rect {
+  stroke: red;
+  stroke-width: 5px;
+}
 .notselected>rect {
   opacity: 0.5;
 }
