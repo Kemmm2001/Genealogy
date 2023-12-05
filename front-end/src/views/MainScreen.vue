@@ -2,33 +2,35 @@
 <template>
   <div class="d-flex h-100 w-100 position-relative">
     <div class="list h-100 d-flex flex-column align-items-center">
-      <div v-if="memberRole != 3" class="w-100 d-flex flex-column" style="height: 15%">
-        <div class="w-100 d-flex flex-row" style="padding-top: 8px">
-          <div class="col-6" style="padding-left: 8px; padding-right: 6px">
-            <div class="w-100 h-100">
-              <button @click="openNotiModal()" style="width:100%" type="button" class="btn btn-secondary h-100">Tạo thông báo</button>
+      <div v-if="memberRole != 3" class="w-100 d-flex flex-column" style="height: 15%;">
+        <div class="w-100 h-100 d-flex flex-column" style="align-items: center">
+          <div class="w-100 d-flex flex-row" style="padding-top: 8px; height: 50%;">
+            <div class="col-6" style="padding-left: 8px; padding-right: 6px">
+              <div class="w-100 h-100">
+                <button @click="openNotiModal()" style="width:100%; font-size: 14px;" type="button" class="p-0 btn btn-secondary h-100">Tạo thông báo</button>
+              </div>
+            </div>
+            <div class="col-6" style="padding-left: 6px; padding-right: 8px">
+              <div class="w-100 h-100">
+                <button @click="openCompareModal()" style="width:100%; font-size: 14px;" type="button" :class="{ 'p-0': true, 'btn': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">Xác định quan hệ</button>
+              </div>
             </div>
           </div>
-          <div class="col-6" style="padding-left: 6px; padding-right: 8px">
-            <div class="w-100 h-100">
-              <button @click="openCompareModal()" style="width:100%" type="button" :class="{ 'btn': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">Xác định quan hệ</button>
+          <div class="w-100 d-flex flex-row" style="padding-top: 8px; height: 50%;">
+            <div class="col-6" style="padding-left: 8px; padding-right: 6px">
+              <div class="w-100 h-100">
+                <button @click="BackUpdata()" style="width:100%; font-size: 14px; color:white" type="button" class="p-0 btn btn-secondary h-100">Lưu trữ dữ liệu</button>
+              </div>
             </div>
-          </div>
-        </div>
-        <div class="w-100 d-flex flex-row" style="padding-top: 8px">
-          <div class="col-6" style="padding-left: 8px; padding-right: 6px">
-            <div class="w-100 h-100">
-              <button @click="BackUpdata()" style="width:100%;color:white" type="button" class="btn btn-secondary h-100">Lưu trữ dữ liệu</button>
-            </div>
-          </div>
-          <div class="col-6" style="padding-left: 6px; padding-right: 8px">
-            <div class="w-100 h-100">
-              <button style="width:100%;color:white" type="button" class="btn btn-secondary h-100">Xuất dữ liệu vào</button>
+            <div class="col-6" style="padding-left: 6px; padding-right: 8px">
+              <div class="w-100 h-100">
+                <button style="width:100%; font-size: 14px; color:white" type="button" class="p-0 btn btn-secondary h-100">Xuất dữ liệu vào</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="w-100 d-flex flex-column px-2" :class="{height100 : memberRole == 3}" style="padding: 12px; height: 85%; font-family: 'QuicksandBold', sans-serif;">
+      <div class="w-100 d-flex flex-column px-2" :class="{height100 : memberRole == 3}" style="padding: 12px; min-height: 85%; font-family: 'QuicksandBold', sans-serif;">
         <div class="existing-members d-flex flex-column w-100">
           <div class="d-flex align-items-center justify-content-center px-2 py-1 list-title">Thành viên có trên phả đồ</div>
           <div class="d-flex flex-column w-100" style="overflow-y: auto;cursor: pointer">
@@ -135,10 +137,10 @@
               <div class="list-group-item feature-overview">Các chức năng chính</div>
               <div class="list-group-item" @click="getInforMember(CurrentIdMember)">Thông tin chi tiết</div>
               <div class="list-group-item" @click="openModalRelationship()">Xem các mối quan hệ</div>
-              <div class="list-group-item" @click="openMemberModal('AddFather', 'Cha')">Thêm Cha</div>
-              <div class="list-group-item" @click="openMemberModal('AddMother', 'Mẹ')">Thêm Mẹ</div>
-              <div class="list-group-item" @click="openMemberModal('AddHusband', 'Chồng')">Thêm Chồng</div>
-              <div class="list-group-item" @click="openMemberModal('AddWife', 'Vợ')">Thêm Vợ</div>
+              <div class="list-group-item" @click="openMemberModal('AddParent', 'Cha')">Thêm Cha</div>
+              <div class="list-group-item" @click="openMemberModal('AddParent', 'Mẹ')">Thêm Mẹ</div>
+              <div class="list-group-item" @click="openMemberModal('AddMarriage', 'Chồng')">Thêm Chồng</div>
+              <div class="list-group-item" @click="openMemberModal('AddMarriage', 'Vợ')">Thêm Vợ</div>
               <div v-for="list in ListMarriedMember" :key="list.id" class="list-group-item" @click="openMemberModal('AddChild', 'Con',list.id)">Thêm Con với vợ {{list.name}}</div>
               <div class="list-group-item" @click="openMemberModal('AddChild', 'Con')">Thêm Con</div>
               <div class="list-group-item" @click="openModalAddMemberFromList()">Thêm mối quan hệ từ Danh Sách</div>
@@ -271,13 +273,13 @@
             </div>
             <div>
               <div v-for="(n, index) in ListMemberCanSendMessage" :key="n.id">
-                <div v-if="n.isDead != 1" :tabindex="index" class="noti-modal-member d-flex flex-row align-items-center px-2" :class="{ chosen: ListPhoneToSendMessage.includes(n.id) }" @click="toggleSelection(n.id)">
+                <div v-if="n.isDead != 1" :tabindex="index" class="noti-modal-member d-flex flex-row align-items-center px-2" :class="{ chosen: ListPhoneToSendMessage.includes(n.MemberID) }" @click="toggleSelection(n.MemberID)">
                   <div>
                     <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                       <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
                     </svg>
                   </div>
-                  <div class="d-flex justify-content-center" style="flex-grow: 1;">{{ n.name }}</div>
+                  <div class="d-flex justify-content-center" style="flex-grow: 1;">{{ n.MemberName }}</div>
                 </div>
               </div>
             </div>
@@ -626,18 +628,6 @@
                     </div>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
-                        <!-- <select v-model="objMemberInfor.Male" class="form-select modal-item" v-if="action == 'AddFather'">
-                          <option value="1" selected>Nam</option>
-                        </select>
-                        <select v-model="objMemberInfor.Male" class="form-select modal-item" v-else-if="action == 'AddMother'">
-                          <option value="0" selected>Nữ</option>
-                        </select>
-                        <select v-model="objMemberInfor.Male" class="form-select modal-item" v-else-if="action == 'AddHusband'">
-                          <option value="1" selected>Nam</option>
-                        </select>
-                        <select v-model="objMemberInfor.Male" class="form-select modal-item" v-else-if="action == 'AddWife'">
-                          <option value="0" selected>Nữ</option>
-                        </select>-->
                         <select v-model="objMemberInfor.Male" class="form-select modal-item">
                           <option value="1">Nam</option>
                           <option value="0">Nữ</option>
@@ -707,11 +697,11 @@
                         </div>
                       </div>
                       <div style="position: relative; margin-right:10px">
-                        <input type="text" class="form-control modal-item" placeholder />
+                        <input v-model="objMemberInfor.PlaceOfDeadth" type="text" class="form-control modal-item" placeholder />
                         <label class="form-label" for="input">Nơi Mất</label>
                       </div>
                       <div style="position: relative; margin-right:10px">
-                        <input type="text" class="form-control modal-item" placeholder />
+                        <input v-model="objMemberInfor.GraveSite" type="text" class="form-control modal-item" placeholder />
                         <label class="form-label" for="input">Mộ Phần</label>
                       </div>
                     </div>
@@ -1102,6 +1092,7 @@ export default {
 
       selectedNodes: [],
       notSelectedNodes: [],
+      nodeRightClickHighLight: null,
 
       helpNoti: false,
       helpCompare: false,
@@ -1288,13 +1279,13 @@ export default {
     },
     //Nguyễn Lê Hùng
     compareMember(memberId1, memberId2) {
-      this.RemoveHightLight();
+      //     this.RemoveHightLight();
       this.selectNodeHighLight = [];
       this.lastClickedNodeId = null;
       this.objCompareMember1 = this.getResultMember(memberId1);
       this.objCompareMember2 = this.getResultMember(memberId2);
-      console.log(this.objCompareMember1);
-      console.log(this.objCompareMember2);
+      // console.log(this.objCompareMember1);
+      // console.log(this.objCompareMember2);
       HTTP.get("compare", {
         params: {
           MemberID1: memberId1,
@@ -1306,6 +1297,8 @@ export default {
             this.resultCompare1 = response.data.data.result1;
             this.resultCompare2 = response.data.data.result2;
             this.$modal.show("compare-modal");
+            this.removeFromSelectedNodesCompare(memberId1);
+            this.removeFromSelectedNodesCompare(memberId2);
           } else {
             this.NotificationsDelete(response.data.message);
           }
@@ -1379,6 +1372,18 @@ export default {
       this.IsDead = this.objMemberInfor.IsDead;
     },
     //Nguyễn Lê Hùng
+    updateStatusEvent() {
+      HTTP.put("updateStatusEvent", {
+        CodeID: this.CodeID,
+      }).then((respone) => {
+        if (respone.data.success == true) {
+          console.log("Update status event thành công");
+        } else {
+          console.log("Update status event thất bại");
+        }
+      });
+    },
+    //Nguyễn Lê Hùng
     sendEmailToMember() {
       if (
         this.subjectEmail != null &&
@@ -1440,6 +1445,24 @@ export default {
       }
     },
     //Nguyễn Lê Hùng
+    getListMemberToSendMessage() {
+      console.log(this.CodeID);
+      HTTP.get("listMemberMessage", {
+        params: {
+          CodeID: this.CodeID,
+        },
+      })
+        .then((respone) => {
+          console.log(respone.data.data);
+          if (respone.data.success == true) {
+            this.ListMemberCanSendMessage = respone.data.data;
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+    //Nguyễn Lê Hùng
     searchMember() {
       if (this.searchKeyword == "" || this.searchKeyword == null) {
         this.ListMemberCanSendMessage = this.nodes;
@@ -1453,14 +1476,7 @@ export default {
           .then((response) => {
             if (response.data.success == true) {
               console.log(response.data.data);
-              let result = response.data.data;
-              this.ListMemberCanSendMessage =
-                this.ListMemberCanSendMessage.filter((element) =>
-                  result.some(
-                    (resultElement) => resultElement.MemberID === element.id
-                  )
-                );
-              console.log(this.ListMemberCanSendMessage);
+              this.ListMemberCanSendMessage = response.data.data;
             } else {
               this.NotificationsDelete(response.data.message);
             }
@@ -1730,6 +1746,7 @@ export default {
           this.getListMember();
           this.getAllListMember();
           this.closeCfDelModal();
+          this.getListMemberToSendMessage();
         } else {
           this.NotificationsDelete(response.data.message);
         }
@@ -1737,9 +1754,30 @@ export default {
     },
     //Nguyễn Lê Hùng
     removeFromSelectedNodes(memberid) {
+      var nodeElement;
       for (let i = 0; i < this.selectedNodes.length; i++) {
         if (this.selectedNodes[i] == memberid) {
           this.selectedNodes.splice(i, 1);
+          nodeElement = document.querySelector(
+            '[data-n-id="' + memberid + '"]'
+          );
+          if (nodeElement != null) {
+            nodeElement.classList.remove("selected");
+          }
+        }
+      }
+    },
+    removeFromSelectedNodesCompare(memberid) {
+      var nodeElement;
+      for (let i = 0; i < this.selectedNodes.length; i++) {
+        if (this.selectedNodes[i] == memberid) {
+          this.selectedNodes.splice(i, 1);
+          nodeElement = document.querySelector(
+            '[data-n-id="' + memberid + '"]'
+          );
+          if (nodeElement != null) {
+            nodeElement.classList.remove("selected-compare");
+          }
         }
       }
     },
@@ -1829,6 +1867,7 @@ export default {
               this.getListMember();
               this.getListUnspecifiedMembers();
               this.closeModalAddMemberFromList();
+              this.getListMemberToSendMessage();
             } else {
               this.NotificationsDelete(response.data.message);
             }
@@ -1869,34 +1908,23 @@ export default {
       }
     },
     //Nguyễn Lê Hùng
-    addMember() {
-      let FatherID;
-      let MotherID;
-      if (this.action == "AddNormal") {
-        this.generationMember = 0;
-      }
-      if (this.action == "AddChild") {
-        if (this.isFather) {
-          FatherID = this.CurrentIdMember;
-          MotherID = this.idParent;
-        } else {
-          FatherID = this.idParent;
-          MotherID = this.CurrentIdMember;
-        }
-      }
-      HTTP.post("member", {
+    addMemberChild(FatherID, MotherID) {
+      console.log(this.objMemberInfor.BirthOrder);
+      console.log(this.objMemberInfor.BirthPlace);
+      console.log(FatherID);
+      console.log(MotherID);
+      HTTP.post("add-child", {
         FatherID: FatherID,
         MotherID: MotherID,
-        CurrentMemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
         NickName: this.objMemberInfor.NickName,
         BirthOrder: this.objMemberInfor.BirthOrder,
-        Origin: this.objMemberInfor.BirthOrder,
+        Origin: this.objMemberInfor.Origin,
         NationalityID: this.objMemberInfor.NationalityID,
         ReligionID: this.objMemberInfor.ReligionID,
         Dob: this.objMemberInfor.Dob,
         LunarDob: this.objMemberInfor.LunarDob,
-        bnirthPlace: this.objMemberInfor.BirthPlace,
+        birthPlace: this.objMemberInfor.BirthPlace,
         IsDead: this.IsDead,
         Dod: this.objMemberInfor.Dod,
         LunarDod: this.objMemberInfor.LunarDod,
@@ -1907,22 +1935,17 @@ export default {
         BloodType: this.objMemberInfor.BloodType,
         Male: this.objMemberInfor.Male,
         CodeID: this.CodeID,
-        Action: this.action,
       })
         .then((response) => {
-          if (this.action == "AddNormal") {
-            this.getListUnspecifiedMembers();
-          }
           if (response.data.success == true) {
+            this.action = null;
             this.getAllListMember();
             this.isUpdateAvatar = false;
-            if (this.action != "AddNormal") {
-              this.nodes.length = this.nodes.length + 1;
-            }
             this.NotificationsScuccess(response.data.message);
             this.$modal.hide("member-modal");
             this.$modal.hide("Select-option-Modal");
             this.getListMember();
+            this.getListMemberToSendMessage();
           } else {
             this.NotificationsDelete(response.data.message);
           }
@@ -1942,19 +1965,112 @@ export default {
               Email: this.objMemberContact.Email,
               FacebookUrl: this.objMemberContact.FacebookUrl,
               Zalo: this.objMemberContact.Zalo,
-            }).then((response) => {
-              if(response.data.success == true){
-           //     this.setDefauValueInModal();
-                this.selectDistrictMember = null;
-              }
-            }).catch((e) => {
-              console.log(e);
-            });
+            })
+              .then((response) => {
+                if (response.data.success == true) {
+                  //     this.setDefauValueInModal();
+                  this.selectDistrictMember = null;
+                }
+              })
+              .catch((e) => {
+                console.log(e);
+              });
           }
         })
         .catch((e) => {
           console.log(e);
         });
+    },
+    //Nguyễn Lê Hùng
+    addMember() {
+      let FatherID;
+      let MotherID;
+      if (this.action == "AddNormal") {
+        this.generationMember = 0;
+      }
+      if (this.action == "AddChild") {
+        if (this.isFather) {
+          FatherID = this.CurrentIdMember;
+          MotherID = this.idParent;
+        } else {
+          FatherID = this.idParent;
+          MotherID = this.CurrentIdMember;
+        }
+        this.addMemberChild(FatherID, MotherID);
+        console.log("FatherID: " + FatherID);
+        console.log("MotherID: " + MotherID);
+      } else {
+        HTTP.post("member", {
+          CurrentMemberID: this.CurrentIdMember,
+          MemberName: this.objMemberInfor.MemberName,
+          NickName: this.objMemberInfor.NickName,
+          BirthOrder: this.objMemberInfor.BirthOrder,
+          Origin: this.objMemberInfor.Origin,
+          NationalityID: this.objMemberInfor.NationalityID,
+          ReligionID: this.objMemberInfor.ReligionID,
+          Dob: this.objMemberInfor.Dob,
+          LunarDob: this.objMemberInfor.LunarDob,
+          birthPlace: this.objMemberInfor.BirthPlace,
+          IsDead: this.IsDead,
+          Dod: this.objMemberInfor.Dod,
+          LunarDod: this.objMemberInfor.LunarDod,
+          PlaceOfDeath: this.objMemberInfor.PlaceOfDeadth,
+          GraveSite: this.objMemberInfor.GraveSite,
+          Note: this.objMemberInfor.Note,
+          CurrentGeneration: this.generationMember,
+          BloodType: this.objMemberInfor.BloodType,
+          Male: this.objMemberInfor.Male,
+          CodeID: this.CodeID,
+          Action: this.action,
+        })
+          .then((response) => {
+            if (this.action == "AddNormal") {
+              this.getListUnspecifiedMembers();
+            }
+            if (response.data.success == true) {
+              this.getAllListMember();
+              this.isUpdateAvatar = false;
+              this.action = null;
+              this.NotificationsScuccess(response.data.message);
+              this.$modal.hide("member-modal");
+              this.$modal.hide("Select-option-Modal");
+              this.getListMember();
+              this.getListMemberToSendMessage();
+            } else {
+              this.NotificationsDelete(response.data.message);
+            }
+            this.newIdMember = response.data.data.MemberID;
+            if (
+              this.objMemberContact.Phone != null ||
+              this.objMemberContact.Address != null ||
+              this.objMemberContact.Email != null ||
+              this.FacebookUrl != null ||
+              this.objMemberContact.Zalo != null
+            ) {
+              this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
+              HTTP.post("addContact", {
+                memberId: this.newIdMember,
+                Address: this.objMemberContact.Address,
+                Phone: this.objMemberContact.Phone,
+                Email: this.objMemberContact.Email,
+                FacebookUrl: this.objMemberContact.FacebookUrl,
+                Zalo: this.objMemberContact.Zalo,
+              })
+                .then((response) => {
+                  if (response.data.success == true) {
+                    //     this.setDefauValueInModal();
+                    this.selectDistrictMember = null;
+                  }
+                })
+                .catch((e) => {
+                  console.log(e);
+                });
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
     },
     triggerFileInputClick() {
       this.$refs.fileInputRef.click();
@@ -2025,7 +2141,7 @@ export default {
         ReligionID: this.objMemberInfor.ReligionID,
         Dob: this.objMemberInfor.Dob,
         LunarDob: this.objMemberInfor.LunarDob,
-        bnirthPlace: this.objMemberInfor.BirthPlace,
+        birthPlace: this.objMemberInfor.BirthPlace,
         IsDead: this.IsDead,
         Dod: this.objMemberInfor.Dod,
         LunarDod: this.objMemberInfor.LunarDod,
@@ -2042,6 +2158,7 @@ export default {
           if (response.data.success == true) {
             this.isUpdateAvatar = false;
             this.getListUnspecifiedMembers();
+            this.getListMemberToSendMessage();
             this.NotificationsScuccess(response.data.message);
             if (this.objMemberContact.Phone != null) {
               this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
@@ -2123,13 +2240,13 @@ export default {
       let selectedNode = this.nodes.find((node) => node.id == SelectNode);
       if (this.selectNodeHighLight.includes(selectedNode.id)) {
         nodeElement = this.family.getNodeElement(selectedNode.id);
-        nodeElement.classList.remove("selected");
+        nodeElement.classList.remove("selected-compare");
         this.selectNodeHighLight = this.selectNodeHighLight.filter(
           (id) => id != selectedNode.id
         );
       } else if (selectedNode) {
         nodeElement = this.family.getNodeElement(selectedNode.id);
-        nodeElement.classList.add("selected");
+        nodeElement.classList.add("selected-compare");
         this.selectedNodes.push(selectedNode.id);
         this.selectNodeHighLight.push(selectedNode.id);
       } else {
@@ -2138,7 +2255,7 @@ export default {
     },
     highLightSelectNode(SelectNode) {
       var nodeElement;
-      this.RemoveHightLight();
+      //this.RemoveHightLight();
       let selectedNode = this.nodes.find((node) => node.id == SelectNode);
       if (selectedNode) {
         nodeElement = this.family.getNodeElement(selectedNode.id);
@@ -2237,7 +2354,7 @@ export default {
       this.$modal.hide("noti-modal");
     },
     openCompareModal() {
-      this.RemoveHightLight();
+      //  this.RemoveHightLight();
       this.isCompare = !this.isCompare;
     },
     closeCompareModal() {
@@ -2292,14 +2409,22 @@ export default {
     OnpenModal_SelectOption(id) {
       this.selectedInfor();
       let foundNode = this.nodes.find((node) => node.id == id);
+      console.log("gender: " + foundNode.gender);
       if (foundNode.gender == "female") {
         this.isFather = false;
+      } else {
+        this.isFather = true;
       }
       this.getAllMarriedInMember(foundNode.pids);
       this.setFunctionCanDo(foundNode);
       this.TitleModal = foundNode.name;
       this.generationMember = foundNode.generation;
+      if (this.nodeRightClickHighLight != null) {
+        this.removeFromSelectedNodes(this.nodeRightClickHighLight);
+      }
+      console.log(this.nodeRightClickHighLight);
       this.highLightSelectNode(id);
+      this.nodeRightClickHighLight = id;
       this.$modal.show("Select-option-Modal");
       this.CurrentIdMember = id;
     },
@@ -2311,7 +2436,7 @@ export default {
 
     closeSelectModal() {
       this.CurrentIdMember = 0;
-      this.RemoveHightLight();
+      //  this.RemoveHightLight();
       this.$modal.hide("Select-option-Modal");
     },
     removeRelationship() {
@@ -2379,7 +2504,6 @@ export default {
           codeID: this.CodeID,
         },
       }).then((response) => {
-        console.log(response.data.data);
         if (response.data.success == true) {
           this.listMember = response.data.data;
         }
@@ -2693,6 +2817,8 @@ export default {
     this.getListHistoryEmail();
     this.getListMember();
     this.getAllListMember();
+    this.getListMemberToSendMessage();
+    this.updateStatusEvent();
   },
 };
 </script>

@@ -1,6 +1,7 @@
 const { promises } = require('nodemailer/lib/xoauth2');
 const db = require('../../Models/ConnectDB')
 
+//Nguyễn Lê Hùng
 function getAllEvent(CodeID) {
     return new Promise((resolve, reject) => {
         try {
@@ -10,7 +11,7 @@ function getAllEvent(CodeID) {
                     console.log(err)
                     reject(err)
                 } else {
-                    resolve(true)
+                    resolve(result)
                 }
             })
         } catch (error) {
@@ -19,10 +20,14 @@ function getAllEvent(CodeID) {
     })
 }
 
-function getListEventRepetition() {
+//Nguyễn Lê Hùng
+function getEventAttendance(EventID) {
     return new Promise((resolve, reject) => {
         try {
-            let query = 'SELECT * FROM genealogy.eventrepetition';
+            let query = `SELECT ea.*, f.MemberName
+            FROM genealogy.eventattendance as ea
+            INNER JOIN familymember as f ON ea.MemberID = f.MemberID
+            WHERE ea.EventID = ${EventID}`;
             db.connection.query(query, (err, result) => {
                 if (!err && result.length > 0) {
                     resolve(result)
@@ -33,9 +38,49 @@ function getListEventRepetition() {
         } catch (error) {
             reject(error)
         }
+
+    })
+}
+//Nguyễn Lê Hùng
+function getListEmailAndMemberID(ListMemberID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `SELECT MemberID, Email FROM contact WHERE MemberID IN (${ListMemberID})`;
+            db.connection.query(query, (err, result) => {
+                if (!err && result.length > 0) {
+                    let filteredResult = result.filter(item => item.Email !== null);
+                    console.log(filteredResult);
+                    resolve(filteredResult);
+                } else {
+                    reject(err)
+                }
+            })
+        } catch (error) {
+            reject(err)
+        }
     })
 }
 
+//Nguyễn Lê Hùng
+function updateStatusEvent(EventID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `UPDATE eventfamily SET Status = '0' WHERE EventID = ${EventID}`
+            db.connection.query(query, (err, result) => {
+                if (err) {
+                    reject(false)
+                } else {
+                    resolve(result)
+                }
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+
+//Nguyễn Lê Hùng
 async function getListPhone(ListMemberID) {
     let ListPhone = [];
     return new Promise((resolve, reject) => {
@@ -92,8 +137,8 @@ async function getListEmail(ListMemberID) {
 async function InsertNewEvent(objData) {
     return new Promise((resolve, reject) => {
         try {
-            let query = `INSERT INTO eventfamily (EventName,CodeID,Status,StartDate,EndDate, Description, IsImportant, Note,Place, RepeatID)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            let query = `INSERT INTO eventfamily (EventName,CodeID,Status,StartDate,EndDate, Description, IsImportant, Note,Place)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
             let values = [
                 objData.EventName,
                 objData.CodeID,
@@ -104,7 +149,6 @@ async function InsertNewEvent(objData) {
                 objData.IsImportant,
                 objData.Note,
                 objData.Place,
-                objData.RepeatID,
 
             ]
             db.connection.query(query, values, (err) => {
@@ -155,8 +199,8 @@ function searchEvent(CodeID, keySearch) {
 async function UpdateEvent(objData) {
     return new Promise((resolve, reject) => {
         try {
-            let query = `UPDATE eventfamily SET EventName = ?, Status = ?, StartDate = ?, EndDate = ?, Description = ?,IsImportant = ?, Note = ?, Place = ?, 
-        RepeatID = ? WHERE EventID = ?`;
+            let query = `UPDATE eventfamily SET EventName = ?, Status = ?, StartDate = ?, EndDate = ?, Description = ?,IsImportant = ?, Note = ?, Place = ?
+        WHERE EventID = ?`;
             let values = [
                 objData.EventName,
                 objData.Status,
@@ -166,7 +210,6 @@ async function UpdateEvent(objData) {
                 objData.IsImportant,
                 objData.Note,
                 objData.Place,
-                objData.RepeatID,
                 objData.EventID,
             ]
             db.connection.query(query, values, (err) => {
@@ -287,5 +330,5 @@ function getCodeID(eventID) {
 
 module.exports = {
     getAllEvent, InsertNewEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth,
-    GetDeadDayInMonth, searchEvent, filterEvent, getListPhone, getListEventRepetition, getInformationEvent, getListEmail, getCodeID
+    GetDeadDayInMonth, searchEvent, filterEvent, getListPhone, getInformationEvent, getListEmail, getCodeID, updateStatusEvent, getEventAttendance, getListEmailAndMemberID
 }

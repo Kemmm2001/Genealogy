@@ -83,9 +83,9 @@ tr{
 }
 
 .logo{
-    height: 95px;
+    height: 100%;
     position: absolute;
-    bottom: -15px;
+    object-fit: cover;
 }
 
 th{
@@ -140,6 +140,7 @@ th{
     inset: 0;
     margin: auto;
     height: 45%;
+    width: 55%;
 }
 
 .editAlbum-container .vm--container{

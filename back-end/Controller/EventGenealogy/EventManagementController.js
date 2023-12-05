@@ -21,6 +21,58 @@ var getAllEventGenealogy = async (req, res) => {
     }
 }
 
+var getEventAttendance = async (req, res) => {
+    try {
+        let EventID = req.query.EventID;
+        let data = await EventManagementService.getEventAttendance(EventID);
+        if (data) {
+            return res.send(Response.successResponse(data))
+        } else {
+            return res.send(Response.dataNotFoundResponse())
+        }
+    } catch (error) {
+        return res.send(Response.dataNotFoundResponse(error))
+    }
+}
+
+var getListMemberIDAndEmail = async (req, res) => {
+    try {
+        let ListMemberID = req.query.ListMemberID;
+        console.log('ListMember: ' + ListMemberID)
+        let data = await EventManagementService.getListEmailAndMemberID(ListMemberID);
+        if (data) {
+
+        }
+    } catch (error) {
+
+    }
+}
+
+var updateStatusEventGenealogy = async (req, res) => {
+    try {
+        let CodeID = req.body.CodeID;
+        let currentDate = new Date().toISOString().split('T')[0];
+        let data = await EventManagementService.getAllEvent(CodeID);
+        if (data) {
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].Status == 1) {
+                    const endDate = new Date(data[i].EndDate);
+                    if (endDate < new Date(currentDate)) {
+                        let result = await EventManagementService.updateStatusEvent(data[i].EventID);
+                        if (!result) {
+                            res.send(Response.badRequestResponse());
+                            return;
+                        }
+                    }
+                }
+            }
+            res.send(Response.successResponse());
+        }
+    } catch (error) {
+        res.send(Response.badRequestResponse(error));
+    }
+}
+
 var getInformationEvent = async (req, res) => {
     try {
         let data = await EventManagementService.getInformationEvent(req.query.EventID);
@@ -34,18 +86,7 @@ var getInformationEvent = async (req, res) => {
     }
 }
 
-var getAllEventRepetition = async (req, res) => {
-    try {
-        let data = await EventManagementService.getListEventRepetition();
-        if (data) {
-            return res.send(Response.successResponse(data));
-        } else {
-            return res.send(Response.internalServerErrorResponse)
-        }
-    } catch (error) {
-        return res.send(Response.internalServerErrorResponse(error))
-    }
-}
+
 
 
 var InsertEvent = async (req, res) => {
@@ -60,7 +101,6 @@ var InsertEvent = async (req, res) => {
         objData.IsImportant = req.body.IsImportant;
         objData.Note = req.body.Note;
         objData.Place = req.body.Place;
-        objData.RepeatID = req.body.RepeatID;
         console.log(objData)
         let data = await EventManagementService.InsertNewEvent(objData);
         if (data) {
@@ -99,7 +139,6 @@ var UpdateEvent = async (req, res) => {
         objData.IsImportant = req.body.IsImportant;
         objData.Note = req.body.Note;
         objData.Place = req.body.Place;
-        objData.RepeatID = req.body.RepeatID;
         objData.EventID = req.body.EventID;
         let data = await EventManagementService.UpdateEvent(objData);
         if (data) {
@@ -335,20 +374,20 @@ var ReadXLSX = async (req, res) => {
         console.log("file: ", file);
         let spreadsheet = xlsx.readFile(file);
         const sheets = spreadsheet.SheetNames;
-        for(let i = 0; i < sheets.length; i++){
+        for (let i = 0; i < sheets.length; i++) {
             console.log('Sheet ' + i + ' -- ' + sheets[i]);
         }
         const firstSheet = spreadsheet.Sheets[sheets[0]];
 
         // Lấy ra dòng 1
         const row1 = firstSheet['!ref'].split(':')[0] + ':' + firstSheet['!ref'].split(':')[0];
-        const row1Values = xlsx.utils.sheet_to_json(firstSheet, {header:1, range: row1})[0];
-        
+        const row1Values = xlsx.utils.sheet_to_json(firstSheet, { header: 1, range: row1 })[0];
+
         // Lấy ra dòng 2
-        const row2 = firstSheet['!ref'].split(':')[0] + ':' + firstSheet['!ref'].split(':')[0]; 
-        const row2Values = xlsx.utils.sheet_to_json(firstSheet, {header:1, range: row2})[0];
-        
-        console.log('Row 1: ', row1Values); 
+        const row2 = firstSheet['!ref'].split(':')[0] + ':' + firstSheet['!ref'].split(':')[0];
+        const row2Values = xlsx.utils.sheet_to_json(firstSheet, { header: 1, range: row2 })[0];
+
+        console.log('Row 1: ', row1Values);
         console.log('Row 2: ', row2Values);
         return res.send(Response.successResponse());
     } catch (error) {
@@ -442,6 +481,7 @@ var inviteMail = async (req, res) => {
         return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
     }
 }
+
 var verifyMail = async (req, res) => {
     try {
       const token = req.query.token;
@@ -467,9 +507,8 @@ var verifyMail = async (req, res) => {
   }
 
 
-
 module.exports = {
     getAllEventGenealogy, InsertEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth,
-    SendSMS, SendEmail, searchEvent, filterEvent, SendSMSToMember, getAllEventRepetition, getInformationEvent, sendEmailToMember
-    , addAttendence, inviteMail, verifyMail, ReadXLSX
+    SendSMS, SendEmail, searchEvent, filterEvent, SendSMSToMember, getInformationEvent, sendEmailToMember
+    , addAttendence, inviteMail, verifyMail, ReadXLSX, updateStatusEventGenealogy, getEventAttendance, getListMemberIDAndEmail
 }

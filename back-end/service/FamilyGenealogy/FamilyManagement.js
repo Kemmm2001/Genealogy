@@ -3,7 +3,7 @@ const CoreFunction = require("../../Utils/CoreFunction");
 const MarriageManagement = require("./MarriageManagement");
 // nguyễn anh tuấn
 function addMember(member) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         try {
             const query = `
         INSERT INTO familymember 
@@ -40,14 +40,8 @@ function addMember(member) {
                 member.Male
             ];
 
-            db.connection.query(query, values, (err, result) => {
-                if (err) {
-                    console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-                    reject(err);
-                } else {
-                    resolve(result);
-                }
-            });
+            let result = await coreQuery(query, values);
+            resolve(result);
 
         }
         catch (err) {
@@ -105,15 +99,8 @@ function updateMember(member) {
                 member.MemberID
             ];
 
-            db.connection.query(query, values, (err, result) => {
-                if (err) {
-                    console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-                    reject(err);
-                } else {
-                    resolve(result);
-
-                }
-            });
+            let result = await coreQuery(query, values);
+            resolve(result);
         } catch (err) {
             console.log(err);
             reject(err);
@@ -129,14 +116,8 @@ function updateMemberPhoto(memberPhotoUrl, memberId) {
         try {
             let query = `UPDATE familymember SET Image = ? WHERE MemberID = ?`;
             let values = [memberPhotoUrl, memberId];
-            db.connection.query(query, values, (err, result) => {
-                if (err) {
-                    console.log(err);
-                    reject(err);
-                } else {
-                    resolve(result);
-                }
-            });
+            let result = await coreQuery(query, values);
+            resolve(result);
         } catch (err) {
             console.log(err);
             reject(err);
@@ -212,15 +193,9 @@ function deleteMember(memberId) {
             // await RemoveAllRelationshipChild(memberId)
             // bắt đầu xóa member
             const query = 'DELETE FROM familymember WHERE MemberID = ?';
-            db.connection.query(query, [memberId], async (err, result) => {
-                if (err) {
-                    console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-                    db.connection.rollback();
-                    reject(err);
-                } else {
-                    resolve(result);
-                }
-            });
+            const values = [memberId];
+            let result = await coreQuery(query, values);
+            resolve(result);
         } catch (err) {
             db.connection.rollback();
             console.log(err);
@@ -309,186 +284,151 @@ function UpdateMemberRelated(memberID) {
 
 // nguyễn anh tuấn
 function UpdateMemberGenerationToZero(memberId) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         console.log("Vào hàm UpdateMemberGenerationToZero với memberId: " + memberId);
         const query = 'UPDATE familymember SET Generation = 0, FatherID = null, MotherID = null WHERE MemberID = ?';
-        db.connection.query(query, memberId, (err, result) => {
-            if (err) {
-                console.log(err);
-                reject(err)
-            } else {
-                resolve(result)
-            }
-        })
+        const values = [memberId];
+        let result = await coreQuery(query, values);
+        resolve(result);
     })
 }
 
 
-
+// nguyễn anh tuấn
 function GetCurrentParentMember(memberID) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         let query = `select * from familymember
-        where MemberID = ${memberID} and ParentID is not null`;
-        db.connection.query(query, (err, result) => {
-            if (err) {
-                console.log(err);
-                reject(err)
-            } else {
-                resolve(result)
-            }
-        })
+        where MemberID = ? and ParentID is not null`;
+        let values = [memberID];
+        let result = await coreQuery(query, values);
+        resolve(result);
     })
 }
 
+// nguyễn anh tuấn
 function insertParentIdToMember(fatherID, motherID, memberID) {
-    let query = `UPDATE familymember SET FatherID = ?, MotherID = ? WHERE MemberID = ?;`
-    let values = [fatherID, motherID, memberID];
-    db.connection.query(query, values, (err, result) => {
-        if (err) {
-            console.log(err)
-        } else {
-            console.log("insert success");
-        }
-    }
-    )
+    return new Promise(async (resolve, reject) => {
+        let query = `UPDATE familymember SET FatherID = ?, MotherID = ? WHERE MemberID = ?;`
+        let values = [fatherID, motherID, memberID];
+        let result = await coreQuery(query, values);
+        resolve(result);
+    })
 }
 // nguyễn anh tuấn
 function insertFatherIDToMember(fatherID, memberID) {
-    let query = `UPDATE familymember SET FatherID = ? WHERE MemberID = ?;`
-    let values = [fatherID, memberID];
-    db.connection.query(query, values, (err, result) => {
-        if (err) {
-            console.log(err)
-        } else {
-            console.log("insert success");
-        }
-    }
-    )
+    return new Promise(async (resolve, reject) => {
+        let query = `UPDATE familymember SET FatherID = ? WHERE MemberID = ?;`
+        let values = [fatherID, memberID];
+        let result = await coreQuery(query, values);
+        resolve(result);
+    })
 }
 
 // nguyễn anh tuấn
 function insertMotherIDToMember(motherID, memberID) {
-    let query = `UPDATE familymember SET MotherID = ? WHERE MemberID = ?;`
-    let values = [motherID, memberID];
-    db.connection.query(query, values, (err, result) => {
-        if (err) {
-            console.log(err)
-        } else {
-            console.log("insert success");
-        }
-    }
-    )
-}
-
-function setGeneration(generation, memberId) {
-    return new Promise((resolve, reject) => {
-        const query = 'UPDATE familymember SET Generation = ? WHERE MemberID = ?';
-        db.connection.query(query, [generation, memberId], (err, result) => {
-            if (err) {
-                console.log(err);
-                reject(err)
-            } else {
-                resolve(result)
-            }
-        })
+    return new Promise(async (resolve, reject) => {
+        let query = `UPDATE familymember SET MotherID = ? WHERE MemberID = ?;`
+        let values = [motherID, memberID];
+        let result = await coreQuery(query, values);
+        resolve(result);
     })
 }
 
+// nguyễn anh tuấn
+function setGeneration(generation, memberId) {
+    return new Promise(async(resolve, reject) => {
+        console.log("Vào hàm setGeneration với generation: " + generation + " và memberId: " + memberId);
+        const query = 'UPDATE familymember SET Generation = ? WHERE MemberID = ?';
+        const values = [generation, memberId];
+        let result = await coreQuery(query, values);
+        resolve(result);
+    })
+}
+
+// nguyễn anh tuấn
 function setBirthOrder(birthOrder, memberId) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async(resolve, reject) => {
+        console.log("Vào hàm setBirthOrder với birthOrder: " + birthOrder + " và memberId: " + memberId);
         const query = 'UPDATE familymember SET BirthOrder = ? WHERE MemberID = ?';
-        db.connection.query(query, [birthOrder, memberId], (err, result) => {
-            if (err) {
-                console.log(err);
-                reject(err)
-            } else {
-                resolve(result)
-            }
-        })
+        const values = [birthOrder, memberId];
+        let result = await coreQuery(query, values);
+        resolve(result);
     })
 }
 
 function getMember(memberId) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         const query = 'select * from familymember where memberid = ?';
-        db.connection.query(query, memberId, (err, result) => {
-            if (err) {
-                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-                reject(err);
-            } else {
-                resolve(result);
-            }
-        });
+        let result = await coreQuery(query);
+        resolve(result);
     });
 }
 
 // nguyễn anh tuấn
 function getMembersByFatherID(fatherID) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         const query = 'select * from familymember where fatherID = ?';
-        db.connection.query(query, fatherID, (err, result) => {
-            if (err) {
-                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-                reject(err);
-            } else {
-                resolve(result);
-            }
-        });
+        const values = [fatherID];
+        let result = await coreQuery(query, values);
+        resolve(result);
+    });
+}
+
+// nguyễn anh tuấn
+function getMembersByOnlyFatherID(fatherID) {
+    return new Promise(async (resolve, reject) => {
+        const query = 'select * from familymember where fatherID = ? and (MotherID = null or MotherID = 0)';
+        const values = [fatherID];
+        let result = await coreQuery(query, values);
+        resolve(result);
+    });
+}
+
+// nguyễn anh tuấn
+function getMembersByOnlyMotherID(motherID) {
+    return new Promise(async (resolve, reject) => {
+        const query = 'select * from familymember where motherID = ? and (FatherID = null or FatherID = 0)';
+        const values = [motherID];
+        let result = await coreQuery(query, values);
+        resolve(result);
     });
 }
 
 // nguyễn anh tuấn
 function getMembersByMotherID(motherID) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         const query = 'select * from familymember where motherID = ?';
-        db.connection.query(query, motherID, (err, result) => {
-            if (err) {
-                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-                reject(err);
-            } else {
-                resolve(result);
-            }
-        });
+        const values = [motherID];
+        let result = await coreQuery(query, values);
+        resolve(result);
     });
 }
 
 // nguyễn anh tuấn
 function getMembersByFatherIDAndMotherID(fatherID, motherID) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         console.log("Vào hàm getMembersByFatherIDAndMotherID với fatherID: " + fatherID + " và motherID: " + motherID);
         const query = 'select * from familymember where fatherID = ? and motherID = ?';
         const values = [fatherID, motherID];
-        db.connection.query(query, values, (err, result) => {
-            if (err) {
-                console.log(err);
-                reject(err)
-            } else {
-                resolve(result)
-            }
-        })
+        let result = await coreQuery(query, values);
+        resolve(result);
     })
 }
 
 // nguyễn anh tuấn
 function getMembersByFatherIDOrMotherID(fatherID, motherID) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         console.log("Vào hàm getMembersByFatherIDOrMotherID với fatherID: " + fatherID + " và motherID: " + motherID);
         const query = 'select * from familymember where fatherID = ? or motherID = ?';
         const values = [fatherID, motherID];
-        db.connection.query(query, values, (err, result) => {
-            if (err) {
-                console.log(err);
-                reject(err)
-            } else {
-                resolve(result)
-            }
-        })
+        let result = await coreQuery(query, values);
+        resolve(result);
     })
 }
 
 // nguyễn anh tuấn
 function updateFatherIDToMotherID(fatherID, memberList) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         console.log("Vào hàm updateFatherIDToMotherID với memberList: " + JSON.stringify(memberList));
         if (CoreFunction.isEmptyOrNullOrSpaces(memberList)) {
             console.log("memberList null");
@@ -496,20 +436,14 @@ function updateFatherIDToMotherID(fatherID, memberList) {
         }
         const query = 'UPDATE familymember SET FatherID = null, MotherID = ? WHERE MemberID in (?)';
         const values = [fatherID, memberList];
-        db.connection.query(query, values, (err, result) => {
-            if (err) {
-                console.log(err);
-                reject(err)
-            } else {
-                resolve(result)
-            }
-        })
+        let result = await coreQuery(query, values);
+        resolve(result);
     });
 }
 
 // nguyễn anh tuấn
 function updateMotherIDToFatherID(motherID, memberList) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         console.log("Vào hàm updateMotherIDToFatherID với memberList: " + JSON.stringify(memberList));
         if (CoreFunction.isEmptyOrNullOrSpaces(memberList)) {
             console.log("memberList null");
@@ -517,19 +451,78 @@ function updateMotherIDToFatherID(motherID, memberList) {
         }
         const query = 'UPDATE familymember SET FatherID = ?, MotherID = null WHERE MemberID in (?)';
         const values = [motherID, memberList];
-        db.connection.query(query, values, (err, result) => {
-            if (err) {
-                console.log(err);
-                reject(err)
-            } else {
-                resolve(result)
-            }
-        })
+        let result = await coreQuery(query, values);
+        resolve(result);
     });
 }
 
-function searchMember(searchTerm) {
+// nguyễn anh tuấn
+function getMaxBirthOrderByFatherIdOrMotherId(fatherId, motherId) {
+    return new Promise(async (resolve, reject) => {
+        const query = `
+        SELECT MAX(BirthOrder) AS MaxBirthOrder FROM familymember
+        WHERE FatherID = ? OR MotherID = ?
+        `;
+        const values = [fatherId, motherId];
+        let result = await coreQuery(query, values);
+        resolve(result);
+    });
+}
+
+// nguyễn anh tuấn
+function getMaxBirthOrderByFatherID(fatherId) {
+    return new Promise(async (resolve, reject) => {
+        const query = `
+        SELECT MAX(BirthOrder) AS MaxBirthOrder FROM familymember
+        WHERE FatherID = ? and (MotherID = null or MotherID = 0);
+        `;
+        const values = [fatherId];
+
+        let result = await coreQuery(query, values);
+        resolve(result);
+    });
+}
+
+// nguyễn anh tuấn
+function getMaxBirthOrderByMotherID(motherId) {
+    return new Promise(async (resolve, reject) => {
+        const query = `
+        SELECT MAX(BirthOrder) AS MaxBirthOrder FROM familymember
+        WHERE MotherID = ? and (FatherID = null or FatherID = 0);
+        `;
+        const values = [motherId];
+        let result = await coreQuery(query, values);
+        resolve(result);
+    });
+}
+
+// nguyễn anh tuấn
+function coreQuery(query, values) {
     return new Promise((resolve, reject) => {
+        if (values == null) {
+            db.connection.query(query, (err, result) => {
+                if (err) {
+                    console.log(err);
+                    reject(err)
+                } else {
+                    resolve(result)
+                }
+            })
+        } else {
+            db.connection.query(query, values, (err, result) => {
+                if (err) {
+                    console.log(err);
+                    reject(err)
+                } else {
+                    resolve(result)
+                }
+            })
+        }
+    })
+}
+
+function searchMember(searchTerm) {
+    return new Promise(async (resolve, reject) => {
         const query = `
         SELECT * FROM familymember
         WHERE MemberName LIKE ?
@@ -537,14 +530,8 @@ function searchMember(searchTerm) {
 
         const values = [`%${searchTerm}%`];
 
-        db.connection.query(query, values, (err, result) => {
-            if (err) {
-                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-                reject(err);
-            } else {
-                resolve(result);
-            }
-        });
+        let result = await coreQuery(query, values);
+        resolve(result);
     });
 }
 
@@ -704,5 +691,7 @@ module.exports = {
     getAllMember, queryFamilyMembers, getAllMemberInMemberRole, getAllMemberNotInMemberRole, GetCurrentParentMember,
     insertFatherIDToMember, insertMotherIDToMember, getMembersByFatherID, getMembersByMotherID,
     setBirthOrder, insertParentIdToMember, getAllMemberID, updateMemberPhoto, deleteMemberRelated,
-    getMembersByFatherIDAndMotherID, getMembersByFatherIDOrMotherID, updateFatherIDToMotherID, updateMotherIDToFatherID, UpdateMemberRelated
+    getMembersByFatherIDAndMotherID, getMembersByFatherIDOrMotherID, updateFatherIDToMotherID,
+    updateMotherIDToFatherID, UpdateMemberRelated, getMaxBirthOrderByFatherIdOrMotherId, getMaxBirthOrderByFatherID,
+    getMaxBirthOrderByMotherID, getMembersByOnlyFatherID, getMembersByOnlyMotherID
 };

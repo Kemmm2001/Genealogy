@@ -11,9 +11,12 @@ const initWebRouter = (app) => {
     router.post('/addEvent', EventManagementController.InsertEvent)
     router.put('/updateEvent', EventManagementController.UpdateEvent)
     router.delete('/removeEvent', EventManagementController.RemoveEvent)
-    router.get('/listRepeat', EventManagementController.getAllEventRepetition)
     router.get('/inforEvent', EventManagementController.getInformationEvent)
     router.post('/searchEvent', EventManagementController.searchEvent)
+    router.put('/updateStatusEvent', EventManagementController.updateStatusEventGenealogy)
+    router.get('/eventAttendance', EventManagementController.getEventAttendance)
+    router.get('/getIdAndEmail', EventManagementController.getListMemberIDAndEmail)
+    // router.get('/getEmail',EventManagementController)
 
     router.get('/birthday', EventManagementController.GetBirthDayInMonth)
     router.get('/deadDay', EventManagementController.GetDeadDayInMonth)
@@ -27,9 +30,9 @@ const initWebRouter = (app) => {
 
     //API Nhật anh  
     router.post('/filter-event', EventManagementController.filterEvent);
-    router.post('/addAttendence', EventManagementController.addAttendence )
+    router.post('/addAttendence', EventManagementController.addAttendence)
     router.post('/inviteMail', EventManagementController.inviteMail)
-    router.post('/verify-invite',EventManagementController.verifyMail)
+    router.post('/verify-invite', EventManagementController.verifyMail)
     //Tiền tố đứng trước route
     app.use('/api/v1', router);
 }
