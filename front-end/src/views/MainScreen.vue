@@ -4,31 +4,31 @@
     <div class="list h-100 d-flex flex-column align-items-center">
       <div v-if="memberRole != 3" class="w-100 d-flex flex-column" style="height: 15%;">
         <div class="w-100 h-100 d-flex flex-column" style="align-items: center">
-        <div class="w-100 d-flex flex-row" style="padding-top: 8px; height: 50%;">
-          <div class="col-6" style="padding-left: 8px; padding-right: 6px">
-            <div class="w-100 h-100">
-              <button @click="openNotiModal()" style="width:100%; font-size: 14px;" type="button" class="p-0 btn btn-secondary h-100">Tạo thông báo</button>
+          <div class="w-100 d-flex flex-row" style="padding-top: 8px; height: 50%;">
+            <div class="col-6" style="padding-left: 8px; padding-right: 6px">
+              <div class="w-100 h-100">
+                <button @click="openNotiModal()" style="width:100%; font-size: 14px;" type="button" class="p-0 btn btn-secondary h-100">Tạo thông báo</button>
+              </div>
+            </div>
+            <div class="col-6" style="padding-left: 6px; padding-right: 8px">
+              <div class="w-100 h-100">
+                <button @click="openCompareModal()" style="width:100%; font-size: 14px;" type="button" :class="{ 'p-0': true, 'btn': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">Xác định quan hệ</button>
+              </div>
             </div>
           </div>
-          <div class="col-6" style="padding-left: 6px; padding-right: 8px">
-            <div class="w-100 h-100">
-              <button @click="openCompareModal()" style="width:100%; font-size: 14px;" type="button" :class="{ 'p-0': true, 'btn': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">Xác định quan hệ</button>
+          <div class="w-100 d-flex flex-row" style="padding-top: 8px; height: 50%;">
+            <div class="col-6" style="padding-left: 8px; padding-right: 6px">
+              <div class="w-100 h-100">
+                <button @click="BackUpdata()" style="width:100%; font-size: 14px; color:white" type="button" class="p-0 btn btn-secondary h-100">Lưu trữ dữ liệu</button>
+              </div>
+            </div>
+            <div class="col-6" style="padding-left: 6px; padding-right: 8px">
+              <div class="w-100 h-100">
+                <button style="width:100%; font-size: 14px; color:white" type="button" class="p-0 btn btn-secondary h-100">Xuất dữ liệu vào</button>
+              </div>
             </div>
           </div>
         </div>
-        <div class="w-100 d-flex flex-row" style="padding-top: 8px; height: 50%;">
-          <div class="col-6" style="padding-left: 8px; padding-right: 6px">
-            <div class="w-100 h-100">
-              <button @click="BackUpdata()" style="width:100%; font-size: 14px; color:white" type="button" class="p-0 btn btn-secondary h-100">Lưu trữ dữ liệu</button>
-            </div>
-          </div>
-          <div class="col-6" style="padding-left: 6px; padding-right: 8px">
-            <div class="w-100 h-100">
-              <button style="width:100%; font-size: 14px; color:white" type="button" class="p-0 btn btn-secondary h-100">Xuất dữ liệu vào</button>
-            </div>
-          </div>
-        </div>
-      </div>
       </div>
       <div class="w-100 d-flex flex-column px-2" :class="{height100 : memberRole == 3}" style="padding: 12px; min-height: 85%; font-family: 'QuicksandBold', sans-serif;">
         <div class="existing-members d-flex flex-column w-100">
@@ -697,11 +697,11 @@
                         </div>
                       </div>
                       <div style="position: relative; margin-right:10px">
-                        <input type="text" class="form-control modal-item" placeholder />
+                        <input v-model="objMemberInfor.PlaceOfDeadth" type="text" class="form-control modal-item" placeholder />
                         <label class="form-label" for="input">Nơi Mất</label>
                       </div>
                       <div style="position: relative; margin-right:10px">
-                        <input type="text" class="form-control modal-item" placeholder />
+                        <input v-model="objMemberInfor.GraveSite" type="text" class="form-control modal-item" placeholder />
                         <label class="form-label" for="input">Mộ Phần</label>
                       </div>
                     </div>
@@ -1092,7 +1092,7 @@ export default {
 
       selectedNodes: [],
       notSelectedNodes: [],
-      nodeRightClickHighLight : null,
+      nodeRightClickHighLight: null,
 
       helpNoti: false,
       helpCompare: false,
@@ -1279,7 +1279,7 @@ export default {
     },
     //Nguyễn Lê Hùng
     compareMember(memberId1, memberId2) {
- //     this.RemoveHightLight();
+      //     this.RemoveHightLight();
       this.selectNodeHighLight = [];
       this.lastClickedNodeId = null;
       this.objCompareMember1 = this.getResultMember(memberId1);
@@ -1297,8 +1297,8 @@ export default {
             this.resultCompare1 = response.data.data.result1;
             this.resultCompare2 = response.data.data.result2;
             this.$modal.show("compare-modal");
-            this.removeFromSelectedNodesCompare(memberId1)
-            this.removeFromSelectedNodesCompare(memberId2)
+            this.removeFromSelectedNodesCompare(memberId1);
+            this.removeFromSelectedNodesCompare(memberId2);
           } else {
             this.NotificationsDelete(response.data.message);
           }
@@ -1754,7 +1754,7 @@ export default {
     },
     //Nguyễn Lê Hùng
     removeFromSelectedNodes(memberid) {
-      var nodeElement
+      var nodeElement;
       for (let i = 0; i < this.selectedNodes.length; i++) {
         if (this.selectedNodes[i] == memberid) {
           this.selectedNodes.splice(i, 1);
@@ -1768,7 +1768,7 @@ export default {
       }
     },
     removeFromSelectedNodesCompare(memberid) {
-      var nodeElement
+      var nodeElement;
       for (let i = 0; i < this.selectedNodes.length; i++) {
         if (this.selectedNodes[i] == memberid) {
           this.selectedNodes.splice(i, 1);
@@ -1909,18 +1909,22 @@ export default {
     },
     //Nguyễn Lê Hùng
     addMemberChild(FatherID, MotherID) {
+      console.log(this.objMemberInfor.BirthOrder);
+      console.log(this.objMemberInfor.BirthPlace);
+      console.log(FatherID);
+      console.log(MotherID);
       HTTP.post("add-child", {
         FatherID: FatherID,
         MotherID: MotherID,
         MemberName: this.objMemberInfor.MemberName,
         NickName: this.objMemberInfor.NickName,
         BirthOrder: this.objMemberInfor.BirthOrder,
-        Origin: this.objMemberInfor.BirthOrder,
+        Origin: this.objMemberInfor.Origin,
         NationalityID: this.objMemberInfor.NationalityID,
         ReligionID: this.objMemberInfor.ReligionID,
         Dob: this.objMemberInfor.Dob,
         LunarDob: this.objMemberInfor.LunarDob,
-        bnirthPlace: this.objMemberInfor.BirthPlace,
+        birthPlace: this.objMemberInfor.BirthPlace,
         IsDead: this.IsDead,
         Dod: this.objMemberInfor.Dod,
         LunarDod: this.objMemberInfor.LunarDod,
@@ -2001,12 +2005,12 @@ export default {
           MemberName: this.objMemberInfor.MemberName,
           NickName: this.objMemberInfor.NickName,
           BirthOrder: this.objMemberInfor.BirthOrder,
-          Origin: this.objMemberInfor.BirthOrder,
+          Origin: this.objMemberInfor.Origin,
           NationalityID: this.objMemberInfor.NationalityID,
           ReligionID: this.objMemberInfor.ReligionID,
           Dob: this.objMemberInfor.Dob,
           LunarDob: this.objMemberInfor.LunarDob,
-          bnirthPlace: this.objMemberInfor.BirthPlace,
+          birthPlace: this.objMemberInfor.BirthPlace,
           IsDead: this.IsDead,
           Dod: this.objMemberInfor.Dod,
           LunarDod: this.objMemberInfor.LunarDod,
@@ -2350,7 +2354,7 @@ export default {
       this.$modal.hide("noti-modal");
     },
     openCompareModal() {
-    //  this.RemoveHightLight();
+      //  this.RemoveHightLight();
       this.isCompare = !this.isCompare;
     },
     closeCompareModal() {
@@ -2415,10 +2419,10 @@ export default {
       this.setFunctionCanDo(foundNode);
       this.TitleModal = foundNode.name;
       this.generationMember = foundNode.generation;
-      if(this.nodeRightClickHighLight != null){
+      if (this.nodeRightClickHighLight != null) {
         this.removeFromSelectedNodes(this.nodeRightClickHighLight);
       }
-      console.log(this.nodeRightClickHighLight)
+      console.log(this.nodeRightClickHighLight);
       this.highLightSelectNode(id);
       this.nodeRightClickHighLight = id;
       this.$modal.show("Select-option-Modal");
@@ -2432,7 +2436,7 @@ export default {
 
     closeSelectModal() {
       this.CurrentIdMember = 0;
-    //  this.RemoveHightLight();
+      //  this.RemoveHightLight();
       this.$modal.hide("Select-option-Modal");
     },
     removeRelationship() {
