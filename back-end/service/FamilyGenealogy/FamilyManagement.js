@@ -337,7 +337,7 @@ function insertMotherIDToMember(motherID, memberID) {
 
 // nguyễn anh tuấn
 function setGeneration(generation, memberId) {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         console.log("Vào hàm setGeneration với generation: " + generation + " và memberId: " + memberId);
         const query = 'UPDATE familymember SET Generation = ? WHERE MemberID = ?';
         const values = [generation, memberId];
@@ -348,7 +348,7 @@ function setGeneration(generation, memberId) {
 
 // nguyễn anh tuấn
 function setBirthOrder(birthOrder, memberId) {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         console.log("Vào hàm setBirthOrder với birthOrder: " + birthOrder + " và memberId: " + memberId);
         const query = 'UPDATE familymember SET BirthOrder = ? WHERE MemberID = ?';
         const values = [birthOrder, memberId];
@@ -638,15 +638,19 @@ function getAllMemberNotInMemberRole() {
 
 function getAllMember(codeID) {
     return new Promise((resolve, reject) => {
-        const query = 'SELECT * FROM familymember where CodeID = ?';
-        db.connection.query(query, codeID, (err, result) => {
-            if (err) {
-                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-                reject(err);
-            } else {
-                resolve(result);
-            }
-        });
+        try {
+            const query = 'SELECT * FROM familymember where CodeID = ?';
+            db.connection.query(query, codeID, (err, result) => {
+                if (err) {
+                    console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            });
+        } catch (error) {
+            reject(error)
+        }
     });
 }
 
