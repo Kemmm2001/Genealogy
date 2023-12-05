@@ -15,6 +15,7 @@ const initWebRouter = (app) => {
     router.post('/searchEvent', EventManagementController.searchEvent)
     router.put('/updateStatusEvent', EventManagementController.updateStatusEventGenealogy)
     router.get('/eventAttendance', EventManagementController.getEventAttendance)
+    router.get('/getIdAndEmail', EventManagementController.getListMemberIDAndEmail)
     // router.get('/getEmail',EventManagementController)
 
     router.get('/birthday', EventManagementController.GetBirthDayInMonth)

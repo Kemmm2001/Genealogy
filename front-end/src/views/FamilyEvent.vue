@@ -123,10 +123,10 @@
                   <td>{{event.Status == 1 ? "Chưa kết thúc": "Đã Kết Thúc"}}</td>
                   <td @click="showEditEventModal(event.EventID)">{{ event.Place }}</td>
                   <td>
-                    <div @click="showParticipantList(event.EventID)" class="btn bg-primary text-white">Danh sách thành viên</div>
+                    <div @click="showParticipantList(event.EventID)" class="btn bg-primary text-white">Thành viên tham gia sự kiện</div>
                   </td>
                   <td>
-                    <div @click="showMemberList()" class="btn bg-primary text-white">Thông báo</div>
+                    <div @click="showMemberList()" class="btn bg-primary text-white" v-if="event.Status == 1">Thông báo</div>
                   </td>
                 </tr>
               </tbody>
@@ -234,7 +234,9 @@
                 </div>
               </div>
             </div>
-            <div v-else class="d-flex flex-row" style="height: calc(100% - 50px);">Bạn chưa tạo thông báo cho sự kiện này</div>
+            <div v-else class="d-flex flex-row w-100 position-relative" style="height: calc(100% - 100px);">
+              <div style="position: absolute; inset: 0; margin: auto; font-size: 20px; height: fit-content; width: fit-content;">Bạn chưa tạo thông báo cho sự kiện này</div>
+            </div>
             <div class="modal-footer position-absolute w-100" style="bottom: 0;">
               <div @click="closeParticipantList()" class="bg-secondary text-white btn mx-2">Đóng</div>
             </div>
@@ -291,7 +293,7 @@
         <div class="form-group h-100">
           <div class="w-100 h-100 modal-bg position-relative">
             <div class="d-flex flex-row w-100 align-items-center position-relative">
-              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Danh sách thành viên</div>
+              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Gửi lời mới đến thành viên</div>
               <div class="close-add-form" @click="closeMemberList()">
                 <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                   <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -334,7 +336,7 @@
               </div>
             </div>
             <div class="modal-footer position-absolute w-100" style="bottom: 0;">
-              <div @click="closeParticipantList()" class="bg-primary text-white btn mx-2">Gửi</div>
+              <div @click="sendMessageToConfirmEvent()" class="bg-primary text-white btn mx-2">Gửi</div>
               <div @click="closeParticipantList()" class="bg-primary text-white btn mx-2">Gửi cho tất cả</div>
             </div>
           </div>
@@ -454,7 +456,7 @@ export default {
       } else {
         this.ListMemberToSendEmail.push(id);
       }
-      console.log(this.ListMemberToSendEmail);
+      
     },
 
     convertSolarToLunar(dateConvert) {
@@ -824,6 +826,16 @@ export default {
           console.log(this.listEventAttendance);
         }
         this.$modal.show("participant-list");
+      });
+    },
+    sendMessageToConfirmEvent() {
+      console.log(this.ListMemberToSendEmail);
+      HTTP.get("getIdAndEmail", {
+        params: {
+          ListMemberID: this.ListMemberToSendEmail,
+        },
+      }).then((respone) => {
+        console.log(respone.data);
       });
     },
     closeParticipantList() {

@@ -1,6 +1,7 @@
 const { promises } = require('nodemailer/lib/xoauth2');
 const db = require('../../Models/ConnectDB')
 
+//Nguyễn Lê Hùng
 function getAllEvent(CodeID) {
     return new Promise((resolve, reject) => {
         try {
@@ -19,6 +20,7 @@ function getAllEvent(CodeID) {
     })
 }
 
+//Nguyễn Lê Hùng
 function getEventAttendance(EventID) {
     return new Promise((resolve, reject) => {
         try {
@@ -36,9 +38,30 @@ function getEventAttendance(EventID) {
         } catch (error) {
             reject(error)
         }
+
+    })
+}
+//Nguyễn Lê Hùng
+function getListEmailAndMemberID(ListMemberID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `SELECT MemberID, Email FROM contact WHERE MemberID IN (${ListMemberID})`;
+            db.connection.query(query, (err, result) => {
+                if (!err && result.length > 0) {
+                    let filteredResult = result.filter(item => item.Email !== null);
+                    console.log(filteredResult);
+                    resolve(filteredResult);
+                } else {
+                    reject(err)
+                }
+            })
+        } catch (error) {
+            reject(err)
+        }
     })
 }
 
+//Nguyễn Lê Hùng
 function updateStatusEvent(EventID) {
     return new Promise((resolve, reject) => {
         try {
@@ -57,6 +80,7 @@ function updateStatusEvent(EventID) {
 }
 
 
+//Nguyễn Lê Hùng
 async function getListPhone(ListMemberID) {
     let ListPhone = [];
     return new Promise((resolve, reject) => {
@@ -306,5 +330,5 @@ function getCodeID(eventID) {
 
 module.exports = {
     getAllEvent, InsertNewEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth,
-    GetDeadDayInMonth, searchEvent, filterEvent, getListPhone, getInformationEvent, getListEmail, getCodeID, updateStatusEvent, getEventAttendance
+    GetDeadDayInMonth, searchEvent, filterEvent, getListPhone, getInformationEvent, getListEmail, getCodeID, updateStatusEvent, getEventAttendance, getListEmailAndMemberID
 }

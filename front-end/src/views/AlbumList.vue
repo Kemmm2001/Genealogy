@@ -31,7 +31,7 @@
               </div>
               <div class="album-cover" @click="openEditAlbumModal()" v-else></div>
               <div class="album-general-info d-flex align-items-center">
-                <div class="d-flex justify-content-center w-100 ellipsis-text" style="padding-left: 8px;">{{
+                <div class="d-flex justify-content-center w-100 ellipsis-text" style="padding: 0 8px; text-align: center;">{{
                   album.AlbumName }}</div>
                 <div class="d-flex w-100" style="justify-content: space-around;">
                   <div @click="openAlbumModal()">
@@ -94,7 +94,7 @@
 
               <div class="col-9 d-flex flex-column">
                 <div class="d-flex flex-row mt-2 align-items-center">
-                  <label class="col-2 d-flex justify-content-center" for="article-name" style="cursor: pointer;">Sửa
+                  <label class="col-2 d-flex justify-content-center" for="article-name" style="cursor: pointer; text-align: center;">Sửa
                     album</label>
                   <div class="mx-2 w-100">
                     <input id="article-name" type="text" v-model="albumPhoto.AlbumName" class="form-control" />
@@ -153,7 +153,7 @@
               </div>
               <div class="col-9 d-flex flex-column">
                 <div class="d-flex flex-row mt-2 align-items-center">
-                  <label class="col-2 d-flex justify-content-center" for="article-name" style="cursor: pointer;">Tên
+                  <label class="col-2 d-flex justify-content-center" for="article-name" style="cursor: pointer; text-align: center;">Tên
                     album</label>
                   <div class="mx-2 w-100">
                     <input id="article-name" type="text" v-model="albumPhoto.AlbumName" class="form-control" />
@@ -664,12 +664,15 @@ export default {
         },
       })
         .then((response) => {
+          console.log(response.data.success)
           if (response.data.success == true) {
             this.AlbumPhotoList = response.data.data;
             console.log(this.AlbumPhotoList);
             for (let i = 0; i < this.AlbumPhotoList.length; i++) {
               this.ListCheckBoxAlbum.push(false);
             }
+          }else{
+            this.AlbumPhotoList = []
           }
         })
         .catch((e) => {
