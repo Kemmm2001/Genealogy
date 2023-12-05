@@ -4,6 +4,7 @@ const MarriageManagement = require("./MarriageManagement");
 // nguyễn anh tuấn
 function addMember(member) {
     return new Promise(async (resolve, reject) => {
+        console.log("Vào hàm addMember ");
         try {
             const query = `
         INSERT INTO familymember 
