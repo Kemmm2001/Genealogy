@@ -29,15 +29,25 @@
   </div>
 </template>
 <script>
+import { HTTP } from "../assets/js/baseAPI.js";
 export default {
   data() {
     return {};
   },
   mounted() {
     const token = this.$route.query.token;
-
     if (token) {
-      console.log("Token:", token);
+      console.log(token);
+      HTTP.get("getEventByToken", {
+        params: {
+          token: token,
+        },
+      }).then((respone) => {
+        console.log(respone.data);
+        if (respone.data.success == true) {
+          console.log(respone.data.data);
+        }
+      });
     } else {
       console.log("Không có token trong URL");
     }

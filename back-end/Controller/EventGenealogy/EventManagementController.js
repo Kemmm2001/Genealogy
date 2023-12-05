@@ -41,7 +41,10 @@ var getListMemberIDAndEmail = async (req, res) => {
         console.log('ListMember: ' + ListMemberID)
         if (ListMemberID) {
             for (let i = 0; i < ListMemberID.length; i++) {
-                
+                let data = await EventAttendence.insertMemberAttend()
+                if (!data) {
+                    return res.send(Response.dataNotFoundResponse())
+                }
             }
             let data = await EventManagementService.getListEmailAndMemberID(ListMemberID);
             if (data) {
@@ -459,7 +462,7 @@ var inviteMail = async (req, res) => {
         const requestBody = req.body;
         const emails = requestBody.data.map(item => item.Email);
         const memberIds = requestBody.data.map(item => item.MemberID);
-        const eventId = requestBody.EventId;
+        const eventId = requestBody.eventId;
         const time = requestBody.time;
         console.log(requestBody)
         console.log('time: ' + time)
@@ -492,36 +495,57 @@ var inviteMail = async (req, res) => {
     }
 }
 
+var getEventByToken = async (req, res) => {
+    try {
+        let token = req.query.token;
+        console.log('token: ' + token)
+        let payload = await verifyInviteToken(token);
+        console.log('payload: ' + payload)
+        console.log('Result:', JSON.stringify(payload, null, 2));
+        if (payload.error === 'Token expired') {
+            return res.send(Response.internalServerErrorResponse(null, "Link đã hết hạn"));
+        }
+        let tokenData = await EventAttendence.checkTokenEvent(token);
+        if (tokenData == 0) {
+            return res.send(Response.dataNotFoundResponse(null, 'Link không đúng'));
+        }
+        return res.send(Response.successResponse(payload.eventId))
+    } catch (error) {
+        return res.send(Response.dataNotFoundResponse());
+    }
+}
+
 var verifyMail = async (req, res) => {
     try {
-      const token = req.query.token;
-      const IsGoing = req.body.IsGoing;
-      const payload = await verifyInviteToken(token);
-      if (payload.error === 'Token expired') {
-        return res.send(Response.internalServerErrorResponse(null, "Link đã hết hạn"));
-      } 
-      const tokenData = await EventAttendence.checkTokenEvent(token);
-      if (tokenData == 0) {
-        return res.send(Response.dataNotFoundResponse(null, 'Link không đúng'));
-      }
-  
-        let data = await EventAttendence.UpdateIsGoing(payload.memberId, payload.eventId,IsGoing)
+        let token = req.query.token;
+        let IsGoing = req.body.IsGoing;
+        let payload = await verifyInviteToken(token);
+        if (payload.error === 'Token expired') {
+            return res.send(Response.internalServerErrorResponse(null, "Link đã hết hạn"));
+        }
+        let tokenData = await EventAttendence.checkTokenEvent(token);
+        if (tokenData == 0) {
+            return res.send(Response.dataNotFoundResponse(null, 'Link không đúng'));
+        }
+
+        let data = await EventAttendence.UpdateIsGoing(payload.memberId, payload.eventId, IsGoing)
 
         if (data == true) {
-          return res.send(Response.successResponse());
+            return res.send(Response.successResponse());
         } else {
-        return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+            return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
         }
-      
+
     } catch (error) {
-      return res.send(Response.internalServerErrorResponse(error, error.message));
-  
+        return res.send(Response.internalServerErrorResponse(error, error.message));
+
     }
-  }
+}
 
 
 module.exports = {
     getAllEventGenealogy, InsertEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth,
     SendSMS, SendEmail, searchEvent, filterEvent, SendSMSToMember, getInformationEvent, sendEmailToMember
-    , addAttendence, inviteMail, verifyMail, ReadXLSX, updateStatusEventGenealogy, getEventAttendance, getListMemberIDAndEmail
+    , addAttendence, inviteMail, verifyMail, ReadXLSX, updateStatusEventGenealogy, getEventAttendance,
+    getListMemberIDAndEmail, getEventByToken
 }
