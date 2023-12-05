@@ -244,28 +244,36 @@ function changeUsername(AccountId, Username) {
 
 function getUserInfo(accountID) {
   return new Promise((resolve, reject) => {
-    let query = 'SELECT Username, Email, Password FROM genealogy.account WHERE AccountID = ?';
-    let values = [accountID];
+    try {
+      let query = 'SELECT Username, Email, Password FROM genealogy.account WHERE AccountID = ?';
+      let values = [accountID];
 
-    db.connection.query(query, values, (err, result) => {
-      if (err) {
-        console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-        reject(err);
-      } else {
-        if (result.length === 0) {
+      db.connection.query(query, values, (err, result) => {
+        try {
+          if (err) {
+            console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+            reject(err);
+          } else {
+            if (result.length === 0) {
 
-          resolve(null);
-        } else {
+              resolve(null);
+            } else {
 
-          const user = {
-            username: result[0].Username,
-            email: result[0].Email,
-            password: result[0].Password
-          };
-          resolve(user);
+              const user = {
+                username: result[0].Username,
+                email: result[0].Email,
+                password: result[0].Password
+              };
+              resolve(user);
+            }
+          }
+        } catch (error) {
+          reject(error)
         }
-      }
-    });
+      });
+    } catch (error) {
+      reject(error)
+    }
   });
 }
 
@@ -395,7 +403,7 @@ function checkID(accountID) {
 function updateRoleID(data) {
   return new Promise((resolve, reject) => {
     const query = 'UPDATE genealogy.AccountFamilyTree SET RoleID = ? WHERE AccountID = ? and CodeID = ?';
-    const values = [data.RoleId, data.accountID,data.CodeID];
+    const values = [data.RoleId, data.accountID, data.CodeID];
 
     db.connection.query(query, values, (err, results) => {
       if (err) {

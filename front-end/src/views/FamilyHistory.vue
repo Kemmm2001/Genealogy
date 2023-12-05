@@ -263,35 +263,41 @@ export default {
     },
     //nguyễn lê hùng
     addHistory() {
-      if (
-        this.endDate != null &&
-        this.startDate != null &&
-        this.descriptionModal != null &&
-        this.descriptionModal != ""
-      ) {
-        HTTP.post("familyhistory", {
-          CodeID: this.CodeID,
-          Description: this.descriptionModal,
-          startDate: this.startDate,
-          endDate: this.endDate,
-        })
-          .then((response) => {
-            if (response.data.success == true) {
-              this.NotificationsScuccess(response.data.message);
-              this.closeAddHistoryModal();
-              this.getListHistory();
-            } else {
-              this.NotificationsDelete(response.data.message);
-            }
-          })
-          .catch((e) => {
-            console.log(e);
-          });
+      if (this.startDate > this.endDate) {
+        this.NotificationsDelete("Ngày bắt đầu đang lớn hơn ngày kết thúc");
       } else {
-        this.NotificationsDelete("bạn chưa điền hết thông tin");
+        if (
+          this.endDate != null &&
+          this.startDate != null &&
+          this.descriptionModal != null &&
+          this.descriptionModal != ""
+        ) {
+          HTTP.post("familyhistory", {
+            CodeID: this.CodeID,
+            Description: this.descriptionModal,
+            startDate: this.startDate,
+            endDate: this.endDate,
+          })
+            .then((response) => {
+              if (response.data.success == true) {
+                this.NotificationsScuccess(response.data.message);
+                this.closeAddHistoryModal();
+                this.getListHistory();
+              } else {
+                this.NotificationsDelete(response.data.message);
+              }
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        } else {
+          this.NotificationsDelete("bạn chưa điền hết thông tin");
+        }
       }
     },
-    checkMove() {},
+    checkMove() {
+      console.log("vào đây");
+    },
     formatDate(dateString) {
       const date = new Date(dateString);
       const year = date.getFullYear();

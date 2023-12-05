@@ -19,6 +19,23 @@ function getAllEvent(CodeID) {
     })
 }
 
+function updateStatusEvent(EventID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `UPDATE eventfamily SET Status = '0' WHERE EventID = ${EventID}`
+            db.connection.query(query, (err, result) => {
+                if (err) {
+                    reject(false)
+                } else {
+                    resolve(result)
+                }
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 
 async function getListPhone(ListMemberID) {
     let ListPhone = [];
@@ -269,5 +286,5 @@ function getCodeID(eventID) {
 
 module.exports = {
     getAllEvent, InsertNewEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth,
-    GetDeadDayInMonth, searchEvent, filterEvent, getListPhone, getInformationEvent, getListEmail, getCodeID
+    GetDeadDayInMonth, searchEvent, filterEvent, getListPhone, getInformationEvent, getListEmail, getCodeID, updateStatusEvent
 }

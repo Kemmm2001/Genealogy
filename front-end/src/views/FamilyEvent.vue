@@ -136,11 +136,7 @@
                     <div>{{ formattedCreatedAt(event.StartDate) }} (DL)</div>
                     <div>{{ formattedCreatedAt(convertSolarToLunar(event.StartDate)) }} (AL)</div>
                   </td>
-                  <!-- <td @click="showEditEventModal(event.EventID)">
-                    <div>{{ formattedCreatedAt(event.EndDate) }} (DL)</div>
-                    <div>{{ formattedCreatedAt(convertSolarToLunar(event.EndDate)) }} (AL)</div>
-                  </td>-->
-                  <td>Đã kết thúc</td>
+                  <td>{{event.Status == 1 ? "Chưa kết thúc": "Đã Kết Thúc"}}</td>
                   <td @click="showEditEventModal(event.EventID)">{{ event.Place }}</td>
                   <td>
                     <div @click="showParticipantList()" class="btn bg-primary text-white">Danh sách thành viên</div>
@@ -643,38 +639,42 @@ export default {
     addEvent() {
       this.eventFamily.StartDate = `${this.startDate} ${this.startHour}:${this.startMinute}`;
       this.eventFamily.EndDate = `${this.endDate} ${this.endHour}:${this.endMinute}`;
-      if (
-        this.eventFamily.EventName != null &&
-        this.eventFamily.StartDate != null &&
-        this.eventFamily.EndDate != null &&
-        this.eventFamily.Place != null
-      ) {
-        HTTP.post("addEvent", {
-          EventName: this.eventFamily.EventName,
-          CodeID: this.CodeID,
-          Status: 1,
-          StartDate: this.eventFamily.StartDate,
-          EndDate: this.eventFamily.EndDate,
-          Description: this.eventFamily.Description,
-          Note: this.eventFamily.Note,
-          Place: this.eventFamily.Place,
-          IsImportant: this.eventFamily.Description ? 1 : 0,
-          isAdd: true,
-        })
-          .then((respone) => {
-            if (respone.data.success == true) {
-              this.closeAddEventModal();
-              this.getListEvent();
-              this.NotificationsScuccess(respone.data.message);
-            } else {
-              this.NotificationsDelete(respone.data.message);
-            }
-          })
-          .catch((e) => {
-            console.log(e);
-          });
+      if (this.eventFamily.StartDate > this.eventFamily.EventName) {
+        this.NotificationsDelete("Ngày bắt đầu đang lớn hơn ngày kết thúc");
       } else {
-        this.NotificationsDelete("bạn nhập thiếu trường (*)");
+        if (
+          this.eventFamily.EventName != null &&
+          this.eventFamily.StartDate != null &&
+          this.eventFamily.EndDate != null &&
+          this.eventFamily.Place != null
+        ) {
+          HTTP.post("addEvent", {
+            EventName: this.eventFamily.EventName,
+            CodeID: this.CodeID,
+            Status: 1,
+            StartDate: this.eventFamily.StartDate,
+            EndDate: this.eventFamily.EndDate,
+            Description: this.eventFamily.Description,
+            Note: this.eventFamily.Note,
+            Place: this.eventFamily.Place,
+            IsImportant: this.eventFamily.Description ? 1 : 0,
+            isAdd: true,
+          })
+            .then((respone) => {
+              if (respone.data.success == true) {
+                this.closeAddEventModal();
+                this.getListEvent();
+                this.NotificationsScuccess(respone.data.message);
+              } else {
+                this.NotificationsDelete(respone.data.message);
+              }
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        } else {
+          this.NotificationsDelete("bạn nhập thiếu trường (*)");
+        }
       }
     },
     updateEvent() {
