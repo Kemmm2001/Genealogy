@@ -234,7 +234,9 @@
                 </div>
               </div>
             </div>
-            <div v-else class="d-flex flex-row" style="height: calc(100% - 50px);">Bạn chưa tạo thông báo cho sự kiện này</div>
+            <div v-else class="d-flex flex-row w-100 position-relative" style="height: calc(100% - 100px);">
+              <div style="position: absolute; inset: 0; margin: auto; font-size: 20px; height: fit-content; width: fit-content;">Bạn chưa tạo thông báo cho sự kiện này</div>
+            </div>
             <div class="modal-footer position-absolute w-100" style="bottom: 0;">
               <div @click="closeParticipantList()" class="bg-secondary text-white btn mx-2">Đóng</div>
             </div>
