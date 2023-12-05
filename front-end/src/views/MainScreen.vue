@@ -135,10 +135,10 @@
               <div class="list-group-item feature-overview">Các chức năng chính</div>
               <div class="list-group-item" @click="getInforMember(CurrentIdMember)">Thông tin chi tiết</div>
               <div class="list-group-item" @click="openModalRelationship()">Xem các mối quan hệ</div>
-              <div class="list-group-item" @click="openMemberModal('AddFather', 'Cha')">Thêm Cha</div>
-              <div class="list-group-item" @click="openMemberModal('AddMother', 'Mẹ')">Thêm Mẹ</div>
-              <div class="list-group-item" @click="openMemberModal('AddHusband', 'Chồng')">Thêm Chồng</div>
-              <div class="list-group-item" @click="openMemberModal('AddWife', 'Vợ')">Thêm Vợ</div>
+              <div class="list-group-item" @click="openMemberModal('AddParent', 'Cha')">Thêm Cha</div>
+              <div class="list-group-item" @click="openMemberModal('AddParent', 'Mẹ')">Thêm Mẹ</div>
+              <div class="list-group-item" @click="openMemberModal('AddMarriage', 'Chồng')">Thêm Chồng</div>
+              <div class="list-group-item" @click="openMemberModal('AddMarriage', 'Vợ')">Thêm Vợ</div>
               <div v-for="list in ListMarriedMember" :key="list.id" class="list-group-item" @click="openMemberModal('AddChild', 'Con',list.id)">Thêm Con với vợ {{list.name}}</div>
               <div class="list-group-item" @click="openMemberModal('AddChild', 'Con')">Thêm Con</div>
               <div class="list-group-item" @click="openModalAddMemberFromList()">Thêm mối quan hệ từ Danh Sách</div>
@@ -1882,25 +1882,10 @@ export default {
       }
     },
     //Nguyễn Lê Hùng
-    addMember() {
-      let FatherID;
-      let MotherID;
-      if (this.action == "AddNormal") {
-        this.generationMember = 0;
-      }
-      if (this.action == "AddChild") {
-        if (this.isFather) {
-          FatherID = this.CurrentIdMember;
-          MotherID = this.idParent;
-        } else {
-          FatherID = this.idParent;
-          MotherID = this.CurrentIdMember;
-        }
-      }
-      HTTP.post("member", {
+    addMemberChild(FatherID, MotherID) {
+      HTTP.post("add-child", {
         FatherID: FatherID,
         MotherID: MotherID,
-        CurrentMemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
         NickName: this.objMemberInfor.NickName,
         BirthOrder: this.objMemberInfor.BirthOrder,
@@ -1920,18 +1905,12 @@ export default {
         BloodType: this.objMemberInfor.BloodType,
         Male: this.objMemberInfor.Male,
         CodeID: this.CodeID,
-        Action: this.action,
       })
         .then((response) => {
-          if (this.action == "AddNormal") {
-            this.getListUnspecifiedMembers();
-          }
           if (response.data.success == true) {
+            this.action = null;
             this.getAllListMember();
             this.isUpdateAvatar = false;
-            if (this.action != "AddNormal") {
-              this.nodes.length = this.nodes.length + 1;
-            }
             this.NotificationsScuccess(response.data.message);
             this.$modal.hide("member-modal");
             this.$modal.hide("Select-option-Modal");
@@ -1971,6 +1950,97 @@ export default {
         .catch((e) => {
           console.log(e);
         });
+    },
+    //Nguyễn Lê Hùng
+    addMember() {
+      let FatherID;
+      let MotherID;
+      if (this.action == "AddNormal") {
+        this.generationMember = 0;
+      }
+      if (this.action == "AddChild") {
+        if (this.isFather) {
+          FatherID = this.CurrentIdMember;
+          MotherID = this.idParent;
+        } else {
+          FatherID = this.idParent;
+          MotherID = this.CurrentIdMember;
+        }
+        this.addMemberChild(FatherID, MotherID);
+        console.log("FatherID: " + FatherID);
+        console.log("MotherID: " + MotherID);
+      } else {
+        HTTP.post("member", {
+          CurrentMemberID: this.CurrentIdMember,
+          MemberName: this.objMemberInfor.MemberName,
+          NickName: this.objMemberInfor.NickName,
+          BirthOrder: this.objMemberInfor.BirthOrder,
+          Origin: this.objMemberInfor.BirthOrder,
+          NationalityID: this.objMemberInfor.NationalityID,
+          ReligionID: this.objMemberInfor.ReligionID,
+          Dob: this.objMemberInfor.Dob,
+          LunarDob: this.objMemberInfor.LunarDob,
+          bnirthPlace: this.objMemberInfor.BirthPlace,
+          IsDead: this.IsDead,
+          Dod: this.objMemberInfor.Dod,
+          LunarDod: this.objMemberInfor.LunarDod,
+          PlaceOfDeath: this.objMemberInfor.PlaceOfDeadth,
+          GraveSite: this.objMemberInfor.GraveSite,
+          Note: this.objMemberInfor.Note,
+          CurrentGeneration: this.generationMember,
+          BloodType: this.objMemberInfor.BloodType,
+          Male: this.objMemberInfor.Male,
+          CodeID: this.CodeID,
+          Action: this.action,
+        })
+          .then((response) => {
+            if (this.action == "AddNormal") {
+              this.getListUnspecifiedMembers();
+            }
+            if (response.data.success == true) {
+              this.getAllListMember();
+              this.isUpdateAvatar = false;
+              this.action = null;
+              this.NotificationsScuccess(response.data.message);
+              this.$modal.hide("member-modal");
+              this.$modal.hide("Select-option-Modal");
+              this.getListMember();
+              this.getListMemberToSendMessage();
+            } else {
+              this.NotificationsDelete(response.data.message);
+            }
+            this.newIdMember = response.data.data.MemberID;
+            if (
+              this.objMemberContact.Phone != null ||
+              this.objMemberContact.Address != null ||
+              this.objMemberContact.Email != null ||
+              this.FacebookUrl != null ||
+              this.objMemberContact.Zalo != null
+            ) {
+              this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
+              HTTP.post("addContact", {
+                memberId: this.newIdMember,
+                Address: this.objMemberContact.Address,
+                Phone: this.objMemberContact.Phone,
+                Email: this.objMemberContact.Email,
+                FacebookUrl: this.objMemberContact.FacebookUrl,
+                Zalo: this.objMemberContact.Zalo,
+              })
+                .then((response) => {
+                  if (response.data.success == true) {
+                    //     this.setDefauValueInModal();
+                    this.selectDistrictMember = null;
+                  }
+                })
+                .catch((e) => {
+                  console.log(e);
+                });
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
     },
     triggerFileInputClick() {
       this.$refs.fileInputRef.click();
@@ -2041,7 +2111,7 @@ export default {
         ReligionID: this.objMemberInfor.ReligionID,
         Dob: this.objMemberInfor.Dob,
         LunarDob: this.objMemberInfor.LunarDob,
-        bnirthPlace: this.objMemberInfor.BirthPlace,
+        birthPlace: this.objMemberInfor.BirthPlace,
         IsDead: this.IsDead,
         Dod: this.objMemberInfor.Dod,
         LunarDod: this.objMemberInfor.LunarDod,
@@ -2309,8 +2379,11 @@ export default {
     OnpenModal_SelectOption(id) {
       this.selectedInfor();
       let foundNode = this.nodes.find((node) => node.id == id);
+      console.log("gender: " + foundNode.gender);
       if (foundNode.gender == "female") {
         this.isFather = false;
+      } else {
+        this.isFather = true;
       }
       this.getAllMarriedInMember(foundNode.pids);
       this.setFunctionCanDo(foundNode);
