@@ -55,6 +55,7 @@ const initWebRouter = (app) => {
     //API tuấn
     router.get('/member', FamilyMemberManagement.getMember);
     router.post('/member', FamilyMemberManagement.addMember);
+    router.post('/add-child', FamilyMemberManagement.addChild);
     router.put('/member', FamilyMemberManagement.updateMember);
     router.put('/member-photo', CoreFunction.uploadImage("member-photo").single('Image'), FamilyMemberManagement.updateMemberPhoto);
     router.put('/memberToGenealogy', FamilyMemberManagement.updateMemberToGenealogy);
