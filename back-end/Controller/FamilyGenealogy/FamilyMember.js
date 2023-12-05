@@ -712,10 +712,13 @@ var deleteMember = async (req, res) => {
             // tìm kiếm tất cả con có cha hoặc mẹ là chồng hoặc vợ của người được xóa
             let listChilds = [];
             if (dataMember[0].Male == 0 && listMarriage.length > 0) {
+                console.log("Đã vào trường hợp người ngoài gia phả là nữ");
                 listChilds = await FamilyManagementService.getMembersByOnlyFatherID(listMarriage[0].HusbandID);
             } else if (dataMember[0].Male == 1 && listMarriage.length > 0) {
+                console.log("Đã vào trường hợp người ngoài gia phả là nam");
                 listChilds = await FamilyManagementService.getMembersByOnlyMotherID(listMarriage[0].WifeID);
             }
+            console.log("listChilds: ", listChilds);
             let maxBirthOrder = 0;
             if (listChilds.length > 0) {
                 /* Tìm giá trị BirthOrder lớn nhất trong mảng. So sánh giá trị BirthOrder của từng 
