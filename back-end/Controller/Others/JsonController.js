@@ -1,12 +1,13 @@
 const JsonService = require('../../service/Backup/JsonSevice')
 const Response = require('../../Utils/Response')
+
 var exportData = async function (req, res) {
   try {
     const { memberIDs } = req.body;
     console.log(memberIDs)
     const result = await JsonService.exportData(memberIDs);
     if (result.success) {
-      return res.send(Response.successResponse(null, 'Export thành công'));
+      return res.send(Response.successResponse({ fileName: result.fileName }, 'Export thành công'));
     } else {
       return res.send(Response.dataNotFoundResponse());
     }

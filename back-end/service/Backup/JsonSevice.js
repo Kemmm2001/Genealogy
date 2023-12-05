@@ -14,11 +14,11 @@ async function exportData(memberIDs) {
         await addDataToSheet(workbook, 'Job Data', jobs);
         await addDataToSheet(workbook, 'Contact Data', contacts);
 
-        const fileName = `all_members_data.xlsx`;
+        const fileName = `/uploads/excel/Backup/all_members_data.xlsx`;
         await workbook.xlsx.writeFile(fileName);
         console.log(`Tất cả dữ liệu đã được xuất thành công vào file ${fileName}`);
 
-        return { success: true };
+        return { success: true, fileName: fileName };
     } catch (error) {
         console.error('Lỗi khi xử lý dữ liệu:', error);
         throw error;
