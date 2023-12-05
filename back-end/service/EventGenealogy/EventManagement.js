@@ -19,6 +19,43 @@ function getAllEvent(CodeID) {
     })
 }
 
+function getEventAttendance(EventID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `SELECT ea.*, f.MemberName
+            FROM genealogy.eventattendance as ea
+            INNER JOIN familymember as f ON ea.MemberID = f.MemberID
+            WHERE ea.EventID = ${EventID}`;
+            db.connection.query(query, (err, result) => {
+                if (!err && result.length > 0) {
+                    resolve(result)
+                } else {
+                    reject(err)
+                }
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+function updateStatusEvent(EventID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `UPDATE eventfamily SET Status = '0' WHERE EventID = ${EventID}`
+            db.connection.query(query, (err, result) => {
+                if (err) {
+                    reject(false)
+                } else {
+                    resolve(result)
+                }
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 
 async function getListPhone(ListMemberID) {
     let ListPhone = [];
@@ -269,5 +306,5 @@ function getCodeID(eventID) {
 
 module.exports = {
     getAllEvent, InsertNewEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth,
-    GetDeadDayInMonth, searchEvent, filterEvent, getListPhone, getInformationEvent, getListEmail, getCodeID
+    GetDeadDayInMonth, searchEvent, filterEvent, getListPhone, getInformationEvent, getListEmail, getCodeID, updateStatusEvent, getEventAttendance
 }
