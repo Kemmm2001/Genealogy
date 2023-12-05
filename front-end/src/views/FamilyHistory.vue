@@ -32,7 +32,7 @@
           <div @click="getInforHistory(element.HistoryID)" class="list-group-item position-relative h-100" :style="{'width': '49%','float': element.HistoryID % 2 === 0 ? 'right' : 'left'}">
             <div class="position-absolute history-start">{{ formatDate(element.startDate) }}</div>
             <div class="position-absolute history-end">{{ formatDate(element.endDate)}}</div>
-            <div class="d-flex align-items-center" style="min-height: inherit; padding-top: 12px;">{{ element.Description }}</div>
+            <div class="d-flex align-items-center" style="min-height: inherit; padding-top: 25px;">{{ element.Description }}</div>
           </div>
         </div>
       </draggable>
