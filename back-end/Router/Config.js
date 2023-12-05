@@ -11,7 +11,7 @@ var router = express.Router();
 const initWebRouter = (app) => {
 
     router.post('/export-pdf', PdfController.exportPDF);
-    router.post('/export-excle', ExcelController.exportExcel);
+    router.post('/export-excel', ExcelController.exportExcel);
     router.post('/back-up', JsonController.exportData)
     router.post('/import',CoreFunction.uploadExcelFile('file').single('xlsx'), JsonController.importData)
 
