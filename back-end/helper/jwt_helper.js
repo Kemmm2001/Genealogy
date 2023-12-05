@@ -118,10 +118,11 @@ module.exports = {
     })
   }),
 
-  signInviteToken: (memberId, time ) => {
+  signInviteToken: (memberId,eventId, time ) => {
     return new Promise((resolve, reject) => {
       const payload = {
-        memberId
+        memberId, 
+        eventId
       }
       const secret = process.env.REPASS_TOKEN_SECRET
       const options = {
