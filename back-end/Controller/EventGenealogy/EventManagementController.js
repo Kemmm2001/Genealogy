@@ -21,6 +21,45 @@ var getAllEventGenealogy = async (req, res) => {
     }
 }
 
+var getEventAttendance = async (req, res) => {
+    try {
+        let EventID = req.query.EventID;
+        let data = await EventManagementService.getEventAttendance(EventID);
+        if (data) {
+            return res.send(Response.successResponse(data))
+        } else {
+            return res.send(Response.dataNotFoundResponse())
+        }
+    } catch (error) {
+        return res.send(Response.dataNotFoundResponse(error))
+    }
+}
+
+var updateStatusEventGenealogy = async (req, res) => {
+    try {
+        let CodeID = req.body.CodeID;
+        let currentDate = new Date().toISOString().split('T')[0];
+        let data = await EventManagementService.getAllEvent(CodeID);
+        if (data) {
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].Status == 1) {
+                    const endDate = new Date(data[i].EndDate);
+                    if (endDate < new Date(currentDate)) {
+                        let result = await EventManagementService.updateStatusEvent(data[i].EventID);
+                        if (!result) {
+                            res.send(Response.badRequestResponse());
+                            return;
+                        }
+                    }
+                }
+            }
+            res.send(Response.successResponse());
+        }
+    } catch (error) {
+        res.send(Response.badRequestResponse(error));
+    }
+}
+
 var getInformationEvent = async (req, res) => {
     try {
         let data = await EventManagementService.getInformationEvent(req.query.EventID);
@@ -48,7 +87,7 @@ var InsertEvent = async (req, res) => {
         objData.Description = req.body.Description;
         objData.IsImportant = req.body.IsImportant;
         objData.Note = req.body.Note;
-        objData.Place = req.body.Place;        
+        objData.Place = req.body.Place;
         console.log(objData)
         let data = await EventManagementService.InsertNewEvent(objData);
         if (data) {
@@ -86,7 +125,7 @@ var UpdateEvent = async (req, res) => {
         objData.Description = req.body.Description;
         objData.IsImportant = req.body.IsImportant;
         objData.Note = req.body.Note;
-        objData.Place = req.body.Place;      
+        objData.Place = req.body.Place;
         objData.EventID = req.body.EventID;
         let data = await EventManagementService.UpdateEvent(objData);
         if (data) {
@@ -322,20 +361,20 @@ var ReadXLSX = async (req, res) => {
         console.log("file: ", file);
         let spreadsheet = xlsx.readFile(file);
         const sheets = spreadsheet.SheetNames;
-        for(let i = 0; i < sheets.length; i++){
+        for (let i = 0; i < sheets.length; i++) {
             console.log('Sheet ' + i + ' -- ' + sheets[i]);
         }
         const firstSheet = spreadsheet.Sheets[sheets[0]];
 
         // Lấy ra dòng 1
         const row1 = firstSheet['!ref'].split(':')[0] + ':' + firstSheet['!ref'].split(':')[0];
-        const row1Values = xlsx.utils.sheet_to_json(firstSheet, {header:1, range: row1})[0];
-        
+        const row1Values = xlsx.utils.sheet_to_json(firstSheet, { header: 1, range: row1 })[0];
+
         // Lấy ra dòng 2
-        const row2 = firstSheet['!ref'].split(':')[0] + ':' + firstSheet['!ref'].split(':')[0]; 
-        const row2Values = xlsx.utils.sheet_to_json(firstSheet, {header:1, range: row2})[0];
-        
-        console.log('Row 1: ', row1Values); 
+        const row2 = firstSheet['!ref'].split(':')[0] + ':' + firstSheet['!ref'].split(':')[0];
+        const row2Values = xlsx.utils.sheet_to_json(firstSheet, { header: 1, range: row2 })[0];
+
+        console.log('Row 1: ', row1Values);
         console.log('Row 2: ', row2Values);
         return res.send(Response.successResponse());
     } catch (error) {
@@ -412,7 +451,7 @@ var inviteMail = async (req, res) => {
 
             if (data === true) {
                 const mailOptions = {
-                    to: emails[i], 
+                    to: emails[i],
                     subject: 'Your Invite Link',
                     text: `Here is your invite link: ${link}`,
                     html: `<p>Click <a href="${link}">here</a> to access your invite.</p>`,
@@ -431,32 +470,32 @@ var inviteMail = async (req, res) => {
 }
 var verifyMail = async (req, res) => {
     try {
-      const token = req.query.token;
-      const IsGoing = req.body.IsGoing;
-      const memberId = await verifyInviteToken(token)
-      const tokenData = EventAttendence.checkToken(token);
-      if (tokenData == 0) {
-        return res.send(Response.dataNotFoundResponse(null, 'không thấy token'));
-      }
-  
-        let data = await EventAttendence.UpdateIsGoing(memberId,IsGoing)
+        const token = req.query.token;
+        const IsGoing = req.body.IsGoing;
+        const memberId = await verifyInviteToken(token)
+        const tokenData = EventAttendence.checkToken(token);
+        if (tokenData == 0) {
+            return res.send(Response.dataNotFoundResponse(null, 'không thấy token'));
+        }
+
+        let data = await EventAttendence.UpdateIsGoing(memberId, IsGoing)
 
         if (data == true) {
-          return res.send(Response.successResponse());
+            return res.send(Response.successResponse());
         } else {
-        return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+            return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
         }
-      
+
     } catch (error) {
-      return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
-  
+        return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+
     }
-  }
+}
 
 
 
 module.exports = {
     getAllEventGenealogy, InsertEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth,
     SendSMS, SendEmail, searchEvent, filterEvent, SendSMSToMember, getInformationEvent, sendEmailToMember
-    , addAttendence, inviteMail, verifyMail, ReadXLSX
+    , addAttendence, inviteMail, verifyMail, ReadXLSX, updateStatusEventGenealogy, getEventAttendance
 }
