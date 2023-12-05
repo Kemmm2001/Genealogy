@@ -59,10 +59,7 @@
                 </div>
               </div>
               <div class="d-flex justify-content-center align-items-center" style="height: auto; width: auto;">
-                <button @click="registerFamilyTree()" class="btn register-button" style="margin-right: 36px;">
-                  Đăng
-                  kí
-                </button>
+                <button @click="registerFamilyTree()" class="btn register-button" style="margin-right: 36px;">Đăng kí</button>
               </div>
             </div>
           </div>
@@ -190,9 +187,9 @@ export default {
       });
     },
     registerFamilyTree() {
-      console.log(this.familyTree.treeName)
-      console.log(this.familyTree.ethnicity)
-      if ( this.familyTree.treeName != "" && this.familyTree.ethnicity != "") {
+      console.log(this.familyTree.treeName);
+      console.log(this.familyTree.ethnicity);
+      if (this.familyTree.treeName != "" && this.familyTree.ethnicity != "") {
         HTTP.post("register-genealogy", {
           accountID: this.accountID,
           treeName: this.familyTree.treeName,

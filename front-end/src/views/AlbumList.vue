@@ -19,10 +19,9 @@
           <div class="d-flex" v-for=" (album, index) in this.AlbumPhotoList" :key="album.AlbumID" @click="getAlbumCurrentId(album.AlbumID)">
             <div class="album mx-2 mb-3 d-flex flex-column">
               <div class="album-cover" @click="openEditAlbumModal()" v-if="album.BackGroundPhoto != null" style="background-image: url();">
-                <!-- <img :src="album.BackGroundPhoto" /> -->
                 <img class="h-100 w-100" style="object-fit: cover;" :src="album.BackGroundPhoto" />
               </div>
-              <div class="album-cover" @click="openEditAlbumModal()" v-if="album.BackGroundPhoto == null"></div>
+              <div class="album-cover" @click="openEditAlbumModal()" v-else></div>
               <div class="album-general-info d-flex align-items-center">
                 <div class="d-flex justify-content-center w-100 ellipsis-text" style="padding-left: 8px;">{{ album.AlbumName }}</div>
                 <div class="d-flex w-100" style="justify-content: space-around;">
@@ -46,7 +45,7 @@
         <div class="form-group">
           <div class="w-100 h-100 add-album-modal">
             <div class="d-flex flex-row w-100 align-items-center position-relative">
-              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm album</div>
+              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thông tin chi tiết của album {{ albumPhoto.AlbumName }}</div>
               <div class="close-add-form" @click="closeAlbumModal()">
                 <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                   <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -55,7 +54,12 @@
             </div>
             <div class="d-flex flex-row" style="height: calc(100% - 50px);">
               <div class="col-3 h-100 p-2">
-                <img class="h-100 w-100" :src="albumPhoto.BackGroundPhoto" style="object-fit: cover;"/>
+                <input type="file" ref="fileInput" style="display: none" @change="updateAvatar($event)" />
+                <img @click="triggerFileInputClick()" v-if="avatarSrc" class="h-100 w-100" :src="avatarSrc" style="object-fit: cover;" />
+                <svg @click="triggerFileInputClick()" v-else fill="#000000" height="100%" width="250px" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 350" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 350 350">
+                  <path d="M5,350h340V0H5V350z M25,330v-62.212h300V330H25z M179.509,247.494H60.491L120,171.253L179.509,247.494z   M176.443,211.061l33.683-32.323l74.654,69.05h-79.67L176.443,211.061z M325,96.574c-6.384,2.269-13.085,3.426-20,3.426  c-33.084,0-60-26.916-60-60c0-6.911,1.156-13.612,3.422-20H325V96.574z M25,20h202.516C225.845,26.479,225,33.166,225,40  c0,44.112,35.888,80,80,80c6.837,0,13.523-0.846,20-2.518v130.306h-10.767l-104.359-96.526l-45.801,43.951L120,138.748  l-85.109,109.04H25V20z" />
+                </svg>
+                <!-- <img class="h-100 w-100" :src="albumPhoto.BackGroundPhoto" style="object-fit: cover;" /> -->
               </div>
               <div class="col-9 d-flex flex-column">
                 <div class="d-flex flex-row mt-2 align-items-center">
@@ -95,34 +99,28 @@
             </div>
             <div class="d-flex flex-row" style="height: calc(100% - 50px);">
               <div class="col-3 h-100 p-2">
-                <img class="h-100 w-100" :src="albumPhoto.BackGroundPhoto" style="object-fit: cover;"/>
+                <input type="file" ref="fileInput" style="display: none" @change="updateAvatar($event)"/>
+                <img @click="triggerFileInputClick()" v-if="avatarSrc" class="h-100 w-100" :src="avatarSrc" style="object-fit: cover;" />
+                <svg @click="triggerFileInputClick()" v-else fill="#000000" height="100%" width="250px" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 350" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 350 350">
+                  <path d="M5,350h340V0H5V350z M25,330v-62.212h300V330H25z M179.509,247.494H60.491L120,171.253L179.509,247.494z   M176.443,211.061l33.683-32.323l74.654,69.05h-79.67L176.443,211.061z M325,96.574c-6.384,2.269-13.085,3.426-20,3.426  c-33.084,0-60-26.916-60-60c0-6.911,1.156-13.612,3.422-20H325V96.574z M25,20h202.516C225.845,26.479,225,33.166,225,40  c0,44.112,35.888,80,80,80c6.837,0,13.523-0.846,20-2.518v130.306h-10.767l-104.359-96.526l-45.801,43.951L120,138.748  l-85.109,109.04H25V20z" />
+                </svg>
               </div>
               <div class="col-9 d-flex flex-column">
                 <div class="d-flex flex-row mt-2 align-items-center">
-                  <label class="col-2 d-flex justify-content-center" for="article-name" style="cursor: pointer;">Sửa
-                    album</label>
+                  <label class="col-2 d-flex justify-content-center" for="article-name" style="cursor: pointer;">Tên album</label>
                   <div class="mx-2 w-100">
                     <input id="article-name" type="text" v-model="albumPhoto.AlbumName" class="form-control" />
                   </div>
                 </div>
                 <div class="d-flex flex-row mt-2 align-items-center">
-                  <label class="col-2 d-flex justify-content-center" for="article-des" style="cursor: pointer;">Mô
-                    tả</label>
+                  <label class="col-2 d-flex justify-content-center" for="article-des" style="cursor: pointer;">Mô tả</label>
                   <div class="mx-2 w-100">
                     <input id="article-des" type="text" v-model="albumPhoto.description" class="form-control" />
                   </div>
                 </div>
-                <!-- <div class="d-flex flex-row my-2 align-items-center">
-                  <label class="col-3 d-flex justify-content-center" for="off-url" style="cursor: pointer;">Thêm ảnh
-                    bìa</label>
-                  <div class="mx-2 w-100">
-                    <input id="off-url" type="file" class="form-control input-file"
-                      @change="handleFileChangeBackGround" />
-                  </div>
-                </div> -->
                 <div class="d-flex flex-row m-3 align-items-center articlelist-button-container">
                   <div class>
-                    <button class="articlelist-item-button form-control" @click="updateAlbum()">Cập nhật</button>
+                    <button class="articlelist-item-button form-control" @click="addAlbumPhoto()">Thêm</button>
                   </div>
                 </div>
               </div>
@@ -285,6 +283,7 @@ export default {
       listHeightLarger: [],
       img: null,
       keySearch: null,
+      avatarSrc: null,
     };
   },
   methods: {
@@ -378,6 +377,11 @@ export default {
         fileInput.click();
       }
     },
+    setDefaultAlbum() {
+      this.albumPhoto.AlbumName = "";
+      this.albumPhoto.description = "";
+      this.albumPhoto.BackGroundPhoto = null;
+    },
     getAlbumCurrentId(id) {
       this.albumCurrentId = id;
       this.getAlbumPhotoByAlbumId();
@@ -390,12 +394,15 @@ export default {
     },
     openAddAlbumModal() {
       this.albumPhoto = {};
+      this.avatarSrc = null;
       this.$modal.show("addAlbum-modal");
     },
     closeAddAlbumModal() {
       this.$modal.hide("addAlbum-modal");
     },
     openAlbumModal() {
+      this.avatarSrc = null;
+      this.setDefaultAlbum();
       this.$modal.show("Album-modal");
     },
     closeAlbumModal() {
@@ -432,30 +439,33 @@ export default {
       console.log("Tại sao lại như thế");
       this.ListCheckBoxPhoto = [];
       this.ListPhotoRemove = [];
-      const file = event.target.files[0];
+      const file = event.target.files;
       //     let count = this.listHeightLarger+1;
       let check = 0;
-      this.FamilyPhotoListAdd.push(file);
-      if (this.FamilyPhotoListAdd[this.FamilyPhotoListAdd.length - 1]) {
-        // Đọc nội dung của tệp và chuyển thành URL
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.imageSrc = reader.result;
-          this.FamilyPhotoListAddShow.push(this.imageSrc);
-          const img = new Image();
-          img.src = e.target.result;
-          img.onload = () => {
-            check += 1;
-            console.log(check);
-            if (img.width != 0 && img.height != 0) {
-              this.checkPhotoSize(img.width, img.height);
-            }
+      this.FamilyPhotoListAdd = file;
+      for(let i = 0 ; i < this.FamilyPhotoListAdd.length;i++){
+        if (this.FamilyPhotoListAdd[i]) {
+          // Đọc nội dung của tệp và chuyển thành URL
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            this.imageSrc = reader.result;
+            this.FamilyPhotoListAddShow.push(this.imageSrc);
+            const img = new Image();
+            img.src = e.target.result;
+            img.onload = () => {
+              check += 1;
+              console.log(check);
+              if (img.width != 0 && img.height != 0) {
+                this.checkPhotoSize(img.width, img.height);
+              }
+            };
           };
-        };
-        reader.readAsDataURL(
-          this.FamilyPhotoListAdd[this.FamilyPhotoListAdd.length - 1]
-        );
+          reader.readAsDataURL(
+            this.FamilyPhotoListAdd[i]
+          );
+        }
       }
+      
       this.ListCheckBoxPhotoAdd.push(false);
       this.getAlbumPhotoByCodeId();
     },
@@ -555,8 +565,10 @@ export default {
       formData.append("CodeID", this.CodeID);
       formData.append("AlbumID", this.albumCurrentId);
       formData.append("AlbumName", this.albumPhoto.AlbumName);
-      formData.append("Description", this.albumPhoto.description);
-      formData.append("BackGroundPhoto", this.albumPhoto.BackGroundPhoto);
+      formData.append("Description", this.albumPhoto.description);    
+      if (this.albumPhoto.BackGroundPhoto != null) {
+        formData.append("BackGroundPhoto", this.albumPhoto.BackGroundPhoto);
+      }
       HTTP.put("albumphoto", formData)
         .then((response) => {
           if (response.data.success == true) {
@@ -599,12 +611,41 @@ export default {
         .then((response) => {
           if (response.data.success == true) {
             this.albumPhoto = response.data.data[0];
+            if (
+              this.albumPhoto.description == "undefined" ||
+              this.albumPhoto.description == "null"
+            ) {
+              this.albumPhoto.description = null;
+            }
+            if (
+              this.albumPhoto.BackGroundPhoto == "null" ||
+              this.albumPhoto.BackGroundPhoto == "undefined"
+            ) {
+              this.albumPhoto.BackGroundPhoto = null;
+            }
+            this.avatarSrc = this.albumPhoto.BackGroundPhoto;
             console.log(this.albumPhoto);
           }
         })
         .catch((e) => {
           console.log(e);
         });
+    },
+    updateAvatar(event) {
+      let file = event.target.files[0];
+      this.albumPhoto.BackGroundPhoto = file;
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.avatarSrc = e.target.result; // Cập nhật ảnh avatar bằng ảnh tải lên
+        };
+        reader.readAsDataURL(file);
+      } else {
+        this.avatarSrc = null;
+      }
+    },
+    triggerFileInputClick() {
+      this.$refs.fileInput.click();
     },
     getFamilyPhotoByAlbumId() {
       HTTP.get("familyphoto", {
@@ -649,8 +690,10 @@ export default {
       this.closeAddPhotoModal();
     },
     addAlbumPhoto() {
-      
-      if(this.albumPhoto.AlbumName != null && this.albumPhoto.AlbumName != '' ){
+      if (
+        this.albumPhoto.AlbumName != null &&
+        this.albumPhoto.AlbumName != ""
+      ) {
         let formData = new FormData();
         formData.append("AlbumName", this.albumPhoto.AlbumName);
         formData.append("CodeID", this.CodeID);
@@ -661,6 +704,7 @@ export default {
             if (response.data.success == true) {
               this.NotificationsScuccess(response.data.message);
               this.getAlbumPhotoByCodeId();
+              this.avatarSrc = null;
             } else {
               this.NotificationsDelete(response.data.message);
             }
@@ -668,11 +712,10 @@ export default {
           .catch((e) => {
             console.log(e);
           });
-          this.closeAddAlbumModal();
-      }else{
+        this.closeAddAlbumModal();
+      } else {
         this.NotificationsDelete("Tên album không được để trống");
       }
-      
     },
     showCfDel() {
       this.$modal.show("cfdel-modal");

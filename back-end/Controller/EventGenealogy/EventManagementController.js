@@ -34,18 +34,7 @@ var getInformationEvent = async (req, res) => {
     }
 }
 
-var getAllEventRepetition = async (req, res) => {
-    try {
-        let data = await EventManagementService.getListEventRepetition();
-        if (data) {
-            return res.send(Response.successResponse(data));
-        } else {
-            return res.send(Response.internalServerErrorResponse)
-        }
-    } catch (error) {
-        return res.send(Response.internalServerErrorResponse(error))
-    }
-}
+
 
 
 var InsertEvent = async (req, res) => {
@@ -59,8 +48,7 @@ var InsertEvent = async (req, res) => {
         objData.Description = req.body.Description;
         objData.IsImportant = req.body.IsImportant;
         objData.Note = req.body.Note;
-        objData.Place = req.body.Place;
-        objData.RepeatID = req.body.RepeatID;
+        objData.Place = req.body.Place;        
         console.log(objData)
         let data = await EventManagementService.InsertNewEvent(objData);
         if (data) {
@@ -98,8 +86,7 @@ var UpdateEvent = async (req, res) => {
         objData.Description = req.body.Description;
         objData.IsImportant = req.body.IsImportant;
         objData.Note = req.body.Note;
-        objData.Place = req.body.Place;
-        objData.RepeatID = req.body.RepeatID;
+        objData.Place = req.body.Place;      
         objData.EventID = req.body.EventID;
         let data = await EventManagementService.UpdateEvent(objData);
         if (data) {
@@ -411,6 +398,7 @@ var addAttendence = async (req, res) => {
 var inviteMail = async (req, res) => {
     try {
         const requestBody = req.body;
+        console.log(requestBody)
         const emails = requestBody.data.map(item => item.email);
         const memberIds = requestBody.data.map(item => item.memberId);
         const time = requestBody.time;
@@ -469,6 +457,6 @@ var verifyMail = async (req, res) => {
 
 module.exports = {
     getAllEventGenealogy, InsertEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth,
-    SendSMS, SendEmail, searchEvent, filterEvent, SendSMSToMember, getAllEventRepetition, getInformationEvent, sendEmailToMember
+    SendSMS, SendEmail, searchEvent, filterEvent, SendSMSToMember, getInformationEvent, sendEmailToMember
     , addAttendence, inviteMail, verifyMail, ReadXLSX
 }
