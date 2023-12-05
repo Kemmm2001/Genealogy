@@ -39,11 +39,16 @@ var getListMemberIDAndEmail = async (req, res) => {
     try {
         let ListMemberID = req.query.ListMemberID;
         console.log('ListMember: ' + ListMemberID)
-        let data = await EventManagementService.getListEmailAndMemberID(ListMemberID);
-        if (data) {
-            return res.send(Response.successResponse(data))
-        } else {
-            return res.send(Response.dataNotFoundResponse())
+        if (ListMemberID) {
+            for (let i = 0; i < ListMemberID.length; i++) {
+                
+            }
+            let data = await EventManagementService.getListEmailAndMemberID(ListMemberID);
+            if (data) {
+                return res.send(Response.successResponse(data))
+            } else {
+                return res.send(Response.dataNotFoundResponse())
+            }
         }
     } catch (error) {
         return res.send(Response.dataNotFoundResponse(error))

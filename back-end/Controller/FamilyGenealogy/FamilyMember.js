@@ -192,7 +192,7 @@ var addMember = async (req, res) => {
                 console.log("Đã vào trường hợp thêm vợ chồng");
                 let objData = {};
                 // trường hợp giới tính giống nhau, thì trả về thông báo ko hỗ trợ
-                if(req.body.Male == currentMember[0].Male){
+                if (req.body.Male == currentMember[0].Male) {
                     let errorMessage = 'Không hỗ trợ mối quan hệ vợ chồng cho hai thành viên cùng giới tính';
                     return res.send(Response.badRequestResponse(null, errorMessage));
                 }
@@ -585,7 +585,7 @@ var updateMemberToGenealogy = async (req, res) => {
                     await MarriageManagement.addMarriage(objData);
                 }
                 FamilyManagementService.insertFatherIDToMember(outGenealogyMemeber[0].MemberID, inGenealogyMemeber[0].MemberID);
-            } 
+            }
             // nếu vào trường hợp thêm mẹ
             else if (outGenealogyMemeber[0].Male == 0) {
                 // nếu đã có mẹ thì ko thêm
