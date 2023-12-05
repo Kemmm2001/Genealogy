@@ -21,6 +21,20 @@ var getAllEventGenealogy = async (req, res) => {
     }
 }
 
+var getEventAttendance = async (req, res) => {
+    try {
+        let EventID = req.query.EventID;
+        let data = await EventManagementService.getEventAttendance(EventID);
+        if (data) {
+            return res.send(Response.successResponse(data))
+        } else {
+            return res.send(Response.dataNotFoundResponse())
+        }
+    } catch (error) {
+        return res.send(Response.dataNotFoundResponse(error))
+    }
+}
+
 var updateStatusEventGenealogy = async (req, res) => {
     try {
         let CodeID = req.body.CodeID;
@@ -483,5 +497,5 @@ var verifyMail = async (req, res) => {
 module.exports = {
     getAllEventGenealogy, InsertEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth,
     SendSMS, SendEmail, searchEvent, filterEvent, SendSMSToMember, getInformationEvent, sendEmailToMember
-    , addAttendence, inviteMail, verifyMail, ReadXLSX, updateStatusEventGenealogy
+    , addAttendence, inviteMail, verifyMail, ReadXLSX, updateStatusEventGenealogy, getEventAttendance
 }

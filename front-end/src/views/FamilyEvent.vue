@@ -68,22 +68,6 @@
                         <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2m-3.5-7h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5" />
                       </svg>
                     </div>
-                    <!-- <div v-if="checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)"
-                      @click="getListEventByDate(`${day.solar.year}-${day.solar.month}-${day.solar.date}`), showEventModal()">
-                      <div v-if="day.solar.date == 1" class="cn"
-                        @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.solar.date + "/"
-                          + (day.solar.month) }}</a></div>
-                      <div v-if="day.solar.date != 1" class="cn"
-                        @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.solar.date
-                        }}</a></div>
-                      <div v-if="day.lunar.date == 1" class="am"
-                        @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.lunar.date + "/"
-                          + (day.lunar.month) }}</a></div>
-                      <div v-if="day.lunar.date != 1" class="am"
-                        @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)"><a>{{ day.lunar.date
-                        }}</a></div>
-                      
-                    </div>-->
                   </td>
                 </tr>
               </tbody>
@@ -139,7 +123,7 @@
                   <td>{{event.Status == 1 ? "Chưa kết thúc": "Đã Kết Thúc"}}</td>
                   <td @click="showEditEventModal(event.EventID)">{{ event.Place }}</td>
                   <td>
-                    <div @click="showParticipantList()" class="btn bg-primary text-white">Danh sách thành viên</div>
+                    <div @click="showParticipantList(event.EventID)" class="btn bg-primary text-white">Danh sách thành viên</div>
                   </td>
                   <td>
                     <div @click="showMemberList()" class="btn bg-primary text-white">Thông báo</div>
@@ -225,46 +209,32 @@
         <div class="form-group h-100">
           <div class="w-100 h-100 modal-bg position-relative">
             <div class="d-flex flex-row w-100 align-items-center position-relative">
-              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Danh sách thành viên gia tộc</div>
+              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Danh sách thành viên tham gia sự kiện {{title}}</div>
               <div class="close-add-form" @click="closeParticipantList()">
                 <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                   <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
                 </svg>
               </div>
             </div>
-            <div class="d-flex flex-row" style="height: calc(100% - 50px);">
+            <div v-if="listEventAttendance" class="d-flex flex-row" style="height: calc(100% - 50px);">
               <div class="col-6 mt-2 d-flex flex-column" style="padding-left: 8px; padding-right: 4px;">
                 <div class="item d-flex justify-content-center" style="background-color: aliceblue;">Có tham gia</div>
                 <div class style="overflow-y: auto; height: calc(100% - 106px);">
-                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
-                  <div class="item even">BAAAAAAAAAAAAAAA</div>
-                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
-                  <div class="item even">BAAAAAAAAAAAAAAA</div>
-                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
-                  <div class="item even">BAAAAAAAAAAAAAAA</div>
-                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
-                  <div class="item even">BAAAAAAAAAAAAAAA</div>
-                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
-                  <div class="item even">BAAAAAAAAAAAAAAA</div>
-                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
-                  <div class="item even">BAAAAAAAAAAAAAAA</div>
-                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
-                  <div class="item even">BAAAAAAAAAAAAAAA</div>
-                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
-                  <div class="item even">BAAAAAAAAAAAAAAA</div>
+                  <div v-for="(item, index) in listEventAttendance" :key="item.id">
+                    <div v-if="item.IsGoing == 1" :class="index % 2 === 0 ? 'item even' : 'item odd'">{{item.MemberName}}</div>
+                  </div>
                 </div>
               </div>
-
               <div class="col-6 mt-2 d-flex flex-column" style="padding-left: 4px; padding-right: 8px;">
                 <div class="item d-flex justify-content-center" style="background-color: aliceblue;">Không tham gia</div>
                 <div class style="overflow-y: auto; height: calc(100% -106px);">
-                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
-                  <div class="item even">BAAAAAAAAAAAAAAA</div>
-                  <div class="item odd">AAAAAAAAAAAAAAAA</div>
-                  <div class="item even">BAAAAAAAAAAAAAAA</div>
+                  <div v-for="(item, index) in listEventAttendance" :key="item.id">
+                    <div v-if="item.IsGoing == 0" :class="index % 2 === 0 ? 'item odd' : 'item even'">{{item.MemberName}}</div>
+                  </div>
                 </div>
               </div>
             </div>
+            <div v-else class="d-flex flex-row" style="height: calc(100% - 50px);">Bạn chưa tạo thông báo cho sự kiện này</div>
             <div class="modal-footer position-absolute w-100" style="bottom: 0;">
               <div @click="closeParticipantList()" class="bg-secondary text-white btn mx-2">Đóng</div>
             </div>
@@ -379,11 +349,13 @@ import Snackbar from "awesome-snackbar";
 import { Calendar } from "vietnamese-lunar-calendar";
 import { HTTP } from "../assets/js/baseAPI.js";
 import { LunarDate } from "vietnamese-lunar-calendar";
+// import { elements } from "chart.js";
 //import moment from 'moment-timezone';
 require("moment-timezone");
 export default {
   data() {
     return {
+      title: null,
       eventFamily: {
         EventID: null,
         EventName: null,
@@ -428,6 +400,7 @@ export default {
       listMember: null,
       checkAll: false,
       ListMemberToSendEmail: [],
+      listEventAttendance: null,
     };
   },
   computed: {
@@ -835,11 +808,25 @@ export default {
     closeEditEventModal() {
       this.$modal.hide("edit-event-modal");
     },
-    showParticipantList() {
-      this.$modal.show("participant-list");
+    showParticipantList(EventID) {
+      this.listEventAttendance = null;
+      this.title = this.listEventFilter.find(
+        (element) => element.EventID === EventID
+      );
+      this.title = this.title.EventName;
+      HTTP.get("eventAttendance", {
+        params: {
+          EventID: EventID,
+        },
+      }).then((respone) => {
+        if (respone.data.success == true) {
+          this.listEventAttendance = respone.data.data;
+          console.log(this.listEventAttendance);
+        }
+        this.$modal.show("participant-list");
+      });
     },
     closeParticipantList() {
-      console.log(this.ListMemberToSendEmail);
       this.$modal.hide("participant-list");
     },
     showEventModal() {
