@@ -2033,9 +2033,10 @@ export default {
               this.getAllListMember();
               this.isUpdateAvatar = false;
               this.action = null;
-              this.NotificationsScuccess(response.data.message);
+   //           this.NotificationsScuccess(response.data.message);
               this.$modal.hide("member-modal");
               this.$modal.hide("Select-option-Modal");
+              console.log('getlist')
               this.getListMember();
               this.getListMemberToSendMessage();
             } else {

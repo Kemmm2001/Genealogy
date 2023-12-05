@@ -66,7 +66,14 @@
         </div>
       </div>
     </div>
-
+    <div class="position-absolute familycode-noti" :class="{ appear: showCode }">
+        <div class="w-100 h-100 position-relative">
+            <div class="position-absolute familycode-noti-timer" :class="{ timerStart: showCode }"></div>
+            <div v-if="showCode" class="w-100 h-100 d-flex align-items-center justify-content-content px-3"
+                style="font-size: 20px;">Đăng
+                kí thành công! Mã gia tộc của bạn là {{ this.familycode }}</div>
+        </div>
+    </div>
     <div class="loginhistory-container">
       <modal name="loginhistory-modal">
         <div class="w-100 h-100 add-album-modal">
@@ -122,6 +129,7 @@ export default {
       right: false,
       enlarge: false,
       loggingin: true,
+      showCode: false,
       familycode: null,
 
       familyTree: {
@@ -200,8 +208,8 @@ export default {
             console.log(response.data);
             if (response.data.success == true) {
               this.NotificationsScuccess(response.data.message);
-              this.showFamilyCode();
               this.familycode = response.data.data;
+              this.showFamilyCode();
             } else {
               this.NotificationsDelete(response.data.message);
             }
@@ -269,6 +277,12 @@ export default {
     },
     closeLoginHistoryModal() {
       this.$modal.hide("loginhistory-modal");
+    },
+    showFamilyCode() {
+      this.showCode = true;
+      setTimeout(() => {
+          this.showCode = false;
+      }, 15000);
     },
     getHistoryCodeID() {
       HTTP.get("historyCodeID", {

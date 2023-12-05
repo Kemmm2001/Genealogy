@@ -9,33 +9,37 @@
           <p class="d-block">Tổng số thành viên: {{ this.totalMember }} người</p>
           <p class="d-block">Số đời: {{ this.numberGeneration }}</p>
           <p class="d-block">Đời nhiều thành viên nhất: {{ this.maxMemberGeneration }}</p>
-          <p class="d-block">Còn sống: {{ this.numberAlive }} người ({{ (this.numberAlive / this.totalMember*100).toFixed(1) }}%)</p>
-          <p class="d-block">Đã mất: {{ this.numberDied }} người ({{ (this.numberDied / this.totalMember*100).toFixed(1) }}%)</p>
+          <p class="d-block">Còn sống: {{ this.numberAlive }} người ({{this.totalMember != 0 ? (this.numberAlive != 0 ?(this.numberAlive / this.totalMember*100).toFixed(1) : 0) : 0 }}%)</p>
+          <p class="d-block">Đã mất: {{ this.numberDied }} người ({{this.totalMember != 0 ? (this.numberDied != 0 ?(this.numberDied / this.totalMember*100).toFixed(1) : 0) : 0 }}%)</p>
         </div>
         <div class="col-2 filter">
           <p class="d-block text-decoration-underline">Thống kê giới tính</p>
-          <p class="d-block">Nam: {{ this.numberMale }} người ({{ (this.numberMale / this.totalMember*100).toFixed(1) }}%)</p>
-          <p class="d-block">Nữ: {{ this.numberFemale }} người ({{ (this.numberFemale / this.totalMember*100).toFixed(1) }}%)</p>
+          <p class="d-block">Nam: {{ this.numberMale }} người ({{this.totalMember != 0 ? (this.numberMale != 0 ? (this.numberMale / this.totalMember*100).toFixed(1) : 0) : 0 }}%)</p>
+          <p class="d-block">Nữ: {{ this.numberFemale }} người ({{this.totalMember != 0 ? ( this.numberFemale != 0 ? (this.numberFemale / this.totalMember*100).toFixed(1) : 0) : 0 }}%)</p>
         </div>
         <div class="col-2 filter">
           <p class="d-block text-decoration-underline">Thống kê dâu rể</p>
-          <p class="d-block">Rể: {{ this.numberSonInLaw }} người ({{ (this.numberSonInLaw / this.totalMember*100).toFixed(1) }}%)</p>
-          <p class="d-block">Dâu: {{ this.numberDaughterInLaw }} người ({{ (this.numberDaughterInLaw / this.totalMember*100).toFixed(1) }}%)</p>
+          <p class="d-block">Rể: {{ this.numberSonInLaw }} người ({{this.totalMember != 0 ? (this.numberSonInLaw != 0 ? (this.numberSonInLaw / this.totalMember*100).toFixed(1) : 0) : 0 }}%)</p>
+          <p class="d-block">Dâu: {{ this.numberDaughterInLaw }} người ({{this.totalMember != 0 ? (this.numberDaughterInLaw != 0 ?(this.numberDaughterInLaw / this.totalMember*100).toFixed(1) : 0) : 0 }}%)</p>
         </div>
         <div class="col-2 filter">
           <p class="d-block text-decoration-underline">Thống kê độ tuổi</p>
-          <p class="d-block">Từ 0-5: {{ this.age0to5 }} người ({{ (this.age0to5 / this.totalMember*100).toFixed(1) }}%)</p>
-          <p class="d-block">Từ 6-17: {{ this.age61up }} người ({{ (this.age61up / this.totalMember*100).toFixed(1) }}%)</p>
-          <p class="d-block">Từ 18-40: {{ this.age18to40 }} người ({{ (this.age18to40 / this.totalMember*100).toFixed(1) }}%)</p>
-          <p class="d-block">Từ 41-60: {{ this.age41to60 }} người ({{ (this.age41to60 / this.totalMember*100).toFixed(1) }}%)</p>
-          <p class="d-block">Trên 61: {{ this.age61up }} người ({{ (this.age61up / this.totalMember*100).toFixed(1) }}%)</p>
+          <p class="d-block">Từ 0-5: {{ this.age0to5 }} người ({{ this.totalMember != 0 ? (this.age0to5 != 0 ? (this.age0to5 / this.totalMember*100).toFixed(1): 0) : 0 }}%)</p>
+          <p class="d-block">Từ 6-17: {{ this.age61up }} người ({{this.totalMember != 0 ? (this.age61up != 0 ? (this.age61up / this.totalMember*100).toFixed(1) : 0) : 0 }}%)</p>
+          <p class="d-block">Từ 18-40: {{ this.age18to40 }} người ({{this.totalMember != 0 ? (this.age18to40 != 0 ? (this.age18to40 / this.totalMember*100).toFixed(1) : 0) : 0 }}%)</p>
+          <p class="d-block">Từ 41-60: {{ this.age41to60 }} người ({{this.totalMember != 0 ? (this.age41to60 != 0 ? (this.age41to60 / this.totalMember*100).toFixed(1) : 0) : 0 }}%)</p>
+          <p class="d-block">Trên 61: {{ this.age61up }} người ({{this.totalMember != 0 ? (this.age61up != 0 ? (this.age61up / this.totalMember*100).toFixed(1) : 0) : 0 }}%)</p>
         </div>
         <div class="col-2 filter">
           <p class="d-block text-decoration-underline">Thống kê đặc biệt</p>
-          <p class="d-block">Thành viên lớn tuổi nhất: {{ this.memberOldest.name }} ({{ this.memberOldest.age }})</p>
-          <p class="d-block">
-            Thành viên lớn tuổi nhất còn sống: {{ this.memberOldestAlive.name }}
+          <p v-if="this.memberOldest.age != 0 && this.memberOldest.age != null" class="d-block">Thành viên lớn tuổi nhất: {{ this.memberOldest.name }} ({{ this.memberOldest.age }})</p>
+          <p v-else class="d-block">Thành viên lớn tuổi nhất: </p>
+          <p v-if="this.memberOldestAlive.age != 0 && this.memberOldestAlive.age != null" class="d-block">
+            Thành viên lớn tuổi nhất còn sống : {{ this.memberOldestAlive.name }}
             ({{ this.memberOldestAlive.age }})
+          </p>
+          <p v-else class="d-block">
+            Thành viên lớn tuổi nhất còn sống:
           </p>
         </div>
       </div>
@@ -407,45 +411,48 @@ export default {
         if (this.memberList[i].isDead == 1) {
           this.numberDied += 1;
         }
-        if (
-          this.ageMember(this.memberList[i].dob) >= 0 &&
-          this.ageMember(this.memberList[i].dob) <= 5
-        ) {
-          this.age0to5 += 1;
+        if(this.memberList[i].dob != null){
+          if (
+            this.ageMember(this.memberList[i].dob) >= 0 &&
+            this.ageMember(this.memberList[i].dob) <= 5
+          ) {
+            this.age0to5 += 1;
+          }
+          if (
+            this.ageMember(this.memberList[i].dob) >= 6 &&
+            this.ageMember(this.memberList[i].dob) <= 17
+          ) {
+            this.age6to17 += 1;
+          }
+          if (
+            this.ageMember(this.memberList[i].dob) >= 18 &&
+            this.ageMember(this.memberList[i].dob) <= 40
+          ) {
+            this.age18to40 += 1;
+          }
+          if (
+            this.ageMember(this.memberList[i].dob) >= 41 &&
+            this.ageMember(this.memberList[i].dob) <= 60
+          ) {
+            this.age41to60 += 1;
+          }
+          if (this.ageMember(this.memberList[i].dob) >= 61) {
+            this.age61up += 1;
+          }
+          let month = 1;
+          while (
+            new Date(this.formatDate(this.memberList[i].dob)).getMonth() + 1 !=
+            month
+          ) {
+            month += 1;
+          }
+          this.monthDob[month - 1] += 1;
+          if (this.ageMember(this.memberList[i].dob) > this.memberOldest.age) {
+            this.memberOldest.age = this.ageMember(this.memberList[i].dob);
+            this.memberOldest.name = this.memberList[i].name;
+          }
         }
-        if (
-          this.ageMember(this.memberList[i].dob) >= 6 &&
-          this.ageMember(this.memberList[i].dob) <= 17
-        ) {
-          this.age6to17 += 1;
-        }
-        if (
-          this.ageMember(this.memberList[i].dob) >= 18 &&
-          this.ageMember(this.memberList[i].dob) <= 40
-        ) {
-          this.age18to40 += 1;
-        }
-        if (
-          this.ageMember(this.memberList[i].dob) >= 41 &&
-          this.ageMember(this.memberList[i].dob) <= 60
-        ) {
-          this.age41to60 += 1;
-        }
-        if (this.ageMember(this.memberList[i].dob) >= 61) {
-          this.age61up += 1;
-        }
-        let month = 1;
-        while (
-          new Date(this.formatDate(this.memberList[i].dob)).getMonth() + 1 !=
-          month
-        ) {
-          month += 1;
-        }
-        this.monthDob[month - 1] += 1;
-        if (this.ageMember(this.memberList[i].dob) > this.memberOldest.age) {
-          this.memberOldest.age = this.ageMember(this.memberList[i].dob);
-          this.memberOldest.name = this.memberList[i].name;
-        }
+        
         if (
           this.ageMember(this.memberList[i].dob) > this.memberOldestAlive.age ||
           this.memberList[i].isDead == 0
@@ -469,10 +476,14 @@ export default {
       // this.numberGenerationFilter = 0,
     },
     ageMember(memberDob) {
-      let dob = new Date(this.formatDate(memberDob));
-      let now = new Date();
-      var age = Math.floor((now - dob) / (365.25 * 24 * 60 * 60 * 1000));
-      return age;
+      if(memberDob != null){
+        let dob = new Date(this.formatDate(memberDob));
+        let now = new Date();
+        var age = Math.floor((now - dob) / (365.25 * 24 * 60 * 60 * 1000));
+        return age;
+      }else{
+        return null;
+      }
     },
     filter() {
       console.log(this.monthSearch);
@@ -530,6 +541,7 @@ export default {
               41 <= this.ageMember(member.dob) &&
               this.ageMember(member.dob) <= 60
           );
+
         }
         if (this.ageSearch == ">60") {
           console.log(this.ageSearch);
@@ -573,32 +585,35 @@ export default {
           month += 1;
         }
         this.monthDobFilter[month - 1] += 1;
-        if (
-          this.ageMember(this.memberFilter[i].dob) >= 0 &&
-          this.ageMember(this.memberFilter[i].dob) <= 5
-        ) {
-          this.age0to5Filter += 1;
-        }
-        if (
-          this.ageMember(this.memberFilter[i].dob) >= 6 &&
-          this.ageMember(this.memberFilter[i].dob) <= 17
-        ) {
-          this.age6to17Filter += 1;
-        }
-        if (
-          this.ageMember(this.memberFilter[i].dob) >= 18 &&
-          this.ageMember(this.memberFilter[i].dob) <= 40
-        ) {
-          this.age18to40Filter += 1;
-        }
-        if (
-          this.ageMember(this.memberFilter[i].dob) >= 41 &&
-          this.ageMember(this.memberFilter[i].dob) <= 60
-        ) {
-          this.age41to60Filter += 1;
-        }
-        if (this.ageMember(this.memberFilter[i].dob) >= 61) {
-          this.age61upFilter += 1;
+        if(this.memberFilter[i].dob != null){
+          if (
+            this.ageMember(this.memberFilter[i].dob) >= 0 &&
+            this.ageMember(this.memberFilter[i].dob) <= 5
+          ) {
+            this.age0to5Filter += 1;
+          }
+          if (
+            this.ageMember(this.memberFilter[i].dob) >= 6 &&
+            this.ageMember(this.memberFilter[i].dob) <= 17
+          ) {
+            this.age6to17Filter += 1;
+          }
+          if (
+            this.ageMember(this.memberFilter[i].dob) >= 18 &&
+            this.ageMember(this.memberFilter[i].dob) <= 40
+          ) {
+            this.age18to40Filter += 1;
+          }
+          if (
+            this.ageMember(this.memberFilter[i].dob) >= 41 &&
+            this.ageMember(this.memberFilter[i].dob) <= 60
+          ) {
+            this.age41to60Filter += 1;
+            console.log(this.ageMember(this.memberFilter[i].dob))
+          }
+          if (this.ageMember(this.memberFilter[i].dob) >= 61) {
+            this.age61upFilter += 1;
+          }
         }
       }
     },
