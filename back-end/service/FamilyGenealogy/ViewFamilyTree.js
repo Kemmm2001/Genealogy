@@ -502,6 +502,8 @@ async function getFamilyHeadInGenealogy(CodeID) {
                         reject(err);
                     }
                 })
+            } else {
+                reject(false);
             }
         } catch (error) {
             console.log(error);

@@ -585,7 +585,7 @@ var updateMemberToGenealogy = async (req, res) => {
                     await MarriageManagement.addMarriage(objData);
                 }
                 FamilyManagementService.insertFatherIDToMember(outGenealogyMemeber[0].MemberID, inGenealogyMemeber[0].MemberID);
-            } 
+            }
             // nếu vào trường hợp thêm mẹ
             else if (outGenealogyMemeber[0].Male == 0) {
                 // nếu đã có mẹ thì ko thêm

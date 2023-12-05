@@ -66,21 +66,38 @@ function checkToken(token) {
   });
 }
 
+function checkTokenEvent(token) {
+  return new Promise((resolve, reject) => {
+    const query = `SELECT COUNT(*) AS count FROM genealogy.eventattendance WHERE Token = ?`;
+    db.connection.query(query, [token], (err, results) => {
+      if (err) {
+        console.log(err)
+        reject(err);
+
+      } else {
+        const count = results[0].count;
+        resolve(count);
+      }
+    });
+  });
+}
+
 function UpdateIsGoing(memberId, eventId, IsGoing) {
   return new Promise((resolve, reject) => {
     try {
-      let query = `UPDATE genealogy.eventattendance as a SET a.IsGoing = '${IsGoing}' WHERE MemberID = '${memberId};' AND EventID = '${eventId}'`;
+      let query = `UPDATE genealogy.eventattendance as a SET a.IsGoing = '${IsGoing}' WHERE MemberID = '${memberId}' AND EventID = '${eventId}'`;
       db.connection.query(query, (err) => {
         if (!err) {
-          resolve(true)
+          resolve(true);
         } else {
-          reject(false)
+          reject(false);
         }
-      })
+      });
     } catch (error) {
-      console.log(error)
-      reject(false)
+      console.log(error);
+      reject(false);
     }
-  })
+  });
 }
-module.exports = { insertMemberAttend, checkEventID, Update, checkToken, UpdateIsGoing }
+
+module.exports = { insertMemberAttend, checkEventID, Update, checkToken,checkTokenEvent, UpdateIsGoing }

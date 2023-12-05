@@ -1989,6 +1989,7 @@ export default {
         this.generationMember = 0;
       }
       if (this.action == "AddChild") {
+        console.log("vào add child");
         if (this.isFather) {
           FatherID = this.CurrentIdMember;
           MotherID = this.idParent;
@@ -2000,6 +2001,7 @@ export default {
         console.log("FatherID: " + FatherID);
         console.log("MotherID: " + MotherID);
       } else {
+        console.log("vào add mare");
         HTTP.post("member", {
           CurrentMemberID: this.CurrentIdMember,
           MemberName: this.objMemberInfor.MemberName,

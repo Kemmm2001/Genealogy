@@ -39,11 +39,16 @@ var getListMemberIDAndEmail = async (req, res) => {
     try {
         let ListMemberID = req.query.ListMemberID;
         console.log('ListMember: ' + ListMemberID)
-        let data = await EventManagementService.getListEmailAndMemberID(ListMemberID);
-        if (data) {
-            return res.send(Response.successResponse(data))
-        } else {
-            return res.send(Response.dataNotFoundResponse())
+        if (ListMemberID) {
+            for (let i = 0; i < ListMemberID.length; i++) {
+                
+            }
+            let data = await EventManagementService.getListEmailAndMemberID(ListMemberID);
+            if (data) {
+                return res.send(Response.successResponse(data))
+            } else {
+                return res.send(Response.dataNotFoundResponse())
+            }
         }
     } catch (error) {
         return res.send(Response.dataNotFoundResponse(error))
@@ -489,27 +494,30 @@ var inviteMail = async (req, res) => {
 
 var verifyMail = async (req, res) => {
     try {
-        const token = req.query.token;
-        const IsGoing = req.body.IsGoing;
-        const payload = await verifyInviteToken(token)
-        const tokenData = EventAttendence.checkToken(token);
-        if (tokenData == 0) {
-            return res.send(Response.dataNotFoundResponse(null, 'không thấy token'));
-        }
-
-        let data = await EventAttendence.UpdateIsGoing(payload.memberId, payload.eventId, IsGoing)
+      const token = req.query.token;
+      const IsGoing = req.body.IsGoing;
+      const payload = await verifyInviteToken(token);
+      if (payload.error === 'Token expired') {
+        return res.send(Response.internalServerErrorResponse(null, "Link đã hết hạn"));
+      } 
+      const tokenData = await EventAttendence.checkTokenEvent(token);
+      if (tokenData == 0) {
+        return res.send(Response.dataNotFoundResponse(null, 'Link không đúng'));
+      }
+  
+        let data = await EventAttendence.UpdateIsGoing(payload.memberId, payload.eventId,IsGoing)
 
         if (data == true) {
-            return res.send(Response.successResponse());
+          return res.send(Response.successResponse());
         } else {
-            return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
-        }
-
-    } catch (error) {
         return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
-
+        }
+      
+    } catch (error) {
+      return res.send(Response.internalServerErrorResponse(error, error.message));
+  
     }
-}
+  }
 
 
 module.exports = {

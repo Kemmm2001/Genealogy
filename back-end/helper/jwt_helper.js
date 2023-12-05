@@ -108,14 +108,15 @@ module.exports = {
       JWT.verify(token, process.env.REPASS_TOKEN_SECRET, (err, payload) => {
         if (err) {
           if (err.name === 'TokenExpiredError') {
-            return resolve.json({ error: 'Token expired' });
+            reject({ error: 'Token expired' });
           } else {
-            return resolve.json({ error: 'Invalid token' });
+            resolve({ error: 'Invalid token' });
           }
+        } else {
+          resolve(payload);
         }
-        resolve(payload);
       });
-    })
+    });
   }),
 
   signInviteToken: (memberId,eventId, time ) => {
@@ -138,18 +139,20 @@ module.exports = {
     })
   },
 
-  verifyInviteToken: (token => {
+  verifyInviteToken: (token) => {
     return new Promise((resolve, reject) => {
       JWT.verify(token, process.env.REPASS_TOKEN_SECRET, (err, payload) => {
         if (err) {
           if (err.name === 'TokenExpiredError') {
-            return resolve.json({ error: 'Token expired' });
+            reject({ error: 'Token expired' });
           } else {
-            return resolve.json({ error: 'Invalid token' });
+            resolve({ error: 'Invalid token' });
           }
+        } else {
+          resolve(payload);
         }
-        resolve(payload);
       });
-    })
-  })
+    });
+  }
+  
 }
