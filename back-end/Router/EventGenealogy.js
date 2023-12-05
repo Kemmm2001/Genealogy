@@ -33,6 +33,7 @@ const initWebRouter = (app) => {
     router.post('/addAttendence', EventManagementController.addAttendence)
     router.post('/inviteMail', EventManagementController.inviteMail)
     router.post('/verify-invite', EventManagementController.verifyMail)
+    router.get('/getEventByToken', EventManagementController.getEventByToken)
     //Tiền tố đứng trước route
     app.use('/api/v1', router);
 }

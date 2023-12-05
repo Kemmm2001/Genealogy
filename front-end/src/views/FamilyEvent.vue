@@ -824,7 +824,7 @@ export default {
       });
     },
     sendMessageToConfirmEvent() {
-      if (this.time != null) {
+      if (this.numberExpire != null) {
         HTTP.get("getIdAndEmail", {
           params: {
             ListMemberID: this.ListMemberToSendEmail,
