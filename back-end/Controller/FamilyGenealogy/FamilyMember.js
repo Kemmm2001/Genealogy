@@ -119,10 +119,6 @@ var addMember = async (req, res) => {
         else {
             console.log("Đã vào trường hợp thêm thành viên có trong cây gia phả");
             let currentMember, memberRole;
-            if (!CoreFunction.isDataNumberExist(req.body.CurrentMemberID)) {
-
-                return res.send(Response.badRequestResponse());
-            }
             currentMember = await FamilyManagementService.getMemberByMemberID(req.body.CurrentMemberID);
             console.log("currentMember: ", currentMember);
             if (!CoreFunction.isDataNumberExist(currentMember)) {
@@ -141,9 +137,8 @@ var addMember = async (req, res) => {
                 if (req.body.Male == 1) {
                     console.log("Đã vào trường hợp thêm cha");
                     // nếu đã có cha thì ko thêm
-                    if (currentMember[0].FatherID != null && currentMember[0].FatherID != '' && currentMember[0].FatherID != 0) {
+                    if (CoreFunction.isDataNumberExist(currentMember[0].FatherID)) {
                         let errorMessage = 'Thành viên này đã có cha';
-
                         return res.send(Response.badRequestResponse(null, errorMessage));
                     }
                     // nếu con đã có mẹ thì thêm mối quan hệ vợ chồng cho mẹ và cha của con
@@ -168,9 +163,8 @@ var addMember = async (req, res) => {
                 else if (req.body.Male == 0) {
                     console.log("Đã vào trường hợp thêm mẹ");
                     // nếu đã có mẹ thì ko thêm
-                    if (currentMember[0].MotherID != null && currentMember[0].MotherID != '' && currentMember[0].MotherID != 0) {
+                    if (CoreFunction.isDataNumberExist(currentMember[0].MotherID)) {
                         let errorMessage = 'Thành viên này đã có mẹ';
-
                         return res.send(Response.badRequestResponse(null, errorMessage));
                     }
                     // nếu con đã có cha thì thêm mối quan hệ vợ chồng cho mẹ và cha của con
