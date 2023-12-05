@@ -323,10 +323,14 @@ var forgetPassword = async (req, res) => {
 var resetPassword = async (req, res) => {
   try {
     const token = req.query.token;
-    const email = await verifyRepassToken(token)
+    const payload = await verifyRepassToken(token)
+    if (payload.error === 'Token expired') {
+      return res.send(Response.internalServerErrorResponse(null, "Link đã hết hạn"));
+    }
+
     const tokenData = UserService.checkToken(token);
     if (tokenData == 0) {
-      return res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống1'));
+      return res.send(Response.internalServerErrorResponse(null, 'Link không đúng '));
     }
 
     if (req.body.password !== req.body.repassword) {
@@ -334,7 +338,7 @@ var resetPassword = async (req, res) => {
     }
     else {
       let hashedPassword = await bcrypt.hash(req.body.password, 10);
-      let data = await UserService.UpdatePassword(hashedPassword, email)
+      let data = await UserService.UpdatePassword(hashedPassword, payload.email)
       if (data == true) {
         return res.send(Response.successResponse());
       } else {
@@ -342,7 +346,7 @@ var resetPassword = async (req, res) => {
       }
     }
   } catch (error) {
-    return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống2'));
+    return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
 
   }
 }
