@@ -193,7 +193,7 @@ var addMember = async (req, res) => {
                 let objData = {};
                 // trường hợp giới tính giống nhau, thì trả về thông báo ko hỗ trợ
                 if(req.body.Male == currentMember[0].Male){
-                    let errorMessage = 'Không hỗ trợ mối quan hệ vợ chồng cho hai thành viên cùng giới tính';
+                    let errorMessage = 'Không hỗ trợ kết hôn đồng giới';
                     return res.send(Response.badRequestResponse(null, errorMessage));
                 }
                 // nếu vào trường hợp thêm chồng 
@@ -633,7 +633,7 @@ var updateMemberToGenealogy = async (req, res) => {
             console.log("Đã vào trường hợp thêm vợ chồng");
             // nếu cùng giới tính thì không cho add
             if (inGenealogyMemeber[0].Male == outGenealogyMemeber[0].Male) {
-                return res.send(Response.badRequestResponse(null, "Không hỗ trợ mối quan hệ vợ chồng cho hai thành viên cùng giới tính"));
+                return res.send(Response.badRequestResponse(null, "Không hỗ trợ kết hôn đồng giới"));
             }
             let objData = {};
             // nếu vào trường hợp thêm chồng 
@@ -713,10 +713,11 @@ var deleteMember = async (req, res) => {
             let listChilds = [];
             if (dataMember[0].Male == 0 && listMarriage.length > 0) {
                 console.log("Đã vào trường hợp người ngoài gia phả là nữ");
-                listChilds = await FamilyManagementService.getMembersByOnlyFatherID(listMarriage[0].HusbandID);
+                listChilds = await FamilyManagementService.getMembersByOnlyFatherID(listMarriage[0].husbandID);
+                console.log("listChilds: ", listChilds);
             } else if (dataMember[0].Male == 1 && listMarriage.length > 0) {
                 console.log("Đã vào trường hợp người ngoài gia phả là nam");
-                listChilds = await FamilyManagementService.getMembersByOnlyMotherID(listMarriage[0].WifeID);
+                listChilds = await FamilyManagementService.getMembersByOnlyMotherID(listMarriage[0].wifeID);
             }
             console.log("listChilds: ", listChilds);
             let maxBirthOrder = 0;
@@ -767,16 +768,6 @@ var deleteMember = async (req, res) => {
 }
 
 
-var InsertMarrieIdToMember = async (req, res) => {
-    try {
-        let memberID = req.body.memberID;
-        let marriageID = req.body.marriageID;
-        await FamilyManagementService.InsertMarriIdToMember(memberID, marriageID);
-        res.send("Insert Successfuly");
-    } catch (e) {
-        console.log(e)
-    }
-}
 
 var GetCurrentParentMember = async (req, res) => {
     try {
@@ -905,7 +896,7 @@ var getMember = async (req, res) => {
 
 
 module.exports = {
-    addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember, sortMembers, InsertMarrieIdToMember,
+    addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember, sortMembers,
     getListAgeGroup, getListBloodTypeGroup, getAllMemberSortByRole, GetCurrentParentMember, insertParentIdToMember,
     getMember, updateMemberToGenealogy, updateMemberPhoto, addChild
 };
