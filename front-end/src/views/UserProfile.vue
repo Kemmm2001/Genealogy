@@ -41,7 +41,13 @@
         </div>
         <div v-if="editRoleSelected" class="func-detail w-100 h-100 position-relative">
           <div class="func-detail-item">
-            <div class="pb-2" style="font-weight: bold;">Gia tộc</div>
+            <div class="pb-2" style="font-weight: bold;">Gia tộc họ</div>
+            <div>
+              <input type="text" class="form-control" value="ABC DEF GHI" disabled />
+            </div>
+          </div>
+          <div class="mt-3 func-detail-item">
+            <div class="pb-2" style="font-weight: bold;">Mã gia tộc</div>
             <div>
               <input type="text" class="form-control" value="ABC DEF GHI" disabled />
             </div>
@@ -55,7 +61,7 @@
               }">
                 <div class="username position-absolute">{{ m.Username }}</div>
                 <div class="role h-100 position-absolute py-1">
-                  <select v-model="m.RoleID" class="form-select h-100 px-3 py-0"
+                  <select :disabled="m.RoleID != 1 ? false : true" v-model="m.RoleID" class="form-select h-100 px-3 py-0"
                     @change="changeRole(m.RoleID, m.AccountID)">
                     <option v-if="m.RoleID == 1" style="text-align: center;" value="1">Admin</option>
                     <option v-if="m.RoleID != 1" style="text-align: center;" value="3">Thành viên</option>
