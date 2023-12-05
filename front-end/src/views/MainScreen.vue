@@ -1090,6 +1090,7 @@ export default {
 
       selectedNodes: [],
       notSelectedNodes: [],
+      nodeRightClickHighLight : null,
 
       helpNoti: false,
       helpCompare: false,
@@ -1276,13 +1277,13 @@ export default {
     },
     //Nguyễn Lê Hùng
     compareMember(memberId1, memberId2) {
-      this.RemoveHightLight();
+ //     this.RemoveHightLight();
       this.selectNodeHighLight = [];
       this.lastClickedNodeId = null;
       this.objCompareMember1 = this.getResultMember(memberId1);
       this.objCompareMember2 = this.getResultMember(memberId2);
-      console.log(this.objCompareMember1);
-      console.log(this.objCompareMember2);
+      // console.log(this.objCompareMember1);
+      // console.log(this.objCompareMember2);
       HTTP.get("compare", {
         params: {
           MemberID1: memberId1,
@@ -1294,6 +1295,8 @@ export default {
             this.resultCompare1 = response.data.data.result1;
             this.resultCompare2 = response.data.data.result2;
             this.$modal.show("compare-modal");
+            this.removeFromSelectedNodesCompare(memberId1)
+            this.removeFromSelectedNodesCompare(memberId2)
           } else {
             this.NotificationsDelete(response.data.message);
           }
@@ -1725,9 +1728,30 @@ export default {
     },
     //Nguyễn Lê Hùng
     removeFromSelectedNodes(memberid) {
+      var nodeElement
       for (let i = 0; i < this.selectedNodes.length; i++) {
         if (this.selectedNodes[i] == memberid) {
           this.selectedNodes.splice(i, 1);
+          nodeElement = document.querySelector(
+            '[data-n-id="' + memberid + '"]'
+          );
+          if (nodeElement != null) {
+            nodeElement.classList.remove("selected");
+          }
+        }
+      }
+    },
+    removeFromSelectedNodesCompare(memberid) {
+      var nodeElement
+      for (let i = 0; i < this.selectedNodes.length; i++) {
+        if (this.selectedNodes[i] == memberid) {
+          this.selectedNodes.splice(i, 1);
+          nodeElement = document.querySelector(
+            '[data-n-id="' + memberid + '"]'
+          );
+          if (nodeElement != null) {
+            nodeElement.classList.remove("selected-compare");
+          }
         }
       }
     },
@@ -2111,13 +2135,13 @@ export default {
       let selectedNode = this.nodes.find((node) => node.id == SelectNode);
       if (this.selectNodeHighLight.includes(selectedNode.id)) {
         nodeElement = this.family.getNodeElement(selectedNode.id);
-        nodeElement.classList.remove("selected");
+        nodeElement.classList.remove("selected-compare");
         this.selectNodeHighLight = this.selectNodeHighLight.filter(
           (id) => id != selectedNode.id
         );
       } else if (selectedNode) {
         nodeElement = this.family.getNodeElement(selectedNode.id);
-        nodeElement.classList.add("selected");
+        nodeElement.classList.add("selected-compare");
         this.selectedNodes.push(selectedNode.id);
         this.selectNodeHighLight.push(selectedNode.id);
       } else {
@@ -2126,7 +2150,7 @@ export default {
     },
     highLightSelectNode(SelectNode) {
       var nodeElement;
-      this.RemoveHightLight();
+      //this.RemoveHightLight();
       let selectedNode = this.nodes.find((node) => node.id == SelectNode);
       if (selectedNode) {
         nodeElement = this.family.getNodeElement(selectedNode.id);
@@ -2225,7 +2249,7 @@ export default {
       this.$modal.hide("noti-modal");
     },
     openCompareModal() {
-      this.RemoveHightLight();
+    //  this.RemoveHightLight();
       this.isCompare = !this.isCompare;
     },
     closeCompareModal() {
@@ -2287,7 +2311,12 @@ export default {
       this.setFunctionCanDo(foundNode);
       this.TitleModal = foundNode.name;
       this.generationMember = foundNode.generation;
+      if(this.nodeRightClickHighLight != null){
+        this.removeFromSelectedNodes(this.nodeRightClickHighLight);
+      }
+      console.log(this.nodeRightClickHighLight)
       this.highLightSelectNode(id);
+      this.nodeRightClickHighLight = id;
       this.$modal.show("Select-option-Modal");
       this.CurrentIdMember = id;
     },
@@ -2299,7 +2328,7 @@ export default {
 
     closeSelectModal() {
       this.CurrentIdMember = 0;
-      this.RemoveHightLight();
+    //  this.RemoveHightLight();
       this.$modal.hide("Select-option-Modal");
     },
     removeRelationship() {

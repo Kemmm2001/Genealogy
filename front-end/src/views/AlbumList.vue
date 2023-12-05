@@ -590,12 +590,15 @@ export default {
         },
       })
         .then((response) => {
+          console.log(response.data.success)
           if (response.data.success == true) {
             this.AlbumPhotoList = response.data.data;
             console.log(this.AlbumPhotoList);
             for (let i = 0; i < this.AlbumPhotoList.length; i++) {
               this.ListCheckBoxAlbum.push(false);
             }
+          }else{
+            this.AlbumPhotoList = []
           }
         })
         .catch((e) => {
