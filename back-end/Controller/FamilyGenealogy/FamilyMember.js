@@ -94,7 +94,7 @@ var addMember = async (req, res) => {
         console.log("Action hợp lệ");
         // kiểm tra xem birthorder có phải là số không và có >= 1 không
         if (!CoreFunction.isDataNumberExist(req.body.BirthOrder) || req.body.BirthOrder < 1) {
-            return res.send(Response.badRequestResponse(null, "Con thứ không hợp lệ, phải là số và >= 1"));
+            return res.send(Response.badRequestResponse(null, "Con thứ không hợp lệ, phải là số và lớn hơn hoặc bằng 1"));
         }
         // kiểm tra xem Dob, LunarDob, Dod, LunarDod có phải là ngày tháng không
         if ((CoreFunction.isDataStringExist(req.body.Dob) && !CoreFunction.isDataDateExist(req.body.Dob))
@@ -335,10 +335,7 @@ var addMember = async (req, res) => {
 // nguyễn anh tuấn
 var isBirthOrderExist = (memberID, birthOrder, listBirthOrderExist) => {
     console.log("Vào hàm isBirthOrderExist");
-    console.log(`listBirthOrderExist: ${listBirthOrderExist}`)
-    console.log(`listBirthOrderExist length:  ${listBirthOrderExist.length}, memberID: ${memberID}, birthOrder: ${birthOrder}`);
     for (let i = 0; i < listBirthOrderExist.length; i++) {
-        console.log(`listBirthOrderExist[i].BirthOrder: ${listBirthOrderExist[i].BirthOrder}, listBirthOrderExist[i].MemberID: ${listBirthOrderExist[i].MemberID}`);
         if (listBirthOrderExist[i].BirthOrder == birthOrder && listBirthOrderExist[i].MemberID != memberID) {
             return true;
         }
@@ -698,35 +695,46 @@ var deleteMember = async (req, res) => {
         // nếu người được xóa là người ngoài gia phả, tức là ko có cha mẹ
         if (!CoreFunction.isDataNumberExist(dataMember[0].FatherID) && !CoreFunction.isDataNumberExist(dataMember[0].MotherID)) {
             console.log("Đã vào trường hợp người ngoài gia phả");
+            // nếu có vợ chồng thì những đứa con của vợ chồng đó sẽ được thêm vào vợ hoặc chồng của người được xóa
+            let listMarriage = await MarriageManagement.getMarriageByHusbandIDOrWifeID(dataMember[0].MemberID, dataMember[0].MemberID);
+            // vì là người ngoài gia phả nên marriage chỉ có 1 dòng
+            // tìm kiếm tất cả con có cha hoặc mẹ là chồng hoặc vợ của người được xóa
+            let listChilds;
+            if (dataMember[0].Male == 0) {
+                listChilds = await FamilyManagementService.getMembersByOnlyFatherID(listMarriage[0].HusbandID);
+            } else if (dataMember[0].Male == 1) {
+                listChilds = await FamilyManagementService.getMembersByOnlyMotherID(listMarriage[0].WifeID);
+            }
+            let maxBirthOrder = 0;
+            if (listChilds.length > 0) {
+                /* Tìm giá trị BirthOrder lớn nhất trong mảng. So sánh giá trị BirthOrder của từng 
+                đối tượng với giá trị max hiện tại và giữ lại giá trị lớn nhất.*/
+                maxBirthOrder = listChilds.reduce((max, child) => (child.BirthOrder > max ? child.BirthOrder : max), listChilds[0].BirthOrder);
+            }
+            console.log("maxBirthOrder: ", maxBirthOrder);
+            let listMember;
             // nếu là nam thì bỏ fatherID của những người có fatherID là memberID của người được xóa
             if (dataMember[0].Male == 1) {
-                let listMember = await FamilyManagementService.getMembersByFatherID(dataMember[0].MemberID);
+                listMember = await FamilyManagementService.getMembersByFatherID(dataMember[0].MemberID);
                 if (listMember.length > 0) {
                     for (let i = 0; i < listMember.length; i++) {
                         FamilyManagementService.insertFatherIDToMember(null, listMember[i].MemberID);
+                        listMember[i].BirthOrder = ++maxBirthOrder;
+                        await FamilyManagementService.updateMember(listMember[i]);
                     }
                 }
             }
             // nếu là nữ thì bỏ motherID của những người có motherID là memberID của người được xóa
             else if (dataMember[0].Male == 0) {
-                let listMember = await FamilyManagementService.getMembersByMotherID(dataMember[0].MemberID);
+                listMember = await FamilyManagementService.getMembersByMotherID(dataMember[0].MemberID);
                 if (listMember.length > 0) {
                     for (let i = 0; i < listMember.length; i++) {
                         FamilyManagementService.insertMotherIDToMember(null, listMember[i].MemberID);
+                        listMember[i].BirthOrder = ++maxBirthOrder;
+                        await FamilyManagementService.updateMember(listMember[i]);
                     }
                 }
             }
-            // nếu có vợ chồng thì những đứa con của vợ chồng đó sẽ được thêm vào vợ hoặc chồng của người được xóa
-            let listMarriage = await MarriageManagement.getMarriageByHusbandIDOrWifeID(dataMember[0].MemberID, dataMember[0].MemberID);
-            // vì là người ngoài gia phả nên marriage chỉ có 1 dòng
-            // tìm kiếm tất cả con có cha hoặc mẹ là chồng hoặc vợ của người được xóa
-            let MaxBirthOrder = 0;
-            if(dataMember[0].Male == 0){
-                 MaxBirthOrder = await FamilyManagementService.getMaxBirthOrderByFatherID(listMarriage[0].HusbandID);
-            }else if (dataMember[0].Male == 1){
-                 MaxBirthOrder = await FamilyManagementService.getMaxBirthOrderByMotherID(listMarriage[0].WifeID);
-            }
-            
         }
         // nếu người được xóa là người trong gia phả, tức là có cha mẹ
         else {
