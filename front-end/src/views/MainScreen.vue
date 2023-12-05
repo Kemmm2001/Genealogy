@@ -1081,7 +1081,7 @@ export default {
       expandEventList: false,
       expandEventListSMS: false,
       advancedFilterDown: false,
-      selectNodeHighLight: [],
+      selectNodeHighLightCompare: [],
       resultCompare1: null,
       resultCompare2: null,
       selectedRowIndex: null,
@@ -1092,6 +1092,7 @@ export default {
 
       selectedNodes: [],
       notSelectedNodes: [],
+      selectedNodesCompare: [],
       nodeRightClickHighLight: null,
 
       helpNoti: false,
@@ -1174,6 +1175,16 @@ export default {
             );
             if (nodeElement != null) {
               nodeElement.classList.add("selected");
+            }
+          }
+        }
+        if (this.selectedNodesCompare.length != 0) {
+          for (let i = 0; i < this.selectedNodesCompare.length; i++) {
+            nodeElement = document.querySelector(
+              '[data-n-id="' + this.selectedNodesCompare[i] + '"]'
+            );
+            if (nodeElement != null) {
+              nodeElement.classList.add("selected-compare");
             }
           }
         }
@@ -1280,7 +1291,7 @@ export default {
     //Nguyễn Lê Hùng
     compareMember(memberId1, memberId2) {
       //     this.RemoveHightLight();
-      this.selectNodeHighLight = [];
+      this.selectNodeHighLightCompare = [];
       this.lastClickedNodeId = null;
       this.objCompareMember1 = this.getResultMember(memberId1);
       this.objCompareMember2 = this.getResultMember(memberId2);
@@ -1297,8 +1308,7 @@ export default {
             this.resultCompare1 = response.data.data.result1;
             this.resultCompare2 = response.data.data.result2;
             this.$modal.show("compare-modal");
-            this.removeFromSelectedNodesCompare(memberId1);
-            this.removeFromSelectedNodesCompare(memberId2);
+            this.removeFromSelectedNodesCompare();
           } else {
             this.NotificationsDelete(response.data.message);
           }
@@ -1767,19 +1777,20 @@ export default {
         }
       }
     },
-    removeFromSelectedNodesCompare(memberid) {
+    removeFromSelectedNodesCompare() {
       var nodeElement;
-      for (let i = 0; i < this.selectedNodes.length; i++) {
-        if (this.selectedNodes[i] == memberid) {
-          this.selectedNodes.splice(i, 1);
-          nodeElement = document.querySelector(
-            '[data-n-id="' + memberid + '"]'
-          );
-          if (nodeElement != null) {
-            nodeElement.classList.remove("selected-compare");
-          }
+      console.log(this.selectedNodesCompare)
+      for (let i = 0; i < this.selectedNodesCompare.length; i++) {
+        console.log(this.selectedNodesCompare[i])
+        
+        nodeElement = document.querySelector(
+          '[data-n-id="' + this.selectedNodesCompare[i] + '"]'
+        );
+        if (nodeElement != null) {
+          nodeElement.classList.remove("selected-compare");
         }
       }
+      this.selectedNodesCompare = []
     },
     //Nguyễn Lê Hùng
     getListJobMember() {
@@ -1941,10 +1952,10 @@ export default {
             this.action = null;
             this.getAllListMember();
             this.isUpdateAvatar = false;
-            this.NotificationsScuccess(response.data.message);
             this.$modal.hide("member-modal");
             this.$modal.hide("Select-option-Modal");
             this.getListMember();
+            this.NotificationsScuccess(response.data.message);
             this.getListMemberToSendMessage();
           } else {
             this.NotificationsDelete(response.data.message);
@@ -2033,11 +2044,12 @@ export default {
               this.getAllListMember();
               this.isUpdateAvatar = false;
               this.action = null;
-              //           this.NotificationsScuccess(response.data.message);
+   //           this.NotificationsScuccess(response.data.message);
               this.$modal.hide("member-modal");
               this.$modal.hide("Select-option-Modal");
               console.log("getlist");
               this.getListMember();
+              this.NotificationsScuccess(response.data.message);
               this.getListMemberToSendMessage();
             } else {
               this.NotificationsDelete(response.data.message);
@@ -2241,17 +2253,17 @@ export default {
     highLightSelectCompareNode(SelectNode) {
       var nodeElement;
       let selectedNode = this.nodes.find((node) => node.id == SelectNode);
-      if (this.selectNodeHighLight.includes(selectedNode.id)) {
+      if (this.selectNodeHighLightCompare.includes(selectedNode.id)) {
         nodeElement = this.family.getNodeElement(selectedNode.id);
         nodeElement.classList.remove("selected-compare");
-        this.selectNodeHighLight = this.selectNodeHighLight.filter(
+        this.selectNodeHighLightCompare = this.selectNodeHighLightCompare.filter(
           (id) => id != selectedNode.id
         );
       } else if (selectedNode) {
         nodeElement = this.family.getNodeElement(selectedNode.id);
         nodeElement.classList.add("selected-compare");
-        this.selectedNodes.push(selectedNode.id);
-        this.selectNodeHighLight.push(selectedNode.id);
+        this.selectedNodesCompare.push(selectedNode.id);
+        this.selectNodeHighLightCompare.push(selectedNode.id);
       } else {
         console.log("Nút không tồn tại:", SelectNode);
       }
@@ -2359,6 +2371,9 @@ export default {
     openCompareModal() {
       //  this.RemoveHightLight();
       this.isCompare = !this.isCompare;
+      if(this.isCompare == false){
+        this.removeFromSelectedNodesCompare();
+      }
     },
     closeCompareModal() {
       this.$modal.hide("compare-modal");
