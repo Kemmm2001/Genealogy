@@ -486,10 +486,13 @@ var verifyMail = async (req, res) => {
     try {
       const token = req.query.token;
       const IsGoing = req.body.IsGoing;
-      const payload = await verifyInviteToken(token)
-      const tokenData = EventAttendence.checkToken(token);
+      const payload = await verifyInviteToken(token);
+      if (payload.error === 'Token expired') {
+        return res.send(Response.internalServerErrorResponse(null, "Link đã hết hạn"));
+      } 
+      const tokenData = await EventAttendence.checkTokenEvent(token);
       if (tokenData == 0) {
-        return res.send(Response.dataNotFoundResponse(null, 'không thấy token'));
+        return res.send(Response.dataNotFoundResponse(null, 'Link không đúng'));
       }
   
         let data = await EventAttendence.UpdateIsGoing(payload.memberId, payload.eventId,IsGoing)
@@ -501,7 +504,7 @@ var verifyMail = async (req, res) => {
         }
       
     } catch (error) {
-      return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+      return res.send(Response.internalServerErrorResponse(error, error.message));
   
     }
   }
