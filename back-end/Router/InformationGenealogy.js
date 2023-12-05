@@ -42,7 +42,6 @@ const initWebRouter = (app) => {
     router.post('/searchHistory', FamilyHistoryController.searchHistory)
     router.post('/filterHistory', FamilyHistoryController.filterHistory)
 
-    router.put('/swapPosition', FamilyHistoryController.swapOrder_position);
 
     // Create a new AlbumPhoto
     router.post('/albumphoto', CoreFunction.uploadImage("album-photo").single('BackGroundPhoto'), AlbumPhotoController.addAlbumPhoto);
@@ -52,7 +51,7 @@ const initWebRouter = (app) => {
     router.put('/albumphoto', CoreFunction.uploadImage("album-photo").single('BackGroundPhoto'), AlbumPhotoController.updateAlbumPhoto);
     // Delete an AlbumPhoto with id
     router.get('/delete-albumphoto', AlbumPhotoController.deleteAlbumPhoto);
-    router.get('/searchAlbum',AlbumPhotoController.searchAlbumPhoto)
+    router.get('/searchAlbum', AlbumPhotoController.searchAlbumPhoto)
 
     // Create a new FamilyPhoto
     router.post('/familyphoto', CoreFunction.uploadImage("family-photo").single('Photo'), FamilyPhotoController.addFamilyPhoto);
@@ -65,7 +64,7 @@ const initWebRouter = (app) => {
     // End API tuấn
 
 
-   
+
 
     router.get('/province', AddressController.getProvince);
     router.get('/district', AddressController.getDistrict);

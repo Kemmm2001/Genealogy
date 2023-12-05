@@ -583,15 +583,19 @@ function GetIdPaternalAncestor(CodeID) {
 
 function getAllMarriage(CodeID) {
     return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM marriage where CodeID = ${CodeID}`;
-        db.connection.query(query, (err, result) => {
-            if (err) {
-                console.log(err)
-                reject(err)
-            } else {
-                resolve(result)
-            }
-        })
+        try {
+            let query = `SELECT * FROM marriage where CodeID = ${CodeID}`;
+            db.connection.query(query, (err, result) => {
+                if (err) {
+                    console.log(err)
+                    reject(err)
+                } else {
+                    resolve(result)
+                }
+            })
+        } catch (error) {
+            console.log(error)
+        }
     })
 }
 

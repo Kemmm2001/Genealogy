@@ -378,7 +378,7 @@ function getMembersByFatherID(fatherID) {
 // nguyễn anh tuấn
 function getMembersByOnlyFatherID(fatherID) {
     return new Promise(async (resolve, reject) => {
-        const query = 'select * from familymember where fatherID = ? and (MotherID = null or MotherID = 0)';
+        const query = 'select * from familymember where fatherID = ? and (MotherID is null or MotherID = 0)';
         const values = [fatherID];
         let result = await coreQuery(query, values);
         resolve(result);
@@ -388,7 +388,7 @@ function getMembersByOnlyFatherID(fatherID) {
 // nguyễn anh tuấn
 function getMembersByOnlyMotherID(motherID) {
     return new Promise(async (resolve, reject) => {
-        const query = 'select * from familymember where motherID = ? and (FatherID = null or FatherID = 0)';
+        const query = 'select * from familymember where motherID = ? and (FatherID is null or FatherID = 0)';
         const values = [motherID];
         let result = await coreQuery(query, values);
         resolve(result);
@@ -475,7 +475,7 @@ function getMaxBirthOrderByFatherID(fatherId) {
     return new Promise(async (resolve, reject) => {
         const query = `
         SELECT MAX(BirthOrder) AS MaxBirthOrder FROM familymember
-        WHERE FatherID = ? and (MotherID = null or MotherID = 0);
+        WHERE FatherID = ? and (MotherID is null or MotherID = 0);
         `;
         const values = [fatherId];
 
@@ -489,7 +489,7 @@ function getMaxBirthOrderByMotherID(motherId) {
     return new Promise(async (resolve, reject) => {
         const query = `
         SELECT MAX(BirthOrder) AS MaxBirthOrder FROM familymember
-        WHERE MotherID = ? and (FatherID = null or FatherID = 0);
+        WHERE MotherID = ? and (FatherID is null or FatherID = 0);
         `;
         const values = [motherId];
         let result = await coreQuery(query, values);

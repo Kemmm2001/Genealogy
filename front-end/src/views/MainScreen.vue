@@ -2033,9 +2033,10 @@ export default {
               this.getAllListMember();
               this.isUpdateAvatar = false;
               this.action = null;
+   //           this.NotificationsScuccess(response.data.message);
               this.$modal.hide("member-modal");
               this.$modal.hide("Select-option-Modal");
-              console.log('getlist')
+              console.log("getlist");
               this.getListMember();
               this.NotificationsScuccess(response.data.message);
               this.getListMemberToSendMessage();
@@ -2364,6 +2365,7 @@ export default {
       this.$modal.hide("compare-modal");
     },
     openMemberModal(action, title, idParent) {
+      console.log(this.CurrentIdMember);
       this.idParent = idParent;
       this.IsDead = 0;
       this.isAdd = true;
@@ -2385,7 +2387,6 @@ export default {
     },
     closeMemberModal() {
       this.$modal.hide("member-modal");
-      this.CurrentIdMember = 0;
     },
     setFunctionCanDo(foundNode) {
       this.canAddFather = true;
@@ -2443,8 +2444,6 @@ export default {
       this.$modal.hide("Select-option-Modal");
     },
     removeRelationship() {
-      console.log(this.CurrentIdMember);
-      console.log(this.newIdMember);
       HTTP.put("removeRelationship", {
         CurrentID: this.CurrentIdMember,
         RemoveID: this.newIdMember,
