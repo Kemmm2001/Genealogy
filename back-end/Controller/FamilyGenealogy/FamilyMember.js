@@ -344,10 +344,12 @@ var addChild = async (req, res) => {
 
             return res.send(Response.badRequestResponse(null, errorMessage));
         }
+        console.log("Bắt đầu update data");
         // kết thúc kiểm tra birthorder
         await FamilyManagementService.setBirthOrder(req.body.BirthOrder, data.insertId);
         await FamilyManagementService.setGeneration(parentGeneration + 1, data.insertId);
         // await FamilyManagementService.insertParentIdToMember(req.body.CurrentMemberID, data.insertId);
+        return res.send(Response.successResponse());
     } catch (e) {
         console.log("Error: " + e);
         return res.send(Response.internalServerErrorResponse());
