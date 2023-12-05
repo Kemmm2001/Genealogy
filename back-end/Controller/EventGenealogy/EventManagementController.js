@@ -459,7 +459,7 @@ var inviteMail = async (req, res) => {
         const requestBody = req.body;
         const emails = requestBody.data.map(item => item.Email);
         const memberIds = requestBody.data.map(item => item.MemberID);
-        const eventId = requestBody.EventId;
+        const eventId = requestBody.eventId;
         const time = requestBody.time;
         console.log(requestBody)
         console.log('time: ' + time)
@@ -497,6 +497,7 @@ var verifyMail = async (req, res) => {
       const token = req.query.token;
       const IsGoing = req.body.IsGoing;
       const payload = await verifyInviteToken(token);
+      console.log(payload)
       if (payload.error === 'Token expired') {
         return res.send(Response.internalServerErrorResponse(null, "Link đã hết hạn"));
       } 

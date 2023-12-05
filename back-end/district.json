@@ -1279,8 +1279,6 @@
     "DistrictName": "Ứng Hòa",
     "CityId": 24
   },
-
-  
   {
     "DistrictId": 259,
     "DistrictName": "Cẩm Xuyên",
@@ -3365,5 +3363,181 @@
     "DistrictId": 675,
     "DistrictName": "Yên Bình",
     "CityId": 63
+  },
+  {
+    "DistrictId": 676,
+    "DistrictName": "Vĩnh Long",
+    "CityId": 31
+  },
+  {
+    "DistrictId": 677,
+    "DistrictName": "Long Hồ",
+    "CityId": 31
+  },
+  {
+    "DistrictId": 678,
+    "DistrictName": "Mang Thít",
+    "CityId": 31
+  },
+  {
+    "DistrictId": 679,
+    "DistrictName": "Vũng Liêm",
+    "CityId": 31
+  },
+  {
+    "DistrictId": 680,
+    "DistrictName": "Tam Bình",
+    "CityId": 31
+  },
+  {
+    "DistrictId": 681,
+    "DistrictName": "Bình Minh",
+    "CityId": 31
+  },
+  {
+    "DistrictId": 682,
+    "DistrictName": "Bình Tân",
+    "CityId": 31
+  },
+  {
+    "DistrictId": 683,
+    "DistrictName": "Ninh Bình",
+    "CityId": 42
+  },
+  {
+    "DistrictId": 684,
+    "DistrictName": "Tam Điệp",
+    "CityId": 42
+  },
+  {
+    "DistrictId": 685,
+    "DistrictName": "Gia Viễn",
+    "CityId": 42
+  },
+  {
+    "DistrictId": 686,
+    "DistrictName": "Hoa Lư",
+    "CityId": 42
+  },
+  {
+    "DistrictId": 687,
+    "DistrictName": "Kim Sơn",
+    "CityId": 42
+  },
+  {
+    "DistrictId": 688,
+    "DistrictName": "Nho Quan",
+    "CityId": 42
+  },
+  {
+    "DistrictId": 689,
+    "DistrictName": "Yên Khánh",
+    "CityId": 42
+  },
+  {
+    "DistrictId": 690,
+    "DistrictName": "Yên Mô",
+    "CityId": 42
+  },
+  {
+    "DistrictId": 691,
+    "DistrictName": "Thuận Nam",
+    "CityId": 43
+  },
+  {
+    "DistrictId": 692,
+    "DistrictName": "Phan Rang - Tháp Chàm",
+    "CityId": 43
+  },
+  {
+    "DistrictId": 693,
+    "DistrictName": "Bắc Ái",
+    "CityId": 43
+  },
+  {
+    "DistrictId": 694,
+    "DistrictName": "Ninh Hải",
+    "CityId": 43
+  },
+  {
+    "DistrictId": 695,
+    "DistrictName": "Ninh Phước",
+    "CityId": 43
+  },
+  {
+    "DistrictId": 696,
+    "DistrictName": "Ninh Sơn",
+    "CityId": 43
+  },
+  {
+    "DistrictId": 697,
+    "DistrictName": "Thuận Bắc",
+    "CityId": 43
+  },
+  {
+    "DistrictId": 698,
+    "DistrictName": "Việt Trì",
+    "CityId": 44
+  },
+  {
+    "DistrictId": 699,
+    "DistrictName": "Phú Thọ",
+    "CityId": 44
+  },
+  {
+    "DistrictId": 700,
+    "DistrictName": "Đoan Hùng",
+    "CityId": 44
+  },
+  {
+    "DistrictId": 701,
+    "DistrictName": "Hạ Hòa",
+    "CityId": 44
+  },
+  {
+    "DistrictId": 702,
+    "DistrictName": "Thanh Ba",
+    "CityId": 44
+  },
+  {
+    "DistrictId": 703,
+    "DistrictName": "Phù Ninh",
+    "CityId": 44
+  },
+  {
+    "DistrictId": 704,
+    "DistrictName": "Yên Lập",
+    "CityId": 44
+  },
+  {
+    "DistrictId": 705,
+    "DistrictName": "Cẩm Khê",
+    "CityId": 44
+  },
+  {
+    "DistrictId": 706,
+    "DistrictName": "Tam Nông",
+    "CityId": 44
+  },
+  {
+    "DistrictId": 707,
+    "DistrictName": "Lâm Thao",
+    "CityId": 44
+  },
+  {
+    "DistrictId": 708,
+    "DistrictName": "Thanh Sơn",
+    "CityId": 44
+  },
+  {
+    "DistrictId": 709,
+    "DistrictName": "Thanh Thủy",
+    "CityId": 44
+  },
+  {
+    "DistrictId": 710,
+    "DistrictName": "Tân Sơn",
+    "CityId": 44
   }
+
 ]
