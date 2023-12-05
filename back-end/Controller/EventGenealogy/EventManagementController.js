@@ -452,7 +452,7 @@ var inviteMail = async (req, res) => {
         const requestBody = req.body;
         const emails = requestBody.data.map(item => item.Email);
         const memberIds = requestBody.data.map(item => item.MemberId);
-        const eventId = requestBody.data.map(item => item.EventId);
+        const eventId = requestBody.eventId;
         const time = requestBody.time;
 
         for (let i = 0; i < memberIds.length; i++) {
