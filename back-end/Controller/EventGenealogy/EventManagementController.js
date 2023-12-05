@@ -41,10 +41,12 @@ var getListMemberIDAndEmail = async (req, res) => {
         console.log('ListMember: ' + ListMemberID)
         let data = await EventManagementService.getListEmailAndMemberID(ListMemberID);
         if (data) {
-
+            return res.send(Response.successResponse(data))
+        } else {
+            return res.send(Response.dataNotFoundResponse())
         }
     } catch (error) {
-
+        return res.send(Response.dataNotFoundResponse(error))
     }
 }
 
@@ -451,20 +453,23 @@ var inviteMail = async (req, res) => {
     try {
         const requestBody = req.body;
         const emails = requestBody.data.map(item => item.Email);
-        const memberIds = requestBody.data.map(item => item.MemberId);
-        const eventId = requestBody.eventId;
+        const memberIds = requestBody.data.map(item => item.MemberID);
+        const eventId = requestBody.EventId;
         const time = requestBody.time;
+        console.log(requestBody)
+        console.log('time: ' + time)
 
+        console.log('memberIds: ' + memberIds)
         for (let i = 0; i < memberIds.length; i++) {
             const memberId = memberIds[i];
-            const token = await signInviteToken(memberId,eventId, time);
+            const token = await signInviteToken(memberId, eventId, time);
 
             const data = await EventAttendence.Update(memberId, token);
-            const link = `http://localhost:3003/api/v1/verify-invite?token=${token}`;
+            const link = `http://localhost:3006/CfEvent?token=${token}`;
 
             if (data === true) {
                 const mailOptions = {
-                    to: emails[i], 
+                    to: emails[i],
                     subject: 'Your Invite Link',
                     text: `Here is your invite link: ${link}`,
                     html: `<p>Click <a href="${link}">here</a> to access your invite.</p>`,

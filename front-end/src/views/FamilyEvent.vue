@@ -389,7 +389,6 @@ export default {
       indexClickDay: null,
       indexClickWeek: null,
 
-      currentEventId: null,
       listEvent: [],
       listEventFilter: [],
       listEventByDate: [],
@@ -398,6 +397,7 @@ export default {
       checkAll: false,
       ListMemberToSendEmail: [],
       listEventAttendance: null,
+      currentEventID: null,
     };
   },
   computed: {
@@ -805,6 +805,7 @@ export default {
       this.$modal.hide("edit-event-modal");
     },
     showParticipantList(EventID) {
+      this.currentEventID = EventID;
       this.listEventAttendance = null;
       this.title = this.listEventFilter.find(
         (element) => element.EventID === EventID
@@ -823,14 +824,29 @@ export default {
       });
     },
     sendMessageToConfirmEvent() {
-      console.log(this.ListMemberToSendEmail);
-      HTTP.get("getIdAndEmail", {
-        params: {
-          ListMemberID: this.ListMemberToSendEmail,
-        },
-      }).then((respone) => {
-        console.log(respone.data);
-      });
+      if (this.time != null) {
+        HTTP.get("getIdAndEmail", {
+          params: {
+            ListMemberID: this.ListMemberToSendEmail,
+          },
+        }).then((respone) => {
+          HTTP.post("inviteMail", {
+            data: respone.data.data,
+            time: this.numberExpire + "d",
+            EventId: this.currentEventID,
+          }).then((respone) => {
+            if (respone.data.success == true) {
+              this.NotificationsScuccess("Gửi thông báo thành công");
+              this.time = null;
+              this.ListMemberToSendEmail = [];
+            }
+          });
+        });
+      } else {
+        this.NotificationsDelete(
+          "Bạn hãy chọn thời gian hết hạn của thông báo"
+        );
+      }
     },
     closeParticipantList() {
       this.$modal.hide("participant-list");
