@@ -453,20 +453,23 @@ var inviteMail = async (req, res) => {
     try {
         const requestBody = req.body;
         const emails = requestBody.data.map(item => item.Email);
-        const memberIds = requestBody.data.map(item => item.MemberId);
-        const eventId = requestBody.data.map(item => item.EventId);
+        const memberIds = requestBody.data.map(item => item.MemberID);
+        const eventId = requestBody.EventId;
         const time = requestBody.time;
+        console.log(requestBody)
+        console.log('time: ' + time)
 
+        console.log('memberIds: ' + memberIds)
         for (let i = 0; i < memberIds.length; i++) {
             const memberId = memberIds[i];
-            const token = await signInviteToken(memberId,eventId, time);
+            const token = await signInviteToken(memberId, eventId, time);
 
             const data = await EventAttendence.Update(memberId, token);
-            const link = `http://localhost:3003/api/v1/verify-invite?token=${token}`;
+            const link = `http://localhost:3006/CfEvent?token=${token}`;
 
             if (data === true) {
                 const mailOptions = {
-                    to: emails[i], 
+                    to: emails[i],
                     subject: 'Your Invite Link',
                     text: `Here is your invite link: ${link}`,
                     html: `<p>Click <a href="${link}">here</a> to access your invite.</p>`,
@@ -486,27 +489,27 @@ var inviteMail = async (req, res) => {
 
 var verifyMail = async (req, res) => {
     try {
-      const token = req.query.token;
-      const IsGoing = req.body.IsGoing;
-      const payload = await verifyInviteToken(token)
-      const tokenData = EventAttendence.checkToken(token);
-      if (tokenData == 0) {
-        return res.send(Response.dataNotFoundResponse(null, 'không thấy token'));
-      }
-  
-        let data = await EventAttendence.UpdateIsGoing(payload.memberId, payload.eventId,IsGoing)
+        const token = req.query.token;
+        const IsGoing = req.body.IsGoing;
+        const payload = await verifyInviteToken(token)
+        const tokenData = EventAttendence.checkToken(token);
+        if (tokenData == 0) {
+            return res.send(Response.dataNotFoundResponse(null, 'không thấy token'));
+        }
+
+        let data = await EventAttendence.UpdateIsGoing(payload.memberId, payload.eventId, IsGoing)
 
         if (data == true) {
-          return res.send(Response.successResponse());
+            return res.send(Response.successResponse());
         } else {
-        return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+            return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
         }
-      
+
     } catch (error) {
-      return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
-  
+        return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+
     }
-  }
+}
 
 
 module.exports = {
