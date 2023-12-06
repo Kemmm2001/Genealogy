@@ -15,40 +15,39 @@
           <div class="func-detail-item">
             <div class="pb-2" style="font-weight: bold;">Tên tài khoản</div>
             <div v-if="accountInfor">
-              <input v-model="accountInfor.username" type="text" class="form-control" />
+              <input v-model="accountInfor.Username" type="text" class="form-control" />
             </div>
           </div>
           <div v-if="accountInfor" class="func-detail-item mt-3">
             <div class="pb-2" style="font-weight: bold;">Tài khoản gmail</div>
             <div>
-              <input v-model="accountInfor.email" type="text" class="form-control" disabled />
+              <input v-model="accountInfor.Username" type="text" class="form-control" disabled />
             </div>
           </div>
-          <div class="mt-3 func-detail-item">
+          <div class="mt-3 func-detail-item" v-if="inforTree">
             <div class="pb-2" style="font-weight: bold;">Gia tộc họ</div>
             <div>
-              <input type="text" class="form-control" value="ABC DEF GHI" disabled />
+              <input type="text" class="form-control" :value="inforTree.TreeName" disabled />
             </div>
           </div>
-          <div class="mt-3 func-detail-item">
+          <div class="mt-3 func-detail-item" v-if="inforTree">
             <div class="pb-2" style="font-weight: bold;">Mã gia tộc</div>
             <div>
-              <input type="text" class="form-control" value="ABC DEF GHI" disabled />
+              <input type="text" class="form-control" :value="inforTree.CodeID" disabled />
             </div>
           </div>
-          <div class="func-detail-item mt-3">
+          <div class="func-detail-item mt-3" v-if="accountInfor">
             <div class="pb-2" style="font-weight: bold;">Quyền hạn tài khoản</div>
             <div>
-              <input type="text" class="form-control" value="Quản trị viên" disabled />
+              <input type="text" class="form-control" :value="accountInfor.RoleName" disabled />
             </div>
           </div>
           <div class="w-100 d-flex mt-3" style="justify-content: end;">
-            <div @click="changeUserName()" class="btn bg-primary text-white">Lưu thay đổi
-            </div>
+            <div @click="changeUserName()" class="btn bg-primary text-white">Lưu thay đổi</div>
           </div>
         </div>
         <div v-if="editRoleSelected" class="func-detail w-100 h-100 position-relative">
-          <div class="">
+          <div class>
             <div class="pb-2 acc-list-container" style="font-weight: bold; height: 32px;">Tài khoản thành viên thuộc gia tộc</div>
             <div class="family-account">
               <div v-for="(m, index) in listMemberRole" :key="index" :class="{
@@ -135,6 +134,7 @@ export default {
       InputRe_newpassword: null,
       accountInfor: null,
       CodeID: null,
+      inforTree: null,
 
       getCurrentPassword: null,
 
@@ -231,13 +231,26 @@ export default {
         this.NotificationsDelete("Nhập lại mật khẩu không đúng");
       }
     },
+    getInforTree() {
+      HTTP.get("inforTree", {
+        params: {
+          CodeID: this.CodeID,
+        },
+      }).then((respone) => {
+        if (respone.data.success == true) {
+          this.inforTree = respone.data.data;
+          this.inforTree = this.inforTree[0];
+          console.log(this.inforTree);
+        }
+      });
+    },
     getInforAccount() {
       HTTP.post("get-user", {
         accountID: this.accountID,
       })
         .then((respone) => {
           if (respone.data.success == true) {
-            this.accountInfor = respone.data.data;
+            this.accountInfor = respone.data.data;           
           } else {
             this.NotificationsScuccess(respone.data.message);
           }
@@ -306,6 +319,7 @@ export default {
     }
     this.getListRoleMember();
     this.getInforAccount();
+    this.getInforTree();
   },
 };
 </script>

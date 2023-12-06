@@ -1259,7 +1259,22 @@ export default {
       HTTP.post("back-up", {
         memberIDs: id,
       }).then((response) => {
-        console.log(response);
+        if (response.data.success == true) {
+          //Mở một window khác ở đây
+          let newWindow = window.open(
+            `https://giaphanguoiviet.com${response.data.data.fileName}`,
+            "_blank"
+          );          
+          if (newWindow) {
+            this.NotificationsScuccess(response.data.message);
+          } else {
+            this.NotificationsDelete(
+              "Không thể mở cửa sổ mới. Vui lòng kiểm tra cài đặt trình duyệt của bạn."
+            );
+          }
+        } else {         
+          this.NotificationsDelete(response.data.message);
+        }
       });
     },
     //Nguyễn Lê Hùng
@@ -1779,10 +1794,10 @@ export default {
     },
     removeFromSelectedNodesCompare() {
       var nodeElement;
-      console.log(this.selectedNodesCompare)
+      console.log(this.selectedNodesCompare);
       for (let i = 0; i < this.selectedNodesCompare.length; i++) {
-        console.log(this.selectedNodesCompare[i])
-        
+        console.log(this.selectedNodesCompare[i]);
+
         nodeElement = document.querySelector(
           '[data-n-id="' + this.selectedNodesCompare[i] + '"]'
         );
@@ -1790,7 +1805,7 @@ export default {
           nodeElement.classList.remove("selected-compare");
         }
       }
-      this.selectedNodesCompare = []
+      this.selectedNodesCompare = [];
     },
     //Nguyễn Lê Hùng
     getListJobMember() {
@@ -2044,7 +2059,7 @@ export default {
               this.getAllListMember();
               this.isUpdateAvatar = false;
               this.action = null;
-   //           this.NotificationsScuccess(response.data.message);
+              //           this.NotificationsScuccess(response.data.message);
               this.$modal.hide("member-modal");
               this.$modal.hide("Select-option-Modal");
               console.log("getlist");
@@ -2256,9 +2271,8 @@ export default {
       if (this.selectNodeHighLightCompare.includes(selectedNode.id)) {
         nodeElement = this.family.getNodeElement(selectedNode.id);
         nodeElement.classList.remove("selected-compare");
-        this.selectNodeHighLightCompare = this.selectNodeHighLightCompare.filter(
-          (id) => id != selectedNode.id
-        );
+        this.selectNodeHighLightCompare =
+          this.selectNodeHighLightCompare.filter((id) => id != selectedNode.id);
       } else if (selectedNode) {
         nodeElement = this.family.getNodeElement(selectedNode.id);
         nodeElement.classList.add("selected-compare");
@@ -2371,7 +2385,7 @@ export default {
     openCompareModal() {
       //  this.RemoveHightLight();
       this.isCompare = !this.isCompare;
-      if(this.isCompare == false){
+      if (this.isCompare == false) {
         this.removeFromSelectedNodesCompare();
       }
     },
