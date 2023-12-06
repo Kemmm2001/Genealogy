@@ -814,6 +814,11 @@ var linkRelationship = async (req, res) => {
             console.log("Dữ liệu không tồn tại");
             return res.send(Response.dataNotFoundResponse());
         }
+        // nếu không cùng codeid thì không thể liên kết
+        if (dataMember1[0].CodeID != dataMember2[0].CodeID) {
+            console.log("Không thể liên kết vì không cùng gia phả");
+            return res.send(Response.badRequestResponse(null, "Không thể liên kết vì không cùng gia phả"));
+        }
         // nếu cách quá 1 thế hệ thì không thể liên kết
         if (Math.abs(dataMember1[0].Generation - dataMember2[0].Generation) > 1) {
             console.log("Không thể liên kết vì cách quá 1 thế hệ");
