@@ -194,7 +194,7 @@ var addMember = async (req, res) => {
                 console.log("Đã vào trường hợp thêm vợ chồng");
                 let objData = {};
                 // trường hợp giới tính giống nhau, thì trả về thông báo ko hỗ trợ
-                if(req.body.Male == currentMember[0].Male){
+                if (req.body.Male == currentMember[0].Male) {
                     let errorMessage = 'Không hỗ trợ kết hôn đồng giới';
                     return res.send(Response.badRequestResponse(null, errorMessage));
                 }
@@ -325,12 +325,26 @@ var addChild = async (req, res) => {
         // trường hợp có cha nhưng ko có mẹ 
         if (CoreFunction.isDataNumberExist(req.body.FatherID) && !CoreFunction.isDataNumberExist(req.body.MotherID)) {
             console.log("Đã vào trường hợp có cha nhưng ko có mẹ");
+            // nếu cha là người ngoài, tức là ko có bố mẹ và role là 3
+            if (fatherData[0].RoleID == 3
+                && !CoreFunction.isDataNumberExist(fatherData[0].FatherID) && !CoreFunction.isDataNumberExist(fatherData[0].MotherID)) {
+                console.log("Đã vào trường hợp cha là người ngoài");
+                let errorMessage = 'Không thể thêm con riêng nếu cha là người ngoài';
+                return res.send(Response.badRequestResponse(null, errorMessage));
+            }
             listChild = await FamilyManagementService.getMembersByOnlyFatherID(req.body.FatherID);
             parentGeneration = fatherData[0].Generation;
         }
         // trường hợp có mẹ nhưng ko có cha
         else if (!CoreFunction.isDataNumberExist(req.body.FatherID) && CoreFunction.isDataNumberExist(req.body.MotherID)) {
             console.log("Đã vào trường hợp có mẹ nhưng ko có cha");
+            // nếu mẹ là người ngoài, tức là ko có bố mẹ và role là 3
+            if (motherData[0].RoleID == 3
+                && !CoreFunction.isDataNumberExist(motherData[0].FatherID) && !CoreFunction.isDataNumberExist(motherData[0].MotherID)) {
+                console.log("Đã vào trường hợp mẹ là người ngoài");
+                let errorMessage = 'Không thể thêm con riêng nếu mẹ là người ngoài';
+                return res.send(Response.badRequestResponse(null, errorMessage));
+            }
             listChild = await FamilyManagementService.getMembersByOnlyMotherID(req.body.MotherID);
             parentGeneration = motherData[0].Generation;
         }
