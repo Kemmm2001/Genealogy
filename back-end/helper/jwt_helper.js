@@ -108,22 +108,24 @@ module.exports = {
       JWT.verify(token, process.env.REPASS_TOKEN_SECRET, (err, payload) => {
         if (err) {
           if (err.name === 'TokenExpiredError') {
-            return resolve.json({ error: 'Token expired' });
+            reject({ error: 'Token expired' });
           } else {
-            return resolve.json({ error: 'Invalid token' });
+            resolve({ error: 'Invalid token' });
           }
+        } else {
+          resolve(payload);
         }
-        resolve(payload);
       });
-    })
+    });
   }),
 
-  signInviteToken: (memberId, time ) => {
+  signInviteToken: (memberId,eventId, time ) => {
     return new Promise((resolve, reject) => {
       const payload = {
-        memberId
+        memberId, 
+        eventId
       }
-      const secret = process.env.REPASS_TOKEN_SECRET
+      const secret = process.env.INVITE_TOKEN_SECRET
       const options = {
         expiresIn: time,
       }
@@ -137,18 +139,56 @@ module.exports = {
     })
   },
 
-  verifyInviteToken: (token => {
+  verifyInviteToken: (token) => {
     return new Promise((resolve, reject) => {
-      JWT.verify(token, process.env.REPASS_TOKEN_SECRET, (err, payload) => {
+      JWT.verify(token, process.env.INVITE_TOKEN_SECRET, (err, payload) => {
         if (err) {
           if (err.name === 'TokenExpiredError') {
-            return resolve.json({ error: 'Token expired' });
+            reject({ error: 'Token expired' });
           } else {
-            return resolve.json({ error: 'Invalid token' });
+            resolve({ error: 'Invalid token' });
           }
+        } else {
+          resolve(payload);
         }
-        resolve(payload);
       });
+    });
+  },
+
+  signRegisterToken: (email) => {
+    return new Promise((resolve, reject) => {
+      const payload = {
+        email
+      }
+      const secret = process.env.REGISTER_TOKEN_SECRET
+      const options = {
+        expiresIn: "15m",
+      }
+      JWT.sign(payload, secret, options, (err, token) => {
+        if (err) {
+          console.log(err.message)
+          reject(createError.InternalServerError())
+        }
+        resolve(token)
+      })
     })
-  })
+  },
+
+
+  verifyRegisterToken: (token => {
+    return new Promise((resolve, reject) => {
+      JWT.verify(token, process.env.REGISTER_TOKEN_SECRET, (err, payload) => {
+        if (err) {
+          if (err.name === 'TokenExpiredError') {
+            reject({ error: 'Token expired' });
+          } else {
+            resolve({ error: 'Invalid token' });
+          }
+        } else {
+          resolve(payload);
+        }
+      });
+    });
+  }),
+  
 }

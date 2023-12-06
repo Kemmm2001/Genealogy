@@ -4,6 +4,7 @@ const MarriageManagement = require("./MarriageManagement");
 // nguyễn anh tuấn
 function addMember(member) {
     return new Promise(async (resolve, reject) => {
+        console.log("Vào hàm addMember ");
         try {
             const query = `
         INSERT INTO familymember 
@@ -336,7 +337,8 @@ function insertMotherIDToMember(motherID, memberID) {
 
 // nguyễn anh tuấn
 function setGeneration(generation, memberId) {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
+        console.log("Vào hàm setGeneration với generation: " + generation + " và memberId: " + memberId);
         const query = 'UPDATE familymember SET Generation = ? WHERE MemberID = ?';
         const values = [generation, memberId];
         let result = await coreQuery(query, values);
@@ -346,7 +348,8 @@ function setGeneration(generation, memberId) {
 
 // nguyễn anh tuấn
 function setBirthOrder(birthOrder, memberId) {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
+        console.log("Vào hàm setBirthOrder với birthOrder: " + birthOrder + " và memberId: " + memberId);
         const query = 'UPDATE familymember SET BirthOrder = ? WHERE MemberID = ?';
         const values = [birthOrder, memberId];
         let result = await coreQuery(query, values);
@@ -375,7 +378,7 @@ function getMembersByFatherID(fatherID) {
 // nguyễn anh tuấn
 function getMembersByOnlyFatherID(fatherID) {
     return new Promise(async (resolve, reject) => {
-        const query = 'select * from familymember where fatherID = ? and (MotherID = null or MotherID = 0)';
+        const query = 'select * from familymember where fatherID = ? and (MotherID is null or MotherID = 0)';
         const values = [fatherID];
         let result = await coreQuery(query, values);
         resolve(result);
@@ -385,7 +388,7 @@ function getMembersByOnlyFatherID(fatherID) {
 // nguyễn anh tuấn
 function getMembersByOnlyMotherID(motherID) {
     return new Promise(async (resolve, reject) => {
-        const query = 'select * from familymember where motherID = ? and (FatherID = null or FatherID = 0)';
+        const query = 'select * from familymember where motherID = ? and (FatherID is null or FatherID = 0)';
         const values = [motherID];
         let result = await coreQuery(query, values);
         resolve(result);
@@ -472,7 +475,7 @@ function getMaxBirthOrderByFatherID(fatherId) {
     return new Promise(async (resolve, reject) => {
         const query = `
         SELECT MAX(BirthOrder) AS MaxBirthOrder FROM familymember
-        WHERE FatherID = ? and (MotherID = null or MotherID = 0);
+        WHERE FatherID = ? and (MotherID is null or MotherID = 0);
         `;
         const values = [fatherId];
 
@@ -486,7 +489,7 @@ function getMaxBirthOrderByMotherID(motherId) {
     return new Promise(async (resolve, reject) => {
         const query = `
         SELECT MAX(BirthOrder) AS MaxBirthOrder FROM familymember
-        WHERE MotherID = ? and (FatherID = null or FatherID = 0);
+        WHERE MotherID = ? and (FatherID is null or FatherID = 0);
         `;
         const values = [motherId];
         let result = await coreQuery(query, values);
@@ -635,15 +638,19 @@ function getAllMemberNotInMemberRole() {
 
 function getAllMember(codeID) {
     return new Promise((resolve, reject) => {
-        const query = 'SELECT * FROM familymember where CodeID = ?';
-        db.connection.query(query, codeID, (err, result) => {
-            if (err) {
-                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-                reject(err);
-            } else {
-                resolve(result);
-            }
-        });
+        try {
+            const query = 'SELECT * FROM familymember where CodeID = ?';
+            db.connection.query(query, codeID, (err, result) => {
+                if (err) {
+                    console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            });
+        } catch (error) {
+            reject(error)
+        }
     });
 }
 

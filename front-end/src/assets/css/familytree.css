@@ -64,11 +64,14 @@ svg.tommy .node.choose.female rect {
   stroke: #EDF048;
   stroke-width: 5px;
 }
-
 .notselected>rect {
   opacity: 0.5;
 }
-
+.selected-compare>rect {
+  stroke: red;
+  opacity: 1;
+  stroke-width: 5px;
+}
 /* 
 svg.tommy .node.notchoose.male rect {
   opacity: 0.5;

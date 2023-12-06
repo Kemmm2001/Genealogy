@@ -10,16 +10,17 @@ const exportExcel = async (req, res) => {
             const workbook = new Excel.Workbook();
             await addDataToSheet(workbook, 'Event Data', data);
     
-            const fileName = `event.xlsx`;
+            const fileName = `/uploads/excel/ExportEvent/event.xlsx`;
             await workbook.xlsx.writeFile(fileName);
     
-            return res.send(Response.successResponse(nul, 'Export thành công'));
+        return res.send(Response.successResponse({ fileName: result.fileName }, 'Export thành công'));
 
         }
-        return res.send(Response.internalServerErrorResponse)
+        return res.send(Response.internalServerErrorResponse())
        
     } catch (error) {
-        return res.send(Response.internalServerErrorResponse)
+        console.log(error)
+        return res.send(Response.internalServerErrorResponse())
 
     }
 };
