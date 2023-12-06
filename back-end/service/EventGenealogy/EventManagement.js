@@ -1,26 +1,22 @@
 const { promises } = require('nodemailer/lib/xoauth2');
 const db = require('../../Models/ConnectDB')
 
-//Nguyễn Lê Hùng
+//Tạ Nhật Anh
 function getAllEvent(CodeID) {
     return new Promise((resolve, reject) => {
-        try {
-            let query = `SELECT * FROM eventfamily where CodeID = '${CodeID}'`;
-            db.connection.query(query, (err, result) => {
-                if (err) {
-                    console.log(err)
-                    reject(err)
-                } else {
-                    resolve(result)
-                }
-            })
-        } catch (error) {
-            console.log(error)
-        }
-    })
+        let query = 'SELECT * FROM eventfamily WHERE CodeID = ?';
+        db.connection.query(query, [CodeID], (err, result) => {
+            if (err) {
+                console.error('Error executing SQL:', err);
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
 }
 
-//Nguyễn Lê Hùng
+//Tạ Nhật Anh
 function getEventAttendance(EventID) {
     return new Promise((resolve, reject) => {
         try {
