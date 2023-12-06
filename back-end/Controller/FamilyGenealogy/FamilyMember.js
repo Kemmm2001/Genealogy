@@ -109,11 +109,13 @@ var addMember = async (req, res) => {
         if (req.body.Action == 'AddNormal') {
             console.log("Đã vào trường hợp thêm thành viên mà không có trong cây gia phả");
             await FamilyManagementService.setGeneration(0, data.insertId);
+            await FamilyManagementService.setRole(3, data.insertId);
         }
         // trường hợp muốn thêm thành viên đầu tiên ( tổ phụ tổ tiên)
         else if (req.body.Action == 'AddFirst') {
             await FamilyManagementService.setGeneration(1, data.insertId);
             await ManagementFamilyHead.addForefather(data.insertId, req.body.CodeID);
+            await FamilyManagementService.setRole(1, data.insertId);
         }
         // trường hợp muốn thêm thành viên mà có trong cây gia phả
         else {
@@ -231,6 +233,7 @@ var addMember = async (req, res) => {
                 await FamilyManagementService.setGeneration(currentMember[0].Generation, data.insertId);
                 await MarriageManagement.addMarriage(objData);
             }
+            await FamilyManagementService.setRole(3, data.insertId);
         }
         // kết thúc phần thêm member theo action
         dataRes.MemberID = data.insertId;
@@ -319,7 +322,7 @@ var addChild = async (req, res) => {
             console.log("Đã vào trường hợp cả FatherID và MotherID đều có ở req.body");
         }
         let listChild, parentGeneration;
-        // trường hợp có cha nhnhưngững ko có mẹ 
+        // trường hợp có cha nhưng ko có mẹ 
         if (CoreFunction.isDataNumberExist(req.body.FatherID) && !CoreFunction.isDataNumberExist(req.body.MotherID)) {
             console.log("Đã vào trường hợp có cha nhưng ko có mẹ");
             listChild = await FamilyManagementService.getMembersByFatherID(req.body.FatherID);
@@ -346,9 +349,8 @@ var addChild = async (req, res) => {
         }
         console.log("Bắt đầu update data");
         // kết thúc kiểm tra birthorder
-        await FamilyManagementService.setBirthOrder(req.body.BirthOrder, data.insertId);
         await FamilyManagementService.setGeneration(parentGeneration + 1, data.insertId);
-        // await FamilyManagementService.insertParentIdToMember(req.body.CurrentMemberID, data.insertId);
+        await FamilyManagementService.setRole(3, data.insertId);
         return res.send(Response.successResponse());
     } catch (e) {
         console.log("Error: " + e);

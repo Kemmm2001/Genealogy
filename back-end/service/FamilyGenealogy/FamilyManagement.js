@@ -347,6 +347,17 @@ function setGeneration(generation, memberId) {
 }
 
 // nguyễn anh tuấn
+function setRole(roleId, memberId) {
+    return new Promise(async (resolve, reject) => {
+        console.log("Vào hàm setRole với roleId: " + roleId + " và memberId: " + memberId);
+        const query = 'UPDATE familymember SET RoleID = ? WHERE MemberID = ?';
+        const values = [roleId, memberId];
+        let result = await coreQuery(query, values);
+        resolve(result);
+    })
+}
+
+// nguyễn anh tuấn
 function setBirthOrder(birthOrder, memberId) {
     return new Promise(async (resolve, reject) => {
         console.log("Vào hàm setBirthOrder với birthOrder: " + birthOrder + " và memberId: " + memberId);
@@ -698,5 +709,5 @@ module.exports = {
     setBirthOrder, insertParentIdToMember, getAllMemberID, updateMemberPhoto, deleteMemberRelated,
     getMembersByFatherIDAndMotherID, getMembersByFatherIDOrMotherID, updateFatherIDToMotherID,
     updateMotherIDToFatherID, UpdateMemberRelated, getMaxBirthOrderByFatherIdOrMotherId, getMaxBirthOrderByFatherID,
-    getMaxBirthOrderByMotherID, getMembersByOnlyFatherID, getMembersByOnlyMotherID
+    getMaxBirthOrderByMotherID, getMembersByOnlyFatherID, getMembersByOnlyMotherID, setRole
 };
