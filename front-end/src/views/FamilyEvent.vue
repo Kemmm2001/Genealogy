@@ -217,7 +217,7 @@
               </div>
             </div>
             <div v-if="listEventAttendance" class="d-flex flex-row" style="height: calc(100% - 50px);">
-              <div class="col-6 mt-2 d-flex flex-column" style="padding-left: 8px; padding-right: 4px;">
+              <div class="col-4 mt-2 d-flex flex-column" style="padding-left: 8px; padding-right: 4px;">
                 <div class="item d-flex justify-content-center" style="background-color: aliceblue;">Có tham gia</div>
                 <div class style="overflow-y: auto; height: calc(100% - 106px);">
                   <div v-for="(item, index) in listEventAttendance" :key="item.id">
@@ -225,8 +225,16 @@
                   </div>
                 </div>
               </div>
-              <div class="col-6 mt-2 d-flex flex-column" style="padding-left: 4px; padding-right: 8px;">
+              <div class="col-4 mt-2 d-flex flex-column" style="padding-left: 4px; padding-right: 4px;">
                 <div class="item d-flex justify-content-center" style="background-color: aliceblue;">Không tham gia</div>
+                <div class style="overflow-y: auto; height: calc(100% -106px);">
+                  <div v-for="(item, index) in listEventAttendance" :key="item.id">
+                    <div v-if="item.IsGoing == 0" :class="index % 2 === 0 ? 'item odd' : 'item even'">{{item.MemberName}}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-4 mt-2 d-flex flex-column" style="padding-left: 4px; padding-right: 8px;">
+                <div class="item d-flex justify-content-center" style="background-color: aliceblue;">Chưa phản hồi</div>
                 <div class style="overflow-y: auto; height: calc(100% -106px);">
                   <div v-for="(item, index) in listEventAttendance" :key="item.id">
                     <div v-if="item.IsGoing == 0" :class="index % 2 === 0 ? 'item odd' : 'item even'">{{item.MemberName}}</div>

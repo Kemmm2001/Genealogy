@@ -1,28 +1,28 @@
 <!-- phùng việt khôi -->
 <template>
   <div class="d-flex h-100 w-100 position-relative">
-    <div class="list h-100 d-flex flex-column align-items-center">
-      <div v-if="memberRole != 3" class="w-100 d-flex flex-column" style="height: 15%;">
-        <div class="w-100 h-100 d-flex flex-column" style="align-items: center">
-        <div class="w-100 d-flex flex-row" style="padding-top: 8px; height: 50%;">
-          <div class="col-6" style="padding-left: 8px; padding-right: 6px">
+    <div class="list w-100 h-100 d-flex flex-column align-items-center">
+      <div v-if="memberRole != 3" class="w-100">
+        <div class="w-100 h-100 align-items-center">
+        <div class="w-100 d-flex flex-row" style="padding-top: 8px;">
+          <div class="col-6" style="padding-left: 8px;">
             <div class="w-100 h-100">
               <button @click="openNotiModal()" style="width:100%; font-size: 14px;" type="button" class="p-0 btn btn-secondary h-100">Tạo thông báo</button>
             </div>
           </div>
-          <div class="col-6" style="padding-left: 6px; padding-right: 8px">
+          <div class="col-6" style="padding: 0 8px;">
             <div class="w-100 h-100">
               <button @click="openCompareModal()" style="width:100%; font-size: 14px;" type="button" :class="{ 'p-0': true, 'btn': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">Xác định quan hệ</button>
             </div>
           </div>
         </div>
-        <div class="w-100 d-flex flex-row" style="padding-top: 8px; height: 50%;">
-          <div class="col-6" style="padding-left: 8px; padding-right: 6px">
+        <div class="w-100 d-flex flex-row" style="padding-top: 8px;">
+          <div class="col-6" style="padding-left: 8px;">
             <div class="w-100 h-100">
               <button @click="BackUpdata()" style="width:100%; font-size: 14px; color:white" type="button" class="p-0 btn btn-secondary h-100">Lưu trữ dữ liệu</button>
             </div>
           </div>
-          <div class="col-6" style="padding-left: 6px; padding-right: 8px">
+          <div class="col-6" style="padding: 8px">
             <div class="w-100 h-100">
               <button style="width:100%; font-size: 14px; color:white" type="button" class="p-0 btn btn-secondary h-100">Xuất dữ liệu vào</button>
             </div>
