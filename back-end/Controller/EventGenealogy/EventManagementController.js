@@ -38,7 +38,14 @@ var getEventAttendance = async (req, res) => {
 var getListMemberIDAndEmail = async (req, res) => {
     try {
         let ListMemberID = req.query.ListMemberID;
+        let eventId = req.query.eventId
         console.log('ListMember: ' + ListMemberID)
+        for (let i = 0; i < ListMemberID.length; i++) {
+            let result = await EventAttendence.insertMemberAttend(eventId, ListMemberID[i])
+            if (!result) {
+                return res.send(Response.internalServerErrorResponse())
+            }
+        }
         if (ListMemberID) {
             let data = await EventManagementService.getListEmailAndMemberID(ListMemberID);
             if (data) {
@@ -400,6 +407,24 @@ var ReadXLSX = async (req, res) => {
     }
 };
 
+//Nguyễn Lê Hùng
+var checkConfirmedEvent = async (req, res) => {
+    try {
+        let EventID = req.body.EventID;
+        let MemberID = req.body.MemberID;
+        let token = req.body.token;
+        let data = await EventAttendence.checkConfirmedEvent(EventID, MemberID, token);
+        console.log('data: ' + data)
+        if (data) {
+            return res.send(Response.successResponse(data))
+        } else {
+            return res.send(Response.dataNotFoundResponse(null, 'Thành viên chưa confirm'))
+        }
+    } catch (error) {
+
+    }
+}
+
 var addAttendence = async (req, res) => {
     try {
         let { eventID } = req.body
@@ -459,22 +484,13 @@ var inviteMail = async (req, res) => {
         const eventId = requestBody.eventId;
         const time = requestBody.time;
 
-        console.log(requestBody)
-        console.log('time: ' + time)
-        console.log('memberIds: ' + memberIds)
-        console.log('eventId: ' + eventId)
-        for (let i = 0; i < memberIds.length; i++) {           
+        console.log('requestBody: ' + requestBody)
+        for (let i = 0; i < memberIds.length; i++) {
             const memberId = memberIds[i];
-            console.log(memberId + memberId)
-            console.log('memberId: ' + memberId)
             const token = await signInviteToken(memberId, eventId, time);
 
             const data = await EventAttendence.Update(memberId, token);
             const link = `http://localhost:3006/CfEvent?token=${token}`;
-            let result = await EventAttendence.insertMemberAttend(eventId, memberIds[i], token)
-            if (!result) {
-                return res.send(Response.internalServerErrorResponse())
-            }
             if (data === true) {
                 const mailOptions = {
                     to: emails[i],
@@ -515,6 +531,22 @@ var getEventByToken = async (req, res) => {
     }
 }
 
+var UpdateIsGoing = async (req, res) => {
+    try {
+        let memberId = req.body.memberId;
+        let eventId = req.body.eventId;
+        let IsGoing = req.body.IsGoing
+        let data = await EventAttendence.UpdateIsGoing(memberId, eventId, IsGoing)
+        if (data) {
+            res.send(Response.successResponse(null, 'Phản hồi thành công. Xin cảm ơn bạn'))
+        } else {
+            res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống'))
+        }
+    } catch (error) {
+
+    }
+}
+
 var verifyMail = async (req, res) => {
     try {
         let token = req.query.token;
@@ -547,5 +579,5 @@ module.exports = {
     getAllEventGenealogy, InsertEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth,
     SendSMS, SendEmail, searchEvent, filterEvent, SendSMSToMember, getInformationEvent, sendEmailToMember
     , addAttendence, inviteMail, verifyMail, ReadXLSX, updateStatusEventGenealogy, getEventAttendance,
-    getListMemberIDAndEmail, getEventByToken
+    getListMemberIDAndEmail, getEventByToken, checkConfirmedEvent, UpdateIsGoing
 }

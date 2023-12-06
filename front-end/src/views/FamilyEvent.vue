@@ -607,7 +607,7 @@ export default {
     },
     addEvent() {
       this.eventFamily.StartDate = `${this.startDate} ${this.startHour}:${this.startMinute}`;
-      this.eventFamily.EndDate = `${this.endDate} ${this.endHour}:${this.endMinute}`;     
+      this.eventFamily.EndDate = `${this.endDate} ${this.endHour}:${this.endMinute}`;
       if (this.eventFamily.StartDate > this.eventFamily.EndDate) {
         this.NotificationsDelete("Ngày bắt đầu đang lớn hơn ngày kết thúc");
       } else {
@@ -830,6 +830,7 @@ export default {
         HTTP.get("getIdAndEmail", {
           params: {
             ListMemberID: this.ListMemberToSendEmail,
+            eventId: this.currentEventID,
           },
         }).then((respone) => {
           HTTP.post("inviteMail", {

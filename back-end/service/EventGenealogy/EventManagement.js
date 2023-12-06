@@ -227,12 +227,19 @@ async function UpdateEvent(objData) {
 async function RemoveEvent(EventID) {
     return new Promise((resolve, reject) => {
         try {
-            let query = `DELETE FROM eventfamily WHERE EventID = ${EventID}`;
+            let query = `DELETE from genealogy.eventattendance where EventID = ${EventID}`;
             db.connection.query(query, (err) => {
-                if (err) {
-                    reject(false)
+                if (!err) {
+                    let query = `DELETE FROM eventfamily WHERE EventID = ${EventID}`;
+                    db.connection.query(query, (err) => {
+                        if (err) {
+                            reject(false)
+                        } else {
+                            resolve(true)
+                        }
+                    })
                 } else {
-                    resolve(true)
+                    reject(false)
                 }
             })
         } catch (error) {
