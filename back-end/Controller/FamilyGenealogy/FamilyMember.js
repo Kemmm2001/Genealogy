@@ -393,6 +393,11 @@ var updateMemberPhoto = async (req, res) => {
         if (!CoreFunction.isDataStringExist(req.file)) {
             return res.send(Response.badRequestResponse(null, "File ảnh không hợp lệ"));
         }
+        // nếu file ảnh ko thuộc png, jpg, jpeg thì ko cho update
+        if (!req.file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+            CoreFunction.deleteImage(req.file.path);
+            return res.send(Response.badRequestResponse(null, "File ảnh không hợp lệ"));
+        }
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
             'MemberID',
