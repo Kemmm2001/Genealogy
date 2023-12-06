@@ -406,7 +406,7 @@ function getListUnspecifiedMembers(CodeID) {
 }
 
 async function getLivingFamilyMember(memberID) {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
         try {
             let queryGetFamilyHead = `SELECT * FROM familymember WHERE MemberID = ${memberID}`;
             db.connection.query(queryGetFamilyHead, async (err, results) => {
@@ -421,29 +421,23 @@ async function getLivingFamilyMember(memberID) {
                             db.connection.query(queryGetSons, async (err, resultGetSon) => {
                                 try {
                                     if (!err && resultGetSon.length > 0) {
-                                        let livingSonIDs = await Promise.all(resultGetSon.map(async son => {
-                                            return await getLivingFamilyMember(son.MemberID);
-                                        }));
-                                        // Lọc ra những memberID có kết quả
-                                        livingSonIDs = livingSonIDs.filter(id => id !== false);
-
-                                        if (livingSonIDs.length > 0) {
-                                            resolve(livingSonIDs);
-                                        } else {
-                                            reject(false);
+                                        for (let son of resultGetSon) {
+                                            let livingSonID = await getLivingFamilyMember(son.MemberID);
+                                            if (livingSonID) {
+                                                resolve(livingSonID);
+                                                return;
+                                            }
                                         }
                                     } else {
-                                        // Nếu không có con, resolve với mảng rỗng
-                                        resolve([]);
+                                        resolve(false);
                                     }
+                                    resolve(false);
                                 } catch (error) {
-                                    console.log(error);
-                                    reject(false);
+                                    console.log(error)
                                 }
                             });
                         }
                     } else {
-                        // Không tìm thấy thông tin cho MemberID
                         reject(false);
                     }
                 } else {
@@ -451,13 +445,12 @@ async function getLivingFamilyMember(memberID) {
                 }
             });
         } catch (error) {
-            reject(false);
+            reject(error);
         }
     });
 }
 
-
-
+//Nguyễn Lê Hùng
 
 
 //Nguyễn Lê Hùng
@@ -466,25 +459,25 @@ async function getListChildWithWifeID(husbandID, wifeID) {
         try {
             let queryListChild = `select * from familymember where FatherID = ${husbandID} and MotherID = ${wifeID} and Male = 1 order by BirthOrder`;
             db.connection.query(queryListChild, async (err, result) => {
-                if (!err && result.length > 0) {
-                    try {
+                try {
+                    if (!err && result.length > 0) {
                         let resultFamilyHead = null;
                         for (let i = 0; i < result.length; i++) {
                             resultFamilyHead = await getLivingFamilyMember(result[i].MemberID);
-                            console.log('resultFamilyHead: ' + resultFamilyHead)
                             if (resultFamilyHead) {
-                                console.log("vào vòng lặp này")
+                                resolve(resultFamilyHead);
+
                                 break;
                             }
                         }
-                        console.log('resultFamilyHead: ' + resultFamilyHead);
-                        resolve(resultFamilyHead);
-                    } catch (error) {
-                        console.log(err);
-                        reject(false);
+
+
+                    } else {
+                        resolve(false);
                     }
-                } else {
-                    reject(false);
+                    resolve(false);
+                } catch (error) {
+                    reject(false)
                 }
             });
         } catch (error) {
@@ -506,11 +499,12 @@ async function getFamilyHeadInGenealogy(CodeID) {
                         for (let i = 0; i < result.length; i++) {
                             try {
                                 let resultFamilyHead = await getListChildWithWifeID(IdPaternal, result[i].wifeID);
-                                if (resultFamilyHead.length > 0) {
+                                if (resultFamilyHead) {
                                     resolve(resultFamilyHead);
                                     return;
                                 }
-                                console.log('result: ' + result);
+                                // resolve(resultFamilyHead);
+                                console.log('result::::: ' + resultFamilyHead);
                             } catch (errorInGetListChild) {
                                 console.error(`Error in getListChildWithWifeID: ${errorInGetListChild}`);
                             }
