@@ -339,12 +339,12 @@ function ResetAllGenerationMember(CodeID) {
 function setAllGenerationMember(memberId, generation) {
     const updateQuery = `update familymember Set Generation =  ${generation}  where MemberID = ${memberId}`;
     db.connection.query(updateQuery, (err, results) => {
-        if (err) console.log(error);;
+        if (err) console.log(err);;
 
         //Tìm tất cả mối hôn nhân hiện tại
         const findMarriesQuery = `SELECT * FROM familymember where MemberID = ${memberId}`;
         db.connection.query(findMarriesQuery, (err, childResults) => {
-            if (err) console.log(error);;
+            if (err) console.log(err);;
 
             childResults.forEach((child) => {
                 if (child.MarriageID != null) {
@@ -356,7 +356,7 @@ function setAllGenerationMember(memberId, generation) {
         // Tìm tất cả các con của thành viên hiện tại        
         const findChildrenQuery = `SELECT * FROM familymember where ParentID = ${memberId}`;
         db.connection.query(findChildrenQuery, (err, childResults) => {
-            if (err) console.log(error);;
+            if (err) console.log(err);;
 
             childResults.forEach((child) => {
                 setAllGenerationMember(child.MemberID, generation + 1);
@@ -405,10 +405,8 @@ function getListUnspecifiedMembers(CodeID) {
     })
 }
 
-
-//Nguyễn Lê Hùng
 async function getLivingFamilyMember(memberID) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         try {
             let queryGetFamilyHead = `SELECT * FROM familymember WHERE MemberID = ${memberID}`;
             db.connection.query(queryGetFamilyHead, async (err, results) => {
@@ -421,16 +419,27 @@ async function getLivingFamilyMember(memberID) {
                         } else {
                             let queryGetSons = `SELECT MemberID FROM familymember WHERE FatherID = ${memberID} AND Male = 1 ORDER BY BirthOrder`;
                             db.connection.query(queryGetSons, async (err, resultGetSon) => {
-                                if (!err && resultGetSon.length > 0) {
-                                    for (let son of resultGetSon) {
-                                        let livingSonID = await getLivingFamilyMember(son.MemberID);
-                                        if (livingSonID) {
-                                            resolve(livingSonID);
-                                            return;
+                                try {
+                                    if (!err && resultGetSon.length > 0) {
+                                        let livingSonIDs = await Promise.all(resultGetSon.map(async son => {
+                                            return await getLivingFamilyMember(son.MemberID);
+                                        }));
+                                        // Lọc ra những memberID có kết quả
+                                        livingSonIDs = livingSonIDs.filter(id => id !== false);
+
+                                        if (livingSonIDs.length > 0) {
+                                            resolve(livingSonIDs);
+                                        } else {
+                                            reject(false);
                                         }
+                                    } else {
+                                        // Nếu không có con, resolve với mảng rỗng
+                                        resolve([]);
                                     }
+                                } catch (error) {
+                                    console.log(error);
+                                    reject(false);
                                 }
-                                reject(false);
                             });
                         }
                     } else {
@@ -442,37 +451,48 @@ async function getLivingFamilyMember(memberID) {
                 }
             });
         } catch (error) {
-            reject(error);
+            reject(false);
         }
     });
 }
 
 
+
+
+
 //Nguyễn Lê Hùng
 async function getListChildWithWifeID(husbandID, wifeID) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         try {
-            let queryListChild = `select *  from familymember where FatherID = ${husbandID} and MotherID = ${wifeID} and Male = 1 order by BirthOrder`;
+            let queryListChild = `select * from familymember where FatherID = ${husbandID} and MotherID = ${wifeID} and Male = 1 order by BirthOrder`;
             db.connection.query(queryListChild, async (err, result) => {
                 if (!err && result.length > 0) {
-                    for (let i = 0; i < result.length; i++) {
-                        let resultFamilyHead = await getLivingFamilyMember(result[i].MemberID)
-                        if (resultFamilyHead != false) {
-                            resolve(resultFamilyHead)
-                            return
+                    try {
+                        let resultFamilyHead = null;
+                        for (let i = 0; i < result.length; i++) {
+                            resultFamilyHead = await getLivingFamilyMember(result[i].MemberID);
+                            console.log('resultFamilyHead: ' + resultFamilyHead)
+                            if (resultFamilyHead) {
+                                console.log("vào vòng lặp này")
+                                break;
+                            }
                         }
+                        console.log('resultFamilyHead: ' + resultFamilyHead);
+                        resolve(resultFamilyHead);
+                    } catch (error) {
+                        console.log(err);
+                        reject(false);
                     }
-                    reject(false);
                 } else {
-                    reject(false)
+                    reject(false);
                 }
-            })
+            });
         } catch (error) {
-
+            console.log(error);
+            reject(false);
         }
-    })
+    });
 }
-
 //Nguyễn Lê Hùng
 async function getFamilyHeadInGenealogy(CodeID) {
     return new Promise(async (resolve, reject) => {
@@ -480,37 +500,39 @@ async function getFamilyHeadInGenealogy(CodeID) {
             let IdPaternal = await GetIdPaternalAncestor(CodeID);
             if (IdPaternal) {
                 IdPaternal = IdPaternal.MemberID;
-                let queryGetFirstWife = `select wifeID from marriage where husbandID = ${IdPaternal} order by MarriageNumber`;
+                let queryGetFirstWife = `SELECT wifeID FROM marriage WHERE husbandID = ${IdPaternal} ORDER BY MarriageNumber`;
                 db.connection.query(queryGetFirstWife, async (err, result) => {
                     if (!err && result.length > 0) {
                         for (let i = 0; i < result.length; i++) {
                             try {
                                 let resultFamilyHead = await getListChildWithWifeID(IdPaternal, result[i].wifeID);
-                                if (resultFamilyHead !== false) {
+                                if (resultFamilyHead.length > 0) {
                                     resolve(resultFamilyHead);
                                     return;
                                 }
+                                console.log('result: ' + result);
                             } catch (errorInGetListChild) {
                                 console.error(`Error in getListChildWithWifeID: ${errorInGetListChild}`);
                             }
                         }
-                        // Nếu không tìm thấy kết quả, gọi reject ở đây
+                        // Nếu không tìm thấy kết quả, gọi resolve với mảng rỗng
                         console.log("Không tìm thấy Family Head");
-                        reject(false);
+                        resolve([]);
                     } else {
                         console.log("Lỗi truy vấn");
                         reject(err);
                     }
-                })
+                });
             } else {
                 reject(false);
             }
         } catch (error) {
             console.log(error);
-            reject(false); // Gọi reject nếu có lỗi trong try-catch
+            reject(false);
         }
-    })
+    });
 }
+
 
 
 
@@ -641,11 +663,15 @@ async function GetGenealogy(result, dataMarriage, MemberID, ListFamily = [], vis
     }
 
     let children = result.filter(member => member.FatherID == MemberID || member.MotherID == MemberID);
-    for (let child of children) {
+    children.sort((a, b) => {
+        return a.BirthOrder - b.BirthOrder;
+    });
 
+
+
+    for (let child of children) {
         await GetGenealogy(result, dataMarriage, child.MemberID, ListFamily, visitedMembers);
     }
-
     return ListFamily;
 }
 

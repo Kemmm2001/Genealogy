@@ -2450,7 +2450,7 @@ export default {
     OnpenModal_SelectOption(id) {
       this.selectedInfor();
       let foundNode = this.nodes.find((node) => node.id == id);
-      console.log("gender: " + foundNode.gender);
+      console.log("node: " + foundNode);
       if (foundNode.gender == "female") {
         this.isFather = false;
       } else {
@@ -2555,6 +2555,7 @@ export default {
           CodeID: this.CodeID,
         },
       }).then((response) => {
+        console.log('response: ' + response.data)
         if (response.data.success == true) {
           this.idFamilyHead = response.data.data;
           console.log(this.idFamilyHead);
