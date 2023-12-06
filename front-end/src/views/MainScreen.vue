@@ -24,7 +24,8 @@
             </div>
             <div class="col-6" style="padding-left: 6px; padding-right: 8px">
               <div class="w-100 h-100">
-                <button style="width:100%; font-size: 14px; color:white" type="button" class="p-0 btn btn-secondary h-100">Xuất dữ liệu vào</button>
+                <label for="upload" style="width:100%; font-size: 14px; color:white" type="button" class="d-flex align-items-center justify-content-center p-0 btn btn-secondary h-100">Xuất dữ liệu vào</label>
+                <input id="upload" type="file" style="display: none"/>
               </div>
             </div>
           </div>
@@ -1651,6 +1652,9 @@ export default {
         },
       })
         .then((response) => {
+          this.selectCityMember = null;
+          this.selectDistrictMember = null;
+          console.log(this.selectDistrictMember)
           this.objMember = response.data;
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
@@ -1668,11 +1672,12 @@ export default {
           }
           if (this.objMember.contact.length > 0) {
             this.objMemberContact = this.objMember.contact[0];
-            if (this.objMemberContact.Address != undefined) {
+            console.log(this.objMemberContact);
+            console.log(this.objMember.contact);
+            if (this.objMemberContact.Address != undefined && this.objMemberContact.Address != null) {
               this.getAdressMember(this.objMemberContact.Address);
             }
-          } else {
-            this.selectCityMember = null;
+            
           }
           this.ListMemberEducation = this.objMember.education;
           this.ListMemberJob = this.objMember.job;
@@ -2159,6 +2164,9 @@ export default {
         this.objMemberContact.Address =
           this.objMemberContact.Address + "-" + this.selectDistrictMember;
       }
+      if (this.selectCityMember == null) {
+        this.objMemberContact.Address = null;
+      }
       HTTP.put("member", {
         MemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
@@ -2233,14 +2241,17 @@ export default {
     },
     //Nguyễn Lê Hùng
     GetListFilterMember() {
+      let city = this.selectAdress ;
       if (this.selectDistrict != null) {
-        this.selectAdress = this.selectAdress + "-" + this.selectDistrict;
+        city = this.selectAdress + "-" + this.selectDistrict
       }
+      console.log(city)
+      console.log(this.selectAdress)
       HTTP.post("filter-member", {
         CodeID: this.CodeID,
         BloodType: this.selectBloodType,
         selectAge: this.selectAge,
-        Address: this.selectAdress,
+        Address: city,
       })
         .then((response) => {
           this.listFilterMember = response.data.data;
@@ -2661,7 +2672,13 @@ export default {
       let selectedCity = this.ListCity.find(
         (city) => city.id == this.selectCityMember
       );
-      this.objMemberContact.Address = selectedCity.name;
+      console.log(this.selectCityMember)
+      if(selectedCity != null){
+        this.objMemberContact.Address = selectedCity.name;
+      }else{
+        this.objMemberContact.Address = null;
+      }
+      
       if (this.selectCityMember == null) {
         this.ListDistrictMember = null;
       } else {

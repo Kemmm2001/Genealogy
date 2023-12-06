@@ -5,19 +5,20 @@ const db = require('../../Models/ConnectDB')
 function getAllEvent(CodeID) {
     return new Promise((resolve, reject) => {
         try {
-            let query = `SELECT * FROM eventfamily where CodeID = '${CodeID}'`;
+            let query = `SELECT * FROM eventfamily WHERE CodeID = ${CodeID}`;
             db.connection.query(query, (err, result) => {
                 if (err) {
-                    console.log(err)
-                    reject(err)
+                    console.log(err);
+                    reject(err);
                 } else {
-                    resolve(result)
+                    resolve(result);
                 }
-            })
+            });
         } catch (error) {
-            console.log(error)
+            console.log(error);
+            reject(error);
         }
-    })
+    });
 }
 
 //Nguyễn Lê Hùng

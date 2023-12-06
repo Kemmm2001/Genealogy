@@ -278,6 +278,12 @@
         </div>
       </modal>
     </div>
+    <div v-if="AlbumPhotoList.length != 0">
+
+    </div>
+    <div v-else>
+
+    </div>
   </div>
 </template>
   
