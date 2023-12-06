@@ -104,8 +104,7 @@
                 <tr class="eventlist-item">
                   <th class="eventlist-list-th" scope="col">#</th>
                   <th class="eventlist-list-th" scope="col">Tên sự kiện</th>
-                  <th class="eventlist-list-th" scope="col">Thời gian bắt đầu</th>
-                  <!-- <th class="eventlist-list-th" scope="col">Thời gian kết thúc</th> -->
+                  <th class="eventlist-list-th" scope="col">Thời gian bắt đầu</th>                  
                   <th class="eventlist-list-th" scope="col">Trạng thái</th>
                   <th class="eventlist-list-th" scope="col">Địa điểm</th>
                   <th class="eventlist-list-th" scope="col"></th>

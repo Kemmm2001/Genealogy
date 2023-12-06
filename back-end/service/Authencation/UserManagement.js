@@ -203,7 +203,7 @@ function UpdatePassword(newPassword, email) {
 function getListRoleMember(CodeID) {
   return new Promise((resolve, reject) => {
     try {
-      let query = `SELECT ac.Username, af.AccountID, af.CodeID, af.RoleID
+      let query = `SELECT ac.Username,ac.Email, af.AccountID, af.CodeID, af.RoleID
       FROM genealogy.AccountFamilyTree AS af
       INNER JOIN genealogy.account AS ac ON af.AccountID = ac.AccountID
       WHERE af.CodeID = '${CodeID}'
