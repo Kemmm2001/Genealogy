@@ -398,6 +398,7 @@ var updateMemberPhoto = async (req, res) => {
             CoreFunction.deleteImage(req.file.path);
             return res.send(Response.badRequestResponse(null, "File ảnh không hợp lệ"));
         }
+
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
             'MemberID',
