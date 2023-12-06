@@ -1,29 +1,30 @@
 const EventManagementService = require('../../service/EventGenealogy/EventManagement');
 const Excel = require('exceljs');
 const Response = require('../../Utils/Response');
-
+const { v4: uuidv4 } = require('uuid');
 const exportExcel = async (req, res) => {
     try {
-        let codeID = req.body.codeID
-        let data = await EventManagementService.getAllEvent(codeID);
-        if(data == true){
-            const workbook = new Excel.Workbook();
-            await addDataToSheet(workbook, 'Event Data', data);
-    
-            const fileName = `event.xlsx`;
-            await workbook.xlsx.writeFile(fileName);
-    
-        return res.send(Response.successResponse({ fileName: result.fileName }, 'Export thành công'));
+        let codeID = req.body.codeID;
+        let data;
 
+        try {
+            data = await EventManagementService.getAllEvent(codeID);
+        } catch (error) {
+            return res.send(Response.internalServerErrorResponse);
         }
-        return res.send(Response.internalServerErrorResponse())
-       
-    } catch (error) {
-        console.log(error)
-        return res.send(Response.internalServerErrorResponse())
 
+        const workbook = new Excel.Workbook();
+        await addDataToSheet(workbook, 'Event Data', data);
+
+        const randomFileName = `/uploads/excel/ExportEvent/event_${uuidv4()}.xlsx`; 
+        await workbook.xlsx.writeFile(randomFileName);
+
+        return res.send(Response.successResponse(null, 'Export thành công'));
+    } catch (error) {
+        return res.send(Response.internalServerErrorResponse);
     }
 };
+
 
 async function addDataToSheet(workbook, sheetName, data) {
     const worksheet = workbook.addWorksheet(sheetName);
