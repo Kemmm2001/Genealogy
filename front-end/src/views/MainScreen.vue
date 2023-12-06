@@ -136,12 +136,10 @@
               <div class="list-group-item" @click="setPaternalAncestor(1)">Set làm tổ phụ</div>-->
               <div class="list-group-item feature-overview">Các chức năng chính</div>
               <div class="list-group-item" @click="getInforMember(CurrentIdMember)">Thông tin chi tiết</div>
-              <div class="list-group-item" @click="openModalRelationship()">Xem các mối quan hệ</div>
-              <div class="list-group-item" @click="openMemberModal('AddParent', 'Cha')">Thêm Cha</div>
-              <div class="list-group-item" @click="openMemberModal('AddParent', 'Mẹ')">Thêm Mẹ</div>
-              <div class="list-group-item" @click="openMemberModal('AddMarriage', 'Chồng')">Thêm Chồng</div>
-              <div class="list-group-item" @click="openMemberModal('AddMarriage', 'Vợ')">Thêm Vợ</div>
-              <div v-for="list in ListMarriedMember" :key="list.id" class="list-group-item" @click="openMemberModal('AddChild', 'Con',list.id)">Thêm Con với vợ {{list.name}}</div>
+              <div class="list-group-item" @click="openModalRelationship()">Xem các mối quan hệ</div>              
+              <div class="list-group-item" @click="openMemberModal('AddParent', 'phụ huynh')">Thêm phụ huynh</div>
+              <div class="list-group-item" @click="openMemberModal('AddMarriage', 'hôn nhân')">Thêm hôn nhân</div>              
+              <div v-for="list in ListMarriedMember" :key="list.id" class="list-group-item" @click="openMemberModal('AddChild', 'Con',list.id)">Thêm Con với {{list.name}}</div>
               <div class="list-group-item" @click="openMemberModal('AddChild', 'Con')">Thêm Con</div>
               <div class="list-group-item" @click="openModalAddMemberFromList()">Thêm mối quan hệ từ Danh Sách</div>
               <div class="list-group-item" @click="openCfDelModal(false,null,TitleModal)">Xóa thành viên (*)</div>
@@ -1264,7 +1262,7 @@ export default {
           let newWindow = window.open(
             `https://giaphanguoiviet.com${response.data.data.fileName}`,
             "_blank"
-          );          
+          );
           if (newWindow) {
             this.NotificationsScuccess(response.data.message);
           } else {
@@ -1272,7 +1270,7 @@ export default {
               "Không thể mở cửa sổ mới. Vui lòng kiểm tra cài đặt trình duyệt của bạn."
             );
           }
-        } else {         
+        } else {
           this.NotificationsDelete(response.data.message);
         }
       });
@@ -2405,7 +2403,7 @@ export default {
       this.objMemberInfor.NationalityID = 1;
       this.objMemberInfor.ReligionID = 1;
       this.objMemberContact = {};
-      this.TitleModal = "Thêm Thông Tin " + title;
+      this.TitleModal = "Thêm mối quan hệ " + title;
       this.action = action;
       if (this.action == "AddMother" || this.action == "AddWife") {
         this.objMemberInfor.Male = 0;

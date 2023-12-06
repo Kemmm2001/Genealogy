@@ -142,6 +142,7 @@ export default {
         }).then((response) => {
           if (response.data.success == true) {
             this.AccountInfor = response.data.data;
+            console.log(this.AccountInfor)
           }
         });
       }

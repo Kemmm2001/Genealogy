@@ -248,11 +248,22 @@ PaternalFamily = [
         name: "Em",
         id: 22
     },
+    {
+        name: "Chồng",
+        id: 23
+    },
+    {
+        name: "Vợ",
+        id: 24
+    }
 ]
 
 //Nguyễn Lê Hùng
 async function getResultCompareToMember(DefferenceGeneration, Generation1, Generation2, Flag, Gender1, Gender2, resultCheck) {
     let objResult = {};
+    console.log('DefferenceGeneration: ' + DefferenceGeneration)
+    console.log('resultCheck: ' + resultCheck)
+    console.log('Gender1: ' + Gender1)
 
 
     if (DefferenceGeneration == -1) {
@@ -286,7 +297,8 @@ async function getResultCompareToMember(DefferenceGeneration, Generation1, Gener
             if (Gender1 == 1) {
                 index1 = calculateIndex(Generation1, Generation2, Flag, 7, 6, 7, 6);
             } else {
-                index1 = calculateIndex(Generation1, Generation2, Flag, 15, 7, 6, 7);
+                console.log("vào else này")
+                index1 = calculateIndex(Generation1, Generation2, Flag, 7, 6, 6, 7);
             }
         }
         setResult(objResult, index1, index2);
@@ -391,6 +403,7 @@ async function getResultCompareWithMemberID1SameID2(DefferenceGeneration, Gender
     let objResult = {};
 
     let mapping = {
+        '0': [Gender1 === 1 ? 23 : 24, Gender2 === 1 ? 23 : 24],
         '-1': [20, Gender2 === 1 ? 8 : 9],
         '1': [Gender1 === 1 ? 8 : 9, 20],
         '-2': [21, Gender2 === 1 ? 4 : 5],
@@ -417,7 +430,7 @@ const generationMappings = {
     '-3': [21, (gender) => gender === 1 ? 2 : 3], '3': [(gender) => gender === 1 ? 2 : 3, 21],
     '-2': [21, (gender) => gender === 1 ? 4 : 5], '2': [(gender) => gender === 1 ? 4 : 5, 21],
     '-1': [20, (gender) => gender === 1 ? 8 : 9], '1': [(gender) => gender === 1 ? 8 : 9, 20],
-    '0': [16, 15],
+    '0': [23, 24, (gender) => gender === 1 ? [23, 24] : [24, 23]],
 };
 //Nguyễn Lê Hùng
 async function getResultCompareInFamily(DefferenceGeneration, Gender1, Gender2) {
@@ -427,7 +440,16 @@ async function getResultCompareInFamily(DefferenceGeneration, Gender1, Gender2) 
         const mapping = generationMappings[DefferenceGeneration];
         const index1 = typeof mapping[0] === 'function' ? mapping[0](Gender1) : mapping[0];
         const index2 = typeof mapping[1] === 'function' ? mapping[1](Gender2) : mapping[1];
-        setResult(objResult, index1, index2);
+
+        if (typeof mapping[2] === 'function') {
+            const [result1, result2] = mapping[2](Gender1);
+            setResult(objResult, result1, result2);
+        } else {
+            setResult(objResult, index1, index2);
+        }
+    } else {
+        // Mặc định khi không có logic điều kiện
+        setResult(objResult, 23, 24);
     }
 
     return objResult;
@@ -473,12 +495,16 @@ async function GetResultCompare(MemberId1, MemberId2, DifferenceGeneration, Flag
     try {
         if (MemberId1 == MemberId2) {
             let result = await getResultCompareWithMemberID1SameID2(DifferenceGeneration, Gender1, Gender2);
+            console.log('DifferenceGeneration: ' + DifferenceGeneration)
+            console.log("Vào == nhau")
             console.log("Kết quả:", result);
             return result;
         }
         let checkMarriage = await checkMarriageRelationship(MemberId1, MemberId2)
         if (checkMarriage) {
             let result = await getResultCompareInFamily(DifferenceGeneration, Gender1, Gender2);
+            console.log('DifferenceGeneration: ' + DifferenceGeneration)
+            console.log("vào check married")
             console.log("Kết quả:", result);
             return result;
         }
@@ -507,11 +533,13 @@ async function GetResultCompare(MemberId1, MemberId2, DifferenceGeneration, Flag
             if (result1.FatherID != null && result2.FatherID != null && result1.MotherID != null && result2.MotherID != null) {
                 if (result1.FatherID == result2.FatherID && result1.MotherID == result2.MotherID) {
                     let result = await getResultCompareToMember(DifferenceGeneration, getGeneration1, getGeneration2, Flag, Gender1, Gender2, resultCheck);
+                    console.log("vào if 1")
                     console.log("Kết quả:", result);
                     return result;
                 } else {
                     let MarriageNumber1 = await getMarriageNumber(result1.FatherID, result1.MotherID);
                     let MarriageNumber2 = await getMarriageNumber(result2.FatherID, result2.MotherID)
+                    console.log("vào else 1")
                     console.log('MarriageNumber1: ' + MarriageNumber1)
                     console.log('MarriageNumber2: ' + MarriageNumber2)
                     let result = await getResultCompareToMember(DifferenceGeneration, MarriageNumber1, MarriageNumber2, Flag, Gender1, Gender2, resultCheck);
@@ -519,9 +547,34 @@ async function GetResultCompare(MemberId1, MemberId2, DifferenceGeneration, Flag
                     return result;
                 }
             } else {
-                let result = await getResultCompareToMember(DifferenceGeneration, getGeneration1, getGeneration2, Flag, Gender1, Gender2, resultCheck);
-                console.log("Kết quả:", result);
-                return result;
+                console.log("vào else 2")
+                console.log('FatherID1: ' + result1.FatherID)
+                console.log('FatherID2: ' + result2.FatherID)
+                console.log('MotherID1: ' + result1.MotherID)
+                console.log('MotherID2: ' + result2.MotherID)
+                if (result1.FatherID == result2.FatherID) {
+                    if (result1.MotherID == result2.MotherID) {
+                        let result = await getResultCompareToMember(DifferenceGeneration, getGeneration1, getGeneration2, Flag, Gender1, Gender2, resultCheck);
+                        console.log("Kết quả:", result);
+                        return result;
+                    } else {
+                        let result = {};
+                        result.result1 = "Không đủ dữ liệu để xác định mối quan hệ";
+                        result.result2 = "Không đủ dữ liệu để xác định mối quan hệ";
+                        return result;
+                    }
+                } else if (result1.MotherID == result2.MotherID) {
+                    if (result1.FatherID == result2.FatherID) {
+                        let result = await getResultCompareToMember(DifferenceGeneration, getGeneration1, getGeneration2, Flag, Gender1, Gender2, resultCheck);
+                        console.log("Kết quả:", result);
+                        return result;
+                    } else {
+                        let result = {};
+                        result.result1 = "Không đủ dữ liệu để xác định mối quan hệ";
+                        result.result2 = "Không đủ dữ liệu để xác định mối quan hệ";
+                        return result;
+                    }
+                }
             }
 
         }
