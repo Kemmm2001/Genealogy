@@ -357,8 +357,9 @@
                 </div>
                 <div class="col-3 d-flex flex-row" style="padding-bottom: 4px; padding-right: 4px;">
                   <select class="form-select h-100 w-100">
-                    <option selected>Tháng</option>
+                    <option selected>Giờ</option>
                     <option>Ngày</option>
+                    <option>Tháng</option>
                   </select>
                 </div>
               </div>
