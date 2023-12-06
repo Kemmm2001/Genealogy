@@ -10,7 +10,7 @@ const exportExcel = async (req, res) => {
             const workbook = new Excel.Workbook();
             await addDataToSheet(workbook, 'Event Data', data);
     
-            const fileName = `/uploads/excel/ExportEvent/event.xlsx`;
+            const fileName = `event.xlsx`;
             await workbook.xlsx.writeFile(fileName);
     
         return res.send(Response.successResponse({ fileName: result.fileName }, 'Export thành công'));
