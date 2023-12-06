@@ -24,18 +24,7 @@
               <input v-model="accountInfor.email" type="text" class="form-control" disabled />
             </div>
           </div>
-          <div class="func-detail-item mt-3">
-            <div class="pb-2" style="font-weight: bold;">Quyền hạn tài khoản</div>
-            <div>
-              <input type="text" class="form-control" value="Quản trị viên" disabled />
-            </div>
-          </div>
-          <div class="w-100 d-flex mt-3" style="justify-content: end;">
-            <div @click="changeUserName()" class="btn bg-primary text-white">Lưu thay đổi</div>
-          </div>
-        </div>
-        <div v-if="editRoleSelected" class="func-detail w-100 h-100 position-relative">
-          <div class="func-detail-item">
+          <div class="mt-3 func-detail-item">
             <div class="pb-2" style="font-weight: bold;">Gia tộc họ</div>
             <div>
               <input type="text" class="form-control" value="ABC DEF GHI" disabled />
@@ -47,7 +36,19 @@
               <input type="text" class="form-control" value="ABC DEF GHI" disabled />
             </div>
           </div>
-          <div class="mt-3">
+          <div class="func-detail-item mt-3">
+            <div class="pb-2" style="font-weight: bold;">Quyền hạn tài khoản</div>
+            <div>
+              <input type="text" class="form-control" value="Quản trị viên" disabled />
+            </div>
+          </div>
+          <div class="w-100 d-flex mt-3" style="justify-content: end;">
+            <div @click="changeUserName()" class="btn bg-primary text-white">Lưu thay đổi
+            </div>
+          </div>
+        </div>
+        <div v-if="editRoleSelected" class="func-detail w-100 h-100 position-relative">
+          <div class="">
             <div class="pb-2 acc-list-container" style="font-weight: bold; height: 32px;">Tài khoản thành viên thuộc gia tộc</div>
             <div class="family-account">
               <div v-for="(m, index) in listMemberRole" :key="index" :class="{
