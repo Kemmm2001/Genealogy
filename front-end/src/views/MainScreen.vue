@@ -1102,6 +1102,8 @@ export default {
       helpNonExist: false,
       helpTree: false,
 
+      idNodeWatching:null,
+
       numberDeath: 0,
       listMember: [],
     };
@@ -1162,6 +1164,7 @@ export default {
         sticky: false,
         nodeMouseClick: FamilyTree.action.none,
       });
+      const self = this;
       this.family.onInit(() => {
         this.family.load(this.nodes);
       });
@@ -1213,7 +1216,7 @@ export default {
       });
 
       // right click
-      const self = this;
+      
       if (this.memberRole != 3) {
         this.family.onInit(function () {
           this.element.addEventListener(
@@ -1225,7 +1228,9 @@ export default {
               }
               if (nodeElement && nodeElement.hasAttribute("data-n-id")) {
                 let id = nodeElement.getAttribute("data-n-id");
+                self.idNodeWatching = id;
                 self.OnpenModal_SelectOption(id);
+              
               }
             },
             false
@@ -2470,6 +2475,7 @@ export default {
       this.nodeRightClickHighLight = id;
       this.$modal.show("Select-option-Modal");
       this.CurrentIdMember = id;
+    //  this.removeFromSelectedNodes(id);
     },
     getAllMarriedInMember(membersArray) {
       this.ListMarriedMember = this.nodes.filter((member) =>
@@ -2479,8 +2485,9 @@ export default {
 
     closeSelectModal() {
       this.CurrentIdMember = 0;
-      //  this.RemoveHightLight();
+      this.removeFromSelectedNodes(this.idNodeWatching)
       this.$modal.hide("Select-option-Modal");
+      
     },
     removeRelationship() {
       HTTP.put("removeRelationship", {
