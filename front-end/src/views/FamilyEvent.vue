@@ -386,6 +386,12 @@
         </div>
       </modal>
     </div>
+    <div v-if="listEvent.length != 0">
+
+    </div>
+    <div v-else>
+
+    </div>
   </div>
 </template>
 

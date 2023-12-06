@@ -208,7 +208,7 @@ function deleteMember(memberId) {
 // nguyễn anh tuấn
 function UpdateMemberRelated(member , listMember) {
     return new Promise(async (resolve, reject) => {
-        console.log("Vào hàm UpdateMemberRelated với member: " + JSON.stringify(member));
+        console.log("Vào hàm UpdateMemberRelated với member: " + JSON.stringify(member.MemberID));
         if (CoreFunction.isEmptyOrNullOrSpaces(member.MemberID)) {
             console.log("member null");
             resolve();

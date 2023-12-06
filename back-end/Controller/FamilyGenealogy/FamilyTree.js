@@ -146,7 +146,6 @@ var getListHistoryEmail = async (req, res) => {
 
 var getFamilyHead = async (req, res) => {
     try {
-        console.log("đã vào api")
         let CodeID = req.query.CodeID;
         let data = await FamilyTreeService.getFamilyHeadInGenealogy(CodeID);
         console.log('dataaaaaaaaaa: ' + data)
