@@ -122,10 +122,10 @@
                   <td>{{event.Status == 1 ? "Chưa kết thúc": "Đã Kết Thúc"}}</td>
                   <td @click="showEditEventModal(event.EventID)">{{ event.Place }}</td>
                   <td>
-                    <div @click="showParticipantList(event.EventID)" class="btn bg-primary text-white">Thành viên tham gia sự kiện</div>
+                    <div @click="showParticipantList(event.EventID)" class="btn bg-primary text-white">Danh sách thành viên</div>
                   </td>
                   <td>
-                    <div @click="showMemberList(event.EventID)" class="btn bg-primary text-white" v-if="event.Status == 1">Thông báo</div>
+                    <div @click="showMemberList()" class="btn bg-primary text-white">Thông báo</div>
                   </td>
                 </tr>
               </tbody>
@@ -300,7 +300,7 @@
         <div class="form-group h-100">
           <div class="w-100 h-100 modal-bg position-relative">
             <div class="d-flex flex-row w-100 align-items-center position-relative">
-              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Gửi lời mới đến thành viên</div>
+              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Danh sách thành viên</div>
               <div class="close-add-form" @click="closeMemberList()">
                 <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                   <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -312,10 +312,7 @@
                 <div class="col-3" style="padding-bottom: 4px; padding-right: 4px;">
                   <input type="text" class="form-control h-100 w-100" placeholder="Tên thành viên" />
                 </div>
-                <div class="col-6" style="padding-bottom: 4px; padding-right: 4px;">
-                  <input v-model="numberExpire" min="0" type="number" class="form-control" placeholder="Thời gian lời mời hết hạn" />
-                </div>
-                <!-- <div class="col-3" style="padding-bottom: 4px; padding-right: 4px;">
+                <div class="col-3" style="padding-bottom: 4px; padding-right: 4px;">
                   <select class="form-select h-100 w-100">
                     <option selected>Độ tuổi</option>
                     <option>1</option>
@@ -323,7 +320,16 @@
                     <option>1</option>
                     <option>1</option>
                   </select>
-                </div>-->
+                </div>
+                <div class="col-3" style="padding-bottom: 4px; padding-right: 4px;">
+                  <select class="form-select h-100 w-100">
+                    <option selected>Độ tuổi</option>
+                    <option>1</option>
+                    <option>1</option>
+                    <option>1</option>
+                    <option>1</option>
+                  </select>
+                </div>
               </div>
               <div class="w-100" style="overflow-y: auto; height: 100%;">
                 <div v-for="list in listMember" :key="list.id" class="noti-modal-member d-flex flex-row align-items-center px-2" :class="{ chosen: ListMemberToSendEmail.includes(list.MemberID)}" @click="toggleSelection(list.MemberID)">
@@ -337,7 +343,7 @@
               </div>
             </div>
             <div class="modal-footer position-absolute w-100" style="bottom: 0;">
-              <div @click="sendMessageToConfirmEvent()" class="bg-primary text-white btn mx-2">Gửi</div>
+              <div @click="closeParticipantList()" class="bg-primary text-white btn mx-2">Gửi</div>
               <div @click="closeParticipantList()" class="bg-primary text-white btn mx-2">Gửi cho tất cả</div>
             </div>
           </div>
@@ -358,7 +364,6 @@ require("moment-timezone");
 export default {
   data() {
     return {
-      numberExpire: null,
       title: null,
       eventFamily: {
         EventID: null,
@@ -396,6 +401,7 @@ export default {
       indexClickDay: null,
       indexClickWeek: null,
 
+      currentEventId: null,
       listEvent: [],
       listEventFilter: [],
       listEventByDate: [],
@@ -404,7 +410,6 @@ export default {
       checkAll: false,
       ListMemberToSendEmail: [],
       listEventAttendance: null,
-      currentEventID: null,
     };
   },
   computed: {
@@ -458,6 +463,7 @@ export default {
       } else {
         this.ListMemberToSendEmail.push(id);
       }
+      console.log(this.ListMemberToSendEmail);
     },
 
     convertSolarToLunar(dateConvert) {
@@ -615,7 +621,7 @@ export default {
     addEvent() {
       this.eventFamily.StartDate = `${this.startDate} ${this.startHour}:${this.startMinute}`;
       this.eventFamily.EndDate = `${this.endDate} ${this.endHour}:${this.endMinute}`;
-      if (this.eventFamily.StartDate > this.eventFamily.EndDate) {
+      if (this.eventFamily.StartDate > this.eventFamily.EventName) {
         this.NotificationsDelete("Ngày bắt đầu đang lớn hơn ngày kết thúc");
       } else {
         if (
@@ -812,8 +818,6 @@ export default {
       this.$modal.hide("edit-event-modal");
     },
     showParticipantList(EventID) {
-      console.log(EventID);
-      this.currentEventID = EventID;
       this.listEventAttendance = null;
       this.title = this.listEventFilter.find(
         (element) => element.EventID === EventID
@@ -831,33 +835,6 @@ export default {
         this.$modal.show("participant-list");
       });
     },
-    sendMessageToConfirmEvent() {
-      console.log(this.currentEventID);
-      if (this.numberExpire != null) {
-        HTTP.get("getIdAndEmail", {
-          params: {
-            ListMemberID: this.ListMemberToSendEmail,
-            eventId: this.currentEventID,
-          },
-        }).then((respone) => {
-          HTTP.post("inviteMail", {
-            data: respone.data.data,
-            time: this.numberExpire + "d",
-            eventId: this.currentEventID,
-          }).then((respone) => {
-            if (respone.data.success == true) {
-              this.NotificationsScuccess("Gửi thông báo thành công");
-              this.time = null;
-              this.ListMemberToSendEmail = [];
-            }
-          });
-        });
-      } else {
-        this.NotificationsDelete(
-          "Bạn hãy chọn thời gian hết hạn của thông báo"
-        );
-      }
-    },
     closeParticipantList() {
       this.$modal.hide("participant-list");
     },
@@ -867,8 +844,7 @@ export default {
     closeEventModal() {
       this.$modal.hide("event-modal");
     },
-    showMemberList(EventID) {
-      this.currentEventID = EventID;
+    showMemberList() {
       this.$modal.show("member-list");
     },
     closeMemberList() {
