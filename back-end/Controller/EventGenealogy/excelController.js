@@ -13,13 +13,14 @@ const exportExcel = async (req, res) => {
             const fileName = `event.xlsx`;
             await workbook.xlsx.writeFile(fileName);
     
-            return res.send(Response.successResponse(nul, 'Export thành công'));
+        return res.send(Response.successResponse({ fileName: result.fileName }, 'Export thành công'));
 
         }
-        return res.send(Response.internalServerErrorResponse)
+        return res.send(Response.internalServerErrorResponse())
        
     } catch (error) {
-        return res.send(Response.internalServerErrorResponse)
+        console.log(error)
+        return res.send(Response.internalServerErrorResponse())
 
     }
 };

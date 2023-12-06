@@ -5,19 +5,20 @@ const db = require('../../Models/ConnectDB')
 function getAllEvent(CodeID) {
     return new Promise((resolve, reject) => {
         try {
-            let query = `SELECT * FROM eventfamily where CodeID = '${CodeID}'`;
+            let query = `SELECT * FROM eventfamily WHERE CodeID = ${CodeID}`;
             db.connection.query(query, (err, result) => {
                 if (err) {
-                    console.log(err)
-                    reject(err)
+                    console.log(err);
+                    reject(err);
                 } else {
-                    resolve(result)
+                    resolve(result);
                 }
-            })
+            });
         } catch (error) {
-            console.log(error)
+            console.log(error);
+            reject(error);
         }
-    })
+    });
 }
 
 //Nguyễn Lê Hùng
@@ -227,12 +228,19 @@ async function UpdateEvent(objData) {
 async function RemoveEvent(EventID) {
     return new Promise((resolve, reject) => {
         try {
-            let query = `DELETE FROM eventfamily WHERE EventID = ${EventID}`;
+            let query = `DELETE from genealogy.eventattendance where EventID = ${EventID}`;
             db.connection.query(query, (err) => {
-                if (err) {
-                    reject(false)
+                if (!err) {
+                    let query = `DELETE FROM eventfamily WHERE EventID = ${EventID}`;
+                    db.connection.query(query, (err) => {
+                        if (err) {
+                            reject(false)
+                        } else {
+                            resolve(true)
+                        }
+                    })
                 } else {
-                    resolve(true)
+                    reject(false)
                 }
             })
         } catch (error) {

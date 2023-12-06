@@ -38,13 +38,24 @@ var getEventAttendance = async (req, res) => {
 var getListMemberIDAndEmail = async (req, res) => {
     try {
         let ListMemberID = req.query.ListMemberID;
+        let eventId = req.query.eventId
         console.log('ListMember: ' + ListMemberID)
-        let data = await EventManagementService.getListEmailAndMemberID(ListMemberID);
-        if (data) {
-
+        for (let i = 0; i < ListMemberID.length; i++) {
+            let result = await EventAttendence.insertMemberAttend(eventId, ListMemberID[i])
+            if (!result) {
+                return res.send(Response.internalServerErrorResponse())
+            }
+        }
+        if (ListMemberID) {
+            let data = await EventManagementService.getListEmailAndMemberID(ListMemberID);
+            if (data) {
+                return res.send(Response.successResponse(data))
+            } else {
+                return res.send(Response.dataNotFoundResponse())
+            }
         }
     } catch (error) {
-
+        return res.send(Response.dataNotFoundResponse(error))
     }
 }
 
@@ -396,6 +407,24 @@ var ReadXLSX = async (req, res) => {
     }
 };
 
+//Nguyễn Lê Hùng
+var checkConfirmedEvent = async (req, res) => {
+    try {
+        let EventID = req.body.EventID;
+        let MemberID = req.body.MemberID;
+        let token = req.body.token;
+        let data = await EventAttendence.checkConfirmedEvent(EventID, MemberID, token);
+        console.log('data: ' + data)
+        if (data) {
+            return res.send(Response.successResponse(data))
+        } else {
+            return res.send(Response.dataNotFoundResponse(null, 'Thành viên chưa confirm'))
+        }
+    } catch (error) {
+
+    }
+}
+
 var addAttendence = async (req, res) => {
     try {
         let { eventID } = req.body
@@ -450,18 +479,18 @@ var addAttendence = async (req, res) => {
 var inviteMail = async (req, res) => {
     try {
         const requestBody = req.body;
-        console.log(requestBody)
-        const emails = requestBody.data.map(item => item.email);
-        const memberIds = requestBody.data.map(item => item.memberId);
+        const emails = requestBody.data.map(item => item.Email);
+        const memberIds = requestBody.data.map(item => item.MemberID);
+        const eventId = requestBody.eventId;
         const time = requestBody.time;
 
+        console.log('requestBody: ' + requestBody)
         for (let i = 0; i < memberIds.length; i++) {
             const memberId = memberIds[i];
-            const token = await signInviteToken(memberId, time);
+            const token = await signInviteToken(memberId, eventId, time);
 
             const data = await EventAttendence.Update(memberId, token);
-            const link = `http://localhost:3003/api/v1/verify-invite?token=${token}`;
-
+            const link = `http://localhost:3006/CfEvent?token=${token}`;
             if (data === true) {
                 const mailOptions = {
                     to: emails[i],
@@ -481,17 +510,57 @@ var inviteMail = async (req, res) => {
         return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
     }
 }
+
+var getEventByToken = async (req, res) => {
+    try {
+        let token = req.query.token;
+        console.log('token: ' + token)
+        let payload = await verifyInviteToken(token);
+        console.log('payload: ' + payload.memberId)
+        console.log('Result:', JSON.stringify(payload, null, 2));
+        if (payload.error === 'Token expired') {
+            return res.send(Response.internalServerErrorResponse(null, "Link đã hết hạn"));
+        }
+        let tokenData = await EventAttendence.checkTokenEvent(token);
+        if (tokenData == 0) {
+            return res.send(Response.dataNotFoundResponse(null, 'Link không đúng'));
+        }
+        return res.send(Response.successResponse(payload))
+    } catch (error) {
+        return res.send(Response.dataNotFoundResponse());
+    }
+}
+
+var UpdateIsGoing = async (req, res) => {
+    try {
+        let memberId = req.body.memberId;
+        let eventId = req.body.eventId;
+        let IsGoing = req.body.IsGoing
+        let data = await EventAttendence.UpdateIsGoing(memberId, eventId, IsGoing)
+        if (data) {
+            res.send(Response.successResponse(null, 'Phản hồi thành công. Xin cảm ơn bạn'))
+        } else {
+            res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống'))
+        }
+    } catch (error) {
+
+    }
+}
+
 var verifyMail = async (req, res) => {
     try {
-        const token = req.query.token;
-        const IsGoing = req.body.IsGoing;
-        const memberId = await verifyInviteToken(token)
-        const tokenData = EventAttendence.checkToken(token);
+        let token = req.query.token;
+        let IsGoing = req.body.IsGoing;
+        let payload = await verifyInviteToken(token);
+        if (payload.error === 'Token expired') {
+            return res.send(Response.internalServerErrorResponse(null, "Link đã hết hạn"));
+        }
+        let tokenData = await EventAttendence.checkTokenEvent(token);
         if (tokenData == 0) {
-            return res.send(Response.dataNotFoundResponse(null, 'không thấy token'));
+            return res.send(Response.dataNotFoundResponse(null, 'Link không đúng'));
         }
 
-        let data = await EventAttendence.UpdateIsGoing(memberId, IsGoing)
+        let data = await EventAttendence.UpdateIsGoing(payload.memberId, payload.eventId, IsGoing)
 
         if (data == true) {
             return res.send(Response.successResponse());
@@ -500,15 +569,15 @@ var verifyMail = async (req, res) => {
         }
 
     } catch (error) {
-        return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+        return res.send(Response.internalServerErrorResponse(error, error.message));
 
     }
 }
 
 
-
 module.exports = {
     getAllEventGenealogy, InsertEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth,
     SendSMS, SendEmail, searchEvent, filterEvent, SendSMSToMember, getInformationEvent, sendEmailToMember
-    , addAttendence, inviteMail, verifyMail, ReadXLSX, updateStatusEventGenealogy, getEventAttendance, getListMemberIDAndEmail
+    , addAttendence, inviteMail, verifyMail, ReadXLSX, updateStatusEventGenealogy, getEventAttendance,
+    getListMemberIDAndEmail, getEventByToken, checkConfirmedEvent, UpdateIsGoing
 }

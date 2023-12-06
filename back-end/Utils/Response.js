@@ -16,7 +16,7 @@ let coreResponse = (success, status_code, message, data) => {
 
 let coreErrorResponse = (status_code, message, data) => {
     try {
-        // db.connection.rollback();
+        db.connection.rollback();
         return coreResponse(false, status_code, message, data);
     } catch (error) {
         console.log(error)

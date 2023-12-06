@@ -14,11 +14,11 @@ async function exportData(memberIDs) {
         await addDataToSheet(workbook, 'Job Data', jobs);
         await addDataToSheet(workbook, 'Contact Data', contacts);
 
-        const fileName = `all_members_data.xlsx`;
+        const fileName = `/uploads/excel/Backup/all_members_data.xlsx`;
         await workbook.xlsx.writeFile(fileName);
         console.log(`Tất cả dữ liệu đã được xuất thành công vào file ${fileName}`);
 
-        return { success: true };
+        return { success: true, fileName: fileName };
     } catch (error) {
         console.error('Lỗi khi xử lý dữ liệu:', error);
         throw error;
@@ -85,20 +85,23 @@ async function importData(file) {
         const educationWorksheet = workbook.getWorksheet('Education Data');
         const jobWorksheet = workbook.getWorksheet('Job Data');
 
+        const promises = [];
+
         familyWorksheet.eachRow(async (row, rowNumber) => {
             if (rowNumber > 1) {
                 const values = row.values;
                 const memberID = values[1];
                 await truncateTablesForMember(memberID);
-
-               
             }
         });
 
-        //  await insertDataToTable(familyWorksheet, 'familymember');
-        //  await insertDataToTable(contactWorksheet, 'contact');
-        //  await insertDataToTable(educationWorksheet, 'education');
-        //  await insertDataToTable(jobWorksheet, 'job');
+        promises.push(insertDataToTable(familyWorksheet, 'familymember'));
+        promises.push(insertDataToTable(contactWorksheet, 'contact'));
+        promises.push(insertDataToTable(educationWorksheet, 'education'));
+        promises.push(insertDataToTable(jobWorksheet, 'job'));
+
+        // Chờ cho tất cả các promises hoàn thành
+        await Promise.all(promises);
 
         return { success: true };
     } catch (error) {
@@ -109,15 +112,47 @@ async function importData(file) {
 
 
 async function insertDataToTable(worksheet, tableName) {
-    const headers = worksheet.getRow(1).values; // Assumed headers are in the first row
+    const headers = worksheet.getRow(1).values.filter(header => header !== ''); // Lấy các headers từ hàng đầu tiên và loại bỏ các header trống
 
-    worksheet.eachRow((row, rowNumber) => {
-        if (rowNumber > 1) {
-            const values = row.values;
-            const query = `INSERT INTO ${tableName} (${headers.join(',')}) VALUES (${values.map(v => typeof v === 'string' ? `'${v}'` : v).join(',')})`;
-            db.connection.query(query);
+    for (let rowNumber = 2; rowNumber <= worksheet.rowCount; rowNumber++) {
+        const row = worksheet.getRow(rowNumber);
+
+        const formattedValues = [];
+        for (let i = 1; i <= headers.length; i++) {
+            const cellValue = row.getCell(i).value;
+            let formattedValue = '';
+
+            // Kiểm tra và xử lý các giá trị để đảm bảo đúng cú pháp trong câu truy vấn SQL
+            if (cellValue === null || cellValue === '') {
+                formattedValue = 'NULL';
+            } else if (typeof cellValue === 'string') {
+                formattedValue = `'${cellValue.replace(/'/g, "''")}'`;
+            } else {
+                formattedValue = cellValue;
+            }
+
+            formattedValues.push(formattedValue);
         }
-    });
+
+        const query = `INSERT INTO ${tableName} (${headers.join(',')}) VALUES (${formattedValues.join(',')})`;
+        console.log(query)
+        try {
+            // Thực hiện truy vấn SQL bằng await để đảm bảo thứ tự chạy của các truy vấn
+            const results = await new Promise((resolve, reject) => {
+                db.connection.query(query, (error, results) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(results);
+                    }
+                });
+            });
+            console.log("Inserted row:", results); // Log kết quả của việc chèn dòng dữ liệu
+        } catch (error) {
+            console.error("Error inserting row:", error); // Bắt lỗi nếu có lỗi xảy ra khi chèn dữ liệu
+        }
+    }
 }
+
 
 module.exports = { exportData, importData };
