@@ -12,7 +12,10 @@ const initWebOthers = require('./Router/Others')
 
 const bodyParser = require('body-parser');
 
-
+app.use((req, res, next) => {
+    console.log(`Nhận request cho API: ${req.url}`);
+    next(); // Chuyển tiếp yêu cầu đến middleware hoặc định tuyến tiếp theo
+});
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(express.json());

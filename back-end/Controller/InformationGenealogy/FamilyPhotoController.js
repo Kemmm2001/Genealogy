@@ -46,6 +46,15 @@ var updateFamilyPhoto = async (req, res) => {
     try {
         // Log ra thông tin trong req.body
         console.log('Request body: ', req.body);
+        console.log("req.file: ", req.file);
+        if (!CoreFunction.isDataStringExist(req.file)) {
+            return res.send(Response.badRequestResponse(null, "File ảnh không hợp lệ"));
+        }
+        // nếu file ảnh ko thuộc png, jpg, jpeg thì ko cho update
+        if (!req.file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+            CoreFunction.deleteImage(req.file.path);
+            return res.send(Response.badRequestResponse(null, "File ảnh không hợp lệ"));
+        }
         // nếu có file ảnh thì lưu đường dẫn vào req.body.PhotoUrl, còn ko thì gán null
         if (req.file != null) {
             req.body.PhotoUrl = req.file.path;

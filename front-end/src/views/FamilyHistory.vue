@@ -27,7 +27,7 @@
       </div>
     </div>
     <div class="h-100 position-absolute p-2" style="top: 0; right: 0; width: 80%; background-color: #f2f2f2;">
-      <draggable :list="listHistory" :disabled="!enabled" class="list-group h-100" style="overflow-y: auto;" ghost-class="ghost" :move="checkMove" @start="dragging = true" @end="dragging = false" @update="onUpdate">
+      <draggable :list="listHistory" :disabled="!enabled" class="list-group h-100" style="overflow-y: auto;" ghost-class="ghost" :move="checkMove" @start="dragging = true" @end="dragging = false">
         <div v-for="element in listHistory" :key="element.HistoryID" class="w-100" :style="{ 'min-height': '72px', 'float': element.HistoryID % 2 === 0 ? 'right' : 'left'} ">
           <div @click="getInforHistory(element.HistoryID)" class="list-group-item position-relative h-100" :style="{'width': '49%','float': element.HistoryID % 2 === 0 ? 'right' : 'left'}">
             <div class="position-absolute history-start">{{ formatDate(element.startDate) }}</div>
@@ -70,6 +70,12 @@
           </div>
         </div>
       </modal>
+    </div>
+    <div v-if="listHistory.length != 0">
+
+    </div>
+    <div v-else>
+
     </div>
   </div>
 </template>
@@ -164,28 +170,7 @@ export default {
           console.log(e);
         });
     },
-    //nguyễn lê hùng
-    onUpdate(event) {
-      let draggedElement = this.listHistory[event.oldIndex];
-      let targetElement = this.listHistory[event.newIndex];
-      HTTP.put("swapPosition", {
-        HistoryID1: draggedElement.HistoryID,
-        HistoryID2: targetElement.HistoryID,
-        Position1: draggedElement.order_position,
-        Position2: targetElement.order_position,
-      })
-        .then((response) => {
-          if (response.data.success == true) {
-            this.NotificationsScuccess(response.data.message);
-            this.getListHistory();
-          } else {
-            this.NotificationsDelete(response.data.message);
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
+
     //nguyễn lê hùng
     removeHistory() {
       HTTP.get("delete-familyhistory", {

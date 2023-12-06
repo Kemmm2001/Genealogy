@@ -7,28 +7,27 @@ var compareMember = async (req, res) => {
         let idMember1 = req.query.MemberID1;
         let idMember2 = req.query.MemberID2;
         console.log('idMember1: ' + idMember1)
-        let newIdToCampereMember1;
-        let newIdToCampereMember2;
+        console.log('idMember2: ' + idMember2)
         let Flag = false;
         let generationMember1 = await CompareMemberService.getGenerationByID(req.query.MemberID1);
         let generationMember2 = await CompareMemberService.getGenerationByID(req.query.MemberID2);
 
         //Kiểm tra xem người đó có phải làm dâu hoặc làm rể không và gán id mới nhất
         if (generationMember1[0].Generation != 1) {
-            newIdToCampereMember1 = await CompareMemberService.checkBrideOrGroom(req.query.MemberID1)
-            if (newIdToCampereMember1 != req.query.MemberID1) {
+            idMember1 = await CompareMemberService.checkBrideOrGroom(req.query.MemberID1)
+            if (idMember1 != req.query.MemberID1) {
                 Flag = true
             }
         }
         if (generationMember2[0].Generation != 1) {
-            newIdToCampereMember2 = await CompareMemberService.checkBrideOrGroom(req.query.MemberID2)
-            if (newIdToCampereMember2 != req.query.MemberID2) {
+            idMember2 = await CompareMemberService.checkBrideOrGroom(req.query.MemberID2)
+            if (idMember2 != req.query.MemberID2) {
                 Flag = true
             }
         }
         let DefferenceGeneration = generationMember2[0].Generation - generationMember1[0].Generation;
         if (DefferenceGeneration == 0) {
-            let data = await CompareMemberService.GetResultCompare(newIdToCampereMember1, newIdToCampereMember2, DefferenceGeneration, Flag, generationMember1[0].Male, generationMember2[0].Male)
+            let data = await CompareMemberService.GetResultCompare(idMember1, idMember2, DefferenceGeneration, Flag, generationMember1[0].Male, generationMember2[0].Male)
             if (data) {
                 return res.send(Response.successResponse(data))
             } else {
@@ -36,18 +35,20 @@ var compareMember = async (req, res) => {
             }
 
         } else if (DefferenceGeneration < 0) {
-            let resultCheckMaternalOrPaternal = await CompareMemberService.checkMaternalOrPaternal(newIdToCampereMember1);
-            idMember1 = await CompareMemberService.getIdToCompare(DefferenceGeneration, newIdToCampereMember1);     
-            let data = await CompareMemberService.GetResultCompare(idMember1, newIdToCampereMember2, DefferenceGeneration, Flag, generationMember1[0].Male, generationMember2[0].Male, resultCheckMaternalOrPaternal)
+            console.log("vào nhỏ hơn 0")
+            let resultCheckMaternalOrPaternal = await CompareMemberService.checkMaternalOrPaternal(idMember1);
+            idMember1 = await CompareMemberService.getIdToCompare(DefferenceGeneration, idMember1);
+            let data = await CompareMemberService.GetResultCompare(idMember1, idMember2, DefferenceGeneration, Flag, generationMember1[0].Male, generationMember2[0].Male, resultCheckMaternalOrPaternal)
             if (data) {
                 return res.send(Response.successResponse(data))
             } else {
                 return res.send(Response.badRequestResponse(null, 'Lỗi hệ thống'))
             }
         } else {
-            let resultCheckMaternalOrPaternal = await CompareMemberService.checkMaternalOrPaternal(newIdToCampereMember2);
-            idMember2 = await CompareMemberService.getIdToCompare(DefferenceGeneration, newIdToCampereMember2);
-            let data = await CompareMemberService.GetResultCompare(newIdToCampereMember1, idMember2, DefferenceGeneration, Flag, generationMember1[0].Male, generationMember2[0].Male, resultCheckMaternalOrPaternal)
+            console.log("vào lớn hơn 0")
+            let resultCheckMaternalOrPaternal = await CompareMemberService.checkMaternalOrPaternal(idMember2);
+            idMember2 = await CompareMemberService.getIdToCompare(DefferenceGeneration, idMember2);
+            let data = await CompareMemberService.GetResultCompare(idMember1, idMember2, DefferenceGeneration, Flag, generationMember1[0].Male, generationMember2[0].Male, resultCheckMaternalOrPaternal)
             if (data) {
                 return res.send(Response.successResponse(data))
             } else {

@@ -50,22 +50,32 @@
               </thead>
               <tbody>
                 <tr class="normal" v-for="(week, weekIndex) in dayOfMonth" :key="weekIndex">
-                  <td class="ngaythang p-0" v-for="(day, dayIndex) in week" :key="dayIndex" :class="{ choose: dayIndex == indexClickDay && weekIndex == indexClickWeek }" @click="checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`) ? getListEventByDate(`${day.solar.year}-${day.solar.month}-${day.solar.date}`) : null" :style="{ color: day.solar.month != currentMonth ? '#bebebe' : 'black' }">
-                    <div v-if="day.solar.date == 1" class="cn" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">
+                  <td class="ngaythang p-0" v-for="(day, dayIndex) in week" :key="dayIndex"
+                    :class="{ choose: dayIndex == indexClickDay && weekIndex == indexClickWeek }"
+                    @click="checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`) ? getListEventByDate(`${day.solar.year}-${day.solar.month}-${day.solar.date}`) : null"
+                    :style="{ color: day.solar.month != currentMonth ? '#bebebe' : 'black' }">
+                    <div v-if="day.solar.date == 1" class="cn"
+                      @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">
                       <a>{{ day.solar.date + "/" + (day.solar.month) }}</a>
                     </div>
-                    <div v-if="day.solar.date != 1" class="cn" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">
+                    <div v-if="day.solar.date != 1" class="cn"
+                      @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">
                       <a>{{ day.solar.date }}</a>
                     </div>
-                    <div v-if="day.lunar.date == 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">
+                    <div v-if="day.lunar.date == 1" class="am"
+                      @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">
                       <a>{{ day.lunar.date + "/" + (day.lunar.month) }}</a>
                     </div>
-                    <div v-if="day.lunar.date != 1" class="am" @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">
+                    <div v-if="day.lunar.date != 1" class="am"
+                      @click="setChooseDate(day.solar.date, day.solar.month, day.solar.year)">
                       <a>{{ day.lunar.date }}</a>
                     </div>
-                    <div class="event-icon" v-if="checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-event-fill" viewBox="0 0 16 16">
-                        <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2m-3.5-7h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5" />
+                    <div class="event-icon"
+                      v-if="checkDateEvent(`${day.solar.year}-${day.solar.month}-${day.solar.date}`)">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-calendar-event-fill" viewBox="0 0 16 16">
+                        <path
+                          d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2m-3.5-7h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5" />
                       </svg>
                     </div>
                   </td>
@@ -80,7 +90,8 @@
       <div class="h-100 p-3 bg-colored" style="background-color: #f2f2f2;">
         <div class="search-filter d-flex flex-row position-relative">
           <div class="search d-flex">
-            <input v-model="keySearch" type="text" class="form-control h-100" placeholder="Nhập tên sự kiện..." @change="searchEvent()" />
+            <input v-model="keySearch" type="text" class="form-control h-100" placeholder="Nhập tên sự kiện..."
+              @change="searchEvent()" />
           </div>
           <div class="d-flex flex-row" style="justify-content: end;">
             <div class="item">
@@ -105,7 +116,6 @@
                   <th class="eventlist-list-th" scope="col">#</th>
                   <th class="eventlist-list-th" scope="col">Tên sự kiện</th>
                   <th class="eventlist-list-th" scope="col">Thời gian bắt đầu</th>
-                  <!-- <th class="eventlist-list-th" scope="col">Thời gian kết thúc</th> -->
                   <th class="eventlist-list-th" scope="col">Trạng thái</th>
                   <th class="eventlist-list-th" scope="col">Địa điểm</th>
                   <th class="eventlist-list-th" scope="col"></th>
@@ -113,20 +123,22 @@
                 </tr>
               </thead>
               <tbody>
-                <tr style="cursor: pointer;" class="eventlist-item eventlist-table-item odd" v-for="(event, index) in listEventFilter" :key="event.EventID">
+                <tr style="cursor: pointer;" class="eventlist-item eventlist-table-item odd"
+                  v-for="(event, index) in listEventFilter" :key="event.EventID">
                   <td @click="showEditEventModal(event.EventID)">{{ index + 1 }}</td>
                   <td style="width: 20%;;" @click="showEditEventModal(event.EventID)">{{ event.EventName }}</td>
                   <td @click="showEditEventModal(event.EventID)">
                     <div>{{ formattedCreatedAt(event.StartDate) }} (DL)</div>
                     <div>{{ formattedCreatedAt(convertSolarToLunar(event.StartDate)) }} (AL)</div>
                   </td>
-                  <td>{{event.Status == 1 ? "Chưa kết thúc": "Đã Kết Thúc"}}</td>
+                  <td>{{ event.Status == 1 ? "Chưa kết thúc" : "Đã Kết Thúc" }}</td>
                   <td @click="showEditEventModal(event.EventID)">{{ event.Place }}</td>
                   <td>
-                    <div @click="showParticipantList(event.EventID)" class="btn bg-primary text-white">Thành viên tham gia sự kiện</div>
+                    <div @click="showParticipantList(event.EventID)" class="btn bg-primary text-white">Danh sách thành
+                      viên</div>
                   </td>
                   <td>
-                    <div @click="showMemberList()" class="btn bg-primary text-white" v-if="event.Status == 1">Thông báo</div>
+                    <div @click="showMemberList()" class="btn bg-primary text-white">Thông báo</div>
                   </td>
                 </tr>
               </tbody>
@@ -141,10 +153,12 @@
         <div class="form-group h-100">
           <div class="w-100 h-100 modal-bg position-relative">
             <div class="d-flex flex-row w-100 align-items-center position-relative">
-              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">{{ titleModal }}</div>
+              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">{{ titleModal }}
+              </div>
               <div class="close-add-form" @click="closeAddEventModal()">
                 <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                  <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                  <path
+                    d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
                 </svg>
               </div>
             </div>
@@ -158,7 +172,8 @@
                 </div>
               </div>
               <div class="mt-2 px-2" style="height: 120px;">
-                <textarea v-model="eventFamily.Description" class="w-100 h-100 text-area description" placeholder="Mô tả"></textarea>
+                <textarea v-model="eventFamily.Description" class="w-100 h-100 text-area description"
+                  placeholder="Mô tả"></textarea>
               </div>
               <div class="item mt-2 px-2 d-flex flex-row">
                 <div class="d-flex align-items-center" style="width: 38px; margin-right: 8px;">Từ(*)</div>
@@ -209,33 +224,51 @@
         <div class="form-group h-100">
           <div class="w-100 h-100 modal-bg position-relative">
             <div class="d-flex flex-row w-100 align-items-center position-relative">
-              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Danh sách thành viên tham gia sự kiện {{title}}</div>
+              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Danh sách thành
+                viên tham gia sự kiện {{ title }}</div>
               <div class="close-add-form" @click="closeParticipantList()">
                 <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                  <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                  <path
+                    d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
                 </svg>
               </div>
             </div>
             <div v-if="listEventAttendance" class="d-flex flex-row" style="height: calc(100% - 50px);">
-              <div class="col-6 mt-2 d-flex flex-column" style="padding-left: 8px; padding-right: 4px;">
+              <div class="col-4 mt-2 d-flex flex-column" style="padding-left: 8px; padding-right: 4px;">
                 <div class="item d-flex justify-content-center" style="background-color: aliceblue;">Có tham gia</div>
                 <div class style="overflow-y: auto; height: calc(100% - 106px);">
                   <div v-for="(item, index) in listEventAttendance" :key="item.id">
-                    <div v-if="item.IsGoing == 1" :class="index % 2 === 0 ? 'item even' : 'item odd'">{{item.MemberName}}</div>
+                    <div v-if="item.IsGoing == 1" :class="index % 2 === 0 ? 'item even' : 'item odd'">{{ item.MemberName
+                    }}
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="col-6 mt-2 d-flex flex-column" style="padding-left: 4px; padding-right: 8px;">
+              <div class="col-4 mt-2 d-flex flex-column" style="padding-left: 4px; padding-right: 4px;">
                 <div class="item d-flex justify-content-center" style="background-color: aliceblue;">Không tham gia</div>
                 <div class style="overflow-y: auto; height: calc(100% -106px);">
                   <div v-for="(item, index) in listEventAttendance" :key="item.id">
-                    <div v-if="item.IsGoing == 0" :class="index % 2 === 0 ? 'item odd' : 'item even'">{{item.MemberName}}</div>
+                    <div v-if="item.IsGoing == 0" :class="index % 2 === 0 ? 'item odd' : 'item even'">{{ item.MemberName
+                    }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-4 mt-2 d-flex flex-column" style="padding-left: 4px; padding-right: 8px;">
+                <div class="item d-flex justify-content-center" style="background-color: aliceblue;">Chưa phản hồi</div>
+                <div class style="overflow-y: auto; height: calc(100% -106px);">
+                  <div v-for="(item, index) in listEventAttendance" :key="item.id">
+                    <div v-if="item.IsGoing == 0" :class="index % 2 === 0 ? 'item odd' : 'item even'">{{ item.MemberName
+                    }}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
             <div v-else class="d-flex flex-row w-100 position-relative" style="height: calc(100% - 100px);">
-              <div style="position: absolute; inset: 0; margin: auto; font-size: 20px; height: fit-content; width: fit-content;">Bạn chưa tạo thông báo cho sự kiện này</div>
+              <div
+                style="position: absolute; inset: 0; margin: auto; font-size: 20px; height: fit-content; width: fit-content;">
+                Bạn chưa tạo thông báo cho sự kiện này</div>
             </div>
             <div class="modal-footer position-absolute w-100" style="bottom: 0;">
               <div @click="closeParticipantList()" class="bg-secondary text-white btn mx-2">Đóng</div>
@@ -249,14 +282,17 @@
       <modal name="event-modal">
         <div class="w-100 h-100 add-head-modal">
           <div class="d-flex flex-row w-100 align-items-center position-relative">
-            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Sự kiện trong ngày {{ formatDate(dateSelected) }}</div>
+            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Sự kiện trong ngày
+              {{ formatDate(dateSelected) }}</div>
             <div class="close-add-form" @click="closeEventModal()">
               <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                <path
+                  d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
               </svg>
             </div>
           </div>
-          <div class="w-100 d-flex flex-column align-items-center justify-content-center" style="height: calc(100% - 50px);">
+          <div class="w-100 d-flex flex-column align-items-center justify-content-center"
+            style="height: calc(100% - 50px);">
             <div class="d-flex h-100 align-items-center px-3" style="overflow-y: auto; font-size: 19px;">
               <table class="table table-eventlist eventlist-list m-0">
                 <thead style="position: sticky; top: 0;">
@@ -268,7 +304,8 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr style="cursor: pointer;" class="eventlist-item eventlist-table-item odd" v-for="(event, index) in listEventByDate" :key="event.EventID">
+                  <tr style="cursor: pointer;" class="eventlist-item eventlist-table-item odd"
+                    v-for="(event, index) in listEventByDate" :key="event.EventID">
                     <td>{{ index + 1 }}</td>
                     <td>{{ event.EventName }}</td>
                     <td>
@@ -293,49 +330,67 @@
         <div class="form-group h-100">
           <div class="w-100 h-100 modal-bg position-relative">
             <div class="d-flex flex-row w-100 align-items-center position-relative">
-              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Gửi lời mới đến thành viên</div>
+              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Danh sách thành
+                viên</div>
               <div class="close-add-form" @click="closeMemberList()">
                 <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                  <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                  <path
+                    d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
                 </svg>
               </div>
             </div>
             <div class="d-flex flex-column p-3" style="height: calc(100% - 100px);">
               <div class="d-flex flex-row">
-                <div class="col-3" style="padding-bottom: 4px; padding-right: 4px;">
+                <div class="col-5" style="padding-bottom: 4px; padding-right: 4px;">
                   <input type="text" class="form-control h-100 w-100" placeholder="Tên thành viên" />
                 </div>
-                <div class="col-6" style="padding-bottom: 4px; padding-right: 4px;">
-                  <input v-model="numberExpire" min="0" type="number" class="form-control" placeholder="Thời gian lời mời hết hạn" />
-                </div>
-                <!-- <div class="col-3" style="padding-bottom: 4px; padding-right: 4px;">
-                  <select class="form-select h-100 w-100">
+                <div class="col-2"></div>
+                <div class="col-2 d-flex flex-row" style="padding-bottom: 4px; padding-right: 4px;">
+                  <!-- <select class="form-select h-100 w-100">
                     <option selected>Độ tuổi</option>
                     <option>1</option>
                     <option>1</option>
                     <option>1</option>
                     <option>1</option>
+                  </select> -->
+                  <input type="number" class="form-control h-100 w-100" min="00"/>
+                </div>
+                <div class="col-3 d-flex flex-row" style="padding-bottom: 4px; padding-right: 4px;">
+                  <select class="form-select h-100 w-100">
+                    <option selected>Giờ</option>
+                    <option>Ngày</option>
+                    <option>Tháng</option>
                   </select>
-                </div>-->
+                </div>
               </div>
               <div class="w-100" style="overflow-y: auto; height: 100%;">
-                <div v-for="list in listMember" :key="list.id" class="noti-modal-member d-flex flex-row align-items-center px-2" :class="{ chosen: ListMemberToSendEmail.includes(list.MemberID)}" @click="toggleSelection(list.MemberID)">
+                <div v-for="list in listMember" :key="list.id"
+                  class="noti-modal-member d-flex flex-row align-items-center px-2"
+                  :class="{ chosen: ListMemberToSendEmail.includes(list.MemberID) }"
+                  @click="toggleSelection(list.MemberID)">
                   <div>
                     <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                      <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
+                      <path
+                        d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
                     </svg>
                   </div>
-                  <div class="d-flex justify-content-center" style="flex-grow: 1;">{{list.MemberName}}</div>
+                  <div class="d-flex justify-content-center" style="flex-grow: 1;">{{ list.MemberName }}</div>
                 </div>
               </div>
             </div>
             <div class="modal-footer position-absolute w-100" style="bottom: 0;">
-              <div @click="sendMessageToConfirmEvent()" class="bg-primary text-white btn mx-2">Gửi</div>
+              <div @click="closeParticipantList()" class="bg-primary text-white btn mx-2">Gửi</div>
               <div @click="closeParticipantList()" class="bg-primary text-white btn mx-2">Gửi cho tất cả</div>
             </div>
           </div>
         </div>
       </modal>
+    </div>
+    <div v-if="listEvent.length != 0">
+
+    </div>
+    <div v-else>
+
     </div>
   </div>
 </template>
@@ -351,7 +406,6 @@ require("moment-timezone");
 export default {
   data() {
     return {
-      numberExpire: null,
       title: null,
       eventFamily: {
         EventID: null,
@@ -389,6 +443,7 @@ export default {
       indexClickDay: null,
       indexClickWeek: null,
 
+      currentEventId: null,
       listEvent: [],
       listEventFilter: [],
       listEventByDate: [],
@@ -397,7 +452,6 @@ export default {
       checkAll: false,
       ListMemberToSendEmail: [],
       listEventAttendance: null,
-      currentEventID: null,
     };
   },
   computed: {
@@ -451,6 +505,7 @@ export default {
       } else {
         this.ListMemberToSendEmail.push(id);
       }
+      console.log(this.ListMemberToSendEmail);
     },
 
     convertSolarToLunar(dateConvert) {
@@ -805,7 +860,6 @@ export default {
       this.$modal.hide("edit-event-modal");
     },
     showParticipantList(EventID) {
-      this.currentEventID = EventID;
       this.listEventAttendance = null;
       this.title = this.listEventFilter.find(
         (element) => element.EventID === EventID
@@ -822,31 +876,6 @@ export default {
         }
         this.$modal.show("participant-list");
       });
-    },
-    sendMessageToConfirmEvent() {
-      if (this.time != null) {
-        HTTP.get("getIdAndEmail", {
-          params: {
-            ListMemberID: this.ListMemberToSendEmail,
-          },
-        }).then((respone) => {
-          HTTP.post("inviteMail", {
-            data: respone.data.data,
-            time: this.numberExpire + "d",
-            EventId: this.currentEventID,
-          }).then((respone) => {
-            if (respone.data.success == true) {
-              this.NotificationsScuccess("Gửi thông báo thành công");
-              this.time = null;
-              this.ListMemberToSendEmail = [];
-            }
-          });
-        });
-      } else {
-        this.NotificationsDelete(
-          "Bạn hãy chọn thời gian hết hạn của thông báo"
-        );
-      }
     },
     closeParticipantList() {
       this.$modal.hide("participant-list");

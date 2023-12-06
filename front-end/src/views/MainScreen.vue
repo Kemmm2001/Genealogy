@@ -24,7 +24,8 @@
             </div>
             <div class="col-6" style="padding-left: 6px; padding-right: 8px">
               <div class="w-100 h-100">
-                <button style="width:100%; font-size: 14px; color:white" type="button" class="p-0 btn btn-secondary h-100">Xuất dữ liệu vào</button>
+                <label for="upload" style="width:100%; font-size: 14px; color:white" type="button" class="d-flex align-items-center justify-content-center p-0 btn btn-secondary h-100">Xuất dữ liệu vào</label>
+                <input id="upload" type="file" style="display: none"/>
               </div>
             </div>
           </div>
@@ -1081,7 +1082,7 @@ export default {
       expandEventList: false,
       expandEventListSMS: false,
       advancedFilterDown: false,
-      selectNodeHighLight: [],
+      selectNodeHighLightCompare: [],
       resultCompare1: null,
       resultCompare2: null,
       selectedRowIndex: null,
@@ -1092,6 +1093,7 @@ export default {
 
       selectedNodes: [],
       notSelectedNodes: [],
+      selectedNodesCompare: [],
       nodeRightClickHighLight: null,
 
       helpNoti: false,
@@ -1099,6 +1101,8 @@ export default {
       helpExist: false,
       helpNonExist: false,
       helpTree: false,
+
+      idNodeWatching:null,
 
       numberDeath: 0,
       listMember: [],
@@ -1160,6 +1164,7 @@ export default {
         sticky: false,
         nodeMouseClick: FamilyTree.action.none,
       });
+      const self = this;
       this.family.onInit(() => {
         this.family.load(this.nodes);
       });
@@ -1174,6 +1179,16 @@ export default {
             );
             if (nodeElement != null) {
               nodeElement.classList.add("selected");
+            }
+          }
+        }
+        if (this.selectedNodesCompare.length != 0) {
+          for (let i = 0; i < this.selectedNodesCompare.length; i++) {
+            nodeElement = document.querySelector(
+              '[data-n-id="' + this.selectedNodesCompare[i] + '"]'
+            );
+            if (nodeElement != null) {
+              nodeElement.classList.add("selected-compare");
             }
           }
         }
@@ -1201,7 +1216,7 @@ export default {
       });
 
       // right click
-      const self = this;
+      
       if (this.memberRole != 3) {
         this.family.onInit(function () {
           this.element.addEventListener(
@@ -1213,7 +1228,9 @@ export default {
               }
               if (nodeElement && nodeElement.hasAttribute("data-n-id")) {
                 let id = nodeElement.getAttribute("data-n-id");
+                self.idNodeWatching = id;
                 self.OnpenModal_SelectOption(id);
+              
               }
             },
             false
@@ -1248,7 +1265,22 @@ export default {
       HTTP.post("back-up", {
         memberIDs: id,
       }).then((response) => {
-        console.log(response);
+        if (response.data.success == true) {
+          //Mở một window khác ở đây
+          let newWindow = window.open(
+            `https://giaphanguoiviet.com${response.data.data.fileName}`,
+            "_blank"
+          );          
+          if (newWindow) {
+            this.NotificationsScuccess(response.data.message);
+          } else {
+            this.NotificationsDelete(
+              "Không thể mở cửa sổ mới. Vui lòng kiểm tra cài đặt trình duyệt của bạn."
+            );
+          }
+        } else {         
+          this.NotificationsDelete(response.data.message);
+        }
       });
     },
     //Nguyễn Lê Hùng
@@ -1280,7 +1312,7 @@ export default {
     //Nguyễn Lê Hùng
     compareMember(memberId1, memberId2) {
       //     this.RemoveHightLight();
-      this.selectNodeHighLight = [];
+      this.selectNodeHighLightCompare = [];
       this.lastClickedNodeId = null;
       this.objCompareMember1 = this.getResultMember(memberId1);
       this.objCompareMember2 = this.getResultMember(memberId2);
@@ -1297,8 +1329,7 @@ export default {
             this.resultCompare1 = response.data.data.result1;
             this.resultCompare2 = response.data.data.result2;
             this.$modal.show("compare-modal");
-            this.removeFromSelectedNodesCompare(memberId1);
-            this.removeFromSelectedNodesCompare(memberId2);
+            this.removeFromSelectedNodesCompare();
           } else {
             this.NotificationsDelete(response.data.message);
           }
@@ -1628,6 +1659,9 @@ export default {
         },
       })
         .then((response) => {
+          this.selectCityMember = null;
+          this.selectDistrictMember = null;
+          console.log(this.selectDistrictMember)
           this.objMember = response.data;
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
@@ -1645,11 +1679,12 @@ export default {
           }
           if (this.objMember.contact.length > 0) {
             this.objMemberContact = this.objMember.contact[0];
-            if (this.objMemberContact.Address != undefined) {
+            console.log(this.objMemberContact);
+            console.log(this.objMember.contact);
+            if (this.objMemberContact.Address != undefined && this.objMemberContact.Address != null) {
               this.getAdressMember(this.objMemberContact.Address);
             }
-          } else {
-            this.selectCityMember = null;
+            
           }
           this.ListMemberEducation = this.objMember.education;
           this.ListMemberJob = this.objMember.job;
@@ -1767,19 +1802,20 @@ export default {
         }
       }
     },
-    removeFromSelectedNodesCompare(memberid) {
+    removeFromSelectedNodesCompare() {
       var nodeElement;
-      for (let i = 0; i < this.selectedNodes.length; i++) {
-        if (this.selectedNodes[i] == memberid) {
-          this.selectedNodes.splice(i, 1);
-          nodeElement = document.querySelector(
-            '[data-n-id="' + memberid + '"]'
-          );
-          if (nodeElement != null) {
-            nodeElement.classList.remove("selected-compare");
-          }
+      console.log(this.selectedNodesCompare);
+      for (let i = 0; i < this.selectedNodesCompare.length; i++) {
+        console.log(this.selectedNodesCompare[i]);
+
+        nodeElement = document.querySelector(
+          '[data-n-id="' + this.selectedNodesCompare[i] + '"]'
+        );
+        if (nodeElement != null) {
+          nodeElement.classList.remove("selected-compare");
         }
       }
+      this.selectedNodesCompare = [];
     },
     //Nguyễn Lê Hùng
     getListJobMember() {
@@ -1941,10 +1977,10 @@ export default {
             this.action = null;
             this.getAllListMember();
             this.isUpdateAvatar = false;
-            this.NotificationsScuccess(response.data.message);
             this.$modal.hide("member-modal");
             this.$modal.hide("Select-option-Modal");
             this.getListMember();
+            this.NotificationsScuccess(response.data.message);
             this.getListMemberToSendMessage();
           } else {
             this.NotificationsDelete(response.data.message);
@@ -1989,6 +2025,7 @@ export default {
         this.generationMember = 0;
       }
       if (this.action == "AddChild") {
+        console.log("vào add child");
         if (this.isFather) {
           FatherID = this.CurrentIdMember;
           MotherID = this.idParent;
@@ -2000,6 +2037,7 @@ export default {
         console.log("FatherID: " + FatherID);
         console.log("MotherID: " + MotherID);
       } else {
+        console.log("vào add mare");
         HTTP.post("member", {
           CurrentMemberID: this.CurrentIdMember,
           MemberName: this.objMemberInfor.MemberName,
@@ -2031,11 +2069,12 @@ export default {
               this.getAllListMember();
               this.isUpdateAvatar = false;
               this.action = null;
-   //           this.NotificationsScuccess(response.data.message);
+              //           this.NotificationsScuccess(response.data.message);
               this.$modal.hide("member-modal");
               this.$modal.hide("Select-option-Modal");
-              console.log('getlist')
+              console.log("getlist");
               this.getListMember();
+              this.NotificationsScuccess(response.data.message);
               this.getListMemberToSendMessage();
             } else {
               this.NotificationsDelete(response.data.message);
@@ -2132,6 +2171,9 @@ export default {
         this.objMemberContact.Address =
           this.objMemberContact.Address + "-" + this.selectDistrictMember;
       }
+      if (this.selectCityMember == null) {
+        this.objMemberContact.Address = null;
+      }
       HTTP.put("member", {
         MemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
@@ -2206,14 +2248,17 @@ export default {
     },
     //Nguyễn Lê Hùng
     GetListFilterMember() {
+      let city = this.selectAdress ;
       if (this.selectDistrict != null) {
-        this.selectAdress = this.selectAdress + "-" + this.selectDistrict;
+        city = this.selectAdress + "-" + this.selectDistrict
       }
+      console.log(city)
+      console.log(this.selectAdress)
       HTTP.post("filter-member", {
         CodeID: this.CodeID,
         BloodType: this.selectBloodType,
         selectAge: this.selectAge,
-        Address: this.selectAdress,
+        Address: city,
       })
         .then((response) => {
           this.listFilterMember = response.data.data;
@@ -2239,17 +2284,16 @@ export default {
     highLightSelectCompareNode(SelectNode) {
       var nodeElement;
       let selectedNode = this.nodes.find((node) => node.id == SelectNode);
-      if (this.selectNodeHighLight.includes(selectedNode.id)) {
+      if (this.selectNodeHighLightCompare.includes(selectedNode.id)) {
         nodeElement = this.family.getNodeElement(selectedNode.id);
         nodeElement.classList.remove("selected-compare");
-        this.selectNodeHighLight = this.selectNodeHighLight.filter(
-          (id) => id != selectedNode.id
-        );
+        this.selectNodeHighLightCompare =
+          this.selectNodeHighLightCompare.filter((id) => id != selectedNode.id);
       } else if (selectedNode) {
         nodeElement = this.family.getNodeElement(selectedNode.id);
         nodeElement.classList.add("selected-compare");
-        this.selectedNodes.push(selectedNode.id);
-        this.selectNodeHighLight.push(selectedNode.id);
+        this.selectedNodesCompare.push(selectedNode.id);
+        this.selectNodeHighLightCompare.push(selectedNode.id);
       } else {
         console.log("Nút không tồn tại:", SelectNode);
       }
@@ -2357,11 +2401,15 @@ export default {
     openCompareModal() {
       //  this.RemoveHightLight();
       this.isCompare = !this.isCompare;
+      if (this.isCompare == false) {
+        this.removeFromSelectedNodesCompare();
+      }
     },
     closeCompareModal() {
       this.$modal.hide("compare-modal");
     },
     openMemberModal(action, title, idParent) {
+      console.log(this.CurrentIdMember);
       this.idParent = idParent;
       this.IsDead = 0;
       this.isAdd = true;
@@ -2383,7 +2431,6 @@ export default {
     },
     closeMemberModal() {
       this.$modal.hide("member-modal");
-      this.CurrentIdMember = 0;
     },
     setFunctionCanDo(foundNode) {
       this.canAddFather = true;
@@ -2428,6 +2475,7 @@ export default {
       this.nodeRightClickHighLight = id;
       this.$modal.show("Select-option-Modal");
       this.CurrentIdMember = id;
+    //  this.removeFromSelectedNodes(id);
     },
     getAllMarriedInMember(membersArray) {
       this.ListMarriedMember = this.nodes.filter((member) =>
@@ -2437,12 +2485,11 @@ export default {
 
     closeSelectModal() {
       this.CurrentIdMember = 0;
-      //  this.RemoveHightLight();
+      this.removeFromSelectedNodes(this.idNodeWatching)
       this.$modal.hide("Select-option-Modal");
+      
     },
     removeRelationship() {
-      console.log(this.CurrentIdMember);
-      console.log(this.newIdMember);
       HTTP.put("removeRelationship", {
         CurrentID: this.CurrentIdMember,
         RemoveID: this.newIdMember,
@@ -2634,7 +2681,13 @@ export default {
       let selectedCity = this.ListCity.find(
         (city) => city.id == this.selectCityMember
       );
-      this.objMemberContact.Address = selectedCity.name;
+      console.log(this.selectCityMember)
+      if(selectedCity != null){
+        this.objMemberContact.Address = selectedCity.name;
+      }else{
+        this.objMemberContact.Address = null;
+      }
+      
       if (this.selectCityMember == null) {
         this.ListDistrictMember = null;
       } else {

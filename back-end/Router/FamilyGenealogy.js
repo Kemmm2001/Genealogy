@@ -63,7 +63,6 @@ const initWebRouter = (app) => {
     router.get('/delete-member', FamilyMemberManagement.deleteMember)
     router.get('/getparent', FamilyMemberManagement.GetCurrentParentMember)
     router.post('/InsertParentID', FamilyMemberManagement.insertParentIdToMember)
-    router.post('/InserMarrie', FamilyMemberManagement.InsertMarrieIdToMember)
 
     //API Nhật anh
     router.get('/members', FamilyMemberManagement.getAllMember);
@@ -73,6 +72,7 @@ const initWebRouter = (app) => {
 
     //Tiền tố đứng trước route
     app.use('/api/v1', router);
+   
 }
 
 module.exports = initWebRouter;

@@ -3,7 +3,7 @@ const db = require('../../Models/ConnectDB')
 function insertMemberAttend(eventID, memberID) {
   return new Promise((resolve, reject) => {
     try {
-      let query = 'INSERT INTO genealogy.eventattendance (EventId, MemberID, IsGoing) VALUES (?,?, 0)';
+      let query = 'INSERT INTO genealogy.eventattendance (EventId, MemberID) VALUES (?,?)';
       db.connection.query(query, [eventID, memberID], (err, result) => {
         if (err) {
           console.log(err);
@@ -18,6 +18,22 @@ function insertMemberAttend(eventID, memberID) {
       reject('Failed to insert attendance');
     }
   });
+}
+
+//Nguyễn Lê Hùng
+function checkConfirmedEvent(EventID, MemberID, Token) {
+  return new Promise((resolve, reject) => {
+    let query = `SELECT IsGoing FROM genealogy.eventattendance where EventID = ${EventID} and MemberID = ${MemberID} and Token = '${Token}'`;
+    db.connection.query(query, (err, result) => {
+      if (!err && result[0].IsGoing != null) {
+        resolve(result[0].IsGoing)
+        console.log("vào khác null")
+      } else {
+        console.log("vào null")
+        resolve(false)
+      }
+    })
+  })
 }
 
 function checkEventID(eventID) {
@@ -100,4 +116,4 @@ function UpdateIsGoing(memberId, eventId, IsGoing) {
   });
 }
 
-module.exports = { insertMemberAttend, checkEventID, Update, checkToken,checkTokenEvent, UpdateIsGoing }
+module.exports = { insertMemberAttend, checkEventID, Update, checkToken, checkTokenEvent, UpdateIsGoing, checkConfirmedEvent }
