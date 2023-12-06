@@ -72,6 +72,7 @@ const initWebRouter = (app) => {
 
     //Tiền tố đứng trước route
     app.use('/api/v1', router);
+   
 }
 
 module.exports = initWebRouter;
