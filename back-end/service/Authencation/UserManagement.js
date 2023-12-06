@@ -203,7 +203,7 @@ function UpdatePassword(newPassword, email) {
 function getListRoleMember(CodeID) {
   return new Promise((resolve, reject) => {
     try {
-      let query = `SELECT ac.Username, af.AccountID, af.CodeID, af.RoleID
+      let query = `SELECT ac.Username,ac.Email, af.AccountID, af.CodeID, af.RoleID
       FROM genealogy.AccountFamilyTree AS af
       INNER JOIN genealogy.account AS ac ON af.AccountID = ac.AccountID
       WHERE af.CodeID = '${CodeID}'
@@ -245,34 +245,20 @@ function changeUsername(AccountId, Username) {
 function getUserInfo(accountID) {
   return new Promise((resolve, reject) => {
     try {
-      let query = 'SELECT Username, Email, Password FROM genealogy.account WHERE AccountID = ?';
-      let values = [accountID];
-
-      db.connection.query(query, values, (err, result) => {
-        try {
-          if (err) {
-            console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-            reject(err);
-          } else {
-            if (result.length === 0) {
-
-              resolve(null);
-            } else {
-
-              const user = {
-                username: result[0].Username,
-                email: result[0].Email,
-                password: result[0].Password
-              };
-              resolve(user);
-            }
-          }
-        } catch (error) {
-          reject(error)
+      let query = `SELECT ac.*, ra.RoleName FROM genealogy.account as ac
+        INNER JOIN AccountFamilyTree as af ON ac.AccountID = af.AccountID 
+        INNER JOIN roleaccount as ra ON af.RoleID = ra.RoleID 
+        WHERE ac.AccountID = ${accountID}`;
+      db.connection.query(query, (err, result) => {
+        if (!err && result.length > 0) {
+          resolve(result[0])
+        } else {
+          reject(err)
         }
-      });
+      })
+
     } catch (error) {
-      reject(error)
+      reject(error);
     }
   });
 }
@@ -366,6 +352,23 @@ function getMemberRole(AccountID, CodeID) {
   })
 }
 
+function getInformationGenealogy(CodeID) {
+  return new Promise((resolve, reject) => {
+    try {
+      let query = `SELECT * FROM genealogy.familytree where CodeID = ${CodeID}`;
+      db.connection.query(query, (err, result) => {
+        if (!err && result.length > 0) {
+          resolve(result)
+        } else {
+          reject(err)
+        }
+      })
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
 
 
 function insertIntoFamily(value, codeID) {
@@ -420,6 +423,6 @@ module.exports = {
   checkMail, checkID, create, getUser, refreshFreeEmail, insertAccountFamily, checkCodeID,
   checkAccountID, updateRoleID, insertIntoFamily, getUserInfo, getUserCodeID, checkCodeIdCreator,
   insertAccountFamilyTree, checkCodeCreatedByID, getHistoryLoginCodeID, ChangePassword, getListRoleMember, UpdateAccount, UpdatePassword,
-  checkToken, getMemberRole, changeUsername
+  checkToken, getMemberRole, changeUsername, getInformationGenealogy
 
 }

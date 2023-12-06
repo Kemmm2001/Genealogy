@@ -28,6 +28,22 @@ var registerUser = async (req, res) => {
   }
 }
 
+//Nguyễn Lê Hùng
+var getInformationTree = async (req, res) => {
+  try {
+    let CodeID = req.query.CodeID;
+    let data = await UserService.getInformationGenealogy(CodeID);
+    if (data) {
+      return res.send(Response.successResponse(data))
+    } else {
+      return res.send(Response.dataNotFoundResponse())
+    }
+  } catch (error) {
+    return res.send(Response.dataNotFoundResponse(error))
+  }
+}
+
+//Nguyễn Lê Hùng
 var getMemberRole = async (req, res) => {
   try {
     let accountID = req.body.accountID;
@@ -140,6 +156,7 @@ var loginUser = async (req, res) => {
 var getUserInfor = async (req, res) => {
   try {
     let data = await UserService.getUserInfo(req.body.accountID)
+    console.log('data: ' + data)
     if (!data) {
       return res.send(Response.dataNotFoundResponse(null, 'Lỗi hệ thống,không tìm thấy tài khoản'));
     }
@@ -354,6 +371,6 @@ var resetPassword = async (req, res) => {
 module.exports = {
   registerUser, loginUser, refreshToken, registerGenealogy, getGenealogy, setRole,
   checkCodeID, getUserInfor, getUserCodeID, getHistoryCodeID, ChangePassword, getListRoleMember,
-  forgetPassword, resetPassword, getMemberRole, changeUsername
+  forgetPassword, resetPassword, getMemberRole, changeUsername, getInformationTree
 
 };
