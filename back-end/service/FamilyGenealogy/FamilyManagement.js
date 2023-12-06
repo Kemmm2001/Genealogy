@@ -206,79 +206,60 @@ function deleteMember(memberId) {
 }
 
 // nguyễn anh tuấn
-async function deleteMemberRelated(member) {
-    console.log(`chạy vào hàm deleteMemberRelated với member: ${JSON.stringify(member.MemberID)}`);
-
-    // tìm tất cả người có fatherID hoặc motherID là memberId
-    let children = await getMembersByFatherIDOrMotherID(member.MemberID, member.MemberID);
-    if (children.length == 0) {
-        console.log("children null");
-        return;
-    } else {
-        for (let child of children) {
-            console.log("child: " + child.MemberID);
-            UpdateMemberRelated(child);
-        }
-    }
-}
-
-// nguyễn anh tuấn
-function UpdateMemberRelated(memberID) {
+function UpdateMemberRelated(member , listMember) {
     return new Promise(async (resolve, reject) => {
-        console.log("Vào hàm UpdateMemberRelated với member: " + JSON.stringify(memberID));
-        if (CoreFunction.isEmptyOrNullOrSpaces(memberID)) {
+        console.log("Vào hàm UpdateMemberRelated với member: " + JSON.stringify(member));
+        if (CoreFunction.isEmptyOrNullOrSpaces(member.MemberID)) {
             console.log("member null");
             resolve();
         }
         // tìm tất cả người có mối quan hệ vợ chồng với memberId
-        let marriedMember = await MarriageManagement.getMarriageByHusbandIDOrWifeID(memberID, memberID);
+        let marriedMember = await MarriageManagement.getMarriageByHusbandIDOrWifeID(member.MemberID, member.MemberID);
         if (marriedMember.length == 0) {
-            console.log(`marriedMember của memberID : ${memberID} là null`);
+            console.log(`marriedMember của member.MemberID : ${member.MemberID} là null`);
             resolve();
         } else {
             for (let married of marriedMember) {
-                console.log("married: " + JSON.stringify(married));
                 // xóa mối quan hệ vợ chồng
                 await MarriageManagement.deleteMarriage(married.MarriageID);
                 let children = [];
-                if (married.husbandID == memberID) {
+                if (married.husbandID == member.MemberID) {
                     // cho generation của vợ = 0
                     await UpdateMemberGenerationToZero(married.wifeID);
                     // tìm tất cả người có fatherID hoặc motherID là memberId
-                    children = await getMembersByFatherIDOrMotherID(married.wifeID, married.wifeID);
+                    children = findMemberByHusbandIDOrWifeID(married.wifeID, married.wifeID, listMember);
 
-                } else if (married.wifeID == memberID) {
+                } else if (married.wifeID == member.MemberID) {
                     // cho generation của chồng = 0
                     await UpdateMemberGenerationToZero(married.husbandID);
                     // tìm tất cả người có fatherID hoặc motherID là memberId
-                    children = await getMembersByFatherIDOrMotherID(married.husbandID, married.husbandID);
+                    children = findMemberByHusbandIDOrWifeID(married.husbandID, married.husbandID, listMember);
                 }
                 if (children.length == 0) {
-                    console.log(`children của memberID : ${memberID} là null`);
+                    console.log(`children của member.MemberID : ${member.MemberID} là null`);
                     resolve();
                 } else {
                     for (let child of children) {
-                        console.log("child: " + JSON.stringify(child));
-                        UpdateMemberRelated(child.MemberID);
+                        UpdateMemberRelated(child, listMember);
                     }
                 }
 
             }
         }
         // tìm tất cả người có fatherID hoặc motherID là memberId
-        let children = await getMembersByFatherIDOrMotherID(memberID, memberID);
+        let children = await getMembersByFatherIDOrMotherID(member.MemberID, member.MemberID);
         if (children.length == 0) {
-            console.log(`children của memberID : ${memberID} là null`);
+            console.log(`children của member.MemberID : ${member.MemberID} là null`);
             resolve();
         } else {
             for (let child of children) {
                 console.log("child: " + JSON.stringify(child));
-                UpdateMemberRelated(child.MemberID);
+                UpdateMemberRelated(child);
             }
         }
 
         // update đời cho thành viên hiện tại
-        await UpdateMemberGenerationToZero(memberID);
+        await UpdateMemberGenerationToZero(member.MemberID);
 
     });
 }
@@ -646,6 +627,37 @@ function getAllMemberNotInMemberRole() {
     })
 }
 
+// nguyễn anh tuấn
+const findMemberByHusbandIDAndWifeID = (husbandID, wifeID, listMember) => {
+    console.log(`Vào hàm findMemberByHusbandIDOrWifeID với những thông tin sau: husbandID = ${husbandID}, wifeID = ${wifeID}, listMember = ${JSON.stringify(listMember)}`)
+    // nếu listMember không phải array
+    if (!Array.isArray(listMember)) return [];
+    const matchingMembers = [];
+    for (let i = 0; i < listMember.length; i++) {
+        const member = listMember[i];
+        if (member.husbandID === husbandID && member.wifeID === wifeID) {
+            matchingMembers.push(member);
+        }
+    }
+
+    return matchingMembers;
+};
+
+// nguyễn anh tuấn
+const findMemberByHusbandIDOrWifeID = (husbandID, wifeID, listMember) => {
+    console.log(`Vào hàm findMemberByHusbandIDOrWifeID với những thông tin sau: husbandID = ${husbandID}, wifeID = ${wifeID}, listMember = ${JSON.stringify(listMember)}`)
+    // nếu listMember không phải array
+    if (!Array.isArray(listMember)) return [];
+    const matchingMembers = [];
+    for (let i = 0; i < listMember.length; i++) {
+        const member = listMember[i];
+        if (member.husbandID === husbandID || member.wifeID === wifeID) {
+            matchingMembers.push(member);
+        }
+    }
+
+    return matchingMembers;
+};
 
 function getAllMember(codeID) {
     return new Promise((resolve, reject) => {
@@ -706,7 +718,7 @@ module.exports = {
     setGeneration, queryContactMembers,
     getAllMember, queryFamilyMembers, getAllMemberInMemberRole, getAllMemberNotInMemberRole, GetCurrentParentMember,
     insertFatherIDToMember, insertMotherIDToMember, getMembersByFatherID, getMembersByMotherID,
-    setBirthOrder, insertParentIdToMember, getAllMemberID, updateMemberPhoto, deleteMemberRelated,
+    setBirthOrder, insertParentIdToMember, getAllMemberID, updateMemberPhoto,
     getMembersByFatherIDAndMotherID, getMembersByFatherIDOrMotherID, updateFatherIDToMotherID,
     updateMotherIDToFatherID, UpdateMemberRelated, getMaxBirthOrderByFatherIdOrMotherId, getMaxBirthOrderByFatherID,
     getMaxBirthOrderByMotherID, getMembersByOnlyFatherID, getMembersByOnlyMotherID, setRole

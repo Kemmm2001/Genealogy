@@ -325,13 +325,13 @@ var addChild = async (req, res) => {
         // trường hợp có cha nhưng ko có mẹ 
         if (CoreFunction.isDataNumberExist(req.body.FatherID) && !CoreFunction.isDataNumberExist(req.body.MotherID)) {
             console.log("Đã vào trường hợp có cha nhưng ko có mẹ");
-            listChild = await FamilyManagementService.getMembersByFatherID(req.body.FatherID);
+            listChild = await FamilyManagementService.getMembersByOnlyFatherID(req.body.FatherID);
             parentGeneration = fatherData[0].Generation;
         }
         // trường hợp có mẹ nhưng ko có cha
         else if (!CoreFunction.isDataNumberExist(req.body.FatherID) && CoreFunction.isDataNumberExist(req.body.MotherID)) {
             console.log("Đã vào trường hợp có mẹ nhưng ko có cha");
-            listChild = await FamilyManagementService.getMembersByMotherID(req.body.MotherID);
+            listChild = await FamilyManagementService.getMembersByOnlyMotherID(req.body.MotherID);
             parentGeneration = motherData[0].Generation;
         }
         // trường hợp có cả cha và mẹ
@@ -755,7 +755,9 @@ var deleteMember = async (req, res) => {
         }
         // nếu người được xóa là người trong gia phả, tức là có cha mẹ
         else {
-            await FamilyManagementService.UpdateMemberRelated(req.query.MemberID);
+            // lấy tất cả thành viên trong gia phả
+            let listMember = await FamilyManagementService.getAllMember(dataMember[0].CodeID);
+            await FamilyManagementService.UpdateMemberRelated(dataMember[0], listMember);
         }
         await FamilyManagementService.deleteMember(req.query.MemberID);
 
