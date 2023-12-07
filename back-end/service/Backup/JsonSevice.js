@@ -33,11 +33,23 @@ async function addDataToSheet(workbook, sheetName, data) {
         worksheet.addRow(headers);
 
         data.forEach(row => {
-            const rowValues = headers.map(header => row[header]);
+            const rowValues = headers.map(header => {
+                // Check if the current value is a Date object
+                if (row[header] instanceof Date) {
+                    // Format the date using toLocaleDateString
+                    return row[header].toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                    });
+                }
+                return row[header];
+            });
             worksheet.addRow(rowValues);
         });
     }
 }
+
 
 async function queryDatabase(tableName, memberIDs) {
     return new Promise((resolve, reject) => {
