@@ -206,7 +206,7 @@ export default {
               this.familycode = response.data.data;
               this.showFamilyCode();
             } else {
-              this.NotificationsDelete(response.data.message);
+              this.NotificationsDelete('Lỗi hệ thống');
             }
           })
           .catch((e) => {
@@ -302,6 +302,8 @@ export default {
     if (localStorage.getItem("CodeID") != null) {
       this.$router.push("/");
     }
+    console.log('accountID: ' + localStorage.getItem("CodeID"))
+
   },
 };
 </script>
