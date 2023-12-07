@@ -65,7 +65,7 @@
           </svg>
         </div>
       </div>
-      <div :class="{ filterExpanded: advancedFilterDown }" class="advanced-filter-container d-flex flex-column p-1 position-absolute" style="cursor: pointer;">
+      <div :class="{ filterExpanded: advancedFilterDown }" class="advanced-filter-container d-flex flex-column p-1 position-absolute col-3 col-sm-2 col-md-3 col-lg-4" style="cursor: pointer;">
         <div :class="{expand : advancedFilterDown}" class="filter-item">
           <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
             <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict(),GetListFilterMember()">
