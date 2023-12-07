@@ -307,7 +307,7 @@
             </div>
             <div class="d-flex flex-column p-3" style="height: calc(100% - 100px);">
               <div class="d-flex flex-column">
-                <div class="" style="padding-bottom: 4px; padding-right: 4px;">
+                <div class style="padding-bottom: 4px; padding-right: 4px;">
                   <input type="text" class="form-control" placeholder="Tên thành viên" />
                 </div>
                 <div class="d-flex flex-row">
