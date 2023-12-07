@@ -1,6 +1,6 @@
 const db = require("../../Models/ConnectDB");
 const Excel = require('exceljs');
-
+const { v4: uuidv4 } = require('uuid'); 
 async function exportData(memberIDs) {
     try {
         const familyMembers = await queryDatabase('genealogy.familymember', memberIDs);
@@ -14,7 +14,7 @@ async function exportData(memberIDs) {
         await addDataToSheet(workbook, 'Job Data', jobs);
         await addDataToSheet(workbook, 'Contact Data', contacts);
 
-        const fileName = `/uploads/excel/Backup/all_members_data.xlsx`;
+        const fileName = `/uploads/excel/Backup/all_members_${uuidv4()}.xlsx`;
         await workbook.xlsx.writeFile(fileName);
         console.log(`Tất cả dữ liệu đã được xuất thành công vào file ${fileName}`);
 

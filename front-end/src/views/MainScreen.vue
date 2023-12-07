@@ -137,12 +137,10 @@
               <div class="list-group-item" @click="setPaternalAncestor(1)">Set làm tổ phụ</div>-->
               <div class="list-group-item feature-overview">Các chức năng chính</div>
               <div class="list-group-item" @click="getInforMember(CurrentIdMember)">Thông tin chi tiết</div>
-              <div class="list-group-item" @click="openModalRelationship()">Xem các mối quan hệ</div>
-              <div class="list-group-item" @click="openMemberModal('AddParent', 'Cha')">Thêm Cha</div>
-              <div class="list-group-item" @click="openMemberModal('AddParent', 'Mẹ')">Thêm Mẹ</div>
-              <div class="list-group-item" @click="openMemberModal('AddMarriage', 'Chồng')">Thêm Chồng</div>
-              <div class="list-group-item" @click="openMemberModal('AddMarriage', 'Vợ')">Thêm Vợ</div>
-              <div v-for="list in ListMarriedMember" :key="list.id" class="list-group-item" @click="openMemberModal('AddChild', 'Con',list.id)">Thêm Con với vợ {{list.name}}</div>
+              <div class="list-group-item" @click="openModalRelationship()">Xem các mối quan hệ</div>              
+              <div class="list-group-item" @click="openMemberModal('AddParent', 'phụ huynh')">Thêm phụ huynh</div>
+              <div class="list-group-item" @click="openMemberModal('AddMarriage', 'hôn nhân')">Thêm hôn nhân</div>              
+              <div v-for="list in ListMarriedMember" :key="list.id" class="list-group-item" @click="openMemberModal('AddChild', 'Con',list.id)">Thêm Con với {{list.name}}</div>
               <div class="list-group-item" @click="openMemberModal('AddChild', 'Con')">Thêm Con</div>
               <div class="list-group-item" @click="openModalAddMemberFromList()">Thêm mối quan hệ từ Danh Sách</div>
               <div class="list-group-item" @click="openCfDelModal(false,null,TitleModal)">Xóa thành viên (*)</div>
@@ -1102,6 +1100,8 @@ export default {
       helpNonExist: false,
       helpTree: false,
 
+      idNodeWatching:null,
+
       numberDeath: 0,
       listMember: [],
     };
@@ -1162,6 +1162,7 @@ export default {
         sticky: false,
         nodeMouseClick: FamilyTree.action.none,
       });
+      const self = this;
       this.family.onInit(() => {
         this.family.load(this.nodes);
       });
@@ -1213,7 +1214,7 @@ export default {
       });
 
       // right click
-      const self = this;
+      
       if (this.memberRole != 3) {
         this.family.onInit(function () {
           this.element.addEventListener(
@@ -1225,7 +1226,9 @@ export default {
               }
               if (nodeElement && nodeElement.hasAttribute("data-n-id")) {
                 let id = nodeElement.getAttribute("data-n-id");
+                self.idNodeWatching = id;
                 self.OnpenModal_SelectOption(id);
+              
               }
             },
             false
@@ -1265,7 +1268,7 @@ export default {
           let newWindow = window.open(
             `https://giaphanguoiviet.com${response.data.data.fileName}`,
             "_blank"
-          );          
+          );
           if (newWindow) {
             this.NotificationsScuccess(response.data.message);
           } else {
@@ -1273,7 +1276,7 @@ export default {
               "Không thể mở cửa sổ mới. Vui lòng kiểm tra cài đặt trình duyệt của bạn."
             );
           }
-        } else {         
+        } else {
           this.NotificationsDelete(response.data.message);
         }
       });
@@ -1654,6 +1657,9 @@ export default {
         },
       })
         .then((response) => {
+          this.selectCityMember = null;
+          this.selectDistrictMember = null;
+          console.log(this.selectDistrictMember)
           this.objMember = response.data;
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
@@ -1671,11 +1677,12 @@ export default {
           }
           if (this.objMember.contact.length > 0) {
             this.objMemberContact = this.objMember.contact[0];
-            if (this.objMemberContact.Address != undefined) {
+            console.log(this.objMemberContact);
+            console.log(this.objMember.contact);
+            if (this.objMemberContact.Address != undefined && this.objMemberContact.Address != null) {
               this.getAdressMember(this.objMemberContact.Address);
             }
-          } else {
-            this.selectCityMember = null;
+            
           }
           this.ListMemberEducation = this.objMember.education;
           this.ListMemberJob = this.objMember.job;
@@ -2162,6 +2169,9 @@ export default {
         this.objMemberContact.Address =
           this.objMemberContact.Address + "-" + this.selectDistrictMember;
       }
+      if (this.selectCityMember == null) {
+        this.objMemberContact.Address = null;
+      }
       HTTP.put("member", {
         MemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
@@ -2236,14 +2246,17 @@ export default {
     },
     //Nguyễn Lê Hùng
     GetListFilterMember() {
+      let city = this.selectAdress ;
       if (this.selectDistrict != null) {
-        this.selectAdress = this.selectAdress + "-" + this.selectDistrict;
+        city = this.selectAdress + "-" + this.selectDistrict
       }
+      console.log(city)
+      console.log(this.selectAdress)
       HTTP.post("filter-member", {
         CodeID: this.CodeID,
         BloodType: this.selectBloodType,
         selectAge: this.selectAge,
-        Address: this.selectAdress,
+        Address: city,
       })
         .then((response) => {
           this.listFilterMember = response.data.data;
@@ -2406,7 +2419,7 @@ export default {
       this.objMemberInfor.NationalityID = 1;
       this.objMemberInfor.ReligionID = 1;
       this.objMemberContact = {};
-      this.TitleModal = "Thêm Thông Tin " + title;
+      this.TitleModal = "Thêm mối quan hệ " + title;
       this.action = action;
       if (this.action == "AddMother" || this.action == "AddWife") {
         this.objMemberInfor.Male = 0;
@@ -2442,7 +2455,7 @@ export default {
     OnpenModal_SelectOption(id) {
       this.selectedInfor();
       let foundNode = this.nodes.find((node) => node.id == id);
-      console.log("gender: " + foundNode.gender);
+      console.log("node: " + foundNode);
       if (foundNode.gender == "female") {
         this.isFather = false;
       } else {
@@ -2460,6 +2473,7 @@ export default {
       this.nodeRightClickHighLight = id;
       this.$modal.show("Select-option-Modal");
       this.CurrentIdMember = id;
+    //  this.removeFromSelectedNodes(id);
     },
     getAllMarriedInMember(membersArray) {
       this.ListMarriedMember = this.nodes.filter((member) =>
@@ -2469,8 +2483,9 @@ export default {
 
     closeSelectModal() {
       this.CurrentIdMember = 0;
-      //  this.RemoveHightLight();
+      this.removeFromSelectedNodes(this.idNodeWatching)
       this.$modal.hide("Select-option-Modal");
+      
     },
     removeRelationship() {
       HTTP.put("removeRelationship", {
@@ -2547,6 +2562,7 @@ export default {
           CodeID: this.CodeID,
         },
       }).then((response) => {
+        console.log('response: ' + response.data)
         if (response.data.success == true) {
           this.idFamilyHead = response.data.data;
           console.log(this.idFamilyHead);
@@ -2664,7 +2680,13 @@ export default {
       let selectedCity = this.ListCity.find(
         (city) => city.id == this.selectCityMember
       );
-      this.objMemberContact.Address = selectedCity.name;
+      console.log(this.selectCityMember)
+      if(selectedCity != null){
+        this.objMemberContact.Address = selectedCity.name;
+      }else{
+        this.objMemberContact.Address = null;
+      }
+      
       if (this.selectCityMember == null) {
         this.ListDistrictMember = null;
       } else {

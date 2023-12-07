@@ -71,6 +71,12 @@
         </div>
       </modal>
     </div>
+    <div v-if="listHistory.length != 0">
+
+    </div>
+    <div v-else>
+
+    </div>
   </div>
 </template>
 
