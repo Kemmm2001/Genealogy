@@ -306,20 +306,22 @@
               </div>
             </div>
             <div class="d-flex flex-column p-3" style="height: calc(100% - 100px);">
-              <div class="d-flex flex-row">
-                <div class="col-5" style="padding-bottom: 4px; padding-right: 4px;">
-                  <input type="text" class="form-control h-100 w-100" placeholder="Tên thành viên" />
+              <div class="d-flex flex-column">
+                <div class="" style="padding-bottom: 4px; padding-right: 4px;">
+                  <input type="text" class="form-control" placeholder="Tên thành viên" />
                 </div>
-                <div class="col-2"></div>
-                <div class="col-2 d-flex flex-row" style="padding-bottom: 4px; padding-right: 4px;">
-                  <input v-model="numberExpire" type="number" min="0" class="form-control h-100 w-100" />
-                </div>
-                <div class="col-3 d-flex flex-row" style="padding-bottom: 4px; padding-right: 4px;">
-                  <select class="form-select h-100 w-100">
-                    <option selected>Giờ</option>
-                    <option>Ngày</option>
-                    <option>Tháng</option>
-                  </select>
+                <div class="d-flex flex-row">
+                  <div class="col-4 d-flex align-items-center" style="padding-left: 6px;">Thời gian hết hạn</div>
+                  <div class="col-2 d-flex flex-row position-relative" style="padding-bottom: 4px; padding-right: 4px;">
+                    <input v-model="numberExpire" type="number" class="form-control h-100 w-100" min="0" />
+                  </div>
+                  <div class="col-3 d-flex flex-row" style="padding-bottom: 4px; padding-right: 4px;">
+                    <select class="form-select h-100 w-100">
+                      <option selected>Giờ</option>
+                      <option>Ngày</option>
+                      <option>Tháng</option>
+                    </select>
+                  </div>
                 </div>
               </div>
               <div class="w-100" style="overflow-y: auto; height: 100%;">
