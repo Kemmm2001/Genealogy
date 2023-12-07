@@ -151,18 +151,22 @@ export default {
         this.accountRegister.rePassword != ""
       ) {
         if (this.accountRegister.rePassword == this.accountRegister.password) {
-          this.accountRegister.email = this.accountRegister.email.replace(/\s+/g, "");
+          this.accountRegister.email = this.accountRegister.email.replace(
+            /\s+/g,
+            ""
+          );
           HTTP.post("register", {
             email: this.accountRegister.email,
             username: this.accountRegister.username,
             password: SHA256(this.accountRegister.password).toString(),
-            repassword: SHA256(this.accountRegister.rePassword).toString()
+            repassword: SHA256(this.accountRegister.rePassword).toString(),
           })
             .then((response) => {
-              if (response.data.success == true) {                
+              console.log(response.data);
+              if (response.data.success == true) {
                 this.moveToLeft();
                 this.enlargeBackground();
-                this.accountRegister = [];                
+                this.accountRegister = [];
                 this.NotificationsScuccess(response.data.message);
               } else {
                 this.NotificationsDelete(response.data.message);
@@ -186,8 +190,8 @@ export default {
       if (this.accountLogin.email != "" && this.accountLogin.password != "") {
         HTTP.post("login", {
           email: this.accountLogin.email.replace(/\s+/g, ""),
-          password: SHA256(this.accountLogin.password).toString(),
-          // password: this.accountLogin.password,
+          // password: SHA256(this.accountLogin.password).toString(),
+          password: this.accountLogin.password,
         })
           .then((response) => {
             if (response.data.success == false) {
@@ -196,10 +200,10 @@ export default {
               VueCookies.remove("accessToken");
               localStorage.removeItem("CodeID");
               this.accountIdToken = response.data.data;
-              console.log(response.data)
-              console.log(this.accountIdToken)
+              console.log(response.data);
+              console.log(this.accountIdToken);
               VueCookies.set("accessToken", this.accountIdToken, 3600);
-              console.log(response.data.data)
+              console.log(response.data.data);
               this.accountLogin = [];
               this.$router.push("/familycode");
             }

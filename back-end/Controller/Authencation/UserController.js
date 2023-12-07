@@ -2,7 +2,7 @@ const UserService = require('../../service/Authencation/UserManagement');
 const createError = require('http-errors')
 const { registerSchema, loginSchema } = require('../../helper/validation_schema')
 const bcrypt = require('bcrypt');
-const { signAccessToken, signRefreshToken, signRePassToken,signRegisterToken,verifyRegisterToken, verifyRepassToken, verifyRefreshToken } = require('../../helper/jwt_helper')
+const { signAccessToken, signRefreshToken, signRePassToken, signRegisterToken, verifyRegisterToken, verifyRepassToken, verifyRefreshToken } = require('../../helper/jwt_helper')
 const Response = require('../../Utils/Response')
 const sendMail = require('../../Utils/SystemOperation');
 
@@ -136,7 +136,7 @@ var loginUser = async (req, res) => {
     if (checkEmail == 0) {
       return res.send(Response.dataNotFoundResponse(null, 'Email không tồn tại'));
     }
-    if(data.isActive == 0){
+    if (data.isActive == 0) {
       return res.send(Response.badRequestResponse(null, 'Tài khoản chưa được kích hoạt'));
     }
     let isPasswordMatch = await bcrypt.compare(req.body.password, data.password);
@@ -206,7 +206,7 @@ var registerGenealogy = async (req, res) => {
     let codeID;
     let doesExist = true;
 
-    let checkCreated = await UserService.checkCodeCreatedByID(req.body.accountID);  
+    let checkCreated = await UserService.checkCodeCreatedByID(req.body.accountID);
 
     if (checkCreated > 0) {
       return res.send(Response.internalServerErrorResponse(null, 'Tài khoản này đã đăng ký gia phả. Không thể đăng ký tiếp'));
@@ -216,18 +216,20 @@ var registerGenealogy = async (req, res) => {
         codeID = generateRandomNumber();
         doesExist = await UserService.checkCodeID(codeID);
       }
-      let InsertHistory = await UserService.insertAccountFamily(req.body.accountID, codeID, 1);
-      if(!InsertHistory){
-        console.log("Lỗi Insert history")
-      }     
       let data1 = await UserService.insertIntoFamily(value, codeID);
       if (data1) {
         try {
           await UserService.insertAccountFamily(value.accountID, codeID, 1);
+          let InsertHistory = await UserService.insertAccountFamily(req.body.accountID, codeID, 1);
+          if (!InsertHistory) {
+            console.log("Lỗi Insert history")
+          }
           return res.send(Response.successResponse(codeID, 'Đăng ký gia phả thành công'));
+
         } catch (error) {
           return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
         }
+
       } else {
         return res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống'));
       }
@@ -426,13 +428,13 @@ var setActive = async (req, res) => {
       return res.send(Response.internalServerErrorResponse(null, 'Link không đúng'));
     }
 
-      let data = await UserService.UpdateActive(req.body.IsActive, payload.email)
-      if (data == true) {
-        return res.send(Response.successResponse());
-      } else {
-        return res.send(Response.dataNotFoundResponse());
-      }
-    
+    let data = await UserService.UpdateActive(req.body.IsActive, payload.email)
+    if (data == true) {
+      return res.send(Response.successResponse());
+    } else {
+      return res.send(Response.dataNotFoundResponse());
+    }
+
   } catch (error) {
     return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
 

@@ -206,7 +206,7 @@ export default {
               this.familycode = response.data.data;
               this.showFamilyCode();
             } else {
-              this.NotificationsDelete('Lỗi hệ thống');
+              this.NotificationsDelete("Lỗi hệ thống");
             }
           })
           .catch((e) => {
@@ -221,7 +221,8 @@ export default {
       this.loginWithCode();
     },
     loginWithCode() {
-      if (this.codeIdLogin != "") {
+      console.log(this.codeIdLogin);
+      if (this.codeIdLogin != "" && this.codeIdLogin != null) {
         HTTP.post("check-codeId", {
           codeID: this.codeIdLogin,
           accountID: this.accountID,
@@ -240,6 +241,7 @@ export default {
             console.log(e);
           });
       } else {
+        console.log("vào đây")
         this.NotificationsDelete("Bạn chưa điền code gia phả");
       }
     },
@@ -301,9 +303,7 @@ export default {
     this.takeAccountId();
     if (localStorage.getItem("CodeID") != null) {
       this.$router.push("/");
-    }
-    console.log('accountID: ' + localStorage.getItem("CodeID"))
-
+    }   
   },
 };
 </script>
