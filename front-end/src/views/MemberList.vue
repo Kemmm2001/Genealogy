@@ -33,30 +33,20 @@
               :disabled="isButtonDisabled">Xóa</button>
           </div>
           <div class="view-member">
-            <div @click="numberItemSelection(index), getInforMember(member.id)" class="member" style="cursor: pointer;"
-              :class="{ choose: itemChoose === index }" v-for="(member, index) in memberFilter" :key="member.id">
-              <div v-if="memberList != null">
-                <div class="image-member" v-if="member.gender == 'male'">
-                  <img class="avatar" src="https://pereaclinic.com/wp-content/uploads/2019/12/270x270-male-avatar.png" />
-                </div>
-                <div class="image-member" v-if="member.gender == 'female'">
-                  <img class="avatar"
-                    src="https://pereaclinic.com/wp-content/uploads/2019/12/270x270-female-avatar.png" />
-                </div>
-                <div class="infor-member">
-                  <b>{{ member.name }}</b>
-                  <br />
-                  <a>Đời thứ:{{ member.generation }}</a>
-                  <br />
-                  <a>Ngày sinh:{{ member.dob }}</a>
-                </div>
+            <div @click="numberItemSelection(index), getInforMember(member.id)" class="member" style="cursor: pointer;" :class="{ choose: itemChoose === index }" v-for="(member, index) in memberFilter" :key="member.id">
+              <div class="image-member" v-if="member.Male == 1">
+                <img class="avatar" src="https://pereaclinic.com/wp-content/uploads/2019/12/270x270-male-avatar.png" />
               </div>
-              <div v-else>
-                <div class="h-100 w-100 position-relative">
-                  <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content;">
-                    Gia tộc của bạn chưa được tạo lịch sử
-                  </div>
-                </div>
+              <div class="image-member" v-if="member.Male == 0">
+                <img class="avatar" src="https://pereaclinic.com/wp-content/uploads/2019/12/270x270-female-avatar.png" />
+              </div>
+              <div class="infor-member">
+                <b>{{ member.MemberName }}</b>
+                <br />
+                <a>Đời thứ : {{ member.Generation }}</a>
+                <br />
+                <a v-if="formatDate(member.Dob) != null">Ngày sinh : {{ new Date(formatDate(member.Dob)).getDate()+"-"+(new Date(formatDate(member.Dob)).getMonth()+1 )+"-"+new Date(formatDate(member.Dob)).getFullYear()}}</a>
+                <a v-if="formatDate(member.Dob) == null">Ngày sinh : </a>
               </div>
             </div>
           </div>
@@ -112,8 +102,8 @@
             <a>Giới tính</a>
             <select @change="filter()" v-model="genderSearch" class="form-select">
               <option value="all">Toàn bộ</option>
-              <option value="male">Nam</option>
-              <option value="female">Nữ</option>
+              <option value="1">Nam</option>
+              <option value="0">Nữ</option>
             </select>
           </div>
           <div class="input-control">
@@ -593,14 +583,6 @@ export default {
       numberGeneration: 0,
       numberAlive: 0,
       numberDied: 0,
-      numberSonInLaw: 0,
-      numberDaughterInLaw: 0,
-      age0to5: 0,
-      age6to17: 0,
-      age18to40: 0,
-      age41to60: 0,
-      age61up: 0,
-      maxMemberGeneration: 0,
 
       monthDob: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 
@@ -763,21 +745,21 @@ export default {
     },
     sortListMember() {
       if (this.genAscending && this.genSort) {
-        this.memberFilter.sort((a, b) => a.generation - b.generation);
+        this.memberFilter.sort((a, b) => a.Generation - b.Generation);
       } else if (!this.genAscending && this.genSort) {
-        this.memberFilter.sort((a, b) => b.generation - a.generation);
+        this.memberFilter.sort((a, b) => b.Generation - a.Generation);
       }
       console.log(this.dobAscending);
       console.log(this.dobSort);
       if (this.dobAscending && this.dobSort) {
         this.memberFilter.sort(
           (a, b) =>
-            new Date(this.formatDate(b.dob)) - new Date(this.formatDate(a.dob))
+            new Date(this.formatDate(b.Dob)) - new Date(this.formatDate(a.Dob))
         );
       } else if (!this.dobAscending && this.dobSort) {
         this.memberFilter.sort(
           (a, b) =>
-            new Date(this.formatDate(a.dob)) - new Date(this.formatDate(b.dob))
+            new Date(this.formatDate(a.Dob)) - new Date(this.formatDate(b.Dob))
         );
       }
     },
@@ -1023,35 +1005,35 @@ export default {
       this.sortListMember();
       if (this.genderSearch != "all") {
         this.memberFilter = this.memberFilter.filter(
-          (member) => member.gender == this.genderSearch
+          (member) => member.Male == this.genderSearch
         );
       }
       if (this.generationSearch != 0) {
         this.memberFilter = this.memberFilter.filter(
-          (member) => member.generation == this.generationSearch
+          (member) => member.Generation == this.generationSearch
         );
       }
       if (this.monthSearch != 0) {
         this.memberFilter = this.memberFilter.filter(
-          (member) =>
-            new Date(this.formatDate(member.dob)).getMonth() + 1 ==
-            this.monthSearch
-        );
+          (member) => this.formatDate(member.Dob) != null ? 
+            new Date(this.formatDate(member.Dob)).getMonth() + 1 ==
+            this.monthSearch : new Date(this.formatDate(member.Dob)).getMonth() + 1 == 0
+        ); 
       }
       if (this.isDeadSearch != "all") {
         this.memberFilter = this.memberFilter.filter(
-          (member) => member.isDead != this.isDeadSearch
+          (member) => member.IsDead != this.isDeadSearch
         );
       }
       if (this.statusSearch != "all") {
         if (this.statusSearch == "trongdongho") {
           this.memberFilter = this.memberFilter.filter(
-            (member) => member.fid != ""
+            (member) => member.FatherID != null || member.Generation == 1
           );
         }
         if (this.statusSearch == "ngoaidongho") {
           this.memberFilter = this.memberFilter.filter(
-            (member) => member.fid == ""
+            (member) => member.FatherID == null && member.Generation != 1
           );
         }
       }
@@ -1059,39 +1041,39 @@ export default {
         if (this.ageSearch == "0-5") {
           console.log(this.ageSearch);
           this.memberFilter = this.memberFilter.filter(
-            (member) =>
-              0 <= this.ageMember(member.dob) && this.ageMember(member.dob) <= 5
+            (member) => this.formatDate(member.Dob) != null ?
+              0 <= this.ageMember(member.Dob) && this.ageMember(member.Dob) <= 5 : this.ageMember(member.Dob) == -1
           );
         }
         if (this.ageSearch == "6-17") {
           console.log(this.ageSearch);
           this.memberFilter = this.memberFilter.filter(
-            (member) =>
-              6 <= this.ageMember(member.dob) &&
-              this.ageMember(member.dob) <= 17
+            (member) => this.formatDate(member.Dob) != null ?
+              6 <= this.ageMember(member.Dob) &&
+              this.ageMember(member.Dob) <= 17 : this.ageMember(member.Dob) == -1
           );
         }
         if (this.ageSearch == "18-40") {
           console.log(this.ageSearch);
           this.memberFilter = this.memberFilter.filter(
-            (member) =>
-              18 <= this.ageMember(member.dob) &&
-              this.ageMember(member.dob) <= 40
+            (member) => this.formatDate(member.Dob) != null ?
+              18 <= this.ageMember(member.Dob) &&
+              this.ageMember(member.Dob) <= 40 : this.ageMember(member.Dob) == -1
           );
         }
         if (this.ageSearch == "41-60") {
           console.log(this.ageSearch);
           this.memberFilter = this.memberFilter.filter(
-            (member) =>
-              41 <= this.ageMember(member.dob) &&
-              this.ageMember(member.dob) <= 60
+            (member) => this.formatDate(member.Dob) != null ?
+              41 <= this.ageMember(member.Dob) &&
+              this.ageMember(member.Dob) <= 60 : this.ageMember(member.Dob) == -1
           );
         }
         if (this.ageSearch == ">60") {
           console.log(this.ageSearch);
           this.memberFilter = this.memberFilter.filter(
-            (member) =>
-              this.ageMember(member.dob) && this.ageMember(member.dob) > 60
+            (member) => this.formatDate(member.Dob) != null ?
+              this.ageMember(member.Dob) && this.ageMember(member.Dob) > 60 : this.ageMember(member.Dob) == -1
           );
         }
       }
@@ -1118,30 +1100,21 @@ export default {
         (this.numberGeneration = 0),
         (this.numberAlive = 0),
         (this.numberDied = 0),
-        (this.numberSonInLaw = 0),
-        (this.numberDaughterInLaw = 0),
-        (this.age0to5 = 0),
-        (this.age6to17 = 0),
-        (this.age18to40 = 0),
-        (this.age41to60 = 0),
-        (this.age61up = 0),
-        (this.memberOldest = {}),
-        (this.memberOldestAlive = {});
       this.totalMember = this.memberList.length;
       for (let i = 0; i < this.memberList.length; i++) {
-        if (this.memberList[i].gender == "male") {
+        if (this.memberList[i].Male == 1) {
           this.numberMale += 1;
         }
-        if (this.memberList[i].gender == "female") {
+        if (this.memberList[i].Male == 0) {
           this.numberFemale += 1;
         }
-        if (this.memberList[i].generation > this.numberGeneration) {
-          this.numberGeneration = this.memberList[i].generation;
+        if (this.memberList[i].Generation > this.numberGeneration) {
+          this.numberGeneration = this.memberList[i].Generation;
         }
-        if (this.memberList[i].isDead == 0) {
+        if (this.memberList[i].IsDead == 0) {
           this.numberAlive += 1;
         }
-        if (this.memberList[i].isDead == 1) {
+        if (this.memberList[i].IsDead == 1) {
           this.numberDied += 1;
         }
         // let month = 1;
@@ -1161,7 +1134,11 @@ export default {
         },
       }).then((response) => {
         if (response.data.success == true) {
-          console.log(response.data.data);
+          
+          this.memberList = response.data.data;
+          this.memberFilter = this.memberList;
+          console.log(this.memberList )
+          this.takeInforList();
         }
       });
     },
@@ -1210,24 +1187,24 @@ export default {
         }
       });
     },
-    getListMember() {
-      HTTP.get("viewTree", {
-        params: {
-          CodeID: this.CodeID,
-        },
-      })
-        .then((response) => {
-          if (response.data.success == true) {
-            console.log(response.data.data);
-            this.memberList = response.data.data;
-            this.memberFilter = this.memberList;
-            this.takeInforList();
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
+    // getListMember() {
+    //   HTTP.get("viewTree", {
+    //     params: {
+    //       CodeID: this.CodeID,
+    //     },
+    //   })
+    //     .then((response) => {
+    //       if (response.data.success == true) {
+    //         console.log(response.data.data);
+    //         this.memberList = response.data.data;
+    //         this.memberFilter = this.memberList;
+    //         this.takeInforList();
+    //       }
+    //     })
+    //     .catch((e) => {
+    //       console.log(e);
+    //     });
+    // },
   },
 
   mounted() {
@@ -1243,7 +1220,7 @@ export default {
     this.getListMemberInGenalogy();
     this.getListNationality();
     this.getListReligion();
-    this.getListMember();
+ //   this.getListMember();
   },
 };
 </script>
