@@ -4,7 +4,7 @@ const { registerSchema, loginSchema } = require('../../helper/validation_schema'
 const bcrypt = require('bcrypt');
 const { signAccessToken, signRefreshToken, signRePassToken, verifyRepassToken, verifyRefreshToken } = require('../../helper/jwt_helper')
 const Response = require('../../Utils/Response')
-const sendMail = require('../../Utils/SystemOperation')
+const sendMail = require('../../Utils/SystemOperation');
 
 
 var registerUser = async (req, res) => {
@@ -24,7 +24,7 @@ var registerUser = async (req, res) => {
     if (error.isJoi === true) {
       error.status = 422;
     }
-    res.status(error.status || 500).json({ error: error.message });
+    return res.send(Response.internalServerErrorResponse(null, error.message));
   }
 }
 
@@ -143,13 +143,13 @@ var loginUser = async (req, res) => {
     let accessToken = await signAccessToken(data.accountID)
     // let refreshToken = await signRefreshToken(data.accountID)
     console.log(refreshToken)
-    return res.send({ accessToken })
+    return res.send(Response.successResponse(accessToken, 'Login thành công'));
 
   } catch (error) {
     if (error.isJoi === true) {
       error.status = 422;
     }
-    res.status(error.status || 500).json({ error: error.message });
+    return res.send(Response.internalServerErrorResponse(null, error.message));
   }
 }
 
@@ -174,10 +174,10 @@ var getUserCodeID = async (req, res) => {
     let data = await UserService.getUserCodeID(req.body.accountID)
     if (!data) throw createError.Conflict(`${data} không tìm thấy`)
 
-    return res.send({ data })
+    return res.send(Response.successResponse(data, 'thành công'));
 
   } catch (error) {
-    res.json({ error: error.message });
+    return res.send(Response.internalServerErrorResponse(null, error.message));
   }
 }
 
@@ -190,9 +190,9 @@ var refreshToken = async (req, res) => {
 
     const accessToken = await signAccessToken(insertId)
 
-    res.send({ accessToken: accessToken })
+    return res.send(Response.successResponse(accessToken, 'Thành công'));
   } catch (error) {
-    res.send(error)
+    return res.send(Response.internalServerErrorResponse(null, error.message));
   }
 }
 
@@ -230,7 +230,7 @@ var registerGenealogy = async (req, res) => {
     }
 
   } catch (error) {
-    res.json({ error: 'Lỗi nội bộ' });
+    return res.send(Response.internalServerErrorResponse(null, error.message));
   }
 }
 
@@ -242,9 +242,9 @@ var getGenealogy = async (req, res) => {
     let doesExist = await UserService.checkID(request.accountID)
     if (doesExist) throw createError.Conflict(`đã đăng kí code gia phả`);
     let data = await UserService.insertAccountFamily(request.accountID, request.codeID, 3);
-    return res.json({ data })
+    return res.send(Response.successResponse(data, 'Thành công'));
   } catch (error) {
-    res.status(error.status || 500).json({ error: error.message });
+    return res.send(Response.internalServerErrorResponse(null, error.message));
 
   }
 }
@@ -295,7 +295,7 @@ var checkCodeID = async (req, res) => {
     }
 
   } catch (error) {
-    res.status(error.status || 500).json({ error: error.message });
+    return res.send(Response.internalServerErrorResponse(null, error.message));
   }
 };
 
