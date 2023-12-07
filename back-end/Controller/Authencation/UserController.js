@@ -2,7 +2,7 @@ const UserService = require('../../service/Authencation/UserManagement');
 const createError = require('http-errors')
 const { registerSchema, loginSchema } = require('../../helper/validation_schema')
 const bcrypt = require('bcrypt');
-const { signAccessToken, signRefreshToken, signRePassToken, verifyRepassToken, verifyRefreshToken } = require('../../helper/jwt_helper')
+const { signAccessToken, signRefreshToken, signRePassToken,signRegisterToken,verifyRegisterToken, verifyRepassToken, verifyRefreshToken } = require('../../helper/jwt_helper')
 const Response = require('../../Utils/Response')
 const sendMail = require('../../Utils/SystemOperation');
 
@@ -18,7 +18,7 @@ var registerUser = async (req, res) => {
     }
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     let newUser = await UserService.create(req.body.username, req.body.email, hashedPassword);
-    return res.send(Response.successResponse(newUser, 'Đăng ký thành công'));
+    return res.send(Response.successResponse(newUser, 'Đăng ký thành công vui lòng xác thực tài khoản'));
 
   } catch (error) {
     if (error.isJoi === true) {
@@ -136,6 +136,9 @@ var loginUser = async (req, res) => {
     if (checkEmail == 0) {
       return res.send(Response.dataNotFoundResponse(null, 'Email không tồn tại'));
     }
+    if(data.isActive == 0){
+      return res.send(Response.badRequestResponse(null, 'Tài khoản chưa được kích hoạt'));
+    }
     let isPasswordMatch = await bcrypt.compare(req.body.password, data.password);
 
     if (!isPasswordMatch) {
@@ -156,7 +159,7 @@ var loginUser = async (req, res) => {
 
 var getUserInfor = async (req, res) => {
   try {
-    console.log('bodyyyyyyyyyyyyyyy: ' + req.body.accountID)
+    console.log('body: ' + req.body.accountID)
     let data = await UserService.getUserInfo(req.body.accountID)
     console.log('data: ' + data)
     if (!data) {
@@ -374,9 +377,71 @@ var resetPassword = async (req, res) => {
   }
 }
 
+var verifyAccount = async (req, res) => {
+  try {
+    const email = req.body.email
+    let checkEmail = await UserService.checkMail(email);
+
+    if (checkEmail == 0) {
+      return res.send(Response.dataNotFoundResponse(null, 'Email không tồn tại'));
+    }
+    else {
+      const token = await signRegisterToken(email)
+      try {
+        console.log(token)
+        const data = await UserService.UpdateRegisterToken(email, token)
+        const verifyLink = `http://localhost:3006/setActive?token=${token}`;
+
+        const objData = {
+          to: email,
+          subject: "For verify account",
+          html: `<p> Hii, Please click the link to <a href="${verifyLink}">verify account</a></p>`
+        };
+        sendMail.SendEmailCore(objData)
+        if (data == true) {
+          return res.send(Response.successResponse(null, 'Vui lòng kiểm tra hộp thư đến trong gmail của bạn'));
+        }
+        return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+      } catch (error) {
+        return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+      }
+    }
+
+  } catch (error) {
+    return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+
+  }
+}
+
+var setActive = async (req, res) => {
+  try {
+    const token = req.query.token;
+    const payload = await verifyRegisterToken(token)
+    if (payload.error === 'Token expired') {
+      return res.send(Response.internalServerErrorResponse(null, "Link đã hết hạn"));
+    }
+
+    const tokenData = UserService.checkRegisterToken(token);
+    if (tokenData == 0) {
+      return res.send(Response.internalServerErrorResponse(null, 'Link không đúng'));
+    }
+
+      let data = await UserService.UpdateActive(req.body.IsActive, payload.email)
+      if (data == true) {
+        return res.send(Response.successResponse());
+      } else {
+        return res.send(Response.dataNotFoundResponse());
+      }
+    
+  } catch (error) {
+    return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+
+  }
+}
+
 module.exports = {
   registerUser, loginUser, refreshToken, registerGenealogy, getGenealogy, setRole,
   checkCodeID, getUserInfor, getUserCodeID, getHistoryCodeID, ChangePassword, getListRoleMember,
-  forgetPassword, resetPassword, getMemberRole, changeUsername, getInformationTree
+  forgetPassword, resetPassword, getMemberRole, changeUsername, getInformationTree, verifyAccount, setActive
 
 };
