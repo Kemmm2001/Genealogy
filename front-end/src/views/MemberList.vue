@@ -33,7 +33,7 @@
               :disabled="isButtonDisabled">Xóa</button>
           </div>
           <div class="view-member">
-            <div @click="numberItemSelection(index), getInforMember(member.id)" class="member" style="cursor: pointer;" :class="{ choose: itemChoose === index }" v-for="(member, index) in memberFilter" :key="member.id">
+            <div @click="numberItemSelection(index), getInforMember(member.MemberID)" class="member" style="cursor: pointer;" :class="{ choose: itemChoose === index }" v-for="(member, index) in memberFilter" :key="member.MemberID">
               <div class="image-member" v-if="member.Male == 1">
                 <img class="avatar" src="https://pereaclinic.com/wp-content/uploads/2019/12/270x270-male-avatar.png" />
               </div>
@@ -909,7 +909,7 @@ export default {
             }).then(() => {
               this.closeMemberModal();
               this.family.load(this.nodes);
-              this.getListMember();
+              this.getListMemberInGenalogy();
             });
           } else {
             this.NotificationsDelete(response.data.message);
@@ -953,6 +953,7 @@ export default {
       this.idPaternalAncestor = id;
     },
     getInforMember(id) {
+      this.CurrentIdMember = id;
       HTTP.get("InforMember", {
         params: {
           memberId: id,
@@ -960,7 +961,6 @@ export default {
       })
         .then((response) => {
           this.objMember = response.data;
-          console.log(this.objMember);
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
             this.takeDataMember(id);
@@ -1139,6 +1139,10 @@ export default {
           this.memberFilter = this.memberList;
           console.log(this.memberList )
           this.takeInforList();
+        }else{
+          this.memberList = [];
+          this.memberFilter = this.memberList;
+          this.CurrentIdMember = null;
         }
       });
     },
@@ -1181,7 +1185,7 @@ export default {
           // this.nodes.length = this.nodes.length - 1;
           this.NotificationsDelete(response.data.message);
           this.$modal.hide("Select-option-Modal");
-          this.getListMember();
+          this.getListMemberInGenalogy();
         } else {
           this.NotificationsDelete(response.data.message);
         }
