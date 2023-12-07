@@ -916,6 +916,10 @@
       <div class="d-flex align-items-center" style="height: 64px;" v-show="togglehelp">Nhấp chuột trái vào thành viên trên phả đồ để xem và thay đổi thông tin thành viên</div>
       <div class="d-flex align-items-center" style="height: 64px;" v-show="togglehelp">Nhấp chuột phải để mở danh sách những chức năng tương tác với thành viên</div>
     </div>
+    <div v-if="node.length != 0"></div>
+    <div v-else ></div>
+    <div v-if="ListUnspecifiedMembers.length != 0"></div>
+    <div v-else ></div>
   </div>
 </template>
 
