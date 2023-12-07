@@ -21,7 +21,7 @@
           <div v-if="accountInfor" class="func-detail-item mt-3">
             <div class="pb-2" style="font-weight: bold;">Tài khoản gmail</div>
             <div>
-              <input v-model="accountInfor.Username" type="text" class="form-control" disabled />
+              <input v-model="accountInfor.Email" type="text" class="form-control" disabled />
             </div>
           </div>
           <div class="mt-3 func-detail-item" v-if="inforTree">

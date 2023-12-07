@@ -1024,6 +1024,21 @@ var getAllMemberSortByRole = async (req, res) => {
     }
 }
 
+var getAllMembersInGenalogy = async (req, res) => {
+    try {
+        let CodeID = req.query.CodeID;
+        let data = await FamilyManagementService.getAllMembersInGenalogy(CodeID);
+        console.log('data: ' + data)
+        if (data) {
+            return res.send(Response.successResponse(data))
+        } else {
+            return res.send(Response.dataNotFoundResponse())
+        }
+    } catch (error) {
+        return res.send(Response.internalServerErrorResponse(error))
+    }
+}
+
 
 var getAllMember = async (req, res) => {
     try {
@@ -1095,5 +1110,5 @@ var getMember = async (req, res) => {
 module.exports = {
     addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember, sortMembers,
     getListAgeGroup, getListBloodTypeGroup, getAllMemberSortByRole, GetCurrentParentMember, insertParentIdToMember,
-    getMember, updateMemberToGenealogy, updateMemberPhoto, addChild, linkRelationship
+    getMember, updateMemberToGenealogy, updateMemberPhoto, addChild, linkRelationship, getAllMembersInGenalogy
 };

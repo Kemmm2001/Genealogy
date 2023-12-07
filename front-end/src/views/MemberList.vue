@@ -483,42 +483,36 @@
         </div>
       </modal>
       <div class="cfdel-modal-container">
-      <modal name="cfdel-modal">
-        <div class="w-100 h-100 add-head-modal">
-          <div class="d-flex flex-row w-100 align-items-center position-relative">
-            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100 text-white"
-              style="background-color: rgb(255, 8, 0);;">Quan trọng</div>
-            <div class="close-add-form" @click="closeCfDelModal()">
-              <svg class="close-add-form-icon" style="fill: #FFFFFF !important;" xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 384 512">
-                <path
-                  d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-              </svg>
-            </div>
-          </div>
-          <div class="w-100 d-flex flex-column align-items-center justify-content-center"
-            style="height: calc(100% - 50px);">
-            <div class="d-flex align-items-center px-3" style="height: 70%; font-size: 19px;">Bạn có chắc chắn muốn xóa
-              thành viên {{objMemberInfor.MemberName}}</div>
-            <div class="d-flex flex-row w-100" style="height: 30%;">
-              <div class="col-6 d-flex align-items-center justify-content-center">
-                <div class="btn bg-danger text-white" @click="removeMember(),closeCfDelModal()">Có</div>
-              </div>
-              <div class="col-6 d-flex align-items-center justify-content-center">
-                <div class="btn bg-primary text-white" @click="closeCfDelModal()">Không</div>
+        <modal name="cfdel-modal">
+          <div class="w-100 h-100 add-head-modal">
+            <div class="d-flex flex-row w-100 align-items-center position-relative">
+              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100 text-white" style="background-color: rgb(255, 8, 0);;">Quan trọng</div>
+              <div class="close-add-form" @click="closeCfDelModal()">
+                <svg class="close-add-form-icon" style="fill: #FFFFFF !important;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                  <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                </svg>
               </div>
             </div>
+            <div class="w-100 d-flex flex-column align-items-center justify-content-center" style="height: calc(100% - 50px);">
+              <div class="d-flex align-items-center px-3" style="height: 70%; font-size: 19px;">
+                Bạn có chắc chắn muốn xóa
+                thành viên {{objMemberInfor.MemberName}}
+              </div>
+              <div class="d-flex flex-row w-100" style="height: 30%;">
+                <div class="col-6 d-flex align-items-center justify-content-center">
+                  <div class="btn bg-danger text-white" @click="removeMember(),closeCfDelModal()">Có</div>
+                </div>
+                <div class="col-6 d-flex align-items-center justify-content-center">
+                  <div class="btn bg-primary text-white" @click="closeCfDelModal()">Không</div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </modal>
+        </modal>
+      </div>
     </div>
-    </div>
-    <div v-if="memberList.length != 0">
-
-    </div>
-    <div v-else>
-
-    </div>
+    <div v-if="memberList.length != 0"></div>
+    <div v-else></div>
   </div>
 </template>
 <script>
@@ -720,8 +714,8 @@ export default {
       } else if (!this.genAscending && this.genSort) {
         this.memberFilter.sort((a, b) => b.generation - a.generation);
       }
-      console.log(this.dobAscending)
-      console.log(this.dobSort)
+      console.log(this.dobAscending);
+      console.log(this.dobSort);
       if (this.dobAscending && this.dobSort) {
         this.memberFilter.sort(
           (a, b) =>
@@ -780,7 +774,7 @@ export default {
     },
     formatDate(dateString) {
       let formattedDate;
-      if(dateString == null){
+      if (dateString == null) {
         return null;
       }
       if (dateString.length <= 10) {
@@ -1106,6 +1100,18 @@ export default {
         // }
       }
     },
+
+    getListMemberInGenalogy() {
+      HTTP.get("membersInGenealogy", {
+        params: {
+          CodeID: this.CodeID,
+        },
+      }).then((response) => {
+        if (response.data.success == true) {
+          console.log(response.data.data);
+        }
+      });
+    },
     openMemberModal() {
       this.$modal.show("member-modal");
     },
@@ -1113,7 +1119,7 @@ export default {
       this.$modal.hide("member-modal");
     },
     removeMember() {
-        HTTP.get("deleteContact", {
+      HTTP.get("deleteContact", {
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1159,6 +1165,7 @@ export default {
       })
         .then((response) => {
           if (response.data.success == true) {
+            console.log(response.data.data);
             this.memberList = response.data.data;
             this.memberFilter = this.memberList;
             this.takeInforList();
@@ -1180,7 +1187,10 @@ export default {
         this.$router.push("/login");
       }
     }
-    this.getListNationality(), this.getListReligion(), this.getListMember();
+    this.getListMemberInGenalogy();
+    this.getListNationality();
+    this.getListReligion();
+    this.getListMember();
   },
 };
 </script>

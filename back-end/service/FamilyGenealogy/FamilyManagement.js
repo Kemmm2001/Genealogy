@@ -206,7 +206,7 @@ function deleteMember(memberId) {
 }
 
 // nguyễn anh tuấn
-function UpdateMemberRelated(member , listMember) {
+function UpdateMemberRelated(member, listMember) {
     return new Promise(async (resolve, reject) => {
         console.log("Vào hàm UpdateMemberRelated với member: " + JSON.stringify(member.MemberID));
         if (CoreFunction.isEmptyOrNullOrSpaces(member.MemberID)) {
@@ -677,6 +677,23 @@ function getAllMember(codeID) {
     });
 }
 
+
+function getAllMembersInGenalogy(CodeID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `SELECT * FROM familymember where CodeID = ${CodeID} and Generation != 0`;
+            db.connection.query(query, (err, result) => {
+                if (!err && result.length > 0) {
+                    resolve(result)
+                } else {
+                    reject(err)
+                }
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
 function getAllMemberID(codeID) {
     return new Promise((resolve, reject) => {
         if (!codeID) {
@@ -721,5 +738,5 @@ module.exports = {
     setBirthOrder, insertParentIdToMember, getAllMemberID, updateMemberPhoto,
     getMembersByFatherIDAndMotherID, getMembersByFatherIDOrMotherID, updateFatherIDToMotherID,
     updateMotherIDToFatherID, UpdateMemberRelated, getMaxBirthOrderByFatherIdOrMotherId, getMaxBirthOrderByFatherID,
-    getMaxBirthOrderByMotherID, getMembersByOnlyFatherID, getMembersByOnlyMotherID, setRole
+    getMaxBirthOrderByMotherID, getMembersByOnlyFatherID, getMembersByOnlyMotherID, setRole, getAllMembersInGenalogy
 };

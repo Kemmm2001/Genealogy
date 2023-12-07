@@ -18,6 +18,7 @@ const initWebRouter = (app) => {
     router.get('/religion', ManagerFamilyTree.AllReligion)
     router.get('/agegroup', FamilyMemberManagement.getListAgeGroup)
     router.get('/bloodtype', FamilyMemberManagement.getListBloodTypeGroup)
+    router.get('/membersInGenealogy',FamilyMemberManagement.getAllMembersInGenalogy)
 
     router.get('/memberRole', ManagerFamilyTree.AllMemberRole)
     router.get('/InforMember', ManagerFamilyTree.informationMember)
