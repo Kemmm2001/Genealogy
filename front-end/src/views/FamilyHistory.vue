@@ -49,7 +49,7 @@
     </div>
     <div v-else class="h-100 position-absolute p-2" style="top: 0; right: 0; width: 80%; background-color: #f2f2f2;">
       <div class="h-100 w-100 position-relative">
-        <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content;">
+        <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content; font-size: 19px;">
           Gia tộc của bạn chưa được tạo lịch sử
         </div>
       </div>
