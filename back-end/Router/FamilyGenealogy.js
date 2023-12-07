@@ -18,6 +18,7 @@ const initWebRouter = (app) => {
     router.get('/religion', ManagerFamilyTree.AllReligion)
     router.get('/agegroup', FamilyMemberManagement.getListAgeGroup)
     router.get('/bloodtype', FamilyMemberManagement.getListBloodTypeGroup)
+    router.get('/membersInGenealogy',FamilyMemberManagement.getAllMembersInGenalogy)
 
     router.get('/memberRole', ManagerFamilyTree.AllMemberRole)
     router.get('/InforMember', ManagerFamilyTree.informationMember)
@@ -60,6 +61,7 @@ const initWebRouter = (app) => {
     router.put('/member', FamilyMemberManagement.updateMember);
     router.put('/member-photo', CoreFunction.uploadImage("member-photo").single('Image'), FamilyMemberManagement.updateMemberPhoto);
     router.put('/memberToGenealogy', FamilyMemberManagement.updateMemberToGenealogy);
+    router.put('/linkRelationship', FamilyMemberManagement.linkRelationship);
     router.get('/delete-member', FamilyMemberManagement.deleteMember)
     router.get('/getparent', FamilyMemberManagement.GetCurrentParentMember)
     router.post('/InsertParentID', FamilyMemberManagement.insertParentIdToMember)

@@ -148,6 +148,7 @@ var getFamilyHead = async (req, res) => {
     try {
         let CodeID = req.query.CodeID;
         let data = await FamilyTreeService.getFamilyHeadInGenealogy(CodeID);
+        console.log('dataaaaaaaaaa: ' + data)
         if (data) {
             return res.send(Response.successResponse(data))
         } else {

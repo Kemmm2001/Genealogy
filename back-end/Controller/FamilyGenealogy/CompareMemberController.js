@@ -27,6 +27,7 @@ var compareMember = async (req, res) => {
         }
         let DefferenceGeneration = generationMember2[0].Generation - generationMember1[0].Generation;
         if (DefferenceGeneration == 0) {
+            console.log("vào 0")
             let data = await CompareMemberService.GetResultCompare(idMember1, idMember2, DefferenceGeneration, Flag, generationMember1[0].Male, generationMember2[0].Male)
             if (data) {
                 return res.send(Response.successResponse(data))

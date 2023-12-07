@@ -21,6 +21,20 @@ var getAllEventGenealogy = async (req, res) => {
     }
 }
 
+var getListEventNotificationSent = async (req, res) => {
+    try {
+        let CodeID = req.query.CodeID;
+        let data = await EventManagementService.getListEventNotificationSent(CodeID);
+        if (data) {
+            return res.send(Response.successResponse(data))
+        } else {
+            return res.send(Response.dataNotFoundResponse())
+        }
+    } catch (error) {
+        return res.send(Response.dataNotFoundResponse(error))
+    }
+}
+
 var getEventAttendance = async (req, res) => {
     try {
         let EventID = req.query.EventID;
@@ -484,6 +498,8 @@ var inviteMail = async (req, res) => {
         const eventId = requestBody.eventId;
         const time = requestBody.time;
 
+        console.log('eventId: ' + eventId)
+
         console.log('requestBody: ' + requestBody)
         for (let i = 0; i < memberIds.length; i++) {
             const memberId = memberIds[i];
@@ -579,5 +595,5 @@ module.exports = {
     getAllEventGenealogy, InsertEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth,
     SendSMS, SendEmail, searchEvent, filterEvent, SendSMSToMember, getInformationEvent, sendEmailToMember
     , addAttendence, inviteMail, verifyMail, ReadXLSX, updateStatusEventGenealogy, getEventAttendance,
-    getListMemberIDAndEmail, getEventByToken, checkConfirmedEvent, UpdateIsGoing
+    getListMemberIDAndEmail, getEventByToken, checkConfirmedEvent, UpdateIsGoing, getListEventNotificationSent
 }

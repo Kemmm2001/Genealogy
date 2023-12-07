@@ -26,7 +26,7 @@
         <div @click="resertHistory()" class="btn bg-primary text-white">Làm mới</div>
       </div>
     </div>
-    <div class="h-100 position-absolute p-2" style="top: 0; right: 0; width: 80%; background-color: #f2f2f2;">
+    <div v-if="listHistory" class="h-100 position-absolute p-2" style="top: 0; right: 0; width: 80%; background-color: #f2f2f2;">
       <draggable :list="listHistory" :disabled="!enabled" class="list-group h-100" style="overflow-y: auto;" ghost-class="ghost" :move="checkMove" @start="dragging = true" @end="dragging = false">
         <div v-for="element in listHistory" :key="element.HistoryID" class="w-100" :style="{ 'min-height': '72px', 'float': element.HistoryID % 2 === 0 ? 'right' : 'left'} ">
           <div @click="getInforHistory(element.HistoryID)" class="list-group-item position-relative h-100" :style="{'width': '49%','float': element.HistoryID % 2 === 0 ? 'right' : 'left'}">
@@ -71,12 +71,8 @@
         </div>
       </modal>
     </div>
-    <div v-if="listHistory.length != 0">
-
-    </div>
-    <div v-else>
-
-    </div>
+    <!-- <div v-if="listHistory.length != 0"></div>
+    <div v-else></div> -->
   </div>
 </template>
 
