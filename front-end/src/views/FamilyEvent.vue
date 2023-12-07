@@ -98,7 +98,7 @@
           <div @click="exportExcel()" class="btn bg-primary text-white d-flex align-items-center item">Xuất excel</div>
         </div>
         <div class="pt-3" style="height: calc(100% - 96px);">
-          <div class="h-100" style="overflow-y: auto;">
+          <div v-if="listEvent.length != 0" class="h-100" style="overflow-y: auto;">
             <table class="table table-eventlist eventlist-list m-0">
               <thead style="position: sticky; top: 0;">
                 <tr class="eventlist-item">
