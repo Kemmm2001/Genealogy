@@ -187,7 +187,7 @@ export default {
         HTTP.post("login", {
           email: this.accountLogin.email.replace(/\s+/g, ""),
           password: SHA256(this.accountLogin.password).toString(),
-        //  password: this.accountLogin.password,
+          // password: this.accountLogin.password,
         })
           .then((response) => {
             if (response.data.success == false) {
@@ -196,6 +196,8 @@ export default {
               VueCookies.remove("accessToken");
               localStorage.removeItem("CodeID");
               this.accountIdToken = response.data.data;
+              console.log(response.data)
+              console.log(this.accountIdToken)
               VueCookies.set("accessToken", this.accountIdToken, 3600);
               console.log(response.data.data)
               this.accountLogin = [];

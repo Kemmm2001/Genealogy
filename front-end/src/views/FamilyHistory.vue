@@ -3,7 +3,7 @@
   <div class="history-screen d-flex h-100 w-100 p-0 position-relative" style="overflow-y: auto;">
     <div class="h-100 position-absolute" style="top: 0; left: 0; width: 20%;">
       <div class="pt-2 px-2 d-flex flex-row align-items-center justify-content-center"
-        style="height: 50px; font-size: 20px; font-weight: bold;">Lịch sử gia tộc</div>
+        style="height: 50px; font-size: 20px; font-weight: bold;">Lịch sử gia phả</div>
       <div class="position-relative p-2 d-flex">
         <label for="text-search" style="position: absolute; inset: 12px;">
           <svg class="text-search-icon h-100 d-flex align-items-center" xmlns="http://www.w3.org/2000/svg"
@@ -50,7 +50,7 @@
     <div v-else class="h-100 position-absolute p-2" style="top: 0; right: 0; width: 80%; background-color: #f2f2f2;">
       <div class="h-100 w-100 position-relative">
         <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content; font-size: 19px;">
-          Gia tộc của bạn chưa được tạo lịch sử
+          Gia phả của bạn chưa được tạo lịch sử
         </div>
       </div>
     </div>

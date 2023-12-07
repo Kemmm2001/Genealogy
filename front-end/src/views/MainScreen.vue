@@ -2956,9 +2956,7 @@ export default {
     if (
       localStorage.getItem("CodeID") != null &&
       localStorage.getItem("accountID") != null
-    ) {
-      console.log(this.CodeID);
-      console.log(localStorage.getItem("accountID"));
+    ) {    
       this.getListMessage();
       this.getListCity();
       this.getListNationality();

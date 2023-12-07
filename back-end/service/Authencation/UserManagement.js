@@ -321,15 +321,17 @@ function insertAccountFamily(accountID, codeID, roleID) {
 function getHistoryLoginCodeID(AccountID) {
   return new Promise((resolve, reject) => {
     try {
-      let query = `select * from AccountFamilyTree where  AccountID = ${AccountID} and AccessTime is not null`;
-      db.connection.query(query, (err, results) => {
-        if (err) {
-          console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-          reject(err);
-        } else {
-          resolve(results);
-        }
-      });
+      if (AccountID) {
+        let query = `select * from AccountFamilyTree where  AccountID = ${AccountID} and AccessTime is not null`;
+        db.connection.query(query, (err, results) => {
+          if (err) {
+            console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+            reject(err);
+          } else {
+            resolve(results);
+          }
+        });
+      }
     } catch (error) {
       console.log(error)
     }
