@@ -32,15 +32,18 @@
         </div>
       </div>
       <div class="w-100 d-flex flex-column px-2" :class="{height100 : memberRole == 3}" style="padding: 12px; min-height: 85%; font-family: 'QuicksandBold', sans-serif;">
-        <div class="existing-members d-flex flex-column w-100">
+        <div class="existing-members d-flex flex-column w-100 position-relative">
           <div class="d-flex align-items-center justify-content-center px-2 py-1 list-title">Thành viên có trên phả đồ</div>
-          <div class="d-flex flex-column w-100" style="overflow-y: auto;cursor: pointer">
+          <div class="d-flex flex-column w-100" style="overflow-y: auto; flex-grow: 1; cursor: pointer">
             <div v-for="(n, index) in nodes" :key="n.id">
               <div @click="handleLeftClick(n.id)" @contextmenu.prevent="handleRightClick(n.id)" :class="{ 'list-item': true, 'selected-list': n.id == CurrentIdMember, 'ancestor-member': index === 0 }">{{ n.name }}</div>
             </div>
           </div>
+          <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content;" v-if="nodes.length == 0">
+            <svg class="loading-icon" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-155.5t86-127Q252-817 325-848.5T480-880q17 0 28.5 11.5T520-840q0 17-11.5 28.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160q133 0 226.5-93.5T800-480q0-17 11.5-28.5T840-520q17 0 28.5 11.5T880-480q0 82-31.5 155t-86 127.5q-54.5 54.5-127 86T480-80Z"/></svg>
+          </div>
         </div>
-        <div class="d-flex nonexisting-members flex-column w-100" style="margin: 8px 0">
+        <div class="d-flex nonexisting-members flex-column w-100 position-relative" style="margin: 8px 0">
           <div class="d-flex flex-row px-2 py-1 list-title">
             <div class="d-flex align-items-center justify-content-center">Thành viên không có trên phả đồ</div>
             <div v-if="memberRole != 3" class="d-flex align-items-center justify-content-center" style="padding-left: 12px;cursor:pointer" @click="openMemberModal('AddNormal', ' thành viên không có trên phả đồ')">
@@ -49,8 +52,11 @@
               </svg>
             </div>
           </div>
-          <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto; flex-grow: 1;cursor: pointer">
+          <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto; flex-grow: 1; cursor: pointer">
             <div v-for="list in ListUnspecifiedMembers" :key="list.id" @click="handleLeftClickUnspecifiedMembers(list.MemberID)" class="list-item">{{ list.MemberName }}</div>
+          </div>
+          <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content;" v-if="ListUnspecifiedMembers.length == 0">
+            <svg class="loading-icon" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-155.5t86-127Q252-817 325-848.5T480-880q17 0 28.5 11.5T520-840q0 17-11.5 28.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160q133 0 226.5-93.5T800-480q0-17 11.5-28.5T840-520q17 0 28.5 11.5T880-480q0 82-31.5 155t-86 127.5q-54.5 54.5-127 86T480-80Z"/></svg>
           </div>
         </div>
       </div>
@@ -910,10 +916,6 @@
         </div>
       </modal>
     </div>
-    <!-- <div v-if="node.length != 0"></div>
-    <div v-else ></div>
-    <div v-if="ListUnspecifiedMembers.length != 0"></div>
-    <div v-else ></div> -->
   </div>
 </template>
 
