@@ -659,7 +659,9 @@ export default {
         } else {
           this.NotificationsDelete(response.data.message);
         }
-      });
+      }).catch((e) => {
+          console.log(e);
+        });
     },
     removeAlbumPhotoByAlbumId() {
       for (let i = 0; i < this.ListAlbumRemove.length; i++) {

@@ -114,7 +114,9 @@ export default {
         } else {
           this.NotificationsDelete(respone.data.message);
         }
-      });
+      }).catch((e) => {
+          console.log(e);
+        });
     },
     checkConfirmedEvent() {
       HTTP.post("checkConfirmed", {
@@ -129,7 +131,9 @@ export default {
           console.log(respone.data.data);
           this.confirmed = true;
         }
-      });
+      }).catch((e) => {
+          console.log(e);
+        });
     },
     getInforEvent() {
       HTTP.get("inforEvent", {
@@ -143,7 +147,9 @@ export default {
           this.formatdate(this.inforEvent.StartDate);
           this.checkConfirmedEvent();
         }
-      });
+      }).catch((e) => {
+          console.log(e);
+        });
     },
   },
   mounted() {
@@ -164,7 +170,9 @@ export default {
         } else {
           this.isExpired = true;
         }
-      });
+      }).catch((e) => {
+          console.log(e);
+        });
     } else {
       console.log("Không có token trong URL");
     }

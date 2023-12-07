@@ -228,7 +228,9 @@ export default {
           this.descriptionModal = data.Description;
           this.showAddHistoryModal("Thông tin lịch sử");
         }
-      });
+      }).catch((e) => {
+          console.log(e);
+        });
     },
     //nguyễn lê hùng
     updateHistory() {

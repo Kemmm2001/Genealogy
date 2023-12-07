@@ -472,7 +472,11 @@ export default {
               this.time = null;
               this.ListMemberToSendEmail = [];
             }
-          });
+          }).catch((e) => {
+          console.log(e);
+        });
+        }).catch((e) => {
+          console.log(e);
         });
       } else {
         this.NotificationsDelete(
@@ -840,7 +844,9 @@ export default {
           this.endDate = `${year}-${month}-${day}`;
           this.$modal.show("add-event-modal");
         }
-      });
+      }).catch((e) => {
+          console.log(e);
+        });
     },
     closeEditEventModal() {
       this.$modal.hide("edit-event-modal");
@@ -865,7 +871,9 @@ export default {
           console.log("vào else");
         }
         this.$modal.show("participant-list");
-      });
+      }).catch((e) => {
+          console.log(e);
+        });
     },
     checkEventNotificationSent(EventID) {
       if (this.ListEventNotificationSent) {
@@ -887,7 +895,9 @@ export default {
           console.log(respone.data.data);
           this.ListEventNotificationSent = respone.data.data;
         }
-      });
+      }).catch((e) => {
+          console.log(e);
+        });
     },
     closeParticipantList() {
       this.$modal.hide("participant-list");
