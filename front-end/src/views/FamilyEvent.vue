@@ -130,7 +130,7 @@
             </table>
           </div>
           <div v-if="listEvent.length == 0" class="h-100 w-100 position-relative">
-            <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content; font-size: 19px;">Gia tộc chưa có sự kiện nào</div>
+            <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content; font-size: 19px;">Gia phả chưa có sự kiện nào</div>
           </div>
         </div>
       </div>

@@ -51,7 +51,7 @@
             </div>
             <div v-if="memberList.length == 0" class="h-100 w-100 position-relative">
             <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content; font-size: 19px;">
-              Gia tộc chưa có thành viên nào
+              Gia phả chưa có thành viên nào
             </div>
           </div>
           </div>
