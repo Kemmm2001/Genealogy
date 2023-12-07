@@ -93,7 +93,7 @@
           <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
             <select class="d-flex text-center form-select dropdown p-0" v-model="selectAge" @change="GetListFilterMember()">
               <option class="dropdown-item" :value="null">Nhóm Tuổi</option>
-              <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{ age.From }} - {{ age.End }} Tuổi</option>
+              <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{ age.From != 61 ? age.From : 'Trên '+ age.From}} {{ age.End != 200 ?' - '+age.End : '' }} Tuổi</option>
             </select>
           </div>
         </div>
