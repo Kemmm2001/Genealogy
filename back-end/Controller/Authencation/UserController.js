@@ -78,6 +78,7 @@ var changeUsername = async (req, res) => {
 var getHistoryCodeID = async (req, res) => {
   try {
     let accountID = req.query.accountID;
+    console.log(accountID)
     let data = await UserService.getHistoryLoginCodeID(accountID);
     if (data) {
       return res.send(Response.successResponse(data));
