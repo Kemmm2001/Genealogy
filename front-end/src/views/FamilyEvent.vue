@@ -129,6 +129,11 @@
               </tbody>
             </table>
           </div>
+          <div v-if="listEvent.length == 0" class="h-100 w-100 position-relative">
+            <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content; font-size: 19px;">
+              Gia tộc chưa có sự kiện nào
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -343,8 +348,6 @@
         </div>
       </modal>
     </div>
-    <div v-if="listEvent.length != 0"></div>
-    <div v-else></div>
   </div>
 </template>
 
@@ -602,6 +605,9 @@ export default {
         .then((response) => {
           if (response.data.success == true) {
             this.listEvent = response.data.data;
+            this.listEventFilter = this.listEvent;
+          }else{
+            this.listEvent = []
             this.listEventFilter = this.listEvent;
           }
         })
