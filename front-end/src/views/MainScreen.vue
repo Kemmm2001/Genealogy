@@ -963,6 +963,7 @@ export default {
       ListAgeGroup: null,
       ListBloodTypeGroup: null,
       ListUnspecifiedMembers: null,
+      CurrentIdToLinkRelationship: null,
 
       selectAge: null,
       selectBloodType: null,
@@ -2472,7 +2473,6 @@ export default {
         if (Node.fid != "") {
           let foundNode = this.nodes.find((node) => node.id == Node.fid);
           console.log(foundNode);
-          this.idParent = foundNode.id;
           this.parentRelationship = this.nodes.filter((node) =>
             foundNode.pids.includes(node.id)
           );
@@ -2480,7 +2480,6 @@ export default {
         } else {
           let foundNode = this.nodes.find((node) => node.id == Node.mid);
           console.log(foundNode);
-          this.idParent = foundNode.id;
           this.parentRelationship = this.nodes.filter((node) =>
             foundNode.pids.includes(node.id)
           );
@@ -2490,11 +2489,16 @@ export default {
     },
     linkRelationship() {
       HTTP.put("linkRelationship", {
-        MemberID1: this.idParent,
+        MemberID1: this.CurrentIdToLinkRelationship,
         MemberID2: this.newIdMember,
       }).then((respone) => {
         if (respone.data.success == true) {
           this.NotificationsScuccess(respone.data.message);
+          this.CurrentIdToLinkRelationship = null;
+          this.newIdMember = null;
+          this.getListMember();
+          this.closeCfDelModal();
+          this.closeSelectModal();
         } else {
           this.NotificationsDelete(respone.data.message);
         }
@@ -2507,6 +2511,7 @@ export default {
       this.parentRelationship = null;
       this.selectedInfor();
       let foundNode = this.nodes.find((node) => node.id == id);
+      this.CurrentIdToLinkRelationship = foundNode.id;
       this.getLinkRelationship(foundNode);
       if (foundNode.gender == "female") {
         this.isFather = false;
