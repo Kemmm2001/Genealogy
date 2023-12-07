@@ -159,11 +159,10 @@ export default {
             repassword: this.accountRegister.rePassword,
           })
             .then((response) => {
-              if (response.data.success == true) {
-                this.moveToRight();
+              if (response.data.success == true) {                
+                this.moveToLeft();
                 this.enlargeBackground();
-                this.accountRegister = [];
-                this.right = fal
+                this.accountRegister = [];                
                 this.NotificationsScuccess(response.data.message);
               } else {
                 this.NotificationsDelete(response.data.message);

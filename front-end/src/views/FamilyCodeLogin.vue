@@ -207,7 +207,7 @@ export default {
           .then((response) => {
             console.log(response.data);
             if (response.data.success == true) {
-              this.NotificationsScuccess(response.data.message);
+              // this.NotificationsScuccess(response.data.message);
               this.familycode = response.data.data;
               this.showFamilyCode();
             } else {

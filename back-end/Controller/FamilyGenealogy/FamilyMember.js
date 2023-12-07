@@ -777,7 +777,9 @@ var deleteMember = async (req, res) => {
         else {
             // lấy tất cả thành viên trong gia phả
             let listMember = await FamilyManagementService.getAllMember(dataMember[0].CodeID);
-            await FamilyManagementService.UpdateMemberRelated(dataMember[0], listMember);
+            if (listMember) {
+                await FamilyManagementService.UpdateMemberRelated(dataMember[0], listMember);
+            }
         }
         await FamilyManagementService.deleteMember(req.query.MemberID);
 
@@ -1045,12 +1047,18 @@ var getAllMember = async (req, res) => {
         // Gọi hàm từ dịch vụ để lấy tất cả thành viên
         const codeID = req.query.codeID
         const members = await FamilyManagementService.getAllMember(codeID);
+        if (members) {
+            res.send(Response.successResponse(members))
+
+        } else {
+            res.send(Response.internalServerErrorResponse())
+        }
 
         // Trả về danh sách thành viên trong phản hồi
         res.json({ success: true, data: members });
     } catch (error) {
         console.error('Lỗi khi lấy tất cả thành viên:', error);
-        res.status(500).json({ success: false, message: 'Lỗi khi lấy tất cả thành viên' });
+        res.send(Response.internalServerErrorResponse())
     }
 }
 var sortMembers = async (req, res) => {

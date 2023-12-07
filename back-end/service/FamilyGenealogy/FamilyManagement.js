@@ -658,19 +658,21 @@ const findMemberByHusbandIDOrWifeID = (husbandID, wifeID, listMember) => {
 
     return matchingMembers;
 };
-
+123
 function getAllMember(codeID) {
     return new Promise((resolve, reject) => {
         try {
-            const query = 'SELECT * FROM familymember where CodeID = ?';
-            db.connection.query(query, codeID, (err, result) => {
-                if (err) {
-                    console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-                    reject(err);
-                } else {
-                    resolve(result);
-                }
-            });
+            if (codeID) {
+                const query = 'SELECT * FROM familymember where CodeID = ?';
+                db.connection.query(query, codeID, (err, result) => {
+                    if (err) {
+                        console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            }
         } catch (error) {
             reject(error)
         }
