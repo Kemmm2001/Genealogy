@@ -5,6 +5,7 @@ const db = require('../../Models/ConnectDB');
 const ManagementFamilyHead = require("../../service/InformationGenealogy/ManagementFamilyHead");
 const ViewFamilyTree = require("../../service/FamilyGenealogy/ViewFamilyTree");
 const MarriageManagement = require("../../service/FamilyGenealogy/MarriageManagement");
+const GeneralInformation = require("../../service/InformationGenealogy/GeneralInformation");
 const ListAgeGroup = [
     {
         From: 0,
@@ -102,6 +103,11 @@ var addMember = async (req, res) => {
             || (CoreFunction.isDataStringExist(req.body.Dod) && !CoreFunction.isDataDateExist(req.body.Dod))
             || (CoreFunction.isDataStringExist(req.body.LunarDod) && !CoreFunction.isDataDateExist(req.body.LunarDod))) {
             return res.send(Response.badRequestResponse(null, "Ngày tháng không hợp lệ"));
+        }
+        // kiểm tra xem codeid có tồn tại ko
+        let dataCodeID = await GeneralInformation.GeneralInformation(req.body.CodeID);
+        if (dataCodeID == null || dataCodeID.length == 0) {
+            return res.send(Response.dataNotFoundResponse(null, "Mã gia phả không tồn tại"));
         }
         let dataRes = {};
         let data = await FamilyManagementService.addMember(req.body);
@@ -277,6 +283,11 @@ var addChild = async (req, res) => {
             || (CoreFunction.isDataStringExist(req.body.Dod) && !CoreFunction.isDataDateExist(req.body.Dod))
             || (CoreFunction.isDataStringExist(req.body.LunarDod) && !CoreFunction.isDataDateExist(req.body.LunarDod))) {
             return res.send(Response.badRequestResponse(null, "Ngày tháng không hợp lệ"));
+        }
+        // kiểm tra xem codeid có tồn tại ko
+        let dataCodeID = await GeneralInformation.GeneralInformation(req.body.CodeID);
+        if (dataCodeID == null || dataCodeID.length == 0) {
+            return res.send(Response.dataNotFoundResponse(null, "Mã gia phả không tồn tại"));
         }
         let data = await FamilyManagementService.addMember(req.body);
         let fatherData, motherData;
