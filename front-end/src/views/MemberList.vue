@@ -570,6 +570,9 @@
   </div>
 </template>
 <script>
+import Vue from "vue";
+import VueCookies from "vue-cookies";
+Vue.use(VueCookies);
 import { HTTP } from "../assets/js/baseAPI.js";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { LunarDate } from "vietnamese-lunar-calendar";
@@ -678,7 +681,11 @@ export default {
 
   methods: {
     getListReligion() {
-      HTTP.get("religion")
+      HTTP.get("religion",{
+        headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
+      })
         .then((response) => {
           this.ListReligion = response.data;
         })
@@ -687,7 +694,11 @@ export default {
         });
     },
     getListNationality() {
-      HTTP.get("nationality")
+      HTTP.get("nationality",{
+        headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
+      })
         .then((response) => {
           this.ListNationality = response.data;
         })
@@ -847,6 +858,9 @@ export default {
     },
     updateEducationMember() {
       HTTP.put("updateEducation", {
+        headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
         School: this.objMemberEducation.School,
         Description: this.objMemberEducation.Description,
         StartDate: this.objMemberEducation.StartDate,
@@ -860,6 +874,9 @@ export default {
     },
     updateJobMember() {
       HTTP.put("updateJob", {
+        headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
         JobID: this.JobIDToUpdate,
         Organization: this.objMemberJob.Organization,
         OrganizationAddress: this.objMemberJob.OrganizationAddress,
@@ -880,6 +897,9 @@ export default {
           this.objMemberContact.Address + "-" + this.selectDistrictMember;
       }
       HTTP.put("member", {
+        headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
         MemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
         NickName: this.objMemberInfor.NickName,
@@ -911,6 +931,9 @@ export default {
               this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
             }
             HTTP.put("updateContact", {
+              headers: {
+                Authorization: "Bearer " + VueCookies.get("accessToken"),
+              },
               MemberID: this.CurrentIdMember,
               Address: this.objMemberContact.Address,
               Phone: this.objMemberContact.Phone,
@@ -966,6 +989,9 @@ export default {
     getInforMember(id) {
       this.CurrentIdMember = id;
       HTTP.get("InforMember", {
+        headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
         params: {
           memberId: id,
         },
@@ -1140,6 +1166,9 @@ export default {
 
     getListMemberInGenalogy() {
       HTTP.get("membersInGenealogy", {
+        headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
         params: {
           CodeID: this.CodeID,
         },
@@ -1165,6 +1194,9 @@ export default {
     },
     removeMember() {
       HTTP.get("deleteContact", {
+        headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1173,6 +1205,9 @@ export default {
       });
 
       HTTP.get("RemoveListJob", {
+        headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1181,6 +1216,9 @@ export default {
       });
 
       HTTP.get("deleteListEducation", {
+        headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1188,6 +1226,9 @@ export default {
         console.log(e);
       });
       HTTP.get("delete-member", {
+        headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
         params: {
           MemberID: this.CurrentIdMember,
         },

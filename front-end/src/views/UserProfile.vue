@@ -122,6 +122,9 @@
 </template>
   
 <script>
+import Vue from "vue";
+import VueCookies from "vue-cookies";
+Vue.use(VueCookies);
 import { HTTP } from "../assets/js/baseAPI.js";
 import Snackbar from "awesome-snackbar";
 export default {
@@ -179,6 +182,9 @@ export default {
     },
     changeUserName() {
       HTTP.post("changeUsername", {
+        headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
         username: this.accountInfor.username,
         AccountID: this.accountID,
       })
@@ -196,6 +202,9 @@ export default {
     changeRole(RoleId, AccountID) {
       console.log(RoleId, AccountID);
       HTTP.post("set-role", {
+        headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
         RoleId: RoleId,
         accountID: AccountID,
         CodeID: this.CodeID,
@@ -214,6 +223,9 @@ export default {
     changePassword() {
       if (this.InputNewPassword == this.InputRe_newpassword) {
         HTTP.put("changepassword", {
+          headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
           accountID: this.accountID,
           currentpassword: this.InputCurentPassword,
           newPassword: this.InputNewPassword,
@@ -235,6 +247,9 @@ export default {
     },
     getInforTree() {
       HTTP.get("inforTree", {
+        headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
         params: {
           CodeID: this.CodeID,
         },
@@ -250,6 +265,9 @@ export default {
     },
     getInforAccount() {
       HTTP.post("get-user", {
+        headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
         accountID: this.accountID,
       })
         .then((respone) => {
@@ -266,6 +284,9 @@ export default {
     getListRoleMember() {
       console.log(this.CodeID);
       HTTP.get("listrole", {
+        headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
         params: {
           CodeID: this.CodeID,
         },

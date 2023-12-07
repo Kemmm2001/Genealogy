@@ -350,6 +350,9 @@
 </template>
 
 <script>
+import Vue from "vue";
+import VueCookies from "vue-cookies";
+Vue.use(VueCookies);
 import Snackbar from "awesome-snackbar";
 import { Calendar } from "vietnamese-lunar-calendar";
 import { HTTP } from "../assets/js/baseAPI.js";
@@ -423,6 +426,9 @@ export default {
     getListMemberToSendMessage() {
       console.log(this.CodeID);
       HTTP.get("listMemberMessage", {
+        headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
         params: {
           CodeID: this.CodeID,
         },
@@ -457,12 +463,18 @@ export default {
       console.log(this.currentEventID);
       if (this.numberExpire != null) {
         HTTP.get("getIdAndEmail", {
+          headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
           params: {
             ListMemberID: this.ListMemberToSendEmail,
             eventId: this.currentEventID,
           },
         }).then((respone) => {
           HTTP.post("inviteMail", {
+            headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
             data: respone.data.data,
             time: this.numberExpire + "d",
             eventId: this.currentEventID,
@@ -600,6 +612,9 @@ export default {
     },
     getListEvent() {
       HTTP.get("event", {
+        headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
         params: {
           CodeID: this.CodeID,
         },
@@ -623,6 +638,9 @@ export default {
         this.getListEvent();
       } else {
         HTTP.post("filter-event", {
+          headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
           Status: this.filterStatus,
           CodeID: this.CodeID,
         })
@@ -638,6 +656,9 @@ export default {
     },
     searchEvent() {
       HTTP.post("searchEvent", {
+        headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
         CodeID: this.CodeID,
         keySearch: this.keySearch,
       })
@@ -663,6 +684,9 @@ export default {
           this.eventFamily.Place != null
         ) {
           HTTP.post("addEvent", {
+            headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
             EventName: this.eventFamily.EventName,
             CodeID: this.CodeID,
             Status: 1,
@@ -701,6 +725,9 @@ export default {
         this.eventFamily.Place != null
       ) {
         HTTP.put("updateEvent", {
+          headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
           EventID: this.eventFamily.EventID,
           EventName: this.eventFamily.EventName,
           StartDate: this.eventFamily.StartDate,
@@ -729,6 +756,9 @@ export default {
     },
     exportExcel() {
       HTTP.post("export-excle", {
+        headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
         CodeID: this.CodeID,
       })
         .then((respone) => {
@@ -745,6 +775,9 @@ export default {
     },
     removeEvent() {
       HTTP.delete("removeEvent", {
+        headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
         params: {
           EventID: this.eventFamily.EventID,
         },
@@ -807,6 +840,9 @@ export default {
       this.eventFamily = {};
       this.titleModal = "sửa thông tin sự kiện";
       HTTP.get("inforEvent", {
+        headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
         params: {
           EventID: id,
         },
@@ -860,6 +896,9 @@ export default {
       );
       this.title = this.title.EventName;
       HTTP.get("eventAttendance", {
+        headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
         params: {
           EventID: EventID,
         },
@@ -887,6 +926,9 @@ export default {
 
     getListEventNotificationSent() {
       HTTP.get("ListEventNotiSent", {
+        headers: {
+            Authorization: "Bearer " + VueCookies.get("accessToken"),
+          },
         params: {
           CodeID: this.CodeID,
         },

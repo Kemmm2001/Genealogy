@@ -185,13 +185,11 @@ export default {
       }
     },
     login() {
-      console.log(this.accountLogin.password.replace(/\s+/g, ""));
-      console.log(SHA256(this.accountLogin.password).toString());
       if (this.accountLogin.email != "" && this.accountLogin.password != "") {
         HTTP.post("login", {
           email: this.accountLogin.email.replace(/\s+/g, ""),
-          // password: SHA256(this.accountLogin.password).toString(),
-          password: this.accountLogin.password,
+          password: SHA256(this.accountLogin.password).toString(),
+          //password: this.accountLogin.password,
         })
           .then((response) => {
             if (response.data.success == false) {
