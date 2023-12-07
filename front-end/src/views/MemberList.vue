@@ -35,10 +35,10 @@
           <div class="view-member">
             <div @click="numberItemSelection(index), getInforMember(member.MemberID)" class="member" style="cursor: pointer;" :class="{ choose: itemChoose === index }" v-for="(member, index) in memberFilter" :key="member.MemberID">
               <div class="image-member" v-if="member.Male == 1">
-                <img class="avatar" src="https://pereaclinic.com/wp-content/uploads/2019/12/270x270-male-avatar.png" />
+                <img class="avatar" src="../assets/image/270x270-male-avatar.png" />
               </div>
               <div class="image-member" v-if="member.Male == 0">
-                <img class="avatar" src="https://pereaclinic.com/wp-content/uploads/2019/12/270x270-female-avatar.png" />
+                <img class="avatar" src= "../assets/image/270x270-female-avatar.png" />
               </div>
               <div class="infor-member">
                 <b>{{ member.MemberName }}</b>

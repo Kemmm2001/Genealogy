@@ -889,7 +889,7 @@
       <modal name="cfdel-modal">
         <div class="w-100 h-100 add-head-modal">
           <div class="d-flex flex-row w-100 align-items-center position-relative">
-            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100 text-white" style="background-color: rgb(255, 8, 0);;">Quan trọng</div>
+            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100 text-white" style="background-color: rgb(255, 8, 0);">Quan trọng</div>
             <div class="close-add-form" @click="closeCfDelModal()">
               <svg class="close-add-form-icon" style="fill: #FFFFFF !important;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -1136,15 +1136,15 @@ export default {
       FamilyTree.templates.tommy_female.field_2 =
         '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="90" y="80">Đời: {val}</text>';
 
-      var iconGG = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-tree-fill" viewBox="0 0 16 16">
+      var iconGG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-tree-fill" viewBox="0 0 16 16">
   <path d="M8.416.223a.5.5 0 0 0-.832 0l-3 4.5A.5.5 0 0 0 5 5.5h.098L3.076 8.735A.5.5 0 0 0 3.5 9.5h.191l-1.638 3.276a.5.5 0 0 0 .447.724H7V16h2v-2.5h4.5a.5.5 0 0 0 .447-.724L12.31 9.5h.191a.5.5 0 0 0 .424-.765L10.902 5.5H11a.5.5 0 0 0 .416-.777l-3-4.5z"/>
 </svg>`;
       FamilyTree.templates.tommy_male.isGG =
-        '<g transform="translate(220,10)";>' + iconGG + "</g>";
+        '<g transform="translate(220,7)";>' + iconGG + "</g>";
       var iconFH =
         '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>';
       FamilyTree.templates.tommy_male.isFH =
-        '<g transform="translate(220,10)";>' + iconFH + "</g>";
+        '<g transform="translate(220,7)";>' + iconFH + "</g>";
 
       FamilyTree.elements._textbox = FamilyTree.elements.textbox;
       FamilyTree.elements.textbox = function (param1, param2, param3) {
@@ -1287,7 +1287,9 @@ export default {
         } else {
           this.NotificationsDelete(response.data.message);
         }
-      });
+      }).catch(() => {
+          this.NotificationsDelete("Có lỗi hệ thống");
+        });
     },
     //Nguyễn Lê Hùng
     getResultMember(id) {
@@ -1418,7 +1420,9 @@ export default {
         } else {
           console.log("Update status event thất bại");
         }
-      });
+      }).catch(() => {
+          this.NotificationsDelete("Có lỗi hệ thống");
+        });
     },
     //Nguyễn Lê Hùng
     sendEmailToMember() {
@@ -1793,7 +1797,9 @@ export default {
         } else {
           this.NotificationsDelete(response.data.message);
         }
-      });
+      }).catch((e) => {
+          console.log(e);
+        });
     },
     //Nguyễn Lê Hùng
     removeFromSelectedNodes(memberid) {
@@ -1833,7 +1839,9 @@ export default {
         },
       }).then((response) => {
         this.ListMemberJob = response.data;
-      });
+      }).catch((e) => {
+          console.log(e);
+        });
     },
     //Nguyễn Lê Hùng
     addNewJobMember() {
@@ -2174,7 +2182,9 @@ export default {
         this.getListEducationMember();
         this.NotificationsScuccess("Sửa thông tin giáo dục thành công");
         this.refreshInputJobAndEducation();
-      });
+      }).catch((e) => {
+          console.log(e);
+        });
     },
     //Nguyễn Lê Hùng
     updateJobMember() {
@@ -2190,7 +2200,9 @@ export default {
         this.getListJobMember();
         this.NotificationsScuccess("Sửa thông tin nghề nghiệp thành công");
         this.refreshInputJobAndEducation();
-      });
+      }).catch((e) => {
+          console.log(e);
+        });
     },
     //Nguyễn Lê Hùng
     updateInformation() {
@@ -2244,7 +2256,9 @@ export default {
               this.closeMemberModal();
               this.family.load(this.nodes);
               this.getListMember();
-            });
+            }).catch(() => {
+          this.NotificationsDelete("Có lỗi hệ thống");
+        });
           } else {
             this.NotificationsDelete(response.data.message);
           }
@@ -2522,7 +2536,9 @@ export default {
         } else {
           this.NotificationsDelete(respone.data.message);
         }
-      });
+      }).catch((e) => {
+          console.log(e);
+        });
       console.log("idparent: " + this.idParent);
       console.log("idLink: " + this.newIdMember);
     },
@@ -2616,7 +2632,9 @@ export default {
           console.log(response.data.data);
           this.ResultRelationship = response.data.data;
         }
-      });
+      }).catch((e) => {
+          console.log(e);
+        });
     },
     closeModalRelationship() {
       this.$modal.hide("modal-relationship");
@@ -2631,7 +2649,9 @@ export default {
         if (response.data.success == true) {
           this.listMember = response.data.data;
         }
-      });
+      }).catch((e) => {
+          console.log(e);
+        });
     },
 
     getListMember() {
@@ -2697,15 +2717,17 @@ export default {
           .catch((e) => {
             console.log(e);
           });
-      });
+      }).catch((e) => {
+          console.log(e);
+        });
     },
     getListAgeGroup() {
       HTTP.get("agegroup")
         .then((response) => {
           this.ListAgeGroup = response.data;
         })
-        .catch((err) => {
-          console.log(err);
+        .catch((e) => {
+          console.log(e);
         });
     },
     getListBloodTypeGroup() {
@@ -2713,8 +2735,8 @@ export default {
         .then((response) => {
           this.ListBloodTypeGroup = response.data;
         })
-        .catch((err) => {
-          console.log(err);
+        .catch((e) => {
+          console.log(e);
         });
     },
     getListNationality() {
@@ -2799,6 +2821,8 @@ export default {
           },
         }).then((response) => {
           this.ListDistrict = response.data;
+        }).catch((e) => {
+          console.log(e);
         });
       }
     },
@@ -2810,7 +2834,9 @@ export default {
         if (response.data.success == true) {
           this.memberRole = response.data.data;
         }
-      });
+      }).catch((e) => {
+          console.log(e);
+        });
     },
     getListCity() {
       HTTP.get("province")

@@ -226,6 +226,8 @@ export default {
           } else {
             this.NotificationsDelete(respone.data.message);
           }
+        }).catch((e) => {
+          console.log(e);
         });
       } else {
         this.NotificationsDelete("Nhập lại mật khẩu không đúng");
@@ -242,7 +244,9 @@ export default {
           this.inforTree = this.inforTree[0];
           console.log(this.inforTree);
         }
-      });
+      }).catch((e) => {
+          console.log(e);
+        });
     },
     getInforAccount() {
       HTTP.post("get-user", {
@@ -270,7 +274,9 @@ export default {
           this.listMemberRole = respone.data.data;
           console.log(this.listMemberRole);
         }
-      });
+      }).catch((e) => {
+          console.log(e);
+        });
     },
     selectProfile() {
       this.profileSelected = true;
