@@ -24,7 +24,7 @@ var registerUser = async (req, res) => {
     if (error.isJoi === true) {
       error.status = 422;
     }
-    res.status(error.status || 500).json({ error: error.message });
+    return res.send(Response.internalServerErrorResponse(null, error.message));
   }
 }
 
@@ -142,14 +142,12 @@ var loginUser = async (req, res) => {
     }
     let accessToken = await signAccessToken(data.accountID)
     // let refreshToken = await signRefreshToken(data.accountID)
-    console.log(refreshToken)
-    return res.send({ accessToken })
-
+    return res.send(Response.successResponse(accessToken, "Login thành công"));
   } catch (error) {
     if (error.isJoi === true) {
       error.status = 422;
     }
-    res.status(error.status || 500).json({ error: error.message });
+    return res.send(Response.internalServerErrorResponse(null, error.message));
   }
 }
 
@@ -177,7 +175,7 @@ var getUserCodeID = async (req, res) => {
     return res.send({ data })
 
   } catch (error) {
-    res.json({ error: error.message });
+    return res.send(Response.internalServerErrorResponse(null, error.message));
   }
 }
 
@@ -192,7 +190,7 @@ var refreshToken = async (req, res) => {
 
     res.send({ accessToken: accessToken })
   } catch (error) {
-    res.send(error)
+    return res.send(Response.internalServerErrorResponse(null, error.message));
   }
 }
 
@@ -230,7 +228,7 @@ var registerGenealogy = async (req, res) => {
     }
 
   } catch (error) {
-    res.json({ error: 'Lỗi nội bộ' });
+    return res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống'));
   }
 }
 

@@ -14,7 +14,13 @@ module.exports = {
                             return res.send(Response.badRequestResponse(null, "Unauthorized"));
                         }
                     }
-
+                    const insertId = req.payload.insertId;
+                    const roleId = await userService.getRoleID(insertId);
+                    
+                    if (!roleId) {
+                        res.send(Response.dataNotFoundResponse(null, "Chưa có roleID"));
+                    }
+    
                     if (requiredRole === 1) {
                         // Role 1 có quyền cao nhất, được phép làm mọi thứ
                         if (roleId === 1) {
