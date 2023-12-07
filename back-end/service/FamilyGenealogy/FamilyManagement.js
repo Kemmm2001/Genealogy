@@ -677,7 +677,6 @@ function getAllMember(codeID) {
     });
 }
 
-
 function getAllMembersInGenalogy(CodeID) {
     return new Promise((resolve, reject) => {
         try {

@@ -25,7 +25,7 @@
             <div class="col-6" style="padding-left: 6px; padding-right: 8px">
               <div class="w-100 h-100">
                 <label for="upload" style="width:100%; font-size: 14px; color:white" type="button" class="d-flex align-items-center justify-content-center p-0 btn btn-secondary h-100">Xuất dữ liệu vào</label>
-                <input id="upload" type="file" style="display: none" />
+                <input ref="importFile" id="upload" type="file" style="display: none" @change="getFileImportMember($event)" />
               </div>
             </div>
           </div>
@@ -962,7 +962,8 @@ export default {
       EducationIdToUpdate: null,
       ListAgeGroup: null,
       ListBloodTypeGroup: null,
-      ListUnspecifiedMembers: null,
+      ListUnspecifiedMembers: [],
+      CurrentIdToLinkRelationship: null,
 
       selectAge: null,
       selectBloodType: null,
@@ -1262,6 +1263,7 @@ export default {
     getViewBox() {
       return this.family.getViewBox();
     },
+    importData() {},
     //Nguyễn Lê Hùng
     BackUpdata() {
       let id = this.nodes.map((item) => item.id);
@@ -1919,6 +1921,24 @@ export default {
           });
       }
     },
+    getFileImportMember(event) {
+      let formData = new FormData();
+      let file = event.target.files[0];
+      formData.append("xlsx", file);
+      HTTP.post("import", formData)
+        .then((respone) => {
+          console.log(respone.data);
+          if (respone.data.success) {
+            this.NotificationsScuccess(respone.data.message);
+          } else {
+            this.NotificationsDelete(respone.data.message);
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+      console.log(file);
+    },
     //Nguyễn Lê Hùng
     updateAvatar(event) {
       let formData = new FormData();
@@ -2141,6 +2161,7 @@ export default {
       this.ListMemberEducation = null;
       this.objMemberEducation = {};
     },
+
     //Nguyễn Lê Hùng
     updateEducationMember() {
       HTTP.put("updateEducation", {
@@ -2472,7 +2493,6 @@ export default {
         if (Node.fid != "") {
           let foundNode = this.nodes.find((node) => node.id == Node.fid);
           console.log(foundNode);
-          this.idParent = foundNode.id;
           this.parentRelationship = this.nodes.filter((node) =>
             foundNode.pids.includes(node.id)
           );
@@ -2480,7 +2500,6 @@ export default {
         } else {
           let foundNode = this.nodes.find((node) => node.id == Node.mid);
           console.log(foundNode);
-          this.idParent = foundNode.id;
           this.parentRelationship = this.nodes.filter((node) =>
             foundNode.pids.includes(node.id)
           );
@@ -2490,11 +2509,16 @@ export default {
     },
     linkRelationship() {
       HTTP.put("linkRelationship", {
-        MemberID1: this.idParent,
+        MemberID1: this.CurrentIdToLinkRelationship,
         MemberID2: this.newIdMember,
       }).then((respone) => {
         if (respone.data.success == true) {
           this.NotificationsScuccess(respone.data.message);
+          this.CurrentIdToLinkRelationship = null;
+          this.newIdMember = null;
+          this.getListMember();
+          this.closeCfDelModal();
+          this.closeSelectModal();
         } else {
           this.NotificationsDelete(respone.data.message);
         }
@@ -2507,6 +2531,7 @@ export default {
       this.parentRelationship = null;
       this.selectedInfor();
       let foundNode = this.nodes.find((node) => node.id == id);
+      this.CurrentIdToLinkRelationship = foundNode.id;
       this.getLinkRelationship(foundNode);
       if (foundNode.gender == "female") {
         this.isFather = false;

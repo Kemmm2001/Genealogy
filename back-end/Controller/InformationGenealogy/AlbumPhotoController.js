@@ -8,7 +8,13 @@ var addAlbumPhoto = async (req, res) => {
         console.log('Request body: ', req.body);
         // nếu có file ảnh thì lưu đường dẫn vào req.body.BackGroundPhoto, còn ko thì gán null
         if (req.file != null) {
+            // nếu file ảnh ko thuộc png, jpg, jpeg thì ko cho update
+            if (!req.file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+                CoreFunction.deleteImage(req.file.path);
+                return res.send(Response.badRequestResponse(null, "File ảnh không hợp lệ"));
+            }
             req.body.BackGroundPhoto = req.file.path;
+
         } else {
             req.body.BackGroundPhoto = null;
         }

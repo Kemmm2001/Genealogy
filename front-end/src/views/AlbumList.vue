@@ -56,7 +56,8 @@
             </div>
           </div>
           <div v-if="AlbumPhotoList.length == 0" class="h-100 w-100 position-relative">
-            <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content; font-size: 19px;">
+            <div
+              style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content; font-size: 19px;">
               Bạn chưa tạo album nào
             </div>
           </div>
@@ -402,6 +403,12 @@ export default {
     handleHide() {
       this.visible = false;
     },
+    isImage(file) {
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+
+      // Kiểm tra loại MIME của file
+      return allowedTypes.includes(file.type);
+    },
     changeCheckAlbum(id, index) {
       if (this.ListCheckBoxAlbum[index]) {
         this.listRemoveAlbum(id, "add");
@@ -546,10 +553,20 @@ export default {
     handleFileChangePhoto(event) {
       this.ListCheckBoxPhoto = [];
       this.ListPhotoRemove = [];
-      const file = event.target.files;
+      const files = event.target.files;
       console.log(111)
-      for (let i = 0; i < file.length; i++) {
-        this.FamilyPhotoListAdd.push(file[i]);
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+
+        if (this.isImage(file)) {
+          // Thực hiện xử lý cho file ảnh
+          this.FamilyPhotoListAdd.push(file);
+        } else {
+          // Thông báo hoặc xử lý cho trường hợp không phải ảnh
+          this.NotificationsDelete('Bạn chỉ được chọn file ảnh');
+          this.FamilyPhotoListAdd = [];
+          break;
+        }
       }
       this.FamilyPhotoListAddShow = []
       for (let i = 0; i < this.FamilyPhotoListAdd.length; i++) {
@@ -746,16 +763,21 @@ export default {
     },
     updateAvatar(event) {
       let file = event.target.files[0];
-      this.albumPhoto.BackGroundPhoto = file;
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.avatarSrc = e.target.result; // Cập nhật ảnh avatar bằng ảnh tải lên
-        };
-        reader.readAsDataURL(file);
+      if (this.isImage(file)) {
+        this.albumPhoto.BackGroundPhoto = file;
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            this.avatarSrc = e.target.result; // Cập nhật ảnh avatar bằng ảnh tải lên
+          };
+          reader.readAsDataURL(file);
+        } else {
+          this.avatarSrc = null;
+        }
       } else {
-        this.avatarSrc = null;
+        this.NotificationsDelete("Bạn chỉ được chọn file ảnh")
       }
+
     },
     triggerFileInputClick() {
       this.$refs.fileInput.click();
