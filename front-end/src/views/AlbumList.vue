@@ -56,7 +56,8 @@
             </div>
           </div>
           <div v-if="AlbumPhotoList.length == 0" class="h-100 w-100 position-relative">
-            <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content; font-size: 19px;">
+            <div
+              style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content; font-size: 19px;">
               Bạn chưa tạo album nào
             </div>
           </div>
@@ -556,7 +557,7 @@ export default {
       console.log(111)
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        
+
         if (this.isImage(file)) {
           // Thực hiện xử lý cho file ảnh
           this.FamilyPhotoListAdd.push(file);
@@ -762,16 +763,21 @@ export default {
     },
     updateAvatar(event) {
       let file = event.target.files[0];
-      this.albumPhoto.BackGroundPhoto = file;
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.avatarSrc = e.target.result; // Cập nhật ảnh avatar bằng ảnh tải lên
-        };
-        reader.readAsDataURL(file);
+      if (this.isImage(file)) {
+        this.albumPhoto.BackGroundPhoto = file;
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            this.avatarSrc = e.target.result; // Cập nhật ảnh avatar bằng ảnh tải lên
+          };
+          reader.readAsDataURL(file);
+        } else {
+          this.avatarSrc = null;
+        }
       } else {
-        this.avatarSrc = null;
+        this.NotificationsDelete("Bạn chỉ được chọn file ảnh")
       }
+
     },
     triggerFileInputClick() {
       this.$refs.fileInput.click();
