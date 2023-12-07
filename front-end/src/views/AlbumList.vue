@@ -562,7 +562,9 @@ export default {
           this.FamilyPhotoListAdd.push(file);
         } else {
           // Thông báo hoặc xử lý cho trường hợp không phải ảnh
-          console.log('Not an image file:');
+          this.NotificationsDelete('Bạn chỉ được chọn file ảnh');
+          this.FamilyPhotoListAdd = [];
+          break;
         }
       }
       this.FamilyPhotoListAddShow = []
