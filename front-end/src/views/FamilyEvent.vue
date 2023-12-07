@@ -130,9 +130,7 @@
             </table>
           </div>
           <div v-if="listEvent.length == 0" class="h-100 w-100 position-relative">
-            <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content; font-size: 19px;">
-              Gia tộc chưa có sự kiện nào
-            </div>
+            <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content; font-size: 19px;">Gia tộc chưa có sự kiện nào</div>
           </div>
         </div>
       </div>
@@ -312,7 +310,7 @@
             </div>
             <div class="d-flex flex-column p-3" style="height: calc(100% - 100px);">
               <div class="d-flex flex-column">
-                <div class="" style="padding-bottom: 4px; padding-right: 4px;">
+                <div class style="padding-bottom: 4px; padding-right: 4px;">
                   <input type="text" class="form-control" placeholder="Tên thành viên" />
                 </div>
                 <div class="d-flex flex-row">
@@ -606,8 +604,8 @@ export default {
           if (response.data.success == true) {
             this.listEvent = response.data.data;
             this.listEventFilter = this.listEvent;
-          }else{
-            this.listEvent = []
+          } else {
+            this.listEvent = [];
             this.listEventFilter = this.listEvent;
           }
         })
@@ -651,7 +649,7 @@ export default {
     addEvent() {
       this.eventFamily.StartDate = `${this.startDate} ${this.startHour}:${this.startMinute}`;
       this.eventFamily.EndDate = `${this.endDate} ${this.endHour}:${this.endMinute}`;
-      if (this.eventFamily.StartDate > this.eventFamily.EventName) {
+      if (this.eventFamily.StartDate > this.eventFamily.EndDate) {
         this.NotificationsDelete("Ngày bắt đầu đang lớn hơn ngày kết thúc");
       } else {
         if (
