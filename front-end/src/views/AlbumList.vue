@@ -28,7 +28,7 @@
         <div class="d-flex flex-row flex-wrap" style="height: calc(100% - 151px); overflow-y: auto;">
           <div class="d-flex" v-for=" (album, index) in this.AlbumPhotoList" :key="album.AlbumID"
             @click="getAlbumCurrentId(album.AlbumID)">
-            <div v-if="AlbumPhotoList.length != 0" class="album mx-2 mb-3 d-flex flex-column">
+            <div class="album mx-2 mb-3 d-flex flex-column">
               <div class="album-cover" @click="openEditAlbumModal()" v-if="album.BackGroundPhoto != null"
                 style="background-image: url();">
                 <img class="h-100 w-100" style="object-fit: cover;" :src="album.BackGroundPhoto" />
@@ -54,10 +54,10 @@
                 </div>
               </div>
             </div>
-            <div v-else class="h-100 w-100 position-relative">
-              <div style="inset: 0; margin: auto; position: absolute;">
-                Bạn chưa tạo album nào
-              </div>
+          </div>
+          <div v-if="AlbumPhotoList.length == 0" class="h-100 w-100 position-relative">
+            <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content; font-size: 19px;">
+              Bạn chưa tạo album nào
             </div>
           </div>
         </div>
@@ -548,12 +548,12 @@ export default {
       this.ListPhotoRemove = [];
       const file = event.target.files;
       console.log(111)
-      for(let i = 0; i < file.length;i++){
+      for (let i = 0; i < file.length; i++) {
         this.FamilyPhotoListAdd.push(file[i]);
       }
       this.FamilyPhotoListAddShow = []
       for (let i = 0; i < this.FamilyPhotoListAdd.length; i++) {
-        
+
         if (this.FamilyPhotoListAdd[i]) {
           // Đọc nội dung của tệp và chuyển thành URL
           const reader = new FileReader();
@@ -571,10 +571,10 @@ export default {
           reader.readAsDataURL(this.FamilyPhotoListAdd[i]);
         }
       }
-      
+
       this.ListCheckBoxPhotoAdd.push(false);
       this.getAlbumPhotoByCodeId();
-      
+
     },
     checkPhotoSize(width, height) {
       if (width > height) {
@@ -785,7 +785,7 @@ export default {
     addFamilyPhotoByAlbumId() {
       console.log(this.FamilyPhotoListAdd)
       for (let i = 0; i < this.FamilyPhotoListAdd.length; i++) {
-      
+
         let formData = new FormData();
         formData.append("AlbumID", this.albumCurrentId);
         formData.append("Photo", this.FamilyPhotoListAdd[i]);
