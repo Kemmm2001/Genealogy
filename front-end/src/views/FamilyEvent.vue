@@ -603,6 +603,9 @@ export default {
           if (response.data.success == true) {
             this.listEvent = response.data.data;
             this.listEventFilter = this.listEvent;
+          }else{
+            this.listEvent = []
+            this.listEventFilter = this.listEvent;
           }
         })
         .catch((e) => {
