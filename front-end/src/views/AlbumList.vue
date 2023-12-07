@@ -402,6 +402,12 @@ export default {
     handleHide() {
       this.visible = false;
     },
+    isImage(file) {
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+
+      // Kiểm tra loại MIME của file
+      return allowedTypes.includes(file.type);
+    },
     changeCheckAlbum(id, index) {
       if (this.ListCheckBoxAlbum[index]) {
         this.listRemoveAlbum(id, "add");
@@ -546,10 +552,18 @@ export default {
     handleFileChangePhoto(event) {
       this.ListCheckBoxPhoto = [];
       this.ListPhotoRemove = [];
-      const file = event.target.files;
+      const files = event.target.files;
       console.log(111)
-      for (let i = 0; i < file.length; i++) {
-        this.FamilyPhotoListAdd.push(file[i]);
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        
+        if (this.isImage(file)) {
+          // Thực hiện xử lý cho file ảnh
+          this.FamilyPhotoListAdd.push(file);
+        } else {
+          // Thông báo hoặc xử lý cho trường hợp không phải ảnh
+          console.log('Not an image file:');
+        }
       }
       this.FamilyPhotoListAddShow = []
       for (let i = 0; i < this.FamilyPhotoListAdd.length; i++) {
