@@ -910,12 +910,6 @@
         </div>
       </modal>
     </div>
-    <div class="help-note text-white position-absolute align-items-center justify-content-center" :class="{expandHelp : togglehelp}">
-      <div class="d-flex align-items-center" style="height: 64px;" v-show="togglehelp">Thông báo: Gửi mail và tin nhắn SMS về thông tin, sự kiện liên quan tới dòng họ.</div>
-      <div class="d-flex align-items-center" style="height: 64px;" v-show="togglehelp">Xác định quan hệ: Chọn 2 thành viên để xác định quan hệ giữa họ.</div>
-      <div class="d-flex align-items-center" style="height: 64px;" v-show="togglehelp">Nhấp chuột trái vào thành viên trên phả đồ để xem và thay đổi thông tin thành viên</div>
-      <div class="d-flex align-items-center" style="height: 64px;" v-show="togglehelp">Nhấp chuột phải để mở danh sách những chức năng tương tác với thành viên</div>
-    </div>
   </div>
 </template>
 
