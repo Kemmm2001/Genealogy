@@ -33,9 +33,14 @@ module.exports = {
 
     JWT.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
       if (err) {
-        const message = err.name === 'JsonWebTokenError' ? 'Unauthorize' : err.message
-        return res.json({ error: message });
-      }
+        if (err.name === 'JsonWebTokenError') {
+            return res.json({ error: 'Unauthorized' });
+        } else if (err.name === 'TokenExpiredError') {
+            return res.json({ error: 'Token expired' });
+        } else {
+            return res.json({ error: err.message });
+        }
+    }
       req.payload = payload;
       next();
     });
