@@ -71,7 +71,7 @@ const initWebRouter = (app) => {
     router.get('/members', FamilyMemberManagement.getAllMember);
     router.post('/search-member', FamilyMemberManagement.searchMember);
     router.post('/filter-member', FamilyMemberManagement.filterMember);
-    router.post('/sort-member', FamilyMemberManagement.sortMembers);
+    // router.post('/sort-member', FamilyMemberManagement.sortMembers);
 
     //Tiền tố đứng trước route
     app.use('/api/v1', router);
