@@ -1,30 +1,33 @@
 const jwtUtils = require('../helper/jwt_helper');
-const createError = require('http-errors');
 const userService = require('../service/Authoration/RoleManagement');
+const Response = require('../Utils/Response')
 
 module.exports = {
     authenticateAndAuthorize: (requiredRole) => {
         return async (req, res, next) => {
             try {
-                // Xác thực token
-                jwtUtils.verifyAccessToken(req, res, async () => {
-                    const insertId = req.payload.insertId;
-
-                    // Lấy roleId từ insertId
-                    const roleId = await userService.getRoleID(insertId);
-                    console.log(roleId)
-                    // Kiểm tra quyền của người dùng
-                    if (!roleId) {
-                        return res.status(403).json({ error: 'Forbidden' });
+                jwtUtils.verifyAccessToken(req, res, async (error) => {
+                    if (error) {
+                        if (error === 'Token expired') {
+                            return res.send(Response.badRequestResponse(null, "Token hết hạn"));
+                        } else {
+                            return res.send(Response.badRequestResponse(null, "Unauthorized"));
+                        }
                     }
-
+                    const insertId = req.payload.insertId;
+                    const roleId = await userService.getRoleID(insertId);
+                    
+                    if (!roleId) {
+                        res.send(Response.dataNotFoundResponse(null, "Chưa có roleID"));
+                    }
+    
                     if (requiredRole === 1) {
                         // Role 1 có quyền cao nhất, được phép làm mọi thứ
                         if (roleId === 1) {
                             // Người dùng có quyền, tiếp tục xử lý yêu cầu
                             next();
                         } else {
-                            return res.status(403).json({ error: 'Forbidden' });
+                            return res.send(Response.badRequestResponse(null, "Bạn không có quyền"));
                         }
                     }
                     else if (requiredRole === 2) {
@@ -33,7 +36,7 @@ module.exports = {
                             // Người dùng có quyền, tiếp tục xử lý yêu cầu
                             next();
                         } else {
-                            return res.status(403).json({ error: 'Forbidden' });
+                            return res.send(Response.badRequestResponse(null, "Bạn không có quyền"));
                         }
                     } 
                     else if (requiredRole === 3) {
@@ -42,15 +45,15 @@ module.exports = {
                             // Người dùng có quyền, tiếp tục xử lý yêu cầu
                             next();
                         } else {
-                            return res.status(403).json({ error: 'Forbidden' });
+                            return res.send(Response.badRequestResponse(null, "Bạn không có quyền"));
                         }
                     } else {
-                        return res.status(403).json({ error: 'Forbidden' });
+                        return res.send(Response.badRequestResponse(null, "Bạn chưa được cấp quyền"));
                     }
                 });
             } catch (error) {
                 console.error(error);
-                return res.status(500).json({ error: 'Internal Server Error' });
+                return res.send(Response.internalServerErrorResponse(null, error.messsage));
             }
         };
     },

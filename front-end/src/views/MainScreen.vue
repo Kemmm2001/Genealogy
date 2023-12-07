@@ -2953,6 +2953,27 @@ export default {
     },
   },
   mounted() {
+    if (
+      localStorage.getItem("CodeID") != null &&
+      localStorage.getItem("accountID") != null
+    ) {
+      console.log(this.CodeID);
+      console.log(localStorage.getItem("accountID"));
+      this.getListMessage();
+      this.getListCity();
+      this.getListNationality();
+      this.getListReligion();
+      this.getListAgeGroup();
+      this.getListBloodTypeGroup();
+      this.getListUnspecifiedMembers();
+      this.getMemberRole();
+      this.getListHistoryEmail();
+      this.getListMember();
+      this.getAllListMember();
+      this.getListMemberToSendMessage();
+      this.updateStatusEvent();
+    }    
+
     if (localStorage.getItem("CodeID") != null) {
       this.CodeID = localStorage.getItem("CodeID");
     } else {
@@ -2962,20 +2983,6 @@ export default {
         this.$router.push("/login");
       }
     }
-    console.log(this.CodeID);
-    this.getListMessage();
-    this.getListCity();
-    this.getListNationality();
-    this.getListReligion();
-    this.getListAgeGroup();
-    this.getListBloodTypeGroup();
-    this.getListUnspecifiedMembers();
-    this.getMemberRole();
-    this.getListHistoryEmail();
-    this.getListMember();
-    this.getAllListMember();
-    this.getListMemberToSendMessage();
-    this.updateStatusEvent();
   },
 };
 </script>

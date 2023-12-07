@@ -24,7 +24,7 @@ var registerUser = async (req, res) => {
     if (error.isJoi === true) {
       error.status = 422;
     }
-    res.status(error.status || 500).json({ error: error.message });
+    return res.send(Response.internalServerErrorResponse(null, error.message));
   }
 }
 
@@ -142,19 +142,18 @@ var loginUser = async (req, res) => {
     }
     let accessToken = await signAccessToken(data.accountID)
     // let refreshToken = await signRefreshToken(data.accountID)
-    console.log(refreshToken)
-    return res.send({ accessToken })
-
+    return res.send(Response.successResponse(accessToken, "Login thành công"));
   } catch (error) {
     if (error.isJoi === true) {
       error.status = 422;
     }
-    res.status(error.status || 500).json({ error: error.message });
+    return res.send(Response.internalServerErrorResponse(null, error.message));
   }
 }
 
 var getUserInfor = async (req, res) => {
   try {
+    console.log('bodyyyyyyyyyyyyyyy: ' + req.body.accountID)
     let data = await UserService.getUserInfo(req.body.accountID)
     console.log('data: ' + data)
     if (!data) {
@@ -164,7 +163,7 @@ var getUserInfor = async (req, res) => {
     return res.send(Response.successResponse(data));
 
   } catch (error) {
-    res.status(error.status || 500).json({ error: error.message });
+    return res.send(Response.internalServerErrorResponse());
   }
 }
 
@@ -176,7 +175,7 @@ var getUserCodeID = async (req, res) => {
     return res.send({ data })
 
   } catch (error) {
-    res.json({ error: error.message });
+    return res.send(Response.internalServerErrorResponse(null, error.message));
   }
 }
 
@@ -191,7 +190,7 @@ var refreshToken = async (req, res) => {
 
     res.send({ accessToken: accessToken })
   } catch (error) {
-    res.send(error)
+    return res.send(Response.internalServerErrorResponse(null, error.message));
   }
 }
 
@@ -201,7 +200,8 @@ var registerGenealogy = async (req, res) => {
     let codeID;
     let doesExist = true;
 
-    let checkCreated = await UserService.checkCodeCreatedByID(req.body.accountID)
+    let checkCreated = await UserService.checkCodeCreatedByID(req.body.accountID);  
+
     if (checkCreated > 0) {
       return res.send(Response.internalServerErrorResponse(null, 'Tài khoản này đã đăng ký gia phả. Không thể đăng ký tiếp'));
     }
@@ -210,7 +210,10 @@ var registerGenealogy = async (req, res) => {
         codeID = generateRandomNumber();
         doesExist = await UserService.checkCodeID(codeID);
       }
-
+      let InsertHistory = await UserService.insertAccountFamily(req.body.accountID, codeID, 1);
+      if(!InsertHistory){
+        console.log("Lỗi Insert history")
+      }     
       let data1 = await UserService.insertIntoFamily(value, codeID);
       if (data1) {
         try {
@@ -225,7 +228,7 @@ var registerGenealogy = async (req, res) => {
     }
 
   } catch (error) {
-    res.json({ error: 'Lỗi nội bộ' });
+    return res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống'));
   }
 }
 
