@@ -362,7 +362,6 @@ export default {
       } else {
         this.listRemoveAlbum(id, "remove");
       }
-      console.log(this.ListAlbumRemove.length);
       if (this.ListAlbumRemove.length != 0) {
         this.isButtonDisabledAlbum = false;
       } else {
@@ -395,13 +394,11 @@ export default {
       console.log(index);
       if (type == "add") {
         this.ListPhotoAddRemove.push(index);
-        console.log("add" + this.ListPhotoAddRemove);
       }
       if (type == "remove") {
         this.ListPhotoAddRemove = this.ListPhotoAddRemove.filter(
           (photo) => photo !== index
         );
-        console.log("remove" + this.ListPhotoAddRemove);
       }
     },
     changeCheckPhoto(id, index) {
@@ -419,7 +416,6 @@ export default {
     listRemovePhoto(id, type) {
       console.log(type);
       if (type == "add") {
-        console.log(id);
         this.ListPhotoRemove.push(id);
       }
       if (type == "remove") {
@@ -502,25 +498,25 @@ export default {
       this.checkAddPhotoModal = false;
     },
     handleFileChangePhoto(event) {
-      console.log("Tại sao lại như thế");
       this.ListCheckBoxPhoto = [];
       this.ListPhotoRemove = [];
       const file = event.target.files;
-      //     let count = this.listHeightLarger+1;
-      let check = 0;
-      this.FamilyPhotoListAdd = file;
+      console.log(111)
+      for(let i = 0; i < file.length;i++){
+        this.FamilyPhotoListAdd.push(file[i]);
+      }
+      this.FamilyPhotoListAddShow = []
       for (let i = 0; i < this.FamilyPhotoListAdd.length; i++) {
+        
         if (this.FamilyPhotoListAdd[i]) {
           // Đọc nội dung của tệp và chuyển thành URL
           const reader = new FileReader();
           reader.onload = (e) => {
             this.imageSrc = reader.result;
-            this.FamilyPhotoListAddShow.push(this.imageSrc);
+            this.FamilyPhotoListAddShow.push(this.imageSrc)
             const img = new Image();
             img.src = e.target.result;
             img.onload = () => {
-              check += 1;
-              console.log(check);
               if (img.width != 0 && img.height != 0) {
                 this.checkPhotoSize(img.width, img.height);
               }
@@ -529,30 +525,34 @@ export default {
           reader.readAsDataURL(this.FamilyPhotoListAdd[i]);
         }
       }
-
+      
       this.ListCheckBoxPhotoAdd.push(false);
       this.getAlbumPhotoByCodeId();
+      
     },
     checkPhotoSize(width, height) {
-      console.log(width, height);
       if (width > height) {
         this.heightLarger = false;
       } else {
         this.heightLarger = true;
       }
       this.listHeightLarger.push(this.heightLarger);
-      console.log(this.listHeightLarger);
     },
 
     handleFileChangeBackGround(event) {
       this.albumPhoto.BackGroundPhoto = event.target.files[0];
     },
     removeFamilyPhotoAdd() {
-      console.log(this.ListPhotoAddRemove);
+      console.log(this.ListPhotoAddRemove)
+      this.ListPhotoAddRemove = this.ListPhotoAddRemove.slice().sort((a, b) => b - a);
+      console.log(this.ListPhotoAddRemove)
       for (let i = 0; i < this.ListPhotoAddRemove.length; i++) {
+        console.log(this.ListPhotoAddRemove[i])
         this.FamilyPhotoListAddShow.splice(this.ListPhotoAddRemove[i], 1);
         this.listHeightLarger.splice(this.ListPhotoAddRemove[i], 1);
         this.FamilyPhotoListAdd.splice(this.ListPhotoAddRemove[i], 1);
+        console.log(this.ListPhotoAddRemove)
+        console.log(this.FamilyPhotoListAddShow)
       }
       this.ListCheckBoxPhotoAdd = [];
       this.ListPhotoAddRemove = [];
@@ -737,7 +737,9 @@ export default {
         });
     },
     addFamilyPhotoByAlbumId() {
+      console.log(this.FamilyPhotoListAdd)
       for (let i = 0; i < this.FamilyPhotoListAdd.length; i++) {
+      
         let formData = new FormData();
         formData.append("AlbumID", this.albumCurrentId);
         formData.append("Photo", this.FamilyPhotoListAdd[i]);
