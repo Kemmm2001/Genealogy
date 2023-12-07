@@ -846,7 +846,6 @@ var linkRelationship = async (req, res) => {
 
         // Hàm kiểm tra giới tính của thành viên
         const isMale = (member, gender) => member.Male == gender;
-
         // So sánh thế hệ của hai thành viên
         if (member1.Generation < member2.Generation) {
             console.log("Thành viên 1 thế hệ nhỏ hơn thành viên 2");
@@ -863,14 +862,44 @@ var linkRelationship = async (req, res) => {
                 console.log("Thành viên 1 là nam");
                 // Nếu đã có bố, trả về lỗi
                 if (hasFather) return res.send(Response.badRequestResponse(null, "Thành viên 2 đã có bố"));
-                // Ngược lại, thêm FatherID cho thành viên 2
+                // Ngược lại, thêm FatherID là thành viên 1 cho thành viên 2
                 await FamilyManagementService.insertFatherIDToMember(member1.MemberID, member2.MemberID);
+                // => hiện tại member1 đã là cha của member2
+                // thêm mối quan hệ vợ chồng cho cha và mẹ của thành viên 2
+                // tìm số lần kết hôn của mẹ
+                let countMarriage = await MarriageManagement.getWifeMaxMarriageNumber(member2.MotherID, member2.CodeID);
+                console.log("countMarriage: ", countMarriage);
+                if (!CoreFunction.isDataNumberExist(countMarriage)) {
+                    countMarriage = 0;
+                }
+                let objData = {
+                    husbandID: member1.MemberID,
+                    wifeID: member2.MotherID,
+                    codeID: member2.CodeID,
+                    marriageNumber: countMarriage + 1
+                }
+                await MarriageManagement.addMarriage(objData);
             } else if (isMale(member1, 0)) {
                 console.log("Thành viên 1 là nữ");
                 // Nếu đã có mẹ, trả về lỗi
                 if (hasMother) return res.send(Response.badRequestResponse(null, "Thành viên 2 đã có mẹ"));
                 // Ngược lại, thêm MotherID cho thành viên 2
                 await FamilyManagementService.insertMotherIDToMember(member1.MemberID, member2.MemberID);
+                // => hiện tại member1 đã là mẹ của member2
+                // thêm mối quan hệ vợ chồng cho cha và mẹ của thành viên 2
+                // tìm số lần kết hôn của cha
+                let countMarriage = await MarriageManagement.getHusbandMaxMarriageNumber(member2.FatherID, member2.CodeID);
+                console.log("countMarriage: ", countMarriage);
+                if (!CoreFunction.isDataNumberExist(countMarriage)) {
+                    countMarriage = 0;
+                }
+                let objData = {
+                    husbandID: member2.FatherID,
+                    wifeID: member1.MemberID,
+                    codeID: member2.CodeID,
+                    marriageNumber: countMarriage + 1
+                }
+                await MarriageManagement.addMarriage(objData);
             }
         } else if (member1.Generation > member2.Generation) {
             console.log("Thành viên 1 thế hệ lớn hơn thành viên 2");
@@ -888,14 +917,42 @@ var linkRelationship = async (req, res) => {
                 if (hasFather) return res.send(Response.badRequestResponse(null, "Thành viên 1 đã có bố"));
                 // Ngược lại, thêm FatherID cho thành viên 1
                 await FamilyManagementService.insertFatherIDToMember(member2.MemberID, member1.MemberID);
+                // => hiện tại member2 đã là cha của member1
+                // thêm mối quan hệ vợ chồng cho cha và mẹ của thành viên 1
+                // tìm số lần kết hôn của mẹ
+                let countMarriage = await MarriageManagement.getWifeMaxMarriageNumber(member1.MotherID, member1.CodeID);
+                console.log("countMarriage: ", countMarriage);
+                if (!CoreFunction.isDataNumberExist(countMarriage)) {
+                    countMarriage = 0;
+                }
+                let objData = {
+                    husbandID: member2.MemberID,
+                    wifeID: member1.MotherID,
+                    codeID: member1.CodeID,
+                    marriageNumber: countMarriage + 1
+                }
+                await MarriageManagement.addMarriage(objData);
             } else if (isMale(member2, 0)) {
                 console.log("Thành viên 2 là nữ");
                 // Nếu đã có mẹ, trả về lỗi
                 if (hasMother) return res.send(Response.badRequestResponse(null, "Thành viên 1 đã có mẹ"));
                 // Ngược lại, thêm MotherID cho thành viên 1
-                console.log("member2.MemberID: ", member2.MemberID);
-                console.log("member1.MemberID: ", member1.MemberID);
                 await FamilyManagementService.insertMotherIDToMember(member2.MemberID, member1.MemberID);
+                // => hiện tại member2 đã là mẹ của member1
+                // thêm mối quan hệ vợ chồng cho cha và mẹ của thành viên 1
+                // tìm số lần kết hôn của cha
+                let countMarriage = await MarriageManagement.getHusbandMaxMarriageNumber(member1.FatherID, member1.CodeID);
+                console.log("countMarriage: ", countMarriage);
+                if (!CoreFunction.isDataNumberExist(countMarriage)) {
+                    countMarriage = 0;
+                }
+                let objData = {
+                    husbandID: member1.FatherID,
+                    wifeID: member2.MemberID,
+                    codeID: member1.CodeID,
+                    marriageNumber: countMarriage + 1
+                }
+                await MarriageManagement.addMarriage(objData);
             }
         }
 
