@@ -6,6 +6,7 @@ const ContactManagementController = require('../Controller/FamilyGenealogy/Conta
 const EducationManagementController = require('../Controller/FamilyGenealogy/EducationManagementController')
 const CompareMemberController = require('../Controller/FamilyGenealogy/CompareMemberController')
 const CoreFunction = require('../Utils/CoreFunction');
+const authMiddleware = require('../helper/author_helper')
 
 var router = express.Router();
 
@@ -57,7 +58,7 @@ const initWebRouter = (app) => {
     //API tuấn
     router.get('/member', FamilyMemberManagement.getMember);
     router.post('/member', FamilyMemberManagement.addMember);
-    router.post('/add-child', FamilyMemberManagement.addChild);
+    router.post('/add-child',FamilyMemberManagement.addChild);
     router.put('/member', FamilyMemberManagement.updateMember);
     router.put('/member-photo', CoreFunction.uploadImage("member-photo").single('Image'), FamilyMemberManagement.updateMemberPhoto);
     router.put('/memberToGenealogy', FamilyMemberManagement.updateMemberToGenealogy);
