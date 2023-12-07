@@ -2489,6 +2489,16 @@ export default {
       }
     },
     linkRelationship() {
+      HTTP.put("linkRelationship", {
+        MemberID1: this.idParent,
+        MemberID2: this.newIdMember,
+      }).then((respone) => {
+        if (respone.data.success == true) {
+          this.NotificationsScuccess(respone.data.message);
+        } else {
+          this.NotificationsDelete(respone.data.message);
+        }
+      });
       console.log("idparent: " + this.idParent);
       console.log("idLink: " + this.newIdMember);
     },
@@ -2565,7 +2575,7 @@ export default {
       this.$modal.show("cfdel-modal");
     },
 
-    closeCfDelModal() {      
+    closeCfDelModal() {
       this.$modal.hide("cfdel-modal");
     },
 
