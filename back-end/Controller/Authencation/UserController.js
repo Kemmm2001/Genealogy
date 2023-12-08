@@ -8,6 +8,8 @@ const sendMail = require('../../Utils/SystemOperation');
 require('dotenv').config();
 const backEndURL = process.env.BACKEND_URL
 const frontEndURL = process.env.FRONTEND_URL
+const secureKey = process.env.KEY_SECRET
+const CryptoJS = require('crypto-js')
 
 var registerUser = async (req, res) => {
   try {
@@ -20,8 +22,17 @@ var registerUser = async (req, res) => {
       return res.send(Response.internalServerErrorResponse(null, 'Email không hợp lệ'));
     }
 
+    var decryptedBytes = CryptoJS.AES.decrypt(req.body.password, secureKey, {
+      mode: CryptoJS.mode.ECB,
+      padding: CryptoJS.pad.Pkcs7
+    });
+    
+    // Chuyển đổi dữ liệu giải mã thành chuỗi
+    var password = decryptedBytes.toString(CryptoJS.enc.Utf8);
+    
+
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>])[a-zA-Z\d!@#$%^&*()\-_=+{};:,<.>]{8,}$/;
-    if (!passwordRegex.test(req.body.password)) {
+    if (!passwordRegex.test(password)) {
       return res.send(Response.internalServerErrorResponse(null, 'Mật khẩu phải có ít nhất 8 kí tự bao gồm ít nhất: 1 chữ cái viết hoa, 1 chữ cái thường, 1 chữ số và 1 kí tự đặc biệt'));
     }
     if (req.body.password !== req.body.repassword) {
@@ -31,7 +42,7 @@ var registerUser = async (req, res) => {
     if (doesExist > 0) {
       return res.send(Response.dataNotFoundResponse(null, `${req.body.email} đã được đăng kí`));
     }
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
     let newUser = await UserService.create(req.body.username, req.body.email, hashedPassword);
     return res.send(Response.successResponse(newUser, 'Đăng ký thành công vui lòng xác thực tài khoản'));
 
@@ -159,7 +170,14 @@ var loginUser = async (req, res) => {
     if (data.isActive == 0) {
       return res.send(Response.badRequestResponse(null, 'Tài khoản chưa được kích hoạt'));
     }
-    let isPasswordMatch = await bcrypt.compare(req.body.password, data.password);
+
+    var decryptedBytes = CryptoJS.AES.decrypt(req.body.password, secureKey, {
+      mode: CryptoJS.mode.ECB,
+      padding: CryptoJS.pad.Pkcs7
+    });
+    var password = decryptedBytes.toString(CryptoJS.enc.Utf8);
+    
+    let isPasswordMatch = await bcrypt.compare(password, data.password);
 
     if (!isPasswordMatch) {
       return res.send(Response.dataNotFoundResponse(null, 'Mật khẩu không đúng'));
@@ -387,8 +405,17 @@ var resetPassword = async (req, res) => {
     if (!req.body.password || !req.body.repassword) {
       return res.send(Response.internalServerErrorResponse(null, 'Vui lòng điền đầy đủ thông tin'));
     }
+
+    var decryptedBytes = CryptoJS.AES.decrypt(req.body.password, secureKey, {
+      mode: CryptoJS.mode.ECB,
+      padding: CryptoJS.pad.Pkcs7
+    });
+    
+    // Chuyển đổi dữ liệu giải mã thành chuỗi
+    var password = decryptedBytes.toString(CryptoJS.enc.Utf8);
+    
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>])[a-zA-Z\d!@#$%^&*()\-_=+{};:,<.>]{8,}$/;
-    if (!passwordRegex.test(req.body.password)) {
+    if (!passwordRegex.test(password)) {
       return res.send(Response.internalServerErrorResponse(null, 'Mật khẩu phải có ít nhất 8 kí tự bao gồm ít nhất: 1 chữ cái viết hoa, 1 chữ cái thường, 1 chữ số và 1 kí tự đặc biệt'));
 
     }
@@ -396,7 +423,7 @@ var resetPassword = async (req, res) => {
       return res.send(Response.dataNotFoundResponse(null, 'Nhập Lại Mật khẩu không trùng nhau'));
     } else {
       console.log(req.body.password)
-      let hashedPassword = await bcrypt.hash(req.body.password, 10);
+      let hashedPassword = await bcrypt.hash(password, 10);
       let data;
       try {
         data = await UserService.UpdatePassword(hashedPassword, payload.email);
