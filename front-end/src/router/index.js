@@ -75,11 +75,6 @@ const routes = [
     component: () => import("../views/CfEvent.vue"),
   },
   {
-    path: "/nav",
-    name: "nav",
-    component: () => import("../components/NavbarComponent.vue"),
-  },
-  {
     path: "/verify",
     name: "verify",
     component: () => import("../views/VerifyAccount.vue"),
