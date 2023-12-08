@@ -640,9 +640,7 @@ export default {
     },
     getListMember() {
       HTTP.get("viewTree", {
-        headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+        
         params: {
           CodeID: this.CodeID,
         },

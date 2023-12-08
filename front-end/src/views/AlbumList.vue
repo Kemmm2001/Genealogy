@@ -578,9 +578,7 @@ export default {
       for (let i = 0; i < this.ListPhotoRemove.length; i++) {
         let length = this.ListPhotoRemove.length;
         HTTP.get("delete-familyphoto", {
-          headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          
           params: {
             PhotoID: this.ListPhotoRemove[i],
           },
@@ -605,9 +603,7 @@ export default {
     },
     searchAlbumPhoto() {
       HTTP.get("searchAlbum", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         params: {
           CodeID: this.CodeID,
           keySearch: this.keySearch,
@@ -660,9 +656,7 @@ export default {
         formData.append("BackGroundPhoto", this.albumPhoto.BackGroundPhoto);
       }
       HTTP.put("albumphoto", formData, {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
       })
         .then((response) => {
           if (response.data.success == true) {
@@ -679,9 +673,7 @@ export default {
     },
     getAlbumPhotoByCodeId() {
       HTTP.get("albumphoto", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         params: {
           CodeID: this.CodeID,
         },
@@ -704,9 +696,7 @@ export default {
     },
     getAlbumPhotoByAlbumId() {
       HTTP.get("albumphoto", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         params: {
           AlbumID: this.albumCurrentId,
         },
@@ -756,9 +746,7 @@ export default {
     },
     getFamilyPhotoByAlbumId() {
       HTTP.get("familyphoto", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         params: {
           AlbumID: this.albumCurrentId,
         },
@@ -786,9 +774,7 @@ export default {
         formData.append("AlbumID", this.albumCurrentId);
         formData.append("Photo", this.FamilyPhotoListAdd[i]);
         HTTP.post("familyphoto", formData, {
-          headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          
         })
           .then((response) => {
             if (response.data.success) {
@@ -815,9 +801,7 @@ export default {
         formData.append("Description", this.albumPhoto.description);
         formData.append("BackGroundPhoto", this.albumPhoto.BackGroundPhoto);
         HTTP.post("albumphoto", formData, {
-          headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          
         })
           .then((response) => {
             if (response.data.success == true) {

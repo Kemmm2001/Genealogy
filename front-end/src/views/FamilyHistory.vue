@@ -155,9 +155,7 @@ export default {
     filterHistory() {
       if (this.filterEndDate != null && this.filterStartDate != null) {
         HTTP.post("filterHistory", {
-          headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          
           startDate: this.filterStartDate,
           endDate: this.filterEndDate,
         })
@@ -176,9 +174,7 @@ export default {
     //nguyễn lê hùng
     searchHistory() {
       HTTP.post("searchHistory", {
-        headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+        
         CodeID: this.CodeID,
         keySearch: this.keySearch,
       })
@@ -197,9 +193,7 @@ export default {
     //nguyễn lê hùng
     removeHistory() {
       HTTP.get("delete-familyhistory", {
-        headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+        
         params: {
           FamilyHistoryID: this.historyID,
         },
@@ -228,9 +222,7 @@ export default {
       this.isAdd = false;
       this.historyID = historyID;
       HTTP.get("familyhistory", {
-        headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+        
         params: {
           FamilyHistoryID: historyID,
         },
@@ -256,9 +248,7 @@ export default {
         this.descriptionModal != ""
       ) {
         HTTP.put("familyhistory", {
-          headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          
           FamilyHistoryID: this.historyID,
           Description: this.descriptionModal,
           startDate: this.startDate,
@@ -292,9 +282,7 @@ export default {
           this.descriptionModal != ""
         ) {
           HTTP.post("familyhistory", {
-            headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+            
             CodeID: this.CodeID,
             Description: this.descriptionModal,
             startDate: this.startDate,
@@ -329,9 +317,7 @@ export default {
     },
     getListHistory() {
       HTTP.get("familyhistory", {
-        headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+        
         params: {
           CodeID: this.CodeID,
         },

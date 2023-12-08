@@ -1268,9 +1268,7 @@ export default {
       let id = this.nodes.map((item) => item.id);
       console.log(id);
       HTTP.post("back-up", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         memberIDs: id,
       })
         .then((response) => {
@@ -1331,9 +1329,7 @@ export default {
       // console.log(this.objCompareMember1);
       // console.log(this.objCompareMember2);
       HTTP.get("compare", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         params: {
           MemberID1: memberId1,
           MemberID2: memberId2,
@@ -1356,9 +1352,7 @@ export default {
     //Nguyễn Lê Hùng
     async setPaternalAncestor(roleId) {
       HTTP.post("setRole", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         memberId: this.CurrentIdMember,
         roleId: roleId,
         CodeId: this.CodeID,
@@ -1423,9 +1417,7 @@ export default {
     //Nguyễn Lê Hùng
     updateStatusEvent() {
       HTTP.put("updateStatusEvent", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         CodeID: this.CodeID,
       })
         .then((respone) => {
@@ -1449,9 +1441,7 @@ export default {
         this.ListPhoneToSendMessage.length > 0
       ) {
         HTTP.post("send-email", {
-          headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          
           listID: this.ListPhoneToSendMessage,
           subject: this.subjectEmail,
           text: this.contentEmail,
@@ -1485,9 +1475,7 @@ export default {
         this.contentMessage != ""
       ) {
         HTTP.post("send-sms", {
-          headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          
           ListMemberID: this.ListPhoneToSendMessage,
           contentMessage: this.contentMessage,
           CodeID: this.CodeID,
@@ -1510,9 +1498,7 @@ export default {
     getListMemberToSendMessage() {
       console.log(this.CodeID);
       HTTP.get("listMemberMessage", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         params: {
           CodeID: this.CodeID,
         },
@@ -1532,9 +1518,7 @@ export default {
         this.ListMemberCanSendMessage = this.nodes;
       } else {
         HTTP.get("searchMemberSendMessage", {
-          headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          
           params: {
             CodeID: this.CodeID,
             keySearch: this.searchKeyword,
@@ -1673,9 +1657,7 @@ export default {
       if (SelectDistinName != null) {
         this.selectDistrictMember = SelectDistinName;
         HTTP.get("district", {
-          headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          
           params: {
             cityID: this.selectCityMember,
           },
@@ -1693,9 +1675,7 @@ export default {
       this.isAdd = false;
       this.isEdit = true;
       HTTP.get("InforMember", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         params: {
           memberId: id,
         },
@@ -1753,9 +1733,7 @@ export default {
     //Nguyễn Lê Hùng
     removeJobMember() {
       HTTP.delete("removeJob", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         params: {
           JobID: this.JobIDToUpdate,
         },
@@ -1772,9 +1750,7 @@ export default {
     //Nguyễn Lê Hùng
     removeMember() {
       HTTP.get("deleteContact", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1789,9 +1765,7 @@ export default {
         });
 
       HTTP.get("RemoveListJob", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1806,9 +1780,7 @@ export default {
         });
 
       HTTP.get("deleteListEducation", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1823,9 +1795,7 @@ export default {
         });
 
       HTTP.get("delete-member", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1883,9 +1853,7 @@ export default {
     //Nguyễn Lê Hùng
     getListJobMember() {
       HTTP.get("getJob", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         params: {
           MemberId: this.CurrentIdMember,
         },
@@ -1900,9 +1868,7 @@ export default {
     //Nguyễn Lê Hùng
     addNewJobMember() {
       HTTP.post("addJob", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         memberId: this.CurrentIdMember,
         Organization: this.objMemberJob.Organization,
         OrganizationAddress: this.objMemberJob.OrganizationAddress,
@@ -1923,9 +1889,7 @@ export default {
     //Nguyễn Lê Hùng
     getListEducationMember() {
       HTTP.get("education", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         params: {
           memberId: this.CurrentIdMember,
         },
@@ -1940,9 +1904,7 @@ export default {
     //Nguyễn Lê Hùng
     addNewEducationMember() {
       HTTP.post("addEducation", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         MemberID: this.CurrentIdMember,
         School: this.objMemberEducation.School,
         Description: this.objMemberEducation.Description,
@@ -1970,9 +1932,7 @@ export default {
         this.NotificationsDelete("Bạn chưa chọn mối quan hệ");
       } else {
         HTTP.put("memberToGenealogy", {
-          headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          
           InGenealogyID: this.CurrentIdMember,
           OutGenealogyID: this.newIdMember,
           Action: this.action,
@@ -2000,9 +1960,7 @@ export default {
       let file = event.target.files[0];
       formData.append("xlsx", file);
       HTTP.post("import", formData, {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
       })
         .then((respone) => {
           console.log(respone.data);
@@ -2025,9 +1983,7 @@ export default {
       formData.append("Image", file);
       formData.append("MemberID", this.CurrentIdMember);
       HTTP.put("member-photo", formData, {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
       })
         .then((response) => {
           if (response.data.success == true) {
@@ -2103,9 +2059,7 @@ export default {
           ) {
             this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
             HTTP.post("addContact", {
-              headers: {
-                Authorization: "Bearer " + VueCookies.get("accessToken"),
-              },
+              
               memberId: this.newIdMember,
               Address: this.objMemberContact.Address,
               Phone: this.objMemberContact.Phone,
@@ -2201,9 +2155,7 @@ export default {
             ) {
               this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
               HTTP.post("addContact", {
-                headers: {
-                  Authorization: "Bearer " + VueCookies.get("accessToken"),
-                },
+                
                 memberId: this.newIdMember,
                 Address: this.objMemberContact.Address,
                 Phone: this.objMemberContact.Phone,
@@ -2254,9 +2206,7 @@ export default {
     //Nguyễn Lê Hùng
     updateEducationMember() {
       HTTP.put("updateEducation", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         School: this.objMemberEducation.School,
         Description: this.objMemberEducation.Description,
         StartDate: this.objMemberEducation.StartDate,
@@ -2275,9 +2225,7 @@ export default {
     //Nguyễn Lê Hùng
     updateJobMember() {
       HTTP.put("updateJob", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         JobID: this.JobIDToUpdate,
         Organization: this.objMemberJob.Organization,
         OrganizationAddress: this.objMemberJob.OrganizationAddress,
@@ -2305,9 +2253,7 @@ export default {
         this.objMemberContact.Address = null;
       }
       HTTP.put("member", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         MemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
         NickName: this.objMemberInfor.NickName,
@@ -2340,9 +2286,7 @@ export default {
               this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
             }
             HTTP.put("updateContact", {
-              headers: {
-                Authorization: "Bearer " + VueCookies.get("accessToken"),
-              },
+              
               MemberID: this.CurrentIdMember,
               Address: this.objMemberContact.Address,
               Phone: this.objMemberContact.Phone,
@@ -2395,9 +2339,7 @@ export default {
       console.log(city);
       console.log(this.selectAdress);
       HTTP.post("filter-member", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         CodeID: this.CodeID,
         BloodType: this.selectBloodType,
         selectAge: this.selectAge,
@@ -2491,9 +2433,7 @@ export default {
     },
     getListAfterSetPaternalAncestor(id) {
       HTTP.get("viewTree", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         params: {
           CodeID: id,
         },
@@ -2513,9 +2453,7 @@ export default {
     },
     async getListUnspecifiedMembers() {
       HTTP.get("unspecified-members", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         params: {
           CodeID: this.CodeID,
         },
@@ -2631,9 +2569,7 @@ export default {
     },
     linkRelationship() {
       HTTP.put("linkRelationship", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         MemberID1: this.CurrentIdToLinkRelationship,
         MemberID2: this.newIdMember,
       })
@@ -2694,9 +2630,7 @@ export default {
     },
     removeRelationship() {
       HTTP.put("removeRelationship", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         CurrentID: this.CurrentIdMember,
         RemoveID: this.newIdMember,
         action: this.action,
@@ -2739,9 +2673,7 @@ export default {
     openModalRelationship() {
       this.$modal.show("modal-relationship");
       HTTP.get("relationship", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         params: {
           CodeID: this.CodeID,
           memberID: this.CurrentIdMember,
@@ -2763,9 +2695,7 @@ export default {
 
     getAllListMember() {
       HTTP.get("members", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         params: {
           codeID: this.CodeID,
         },
@@ -2782,9 +2712,7 @@ export default {
 
     getListMember() {
       HTTP.get("getFamilyHead", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         params: {
           CodeID: this.CodeID,
         },
@@ -2796,9 +2724,6 @@ export default {
             console.log(this.idFamilyHead);
           }
           HTTP.get("viewTree", {
-            headers: {
-              Authorization: "Bearer " + VueCookies.get("accessToken"),
-            },
             params: {
               CodeID: this.CodeID,
             },
@@ -2857,9 +2782,7 @@ export default {
     },
     getListAgeGroup() {
       HTTP.get("agegroup", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
       })
         .then((response) => {
           this.ListAgeGroup = response.data;
@@ -2870,9 +2793,7 @@ export default {
     },
     getListBloodTypeGroup() {
       HTTP.get("bloodtype", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
       })
         .then((response) => {
           this.ListBloodTypeGroup = response.data;
@@ -2883,9 +2804,7 @@ export default {
     },
     getListNationality() {
       HTTP.get("nationality", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
       })
         .then((response) => {
           this.ListNationality = response.data;
@@ -2896,9 +2815,7 @@ export default {
     },
     getListMessage() {
       HTTP.get("listMessage", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         params: {
           CodeID: this.CodeID,
         },
@@ -2912,9 +2829,7 @@ export default {
     },
     getListHistoryEmail() {
       HTTP.get("listHistoryEmail", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         params: {
           CodeID: this.CodeID,
         },
@@ -2943,9 +2858,7 @@ export default {
         this.ListDistrictMember = null;
       } else {
         HTTP.get("district", {
-          headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          
           params: {
             cityID: this.selectCityMember,
           },
@@ -2971,9 +2884,7 @@ export default {
         this.selectAdress = selectedCity.name;
         this.GetListFilterMember();
         HTTP.get("district", {
-          headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          
           params: {
             cityID: this.selectCity,
           },
@@ -2988,9 +2899,7 @@ export default {
     },
     getMemberRole() {
       HTTP.post("memberRole", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
         accountID: localStorage.getItem("accountID"),
         codeID: localStorage.getItem("CodeID"),
       })
@@ -3005,9 +2914,7 @@ export default {
     },
     getListCity() {
       HTTP.get("province", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
       })
         .then((response) => {
           this.ListCity = response.data;
@@ -3018,9 +2925,7 @@ export default {
     },
     getListReligion() {
       HTTP.get("religion", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
+        
       })
         .then((response) => {
           this.ListReligion = response.data;
