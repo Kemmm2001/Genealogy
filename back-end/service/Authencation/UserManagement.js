@@ -216,19 +216,55 @@ function ChangePassword(newPassword, AccountID) {
 function UpdatePassword(newPassword, email) {
   return new Promise((resolve, reject) => {
     try {
-      let query = `UPDATE genealogy.account as a SET a.Password = '${newPassword}' WHERE Email = '${email};'`;
-      db.connection.query(query, (err) => {
+      let query = `UPDATE genealogy.account AS a SET a.Password = '${newPassword}' WHERE Email = '${email}'`;
+      db.connection.query(query, (err, result) => {
         if (!err) {
-          resolve(true)
+          resolve(result.affectedRows > 0); // Trả về true nếu có hàng bị ảnh hưởng
         } else {
-          reject(false)
+          reject(err); // Trả về lỗi nếu có lỗi xảy ra
         }
-      })
+      });
     } catch (error) {
-      console.log(error)
-      reject(false)
+      console.log(error);
+      reject(false);
     }
-  })
+  });
+}
+
+function DeleteRePasssToken(email) {
+  return new Promise((resolve, reject) => {
+    try {
+      let query = `UPDATE genealogy.account AS a SET a.RePassToken = NULL WHERE Email = '${email}'`;
+      db.connection.query(query, (err, result) => {
+        if (!err) {
+          resolve(result.affectedRows > 0); // Trả về true nếu có hàng bị ảnh hưởng
+        } else {
+          reject(err); // Trả về lỗi nếu có lỗi xảy ra
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      reject(error);
+    }
+  });
+}
+
+function DeleteRegisterToken(email) {
+  return new Promise((resolve, reject) => {
+    try {
+      let query = `UPDATE genealogy.account AS a SET a.RegisterToken = NULL WHERE Email = '${email}'`;
+      db.connection.query(query, (err, result) => {
+        if (!err) {
+          resolve(result.affectedRows > 0); // Trả về true nếu có hàng bị ảnh hưởng
+        } else {
+          reject(err); // Trả về lỗi nếu có lỗi xảy ra
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      reject(error);
+    }
+  });
 }
 
 function UpdateActive(IsActive, email) {
@@ -474,6 +510,6 @@ module.exports = {
   checkMail, checkID, create, getUser, refreshFreeEmail, insertAccountFamily, checkCodeID,
   checkAccountID, updateRoleID, insertIntoFamily, getUserInfo, getUserCodeID, checkCodeIdCreator,
   insertAccountFamilyTree, checkCodeCreatedByID, getHistoryLoginCodeID, ChangePassword, getListRoleMember, UpdateAccount, UpdatePassword,
-  checkToken, getMemberRole, changeUsername, getInformationGenealogy, UpdateRegisterToken, checkRegisterToken, UpdateActive
+  checkToken, getMemberRole, changeUsername, getInformationGenealogy, UpdateRegisterToken, checkRegisterToken, UpdateActive, DeleteRePasssToken, DeleteRegisterToken
 
 }
