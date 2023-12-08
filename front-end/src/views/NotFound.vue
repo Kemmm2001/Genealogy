@@ -8,6 +8,7 @@
 .not-found-bg{
     background-color: #FFFFFF;
     min-height: inherit;
+    height: 100%;
     background-image: url(../assets/NotFound.png);
     background-position: center;
     background-repeat: no-repeat;
