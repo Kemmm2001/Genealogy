@@ -22,7 +22,7 @@ var registerUser = async (req, res) => {
 
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>])[a-zA-Z\d!@#$%^&*()\-_=+{};:,<.>]{8,}$/;
     if (!passwordRegex.test(req.body.password)) {
-      return res.send(Response.internalServerErrorResponse(null, 'Mật khẩu không đáp ứng yêu cầu'));
+      return res.send(Response.internalServerErrorResponse(null, 'Mật khẩu phải có ít nhất 8 kí tự bao gồm ít nhất: 1 chữ cái viết hoa, 1 chữ cái thường, 1 chữ số và 1 kí tự đặc biệt'));
     }
     if (req.body.password !== req.body.repassword) {
       return res.send(Response.internalServerErrorResponse(null, 'Nhập Lại Mật khẩu không trùng nhau'));
@@ -389,7 +389,8 @@ var resetPassword = async (req, res) => {
     }
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>])[a-zA-Z\d!@#$%^&*()\-_=+{};:,<.>]{8,}$/;
     if (!passwordRegex.test(req.body.password)) {
-      return res.send(Response.badRequestResponse(null, 'Mật khẩu không đáp ứng yêu cầu'));
+      return res.send(Response.internalServerErrorResponse(null, 'Mật khẩu phải có ít nhất 8 kí tự bao gồm ít nhất: 1 chữ cái viết hoa, 1 chữ cái thường, 1 chữ số và 1 kí tự đặc biệt'));
+
     }
     if (req.body.password !== req.body.repassword) {
       return res.send(Response.dataNotFoundResponse(null, 'Nhập Lại Mật khẩu không trùng nhau'));
