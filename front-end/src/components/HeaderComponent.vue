@@ -5,7 +5,7 @@
         <router-link to="/" class="w-100">
           <div class="d-flex align-items-center w-100 h-100" style="justify-content: left; ">
             <div class="h-100 w-100" style="padding-left: 20%;">
-              <img class="logo" style src="../assets/Logo1.png" />
+              <img class="logo" src="../assets/Logo1.png" />
             </div>
           </div>
         </router-link>

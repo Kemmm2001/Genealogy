@@ -74,6 +74,11 @@ const routes = [
     name: "cfevent",
     component: () => import("../views/CfEvent.vue"),
   },
+  {
+    path: "/nav",
+    name: "nav",
+    component: () => import("../components/NavbarComponent.vue"),
+  },
 ];
 
 const router = new Router({

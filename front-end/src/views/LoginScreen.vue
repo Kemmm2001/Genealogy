@@ -163,7 +163,7 @@ export default {
                 this.moveToRight();
                 this.enlargeBackground();
                 this.accountRegister = [];
-                this.right = fal
+                this.right = false;
                 this.NotificationsScuccess(response.data.message);
               } else {
                 this.NotificationsDelete(response.data.message);
