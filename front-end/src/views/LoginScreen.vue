@@ -184,6 +184,9 @@ export default {
         );
       }
     },
+    verify_account(){
+      
+    },
     login() {
       if (this.accountLogin.email != "" && this.accountLogin.password != "") {
         HTTP.post("login", {
