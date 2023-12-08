@@ -110,7 +110,7 @@ var updateAlbumPhoto = async (req, res) => {
         return res.send(Response.internalServerErrorResponse());
     }
 };
-
+// nguyễn anh tuấn
 var checkAlbumIDExist = async (AlbumID) => {
     try {
         console.log("Chạy vào hàm checkAlbumIDExist");
@@ -129,7 +129,7 @@ var checkAlbumIDExist = async (AlbumID) => {
         return Response.internalServerErrorResponse();
     }
 }
-
+// nguyễn anh tuấn
 var checkCodeIDExist = async (CodeID) => {
     try {
         console.log("Chạy vào hàm checkCodeIDExist");
@@ -179,7 +179,7 @@ var searchAlbumPhoto = async (req, res) => {
         return res.send(Response.dataNotFoundResponse(error))
     }
 }
-
+// nguyễn anh tuấn
 var deleteAlbumPhoto = async (req, res) => {
     try {
         // Log ra thông tin trong req.query
@@ -212,7 +212,7 @@ var deleteAlbumPhoto = async (req, res) => {
     }
 };
 
-
+// nguyễn anh tuấn
 var getAlbumPhoto = async (req, res) => {
     try {
         // Log ra thông tin trong req.query
@@ -239,17 +239,5 @@ var getAlbumPhoto = async (req, res) => {
     }
 };
 
-var getAllAlbumPhotos = async (req, res) => {
-    try {
-        // lấy thông tin tất cả AlbumPhoto từ database
-        let data = await AlbumPhotoManagementService.getAllAlbumPhoto();
-        return res.send(Response.successResponse(data));
-    } catch (e) {
-        console.log("Error: " + e);
-        return res.send(Response.internalServerErrorResponse());
-    }
-};
 
-
-
-module.exports = { addAlbumPhoto, updateAlbumPhoto, deleteAlbumPhoto, getAlbumPhoto, getAllAlbumPhotos, searchAlbumPhoto };
+module.exports = { addAlbumPhoto, updateAlbumPhoto, deleteAlbumPhoto, getAlbumPhoto, searchAlbumPhoto };
