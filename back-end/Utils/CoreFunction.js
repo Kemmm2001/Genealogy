@@ -153,11 +153,6 @@ const isDataDateExist = (data) => {
     return moment(data, "yyyy-MM-dd").isValid();
 }
 
-// nguyễn anh tuấn
-const loadImage = (filePath) => {
-    let url = process.env.DNS_SERVER + filePath;
-    console.log(url);
-    return url;
-}
+
 module.exports = { missingFields, uploadImage, deleteImage, isEmptyOrNullOrSpaces, isDataStringExist, 
-    isDataNumberExist, uploadExcelFile, isDataDateExist,loadImage };
+    isDataNumberExist, uploadExcelFile, isDataDateExist };

@@ -2044,7 +2044,7 @@ export default {
             this.$modal.hide("member-modal");
             this.$modal.hide("Select-option-Modal");
             this.getListMember();
-            this.NotificationsScuccess(response.data.message);
+         //   this.NotificationsScuccess(response.data.message);
             this.getListMemberToSendMessage();
           } else {
             this.NotificationsDelete(response.data.message);

@@ -72,6 +72,7 @@ export default {
                 },
             }).then((response) => {
                 if(response.data.success == true){
+                    console.log(SHA256(this.newPwd).toString());
                     this.$router.push("/login");
                     this.NotificationsScuccess(response.data.message)
                 }else{

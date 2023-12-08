@@ -194,9 +194,6 @@ export default {
       console.log(this.familyTree.ethnicity);
       if (this.familyTree.treeName != "" && this.familyTree.ethnicity != "") {
         HTTP.post("register-genealogy", {
-          headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
           accountID: this.accountID,
           treeName: this.familyTree.treeName,
           ethnicity: this.familyTree.ethnicity,
@@ -228,9 +225,6 @@ export default {
       console.log(this.codeIdLogin);
       if (this.codeIdLogin != "" && this.codeIdLogin != null) {
         HTTP.post("check-codeId", {
-          headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
           codeID: this.codeIdLogin,
           accountID: this.accountID,
         })
@@ -290,9 +284,6 @@ export default {
     },
     getHistoryCodeID() {
       HTTP.get("historyCodeID", {
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("accessToken"),
-        },
         params: {
           accountID: this.accountID,
         },

@@ -74,6 +74,11 @@ const routes = [
     name: "cfevent",
     component: () => import("../views/CfEvent.vue"),
   },
+  {
+    path: "/verify",
+    name: "verify",
+    component: () => import("../views/VerifyAccount.vue"),
+  },
 ];
 
 const router = new Router({

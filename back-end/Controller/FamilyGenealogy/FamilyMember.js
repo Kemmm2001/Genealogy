@@ -141,6 +141,17 @@ var addMember = async (req, res) => {
             // trường hợp muốn thêm cha mẹ
             if (req.body.Action == 'AddParent') {
                 console.log("Đã vào trường hợp thêm cha mẹ");
+                // nếu đã có cha mẹ thì ko thêm
+                if (CoreFunction.isDataNumberExist(currentMember[0].FatherID) && CoreFunction.isDataNumberExist(currentMember[0].MotherID)) {
+                    let errorMessage = 'Thành viên này đã có cha mẹ';
+                    return res.send(Response.badRequestResponse(null, errorMessage));
+                }
+                // nếu là người ngoài gia phả, tức là ko có cha mẹ, và roleid là 3
+                if (currentMember[0].RoleID == 3 
+                    && !CoreFunction.isDataNumberExist(currentMember[0].FatherID) && !CoreFunction.isDataNumberExist(currentMember[0].MotherID)) {
+                    let errorMessage = 'Không thể thêm vì thành viên này là người ngoài gia phả';
+                    return res.send(Response.badRequestResponse(null, errorMessage));
+                }
                 // nếu vào trường hợp thêm cha
                 if (req.body.Male == 1) {
                     console.log("Đã vào trường hợp thêm cha");
@@ -1102,9 +1113,6 @@ var getMember = async (req, res) => {
         console.log(dataMember)
         if (dataMember == null || dataMember.length == 0) {
             return res.send(Response.dataNotFoundResponse());
-        }
-        if (CoreFunction.isDataStringExist(dataMember[0].Image)) {
-            dataMember[0].Image = process.env.DNS_SERVER + dataMember[0].Image;
         }
         return res.send(Response.successResponse(dataMember));
     } catch (e) {
