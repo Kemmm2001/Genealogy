@@ -739,7 +739,6 @@ export default {
       }
     },
     exportExcel() {
-      console.log(111)
       HTTP.post("export-excel", {
         
         CodeID: this.CodeID,

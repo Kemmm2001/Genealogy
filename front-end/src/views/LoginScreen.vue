@@ -163,10 +163,12 @@ export default {
           })
             .then((response) => {
               console.log(response.data);
+              console.log(this.accountRegister.email) 
               if (response.data.success == true) {
                 this.moveToLeft();
+                console.log(this.accountRegister.email) 
                 this.enlargeBackground();
-                this.accountRegister = [];
+                this.verifyAccount();
                 this.NotificationsScuccess(response.data.message);
               } else {
                 this.NotificationsDelete(response.data.message);
@@ -184,6 +186,24 @@ export default {
         );
       }
     },
+    verifyAccount(){
+      HTTP.post("verify-account", {
+          email: this.accountRegister.email,
+        })
+          .then((response) => {
+            console.log(this.accountRegister.email)
+            localStorage.setItem("emailRegister",this.accountRegister.email)
+            this.accountRegister = []
+            if (response.data.success == false) {
+              this.NotificationsDelete(response.data.message);
+            } else {
+              this.$router.push("/verify");
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+    },
     login() {
       if (this.accountLogin.email != "" && this.accountLogin.password != "") {
         HTTP.post("login", {
@@ -192,6 +212,7 @@ export default {
           //password: this.accountLogin.password,
         })
           .then((response) => {
+            console.log(SHA256(this.accountLogin.password).toString())
             if (response.data.success == false) {
               this.NotificationsDelete(response.data.message);
             } else {
@@ -231,10 +252,10 @@ export default {
     },
 
     moveToLeft() {
-      this.accountRegister.username = null;
-      (this.accountRegister.password = null),
-        (this.accountRegister.rePassword = null),
-        (this.accountRegister.email = null),
+      // this.accountRegister.username = null;
+      // (this.accountRegister.password = null),
+      //   (this.accountRegister.rePassword = null),
+      //   (this.accountRegister.email = null),
         (this.loggingin = true);
       setTimeout(() => {
         this.right = false;

@@ -102,14 +102,14 @@
           </div>
         </div>
       </div>
-      <!-- <div class="d-flex flex-row" style="position: absolute; bottom: 0; right: 0; align-items: end; z-index: 999;">
+      <div class="d-flex flex-row" style="position: absolute; bottom: 0; right: 0; align-items: end; z-index: 999;">
         <svg @click="togglehelp = !togglehelp" :class="{expandHelp : togglehelp}" class="help-icon p-1" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF">
           <g>
             <path d="M0,0h24v24H0V0z" fill="none" />
             <path d="M11,7h2v2h-2V7z M11,11h2v6h-2V11z M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,20 c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8S16.41,20,12,20z" />
           </g>
         </svg>
-      </div> -->
+      </div>
     </div>
     <div class="Container-select-modal">
       <modal name="Select-option-Modal">
@@ -1268,7 +1268,7 @@ export default {
       let id = this.nodes.map((item) => item.id);
       console.log(id);
       HTTP.post("back-up", {
-
+        
         memberIDs: id,
       })
         .then((response) => {
@@ -1329,7 +1329,7 @@ export default {
       // console.log(this.objCompareMember1);
       // console.log(this.objCompareMember2);
       HTTP.get("compare", {
-
+        
         params: {
           MemberID1: memberId1,
           MemberID2: memberId2,
@@ -1352,7 +1352,7 @@ export default {
     //Nguyễn Lê Hùng
     async setPaternalAncestor(roleId) {
       HTTP.post("setRole", {
-
+        
         memberId: this.CurrentIdMember,
         roleId: roleId,
         CodeId: this.CodeID,
@@ -1417,7 +1417,7 @@ export default {
     //Nguyễn Lê Hùng
     updateStatusEvent() {
       HTTP.put("updateStatusEvent", {
-
+        
         CodeID: this.CodeID,
       })
         .then((respone) => {
@@ -1441,7 +1441,7 @@ export default {
         this.ListPhoneToSendMessage.length > 0
       ) {
         HTTP.post("send-email", {
-
+          
           listID: this.ListPhoneToSendMessage,
           subject: this.subjectEmail,
           text: this.contentEmail,
@@ -1475,7 +1475,7 @@ export default {
         this.contentMessage != ""
       ) {
         HTTP.post("send-sms", {
-
+          
           ListMemberID: this.ListPhoneToSendMessage,
           contentMessage: this.contentMessage,
           CodeID: this.CodeID,
@@ -1498,12 +1498,12 @@ export default {
     getListMemberToSendMessage() {
       console.log(this.CodeID);
       HTTP.get("listMemberMessage", {
-
+        
         params: {
           CodeID: this.CodeID,
         },
       })
-        .then((respone) => {
+        .then((respone) => {     
           if (respone.data.success == true) {
             this.ListMemberCanSendMessage = respone.data.data;
           }
@@ -1518,7 +1518,7 @@ export default {
         this.ListMemberCanSendMessage = this.nodes;
       } else {
         HTTP.get("searchMemberSendMessage", {
-
+          
           params: {
             CodeID: this.CodeID,
             keySearch: this.searchKeyword,
@@ -1657,7 +1657,7 @@ export default {
       if (SelectDistinName != null) {
         this.selectDistrictMember = SelectDistinName;
         HTTP.get("district", {
-
+          
           params: {
             cityID: this.selectCityMember,
           },
@@ -1675,7 +1675,7 @@ export default {
       this.isAdd = false;
       this.isEdit = true;
       HTTP.get("InforMember", {
-
+        
         params: {
           memberId: id,
         },
@@ -1733,7 +1733,7 @@ export default {
     //Nguyễn Lê Hùng
     removeJobMember() {
       HTTP.delete("removeJob", {
-
+        
         params: {
           JobID: this.JobIDToUpdate,
         },
@@ -1750,7 +1750,7 @@ export default {
     //Nguyễn Lê Hùng
     removeMember() {
       HTTP.get("deleteContact", {
-
+        
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1765,7 +1765,7 @@ export default {
         });
 
       HTTP.get("RemoveListJob", {
-
+        
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1780,7 +1780,7 @@ export default {
         });
 
       HTTP.get("deleteListEducation", {
-
+        
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1795,7 +1795,7 @@ export default {
         });
 
       HTTP.get("delete-member", {
-
+        
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1853,7 +1853,7 @@ export default {
     //Nguyễn Lê Hùng
     getListJobMember() {
       HTTP.get("getJob", {
-
+        
         params: {
           MemberId: this.CurrentIdMember,
         },
@@ -1868,7 +1868,7 @@ export default {
     //Nguyễn Lê Hùng
     addNewJobMember() {
       HTTP.post("addJob", {
-
+        
         memberId: this.CurrentIdMember,
         Organization: this.objMemberJob.Organization,
         OrganizationAddress: this.objMemberJob.OrganizationAddress,
@@ -1889,7 +1889,7 @@ export default {
     //Nguyễn Lê Hùng
     getListEducationMember() {
       HTTP.get("education", {
-
+        
         params: {
           memberId: this.CurrentIdMember,
         },
@@ -1904,7 +1904,7 @@ export default {
     //Nguyễn Lê Hùng
     addNewEducationMember() {
       HTTP.post("addEducation", {
-
+        
         MemberID: this.CurrentIdMember,
         School: this.objMemberEducation.School,
         Description: this.objMemberEducation.Description,
@@ -1932,7 +1932,7 @@ export default {
         this.NotificationsDelete("Bạn chưa chọn mối quan hệ");
       } else {
         HTTP.put("memberToGenealogy", {
-
+          
           InGenealogyID: this.CurrentIdMember,
           OutGenealogyID: this.newIdMember,
           Action: this.action,
@@ -1960,7 +1960,7 @@ export default {
       let file = event.target.files[0];
       formData.append("xlsx", file);
       HTTP.post("import", formData, {
-
+        
       })
         .then((respone) => {
           console.log(respone.data);
@@ -1983,7 +1983,7 @@ export default {
       formData.append("Image", file);
       formData.append("MemberID", this.CurrentIdMember);
       HTTP.put("member-photo", formData, {
-
+        
       })
         .then((response) => {
           if (response.data.success == true) {
@@ -2044,7 +2044,7 @@ export default {
             this.$modal.hide("member-modal");
             this.$modal.hide("Select-option-Modal");
             this.getListMember();
-            this.NotificationsScuccess(response.data.message);
+         //   this.NotificationsScuccess(response.data.message);
             this.getListMemberToSendMessage();
           } else {
             this.NotificationsDelete(response.data.message);
@@ -2059,7 +2059,7 @@ export default {
           ) {
             this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
             HTTP.post("addContact", {
-
+              
               memberId: this.newIdMember,
               Address: this.objMemberContact.Address,
               Phone: this.objMemberContact.Phone,
@@ -2104,7 +2104,7 @@ export default {
         console.log("MotherID: " + MotherID);
       } else {
         console.log("vào add mare");
-        HTTP.post("member", {
+        HTTP.post("member", {         
           CurrentMemberID: this.CurrentIdMember,
           MemberName: this.objMemberInfor.MemberName,
           NickName: this.objMemberInfor.NickName,
@@ -2155,7 +2155,7 @@ export default {
             ) {
               this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
               HTTP.post("addContact", {
-
+                
                 memberId: this.newIdMember,
                 Address: this.objMemberContact.Address,
                 Phone: this.objMemberContact.Phone,
@@ -2206,7 +2206,7 @@ export default {
     //Nguyễn Lê Hùng
     updateEducationMember() {
       HTTP.put("updateEducation", {
-
+        
         School: this.objMemberEducation.School,
         Description: this.objMemberEducation.Description,
         StartDate: this.objMemberEducation.StartDate,
@@ -2225,7 +2225,7 @@ export default {
     //Nguyễn Lê Hùng
     updateJobMember() {
       HTTP.put("updateJob", {
-
+        
         JobID: this.JobIDToUpdate,
         Organization: this.objMemberJob.Organization,
         OrganizationAddress: this.objMemberJob.OrganizationAddress,
@@ -2253,7 +2253,7 @@ export default {
         this.objMemberContact.Address = null;
       }
       HTTP.put("member", {
-
+        
         MemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
         NickName: this.objMemberInfor.NickName,
@@ -2286,7 +2286,7 @@ export default {
               this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
             }
             HTTP.put("updateContact", {
-
+              
               MemberID: this.CurrentIdMember,
               Address: this.objMemberContact.Address,
               Phone: this.objMemberContact.Phone,
@@ -2339,7 +2339,7 @@ export default {
       console.log(city);
       console.log(this.selectAdress);
       HTTP.post("filter-member", {
-
+        
         CodeID: this.CodeID,
         BloodType: this.selectBloodType,
         selectAge: this.selectAge,
@@ -2433,7 +2433,7 @@ export default {
     },
     getListAfterSetPaternalAncestor(id) {
       HTTP.get("viewTree", {
-
+        
         params: {
           CodeID: id,
         },
@@ -2453,7 +2453,7 @@ export default {
     },
     async getListUnspecifiedMembers() {
       HTTP.get("unspecified-members", {
-
+        
         params: {
           CodeID: this.CodeID,
         },
@@ -2569,7 +2569,7 @@ export default {
     },
     linkRelationship() {
       HTTP.put("linkRelationship", {
-
+        
         MemberID1: this.CurrentIdToLinkRelationship,
         MemberID2: this.newIdMember,
       })
@@ -2630,7 +2630,7 @@ export default {
     },
     removeRelationship() {
       HTTP.put("removeRelationship", {
-
+        
         CurrentID: this.CurrentIdMember,
         RemoveID: this.newIdMember,
         action: this.action,
@@ -2673,7 +2673,7 @@ export default {
     openModalRelationship() {
       this.$modal.show("modal-relationship");
       HTTP.get("relationship", {
-
+        
         params: {
           CodeID: this.CodeID,
           memberID: this.CurrentIdMember,
@@ -2695,7 +2695,7 @@ export default {
 
     getAllListMember() {
       HTTP.get("members", {
-
+        
         params: {
           codeID: this.CodeID,
         },
@@ -2712,7 +2712,7 @@ export default {
 
     getListMember() {
       HTTP.get("getFamilyHead", {
-
+        
         params: {
           CodeID: this.CodeID,
         },
@@ -2782,7 +2782,7 @@ export default {
     },
     getListAgeGroup() {
       HTTP.get("agegroup", {
-
+        
       })
         .then((response) => {
           this.ListAgeGroup = response.data;
@@ -2793,7 +2793,7 @@ export default {
     },
     getListBloodTypeGroup() {
       HTTP.get("bloodtype", {
-
+        
       })
         .then((response) => {
           this.ListBloodTypeGroup = response.data;
@@ -2804,7 +2804,7 @@ export default {
     },
     getListNationality() {
       HTTP.get("nationality", {
-
+        
       })
         .then((response) => {
           this.ListNationality = response.data;
@@ -2815,7 +2815,7 @@ export default {
     },
     getListMessage() {
       HTTP.get("listMessage", {
-
+        
         params: {
           CodeID: this.CodeID,
         },
@@ -2829,7 +2829,7 @@ export default {
     },
     getListHistoryEmail() {
       HTTP.get("listHistoryEmail", {
-
+        
         params: {
           CodeID: this.CodeID,
         },
@@ -2858,7 +2858,7 @@ export default {
         this.ListDistrictMember = null;
       } else {
         HTTP.get("district", {
-
+          
           params: {
             cityID: this.selectCityMember,
           },
@@ -2884,7 +2884,7 @@ export default {
         this.selectAdress = selectedCity.name;
         this.GetListFilterMember();
         HTTP.get("district", {
-
+          
           params: {
             cityID: this.selectCity,
           },
@@ -2899,7 +2899,7 @@ export default {
     },
     getMemberRole() {
       HTTP.post("memberRole", {
-
+        
         accountID: localStorage.getItem("accountID"),
         codeID: localStorage.getItem("CodeID"),
       })
@@ -2914,7 +2914,7 @@ export default {
     },
     getListCity() {
       HTTP.get("province", {
-
+        
       })
         .then((response) => {
           this.ListCity = response.data;
@@ -2925,7 +2925,7 @@ export default {
     },
     getListReligion() {
       HTTP.get("religion", {
-
+        
       })
         .then((response) => {
           this.ListReligion = response.data;
@@ -3062,7 +3062,7 @@ export default {
   },
 };
 </script>
-
+    
 <style>
 @import "../assets/css/familytree.css";
 
