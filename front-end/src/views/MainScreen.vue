@@ -39,9 +39,7 @@
               <div @click="handleLeftClick(n.id)" @contextmenu.prevent="handleRightClick(n.id)" :class="{ 'list-item': true, 'selected-list': n.id == CurrentIdMember, 'ancestor-member': index === 0 }">{{ n.name }}</div>
             </div>
           </div>
-          <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content;" v-if="nodes.length == 0">
-            Danh sách chưa có thành viên
-          </div>
+          <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content;" v-if="nodes.length == 0">Danh sách chưa có thành viên</div>
         </div>
         <div class="d-flex nonexisting-members flex-column w-100 position-relative" style="margin: 8px 0">
           <div class="d-flex flex-row px-2 py-1 list-title">
@@ -55,9 +53,7 @@
           <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto; flex-grow: 1; cursor: pointer">
             <div v-for="list in ListUnspecifiedMembers" :key="list.id" @click="handleLeftClickUnspecifiedMembers(list.MemberID)" class="list-item">{{ list.MemberName }}</div>
           </div>
-          <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content;" v-if="ListUnspecifiedMembers.length == 0">
-            Danh sách chưa có thành viên
-          </div>
+          <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content;" v-if="ListUnspecifiedMembers.length == 0">Danh sách chưa có thành viên</div>
         </div>
       </div>
     </div>
@@ -1273,27 +1269,29 @@ export default {
       console.log(id);
       HTTP.post("back-up", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         memberIDs: id,
-      }).then((response) => {
-        if (response.data.success == true) {
-          //Mở một window khác ở đây
-          let newWindow = window.open(
-            `https://giaphanguoiviet.com${response.data.data.fileName}`,
-            "_blank"
-          );
-          if (newWindow) {
-            this.NotificationsScuccess(response.data.message);
-          } else {
-            this.NotificationsDelete(
-              "Không thể mở cửa sổ mới. Vui lòng kiểm tra cài đặt trình duyệt của bạn."
+      })
+        .then((response) => {
+          if (response.data.success == true) {
+            //Mở một window khác ở đây
+            let newWindow = window.open(
+              `https://giaphanguoiviet.com${response.data.data.fileName}`,
+              "_blank"
             );
+            if (newWindow) {
+              this.NotificationsScuccess(response.data.message);
+            } else {
+              this.NotificationsDelete(
+                "Không thể mở cửa sổ mới. Vui lòng kiểm tra cài đặt trình duyệt của bạn."
+              );
+            }
+          } else {
+            this.NotificationsDelete(response.data.message);
           }
-        } else {
-          this.NotificationsDelete(response.data.message);
-        }
-      }).catch(() => {
+        })
+        .catch(() => {
           this.NotificationsDelete("Có lỗi hệ thống");
         });
     },
@@ -1334,8 +1332,8 @@ export default {
       // console.log(this.objCompareMember2);
       HTTP.get("compare", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         params: {
           MemberID1: memberId1,
           MemberID2: memberId2,
@@ -1359,8 +1357,8 @@ export default {
     async setPaternalAncestor(roleId) {
       HTTP.post("setRole", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         memberId: this.CurrentIdMember,
         roleId: roleId,
         CodeId: this.CodeID,
@@ -1426,16 +1424,18 @@ export default {
     updateStatusEvent() {
       HTTP.put("updateStatusEvent", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         CodeID: this.CodeID,
-      }).then((respone) => {
-        if (respone.data.success == true) {
-          console.log("Update status event thành công");
-        } else {
-          console.log("Update status event thất bại");
-        }
-      }).catch(() => {
+      })
+        .then((respone) => {
+          if (respone.data.success == true) {
+            console.log("Update status event thành công");
+          } else {
+            console.log("Update status event thất bại");
+          }
+        })
+        .catch(() => {
           this.NotificationsDelete("Có lỗi hệ thống");
         });
     },
@@ -1511,14 +1511,13 @@ export default {
       console.log(this.CodeID);
       HTTP.get("listMemberMessage", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         params: {
           CodeID: this.CodeID,
         },
       })
-        .then((respone) => {
-          console.log(respone.data.data);
+        .then((respone) => {     
           if (respone.data.success == true) {
             this.ListMemberCanSendMessage = respone.data.data;
           }
@@ -1695,8 +1694,8 @@ export default {
       this.isEdit = true;
       HTTP.get("InforMember", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         params: {
           memberId: id,
         },
@@ -1755,8 +1754,8 @@ export default {
     removeJobMember() {
       HTTP.delete("removeJob", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         params: {
           JobID: this.JobIDToUpdate,
         },
@@ -1774,8 +1773,8 @@ export default {
     removeMember() {
       HTTP.get("deleteContact", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1791,8 +1790,8 @@ export default {
 
       HTTP.get("RemoveListJob", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1808,8 +1807,8 @@ export default {
 
       HTTP.get("deleteListEducation", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1825,27 +1824,29 @@ export default {
 
       HTTP.get("delete-member", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         params: {
           MemberID: this.CurrentIdMember,
         },
-      }).then((response) => {
-        if (response.data.success == true) {
-          // this.nodes.length = this.nodes.length - 1;
-          this.removeFromSelectedNodes(this.CurrentIdMember);
-          this.NotificationsScuccess(response.data.message);
-          this.getListUnspecifiedMembers();
-          this.$modal.hide("Select-option-Modal");
-          this.$modal.hide("member-modal");
-          this.getListMember();
-          this.getAllListMember();
-          this.closeCfDelModal();
-          this.getListMemberToSendMessage();
-        } else {
-          this.NotificationsDelete(response.data.message);
-        }
-      }).catch((e) => {
+      })
+        .then((response) => {
+          if (response.data.success == true) {
+            // this.nodes.length = this.nodes.length - 1;
+            this.removeFromSelectedNodes(this.CurrentIdMember);
+            this.NotificationsScuccess(response.data.message);
+            this.getListUnspecifiedMembers();
+            this.$modal.hide("Select-option-Modal");
+            this.$modal.hide("member-modal");
+            this.getListMember();
+            this.getAllListMember();
+            this.closeCfDelModal();
+            this.getListMemberToSendMessage();
+          } else {
+            this.NotificationsDelete(response.data.message);
+          }
+        })
+        .catch((e) => {
           console.log(e);
         });
     },
@@ -1883,14 +1884,16 @@ export default {
     getListJobMember() {
       HTTP.get("getJob", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         params: {
           MemberId: this.CurrentIdMember,
         },
-      }).then((response) => {
-        this.ListMemberJob = response.data;
-      }).catch((e) => {
+      })
+        .then((response) => {
+          this.ListMemberJob = response.data;
+        })
+        .catch((e) => {
           console.log(e);
         });
     },
@@ -1898,8 +1901,8 @@ export default {
     addNewJobMember() {
       HTTP.post("addJob", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         memberId: this.CurrentIdMember,
         Organization: this.objMemberJob.Organization,
         OrganizationAddress: this.objMemberJob.OrganizationAddress,
@@ -1921,8 +1924,8 @@ export default {
     getListEducationMember() {
       HTTP.get("education", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         params: {
           memberId: this.CurrentIdMember,
         },
@@ -1938,8 +1941,8 @@ export default {
     addNewEducationMember() {
       HTTP.post("addEducation", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         MemberID: this.CurrentIdMember,
         School: this.objMemberEducation.School,
         Description: this.objMemberEducation.Description,
@@ -1996,10 +1999,10 @@ export default {
       let formData = new FormData();
       let file = event.target.files[0];
       formData.append("xlsx", file);
-      HTTP.post("import", formData,{
+      HTTP.post("import", formData, {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
       })
         .then((respone) => {
           console.log(respone.data);
@@ -2021,10 +2024,10 @@ export default {
       let file = event.target.files[0];
       formData.append("Image", file);
       formData.append("MemberID", this.CurrentIdMember);
-      HTTP.put("member-photo", formData,{
+      HTTP.put("member-photo", formData, {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
       })
         .then((response) => {
           if (response.data.success == true) {
@@ -2055,9 +2058,6 @@ export default {
       console.log(FatherID);
       console.log(MotherID);
       HTTP.post("add-child", {
-        headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
         FatherID: FatherID,
         MotherID: MotherID,
         MemberName: this.objMemberInfor.MemberName,
@@ -2104,8 +2104,8 @@ export default {
             this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
             HTTP.post("addContact", {
               headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+                Authorization: "Bearer " + VueCookies.get("accessToken"),
+              },
               memberId: this.newIdMember,
               Address: this.objMemberContact.Address,
               Phone: this.objMemberContact.Phone,
@@ -2130,6 +2130,7 @@ export default {
     },
     //Nguyễn Lê Hùng
     addMember() {
+      console.log("Token: " + VueCookies.get("accessToken"));
       let FatherID;
       let MotherID;
       if (this.action == "AddNormal") {
@@ -2149,10 +2150,7 @@ export default {
         console.log("MotherID: " + MotherID);
       } else {
         console.log("vào add mare");
-        HTTP.post("member", {
-          headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+        HTTP.post("member", {         
           CurrentMemberID: this.CurrentIdMember,
           MemberName: this.objMemberInfor.MemberName,
           NickName: this.objMemberInfor.NickName,
@@ -2204,8 +2202,8 @@ export default {
               this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
               HTTP.post("addContact", {
                 headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+                  Authorization: "Bearer " + VueCookies.get("accessToken"),
+                },
                 memberId: this.newIdMember,
                 Address: this.objMemberContact.Address,
                 Phone: this.objMemberContact.Phone,
@@ -2257,18 +2255,20 @@ export default {
     updateEducationMember() {
       HTTP.put("updateEducation", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         School: this.objMemberEducation.School,
         Description: this.objMemberEducation.Description,
         StartDate: this.objMemberEducation.StartDate,
         EndDate: this.objMemberEducation.EndDate,
         EducationID: this.EducationIdToUpdate,
-      }).then(() => {
-        this.getListEducationMember();
-        this.NotificationsScuccess("Sửa thông tin giáo dục thành công");
-        this.refreshInputJobAndEducation();
-      }).catch((e) => {
+      })
+        .then(() => {
+          this.getListEducationMember();
+          this.NotificationsScuccess("Sửa thông tin giáo dục thành công");
+          this.refreshInputJobAndEducation();
+        })
+        .catch((e) => {
           console.log(e);
         });
     },
@@ -2276,8 +2276,8 @@ export default {
     updateJobMember() {
       HTTP.put("updateJob", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         JobID: this.JobIDToUpdate,
         Organization: this.objMemberJob.Organization,
         OrganizationAddress: this.objMemberJob.OrganizationAddress,
@@ -2285,11 +2285,13 @@ export default {
         JobName: this.objMemberJob.JobName,
         StartDate: this.objMemberJob.StartDate,
         EndDate: this.objMemberJob.EndDate,
-      }).then(() => {
-        this.getListJobMember();
-        this.NotificationsScuccess("Sửa thông tin nghề nghiệp thành công");
-        this.refreshInputJobAndEducation();
-      }).catch((e) => {
+      })
+        .then(() => {
+          this.getListJobMember();
+          this.NotificationsScuccess("Sửa thông tin nghề nghiệp thành công");
+          this.refreshInputJobAndEducation();
+        })
+        .catch((e) => {
           console.log(e);
         });
     },
@@ -2304,8 +2306,8 @@ export default {
       }
       HTTP.put("member", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         MemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
         NickName: this.objMemberInfor.NickName,
@@ -2347,13 +2349,15 @@ export default {
               Email: this.objMemberContact.Email,
               FacebookUrl: this.objMemberContact.FacebookUrl,
               Zalo: this.objMemberContact.Zalo,
-            }).then(() => {
-              this.closeMemberModal();
-              this.family.load(this.nodes);
-              this.getListMember();
-            }).catch(() => {
-          this.NotificationsDelete("Có lỗi hệ thống");
-        });
+            })
+              .then(() => {
+                this.closeMemberModal();
+                this.family.load(this.nodes);
+                this.getListMember();
+              })
+              .catch(() => {
+                this.NotificationsDelete("Có lỗi hệ thống");
+              });
           } else {
             this.NotificationsDelete(response.data.message);
           }
@@ -2392,8 +2396,8 @@ export default {
       console.log(this.selectAdress);
       HTTP.post("filter-member", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         CodeID: this.CodeID,
         BloodType: this.selectBloodType,
         selectAge: this.selectAge,
@@ -2488,8 +2492,8 @@ export default {
     getListAfterSetPaternalAncestor(id) {
       HTTP.get("viewTree", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         params: {
           CodeID: id,
         },
@@ -2510,8 +2514,8 @@ export default {
     async getListUnspecifiedMembers() {
       HTTP.get("unspecified-members", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         params: {
           CodeID: this.CodeID,
         },
@@ -2628,22 +2632,24 @@ export default {
     linkRelationship() {
       HTTP.put("linkRelationship", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         MemberID1: this.CurrentIdToLinkRelationship,
         MemberID2: this.newIdMember,
-      }).then((respone) => {
-        if (respone.data.success == true) {
-          this.NotificationsScuccess(respone.data.message);
-          this.CurrentIdToLinkRelationship = null;
-          this.newIdMember = null;
-          this.getListMember();
-          this.closeCfDelModal();
-          this.closeSelectModal();
-        } else {
-          this.NotificationsDelete(respone.data.message);
-        }
-      }).catch((e) => {
+      })
+        .then((respone) => {
+          if (respone.data.success == true) {
+            this.NotificationsScuccess(respone.data.message);
+            this.CurrentIdToLinkRelationship = null;
+            this.newIdMember = null;
+            this.getListMember();
+            this.closeCfDelModal();
+            this.closeSelectModal();
+          } else {
+            this.NotificationsDelete(respone.data.message);
+          }
+        })
+        .catch((e) => {
           console.log(e);
         });
       console.log("idparent: " + this.idParent);
@@ -2689,8 +2695,8 @@ export default {
     removeRelationship() {
       HTTP.put("removeRelationship", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         CurrentID: this.CurrentIdMember,
         RemoveID: this.newIdMember,
         action: this.action,
@@ -2734,18 +2740,20 @@ export default {
       this.$modal.show("modal-relationship");
       HTTP.get("relationship", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         params: {
           CodeID: this.CodeID,
           memberID: this.CurrentIdMember,
         },
-      }).then((response) => {
-        if (response.data.success == true) {
-          console.log(response.data.data);
-          this.ResultRelationship = response.data.data;
-        }
-      }).catch((e) => {
+      })
+        .then((response) => {
+          if (response.data.success == true) {
+            console.log(response.data.data);
+            this.ResultRelationship = response.data.data;
+          }
+        })
+        .catch((e) => {
           console.log(e);
         });
     },
@@ -2756,16 +2764,18 @@ export default {
     getAllListMember() {
       HTTP.get("members", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         params: {
           codeID: this.CodeID,
         },
-      }).then((response) => {
-        if (response.data.success == true) {
-          this.listMember = response.data.data;
-        }
-      }).catch((e) => {
+      })
+        .then((response) => {
+          if (response.data.success == true) {
+            this.listMember = response.data.data;
+          }
+        })
+        .catch((e) => {
           console.log(e);
         });
     },
@@ -2773,81 +2783,83 @@ export default {
     getListMember() {
       HTTP.get("getFamilyHead", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         params: {
           CodeID: this.CodeID,
         },
-      }).then((response) => {
-        console.log("response: " + response.data);
-        if (response.data.success == true) {
-          this.idFamilyHead = response.data.data;
-          console.log(this.idFamilyHead);
-        }
-        HTTP.get("viewTree", {
-          headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
-          params: {
-            CodeID: this.CodeID,
-          },
-        })
-          .then((response) => {
-            this.nodes = [];
-            this.numberDeath = 0;
-            if (response.data.success == true) {
-              this.nodes = response.data.data;
-              console.log(this.nodes);
-              for (let i = 0; i < this.nodes.length; i++) {
-                if (this.nodes[i].pids.length > 1) {
-                  let listPid = [];
-                  for (let j = this.nodes[i].pids.length - 1; j >= 0; j--) {
-                    listPid.push(this.nodes[i].pids[j]);
-                  }
-                  this.nodes[i].pids = listPid;
-                }
-                this.nodes[i].tags = [];
-                if (this.nodes[i].name.length > 15) {
-                  this.nodes[i].name =
-                    this.nodes[i].name.substring(0, 16) + "...";
-                }
-                if (this.idFamilyHead != null) {
-                  if (this.nodes[i].id == this.idFamilyHead) {
-                    this.nodes[i].isFH = "true";
-                  }
-                }
-                if (this.nodes[i].isDead == 1) {
-                  this.numberDeath += 1;
-                  this.nodes[i].tags.push("died");
-                }
-                if (this.nodes[i].img == null || this.nodes[i].img == "") {
-                  if (this.nodes[i].gender == "male") {
-                    this.nodes[i].img =
-                      "data:image/jpeg;base64,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";
-                  } else if (this.nodes[i].gender == "female") {
-                    this.nodes[i].img =
-                      "data:image/jpeg;base64,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";
-                  }
-                }
-              }
-              this.nodes[0].tags.push("great-grandfather");
-              this.nodes[0].isGG = "true";
-              this.mytree(this.$refs.tree, this.nodes);
-            }
-            // this.family.load(this.nodes);
+      })
+        .then((response) => {
+          console.log("response: " + response.data);
+          if (response.data.success == true) {
+            this.idFamilyHead = response.data.data;
+            console.log(this.idFamilyHead);
+          }
+          HTTP.get("viewTree", {
+            headers: {
+              Authorization: "Bearer " + VueCookies.get("accessToken"),
+            },
+            params: {
+              CodeID: this.CodeID,
+            },
           })
-          .catch((e) => {
-            console.log(e);
-          });
-      }).catch((e) => {
+            .then((response) => {
+              this.nodes = [];
+              this.numberDeath = 0;
+              if (response.data.success == true) {
+                this.nodes = response.data.data;
+                console.log(this.nodes);
+                for (let i = 0; i < this.nodes.length; i++) {
+                  if (this.nodes[i].pids.length > 1) {
+                    let listPid = [];
+                    for (let j = this.nodes[i].pids.length - 1; j >= 0; j--) {
+                      listPid.push(this.nodes[i].pids[j]);
+                    }
+                    this.nodes[i].pids = listPid;
+                  }
+                  this.nodes[i].tags = [];
+                  if (this.nodes[i].name.length > 15) {
+                    this.nodes[i].name =
+                      this.nodes[i].name.substring(0, 16) + "...";
+                  }
+                  if (this.idFamilyHead != null) {
+                    if (this.nodes[i].id == this.idFamilyHead) {
+                      this.nodes[i].isFH = "true";
+                    }
+                  }
+                  if (this.nodes[i].isDead == 1) {
+                    this.numberDeath += 1;
+                    this.nodes[i].tags.push("died");
+                  }
+                  if (this.nodes[i].img == null || this.nodes[i].img == "") {
+                    if (this.nodes[i].gender == "male") {
+                      this.nodes[i].img =
+                        "data:image/jpeg;base64,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";
+                    } else if (this.nodes[i].gender == "female") {
+                      this.nodes[i].img =
+                        "data:image/jpeg;base64,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";
+                    }
+                  }
+                }
+                this.nodes[0].tags.push("great-grandfather");
+                this.nodes[0].isGG = "true";
+                this.mytree(this.$refs.tree, this.nodes);
+              }
+              // this.family.load(this.nodes);
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        })
+        .catch((e) => {
           console.log(e);
         });
     },
     getListAgeGroup() {
-      HTTP.get("agegroup",{
+      HTTP.get("agegroup", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
       })
         .then((response) => {
           this.ListAgeGroup = response.data;
@@ -2857,10 +2869,10 @@ export default {
         });
     },
     getListBloodTypeGroup() {
-      HTTP.get("bloodtype",{
+      HTTP.get("bloodtype", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
       })
         .then((response) => {
           this.ListBloodTypeGroup = response.data;
@@ -2870,10 +2882,10 @@ export default {
         });
     },
     getListNationality() {
-      HTTP.get("nationality",{
+      HTTP.get("nationality", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
       })
         .then((response) => {
           this.ListNationality = response.data;
@@ -2885,8 +2897,8 @@ export default {
     getListMessage() {
       HTTP.get("listMessage", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         params: {
           CodeID: this.CodeID,
         },
@@ -2901,8 +2913,8 @@ export default {
     getListHistoryEmail() {
       HTTP.get("listHistoryEmail", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         params: {
           CodeID: this.CodeID,
         },
@@ -2965,33 +2977,37 @@ export default {
           params: {
             cityID: this.selectCity,
           },
-        }).then((response) => {
-          this.ListDistrict = response.data;
-        }).catch((e) => {
-          console.log(e);
-        });
+        })
+          .then((response) => {
+            this.ListDistrict = response.data;
+          })
+          .catch((e) => {
+            console.log(e);
+          });
       }
     },
     getMemberRole() {
       HTTP.post("memberRole", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         accountID: localStorage.getItem("accountID"),
         codeID: localStorage.getItem("CodeID"),
-      }).then((response) => {
-        if (response.data.success == true) {
-          this.memberRole = response.data.data;
-        }
-      }).catch((e) => {
+      })
+        .then((response) => {
+          if (response.data.success == true) {
+            this.memberRole = response.data.data;
+          }
+        })
+        .catch((e) => {
           console.log(e);
         });
     },
     getListCity() {
-      HTTP.get("province",{
+      HTTP.get("province", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
       })
         .then((response) => {
           this.ListCity = response.data;
@@ -3001,10 +3017,10 @@ export default {
         });
     },
     getListReligion() {
-      HTTP.get("religion",{
+      HTTP.get("religion", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
       })
         .then((response) => {
           this.ListReligion = response.data;
@@ -3113,7 +3129,7 @@ export default {
     if (
       localStorage.getItem("CodeID") != null &&
       localStorage.getItem("accountID") != null
-    ) {    
+    ) {
       this.getListMessage();
       this.getListCity();
       this.getListNationality();
@@ -3127,7 +3143,7 @@ export default {
       this.getAllListMember();
       this.getListMemberToSendMessage();
       this.updateStatusEvent();
-    }    
+    }
 
     if (localStorage.getItem("CodeID") != null) {
       this.CodeID = localStorage.getItem("CodeID");

@@ -1051,14 +1051,11 @@ var getAllMember = async (req, res) => {
         const codeID = req.query.codeID
         const members = await FamilyManagementService.getAllMember(codeID);
         if (members) {
-            res.send(Response.successResponse(members))
+            return res.send(Response.successResponse(members))
 
         } else {
-            res.send(Response.internalServerErrorResponse())
+            return res.send(Response.internalServerErrorResponse())
         }
-
-        // Trả về danh sách thành viên trong phản hồi
-        res.json({ success: true, data: members });
     } catch (error) {
         console.error('Lỗi khi lấy tất cả thành viên:', error);
         res.send(Response.internalServerErrorResponse())

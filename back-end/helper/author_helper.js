@@ -16,6 +16,8 @@ module.exports = {
                     }
                     const insertId = req.payload.insertId;
                     const roleId = await userService.getRoleID(insertId);
+
+                    console.log('roleId: ' + roleId)
                     
                     if (!roleId) {
                         res.send(Response.dataNotFoundResponse(null, "Chưa có roleID"));

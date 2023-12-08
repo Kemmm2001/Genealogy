@@ -289,7 +289,7 @@ var checkCodeID = async (req, res) => {
       let checkCodeIdCreator2 = await UserService.checkCodeIdCreator(accountID, CodeID, 2);
       let checkCodeIdCreator3 = await UserService.checkCodeIdCreator(accountID, CodeID, 3);
       console.log('checkCodeIdCreator: ' + checkCodeIdCreator1)
-      if (checkCodeIdCreator1 > 0 || checkCodeIdCreator2 || checkCodeIdCreator3) {
+      if (checkCodeIdCreator1 > 0 || checkCodeIdCreator2 > 0 || checkCodeIdCreator3 > 0) {
         return res.send(Response.successResponse())
       }
       else {

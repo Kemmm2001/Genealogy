@@ -56,6 +56,14 @@
               </div>
             </div>
             <div class="d-flex mb-2" style="position: relative;">
+              <input v-model="accountRegister.email" id="email" type="text" class="form-control py-2 px-5 position-relative" placeholder="Email" />
+              <div class="position-absolute d-flex align-items-center justify-content-center h-100" style="left: 0; width: 3rem;">
+                <svg class="login-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                  <path style="fill: gray;" d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z" />
+                </svg>
+              </div>
+            </div>
+            <div class="d-flex mb-2" style="position: relative;">
               <input v-model="accountRegister.password" id="password" type="password" class="form-control py-2 px-5 position-relative" placeholder="Mật khẩu" />
               <div class="position-absolute d-flex align-items-center justify-content-center h-100" style="left: 0; width: 3rem;">
                 <svg class="login-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -68,14 +76,6 @@
               <div class="position-absolute d-flex align-items-center justify-content-center h-100" style="left: 0; width: 3rem;">
                 <svg class="login-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                   <path style="fill: gray;" d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z" />
-                </svg>
-              </div>
-            </div>
-            <div class="d-flex mb-2" style="position: relative;">
-              <input v-model="accountRegister.email" id="email" type="text" class="form-control py-2 px-5 position-relative" placeholder="Email" />
-              <div class="position-absolute d-flex align-items-center justify-content-center h-100" style="left: 0; width: 3rem;">
-                <svg class="login-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                  <path style="fill: gray;" d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z" />
                 </svg>
               </div>
             </div>

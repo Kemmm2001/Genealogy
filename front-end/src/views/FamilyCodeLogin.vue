@@ -207,7 +207,9 @@ export default {
             if (response.data.success == true) {
               // this.NotificationsScuccess(response.data.message);
               this.familycode = response.data.data;
+              this.moveToLeft();
               this.showFamilyCode();
+              this.getHistoryCodeID();
             } else {
               this.NotificationsDelete("Lỗi hệ thống");
             }
@@ -247,7 +249,7 @@ export default {
             console.log(e);
           });
       } else {
-        console.log("vào đây")
+        console.log("vào đây");
         this.NotificationsDelete("Bạn chưa điền code gia phả");
       }
     },
@@ -290,8 +292,8 @@ export default {
     getHistoryCodeID() {
       HTTP.get("historyCodeID", {
         headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
+          Authorization: "Bearer " + VueCookies.get("accessToken"),
+        },
         params: {
           accountID: this.accountID,
         },
@@ -312,7 +314,7 @@ export default {
     this.takeAccountId();
     if (localStorage.getItem("CodeID") != null) {
       this.$router.push("/");
-    }   
+    }
   },
 };
 </script>

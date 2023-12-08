@@ -23,9 +23,12 @@ module.exports = {
   },
 
   verifyAccessToken: (req, res, next) => {
+    console.log('req.headers: ' + JSON.stringify(req.headers, null, 2));
     if (!req.headers['authorization']) {
+      console.log("vào đây123")
       return res.json({ error: 'Unauthorized' });
     }
+    console.log("vào đây")
 
     const authHeader = req.headers['authorization'];
     const bearerToken = authHeader.split(' ');

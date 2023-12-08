@@ -57,9 +57,9 @@ const initWebRouter = (app) => {
 
     //API tuấn
     router.get('/member', FamilyMemberManagement.getMember);
-    router.post('/member', FamilyMemberManagement.addMember);
-    router.post('/add-child',authMiddleware.authenticateAndAuthorize(2),FamilyMemberManagement.addChild);
-    router.put('/member', FamilyMemberManagement.updateMember);
+    router.post('/member', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.addMember);
+    router.post('/add-child', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.addChild);
+    router.put('/member', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.updateMember);
     router.put('/member-photo', CoreFunction.uploadImage("member-photo").single('Image'), FamilyMemberManagement.updateMemberPhoto);
     router.put('/memberToGenealogy', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.updateMemberToGenealogy);
     router.put('/linkRelationship', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.linkRelationship);
