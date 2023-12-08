@@ -43,7 +43,6 @@ import "./assets/css-dark/familytree.css";
 import "./assets/css-dark/event.css";
 
 
-
 Vue.config.productionTip = false
 
 

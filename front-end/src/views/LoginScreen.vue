@@ -117,7 +117,7 @@
 
 <script>
 import { HTTP } from "../assets/js/baseAPI.js";
-import SHA256 from "crypto-js/sha256";
+import CryptoJS from 'crypto-js';
 import Vue from "vue";
 import VueCookies from "vue-cookies";
 Vue.use(VueCookies);
@@ -176,6 +176,21 @@ export default {
       });
     },
     register() {
+      var secureKey = process.env.VUE_APP_KEY_SECRET
+      var passwordToEncrypt = this.accountRegister.password;
+      // Mã hóa dữ liệu với khóa
+      var encryptedPassword = CryptoJS.AES.encrypt(passwordToEncrypt, secureKey, {
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7
+      });
+      var rePasswordToEncrypt = this.accountRegister.rePassword;
+      // Mã hóa dữ liệu với khóa
+      var encryptedRepassword = CryptoJS.AES.encrypt(rePasswordToEncrypt, secureKey, {
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7
+      });
+      console.log(encryptedPassword.toString() )
+      console.log(encryptedRepassword.toString() )
       if (
         this.accountRegister.email != "" &&
         this.accountRegister.username != "" &&
@@ -190,8 +205,8 @@ export default {
           HTTP.post("register", {
             email: this.accountRegister.email,
             username: this.accountRegister.username,
-            password: SHA256(this.accountRegister.password).toString(),
-            repassword: SHA256(this.accountRegister.rePassword).toString(),
+            password: encryptedPassword,
+            repassword: encryptedRepassword,
           })
             .then((response) => {
               console.log(response.data);
@@ -237,14 +252,21 @@ export default {
           });
     },
     login() {
+      // Dữ liệu cần mã hóa
+      var dataToEncrypt = this.accountLogin.password;
+      var secureKey = process.env.VUE_APP_KEY_SECRET
+      // Mã hóa dữ liệu với khóa
+      var encryptedData = CryptoJS.AES.encrypt(dataToEncrypt, secureKey, {
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7
+      });
       if (this.accountLogin.email != "" && this.accountLogin.password != "") {
         HTTP.post("login", {
           email: this.accountLogin.email.replace(/\s+/g, ""),
-          password: SHA256(this.accountLogin.password).toString(),
+          password: encryptedData.toString(),
           //password: this.accountLogin.password,
         })
           .then((response) => {
-            console.log(SHA256(this.accountLogin.password).toString())
             if (response.data.success == false) {
               this.NotificationsDelete(response.data.message);
             } else {

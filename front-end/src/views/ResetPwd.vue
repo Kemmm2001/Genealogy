@@ -45,8 +45,8 @@
 
 <script>
 import { HTTP } from "../assets/js/baseAPI.js";
-import SHA256 from "crypto-js/sha256";
 import Snackbar from "awesome-snackbar";
+import CryptoJS from 'crypto-js';
 export default {
     data() {
         return {
@@ -62,17 +62,28 @@ export default {
     },
     methods: {
         changePassWord(){
-            console.log(this.token)
+            // Dữ liệu cần mã hóa
+            var dataToEncrypt1 = this.newPwd;
+            var dataToEncrypt2 = this.reNewPwd;
+            var secureKey = process.env.VUE_APP_KEY_SECRET
+            // Mã hóa dữ liệu với khóa
+            var encryptedData1 = CryptoJS.AES.encrypt(dataToEncrypt1, secureKey, {
+                mode: CryptoJS.mode.ECB,
+                padding: CryptoJS.pad.Pkcs7
+            });
+            var encryptedData2 = CryptoJS.AES.encrypt(dataToEncrypt2, secureKey, {
+                mode: CryptoJS.mode.ECB,
+                padding: CryptoJS.pad.Pkcs7
+            });
             HTTP.post("reset-password", {
-                password: SHA256(this.newPwd).toString(),
-                repassword: SHA256(this.reNewPwd).toString(),
+                password: encryptedData1.toString(),
+                repassword: encryptedData2.toString(),
             },{
                 params: {
                     token: this.token,
                 },
             }).then((response) => {
                 if(response.data.success == true){
-                    console.log(SHA256(this.newPwd).toString());
                     this.$router.push("/login");
                     this.NotificationsScuccess(response.data.message)
                 }else{

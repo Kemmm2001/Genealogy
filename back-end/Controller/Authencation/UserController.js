@@ -405,7 +405,7 @@ var resetPassword = async (req, res) => {
     if (!req.body.password || !req.body.repassword) {
       return res.send(Response.internalServerErrorResponse(null, 'Vui lòng điền đầy đủ thông tin'));
     }
-
+    console.log(req.body.password)
     var decryptedBytes = CryptoJS.AES.decrypt(req.body.password, secureKey, {
       mode: CryptoJS.mode.ECB,
       padding: CryptoJS.pad.Pkcs7
@@ -413,7 +413,7 @@ var resetPassword = async (req, res) => {
     
     // Chuyển đổi dữ liệu giải mã thành chuỗi
     var password = decryptedBytes.toString(CryptoJS.enc.Utf8);
-    
+    console.log(password)
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>])[a-zA-Z\d!@#$%^&*()\-_=+{};:,<.>]{8,}$/;
     if (!passwordRegex.test(password)) {
       return res.send(Response.internalServerErrorResponse(null, 'Mật khẩu phải có ít nhất 8 kí tự bao gồm ít nhất: 1 chữ cái viết hoa, 1 chữ cái thường, 1 chữ số và 1 kí tự đặc biệt'));
