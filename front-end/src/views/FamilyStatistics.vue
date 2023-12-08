@@ -131,6 +131,9 @@
   </div>
 </template>
 <script>
+import Vue from "vue";
+import VueCookies from "vue-cookies";
+Vue.use(VueCookies);
 import { Bar } from "vue-chartjs";
 import {
   Chart as ChartJS,
@@ -637,6 +640,7 @@ export default {
     },
     getListMember() {
       HTTP.get("viewTree", {
+        
         params: {
           CodeID: this.CodeID,
         },

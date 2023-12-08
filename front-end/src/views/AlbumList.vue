@@ -46,6 +46,9 @@
               </div>
             </div>
           </div>
+          <div v-if="AlbumPhotoList.length == 0" class="h-100 w-100 position-relative">
+            <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content; font-size: 19px;">Bạn chưa tạo album nào</div>
+          </div>
         </div>
       </div>
     </div>
@@ -278,18 +281,15 @@
         </div>
       </modal>
     </div>
-    <div v-if="AlbumPhotoList.length != 0">
-
-    </div>
-    <div v-else>
-
-    </div>
   </div>
 </template>
   
 <script>
 import { HTTP } from "../assets/js/baseAPI.js";
 import Snackbar from "awesome-snackbar";
+import Vue from "vue";
+import VueCookies from "vue-cookies";
+Vue.use(VueCookies);
 import VueEasyLightbox from "vue-easy-lightbox";
 export default {
   components: {
@@ -356,13 +356,18 @@ export default {
     handleHide() {
       this.visible = false;
     },
+    isImage(file) {
+      const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+
+      // Kiểm tra loại MIME của file
+      return allowedTypes.includes(file.type);
+    },
     changeCheckAlbum(id, index) {
       if (this.ListCheckBoxAlbum[index]) {
         this.listRemoveAlbum(id, "add");
       } else {
         this.listRemoveAlbum(id, "remove");
       }
-      console.log(this.ListAlbumRemove.length);
       if (this.ListAlbumRemove.length != 0) {
         this.isButtonDisabledAlbum = false;
       } else {
@@ -395,13 +400,11 @@ export default {
       console.log(index);
       if (type == "add") {
         this.ListPhotoAddRemove.push(index);
-        console.log("add" + this.ListPhotoAddRemove);
       }
       if (type == "remove") {
         this.ListPhotoAddRemove = this.ListPhotoAddRemove.filter(
           (photo) => photo !== index
         );
-        console.log("remove" + this.ListPhotoAddRemove);
       }
     },
     changeCheckPhoto(id, index) {
@@ -419,7 +422,6 @@ export default {
     listRemovePhoto(id, type) {
       console.log(type);
       if (type == "add") {
-        console.log(id);
         this.ListPhotoRemove.push(id);
       }
       if (type == "remove") {
@@ -502,13 +504,24 @@ export default {
       this.checkAddPhotoModal = false;
     },
     handleFileChangePhoto(event) {
-      console.log("Tại sao lại như thế");
       this.ListCheckBoxPhoto = [];
       this.ListPhotoRemove = [];
-      const file = event.target.files;
-      //     let count = this.listHeightLarger+1;
-      let check = 0;
-      this.FamilyPhotoListAdd = file;
+      const files = event.target.files;
+      console.log(111);
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+
+        if (this.isImage(file)) {
+          // Thực hiện xử lý cho file ảnh
+          this.FamilyPhotoListAdd.push(file);
+        } else {
+          // Thông báo hoặc xử lý cho trường hợp không phải ảnh
+          this.NotificationsDelete("Bạn chỉ được chọn file ảnh");
+          this.FamilyPhotoListAdd = [];
+          break;
+        }
+      }
+      this.FamilyPhotoListAddShow = [];
       for (let i = 0; i < this.FamilyPhotoListAdd.length; i++) {
         if (this.FamilyPhotoListAdd[i]) {
           // Đọc nội dung của tệp và chuyển thành URL
@@ -519,8 +532,6 @@ export default {
             const img = new Image();
             img.src = e.target.result;
             img.onload = () => {
-              check += 1;
-              console.log(check);
               if (img.width != 0 && img.height != 0) {
                 this.checkPhotoSize(img.width, img.height);
               }
@@ -534,14 +545,12 @@ export default {
       this.getAlbumPhotoByCodeId();
     },
     checkPhotoSize(width, height) {
-      console.log(width, height);
       if (width > height) {
         this.heightLarger = false;
       } else {
         this.heightLarger = true;
       }
       this.listHeightLarger.push(this.heightLarger);
-      console.log(this.listHeightLarger);
     },
 
     handleFileChangeBackGround(event) {
@@ -549,10 +558,17 @@ export default {
     },
     removeFamilyPhotoAdd() {
       console.log(this.ListPhotoAddRemove);
+      this.ListPhotoAddRemove = this.ListPhotoAddRemove.slice().sort(
+        (a, b) => b - a
+      );
+      console.log(this.ListPhotoAddRemove);
       for (let i = 0; i < this.ListPhotoAddRemove.length; i++) {
+        console.log(this.ListPhotoAddRemove[i]);
         this.FamilyPhotoListAddShow.splice(this.ListPhotoAddRemove[i], 1);
         this.listHeightLarger.splice(this.ListPhotoAddRemove[i], 1);
         this.FamilyPhotoListAdd.splice(this.ListPhotoAddRemove[i], 1);
+        console.log(this.ListPhotoAddRemove);
+        console.log(this.FamilyPhotoListAddShow);
       }
       this.ListCheckBoxPhotoAdd = [];
       this.ListPhotoAddRemove = [];
@@ -562,6 +578,7 @@ export default {
       for (let i = 0; i < this.ListPhotoRemove.length; i++) {
         let length = this.ListPhotoRemove.length;
         HTTP.get("delete-familyphoto", {
+          
           params: {
             PhotoID: this.ListPhotoRemove[i],
           },
@@ -585,18 +602,23 @@ export default {
       }
     },
     searchAlbumPhoto() {
-      HTTP.get("searchAlbum", { 
+      HTTP.get("searchAlbum", {
+        
         params: {
           CodeID: this.CodeID,
           keySearch: this.keySearch,
         },
-      }).then((response) => {
-        if (response.data.success == true) {
-          this.AlbumPhotoList = response.data.data;
-        } else {
-          this.NotificationsDelete(response.data.message);
-        }
-      });
+      })
+        .then((response) => {
+          if (response.data.success == true) {
+            this.AlbumPhotoList = response.data.data;
+          } else {
+            this.NotificationsDelete(response.data.message);
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
     removeAlbumPhotoByAlbumId() {
       for (let i = 0; i < this.ListAlbumRemove.length; i++) {
@@ -633,7 +655,9 @@ export default {
       if (this.albumPhoto.BackGroundPhoto != null) {
         formData.append("BackGroundPhoto", this.albumPhoto.BackGroundPhoto);
       }
-      HTTP.put("albumphoto", formData)
+      HTTP.put("albumphoto", formData, {
+        
+      })
         .then((response) => {
           if (response.data.success == true) {
             this.getAlbumPhotoByCodeId();
@@ -649,6 +673,7 @@ export default {
     },
     getAlbumPhotoByCodeId() {
       HTTP.get("albumphoto", {
+        
         params: {
           CodeID: this.CodeID,
         },
@@ -671,6 +696,7 @@ export default {
     },
     getAlbumPhotoByAlbumId() {
       HTTP.get("albumphoto", {
+        
         params: {
           AlbumID: this.albumCurrentId,
         },
@@ -700,15 +726,19 @@ export default {
     },
     updateAvatar(event) {
       let file = event.target.files[0];
-      this.albumPhoto.BackGroundPhoto = file;
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.avatarSrc = e.target.result; // Cập nhật ảnh avatar bằng ảnh tải lên
-        };
-        reader.readAsDataURL(file);
+      if (this.isImage(file)) {
+        this.albumPhoto.BackGroundPhoto = file;
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            this.avatarSrc = e.target.result; // Cập nhật ảnh avatar bằng ảnh tải lên
+          };
+          reader.readAsDataURL(file);
+        } else {
+          this.avatarSrc = null;
+        }
       } else {
-        this.avatarSrc = null;
+        this.NotificationsDelete("Bạn chỉ được chọn file ảnh");
       }
     },
     triggerFileInputClick() {
@@ -716,6 +746,7 @@ export default {
     },
     getFamilyPhotoByAlbumId() {
       HTTP.get("familyphoto", {
+        
         params: {
           AlbumID: this.albumCurrentId,
         },
@@ -737,11 +768,14 @@ export default {
         });
     },
     addFamilyPhotoByAlbumId() {
+      console.log(this.FamilyPhotoListAdd);
       for (let i = 0; i < this.FamilyPhotoListAdd.length; i++) {
         let formData = new FormData();
         formData.append("AlbumID", this.albumCurrentId);
         formData.append("Photo", this.FamilyPhotoListAdd[i]);
-        HTTP.post("familyphoto", formData)
+        HTTP.post("familyphoto", formData, {
+          
+        })
           .then((response) => {
             if (response.data.success) {
               this.getFamilyPhotoByAlbumId();
@@ -766,7 +800,9 @@ export default {
         formData.append("CodeID", this.CodeID);
         formData.append("Description", this.albumPhoto.description);
         formData.append("BackGroundPhoto", this.albumPhoto.BackGroundPhoto);
-        HTTP.post("albumphoto", formData)
+        HTTP.post("albumphoto", formData, {
+          
+        })
           .then((response) => {
             if (response.data.success == true) {
               this.NotificationsScuccess(response.data.message);
@@ -834,6 +870,7 @@ export default {
     // EventBus.$emit("HeadList", false);
     // EventBus.$emit("AlbumList", true);
     // EventBus.$emit("ArticleList", false);
+    console.log(this.AlbumPhotoList.length);
   },
   watch: {
     imageInfo() {

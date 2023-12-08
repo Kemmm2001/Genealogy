@@ -32,6 +32,22 @@ function checkToken(token) {
   });
 }
 
+function checkRegisterToken(token) {
+  return new Promise((resolve, reject) => {
+    const query = `SELECT COUNT(*) AS count FROM genealogy.account WHERE RegisterToken = ?`;
+    db.connection.query(query, [token], (err, results) => {
+      if (err) {
+        console.log(err)
+        reject(err);
+
+      } else {
+        const count = results[0].count;
+        resolve(count);
+      }
+    });
+  });
+}
+
 function insertAccountFamilyTree(AccountID, CodeID) {
   return new Promise((resolve, reject) => {
     const query = `INSERT INTO AccountFamilyTree (AccountID, CodeID, RoleID)
@@ -51,6 +67,20 @@ function insertAccountFamilyTree(AccountID, CodeID) {
 function UpdateAccount(email, token) {
   return new Promise((resolve, reject) => {
     const query = `UPDATE genealogy.account as a SET a.RePassToken = '${token}' WHERE Email = '${email}'`;
+    db.connection.query(query, (err, results) => {
+      if (err) {
+        console.log(err)
+        resolve(false);
+      } else {
+        resolve(true)
+      }
+    });
+  });
+}
+
+function UpdateRegisterToken(email, token) {
+  return new Promise((resolve, reject) => {
+    const query = `UPDATE genealogy.account as a SET a.RegisterToken = '${token}' WHERE Email = '${email}'`;
     db.connection.query(query, (err, results) => {
       if (err) {
         console.log(err)
@@ -123,7 +153,7 @@ function checkAccountID(accountID) {
 
 function create(username, email, password) {
   return new Promise((resolve, reject) => {
-    const query = 'INSERT INTO genealogy.account (Username, Email, Password,FreeSMS,FreeEmail) VALUES (?, ?, ? , ? , ?)';
+    const query = 'INSERT INTO genealogy.account (Username, Email, Password,FreeSMS,FreeEmail, IsActive) VALUES (?, ?, ? , ? , ?, 0)';
     const values = [username, email, password, 5, 5];
 
     db.connection.query(query, values, (err, results) => {
@@ -140,7 +170,7 @@ function create(username, email, password) {
 
 function getUser(email) {
   return new Promise((resolve, reject) => {
-    const query = 'SELECT accountID, Password FROM genealogy.account WHERE Email = ?';
+    const query = 'SELECT accountID, Password, IsActive FROM genealogy.account WHERE Email = ?';
     const values = [email];
 
     db.connection.query(query, values, (err, result) => {
@@ -155,7 +185,8 @@ function getUser(email) {
           // Tìm thấy email và trả về accountID và mật khẩu
           const user = {
             accountID: result[0].accountID,
-            password: result[0].Password
+            password: result[0].Password,
+            isActive: result[0].IsActive
           };
           resolve(user);
         }
@@ -186,6 +217,24 @@ function UpdatePassword(newPassword, email) {
   return new Promise((resolve, reject) => {
     try {
       let query = `UPDATE genealogy.account as a SET a.Password = '${newPassword}' WHERE Email = '${email};'`;
+      db.connection.query(query, (err) => {
+        if (!err) {
+          resolve(true)
+        } else {
+          reject(false)
+        }
+      })
+    } catch (error) {
+      console.log(error)
+      reject(false)
+    }
+  })
+}
+
+function UpdateActive(IsActive, email) {
+  return new Promise((resolve, reject) => {
+    try {
+      let query = `UPDATE genealogy.account as a SET a.IsActive = '${IsActive}' WHERE Email = '${email};'`;
       db.connection.query(query, (err) => {
         if (!err) {
           resolve(true)
@@ -321,15 +370,17 @@ function insertAccountFamily(accountID, codeID, roleID) {
 function getHistoryLoginCodeID(AccountID) {
   return new Promise((resolve, reject) => {
     try {
-      let query = `select * from AccountFamilyTree where  AccountID = ${AccountID} and AccessTime is not null`;
-      db.connection.query(query, (err, results) => {
-        if (err) {
-          console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-          reject(err);
-        } else {
-          resolve(results);
-        }
-      });
+      if (AccountID) {
+        let query = `select * from AccountFamilyTree where  AccountID = ${AccountID} and AccessTime is not null`;
+        db.connection.query(query, (err, results) => {
+          if (err) {
+            console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+            reject(err);
+          } else {
+            resolve(results);
+          }
+        });
+      }
     } catch (error) {
       console.log(error)
     }
@@ -423,6 +474,6 @@ module.exports = {
   checkMail, checkID, create, getUser, refreshFreeEmail, insertAccountFamily, checkCodeID,
   checkAccountID, updateRoleID, insertIntoFamily, getUserInfo, getUserCodeID, checkCodeIdCreator,
   insertAccountFamilyTree, checkCodeCreatedByID, getHistoryLoginCodeID, ChangePassword, getListRoleMember, UpdateAccount, UpdatePassword,
-  checkToken, getMemberRole, changeUsername, getInformationGenealogy
+  checkToken, getMemberRole, changeUsername, getInformationGenealogy, UpdateRegisterToken, checkRegisterToken, UpdateActive
 
 }

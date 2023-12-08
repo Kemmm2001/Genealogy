@@ -25,22 +25,23 @@
             <div class="col-6" style="padding-left: 6px; padding-right: 8px">
               <div class="w-100 h-100">
                 <label for="upload" style="width:100%; font-size: 14px; color:white" type="button" class="d-flex align-items-center justify-content-center p-0 btn btn-secondary h-100">Xuất dữ liệu vào</label>
-                <input id="upload" type="file" style="display: none" />
+                <input ref="importFile" id="upload" type="file" style="display: none" @change="getFileImportMember($event)" />
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="w-100 d-flex flex-column px-2" :class="{height100 : memberRole == 3}" style="padding: 12px; min-height: 85%; font-family: 'QuicksandBold', sans-serif;">
-        <div class="existing-members d-flex flex-column w-100">
+        <div class="existing-members d-flex flex-column w-100 position-relative">
           <div class="d-flex align-items-center justify-content-center px-2 py-1 list-title">Thành viên có trên phả đồ</div>
-          <div class="d-flex flex-column w-100" style="overflow-y: auto;cursor: pointer">
+          <div class="d-flex flex-column w-100" style="overflow-y: auto; flex-grow: 1; cursor: pointer">
             <div v-for="(n, index) in nodes" :key="n.id">
               <div @click="handleLeftClick(n.id)" @contextmenu.prevent="handleRightClick(n.id)" :class="{ 'list-item': true, 'selected-list': n.id == CurrentIdMember, 'ancestor-member': index === 0 }">{{ n.name }}</div>
             </div>
           </div>
+          <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content;" v-if="nodes.length == 0">Danh sách chưa có thành viên</div>
         </div>
-        <div class="d-flex nonexisting-members flex-column w-100" style="margin: 8px 0">
+        <div class="d-flex nonexisting-members flex-column w-100 position-relative" style="margin: 8px 0">
           <div class="d-flex flex-row px-2 py-1 list-title">
             <div class="d-flex align-items-center justify-content-center">Thành viên không có trên phả đồ</div>
             <div v-if="memberRole != 3" class="d-flex align-items-center justify-content-center" style="padding-left: 12px;cursor:pointer" @click="openMemberModal('AddNormal', ' thành viên không có trên phả đồ')">
@@ -49,9 +50,10 @@
               </svg>
             </div>
           </div>
-          <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto; flex-grow: 1;cursor: pointer">
+          <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto; flex-grow: 1; cursor: pointer">
             <div v-for="list in ListUnspecifiedMembers" :key="list.id" @click="handleLeftClickUnspecifiedMembers(list.MemberID)" class="list-item">{{ list.MemberName }}</div>
           </div>
+          <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content;" v-if="ListUnspecifiedMembers.length == 0">Danh sách chưa có thành viên</div>
         </div>
       </div>
     </div>
@@ -87,7 +89,7 @@
           <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
             <select class="d-flex text-center form-select dropdown p-0" v-model="selectAge" @change="GetListFilterMember()">
               <option class="dropdown-item" :value="null">Nhóm Tuổi</option>
-              <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{ age.From }} - {{ age.End }} Tuổi</option>
+              <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{ age.From != 61 ? age.From : 'Trên '+ age.From}} {{ age.End != 200 ?' - '+age.End : '' }} Tuổi</option>
             </select>
           </div>
         </div>
@@ -100,14 +102,14 @@
           </div>
         </div>
       </div>
-      <div class="d-flex flex-row" style="position: absolute; bottom: 0; right: 0; align-items: end; z-index: 999;">
+      <!-- <div class="d-flex flex-row" style="position: absolute; bottom: 0; right: 0; align-items: end; z-index: 999;">
         <svg @click="togglehelp = !togglehelp" :class="{expandHelp : togglehelp}" class="help-icon p-1" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF">
           <g>
             <path d="M0,0h24v24H0V0z" fill="none" />
             <path d="M11,7h2v2h-2V7z M11,11h2v6h-2V11z M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,20 c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8S16.41,20,12,20z" />
           </g>
         </svg>
-      </div>
+      </div> -->
     </div>
     <div class="Container-select-modal">
       <modal name="Select-option-Modal">
@@ -883,7 +885,7 @@
       <modal name="cfdel-modal">
         <div class="w-100 h-100 add-head-modal">
           <div class="d-flex flex-row w-100 align-items-center position-relative">
-            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100 text-white" style="background-color: rgb(255, 8, 0);;">Quan trọng</div>
+            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100 text-white" style="background-color: rgb(255, 8, 0);">Quan trọng</div>
             <div class="close-add-form" @click="closeCfDelModal()">
               <svg class="close-add-form-icon" style="fill: #FFFFFF !important;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -910,16 +912,13 @@
         </div>
       </modal>
     </div>
-    <div class="help-note text-white position-absolute align-items-center justify-content-center" :class="{expandHelp : togglehelp}">
-      <div class="d-flex align-items-center" style="height: 64px;" v-show="togglehelp">Thông báo: Gửi mail và tin nhắn SMS về thông tin, sự kiện liên quan tới dòng họ.</div>
-      <div class="d-flex align-items-center" style="height: 64px;" v-show="togglehelp">Xác định quan hệ: Chọn 2 thành viên để xác định quan hệ giữa họ.</div>
-      <div class="d-flex align-items-center" style="height: 64px;" v-show="togglehelp">Nhấp chuột trái vào thành viên trên phả đồ để xem và thay đổi thông tin thành viên</div>
-      <div class="d-flex align-items-center" style="height: 64px;" v-show="togglehelp">Nhấp chuột phải để mở danh sách những chức năng tương tác với thành viên</div>
-    </div>
   </div>
 </template>
 
 <script>
+import Vue from "vue";
+import VueCookies from "vue-cookies";
+Vue.use(VueCookies);
 import Snackbar from "awesome-snackbar";
 import FamilyTree from "@balkangraph/familytree.js";
 import { EventBus } from "../assets/js/MyEventBus.js";
@@ -962,7 +961,8 @@ export default {
       EducationIdToUpdate: null,
       ListAgeGroup: null,
       ListBloodTypeGroup: null,
-      ListUnspecifiedMembers: null,
+      ListUnspecifiedMembers: [],
+      CurrentIdToLinkRelationship: null,
 
       selectAge: null,
       selectBloodType: null,
@@ -1135,15 +1135,15 @@ export default {
       FamilyTree.templates.tommy_female.field_2 =
         '<text class="field_4" style="font-size: 14px;" fill="#ffffff" x="90" y="80">Đời: {val}</text>';
 
-      var iconGG = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-tree-fill" viewBox="0 0 16 16">
+      var iconGG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-tree-fill" viewBox="0 0 16 16">
   <path d="M8.416.223a.5.5 0 0 0-.832 0l-3 4.5A.5.5 0 0 0 5 5.5h.098L3.076 8.735A.5.5 0 0 0 3.5 9.5h.191l-1.638 3.276a.5.5 0 0 0 .447.724H7V16h2v-2.5h4.5a.5.5 0 0 0 .447-.724L12.31 9.5h.191a.5.5 0 0 0 .424-.765L10.902 5.5H11a.5.5 0 0 0 .416-.777l-3-4.5z"/>
 </svg>`;
       FamilyTree.templates.tommy_male.isGG =
-        '<g transform="translate(220,10)";>' + iconGG + "</g>";
+        '<g transform="translate(220,7)";>' + iconGG + "</g>";
       var iconFH =
         '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>';
       FamilyTree.templates.tommy_male.isFH =
-        '<g transform="translate(220,10)";>' + iconFH + "</g>";
+        '<g transform="translate(220,7)";>' + iconFH + "</g>";
 
       FamilyTree.elements._textbox = FamilyTree.elements.textbox;
       FamilyTree.elements.textbox = function (param1, param2, param3) {
@@ -1262,30 +1262,36 @@ export default {
     getViewBox() {
       return this.family.getViewBox();
     },
+    importData() {},
     //Nguyễn Lê Hùng
     BackUpdata() {
       let id = this.nodes.map((item) => item.id);
       console.log(id);
       HTTP.post("back-up", {
+
         memberIDs: id,
-      }).then((response) => {
-        if (response.data.success == true) {
-          //Mở một window khác ở đây
-          let newWindow = window.open(
-            `https://giaphanguoiviet.com${response.data.data.fileName}`,
-            "_blank"
-          );
-          if (newWindow) {
-            this.NotificationsScuccess(response.data.message);
-          } else {
-            this.NotificationsDelete(
-              "Không thể mở cửa sổ mới. Vui lòng kiểm tra cài đặt trình duyệt của bạn."
+      })
+        .then((response) => {
+          if (response.data.success == true) {
+            //Mở một window khác ở đây
+            let newWindow = window.open(
+              `https://giaphanguoiviet.com${response.data.data.fileName}`,
+              "_blank"
             );
+            if (newWindow) {
+              this.NotificationsScuccess(response.data.message);
+            } else {
+              this.NotificationsDelete(
+                "Không thể mở cửa sổ mới. Vui lòng kiểm tra cài đặt trình duyệt của bạn."
+              );
+            }
+          } else {
+            this.NotificationsDelete(response.data.message);
           }
-        } else {
-          this.NotificationsDelete(response.data.message);
-        }
-      });
+        })
+        .catch(() => {
+          this.NotificationsDelete("Có lỗi hệ thống");
+        });
     },
     //Nguyễn Lê Hùng
     getResultMember(id) {
@@ -1323,6 +1329,7 @@ export default {
       // console.log(this.objCompareMember1);
       // console.log(this.objCompareMember2);
       HTTP.get("compare", {
+
         params: {
           MemberID1: memberId1,
           MemberID2: memberId2,
@@ -1345,6 +1352,7 @@ export default {
     //Nguyễn Lê Hùng
     async setPaternalAncestor(roleId) {
       HTTP.post("setRole", {
+
         memberId: this.CurrentIdMember,
         roleId: roleId,
         CodeId: this.CodeID,
@@ -1409,14 +1417,19 @@ export default {
     //Nguyễn Lê Hùng
     updateStatusEvent() {
       HTTP.put("updateStatusEvent", {
+
         CodeID: this.CodeID,
-      }).then((respone) => {
-        if (respone.data.success == true) {
-          console.log("Update status event thành công");
-        } else {
-          console.log("Update status event thất bại");
-        }
-      });
+      })
+        .then((respone) => {
+          if (respone.data.success == true) {
+            console.log("Update status event thành công");
+          } else {
+            console.log("Update status event thất bại");
+          }
+        })
+        .catch(() => {
+          this.NotificationsDelete("Có lỗi hệ thống");
+        });
     },
     //Nguyễn Lê Hùng
     sendEmailToMember() {
@@ -1428,6 +1441,7 @@ export default {
         this.ListPhoneToSendMessage.length > 0
       ) {
         HTTP.post("send-email", {
+
           listID: this.ListPhoneToSendMessage,
           subject: this.subjectEmail,
           text: this.contentEmail,
@@ -1461,6 +1475,7 @@ export default {
         this.contentMessage != ""
       ) {
         HTTP.post("send-sms", {
+
           ListMemberID: this.ListPhoneToSendMessage,
           contentMessage: this.contentMessage,
           CodeID: this.CodeID,
@@ -1483,12 +1498,12 @@ export default {
     getListMemberToSendMessage() {
       console.log(this.CodeID);
       HTTP.get("listMemberMessage", {
+
         params: {
           CodeID: this.CodeID,
         },
       })
         .then((respone) => {
-          console.log(respone.data.data);
           if (respone.data.success == true) {
             this.ListMemberCanSendMessage = respone.data.data;
           }
@@ -1503,6 +1518,7 @@ export default {
         this.ListMemberCanSendMessage = this.nodes;
       } else {
         HTTP.get("searchMemberSendMessage", {
+
           params: {
             CodeID: this.CodeID,
             keySearch: this.searchKeyword,
@@ -1641,6 +1657,7 @@ export default {
       if (SelectDistinName != null) {
         this.selectDistrictMember = SelectDistinName;
         HTTP.get("district", {
+
           params: {
             cityID: this.selectCityMember,
           },
@@ -1658,6 +1675,7 @@ export default {
       this.isAdd = false;
       this.isEdit = true;
       HTTP.get("InforMember", {
+
         params: {
           memberId: id,
         },
@@ -1715,6 +1733,7 @@ export default {
     //Nguyễn Lê Hùng
     removeJobMember() {
       HTTP.delete("removeJob", {
+
         params: {
           JobID: this.JobIDToUpdate,
         },
@@ -1731,6 +1750,7 @@ export default {
     //Nguyễn Lê Hùng
     removeMember() {
       HTTP.get("deleteContact", {
+
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1745,6 +1765,7 @@ export default {
         });
 
       HTTP.get("RemoveListJob", {
+
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1759,6 +1780,7 @@ export default {
         });
 
       HTTP.get("deleteListEducation", {
+
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1773,25 +1795,30 @@ export default {
         });
 
       HTTP.get("delete-member", {
+
         params: {
           MemberID: this.CurrentIdMember,
         },
-      }).then((response) => {
-        if (response.data.success == true) {
-          // this.nodes.length = this.nodes.length - 1;
-          this.removeFromSelectedNodes(this.CurrentIdMember);
-          this.NotificationsScuccess(response.data.message);
-          this.getListUnspecifiedMembers();
-          this.$modal.hide("Select-option-Modal");
-          this.$modal.hide("member-modal");
-          this.getListMember();
-          this.getAllListMember();
-          this.closeCfDelModal();
-          this.getListMemberToSendMessage();
-        } else {
-          this.NotificationsDelete(response.data.message);
-        }
-      });
+      })
+        .then((response) => {
+          if (response.data.success == true) {
+            // this.nodes.length = this.nodes.length - 1;
+            this.removeFromSelectedNodes(this.CurrentIdMember);
+            this.NotificationsScuccess(response.data.message);
+            this.getListUnspecifiedMembers();
+            this.$modal.hide("Select-option-Modal");
+            this.$modal.hide("member-modal");
+            this.getListMember();
+            this.getAllListMember();
+            this.closeCfDelModal();
+            this.getListMemberToSendMessage();
+          } else {
+            this.NotificationsDelete(response.data.message);
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
     //Nguyễn Lê Hùng
     removeFromSelectedNodes(memberid) {
@@ -1826,16 +1853,22 @@ export default {
     //Nguyễn Lê Hùng
     getListJobMember() {
       HTTP.get("getJob", {
+
         params: {
           MemberId: this.CurrentIdMember,
         },
-      }).then((response) => {
-        this.ListMemberJob = response.data;
-      });
+      })
+        .then((response) => {
+          this.ListMemberJob = response.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
     //Nguyễn Lê Hùng
     addNewJobMember() {
       HTTP.post("addJob", {
+
         memberId: this.CurrentIdMember,
         Organization: this.objMemberJob.Organization,
         OrganizationAddress: this.objMemberJob.OrganizationAddress,
@@ -1856,6 +1889,7 @@ export default {
     //Nguyễn Lê Hùng
     getListEducationMember() {
       HTTP.get("education", {
+
         params: {
           memberId: this.CurrentIdMember,
         },
@@ -1870,6 +1904,7 @@ export default {
     //Nguyễn Lê Hùng
     addNewEducationMember() {
       HTTP.post("addEducation", {
+
         MemberID: this.CurrentIdMember,
         School: this.objMemberEducation.School,
         Description: this.objMemberEducation.Description,
@@ -1897,6 +1932,7 @@ export default {
         this.NotificationsDelete("Bạn chưa chọn mối quan hệ");
       } else {
         HTTP.put("memberToGenealogy", {
+
           InGenealogyID: this.CurrentIdMember,
           OutGenealogyID: this.newIdMember,
           Action: this.action,
@@ -1919,6 +1955,26 @@ export default {
           });
       }
     },
+    getFileImportMember(event) {
+      let formData = new FormData();
+      let file = event.target.files[0];
+      formData.append("xlsx", file);
+      HTTP.post("import", formData, {
+
+      })
+        .then((respone) => {
+          console.log(respone.data);
+          if (respone.data.success) {
+            this.NotificationsScuccess(respone.data.message);
+          } else {
+            this.NotificationsDelete(respone.data.message);
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+      console.log(file);
+    },
     //Nguyễn Lê Hùng
     updateAvatar(event) {
       let formData = new FormData();
@@ -1926,7 +1982,9 @@ export default {
       let file = event.target.files[0];
       formData.append("Image", file);
       formData.append("MemberID", this.CurrentIdMember);
-      HTTP.put("member-photo", formData)
+      HTTP.put("member-photo", formData, {
+
+      })
         .then((response) => {
           if (response.data.success == true) {
             this.getListMember();
@@ -2001,6 +2059,7 @@ export default {
           ) {
             this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
             HTTP.post("addContact", {
+
               memberId: this.newIdMember,
               Address: this.objMemberContact.Address,
               Phone: this.objMemberContact.Phone,
@@ -2025,6 +2084,7 @@ export default {
     },
     //Nguyễn Lê Hùng
     addMember() {
+      console.log("Token: " + VueCookies.get("accessToken"));
       let FatherID;
       let MotherID;
       if (this.action == "AddNormal") {
@@ -2095,6 +2155,7 @@ export default {
             ) {
               this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
               HTTP.post("addContact", {
+
                 memberId: this.newIdMember,
                 Address: this.objMemberContact.Address,
                 Phone: this.objMemberContact.Phone,
@@ -2141,23 +2202,30 @@ export default {
       this.ListMemberEducation = null;
       this.objMemberEducation = {};
     },
+
     //Nguyễn Lê Hùng
     updateEducationMember() {
       HTTP.put("updateEducation", {
+
         School: this.objMemberEducation.School,
         Description: this.objMemberEducation.Description,
         StartDate: this.objMemberEducation.StartDate,
         EndDate: this.objMemberEducation.EndDate,
         EducationID: this.EducationIdToUpdate,
-      }).then(() => {
-        this.getListEducationMember();
-        this.NotificationsScuccess("Sửa thông tin giáo dục thành công");
-        this.refreshInputJobAndEducation();
-      });
+      })
+        .then(() => {
+          this.getListEducationMember();
+          this.NotificationsScuccess("Sửa thông tin giáo dục thành công");
+          this.refreshInputJobAndEducation();
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
     //Nguyễn Lê Hùng
     updateJobMember() {
       HTTP.put("updateJob", {
+
         JobID: this.JobIDToUpdate,
         Organization: this.objMemberJob.Organization,
         OrganizationAddress: this.objMemberJob.OrganizationAddress,
@@ -2165,11 +2233,15 @@ export default {
         JobName: this.objMemberJob.JobName,
         StartDate: this.objMemberJob.StartDate,
         EndDate: this.objMemberJob.EndDate,
-      }).then(() => {
-        this.getListJobMember();
-        this.NotificationsScuccess("Sửa thông tin nghề nghiệp thành công");
-        this.refreshInputJobAndEducation();
-      });
+      })
+        .then(() => {
+          this.getListJobMember();
+          this.NotificationsScuccess("Sửa thông tin nghề nghiệp thành công");
+          this.refreshInputJobAndEducation();
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
     //Nguyễn Lê Hùng
     updateInformation() {
@@ -2181,6 +2253,7 @@ export default {
         this.objMemberContact.Address = null;
       }
       HTTP.put("member", {
+
         MemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
         NickName: this.objMemberInfor.NickName,
@@ -2213,17 +2286,22 @@ export default {
               this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
             }
             HTTP.put("updateContact", {
+
               MemberID: this.CurrentIdMember,
               Address: this.objMemberContact.Address,
               Phone: this.objMemberContact.Phone,
               Email: this.objMemberContact.Email,
               FacebookUrl: this.objMemberContact.FacebookUrl,
               Zalo: this.objMemberContact.Zalo,
-            }).then(() => {
-              this.closeMemberModal();
-              this.family.load(this.nodes);
-              this.getListMember();
-            });
+            })
+              .then(() => {
+                this.closeMemberModal();
+                this.family.load(this.nodes);
+                this.getListMember();
+              })
+              .catch(() => {
+                this.NotificationsDelete("Có lỗi hệ thống");
+              });
           } else {
             this.NotificationsDelete(response.data.message);
           }
@@ -2261,6 +2339,7 @@ export default {
       console.log(city);
       console.log(this.selectAdress);
       HTTP.post("filter-member", {
+
         CodeID: this.CodeID,
         BloodType: this.selectBloodType,
         selectAge: this.selectAge,
@@ -2354,6 +2433,7 @@ export default {
     },
     getListAfterSetPaternalAncestor(id) {
       HTTP.get("viewTree", {
+
         params: {
           CodeID: id,
         },
@@ -2373,6 +2453,7 @@ export default {
     },
     async getListUnspecifiedMembers() {
       HTTP.get("unspecified-members", {
+
         params: {
           CodeID: this.CodeID,
         },
@@ -2472,7 +2553,6 @@ export default {
         if (Node.fid != "") {
           let foundNode = this.nodes.find((node) => node.id == Node.fid);
           console.log(foundNode);
-          this.idParent = foundNode.id;
           this.parentRelationship = this.nodes.filter((node) =>
             foundNode.pids.includes(node.id)
           );
@@ -2480,7 +2560,6 @@ export default {
         } else {
           let foundNode = this.nodes.find((node) => node.id == Node.mid);
           console.log(foundNode);
-          this.idParent = foundNode.id;
           this.parentRelationship = this.nodes.filter((node) =>
             foundNode.pids.includes(node.id)
           );
@@ -2489,6 +2568,26 @@ export default {
       }
     },
     linkRelationship() {
+      HTTP.put("linkRelationship", {
+
+        MemberID1: this.CurrentIdToLinkRelationship,
+        MemberID2: this.newIdMember,
+      })
+        .then((respone) => {
+          if (respone.data.success == true) {
+            this.NotificationsScuccess(respone.data.message);
+            this.CurrentIdToLinkRelationship = null;
+            this.newIdMember = null;
+            this.getListMember();
+            this.closeCfDelModal();
+            this.closeSelectModal();
+          } else {
+            this.NotificationsDelete(respone.data.message);
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
       console.log("idparent: " + this.idParent);
       console.log("idLink: " + this.newIdMember);
     },
@@ -2497,6 +2596,7 @@ export default {
       this.parentRelationship = null;
       this.selectedInfor();
       let foundNode = this.nodes.find((node) => node.id == id);
+      this.CurrentIdToLinkRelationship = foundNode.id;
       this.getLinkRelationship(foundNode);
       if (foundNode.gender == "female") {
         this.isFather = false;
@@ -2530,6 +2630,7 @@ export default {
     },
     removeRelationship() {
       HTTP.put("removeRelationship", {
+
         CurrentID: this.CurrentIdMember,
         RemoveID: this.newIdMember,
         action: this.action,
@@ -2565,23 +2666,28 @@ export default {
       this.$modal.show("cfdel-modal");
     },
 
-    closeCfDelModal() {      
+    closeCfDelModal() {
       this.$modal.hide("cfdel-modal");
     },
 
     openModalRelationship() {
       this.$modal.show("modal-relationship");
       HTTP.get("relationship", {
+
         params: {
           CodeID: this.CodeID,
           memberID: this.CurrentIdMember,
         },
-      }).then((response) => {
-        if (response.data.success == true) {
-          console.log(response.data.data);
-          this.ResultRelationship = response.data.data;
-        }
-      });
+      })
+        .then((response) => {
+          if (response.data.success == true) {
+            console.log(response.data.data);
+            this.ResultRelationship = response.data.data;
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
     closeModalRelationship() {
       this.$modal.hide("modal-relationship");
@@ -2589,101 +2695,117 @@ export default {
 
     getAllListMember() {
       HTTP.get("members", {
+
         params: {
           codeID: this.CodeID,
         },
-      }).then((response) => {
-        if (response.data.success == true) {
-          this.listMember = response.data.data;
-        }
-      });
+      })
+        .then((response) => {
+          if (response.data.success == true) {
+            this.listMember = response.data.data;
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
 
     getListMember() {
       HTTP.get("getFamilyHead", {
+
         params: {
           CodeID: this.CodeID,
         },
-      }).then((response) => {
-        console.log("response: " + response.data);
-        if (response.data.success == true) {
-          this.idFamilyHead = response.data.data;
-          console.log(this.idFamilyHead);
-        }
-        HTTP.get("viewTree", {
-          params: {
-            CodeID: this.CodeID,
-          },
-        })
-          .then((response) => {
-            this.nodes = [];
-            this.numberDeath = 0;
-            if (response.data.success == true) {
-              this.nodes = response.data.data;
-              console.log(this.nodes);
-              for (let i = 0; i < this.nodes.length; i++) {
-                if (this.nodes[i].pids.length > 1) {
-                  let listPid = [];
-                  for (let j = this.nodes[i].pids.length - 1; j >= 0; j--) {
-                    listPid.push(this.nodes[i].pids[j]);
-                  }
-                  this.nodes[i].pids = listPid;
-                }
-                this.nodes[i].tags = [];
-                if (this.nodes[i].name.length > 15) {
-                  this.nodes[i].name =
-                    this.nodes[i].name.substring(0, 16) + "...";
-                }
-                if (this.idFamilyHead != null) {
-                  if (this.nodes[i].id == this.idFamilyHead) {
-                    this.nodes[i].isFH = "true";
-                  }
-                }
-                if (this.nodes[i].isDead == 1) {
-                  this.numberDeath += 1;
-                  this.nodes[i].tags.push("died");
-                }
-                if (this.nodes[i].img == null || this.nodes[i].img == "") {
-                  if (this.nodes[i].gender == "male") {
-                    this.nodes[i].img =
-                      "data:image/jpeg;base64,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";
-                  } else if (this.nodes[i].gender == "female") {
-                    this.nodes[i].img =
-                      "data:image/jpeg;base64,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";
-                  }
-                }
-              }
-              this.nodes[0].tags.push("great-grandfather");
-              this.nodes[0].isGG = "true";
-              this.mytree(this.$refs.tree, this.nodes);
-            }
-            // this.family.load(this.nodes);
+      })
+        .then((response) => {
+          console.log("response: " + response.data);
+          if (response.data.success == true) {
+            this.idFamilyHead = response.data.data;
+            console.log(this.idFamilyHead);
+          }
+          HTTP.get("viewTree", {
+            params: {
+              CodeID: this.CodeID,
+            },
           })
-          .catch((e) => {
-            console.log(e);
-          });
-      });
+            .then((response) => {
+              this.nodes = [];
+              this.numberDeath = 0;
+              if (response.data.success == true) {
+                this.nodes = response.data.data;
+                console.log(this.nodes);
+                for (let i = 0; i < this.nodes.length; i++) {
+                  if (this.nodes[i].pids.length > 1) {
+                    let listPid = [];
+                    for (let j = this.nodes[i].pids.length - 1; j >= 0; j--) {
+                      listPid.push(this.nodes[i].pids[j]);
+                    }
+                    this.nodes[i].pids = listPid;
+                  }
+                  this.nodes[i].tags = [];
+                  if (this.nodes[i].name.length > 15) {
+                    this.nodes[i].name =
+                      this.nodes[i].name.substring(0, 16) + "...";
+                  }
+                  if (this.idFamilyHead != null) {
+                    if (this.nodes[i].id == this.idFamilyHead) {
+                      this.nodes[i].isFH = "true";
+                    }
+                  }
+                  if (this.nodes[i].isDead == 1) {
+                    this.numberDeath += 1;
+                    this.nodes[i].tags.push("died");
+                  }
+                  if (this.nodes[i].img == null || this.nodes[i].img == "") {
+                    if (this.nodes[i].gender == "male") {
+                      this.nodes[i].img =
+                        "data:image/jpeg;base64,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";
+                    } else if (this.nodes[i].gender == "female") {
+                      this.nodes[i].img =
+                        "data:image/jpeg;base64,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";
+                    }
+                  }
+                }
+                this.nodes[0].tags.push("great-grandfather");
+                this.nodes[0].isGG = "true";
+                this.mytree(this.$refs.tree, this.nodes);
+              }
+              // this.family.load(this.nodes);
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
     getListAgeGroup() {
-      HTTP.get("agegroup")
+      HTTP.get("agegroup", {
+
+      })
         .then((response) => {
           this.ListAgeGroup = response.data;
         })
-        .catch((err) => {
-          console.log(err);
+        .catch((e) => {
+          console.log(e);
         });
     },
     getListBloodTypeGroup() {
-      HTTP.get("bloodtype")
+      HTTP.get("bloodtype", {
+
+      })
         .then((response) => {
           this.ListBloodTypeGroup = response.data;
         })
-        .catch((err) => {
-          console.log(err);
+        .catch((e) => {
+          console.log(e);
         });
     },
     getListNationality() {
-      HTTP.get("nationality")
+      HTTP.get("nationality", {
+
+      })
         .then((response) => {
           this.ListNationality = response.data;
         })
@@ -2693,6 +2815,7 @@ export default {
     },
     getListMessage() {
       HTTP.get("listMessage", {
+
         params: {
           CodeID: this.CodeID,
         },
@@ -2706,6 +2829,7 @@ export default {
     },
     getListHistoryEmail() {
       HTTP.get("listHistoryEmail", {
+
         params: {
           CodeID: this.CodeID,
         },
@@ -2734,6 +2858,7 @@ export default {
         this.ListDistrictMember = null;
       } else {
         HTTP.get("district", {
+
           params: {
             cityID: this.selectCityMember,
           },
@@ -2759,26 +2884,38 @@ export default {
         this.selectAdress = selectedCity.name;
         this.GetListFilterMember();
         HTTP.get("district", {
+
           params: {
             cityID: this.selectCity,
           },
-        }).then((response) => {
-          this.ListDistrict = response.data;
-        });
+        })
+          .then((response) => {
+            this.ListDistrict = response.data;
+          })
+          .catch((e) => {
+            console.log(e);
+          });
       }
     },
     getMemberRole() {
       HTTP.post("memberRole", {
+
         accountID: localStorage.getItem("accountID"),
         codeID: localStorage.getItem("CodeID"),
-      }).then((response) => {
-        if (response.data.success == true) {
-          this.memberRole = response.data.data;
-        }
-      });
+      })
+        .then((response) => {
+          if (response.data.success == true) {
+            this.memberRole = response.data.data;
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
     getListCity() {
-      HTTP.get("province")
+      HTTP.get("province", {
+
+      })
         .then((response) => {
           this.ListCity = response.data;
         })
@@ -2787,7 +2924,9 @@ export default {
         });
     },
     getListReligion() {
-      HTTP.get("religion")
+      HTTP.get("religion", {
+
+      })
         .then((response) => {
           this.ListReligion = response.data;
         })
@@ -2892,6 +3031,25 @@ export default {
     },
   },
   mounted() {
+    if (
+      localStorage.getItem("CodeID") != null &&
+      localStorage.getItem("accountID") != null
+    ) {
+      this.getListMessage();
+      this.getListCity();
+      this.getListNationality();
+      this.getListReligion();
+      this.getListAgeGroup();
+      this.getListBloodTypeGroup();
+      this.getListUnspecifiedMembers();
+      this.getMemberRole();
+      this.getListHistoryEmail();
+      this.getListMember();
+      this.getAllListMember();
+      this.getListMemberToSendMessage();
+      this.updateStatusEvent();
+    }
+
     if (localStorage.getItem("CodeID") != null) {
       this.CodeID = localStorage.getItem("CodeID");
     } else {
@@ -2901,24 +3059,10 @@ export default {
         this.$router.push("/login");
       }
     }
-    console.log(this.CodeID);
-    this.getListMessage();
-    this.getListCity();
-    this.getListNationality();
-    this.getListReligion();
-    this.getListAgeGroup();
-    this.getListBloodTypeGroup();
-    this.getListUnspecifiedMembers();
-    this.getMemberRole();
-    this.getListHistoryEmail();
-    this.getListMember();
-    this.getAllListMember();
-    this.getListMemberToSendMessage();
-    this.updateStatusEvent();
   },
 };
 </script>
-    
+
 <style>
 @import "../assets/css/familytree.css";
 

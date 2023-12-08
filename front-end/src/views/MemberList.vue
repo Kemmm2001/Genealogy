@@ -29,24 +29,31 @@
               Chỉnh
               sửa
             </button>
-            <button @click="showCfDel(),getInforMember(CurrentIdMember)" class="btn bg-info text-white m-2" :disabled="isButtonDisabled">Xóa</button>
+            <button @click="showCfDel(), getInforMember(CurrentIdMember)" class="btn bg-info text-white m-2"
+              :disabled="isButtonDisabled">Xóa</button>
           </div>
           <div class="view-member">
-            <div @click="numberItemSelection(index), getInforMember(member.id)" class="member" style="cursor: pointer;" :class="{ choose: itemChoose === index }" v-for="(member, index) in memberFilter" :key="member.id">
-              <div class="image-member" v-if="member.gender == 'male'">
-                <img class="avatar" src="https://pereaclinic.com/wp-content/uploads/2019/12/270x270-male-avatar.png" />
+            <div @click="numberItemSelection(index), getInforMember(member.MemberID)" class="member" style="cursor: pointer;" :class="{ choose: itemChoose === index }" v-for="(member, index) in memberFilter" :key="member.MemberID">
+              <div class="image-member" v-if="member.Male == 1">
+                <img class="avatar" src="../assets/image/270x270-male-avatar.png" />
               </div>
-              <div class="image-member" v-if="member.gender == 'female'">
-                <img class="avatar" src="https://pereaclinic.com/wp-content/uploads/2019/12/270x270-female-avatar.png" />
+              <div class="image-member" v-if="member.Male == 0">
+                <img class="avatar" src= "../assets/image/270x270-female-avatar.png" />
               </div>
               <div class="infor-member">
-                <b>{{ member.name }}</b>
+                <b>{{ member.MemberName }}</b>
                 <br />
-                <a>Đời thứ:{{ member.generation }}</a>
+                <a>Đời thứ : {{ member.Generation }}</a>
                 <br />
-                <a>Ngày sinh:{{ member.dob }}</a>
+                <a v-if="formatDate(member.Dob) != null">Ngày sinh : {{ new Date(formatDate(member.Dob)).getDate()+"-"+(new Date(formatDate(member.Dob)).getMonth()+1 )+"-"+new Date(formatDate(member.Dob)).getFullYear()}}</a>
+                <a v-if="formatDate(member.Dob) == null">Ngày sinh : </a>
               </div>
             </div>
+            <div v-if="memberList.length == 0" class="h-100 w-100 position-relative">
+            <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content; font-size: 19px;">
+              Gia phả chưa có thành viên nào
+            </div>
+          </div>
           </div>
         </div>
       </div>
@@ -54,12 +61,14 @@
         <div class="sort-member">
           <p class="title">Sắp xếp</p>
           <div class="sort-button d-flex justify-content-center">
-            <button @click="clickGenSort()" :class="{ chosen: genSort }" class="btn d-flex justify-content-center align-items-center">
+            <button @click="clickGenSort()" :class="{ chosen: genSort }"
+              class="btn d-flex justify-content-center align-items-center">
               <i v-if="genAscending" class="bi bi-arrow-up" style="padding-right: 8px;"></i>
               <i v-if="!genAscending" class="bi bi-arrow-up" style="padding-left: 8px; transform: rotate(180deg);"></i>
               <div>Đời</div>
             </button>
-            <button @click="clickDobSort()" :class="{ chosen: dobSort }" class="btn d-flex justify-content-center align-items-center" style="margin-left: 4px;">
+            <button @click="clickDobSort()" :class="{ chosen: dobSort }"
+              class="btn d-flex justify-content-center align-items-center" style="margin-left: 4px;">
               <i v-if="dobAscending" class="bi bi-arrow-up" style="padding-right: 8px;"></i>
               <i v-if="!dobAscending" class="bi bi-arrow-up" style="padding-left: 8px; transform: rotate(180deg);"></i>
               <div>Ngày sinh</div>
@@ -91,15 +100,15 @@
             <a>Đời</a>
             <select v-model="generationSearch" @change="filter()" class="form-select">
               <option value="0">Toàn bộ</option>
-              <option :value="index" v-for="index in this.numberGeneration" :key="index">{{index}}</option>
+              <option :value="index" v-for="index in this.numberGeneration" :key="index">{{ index }}</option>
             </select>
           </div>
           <div class="input-control">
             <a>Giới tính</a>
             <select @change="filter()" v-model="genderSearch" class="form-select">
               <option value="all">Toàn bộ</option>
-              <option value="male">Nam</option>
-              <option value="female">Nữ</option>
+              <option value="1">Nam</option>
+              <option value="0">Nữ</option>
             </select>
           </div>
           <div class="input-control">
@@ -141,7 +150,8 @@
             <h5 class="m-0">{{ TitleModal }}</h5>
             <div class="close-add-form" @click="closeEditHeadModal" style="top: 8px;right:5px">
               <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                <path
+                  d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
               </svg>
             </div>
           </div>
@@ -167,8 +177,11 @@
               <div class="col-9" style="padding-top: 15px" v-if="extendedInfo">
                 <div class="row">
                   <div class="col-4">
-                    <img style="height:316px;width:360px;margin-bottom:30px" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" />
-                    <svg v-else style="margin-bottom:46px" fill="#000000" height="300px" width="300px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
+                    <img style="height:316px;width:360px;margin-bottom:30px" v-if="avatarSrc" :src="avatarSrc"
+                      alt="Avatar" />
+                    <svg v-else style="margin-bottom:46px" fill="#000000" height="300px" width="300px" version="1.1"
+                      id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                      viewBox="0 0 512 512" xml:space="preserve">
                       <g>
                         <g>
                           <circle cx="256" cy="114.526" r="114.526" />
@@ -176,18 +189,21 @@
                       </g>
                       <g>
                         <g>
-                          <path d="M256,256c-111.619,0-202.105,90.487-202.105,202.105c0,29.765,24.13,53.895,53.895,53.895h296.421 c29.765,0,53.895-24.13,53.895-53.895C458.105,346.487,367.619,256,256,256z" />
+                          <path
+                            d="M256,256c-111.619,0-202.105,90.487-202.105,202.105c0,29.765,24.13,53.895,53.895,53.895h296.421 c29.765,0,53.895-24.13,53.895-53.895C458.105,346.487,367.619,256,256,256z" />
                         </g>
                       </g>
                     </svg>
                     <div class="form-group">
                       <label for="imageUpload">Tải ảnh lên</label>
-                      <input type="file" class="form-control input-file" id="imageUpload" accept="image/*" @change="updateAvatar($event)" />
+                      <input type="file" class="form-control input-file" id="imageUpload" accept="image/*"
+                        @change="updateAvatar($event)" />
                     </div>
                   </div>
                   <div class="col-8">
                     <div style="position: relative; margin-right:10px">
-                      <input v-model="objMemberInfor.MemberName" type="text" class="form-control modal-item" placeholder />
+                      <input v-model="objMemberInfor.MemberName" type="text" class="form-control modal-item"
+                        placeholder />
                       <label class="form-label" for="input" :class="{ 'active': objMemberInfor.MemberName }">
                         Tên thành
                         viên đầy đủ
@@ -195,14 +211,16 @@
                     </div>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
-                        <input v-model="objMemberInfor.NickName" type="text" class="form-control modal-item" placeholder />
+                        <input v-model="objMemberInfor.NickName" type="text" class="form-control modal-item"
+                          placeholder />
                         <label class="form-label" for="input" :class="{ 'active': objMemberInfor.NickName }">
                           Tên thường
                           gọi
                         </label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
-                        <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item" placeholder />
+                        <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item"
+                          placeholder />
                         <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">
                           Con
                           Thứ
@@ -233,7 +251,7 @@
                         <select v-model="objMemberInfor.NationalityID" class="form-select modal-item">
                           <option v-for="nation in ListNationality" :key="nation.id" :value="nation.NationalityID">
                             {{
-                            nation.NationalityName }}
+                              nation.NationalityName }}
                           </option>
                         </select>
                         <label class="form-label" for="select">Quốc Tịch</label>
@@ -242,7 +260,7 @@
                         <select v-model="objMemberInfor.ReligionID" class="form-select modal-item">
                           <option v-for="religion in ListReligion" :key="religion.id" :value="religion.ReligionID">
                             {{
-                            religion.ReligionName }}
+                              religion.ReligionName }}
                           </option>
                         </select>
                         <label class="form-label-number" for="select">Tôn Giáo</label>
@@ -262,17 +280,20 @@
                       </h6>
                       <div style="display:flex">
                         <div style="position: relative; width: 50%;margin-right: 10px;">
-                          <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar()" />
+                          <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder
+                            @change="convertSolarToLunar()" />
                           <label class="form-label" for="input">Dương Lịch</label>
                         </div>
                         <div style="position: relative;width: 50%; margin-right: 10px;">
-                          <input v-model="objMemberInfor.LunarDob" type="date" class="form-control modal-item" placeholder @change="convertLunarToSolar()" />
+                          <input v-model="objMemberInfor.LunarDob" type="date" class="form-control modal-item" placeholder
+                            @change="convertLunarToSolar()" />
                           <label class="form-label-number" min="0" for="input">Âm lịch</label>
                         </div>
                       </div>
                     </div>
                     <div style="position: relative; margin-right:10px">
-                      <input v-model="objMemberInfor.BirthPlace" type="text" class="form-control modal-item" placeholder />
+                      <input v-model="objMemberInfor.BirthPlace" type="text" class="form-control modal-item"
+                        placeholder />
                       <label class="form-label" for="input" :class="{ 'active': objMemberInfor.BirthPlace }">
                         Nơi
                         sinh
@@ -293,7 +314,8 @@
                           <label class="form-label" for="input">Dương Lịch</label>
                         </div>
                         <div style="position: relative;width: 50%; margin-right: 10px;">
-                          <input v-model="objMemberInfor.LunarDod" type="date" class="form-control modal-item" placeholder />
+                          <input v-model="objMemberInfor.LunarDod" type="date" class="form-control modal-item"
+                            placeholder />
                           <label class="form-label-number" min="0" for="input">Âm lịch</label>
                         </div>
                       </div>
@@ -329,7 +351,8 @@
                   </div>
                   <div style="display:flex">
                     <div style="position: relative; width: 50%;margin-right: 10px;">
-                      <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" :disabled="isDisabled" :default-country="defaultCountry" :validations="validations"></VuePhoneNumberInput>
+                      <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" :disabled="isDisabled"
+                        :default-country="defaultCountry" :validations="validations"></VuePhoneNumberInput>
                     </div>
                     <div style="position: relative;width: 50%; margin-right: 10px;">
                       <input v-model="objMemberContact.Email" type="email" class="form-control modal-item" placeholder />
@@ -337,12 +360,15 @@
                     </div>
                   </div>
                   <div style="position: relative; padding-right: 23px;">
-                    <input v-model="objMemberContact.FacebookUrl" type="text" class="form-control modal-item" placeholder />
-                    <label style="left: 25px;" class="form-label" for="input" :class="{ 'active': objMemberContact.FacebookUrl }">Facebook</label>
+                    <input v-model="objMemberContact.FacebookUrl" type="text" class="form-control modal-item"
+                      placeholder />
+                    <label style="left: 25px;" class="form-label" for="input"
+                      :class="{ 'active': objMemberContact.FacebookUrl }">Facebook</label>
                   </div>
                   <div style="position: relative; padding-right: 23px;">
                     <input v-model="objMemberContact.Zalo" type="text" class="form-control modal-item" placeholder />
-                    <label style="left: 25px;" class="form-label" for="input" :class="{ 'active': objMemberContact.Zalo }">Zalo</label>
+                    <label style="left: 25px;" class="form-label" for="input"
+                      :class="{ 'active': objMemberContact.Zalo }">Zalo</label>
                   </div>
                 </div>
               </div>
@@ -350,15 +376,18 @@
                 <div class="row">
                   <div style="display:flex">
                     <div style="position: relative; width: 50%; margin-right: 10px;">
-                      <input v-model="objMemberJob.Organization" type="text" class="form-control modal-item" placeholder />
+                      <input v-model="objMemberJob.Organization" type="text" class="form-control modal-item"
+                        placeholder />
                       <label class="form-label" for="input" :class="{ 'active': objMemberJob.Organization }">
                         Tên Cơ
                         Quan
                       </label>
                     </div>
                     <div style="position: relative;width: 50%; margin-right: 10px;">
-                      <input v-model="objMemberJob.OrganizationAddress" type="text" class="form-control modal-item" placeholder />
-                      <label class="form-label" min="0" for="input" :class="{ 'active': objMemberJob.OrganizationAddress }">Địa Chỉ</label>
+                      <input v-model="objMemberJob.OrganizationAddress" type="text" class="form-control modal-item"
+                        placeholder />
+                      <label class="form-label" min="0" for="input"
+                        :class="{ 'active': objMemberJob.OrganizationAddress }">Địa Chỉ</label>
                     </div>
                   </div>
                   <div style="display:flex">
@@ -371,7 +400,8 @@
                     </div>
                     <div style="position: relative;width: 50%; margin-right: 10px;">
                       <input v-model="objMemberJob.JobName" type="text" class="form-control modal-item" placeholder />
-                      <label class="form-label-number" min="0" for="input" :class="{ 'active': objMemberJob.JobName }">nghề nghiệp</label>
+                      <label class="form-label-number" min="0" for="input"
+                        :class="{ 'active': objMemberJob.JobName }">nghề nghiệp</label>
                     </div>
                   </div>
                   <div class="form-group">
@@ -389,9 +419,12 @@
                   </div>
                   <div class="d-flex justify-content-end">
                     <div class="form-group" role="group">
-                      <button type="button" class="btn btn-primary" @click="addNewJobMember()" style="margin-right:10px">Thêm</button>
-                      <button type="button" class="btn btn-info mr-1" @click="updateJobMember()" style="margin-right:10px">Sửa</button>
-                      <button type="button" class="btn btn-danger mr-1" @click="removeJobMember()" style="margin-right:10px">Xóa</button>
+                      <button type="button" class="btn btn-primary" @click="addNewJobMember()"
+                        style="margin-right:10px">Thêm</button>
+                      <button type="button" class="btn btn-info mr-1" @click="updateJobMember()"
+                        style="margin-right:10px">Sửa</button>
+                      <button type="button" class="btn btn-danger mr-1" @click="removeJobMember()"
+                        style="margin-right:10px">Xóa</button>
                     </div>
                   </div>
                   <div class="form-group" style="margin-top:13px;padding-right:22px">
@@ -405,7 +438,8 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-for="job in ListMemberJob" :key="job.id" @click="selectRowJob(job)" :class="{ 'row-selected': job === objMemberJob }">
+                        <tr v-for="job in ListMemberJob" :key="job.id" @click="selectRowJob(job)"
+                          :class="{ 'row-selected': job === objMemberJob }">
                           <td>{{ job.Organization }}</td>
                           <td>{{ job.Role }}</td>
                           <td>{{ formatDate(job.StartDate) }}</td>
@@ -420,30 +454,38 @@
                 <div class="row">
                   <div style="position: relative;padding-right: 20px;">
                     <input v-model="objMemberEducation.School" type="text" class="form-control modal-item" placeholder />
-                    <label style="left: 20px;" class="form-label" for="input" :class="{ 'active': objMemberEducation.School }">Tên trường</label>
+                    <label style="left: 20px;" class="form-label" for="input"
+                      :class="{ 'active': objMemberEducation.School }">Tên trường</label>
                   </div>
                   <div style="position: relative;padding-right: 20px;">
-                    <input v-model="objMemberEducation.Description" type="text" class="form-control modal-item" placeholder />
-                    <label style="left: 20px;" class="form-label" for="input" :class="{ 'active': objMemberEducation.Description }">Mô tả</label>
+                    <input v-model="objMemberEducation.Description" type="text" class="form-control modal-item"
+                      placeholder />
+                    <label style="left: 20px;" class="form-label" for="input"
+                      :class="{ 'active': objMemberEducation.Description }">Mô tả</label>
                   </div>
                   <div class="form-group">
                     <h6 style="margin-bottom:20px">Thời gian học tập</h6>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
-                        <input v-model="objMemberEducation.StartDate" type="date" class="form-control modal-item" placeholder />
+                        <input v-model="objMemberEducation.StartDate" type="date" class="form-control modal-item"
+                          placeholder />
                         <label class="form-label" for="input">Từ ngày</label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
-                        <input v-model="objMemberEducation.EndDate" type="date" class="form-control modal-item" placeholder />
+                        <input v-model="objMemberEducation.EndDate" type="date" class="form-control modal-item"
+                          placeholder />
                         <label class="form-label-number" min="0" for="input">Đến ngày</label>
                       </div>
                     </div>
                   </div>
                   <div class="d-flex justify-content-end">
                     <div class="form-group" role="group">
-                      <button type="button" class="btn btn-primary" @click="addNewEducationMember()" style="margin-right:10px">Thêm</button>
-                      <button type="button" class="btn btn-info mr-1" @click="updateEducationMember()" style="margin-right:10px">Sửa</button>
-                      <button type="button" class="btn btn-danger mr-1" @click="deleteJobMember()" style="margin-right:10px">Xóa</button>
+                      <button type="button" class="btn btn-primary" @click="addNewEducationMember()"
+                        style="margin-right:10px">Thêm</button>
+                      <button type="button" class="btn btn-info mr-1" @click="updateEducationMember()"
+                        style="margin-right:10px">Sửa</button>
+                      <button type="button" class="btn btn-danger mr-1" @click="deleteJobMember()"
+                        style="margin-right:10px">Xóa</button>
                     </div>
                   </div>
                   <div class="form-group" style="margin-top:13px;padding-right:22px">
@@ -456,7 +498,8 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-for="edu in ListMemberEducation" :key="edu.id" @click="selectRowEducation(edu)" :class="{ 'row-selected': edu === objMemberEducation }">
+                        <tr v-for="edu in ListMemberEducation" :key="edu.id" @click="selectRowEducation(edu)"
+                          :class="{ 'row-selected': edu === objMemberEducation }">
                           <td>{{ edu.School }}</td>
                           <td>{{ formatDate(edu.StartDate) }}</td>
                           <td>{{ formatDate(edu.EndDate) }}</td>
@@ -468,7 +511,8 @@
               </div>
               <div class="col-9" style="padding-top: 15px" v-else>
                 <div class="form-group" style="margin-top:13px;padding-right:22px">
-                  <textarea v-model="objMemberInfor.Note" style="height:300px" class="form-control modal-item" id="lichSuCongTac" rows="5" placeholder="Ghi Chú"></textarea>
+                  <textarea v-model="objMemberInfor.Note" style="height:300px" class="form-control modal-item"
+                    id="lichSuCongTac" rows="5" placeholder="Ghi Chú"></textarea>
                 </div>
               </div>
             </div>
@@ -476,8 +520,10 @@
           <div class="card-footer modal-footer">
             <div class="d-flex justify-content-end" style="padding-right: 12px;">
               <button type="button" class="btn btn-danger mr-2" @click="removeFamilyHead()">Xóa</button>
-              <button style="margin-left:10px" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
-              <button style="margin-left:10px" type="button" class="btn btn-secondary" @click="closeSelectModal()">Cancel</button>
+              <button style="margin-left:10px" type="button" class="btn btn-primary mr-2"
+                @click="updateInformation()">Sửa</button>
+              <button style="margin-left:10px" type="button" class="btn btn-secondary"
+                @click="closeSelectModal()">Cancel</button>
             </div>
           </div>
         </div>
@@ -486,21 +532,25 @@
         <modal name="cfdel-modal">
           <div class="w-100 h-100 add-head-modal">
             <div class="d-flex flex-row w-100 align-items-center position-relative">
-              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100 text-white" style="background-color: rgb(255, 8, 0);;">Quan trọng</div>
+              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100 text-white"
+                style="background-color: rgb(255, 8, 0);;">Quan trọng</div>
               <div class="close-add-form" @click="closeCfDelModal()">
-                <svg class="close-add-form-icon" style="fill: #FFFFFF !important;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                  <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                <svg class="close-add-form-icon" style="fill: #FFFFFF !important;" xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 384 512">
+                  <path
+                    d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
                 </svg>
               </div>
             </div>
-            <div class="w-100 d-flex flex-column align-items-center justify-content-center" style="height: calc(100% - 50px);">
+            <div class="w-100 d-flex flex-column align-items-center justify-content-center"
+              style="height: calc(100% - 50px);">
               <div class="d-flex align-items-center px-3" style="height: 70%; font-size: 19px;">
                 Bạn có chắc chắn muốn xóa
-                thành viên {{objMemberInfor.MemberName}}
+                thành viên {{ objMemberInfor.MemberName }}
               </div>
               <div class="d-flex flex-row w-100" style="height: 30%;">
                 <div class="col-6 d-flex align-items-center justify-content-center">
-                  <div class="btn bg-danger text-white" @click="removeMember(),closeCfDelModal()">Có</div>
+                  <div class="btn bg-danger text-white" @click="removeMember(), closeCfDelModal()">Có</div>
                 </div>
                 <div class="col-6 d-flex align-items-center justify-content-center">
                   <div class="btn bg-primary text-white" @click="closeCfDelModal()">Không</div>
@@ -511,11 +561,18 @@
         </modal>
       </div>
     </div>
-    <div v-if="memberList.length != 0"></div>
-    <div v-else></div>
+    <div v-if="memberList.length != 0">
+
+    </div>
+    <div v-else>
+      
+    </div>
   </div>
 </template>
 <script>
+import Vue from "vue";
+import VueCookies from "vue-cookies";
+Vue.use(VueCookies);
 import { HTTP } from "../assets/js/baseAPI.js";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { LunarDate } from "vietnamese-lunar-calendar";
@@ -540,14 +597,6 @@ export default {
       numberGeneration: 0,
       numberAlive: 0,
       numberDied: 0,
-      numberSonInLaw: 0,
-      numberDaughterInLaw: 0,
-      age0to5: 0,
-      age6to17: 0,
-      age18to40: 0,
-      age41to60: 0,
-      age61up: 0,
-      maxMemberGeneration: 0,
 
       monthDob: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 
@@ -632,7 +681,9 @@ export default {
 
   methods: {
     getListReligion() {
-      HTTP.get("religion")
+      HTTP.get("religion",{
+        
+      })
         .then((response) => {
           this.ListReligion = response.data;
         })
@@ -641,7 +692,9 @@ export default {
         });
     },
     getListNationality() {
-      HTTP.get("nationality")
+      HTTP.get("nationality",{
+        
+      })
         .then((response) => {
           this.ListNationality = response.data;
         })
@@ -710,21 +763,21 @@ export default {
     },
     sortListMember() {
       if (this.genAscending && this.genSort) {
-        this.memberFilter.sort((a, b) => a.generation - b.generation);
+        this.memberFilter.sort((a, b) => a.Generation - b.Generation);
       } else if (!this.genAscending && this.genSort) {
-        this.memberFilter.sort((a, b) => b.generation - a.generation);
+        this.memberFilter.sort((a, b) => b.Generation - a.Generation);
       }
       console.log(this.dobAscending);
       console.log(this.dobSort);
       if (this.dobAscending && this.dobSort) {
         this.memberFilter.sort(
           (a, b) =>
-            new Date(this.formatDate(b.dob)) - new Date(this.formatDate(a.dob))
+            new Date(this.formatDate(b.Dob)) - new Date(this.formatDate(a.Dob))
         );
       } else if (!this.dobAscending && this.dobSort) {
         this.memberFilter.sort(
           (a, b) =>
-            new Date(this.formatDate(a.dob)) - new Date(this.formatDate(b.dob))
+            new Date(this.formatDate(a.Dob)) - new Date(this.formatDate(b.Dob))
         );
       }
     },
@@ -801,6 +854,7 @@ export default {
     },
     updateEducationMember() {
       HTTP.put("updateEducation", {
+        
         School: this.objMemberEducation.School,
         Description: this.objMemberEducation.Description,
         StartDate: this.objMemberEducation.StartDate,
@@ -814,6 +868,7 @@ export default {
     },
     updateJobMember() {
       HTTP.put("updateJob", {
+        
         JobID: this.JobIDToUpdate,
         Organization: this.objMemberJob.Organization,
         OrganizationAddress: this.objMemberJob.OrganizationAddress,
@@ -834,6 +889,7 @@ export default {
           this.objMemberContact.Address + "-" + this.selectDistrictMember;
       }
       HTTP.put("member", {
+        
         MemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
         NickName: this.objMemberInfor.NickName,
@@ -865,6 +921,7 @@ export default {
               this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
             }
             HTTP.put("updateContact", {
+              
               MemberID: this.CurrentIdMember,
               Address: this.objMemberContact.Address,
               Phone: this.objMemberContact.Phone,
@@ -874,7 +931,7 @@ export default {
             }).then(() => {
               this.closeMemberModal();
               this.family.load(this.nodes);
-              this.getListMember();
+              this.getListMemberInGenalogy();
             });
           } else {
             this.NotificationsDelete(response.data.message);
@@ -918,14 +975,15 @@ export default {
       this.idPaternalAncestor = id;
     },
     getInforMember(id) {
+      this.CurrentIdMember = id;
       HTTP.get("InforMember", {
+        
         params: {
           memberId: id,
         },
       })
         .then((response) => {
           this.objMember = response.data;
-          console.log(this.objMember);
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
             this.takeDataMember(id);
@@ -970,35 +1028,35 @@ export default {
       this.sortListMember();
       if (this.genderSearch != "all") {
         this.memberFilter = this.memberFilter.filter(
-          (member) => member.gender == this.genderSearch
+          (member) => member.Male == this.genderSearch
         );
       }
       if (this.generationSearch != 0) {
         this.memberFilter = this.memberFilter.filter(
-          (member) => member.generation == this.generationSearch
+          (member) => member.Generation == this.generationSearch
         );
       }
       if (this.monthSearch != 0) {
         this.memberFilter = this.memberFilter.filter(
-          (member) =>
-            new Date(this.formatDate(member.dob)).getMonth() + 1 ==
-            this.monthSearch
-        );
+          (member) => this.formatDate(member.Dob) != null ? 
+            new Date(this.formatDate(member.Dob)).getMonth() + 1 ==
+            this.monthSearch : new Date(this.formatDate(member.Dob)).getMonth() + 1 == 0
+        ); 
       }
       if (this.isDeadSearch != "all") {
         this.memberFilter = this.memberFilter.filter(
-          (member) => member.isDead != this.isDeadSearch
+          (member) => member.IsDead != this.isDeadSearch
         );
       }
       if (this.statusSearch != "all") {
         if (this.statusSearch == "trongdongho") {
           this.memberFilter = this.memberFilter.filter(
-            (member) => member.fid != ""
+            (member) => member.FatherID != null || member.Generation == 1
           );
         }
         if (this.statusSearch == "ngoaidongho") {
           this.memberFilter = this.memberFilter.filter(
-            (member) => member.fid == ""
+            (member) => member.FatherID == null && member.Generation != 1
           );
         }
       }
@@ -1006,39 +1064,39 @@ export default {
         if (this.ageSearch == "0-5") {
           console.log(this.ageSearch);
           this.memberFilter = this.memberFilter.filter(
-            (member) =>
-              0 <= this.ageMember(member.dob) && this.ageMember(member.dob) <= 5
+            (member) => this.formatDate(member.Dob) != null ?
+              0 <= this.ageMember(member.Dob) && this.ageMember(member.Dob) <= 5 : this.ageMember(member.Dob) == -1
           );
         }
         if (this.ageSearch == "6-17") {
           console.log(this.ageSearch);
           this.memberFilter = this.memberFilter.filter(
-            (member) =>
-              6 <= this.ageMember(member.dob) &&
-              this.ageMember(member.dob) <= 17
+            (member) => this.formatDate(member.Dob) != null ?
+              6 <= this.ageMember(member.Dob) &&
+              this.ageMember(member.Dob) <= 17 : this.ageMember(member.Dob) == -1
           );
         }
         if (this.ageSearch == "18-40") {
           console.log(this.ageSearch);
           this.memberFilter = this.memberFilter.filter(
-            (member) =>
-              18 <= this.ageMember(member.dob) &&
-              this.ageMember(member.dob) <= 40
+            (member) => this.formatDate(member.Dob) != null ?
+              18 <= this.ageMember(member.Dob) &&
+              this.ageMember(member.Dob) <= 40 : this.ageMember(member.Dob) == -1
           );
         }
         if (this.ageSearch == "41-60") {
           console.log(this.ageSearch);
           this.memberFilter = this.memberFilter.filter(
-            (member) =>
-              41 <= this.ageMember(member.dob) &&
-              this.ageMember(member.dob) <= 60
+            (member) => this.formatDate(member.Dob) != null ?
+              41 <= this.ageMember(member.Dob) &&
+              this.ageMember(member.Dob) <= 60 : this.ageMember(member.Dob) == -1
           );
         }
         if (this.ageSearch == ">60") {
           console.log(this.ageSearch);
           this.memberFilter = this.memberFilter.filter(
-            (member) =>
-              this.ageMember(member.dob) && this.ageMember(member.dob) > 60
+            (member) => this.formatDate(member.Dob) != null ?
+              this.ageMember(member.Dob) && this.ageMember(member.Dob) > 60 : this.ageMember(member.Dob) == -1
           );
         }
       }
@@ -1065,30 +1123,21 @@ export default {
         (this.numberGeneration = 0),
         (this.numberAlive = 0),
         (this.numberDied = 0),
-        (this.numberSonInLaw = 0),
-        (this.numberDaughterInLaw = 0),
-        (this.age0to5 = 0),
-        (this.age6to17 = 0),
-        (this.age18to40 = 0),
-        (this.age41to60 = 0),
-        (this.age61up = 0),
-        (this.memberOldest = {}),
-        (this.memberOldestAlive = {});
       this.totalMember = this.memberList.length;
       for (let i = 0; i < this.memberList.length; i++) {
-        if (this.memberList[i].gender == "male") {
+        if (this.memberList[i].Male == 1) {
           this.numberMale += 1;
         }
-        if (this.memberList[i].gender == "female") {
+        if (this.memberList[i].Male == 0) {
           this.numberFemale += 1;
         }
-        if (this.memberList[i].generation > this.numberGeneration) {
-          this.numberGeneration = this.memberList[i].generation;
+        if (this.memberList[i].Generation > this.numberGeneration) {
+          this.numberGeneration = this.memberList[i].Generation;
         }
-        if (this.memberList[i].isDead == 0) {
+        if (this.memberList[i].IsDead == 0) {
           this.numberAlive += 1;
         }
-        if (this.memberList[i].isDead == 1) {
+        if (this.memberList[i].IsDead == 1) {
           this.numberDied += 1;
         }
         // let month = 1;
@@ -1103,12 +1152,21 @@ export default {
 
     getListMemberInGenalogy() {
       HTTP.get("membersInGenealogy", {
+        
         params: {
           CodeID: this.CodeID,
         },
       }).then((response) => {
         if (response.data.success == true) {
-          console.log(response.data.data);
+          
+          this.memberList = response.data.data;
+          this.memberFilter = this.memberList;
+          console.log(this.memberList )
+          this.takeInforList();
+        }else{
+          this.memberList = [];
+          this.memberFilter = this.memberList;
+          this.CurrentIdMember = null;
         }
       });
     },
@@ -1120,6 +1178,7 @@ export default {
     },
     removeMember() {
       HTTP.get("deleteContact", {
+        
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1128,6 +1187,7 @@ export default {
       });
 
       HTTP.get("RemoveListJob", {
+        
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1136,6 +1196,7 @@ export default {
       });
 
       HTTP.get("deleteListEducation", {
+        
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1143,6 +1204,7 @@ export default {
         console.log(e);
       });
       HTTP.get("delete-member", {
+        
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1151,30 +1213,30 @@ export default {
           // this.nodes.length = this.nodes.length - 1;
           this.NotificationsDelete(response.data.message);
           this.$modal.hide("Select-option-Modal");
-          this.getListMember();
+          this.getListMemberInGenalogy();
         } else {
           this.NotificationsDelete(response.data.message);
         }
       });
     },
-    getListMember() {
-      HTTP.get("viewTree", {
-        params: {
-          CodeID: this.CodeID,
-        },
-      })
-        .then((response) => {
-          if (response.data.success == true) {
-            console.log(response.data.data);
-            this.memberList = response.data.data;
-            this.memberFilter = this.memberList;
-            this.takeInforList();
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
+    // getListMember() {
+    //   HTTP.get("viewTree", {
+    //     params: {
+    //       CodeID: this.CodeID,
+    //     },
+    //   })
+    //     .then((response) => {
+    //       if (response.data.success == true) {
+    //         console.log(response.data.data);
+    //         this.memberList = response.data.data;
+    //         this.memberFilter = this.memberList;
+    //         this.takeInforList();
+    //       }
+    //     })
+    //     .catch((e) => {
+    //       console.log(e);
+    //     });
+    // },
   },
 
   mounted() {
@@ -1190,7 +1252,7 @@ export default {
     this.getListMemberInGenalogy();
     this.getListNationality();
     this.getListReligion();
-    this.getListMember();
+ //   this.getListMember();
   },
 };
 </script>

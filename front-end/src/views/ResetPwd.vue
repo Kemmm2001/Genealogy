@@ -45,6 +45,7 @@
 
 <script>
 import { HTTP } from "../assets/js/baseAPI.js";
+import SHA256 from "crypto-js/sha256";
 import Snackbar from "awesome-snackbar";
 export default {
     data() {
@@ -63,8 +64,8 @@ export default {
         changePassWord(){
             console.log(this.token)
             HTTP.post("reset-password", {
-                password: this.newPwd,
-                repassword: this.reNewPwd,
+                password: SHA256(this.newPwd).toString(),
+                repassword: SHA256(this.reNewPwd).toString(),
             },{
                 params: {
                     token: this.token,
