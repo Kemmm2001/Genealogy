@@ -1103,9 +1103,6 @@ var getMember = async (req, res) => {
         if (dataMember == null || dataMember.length == 0) {
             return res.send(Response.dataNotFoundResponse());
         }
-        if (CoreFunction.isDataStringExist(dataMember[0].Image)) {
-            dataMember[0].Image = process.env.DNS_SERVER + dataMember[0].Image;
-        }
         return res.send(Response.successResponse(dataMember));
     } catch (e) {
         console.log("Error: " + e);
