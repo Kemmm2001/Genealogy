@@ -1,29 +1,30 @@
 const puppeteer = require('puppeteer');
 const Response = require('../../Utils/Response')
+const fs = require('fs'); 
+const { v4: uuidv4 } = require('uuid'); 
 
 async function exportPDF(req, res) {
   try {
+    const { htmlContent } = req.body; // Lấy nội dung HTML từ req.body
+
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
-    // Điều hướng trình duyệt đến trang HTML hoặc URL bạn muốn xuất PDF
-    const urlOrHtml = req.body.urlOrHtml; // Đây là ví dụ, bạn có thể truyền thông tin từ yêu cầu
+    await page.setContent(htmlContent);
 
-    await page.goto(urlOrHtml);
-
-    // Tạo file PDF từ trang HTML
     const pdfBuffer = await page.pdf({ format: 'A4' });
+    const fileName = `/uploads/pdf/export_${uuidv4()}.pdf`;
 
-    // Đóng trình duyệt
+    fs.writeFile(fileName, pdfBuffer, (err) => {
+      if (err) throw err;
+      console.log('File PDF đã được lưu!');
+      return res.send(Response.successResponse({ fileName: fileName }, 'Export thành công'));
+    });
+
     await browser.close();
-
-    // Trả về file PDF cho client
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'inline; filename=exported.pdf');
-    res.send(pdfBuffer);
   } catch (error) {
-    console.error('Lỗi khi export PDF:', error);
-    return res.send(Response.BadRequest(null, error.message));
+    console.error('Lỗi khi tạo và lưu PDF:', error);
+    return res.send(Response.internalServerErrorResponse());
 
   }
 }
