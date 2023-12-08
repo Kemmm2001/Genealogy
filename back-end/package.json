@@ -41,6 +41,7 @@
     "sequelize": "^6.33.0",
     "twilio": "^3.40.0",
     "uuid": "^9.0.1",
+    "validator": "^13.11.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

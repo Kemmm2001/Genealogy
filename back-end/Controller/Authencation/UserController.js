@@ -1,16 +1,31 @@
 const UserService = require('../../service/Authencation/UserManagement');
 const createError = require('http-errors')
-const { registerSchema, loginSchema } = require('../../helper/validation_schema')
+const validator = require('validator');
 const bcrypt = require('bcrypt');
 const { signAccessToken, signRefreshToken, signRePassToken, signRegisterToken, verifyRegisterToken, verifyRepassToken, verifyRefreshToken } = require('../../helper/jwt_helper')
 const Response = require('../../Utils/Response')
 const sendMail = require('../../Utils/SystemOperation');
-
+require('dotenv').config();
+const backEndURL = process.env.BACKEND_URL
+const frontEndURL = process.env.FRONTEND_URL
 
 var registerUser = async (req, res) => {
   try {
+
+    if (!req.body.email || !req.body.password || !req.body.username || !req.body.repassword) {
+      return res.send(Response.internalServerErrorResponse(null, 'Vui lòng điền đầy đủ thông tin'));
+    }
+
+    if (!validator.isEmail(req.body.email)) {
+      return res.send(Response.internalServerErrorResponse(null, 'Email không hợp lệ'));
+    }
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>])[a-zA-Z\d!@#$%^&*()\-_=+{};:,<.>]{8,}$/;
+    if (!passwordRegex.test(req.body.password)) {
+      return res.send(Response.internalServerErrorResponse(null, 'Mật khẩu phải có ít nhất 8 kí tự bao gồm ít nhất: 1 chữ cái viết hoa, 1 chữ cái thường, 1 chữ số và 1 kí tự đặc biệt'));
+    }
     if (req.body.password !== req.body.repassword) {
-      return res.send(Response.dataNotFoundResponse(null, 'Nhập Lại Mật khẩu không trùng nhau'));
+      return res.send(Response.internalServerErrorResponse(null, 'Nhập Lại Mật khẩu không trùng nhau'));
     }
     let doesExist = await UserService.checkMail(req.body.email);
     if (doesExist > 0) {
@@ -21,9 +36,6 @@ var registerUser = async (req, res) => {
     return res.send(Response.successResponse(newUser, 'Đăng ký thành công vui lòng xác thực tài khoản'));
 
   } catch (error) {
-    if (error.isJoi === true) {
-      error.status = 422;
-    }
     return res.send(Response.internalServerErrorResponse(null, error.message));
   }
 }
@@ -130,6 +142,14 @@ var ChangePassword = async (req, res) => {
 
 var loginUser = async (req, res) => {
   try {
+    if (!req.body.email || !req.body.password) {
+      return res.send(Response.internalServerErrorResponse(null, 'Vui lòng nhập email và mật khẩu'));
+    }
+
+    if (!validator.isEmail(req.body.email)) {
+      return res.send(Response.internalServerErrorResponse(null, 'Email không hợp lệ'));
+    }
+
     let checkEmail = await UserService.checkMail(req.body.email);
     let data = await UserService.getUser(req.body.email)
 
@@ -150,9 +170,6 @@ var loginUser = async (req, res) => {
     return res.send(Response.successResponse(accessToken, 'Login thành công'));
 
   } catch (error) {
-    if (error.isJoi === true) {
-      error.status = 422;
-    }
     return res.send(Response.internalServerErrorResponse(null, error.message));
   }
 }
@@ -315,6 +332,13 @@ function generateRandomNumber() {
 var forgetPassword = async (req, res) => {
   try {
     const email = req.body.email
+    if (!email) {
+      return res.send(Response.internalServerErrorResponse(null, 'Vui lòng nhập email'));
+    }
+
+    if (!validator.isEmail(email)) {
+      return res.send(Response.internalServerErrorResponse(null, 'Email không hợp lệ'));
+    }
     let checkEmail = await UserService.checkMail(email);
 
     if (checkEmail == 0) {
@@ -325,7 +349,7 @@ var forgetPassword = async (req, res) => {
       try {
         console.log(token)
         const data = await UserService.UpdateAccount(email, token)
-        const resetPasswordLink = `http://localhost:3006/reset-password?token=${token}`;
+        const resetPasswordLink =`${frontEndURL}/reset-password?token=${token}`;
 
         const objData = {
           to: email,
@@ -360,28 +384,58 @@ var resetPassword = async (req, res) => {
     if (tokenData == 0) {
       return res.send(Response.internalServerErrorResponse(null, 'Link không đúng '));
     }
+    if (!req.body.password || !req.body.repassword) {
+      return res.send(Response.internalServerErrorResponse(null, 'Vui lòng điền đầy đủ thông tin'));
+    }
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>])[a-zA-Z\d!@#$%^&*()\-_=+{};:,<.>]{8,}$/;
+    if (!passwordRegex.test(req.body.password)) {
+      return res.send(Response.internalServerErrorResponse(null, 'Mật khẩu phải có ít nhất 8 kí tự bao gồm ít nhất: 1 chữ cái viết hoa, 1 chữ cái thường, 1 chữ số và 1 kí tự đặc biệt'));
 
+    }
     if (req.body.password !== req.body.repassword) {
       return res.send(Response.dataNotFoundResponse(null, 'Nhập Lại Mật khẩu không trùng nhau'));
-    }
-    else {
+    } else {
+      console.log(req.body.password)
       let hashedPassword = await bcrypt.hash(req.body.password, 10);
-      let data = await UserService.UpdatePassword(hashedPassword, payload.email)
-      if (data == true) {
-        return res.send(Response.successResponse());
-      } else {
-        return res.send(Response.dataNotFoundResponse());
+      let data;
+      try {
+        data = await UserService.UpdatePassword(hashedPassword, payload.email);
+        if (data == true) {
+          try {
+            console.log(hashedPassword)
+            let data1 = await UserService.DeleteRePasssToken(payload.email);
+            if (data1 == true) {
+              
+              return res.send(Response.successResponse());
+            }
+            return res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống'));
+          } catch (error) {
+            return res.send(Response.internalServerErrorResponse(null, 'Lỗi khi cập nhật token'));
+          }
+        } else {
+          return res.send(Response.internalServerErrorResponse(null, 'Lỗi khi cập nhật mật khẩu'));
+        }
+      } catch (error) {
+        return res.send(Response.badRequestResponse(null, 'Lỗi khi cập nhật mật khẩu'));
       }
     }
   } catch (error) {
-    return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
-
+    return res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống'));
   }
 }
+
+
 
 var verifyAccount = async (req, res) => {
   try {
     const email = req.body.email
+    if (!email) {
+      return res.send(Response.internalServerErrorResponse(null, 'Vui lòng nhập email'));
+    }
+
+    if (!validator.isEmail(email)) {
+      return res.send(Response.internalServerErrorResponse(null, 'Email không hợp lệ'));
+    }
     let checkEmail = await UserService.checkMail(email);
 
     if (checkEmail == 0) {
@@ -392,7 +446,7 @@ var verifyAccount = async (req, res) => {
       try {
         console.log(token)
         const data = await UserService.UpdateRegisterToken(email, token)
-        const verifyLink = `http://localhost:3006/setActive?token=${token}`;
+        const verifyLink = `${frontEndURL}/setActive?token=${token}`;
 
         const objData = {
           to: email,
@@ -428,18 +482,30 @@ var setActive = async (req, res) => {
       return res.send(Response.internalServerErrorResponse(null, 'Link không đúng'));
     }
 
-    let data = await UserService.UpdateActive(req.body.IsActive, payload.email)
-    if (data == true) {
-      return res.send(Response.successResponse());
-    } else {
-      return res.send(Response.dataNotFoundResponse());
+    let data;
+    try {
+      data = await UserService.UpdateActive(req.body.IsActive, payload.email);
+      if (data == true) {
+        try {
+          let data1 = await UserService.DeleteRegisterToken(payload.email);
+          if (data1 == true) {
+            return res.send(Response.successResponse());
+          }
+          return res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống'));
+        } catch (error) {
+          return res.send(Response.internalServerErrorResponse(null, 'Lỗi khi cập nhật token'));
+        }
+      } else {
+        return res.send(Response.internalServerErrorResponse());
+      }
+    } catch (error) {
+      return res.send(Response.internalServerErrorResponse(null, 'Lỗi khi cập nhật trạng thái kích hoạt'));
     }
-
   } catch (error) {
-    return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
-
+    return res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống'));
   }
 }
+
 
 module.exports = {
   registerUser, loginUser, refreshToken, registerGenealogy, getGenealogy, setRole,

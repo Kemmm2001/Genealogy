@@ -2,23 +2,19 @@ const db = require('../../Models/ConnectDB')
 
 function insertMemberAttend(eventID, memberID) {
   return new Promise((resolve, reject) => {
-    try {
-      let query = 'INSERT INTO genealogy.eventattendance (EventId, MemberID) VALUES (?,?)';
-      db.connection.query(query, [eventID, memberID], (err, result) => {
-        if (err) {
-          console.log(err);
-          reject(err);
-        } else {
-          console.log("Insertion successful");
-          resolve(true);
-        }
-      });
-    } catch (error) {
-      console.error(error);
-      reject('Failed to insert attendance');
-    }
+    let query = 'INSERT INTO genealogy.eventattendance (EventId, MemberID, IsGoing) VALUES (?, ?, -1)';
+    db.connection.query(query, [eventID, memberID], (err, result) => {
+      if (err) {
+        console.error(err);
+        reject('Failed to insert attendance');
+      } else {
+        console.log('Insertion successful');
+        resolve(result && result.affectedRows > 0);
+      }
+    });
   });
 }
+
 
 //Nguyễn Lê Hùng
 function checkConfirmedEvent(EventID, MemberID, Token) {
@@ -116,4 +112,17 @@ function UpdateIsGoing(memberId, eventId, IsGoing) {
   });
 }
 
-module.exports = { insertMemberAttend, checkEventID, Update, checkToken, checkTokenEvent, UpdateIsGoing, checkConfirmedEvent }
+function DeleteToken(memberId, eventId) {
+  return new Promise((resolve, reject) => {
+    let query = 'UPDATE genealogy.eventattendance AS a SET a.Token = NULL WHERE MemberID = ? AND EventID = ?';
+    db.connection.query(query, [memberId, eventId], (err, result) => {
+      if (!err) {
+        resolve(result.affectedRows > 0); // Trả về true nếu có hàng bị ảnh hưởng
+      } else {
+        reject(err); // Trả về lỗi nếu có lỗi xảy ra
+      }
+    });
+  });
+}
+
+module.exports = { insertMemberAttend, checkEventID, Update, checkToken, checkTokenEvent, UpdateIsGoing, checkConfirmedEvent, DeleteToken }
