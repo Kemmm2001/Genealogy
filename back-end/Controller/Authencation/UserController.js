@@ -428,6 +428,13 @@ var resetPassword = async (req, res) => {
 var verifyAccount = async (req, res) => {
   try {
     const email = req.body.email
+    if (!email) {
+      return res.send(Response.internalServerErrorResponse(null, 'Vui lòng nhập email'));
+    }
+
+    if (!validator.isEmail(email)) {
+      return res.send(Response.internalServerErrorResponse(null, 'Email không hợp lệ'));
+    }
     let checkEmail = await UserService.checkMail(email);
 
     if (checkEmail == 0) {
