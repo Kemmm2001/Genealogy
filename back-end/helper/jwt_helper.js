@@ -1,6 +1,11 @@
 const JWT = require('jsonwebtoken')
 const createError = require('http-errors')
 const { saveRefreshToken, RefreshToken } = require('../Models/RefreshTokenSchema');
+require('dotenv').config();
+const timeAccessToken = process.env.TIME_ACCESS_TOKEN
+const timeRefreshToken = process.env.TIME_REFRESH_TOKEN
+const timeRePassToken = process.env.TIME_REPASS_TOKEN
+const timeRegisterToken = process.env.TIME_REGISTER_TOKEN
 
 module.exports = {
   signAccessToken: (insertId) => {
@@ -10,7 +15,7 @@ module.exports = {
       }
       const secret = process.env.ACCESS_TOKEN_SECRET
       const options = {
-        expiresIn: "1h",
+        expiresIn: timeAccessToken,
       }
       JWT.sign(payload, secret, options, (err, token) => {
         if (err) {
@@ -23,9 +28,12 @@ module.exports = {
   },
 
   verifyAccessToken: (req, res, next) => {
+    console.log('req.headers: ' + JSON.stringify(req.headers, null, 2));
     if (!req.headers['authorization']) {
+      console.log("vào đây123")
       return res.json({ error: 'Unauthorized' });
     }
+    console.log("vào đây")
 
     const authHeader = req.headers['authorization'];
     const bearerToken = authHeader.split(' ');
@@ -33,9 +41,14 @@ module.exports = {
 
     JWT.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
       if (err) {
-        const message = err.name === 'JsonWebTokenError' ? 'Unauthorize' : err.message
-        return res.json({ error: message });
-      }
+        if (err.name === 'JsonWebTokenError') {
+            return res.json({ error: 'Unauthorized' });
+        } else if (err.name === 'TokenExpiredError') {
+            return res.json({ error: 'Token expired' });
+        } else {
+            return res.json({ error: err.message });
+        }
+    }
       req.payload = payload;
       next();
     });
@@ -48,7 +61,7 @@ module.exports = {
       };
       const secret = process.env.REFRESH_TOKEN_SECRET;
       const options = {
-        expiresIn: '1m',
+        expiresIn: timeRefreshToken,
       };
       JWT.sign(payload, secret, options, async (err, token) => {
         if (err) {
@@ -90,7 +103,7 @@ module.exports = {
       }
       const secret = process.env.REPASS_TOKEN_SECRET
       const options = {
-        expiresIn: "15m",
+        expiresIn: timeRePassToken,
       }
       JWT.sign(payload, secret, options, (err, token) => {
         if (err) {
@@ -162,7 +175,7 @@ module.exports = {
       }
       const secret = process.env.REGISTER_TOKEN_SECRET
       const options = {
-        expiresIn: "15m",
+        expiresIn: timeRegisterToken,
       }
       JWT.sign(payload, secret, options, (err, token) => {
         if (err) {

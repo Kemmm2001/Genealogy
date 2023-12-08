@@ -1,9 +1,9 @@
 <!-- phùng việt khôi -->
 <template>
     <div class="w-100 h-100 position-relative raining-background" style="min-height: inherit;">
-        <div class="position-absolute login-form-container d-flex align-items-center flex-column" style="opacity: 93%;">
+        <div class="position-absolute login-form-container d-flex align-items-center flex-column justify-content-center" style="opacity: 93%;">
             <div class="d-flex justify-content-center text-danger mb-2"
-                style="font-size: 36px; font-weight: bold; margin-top: 51px;">Quên mật khẩu</div>
+                style="font-size: 36px; font-weight: bold;">Quên mật khẩu</div>
             <div class="d-flex flex-column" style="width: 420px;">
                 <div class="d-flex mb-2" style="position: relative;">
                     <input type="text" class="form-control py-2 px-5 position-relative" v-model="emailReset" placeholder="Email khôi phục" />

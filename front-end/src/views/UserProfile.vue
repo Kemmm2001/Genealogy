@@ -5,7 +5,7 @@
       <div class="menu px-3 d-flex flex-column">
         <div @click="selectProfile()" :class="{ chosen: profileSelected }" class="menu-item d-flex align-items-center mt-3 px-3 py-2" style="color: #FFFFFF;">Tài khoản cá nhân</div>
         <!-- Phân quyền chỉ dành cho role creator -->
-        <div @click="selectEditRole()" :class="{ chosen: editRoleSelected }" class="menu-item d-flex align-items-center mt-2 px-3 py-2" style="color: #FFFFFF;">Phân quyền trong gia tộc</div>
+        <div @click="selectEditRole()" :class="{ chosen: editRoleSelected }" class="menu-item d-flex align-items-center mt-2 px-3 py-2" style="color: #FFFFFF;">Phân quyền trong gia phả</div>
         <div @click="selectChangePwd()" :class="{ chosen: changePwdSelected }" class="menu-item d-flex align-items-center mt-2 px-3 py-2" style="color: #FFFFFF;">Thay đổi mật khẩu</div>
       </div>
     </div>
@@ -25,13 +25,13 @@
             </div>
           </div>
           <div class="mt-3 func-detail-item" v-if="inforTree">
-            <div class="pb-2" style="font-weight: bold;">Gia tộc họ</div>
+            <div class="pb-2" style="font-weight: bold;">Gia phả họ</div>
             <div>
               <input type="text" class="form-control" :value="inforTree.TreeName" disabled />
             </div>
           </div>
           <div class="mt-3 func-detail-item" v-if="inforTree">
-            <div class="pb-2" style="font-weight: bold;">Mã gia tộc</div>
+            <div class="pb-2" style="font-weight: bold;">Mã gia phả</div>
             <div>
               <input type="text" class="form-control" :value="inforTree.CodeID" disabled />
             </div>
@@ -48,7 +48,7 @@
         </div>
         <div v-if="editRoleSelected" class="func-detail w-100 h-100 position-relative">
           <div class>
-            <div class="pb-2 acc-list-container" style="font-weight: bold; height: 32px;">Tài khoản thành viên thuộc gia tộc</div>
+            <div class="pb-2 acc-list-container" style="font-weight: bold; height: 32px;">Tài khoản thành viên thuộc gia phả</div>
             <div class="family-account">
               <div v-for="(m, index) in listMemberRole" :key="index" :class="{
                 'family-account-item odd py-2 position-relative': index % 2 !== 0,
@@ -122,6 +122,9 @@
 </template>
   
 <script>
+import Vue from "vue";
+import VueCookies from "vue-cookies";
+Vue.use(VueCookies);
 import { HTTP } from "../assets/js/baseAPI.js";
 import Snackbar from "awesome-snackbar";
 export default {
@@ -179,6 +182,7 @@ export default {
     },
     changeUserName() {
       HTTP.post("changeUsername", {
+        
         username: this.accountInfor.username,
         AccountID: this.accountID,
       })
@@ -196,6 +200,7 @@ export default {
     changeRole(RoleId, AccountID) {
       console.log(RoleId, AccountID);
       HTTP.post("set-role", {
+        
         RoleId: RoleId,
         accountID: AccountID,
         CodeID: this.CodeID,
@@ -214,6 +219,7 @@ export default {
     changePassword() {
       if (this.InputNewPassword == this.InputRe_newpassword) {
         HTTP.put("changepassword", {
+          
           accountID: this.accountID,
           currentpassword: this.InputCurentPassword,
           newPassword: this.InputNewPassword,
@@ -226,6 +232,8 @@ export default {
           } else {
             this.NotificationsDelete(respone.data.message);
           }
+        }).catch((e) => {
+          console.log(e);
         });
       } else {
         this.NotificationsDelete("Nhập lại mật khẩu không đúng");
@@ -233,6 +241,7 @@ export default {
     },
     getInforTree() {
       HTTP.get("inforTree", {
+        
         params: {
           CodeID: this.CodeID,
         },
@@ -242,10 +251,13 @@ export default {
           this.inforTree = this.inforTree[0];
           console.log(this.inforTree);
         }
-      });
+      }).catch((e) => {
+          console.log(e);
+        });
     },
     getInforAccount() {
       HTTP.post("get-user", {
+        
         accountID: this.accountID,
       })
         .then((respone) => {
@@ -262,6 +274,7 @@ export default {
     getListRoleMember() {
       console.log(this.CodeID);
       HTTP.get("listrole", {
+        
         params: {
           CodeID: this.CodeID,
         },
@@ -270,7 +283,9 @@ export default {
           this.listMemberRole = respone.data.data;
           console.log(this.listMemberRole);
         }
-      });
+      }).catch((e) => {
+          console.log(e);
+        });
     },
     selectProfile() {
       this.profileSelected = true;

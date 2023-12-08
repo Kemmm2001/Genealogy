@@ -35,10 +35,10 @@
           <div class="view-member">
             <div @click="numberItemSelection(index), getInforMember(member.MemberID)" class="member" style="cursor: pointer;" :class="{ choose: itemChoose === index }" v-for="(member, index) in memberFilter" :key="member.MemberID">
               <div class="image-member" v-if="member.Male == 1">
-                <img class="avatar" src="https://pereaclinic.com/wp-content/uploads/2019/12/270x270-male-avatar.png" />
+                <img class="avatar" src="../assets/image/270x270-male-avatar.png" />
               </div>
               <div class="image-member" v-if="member.Male == 0">
-                <img class="avatar" src="https://pereaclinic.com/wp-content/uploads/2019/12/270x270-female-avatar.png" />
+                <img class="avatar" src= "../assets/image/270x270-female-avatar.png" />
               </div>
               <div class="infor-member">
                 <b>{{ member.MemberName }}</b>
@@ -51,7 +51,7 @@
             </div>
             <div v-if="memberList.length == 0" class="h-100 w-100 position-relative">
             <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content; font-size: 19px;">
-              Gia tộc chưa có thành viên nào
+              Gia phả chưa có thành viên nào
             </div>
           </div>
           </div>
@@ -570,6 +570,9 @@
   </div>
 </template>
 <script>
+import Vue from "vue";
+import VueCookies from "vue-cookies";
+Vue.use(VueCookies);
 import { HTTP } from "../assets/js/baseAPI.js";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { LunarDate } from "vietnamese-lunar-calendar";
@@ -678,7 +681,9 @@ export default {
 
   methods: {
     getListReligion() {
-      HTTP.get("religion")
+      HTTP.get("religion",{
+        
+      })
         .then((response) => {
           this.ListReligion = response.data;
         })
@@ -687,7 +692,9 @@ export default {
         });
     },
     getListNationality() {
-      HTTP.get("nationality")
+      HTTP.get("nationality",{
+        
+      })
         .then((response) => {
           this.ListNationality = response.data;
         })
@@ -847,6 +854,7 @@ export default {
     },
     updateEducationMember() {
       HTTP.put("updateEducation", {
+        
         School: this.objMemberEducation.School,
         Description: this.objMemberEducation.Description,
         StartDate: this.objMemberEducation.StartDate,
@@ -860,6 +868,7 @@ export default {
     },
     updateJobMember() {
       HTTP.put("updateJob", {
+        
         JobID: this.JobIDToUpdate,
         Organization: this.objMemberJob.Organization,
         OrganizationAddress: this.objMemberJob.OrganizationAddress,
@@ -880,6 +889,7 @@ export default {
           this.objMemberContact.Address + "-" + this.selectDistrictMember;
       }
       HTTP.put("member", {
+        
         MemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
         NickName: this.objMemberInfor.NickName,
@@ -911,6 +921,7 @@ export default {
               this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
             }
             HTTP.put("updateContact", {
+              
               MemberID: this.CurrentIdMember,
               Address: this.objMemberContact.Address,
               Phone: this.objMemberContact.Phone,
@@ -966,6 +977,7 @@ export default {
     getInforMember(id) {
       this.CurrentIdMember = id;
       HTTP.get("InforMember", {
+        
         params: {
           memberId: id,
         },
@@ -1140,6 +1152,7 @@ export default {
 
     getListMemberInGenalogy() {
       HTTP.get("membersInGenealogy", {
+        
         params: {
           CodeID: this.CodeID,
         },
@@ -1165,6 +1178,7 @@ export default {
     },
     removeMember() {
       HTTP.get("deleteContact", {
+        
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1173,6 +1187,7 @@ export default {
       });
 
       HTTP.get("RemoveListJob", {
+        
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1181,6 +1196,7 @@ export default {
       });
 
       HTTP.get("deleteListEducation", {
+        
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1188,6 +1204,7 @@ export default {
         console.log(e);
       });
       HTTP.get("delete-member", {
+        
         params: {
           MemberID: this.CurrentIdMember,
         },

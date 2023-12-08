@@ -6,6 +6,7 @@ const ContactManagementController = require('../Controller/FamilyGenealogy/Conta
 const EducationManagementController = require('../Controller/FamilyGenealogy/EducationManagementController')
 const CompareMemberController = require('../Controller/FamilyGenealogy/CompareMemberController')
 const CoreFunction = require('../Utils/CoreFunction');
+const authMiddleware = require('../helper/author_helper')
 
 var router = express.Router();
 
@@ -18,7 +19,7 @@ const initWebRouter = (app) => {
     router.get('/religion', ManagerFamilyTree.AllReligion)
     router.get('/agegroup', FamilyMemberManagement.getListAgeGroup)
     router.get('/bloodtype', FamilyMemberManagement.getListBloodTypeGroup)
-    router.get('/membersInGenealogy',FamilyMemberManagement.getAllMembersInGenalogy)
+    router.get('/membersInGenealogy', FamilyMemberManagement.getAllMembersInGenalogy)
 
     router.get('/memberRole', ManagerFamilyTree.AllMemberRole)
     router.get('/InforMember', ManagerFamilyTree.informationMember)
@@ -27,7 +28,7 @@ const initWebRouter = (app) => {
     router.get('/viewTree', ManagerFamilyTree.AllMemberInGenelogy)
     router.get('/getFamilyHead', ManagerFamilyTree.getFamilyHead)
 
-    router.get('/listMemberMessage',ManagerFamilyTree.getlistMemberToSendMessage)
+    router.get('/listMemberMessage', ManagerFamilyTree.getlistMemberToSendMessage)
     router.get('/relationship', ManagerFamilyTree.getRelationShipMember)
     router.put('/removeRelationship', ManagerFamilyTree.removeRelationship)
     router.get('/idPaternal', ManagerFamilyTree.GetIdPaternalAncestor)
@@ -56,25 +57,25 @@ const initWebRouter = (app) => {
 
     //API tuấn
     router.get('/member', FamilyMemberManagement.getMember);
-    router.post('/member', FamilyMemberManagement.addMember);
-    router.post('/add-child', FamilyMemberManagement.addChild);
-    router.put('/member', FamilyMemberManagement.updateMember);
-    router.put('/member-photo', CoreFunction.uploadImage("member-photo").single('Image'), FamilyMemberManagement.updateMemberPhoto);
-    router.put('/memberToGenealogy', FamilyMemberManagement.updateMemberToGenealogy);
-    router.put('/linkRelationship', FamilyMemberManagement.linkRelationship);
-    router.get('/delete-member', FamilyMemberManagement.deleteMember)
+    router.post('/member', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.addMember);
+    router.post('/add-child', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.addChild);
+    router.put('/member', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.updateMember);
+    router.put('/member-photo',authMiddleware.authenticateAndAuthorize(2), CoreFunction.uploadImage("member-photo").single('Image'), FamilyMemberManagement.updateMemberPhoto);
+    router.put('/memberToGenealogy', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.updateMemberToGenealogy);
+    router.put('/linkRelationship', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.linkRelationship);
+    router.get('/delete-member', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.deleteMember)
     router.get('/getparent', FamilyMemberManagement.GetCurrentParentMember)
-    router.post('/InsertParentID', FamilyMemberManagement.insertParentIdToMember)
+    router.post('/InsertParentID', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.insertParentIdToMember)
 
     //API Nhật anh
     router.get('/members', FamilyMemberManagement.getAllMember);
     router.post('/search-member', FamilyMemberManagement.searchMember);
     router.post('/filter-member', FamilyMemberManagement.filterMember);
-    router.post('/sort-member', FamilyMemberManagement.sortMembers);
+    // router.post('/sort-member', FamilyMemberManagement.sortMembers);
 
     //Tiền tố đứng trước route
     app.use('/api/v1', router);
-   
+
 }
 
 module.exports = initWebRouter;

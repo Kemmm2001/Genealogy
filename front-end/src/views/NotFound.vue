@@ -8,8 +8,10 @@
 .not-found-bg{
     background-color: #FFFFFF;
     min-height: inherit;
-    background-image: url(../assets/NotFound.png);
+    height: 100%;
+    background-image: url(../assets/error-404.webp);
     background-position: center;
     background-repeat: no-repeat;
+    background-size: contain;
 }
 </style>

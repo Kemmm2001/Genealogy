@@ -3,7 +3,7 @@
   <div class="history-screen d-flex h-100 w-100 p-0 position-relative" style="overflow-y: auto;">
     <div class="h-100 position-absolute" style="top: 0; left: 0; width: 20%;">
       <div class="pt-2 px-2 d-flex flex-row align-items-center justify-content-center"
-        style="height: 50px; font-size: 20px; font-weight: bold;">Lịch sử gia tộc</div>
+        style="height: 50px; font-size: 20px; font-weight: bold;">Lịch sử gia phả</div>
       <div class="position-relative p-2 d-flex">
         <label for="text-search" style="position: absolute; inset: 12px;">
           <svg class="text-search-icon h-100 d-flex align-items-center" xmlns="http://www.w3.org/2000/svg"
@@ -50,7 +50,7 @@
     <div v-else class="h-100 position-absolute p-2" style="top: 0; right: 0; width: 80%; background-color: #f2f2f2;">
       <div class="h-100 w-100 position-relative">
         <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content; font-size: 19px;">
-          Gia tộc của bạn chưa được tạo lịch sử
+          Gia phả của bạn chưa được tạo lịch sử
         </div>
       </div>
     </div>
@@ -95,6 +95,9 @@
 </template>
 
 <script>
+import Vue from "vue";
+import VueCookies from "vue-cookies";
+Vue.use(VueCookies);
 import draggable from "vuedraggable";
 import { HTTP } from "../assets/js/baseAPI";
 import Snackbar from "awesome-snackbar";
@@ -152,6 +155,7 @@ export default {
     filterHistory() {
       if (this.filterEndDate != null && this.filterStartDate != null) {
         HTTP.post("filterHistory", {
+          
           startDate: this.filterStartDate,
           endDate: this.filterEndDate,
         })
@@ -170,6 +174,7 @@ export default {
     //nguyễn lê hùng
     searchHistory() {
       HTTP.post("searchHistory", {
+        
         CodeID: this.CodeID,
         keySearch: this.keySearch,
       })
@@ -188,6 +193,7 @@ export default {
     //nguyễn lê hùng
     removeHistory() {
       HTTP.get("delete-familyhistory", {
+        
         params: {
           FamilyHistoryID: this.historyID,
         },
@@ -216,6 +222,7 @@ export default {
       this.isAdd = false;
       this.historyID = historyID;
       HTTP.get("familyhistory", {
+        
         params: {
           FamilyHistoryID: historyID,
         },
@@ -228,7 +235,9 @@ export default {
           this.descriptionModal = data.Description;
           this.showAddHistoryModal("Thông tin lịch sử");
         }
-      });
+      }).catch((e) => {
+          console.log(e);
+        });
     },
     //nguyễn lê hùng
     updateHistory() {
@@ -239,6 +248,7 @@ export default {
         this.descriptionModal != ""
       ) {
         HTTP.put("familyhistory", {
+          
           FamilyHistoryID: this.historyID,
           Description: this.descriptionModal,
           startDate: this.startDate,
@@ -272,6 +282,7 @@ export default {
           this.descriptionModal != ""
         ) {
           HTTP.post("familyhistory", {
+            
             CodeID: this.CodeID,
             Description: this.descriptionModal,
             startDate: this.startDate,
@@ -306,6 +317,7 @@ export default {
     },
     getListHistory() {
       HTTP.get("familyhistory", {
+        
         params: {
           CodeID: this.CodeID,
         },

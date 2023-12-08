@@ -130,7 +130,7 @@
             </table>
           </div>
           <div v-if="listEvent.length == 0" class="h-100 w-100 position-relative">
-            <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content; font-size: 19px;">Gia tộc chưa có sự kiện nào</div>
+            <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content; font-size: 19px;">Gia phả chưa có sự kiện nào</div>
           </div>
         </div>
       </div>
@@ -350,6 +350,9 @@
 </template>
 
 <script>
+import Vue from "vue";
+import VueCookies from "vue-cookies";
+Vue.use(VueCookies);
 import Snackbar from "awesome-snackbar";
 import { Calendar } from "vietnamese-lunar-calendar";
 import { HTTP } from "../assets/js/baseAPI.js";
@@ -423,6 +426,7 @@ export default {
     getListMemberToSendMessage() {
       console.log(this.CodeID);
       HTTP.get("listMemberMessage", {
+        
         params: {
           CodeID: this.CodeID,
         },
@@ -457,12 +461,14 @@ export default {
       console.log(this.currentEventID);
       if (this.numberExpire != null) {
         HTTP.get("getIdAndEmail", {
+          
           params: {
             ListMemberID: this.ListMemberToSendEmail,
             eventId: this.currentEventID,
           },
         }).then((respone) => {
           HTTP.post("inviteMail", {
+            
             data: respone.data.data,
             time: this.numberExpire + "d",
             eventId: this.currentEventID,
@@ -472,7 +478,11 @@ export default {
               this.time = null;
               this.ListMemberToSendEmail = [];
             }
-          });
+          }).catch((e) => {
+          console.log(e);
+        });
+        }).catch((e) => {
+          console.log(e);
         });
       } else {
         this.NotificationsDelete(
@@ -596,6 +606,7 @@ export default {
     },
     getListEvent() {
       HTTP.get("event", {
+        
         params: {
           CodeID: this.CodeID,
         },
@@ -619,6 +630,7 @@ export default {
         this.getListEvent();
       } else {
         HTTP.post("filter-event", {
+          
           Status: this.filterStatus,
           CodeID: this.CodeID,
         })
@@ -634,6 +646,7 @@ export default {
     },
     searchEvent() {
       HTTP.post("searchEvent", {
+        
         CodeID: this.CodeID,
         keySearch: this.keySearch,
       })
@@ -659,6 +672,7 @@ export default {
           this.eventFamily.Place != null
         ) {
           HTTP.post("addEvent", {
+            
             EventName: this.eventFamily.EventName,
             CodeID: this.CodeID,
             Status: 1,
@@ -697,6 +711,7 @@ export default {
         this.eventFamily.Place != null
       ) {
         HTTP.put("updateEvent", {
+          
           EventID: this.eventFamily.EventID,
           EventName: this.eventFamily.EventName,
           StartDate: this.eventFamily.StartDate,
@@ -724,7 +739,9 @@ export default {
       }
     },
     exportExcel() {
-      HTTP.post("export-excle", {
+      console.log(111)
+      HTTP.post("export-excel", {
+        
         CodeID: this.CodeID,
       })
         .then((respone) => {
@@ -741,6 +758,7 @@ export default {
     },
     removeEvent() {
       HTTP.delete("removeEvent", {
+        
         params: {
           EventID: this.eventFamily.EventID,
         },
@@ -803,6 +821,7 @@ export default {
       this.eventFamily = {};
       this.titleModal = "sửa thông tin sự kiện";
       HTTP.get("inforEvent", {
+        
         params: {
           EventID: id,
         },
@@ -840,7 +859,9 @@ export default {
           this.endDate = `${year}-${month}-${day}`;
           this.$modal.show("add-event-modal");
         }
-      });
+      }).catch((e) => {
+          console.log(e);
+        });
     },
     closeEditEventModal() {
       this.$modal.hide("edit-event-modal");
@@ -854,6 +875,7 @@ export default {
       );
       this.title = this.title.EventName;
       HTTP.get("eventAttendance", {
+        
         params: {
           EventID: EventID,
         },
@@ -865,7 +887,9 @@ export default {
           console.log("vào else");
         }
         this.$modal.show("participant-list");
-      });
+      }).catch((e) => {
+          console.log(e);
+        });
     },
     checkEventNotificationSent(EventID) {
       if (this.ListEventNotificationSent) {
@@ -879,6 +903,7 @@ export default {
 
     getListEventNotificationSent() {
       HTTP.get("ListEventNotiSent", {
+        
         params: {
           CodeID: this.CodeID,
         },
@@ -887,7 +912,9 @@ export default {
           console.log(respone.data.data);
           this.ListEventNotificationSent = respone.data.data;
         }
-      });
+      }).catch((e) => {
+          console.log(e);
+        });
     },
     closeParticipantList() {
       this.$modal.hide("participant-list");

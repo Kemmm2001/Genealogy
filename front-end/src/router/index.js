@@ -79,6 +79,11 @@ const routes = [
     name: "nav",
     component: () => import("../components/NavbarComponent.vue"),
   },
+  {
+    path: "/verify",
+    name: "verify",
+    component: () => import("../views/VerifyAccount.vue"),
+  },
 ];
 
 const router = new Router({

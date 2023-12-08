@@ -1,4 +1,6 @@
 import axios from 'axios';
+import VueCookies from 'vue-cookies'
+
 export const HTTP = axios.create({
   baseURL: process.env.VUE_APP_BASEURL,
   headers: {
@@ -8,3 +10,8 @@ export const HTTP = axios.create({
   },
   responseType: "json",
 })
+
+HTTP.interceptors.request.use(config => {
+  config.headers.Authorization = "Bearer " + VueCookies.get("accessToken");
+  return config;
+});

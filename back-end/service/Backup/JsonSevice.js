@@ -33,11 +33,23 @@ async function addDataToSheet(workbook, sheetName, data) {
         worksheet.addRow(headers);
 
         data.forEach(row => {
-            const rowValues = headers.map(header => row[header]);
+            const rowValues = headers.map(header => {
+                // Check if the current value is a Date object
+                if (row[header] instanceof Date) {
+                    // Format the date using toLocaleDateString
+                    return row[header].toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                    });
+                }
+                return row[header];
+            });
             worksheet.addRow(rowValues);
         });
     }
 }
+
 
 async function queryDatabase(tableName, memberIDs) {
     return new Promise((resolve, reject) => {
@@ -112,7 +124,7 @@ async function importData(file) {
 
 
 async function insertDataToTable(worksheet, tableName) {
-    const headers = worksheet.getRow(1).values.filter(header => header !== ''); // Lấy các headers từ hàng đầu tiên và loại bỏ các header trống
+    const headers = worksheet.getRow(1).values.filter(header => header !== ''); // Get non-empty headers from the first row
 
     for (let rowNumber = 2; rowNumber <= worksheet.rowCount; rowNumber++) {
         const row = worksheet.getRow(rowNumber);
@@ -122,8 +134,11 @@ async function insertDataToTable(worksheet, tableName) {
             const cellValue = row.getCell(i).value;
             let formattedValue = '';
 
-            // Kiểm tra và xử lý các giá trị để đảm bảo đúng cú pháp trong câu truy vấn SQL
-            if (cellValue === null || cellValue === '') {
+            // Update date formatting logic
+            if (typeof cellValue === 'string' && !isNaN(Date.parse(cellValue))) {
+                const formattedDate = new Date(cellValue).toISOString().split('T')[0];
+                formattedValue = `'${formattedDate}'`;
+            } else if (cellValue === null || cellValue === '') {
                 formattedValue = 'NULL';
             } else if (typeof cellValue === 'string') {
                 formattedValue = `'${cellValue.replace(/'/g, "''")}'`;
@@ -137,7 +152,7 @@ async function insertDataToTable(worksheet, tableName) {
         const query = `INSERT INTO ${tableName} (${headers.join(',')}) VALUES (${formattedValues.join(',')})`;
         console.log(query)
         try {
-            // Thực hiện truy vấn SQL bằng await để đảm bảo thứ tự chạy của các truy vấn
+            // Execute SQL query with await to maintain query execution order
             const results = await new Promise((resolve, reject) => {
                 db.connection.query(query, (error, results) => {
                     if (error) {
@@ -147,9 +162,9 @@ async function insertDataToTable(worksheet, tableName) {
                     }
                 });
             });
-            console.log("Inserted row:", results); // Log kết quả của việc chèn dòng dữ liệu
+            console.log("Inserted row:", results); // Log the result of inserting a data row
         } catch (error) {
-            console.error("Error inserting row:", error); // Bắt lỗi nếu có lỗi xảy ra khi chèn dữ liệu
+            console.error("Error inserting row:", error); // Catch error if there's an issue while inserting data
         }
     }
 }

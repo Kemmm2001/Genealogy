@@ -21,6 +21,8 @@ const initWebRouter = (app) => {
   // router.delete('/logout', UserController.logout);
   router.post('/forget-password', UserController.forgetPassword)
   router.post('/reset-password', UserController.resetPassword)
+  router.post('/verify-account', UserController.verifyAccount)
+  router.post('/setActive', UserController.setActive)
 
   router.post('/register-genealogy', UserController.registerGenealogy)
   router.post('/get-genealogy', UserController.getGenealogy)
