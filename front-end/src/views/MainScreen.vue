@@ -627,7 +627,7 @@
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
                         <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item" placeholder />
-                        <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">{{this.action=="AddChild" ? 'Con thứ' : (this.isFather ? "Vợ thứ" : "Chồng thứ")}}</label>
+                        <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">{{this.action=="AddChild" ? 'Con thứ' : (this.isFather ? "Vợ thứ" : (this.isFather == null ? "Con thứ":"Chồng thứ"))}}</label>
                       </div>
                     </div>
                     <div style="display:flex">
@@ -1062,7 +1062,7 @@ export default {
       ListReligion: null,
       nodes: [],
       formData: null,
-      isFather: true,
+      isFather: null,
 
       extendedInfo: true,
       extendedContact: false,
@@ -1236,6 +1236,7 @@ export default {
               if (nodeElement.hasAttribute("data-n-id") == false) {
                 nodeElement = nodeElement.parentNode;
               }
+              this.isFather = null;
               if (nodeElement && nodeElement.hasAttribute("data-n-id")) {
                 let id = nodeElement.getAttribute("data-n-id");
                 self.idNodeWatching = id;
@@ -2681,6 +2682,7 @@ export default {
     },
 
     getListMember() {
+      
       HTTP.get("getFamilyHead", {
         params: {
           CodeID: this.CodeID,
@@ -2698,6 +2700,7 @@ export default {
             },
           })
             .then((response) => {
+              console.log(111)
               this.nodes = [];
               this.numberDeath = 0;
               if (response.data.success == true) {
