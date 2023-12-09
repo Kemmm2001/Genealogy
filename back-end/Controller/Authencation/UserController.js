@@ -73,6 +73,20 @@ var getInformationTree = async (req, res) => {
   }
 }
 
+//Nguyễn Lê Hùng
+var getAllRoleAccount = async (req, res) => {
+  try {
+    let data = await UserService.getAllRoleAccount();
+    if (data) {
+      res.send(Response.successResponse(data))
+    } else {
+      res.send(Response.dataNotFoundResponse())
+    }
+  } catch (error) {
+    res.send(Response.internalServerErrorResponse())
+  }
+}
+//Nguyễn Lê Hùng
 var getRoleAccount = async (req, res) => {
   try {
     let accountID = req.body.accountID;
@@ -87,7 +101,7 @@ var getRoleAccount = async (req, res) => {
     return res.send(Response.internalServerErrorResponse())
   }
 }
-
+//Nguyễn Lê Hùng
 var changeUsername = async (req, res) => {
   try {
     console.log(req.body)
@@ -103,7 +117,7 @@ var changeUsername = async (req, res) => {
     return res.send(Response.dataNotFoundResponse(error));
   }
 }
-
+//Nguyễn Lê Hùng
 var getHistoryCodeID = async (req, res) => {
   try {
     let accountID = req.query.accountID;
@@ -118,7 +132,7 @@ var getHistoryCodeID = async (req, res) => {
     return res.send(Response.dataNotFoundResponse(error));
   }
 }
-
+//Nguyễn Lê Hùng
 var getListRoleMember = async (req, res) => {
   try {
     console.log('req: ' + req.query.CodeID)
@@ -132,7 +146,7 @@ var getListRoleMember = async (req, res) => {
     return res.send(Response.dataNotFoundResponse(error));
   }
 }
-
+//Nguyễn Lê Hùng
 var ChangePassword = async (req, res) => {
   try {
     let dataAccount = await UserService.getUserInfo(req.body.accountID);
@@ -594,6 +608,6 @@ var setActive = async (req, res) => {
 module.exports = {
   registerUser, loginUser, refreshToken, registerGenealogy, getGenealogy, setRole,
   checkCodeID, getUserInfor, getUserCodeID, getHistoryCodeID, ChangePassword, getListRoleMember,
-  forgetPassword, resetPassword, changeUsername, getInformationTree, verifyAccount, setActive,getRoleAccount
+  forgetPassword, resetPassword, changeUsername, getInformationTree, verifyAccount, setActive, getRoleAccount, getAllRoleAccount
 
 };

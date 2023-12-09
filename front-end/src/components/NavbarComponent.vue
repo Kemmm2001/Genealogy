@@ -113,9 +113,9 @@
                     </svg>
                 </button>
             </div>
-            <div class="navbar-item-content d-flex flex-row justify-content-center">
+            <div class="navbar-item-content d-flex flex-row justify-content-center position-relative">
                 <div @mouseenter="expandAccountManage = true;" @mouseleave="expandAccountManage = false;"
-                    style="padding-right: 20px;" class="position-relative align-items-center d-flex">
+                    style="padding-right: 20px; overflow: hidden;" class="align-items-center d-flex">
                     <div :class="{ 'header-selected': currentPath === '/profile' }"
                         class="navbar-item d-flex flex-row w-100 p-1" style="overflow: hidden;">
                         <div>

@@ -54,7 +54,7 @@ const initWebRouter = (app) => {
     router.get('/deleteListEducation',authMiddleware.authenticateAndAuthorize(2), EducationManagementController.RemoveListEducationMember)
 
     //API tuấn
-    router.get('/member', FamilyMemberManagement.getMember);
+    router.get('/member',authMiddleware.authenticateAndAuthorize(3), FamilyMemberManagement.getMember);
     router.post('/member', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.addMember);
     router.post('/add-child', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.addChild);
     router.post('/add-marriage', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.addMarriage);
@@ -63,7 +63,7 @@ const initWebRouter = (app) => {
     router.put('/memberToGenealogy', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.updateMemberToGenealogy);
     router.put('/linkRelationship', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.linkRelationship);
     router.get('/delete-member', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.deleteMember)
-    router.get('/getparent', FamilyMemberManagement.GetCurrentParentMember)
+    router.get('/getparent',authMiddleware.authenticateAndAuthorize(3), FamilyMemberManagement.GetCurrentParentMember)
     router.post('/InsertParentID', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.insertParentIdToMember)
 
     //API Nhật anh

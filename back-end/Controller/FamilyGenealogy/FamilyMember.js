@@ -85,7 +85,7 @@ var addMember = async (req, res) => {
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("Đã có đủ các trường bắt buộc");
-        const action = ['AddParent', 'AddMarriage', 'AddNormal', 'AddFirst'];
+        const action = ['AddParent', 'AddNormal', 'AddFirst'];
         if (!action.includes(req.body.Action)) {
 
             return res.send(Response.badRequestResponse(null, "Action không hợp lệ"));
@@ -107,7 +107,6 @@ var addMember = async (req, res) => {
         if (dataCodeID == null || dataCodeID.length == 0) {
             return res.send(Response.dataNotFoundResponse(null, "Mã gia phả không tồn tại"));
         }
-        let dataRes = {};
         let data = await FamilyManagementService.addMember(req.body);
         // trường hợp muốn thêm thành viên mà không có trong cây gia phả
         if (req.body.Action == 'AddNormal') {
@@ -201,53 +200,11 @@ var addMember = async (req, res) => {
                 }
                 await FamilyManagementService.setGeneration(currentMember[0].Generation - 1, data.insertId);
             }
-            // trường hợp muốn thêm vợ chồng
-            else if (req.body.Action == 'AddMarriage') {
-                console.log("Đã vào trường hợp thêm vợ chồng");
-                let objData = {};
-                // trường hợp giới tính giống nhau, thì trả về thông báo ko hỗ trợ
-                if (req.body.Male == currentMember[0].Male) {
-                    let errorMessage = 'Không hỗ trợ kết hôn đồng giới';
-                    return res.send(Response.badRequestResponse(null, errorMessage));
-                }
-                // nếu vào trường hợp thêm chồng 
-                if (req.body.Male == 1) {
-                    console.log("Đã vào trường hợp thêm chồng");
-                    // tìm số lần kết hôn của vợ
-                    let countMarriage = await MarriageManagement.getWifeMaxMarriageNumber(req.body.CurrentMemberID, currentMember[0].CodeID);
-                    console.log("countMarriage: ", countMarriage);
-                    if (!CoreFunction.isDataNumberExist(countMarriage)) {
-                        countMarriage = 0;
-                    }
-                    objData = {
-                        husbandID: data.insertId,
-                        wifeID: req.body.CurrentMemberID,
-                        codeID: req.body.CodeID,
-                        marriageNumber: countMarriage + 1
-                    }
-                }
-                // nếu vào trường hợp thêm vợ
-                else if (req.body.Male == 0) {
-                    console.log("Đã vào trường hợp thêm vợ");
-                    // tìm số lần kết hôn của chồng
-                    let countMarriage = await MarriageManagement.getHusbandMaxMarriageNumber(req.body.CurrentMemberID, currentMember[0].CodeID);
-                    console.log("countMarriage: ", countMarriage);
-                    if (!CoreFunction.isDataNumberExist(countMarriage)) {
-                        countMarriage = 0;
-                    }
-                    objData = {
-                        husbandID: req.body.CurrentMemberID,
-                        wifeID: data.insertId,
-                        codeID: req.body.CodeID,
-                        marriageNumber: countMarriage + 1
-                    }
-                }
-                await FamilyManagementService.setGeneration(currentMember[0].Generation, data.insertId);
-                await MarriageManagement.addMarriage(objData);
-            }
+           
             await FamilyManagementService.setRole(3, data.insertId);
         }
         // kết thúc phần thêm member theo action
+        let dataRes = {};
         dataRes.MemberID = data.insertId;
         dataRes.affectedRows = data.affectedRows;
         return res.send(Response.successResponse(dataRes));
@@ -382,7 +339,10 @@ var addChild = async (req, res) => {
         // kết thúc kiểm tra birthorder
         await FamilyManagementService.setGeneration(parentGeneration + 1, data.insertId);
         await FamilyManagementService.setRole(3, data.insertId);
-        return res.send(Response.successResponse());
+        let dataRes = {};
+        dataRes.MemberID = data.insertId;
+        dataRes.affectedRows = data.affectedRows;
+        return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
         return res.send(Response.internalServerErrorResponse());
@@ -431,6 +391,12 @@ var addMarriage = async (req, res) => {
         console.log("currentMember: ", currentMember);
         if (!CoreFunction.isDataNumberExist(currentMember)) {
             return res.send(Response.dataNotFoundResponse(null, "Thành viên hiện tại đang không tồn tại"));
+        }
+        // nếu là người ngoài gia phả, tức là ko có cha mẹ và roleid là 3
+        if (currentMember[0].RoleID == 3 
+            && !CoreFunction.isDataNumberExist(currentMember[0].FatherID) && !CoreFunction.isDataNumberExist(currentMember[0].MotherID)) {
+            let errorMessage = 'Không thể thêm vợ chồng nếu thành viên hiện tại là người ngoài gia phả';
+            return res.send(Response.badRequestResponse(null, errorMessage));
         }
         // trường hợp ở khác gia phả
         if (currentMember[0].CodeID != req.body.CodeID) {
@@ -503,7 +469,6 @@ var isBirthOrderExist = (memberID, birthOrder, listBirthOrderExist) => {
 // nguyễn anh tuấn
 var updateMemberPhoto = async (req, res) => {
     try {
-        console.log("vào đây")
         db.connection.beginTransaction();
         console.log('Request req.body: ', req.body);
         console.log("req.file: ", req.file);

@@ -169,4 +169,14 @@ th{
     display: inline-block !important;
 }
 
+/* tắt icon ẩn hiện pwd của microsoft edge */
+input::-ms-reveal, input::-ms-clear {
+    display: none;
+}
+
 /* ------------------------------ */
+.app-grid-container{
+    display: grid;
+    height: 100%;
+    grid-template-rows: 8% 92%;
+}

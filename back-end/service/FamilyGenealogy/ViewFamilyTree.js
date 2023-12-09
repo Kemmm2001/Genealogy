@@ -273,7 +273,7 @@ function getEventMember(id) {
 //Nguyễn Lê Hùng
 function getRoleExist(MemberID, Role) {
     return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM genealogy.familymembe
+        let query = `SELECT * FROM genealogy.familymember
         where CodeID = ${MemberID} and RoleID = ${Role}`;
         db.connection.query(query, (err, result) => {
             if (err) {

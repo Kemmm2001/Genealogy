@@ -474,6 +474,23 @@ function getRoleAccount(AccountID, CodeID) {
   })
 }
 
+function getAllRoleAccount() {
+  return new Promise((resolve, reject) => {
+    try {
+      let query = "SELECT * FROM genealogy.roleaccount";
+      db.connection.query(query, (err, result) => {
+        if (!err && result.length > 0) {
+          resolve(result)
+        } else {
+          reject(err)
+        }
+      })
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
 
 
 function insertIntoFamily(value, codeID) {
@@ -528,7 +545,7 @@ module.exports = {
   checkMail, checkID, create, getUser, refreshFreeEmail, insertAccountFamily, checkCodeID,
   checkAccountID, updateRoleID, insertIntoFamily, getUserInfo, getUserCodeID, checkCodeIdCreator,
   insertAccountFamilyTree, checkCodeCreatedByID, getHistoryLoginCodeID, ChangePassword, getListRoleMember, UpdateAccount, UpdatePassword,
-  checkToken, changeUsername, getInformationGenealogy, UpdateRegisterToken, checkRegisterToken, 
-  UpdateActive, DeleteRePasssToken, DeleteRegisterToken,getRoleAccount
+  checkToken, changeUsername, getInformationGenealogy, UpdateRegisterToken, checkRegisterToken,
+  UpdateActive, DeleteRePasssToken, DeleteRegisterToken, getRoleAccount,getAllRoleAccount
 
 }

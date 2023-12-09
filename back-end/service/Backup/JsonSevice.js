@@ -124,50 +124,58 @@ async function importData(file) {
 
 
 async function insertDataToTable(worksheet, tableName) {
-    const headers = worksheet.getRow(1).values.filter(header => header !== ''); // Get non-empty headers from the first row
+    try {
+        const headers = worksheet.getRow(1).values.filter(header => header !== '');
 
-    for (let rowNumber = 2; rowNumber <= worksheet.rowCount; rowNumber++) {
-        const row = worksheet.getRow(rowNumber);
+        const queries = [];
 
-        const formattedValues = [];
-        for (let i = 1; i <= headers.length; i++) {
-            const cellValue = row.getCell(i).value;
-            let formattedValue = '';
+        for (let rowNumber = 2; rowNumber <= worksheet.rowCount; rowNumber++) {
+            const row = worksheet.getRow(rowNumber);
+            const formattedValues = [];
 
-            // Update date formatting logic
-            if (typeof cellValue === 'string' && !isNaN(Date.parse(cellValue))) {
-                const formattedDate = new Date(cellValue).toISOString().split('T')[0];
-                formattedValue = `'${formattedDate}'`;
-            } else if (cellValue === null || cellValue === '') {
-                formattedValue = 'NULL';
-            } else if (typeof cellValue === 'string') {
-                formattedValue = `'${cellValue.replace(/'/g, "''")}'`;
-            } else {
-                formattedValue = cellValue;
+            for (let i = 1; i <= headers.length; i++) {
+                const cellValue = row.getCell(i).value;
+                let formattedValue = '';
+
+                if (cellValue === null || cellValue === '') {
+                    formattedValue = 'NULL';
+                } else if (typeof cellValue === 'string') {
+                    // Escape single quotes in string values
+                    formattedValue = `'${cellValue.replace(/'/g, "''")}'`;
+                } else if (cellValue instanceof Date) {
+                    // Format date values as MySQL date strings
+                    formattedValue = `'${cellValue.toISOString().slice(0, 10)}'`;
+                } else {
+                    formattedValue = cellValue;
+                }
+
+                formattedValues.push(formattedValue);
             }
 
-            formattedValues.push(formattedValue);
+            const query = `INSERT INTO ${tableName} (${headers.join(',')}) VALUES (${formattedValues.join(',')})`;
+            console.log(query)
+            queries.push(query);
         }
 
-        const query = `INSERT INTO ${tableName} (${headers.join(',')}) VALUES (${formattedValues.join(',')})`;
-        console.log(query)
-        try {
-            // Execute SQL query with await to maintain query execution order
-            const results = await new Promise((resolve, reject) => {
-                db.connection.query(query, (error, results) => {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        resolve(results);
-                    }
-                });
-            });
-            console.log("Inserted row:", results); // Log the result of inserting a data row
-        } catch (error) {
-            console.error("Error inserting row:", error); // Catch error if there's an issue while inserting data
-        }
+        const results = await Promise.all(queries.map(query =>
+            queryWithPromise(query)
+                .then(result => {
+                    console.log("Inserted row:", result);
+                    return result;
+                })
+                .catch(error => {
+                    console.error("Error inserting row:", error);
+                    throw error;
+                })
+        ));
+
+        return results;
+    } catch (error) {
+        console.error('Error inserting data into table', tableName, error);
+        throw error;
     }
 }
+
 
 
 module.exports = { exportData, importData };
