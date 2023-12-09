@@ -138,18 +138,43 @@ var ChangePassword = async (req, res) => {
   try {
     let data = await UserService.getUserInfo(req.body.accountID);
     if (data) {
-      let isPasswordMatch = await bcrypt.compare(req.body.currentpassword, data.password);
-      if (!isPasswordMatch) {
-        return res.send(Response.dataNotFoundResponse(null, 'Mật khẩu không đúng'));
-      } else {
-        let hashedPassword = await bcrypt.hash(req.body.newPassword, 10);
+      if (!req.body.password || !req.body.repassword) {
+        return res.send(Response.internalServerErrorResponse(null, 'Vui lòng điền đầy đủ thông tin'));
+      }
+      console.log(req.body.password)
+      const decryptedBytes = CryptoJS.AES.decrypt(req.body.password, process.env.AES256_SECRET, {
+        iv: process.env.AES256_IV,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7  
+      });
+      const decryptedBytes1 = CryptoJS.AES.decrypt(req.body.repassword, process.env.AES256_SECRET, {
+        iv: process.env.AES256_IV,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7  
+      });
+      // Chuyển đổi dữ liệu giải mã thành chuỗi
+      var password = decryptedBytes.toString(CryptoJS.enc.Utf8);
+      var repassword = decryptedBytes1.toString(CryptoJS.enc.Utf8);
+  
+      console.log(password)
+  
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>])[a-zA-Z\d!@#$%^&*()\-_=+{};:,<.>]{8,}$/;
+      if (!passwordRegex.test(password)) {
+        return res.send(Response.internalServerErrorResponse(null, 'Mật khẩu phải có ít nhất 8 kí tự bao gồm ít nhất: 1 chữ cái viết hoa, 1 chữ cái thường, 1 chữ số và 1 kí tự đặc biệt'));
+  
+      }
+      if (password !== repassword) {
+        return res.send(Response.dataNotFoundResponse(null, 'Nhập Lại Mật khẩu không trùng nhau'));
+      } 
+    
+        let hashedPassword = await bcrypt.hash(password, 10);
         let data = await UserService.ChangePassword(hashedPassword, req.body.accountID)
         if (data == true) {
           return res.send(Response.successResponse());
         } else {
           return res.send(Response.dataNotFoundResponse());
         }
-      }
+      
     } else {
       return res.send(Response.dataNotFoundResponse());
     }
@@ -157,6 +182,7 @@ var ChangePassword = async (req, res) => {
     return res.send(Response.dataNotFoundResponse(error));
   }
 }
+
 
 var loginUser = async (req, res) => {
   try {
@@ -415,7 +441,6 @@ var resetPassword = async (req, res) => {
       return res.send(Response.internalServerErrorResponse(null, 'Vui lòng điền đầy đủ thông tin'));
     }
     console.log(req.body.password)
-
     const decryptedBytes = CryptoJS.AES.decrypt(req.body.password, process.env.AES256_SECRET, {
       iv: process.env.AES256_IV,
       mode: CryptoJS.mode.CBC,
@@ -439,7 +464,8 @@ var resetPassword = async (req, res) => {
     }
     if (password !== repassword) {
       return res.send(Response.dataNotFoundResponse(null, 'Nhập Lại Mật khẩu không trùng nhau'));
-    } else {
+    } 
+  
       console.log(req.body.password)
       let hashedPassword = await bcrypt.hash(password, 10);
       let data;
@@ -463,7 +489,7 @@ var resetPassword = async (req, res) => {
       } catch (error) {
         return res.send(Response.badRequestResponse(null, 'Lỗi khi cập nhật mật khẩu'));
       }
-    }
+    
   } catch (error) {
     return res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống'));
   }
