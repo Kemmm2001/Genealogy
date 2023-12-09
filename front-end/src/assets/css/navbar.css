@@ -90,6 +90,7 @@ router-link-exact-active {
     font-size: 7px;
     background-color: #FFFFFF;
     text-align: center;
+    z-index: 100px;
 }
 
 .navbar-grid-container .navbar-item-logo{
@@ -106,8 +107,6 @@ router-link-exact-active {
 .navbar-grid-container .navbar-item-select{
     display: flex;
     flex-direction: row;
-    /* grid-template-columns: 20% 25% 30% 25%; */
-    /* width: 90%; */
 }
 
 .navbar-grid-container .navbar-item-theme-user{
