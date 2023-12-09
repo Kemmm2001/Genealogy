@@ -216,7 +216,7 @@ var setRole = async (req, res) => {
             let turnOff = await FamilyTreeService.turnOffSQL_SAFE_UPDATES();
             let resetAll = await FamilyTreeService.ResetAllGenerationMember(CodeId);
             let turnOn = await FamilyTreeService.turnOnSQL_SAFE_UPDATES();
-            let settAll = await FamilyTreeService.setAllGenerationMember(memberId, 1);
+            let settAll = await FamilyTreeService.setAllGenerationMember(memberId, 1, CodeId);
             if (!remove || !insertMemberRole || !turnOff || !resetAll || !turnOn || !settAll) {
                 return res.send(Response.internalServerErrorResponse())
             }
