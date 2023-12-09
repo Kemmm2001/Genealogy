@@ -73,7 +73,20 @@ var getInformationTree = async (req, res) => {
   }
 }
 
-
+var getRoleAccount = async (req, res) => {
+  try {
+    let accountID = req.body.accountID;
+    let codeID = req.body.codeID;
+    let data = await UserService.getRoleAccount(accountID, codeID)
+    if (data) {
+      return res.send(Response.successResponse(data))
+    } else {
+      return res.send(Response.dataNotFoundResponse())
+    }
+  } catch (error) {
+    return res.send(Response.internalServerErrorResponse())
+  }
+}
 
 var changeUsername = async (req, res) => {
   try {
@@ -128,7 +141,7 @@ var ChangePassword = async (req, res) => {
     if (dataAccount) {
       if (!req.body.currentPassword || !req.body.newPassword || !req.body.Re_newPassword) {
         return res.send(Response.internalServerErrorResponse(null, 'Vui lòng điền đầy đủ thông tin'));
-      }      
+      }
       const decryptedBytesCurrentPassword = CryptoJS.AES.decrypt(req.body.currentPassword, process.env.AES256_SECRET, {
         iv: process.env.AES256_IV,
         mode: CryptoJS.mode.CBC,
@@ -148,7 +161,7 @@ var ChangePassword = async (req, res) => {
       var inputCurrentPassword = decryptedBytesCurrentPassword.toString(CryptoJS.enc.Utf8)
       console.log('inputCurrentPassword: ' + inputCurrentPassword)
       console.log('password: ' + dataAccount.Password)
-      let isPasswordMatch = await bcrypt.compare(inputCurrentPassword, dataAccount.Password);   
+      let isPasswordMatch = await bcrypt.compare(inputCurrentPassword, dataAccount.Password);
 
       if (!isPasswordMatch) {
         return res.send(Response.dataNotFoundResponse(null, 'Mật khẩu hiện tại không đúng'))
@@ -581,6 +594,6 @@ var setActive = async (req, res) => {
 module.exports = {
   registerUser, loginUser, refreshToken, registerGenealogy, getGenealogy, setRole,
   checkCodeID, getUserInfor, getUserCodeID, getHistoryCodeID, ChangePassword, getListRoleMember,
-  forgetPassword, resetPassword, changeUsername, getInformationTree, verifyAccount, setActive
+  forgetPassword, resetPassword, changeUsername, getInformationTree, verifyAccount, setActive,getRoleAccount
 
 };
