@@ -57,7 +57,7 @@
                 <div class="username position-absolute">{{ m.Email }}</div>
                 <div class="role h-100 position-absolute py-1">
                   <select :disabled="m.RoleID != 1 ? false : true" v-model="m.RoleID" class="form-select h-100 px-3 py-0" @change="changeRole(m.RoleID, m.AccountID)">
-                    <option style="text-align: center;" :value="m.RoleID">{{m.RoleName}}</option>
+                    <option v-for="list in listRoleAccount" :key="list.id" style="text-align: center;" :value="list.RoleID">{{m.RoleName}}</option>
                   </select>
                 </div>
               </div>
@@ -150,6 +150,7 @@ export default {
       oldPwdVisibilityType: "password",
       newPwdVisibilityType: "password",
       newPwd2VisibilityType: "password",
+      listRoleAccount: null,
     };
   },
   methods: {
@@ -168,7 +169,13 @@ export default {
 
       return encrypted;
     },
-
+    getAllRoleAccount() {
+      HTTP.get("allRoleAccount").then((respone) => {
+        if (respone.data.success) {
+          this.listRoleAccount = respone.data.data;
+        }
+      });
+    },
     decrypt(encrypted) {
       const decrypted = CryptoJS.AES.decrypt(
         encrypted,
@@ -379,6 +386,7 @@ export default {
     this.getListRoleMember();
     this.getInforAccount();
     this.getInforTree();
+    this.getAllRoleAccount();
   },
 };
 </script>
