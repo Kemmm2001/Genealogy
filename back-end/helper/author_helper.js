@@ -6,7 +6,7 @@ module.exports = {
     authenticateAndAuthorize: (requiredRole) => {
         return async (req, res, next) => {
             try {
-                jwtUtils.verifyAccessToken(req, res, async (error) => {
+                jwtUtils.verifyGenealogyToken(req, res, async (error) => {
                     if (error) {
                         if (error === 'Token expired') {
                             return res.send(Response.badRequestResponse(null, "Token hết hạn"));

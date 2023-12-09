@@ -6,17 +6,17 @@ const timeAccessToken = process.env.TIME_ACCESS_TOKEN
 const timeRefreshToken = process.env.TIME_REFRESH_TOKEN
 const timeRePassToken = process.env.TIME_REPASS_TOKEN
 const timeRegisterToken = process.env.TIME_REGISTER_TOKEN
+const timeGenealogyToken = process.env.TIME_GENEALOGY_TOKEN
 
 module.exports = {
   signAccessToken: (insertId) => {
     return new Promise((resolve, reject) => {
       const payload = {
-        codeId,
         insertId
       }
       const secret = process.env.ACCESS_TOKEN_SECRET
       const options = {
-        expiresIn: timeAccessToken,
+        expiresIn: "1d",
       }
       JWT.sign(payload, secret, options, (err, token) => {
         if (err) {
@@ -54,10 +54,53 @@ module.exports = {
     });
   },
 
+  signGenealogyToken: (insertId, codeID) => {
+    return new Promise((resolve, reject) => {
+      const payload = {
+        insertId, 
+        codeID
+      }
+      const secret = process.env.GENEALOGY_TOKEN_SECRET
+      const options = {
+        expiresIn: "8h" ,
+      }
+      JWT.sign(payload, secret, options, (err, token) => {
+        if (err) {
+          console.log(err.message)
+          reject(createError.InternalServerError())
+        }
+        resolve(token)
+      })
+    })
+  },
+
+  verifyGenealogyToken: (req, res, next) => {
+    if (!req.headers['authorization']) {
+      return res.json({ error: 'Unauthorized' });
+    }
+    const authHeader = req.headers['authorization'];
+    const bearerToken = authHeader.split(' ');
+    const token = bearerToken[1];
+
+    JWT.verify(token, process.env.GENEALOGY_TOKEN_SECRET, (err, payload) => {
+      if (err) {
+        if (err.name === 'JsonWebTokenError') {
+          return res.json({ error: 'Unauthorized' });
+        } else if (err.name === 'TokenExpiredError') {
+          return res.json({ error: 'Token expired' });
+        } else {
+          return res.json({ error: err.message });
+        }
+      }
+      req.payload = payload;
+      next();
+    });
+  },
+
   signRefreshToken: (insertId) => {
     return new Promise((resolve, reject) => {
       const payload = {
-        insertId,
+        insertId
       };
       const secret = process.env.REFRESH_TOKEN_SECRET;
       const options = {
