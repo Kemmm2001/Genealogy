@@ -21,3 +21,5 @@ function decrypt(encrypted) {
   decrypted += decipher.final('utf8');
   return decrypted;
 }
+
+module.exports = { encrypt, decrypt };
