@@ -960,11 +960,18 @@ var linkRelationship = async (req, res) => {
             return res.send(Response.badRequestResponse(null, "Không thể liên kết vì cả 2 người đều là người ngoài gia phả"));
         }
         console.log("Có thể liên kết sơ bộ");
-        const member1 = dataMember1[0];
-        const member2 = dataMember2[0];
+        let member1 = dataMember1[0];
+        let member2 = dataMember2[0];
 
         // Hàm kiểm tra giới tính của thành viên
-        const isMale = (member, gender) => member.Male == gender;
+        let isMale = (member, gender) => member.Male == gender;
+        let temp = {};
+        // luôn đảm bảo member1 là thế hệ trước và member2 là thế hệ sau
+        if (member1.Generation > member2.Generation) {
+            temp = member1;
+            member1 = member2;
+            member2 = temp;
+        }
         // So sánh thế hệ của hai thành viên
         if (member1.Generation < member2.Generation) {
             console.log("Thành viên 1 thế hệ nhỏ hơn thành viên 2");
@@ -1015,53 +1022,6 @@ var linkRelationship = async (req, res) => {
                 member2.BirthOrder = ++maxBirthOrder;
                 await FamilyManagementService.insertMotherIDToMember(member1.MemberID, member2.MemberID);
                 // => hiện tại member1 đã là mẹ của member2
-            }
-        } else if (member1.Generation > member2.Generation) {
-            console.log("Thành viên 1 thế hệ lớn hơn thành viên 2");
-            const hasFather = CoreFunction.isDataNumberExist(member1.FatherID);
-            const hasMother = CoreFunction.isDataNumberExist(member1.MotherID);
-            // nếu thành viên 1 là người ngoài gia phả, tức là không có cha mẹ
-            if (!hasFather && !hasMother) {
-                console.log("Không thể liên kết vì thành viên 1 là người ngoài gia phả");
-                return res.send(Response.badRequestResponse(null, "Không thể liên kết vì thành viên 1 là người ngoài gia phả"));
-            }
-            // Nếu thành viên 2 là nam
-            if (isMale(member2, 1)) {
-                console.log("Thành viên 2 là nam");
-                // Nếu đã có bố, trả về lỗi
-                if (hasFather) return res.send(Response.badRequestResponse(null, "Thành viên 1 đã có bố"));
-                // tìm tất cả con của member2 và mẹ của member1
-                let listChilds = await FamilyManagementService.getMembersByFatherIDAndMotherID(member2.MemberID, member1.MotherID);
-                console.log("listChilds: ", listChilds);
-                let maxBirthOrder = 0;
-                if (listChilds.length > 0) {
-                    /* Tìm giá trị BirthOrder lớn nhất trong mảng. So sánh giá trị BirthOrder của từng 
-                    đối tượng với giá trị max hiện tại và giữ lại giá trị lớn nhất.*/
-                    maxBirthOrder = listChilds.reduce((max, child) => (child.BirthOrder > max ? child.BirthOrder : max), listChilds[0].BirthOrder);
-                }
-                console.log("maxBirthOrder: ", maxBirthOrder);
-                // thay birthorder của member1 thành maxBirthOrder + 1
-                member1.BirthOrder = ++maxBirthOrder;
-                await FamilyManagementService.insertFatherIDToMember(member2.MemberID, member1.MemberID);
-                // => hiện tại member2 đã là cha của member1
-            } else if (isMale(member2, 0)) {
-                console.log("Thành viên 2 là nữ");
-                // Nếu đã có mẹ, trả về lỗi
-                if (hasMother) return res.send(Response.badRequestResponse(null, "Thành viên 1 đã có mẹ"));
-                // tìm tất cả con của member2 và cha của member1
-                let listChilds = await FamilyManagementService.getMembersByFatherIDAndMotherID(member1.FatherID, member2.MemberID);
-                console.log("listChilds: ", listChilds);
-                let maxBirthOrder = 0;
-                if (listChilds.length > 0) {
-                    /* Tìm giá trị BirthOrder lớn nhất trong mảng. So sánh giá trị BirthOrder của từng 
-                    đối tượng với giá trị max hiện tại và giữ lại giá trị lớn nhất.*/
-                    maxBirthOrder = listChilds.reduce((max, child) => (child.BirthOrder > max ? child.BirthOrder : max), listChilds[0].BirthOrder);
-                }
-                console.log("maxBirthOrder: ", maxBirthOrder);
-                // thay birthorder của member1 thành maxBirthOrder + 1
-                member1.BirthOrder = ++maxBirthOrder;
-                await FamilyManagementService.insertMotherIDToMember(member2.MemberID, member1.MemberID);
-                // => hiện tại member2 đã là mẹ của member1
             }
         }
         // lưu lại thông tin 2 member 
