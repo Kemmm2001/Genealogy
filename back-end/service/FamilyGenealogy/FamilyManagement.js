@@ -309,6 +309,7 @@ function insertFatherIDToMember(fatherID, memberID) {
 // nguyễn anh tuấn
 function insertMotherIDToMember(motherID, memberID) {
     return new Promise(async (resolve, reject) => {
+        console.log("Vào hàm insertMotherIDToMember với motherID: " + motherID + " và memberID: " + memberID);
         let query = `UPDATE familymember SET MotherID = ? WHERE MemberID = ?;`
         let values = [motherID, memberID];
         let result = await coreQuery(query, values);
