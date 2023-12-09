@@ -632,8 +632,12 @@
                     </div>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
-                        <select v-model="objMemberInfor.Male" class="form-select modal-item">
+                        <select v-model="objMemberInfor.Male" class="form-select modal-item" v-if="isFather == true">
                           <option value="1">Nam</option>
+                          <option value="0" selected>Nữ</option>
+                        </select>
+                        <select v-model="objMemberInfor.Male" class="form-select modal-item" v-else>
+                          <option value="1" selected>Nam</option>
                           <option value="0">Nữ</option>
                         </select>
                         <label class="form-label" for="select">Giới Tính</label>
@@ -2472,6 +2476,13 @@ export default {
       this.objMemberInfor = {};
       this.objMemberInfor.BirthOrder = 1;
       this.objMemberInfor.Male = 1;
+      console.log(this.isFather)
+      if(this.isFather == true && action == "AddMarriage"){
+        console.log(this.isFather)
+        this.objMemberInfor.Male = 0;
+      }else if(!this.isFather && action == "AddMarriage"){
+        this.objMemberInfor.Male = 1;
+      }
       this.objMemberInfor.BloodType = null;
       this.objMemberInfor.NationalityID = 1;
       this.objMemberInfor.ReligionID = 1;
