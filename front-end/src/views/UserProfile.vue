@@ -62,9 +62,6 @@
               </div>
             </div>
           </div>
-          <div class="w-100 d-flex mt-3" style="justify-content: end;">
-            <div class="btn bg-primary text-white" @click="saveChanges">Lưu thay đổi</div>
-          </div>
         </div>
         <div v-if="changePwdSelected" class="func-detail w-100 h-100 position-relative">
           <div class="func-detail-item">
@@ -308,10 +305,12 @@ export default {
     getInforAccount() {
       HTTP.post("get-user", {
         accountID: this.accountID,
+        CodeID: this.CodeID
       })
         .then((respone) => {
           if (respone.data.success == true) {
             this.accountInfor = respone.data.data;
+            console.log('infor: ' + this.accountInfor );
           } else {
             this.NotificationsScuccess(respone.data.message);
           }

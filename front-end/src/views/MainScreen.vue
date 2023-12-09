@@ -1543,27 +1543,23 @@ export default {
 
     //Nguyễn Lê Hùng
     searchMember() {
-      if (this.searchKeyword == "" || this.searchKeyword == null) {
-        this.ListMemberCanSendMessage = this.nodes;
-      } else {
-        HTTP.get("searchMemberSendMessage", {
-          params: {
-            CodeID: this.CodeID,
-            keySearch: this.searchKeyword,
-          },
+      HTTP.get("searchMemberSendMessage", {
+        params: {
+          CodeID: this.CodeID,
+          keySearch: this.searchKeyword,
+        },
+      })
+        .then((response) => {
+          if (response.data.success == true) {
+            console.log(response.data.data);
+            this.ListMemberCanSendMessage = response.data.data;
+          } else {
+            this.NotificationsDelete(response.data.message);
+          }
         })
-          .then((response) => {
-            if (response.data.success == true) {
-              console.log(response.data.data);
-              this.ListMemberCanSendMessage = response.data.data;
-            } else {
-              this.NotificationsDelete(response.data.message);
-            }
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-      }
+        .catch((e) => {
+          console.log(e);
+        });
     },
     //Nguyễn Lê Hùng
     toggleSelectAll() {

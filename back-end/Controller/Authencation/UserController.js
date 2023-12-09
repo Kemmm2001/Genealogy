@@ -257,7 +257,8 @@ var loginUser = async (req, res) => {
 var getUserInfor = async (req, res) => {
   try {
     console.log('body: ' + req.body.accountID)
-    let data = await UserService.getUserInfo(req.body.accountID)
+    let data = await UserService.getUserInfo(req.body.accountID, req.body.CodeID)
+
     console.log('data: ' + data)
     if (!data) {
       return res.send(Response.dataNotFoundResponse(null, 'Lỗi hệ thống,không tìm thấy tài khoản'));
