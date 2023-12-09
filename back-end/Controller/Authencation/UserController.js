@@ -244,7 +244,7 @@ var loginUser = async (req, res) => {
     if (!isPasswordMatch) {
       return res.send(Response.dataNotFoundResponse(null, 'Mật khẩu không đúng'));
     }
-    let accessToken = await signAccessToken(data.accountID)
+    let accessToken = await signAccessToken(codeID,data.accountID)
     // let refreshToken = await signRefreshToken(data.accountID)
     console.log(refreshToken)
     return res.send(Response.successResponse(accessToken, 'Login thành công'));
@@ -385,6 +385,7 @@ var checkCodeID = async (req, res) => {
       let checkCodeIdCreator1 = await UserService.checkCodeIdCreator(accountID, CodeID, 1);
       let checkCodeIdCreator2 = await UserService.checkCodeIdCreator(accountID, CodeID, 2);
       let checkCodeIdCreator3 = await UserService.checkCodeIdCreator(accountID, CodeID, 3);
+      
       console.log('checkCodeIdCreator: ' + checkCodeIdCreator1)
       if (checkCodeIdCreator1 > 0 || checkCodeIdCreator2 > 0 || checkCodeIdCreator3 > 0) {
         return res.send(Response.successResponse())

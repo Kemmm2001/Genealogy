@@ -11,6 +11,7 @@ module.exports = {
   signAccessToken: (insertId) => {
     return new Promise((resolve, reject) => {
       const payload = {
+        codeId,
         insertId
       }
       const secret = process.env.ACCESS_TOKEN_SECRET
