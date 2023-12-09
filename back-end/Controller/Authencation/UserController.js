@@ -491,7 +491,7 @@ var verifyAccount = async (req, res) => {
       try {
         console.log(token)
         const data = await UserService.UpdateRegisterToken(email, token)
-        const verifyLink = `${frontEndURL}/setActive?token=${token}`;
+        const verifyLink = `${frontEndURL}/verify?token=${token}`;
 
         const objData = {
           to: email,
