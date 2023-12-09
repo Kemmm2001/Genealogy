@@ -102,14 +102,6 @@
           </div>
         </div>
       </div>
-      <div class="d-flex flex-row" style="position: absolute; bottom: 0; right: 0; align-items: end; z-index: 999;">
-        <svg @click="togglehelp = !togglehelp" :class="{expandHelp : togglehelp}" class="help-icon p-1" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF">
-          <g>
-            <path d="M0,0h24v24H0V0z" fill="none" />
-            <path d="M11,7h2v2h-2V7z M11,11h2v6h-2V11z M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,20 c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8S16.41,20,12,20z" />
-          </g>
-        </svg>
-      </div>
     </div>
     <div class="Container-select-modal">
       <modal name="Select-option-Modal">
@@ -300,7 +292,7 @@
                   <div class="col-6 h-100 d-flex align-items-center position-relative">
                     <div class="mail-content-prev">{{e.EmailContent}}</div>
                   </div>
-                  <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">1/1/2000</div>
+                  <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">{{formatDate(e.EmailDate)}}</div>
                 </div>
               </div>
 
@@ -350,62 +342,6 @@
                     <div class="btn d-flex align-items-center justify-content-center" style="padding: 4px 12px; background: #007bff; color: #FFFFFF; border-radius: 0; outline: none; border: none;">Gửi</div>
                     <div style="border-radius: 0 50% 50% 0; background: #007bff; width: 25px;"></div>
                   </div>
-                </div>
-              </div>
-            </div>
-            <div class="position-absolute create-mail" :class="{ expanded: expandEventList }">
-              <div class="w-100 h-100 d-flex flex-column">
-                <div class="create-mail-title d-flex align-items-center justify-content-center position-relative">
-                  <div>Danh sách sự kiện</div>
-                  <div class="create-mail-close position-absolute" @click="expandEventList = !expandEventList">
-                    <div class="position-relative h-100 w-100">
-                      <svg class="create-mail-close-icon position-absolute" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                        <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-                <div class="pt-3 px-2 w-100" style="height: calc(100% - 100px); overflow-y: auto;">
-                  <div v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row">
-                    <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Chủ đề: {{e.EmailSubject}}</div>
-                    <div class="col-6 h-100 d-flex align-items-center position-relative">
-                      <div class="mail-content-prev">{{e.EmailContent}}</div>
-                    </div>
-                    <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">1/1/2000</div>
-                  </div>
-                </div>
-                <div class="create-mail-footer d-flex flex-row px-3 py-2 w-100" style="justify-content: end;">
-                  <div style="border-radius: 50% 0 0 50%; background: #007bff; width: 25px;"></div>
-                  <div class="btn d-flex align-items-center justify-content-center" style="padding: 4px 12px; background: #007bff; color: #FFFFFF; border-radius: 0" @click="sendEmailToMember()">Gửi</div>
-                  <div style="border-radius: 0 50% 50% 0; background: #007bff; width: 25px;"></div>
-                </div>
-              </div>
-            </div>
-            <div class="position-absolute create-mail" :class="{ expanded: expandEventListSMS }">
-              <div class="w-100 h-100 d-flex flex-column">
-                <div class="create-mail-title d-flex align-items-center justify-content-center position-relative">
-                  <div>Danh sách sự kiện</div>
-                  <div class="create-mail-close position-absolute" @click="expandEventListSMS = !expandEventListSMS">
-                    <div class="position-relative h-100 w-100">
-                      <svg class="create-mail-close-icon position-absolute" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                        <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-                <div class="pt-3 px-2 w-100" style="height: calc(100% - 100px); overflow-y: auto;">
-                  <div v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row">
-                    <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Chủ đề: {{e.EmailSubject}}</div>
-                    <div class="col-6 h-100 d-flex align-items-center position-relative">
-                      <div class="mail-content-prev">{{e.EmailContent}}</div>
-                    </div>
-                    <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">1/1/2000</div>
-                  </div>
-                </div>
-                <div class="create-mail-footer d-flex flex-row px-3 py-2 w-100" style="justify-content: end;">
-                  <div style="border-radius: 50% 0 0 50%; background: #007bff; width: 25px;"></div>
-                  <div class="btn d-flex align-items-center justify-content-center" style="padding: 4px 12px; background: #007bff; color: #FFFFFF; border-radius: 0" @click="sendEmailToMember()">Gửi</div>
-                  <div style="border-radius: 0 50% 50% 0; background: #007bff; width: 25px;"></div>
                 </div>
               </div>
             </div>
@@ -2483,11 +2419,11 @@ export default {
       this.objMemberInfor = {};
       this.objMemberInfor.BirthOrder = 1;
       this.objMemberInfor.Male = 1;
-      console.log(this.isFather)
-      if(this.isFather == true && action == "AddMarriage"){
-        console.log(this.isFather)
+      console.log(this.isFather);
+      if (this.isFather == true && action == "AddMarriage") {
+        console.log(this.isFather);
         this.objMemberInfor.Male = 0;
-      }else if(!this.isFather && action == "AddMarriage"){
+      } else if (!this.isFather && action == "AddMarriage") {
         this.objMemberInfor.Male = 1;
       }
       this.objMemberInfor.BloodType = null;
@@ -2880,13 +2816,13 @@ export default {
       }
     },
     getMemberRole() {
-      HTTP.post("memberRole", {
+      HTTP.post("roleAccount", {
         accountID: localStorage.getItem("accountID"),
         codeID: localStorage.getItem("CodeID"),
       })
-        .then((response) => {
+        .then((response) => {          
           if (response.data.success == true) {
-            this.memberRole = response.data.data;
+            this.memberRole = response.data.data.RoleID;
           }
         })
         .catch((e) => {
