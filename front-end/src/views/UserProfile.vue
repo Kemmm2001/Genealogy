@@ -57,9 +57,7 @@
                 <div class="username position-absolute">{{ m.Email }}</div>
                 <div class="role h-100 position-absolute py-1">
                   <select :disabled="m.RoleID != 1 ? false : true" v-model="m.RoleID" class="form-select h-100 px-3 py-0" @change="changeRole(m.RoleID, m.AccountID)">
-                    <option v-if="m.RoleID == 1" style="text-align: center;" value="1">Admin</option>
-                    <option v-if="m.RoleID != 1" style="text-align: center;" value="3">Thành viên</option>
-                    <option v-if="m.RoleID != 1" style="text-align: center;" value="2">Được tin cậy</option>
+                    <option  style="text-align: center;" :value="m.RoleID">{{m.RoleName}}</option>                   
                   </select>
                 </div>
               </div>
@@ -281,7 +279,7 @@ export default {
       }).then((respone) => {
         if (respone.data.success == true) {
           this.listMemberRole = respone.data.data;
-          console.log(this.listMemberRole);
+          console.log('ListMemberRole: ' + this.listMemberRole);
         }
       }).catch((e) => {
           console.log(e);
