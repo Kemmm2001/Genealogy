@@ -90,7 +90,7 @@
             </div>
         </div>
         <div class="navbar-item-theme-user">
-            <div @click="darkMode = !darkMode" class="d-flex" style="justify-content: center;">
+            <div @click="darkMode = !darkMode" class="d-flex" style="justify-content: end; padding-right: 12px;">
                 <button class="btn p-0" style="border: none; outline: none;">
                     <svg v-if="!darkMode" class="night-icon" xmlns="http://www.w3.org/2000/svg"
                         enable-background="new 0 0 24 24" height="36px" viewBox="0 0 24 24" width="36px" fill="#000000">
