@@ -236,7 +236,7 @@
                 <div class="item d-flex justify-content-center" style="background-color: aliceblue;">Chưa phản hồi</div>
                 <div class style="overflow-y: auto; height: calc(100% -106px);">
                   <div v-for="(item, index) in listEventAttendance" :key="item.id">
-                    <div v-if="item.IsGoing == null" :class="index % 2 === 0 ? 'item odd' : 'item even'">{{ item.MemberName }}</div>
+                    <div v-if="item.IsGoing == -1" :class="index % 2 === 0 ? 'item odd' : 'item even'">{{ item.MemberName }}</div>
                   </div>
                 </div>
               </div>
@@ -337,7 +337,7 @@
                 </div>
               </div>
             </div>
-            <div class="position-absolute text-danger d-flex align-items-center px-2" style="bottom: 0; font-weight: bold; height: 50px; z-index: 2;">Thông báo mỗi sự kiện sẽ chỉ được gửi một lần</div>
+            <div class="position-absolute text-danger d-flex align-items-center px-2" style="bottom: 0; font-weight: bold; height: 50px; z-index: 2;">Lưu ý: Thông báo mỗi sự kiện sẽ chỉ được gửi một lần</div>
             <div class="modal-footer position-absolute w-100" style="bottom: 0;">
               <div @click="sendMessageToConfirmEvent()" class="bg-primary text-white btn mx-2">Gửi</div>
               <div @click="closeParticipantList()" class="bg-primary text-white btn mx-2">Gửi cho tất cả</div>
@@ -474,6 +474,8 @@ export default {
               .then((respone) => {
                 if (respone.data.success == true) {
                   this.NotificationsScuccess("Gửi thông báo thành công");
+                  this.closeMemberList();
+                  this.getListEvent();
                   this.time = null;
                   this.ListMemberToSendEmail = [];
                 }

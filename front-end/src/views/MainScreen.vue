@@ -1988,6 +1988,7 @@ export default {
       })
         .then((response) => {
           if (response.data.success == true) {
+            console.log('response: ' + response.data.data);
             this.action = null;
             this.getAllListMember();
             this.isUpdateAvatar = false;
@@ -2000,6 +2001,7 @@ export default {
             this.NotificationsDelete(response.data.message);
           }
           this.newIdMember = response.data.data.MemberID;
+          console.log("newIdMember: " + this.newIdMember);
           if (
             this.objMemberContact.Phone != null ||
             this.objMemberContact.Address != null ||
