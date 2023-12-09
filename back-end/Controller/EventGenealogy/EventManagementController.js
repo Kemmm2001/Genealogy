@@ -516,7 +516,7 @@ var inviteMail = async (req, res) => {
                     to: emails[i],
                     subject: 'Your Invite Link',
                     text: `Here is your invite link: ${link}`,
-                    html: `<p>Click <a href="${link}">here</a> to access your invite.</p>`,
+                    html: `<p>Bạn có thông báo mới về sự kiện sắp diễn ra. Click <a href="${link}">here</a> để biết thêm chi tiết.</p>`,
                 };
                 SystemAction.SendEmailCore(mailOptions);
                 console.log(`Token generated for member ${memberId}: ${token}`);
