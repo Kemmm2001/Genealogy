@@ -66,3 +66,72 @@
     background-color: #FFFFFF;
     border-radius: 0.2rem;
 }
+
+/* ------------------------------------------------ */
+.profile-grid-container{
+    display: grid;
+    grid-template-columns: 17% 83%;
+    font-size: 8px;
+}
+
+.profile-grid-container .profile-sidebar{
+    background-color: #3A4B54;
+}
+
+.profile-grid-container .profile-content{
+    position: relative;
+}
+
+.profile-grid-container .profile-content .content{
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 40%;
+    height: fit-content;
+}
+
+.profile-grid-container .btn.chosen{
+    background-color: #c9e6ff;
+    color: #000 !important;
+}
+
+.profile-grid-container .profile-content input{
+    font-size: 8px;
+}
+
+.profile-grid-container .family-account{
+    height: 80%;
+    overflow-y: auto;
+    border: 1px solid #000;
+    border-radius: 0.175rem;
+}
+
+.profile-grid-container .family-account-item{
+    height: 8%;
+    display: flex;
+    align-items: center;
+}
+
+@media (min-width: 900px) {
+    .profile-grid-container .profile-sidebar .btn, .profile-grid-container .profile-content .content, .profile-grid-container .profile-content input, .profile-grid-container .profile-content select, .profile-grid-container .profile-content option{
+        font-size: 12px;
+    }
+}
+
+@media (min-width: 1300px) {
+    .profile-grid-container .profile-sidebar .btn, .profile-grid-container .profile-content .content, .profile-grid-container .profile-content input, .profile-grid-container .profile-content select, .profile-grid-container .profile-content option{
+        font-size: 14px;
+    }
+}
+
+@media (min-width: 1700px) {
+    .profile-grid-container .profile-sidebar .btn, .profile-grid-container .profile-content .content, .profile-grid-container .profile-content input, .profile-grid-container .profile-content select, .profile-grid-container .profile-content option{
+        font-size: 15px;
+    }
+}
+
+@media (min-width: 2000px) {
+    .profile-grid-container .profile-sidebar .btn, .profile-grid-container .profile-content .content, .profile-grid-container .profile-content input, .profile-grid-container .profile-content select, .profile-grid-container .profile-content option{
+        font-size: 16px;
+    }
+}

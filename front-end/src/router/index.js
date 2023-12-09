@@ -79,6 +79,11 @@ const routes = [
     name: "verify",
     component: () => import("../views/VerifyAccount.vue"),
   },
+  {
+    path: "/user",
+    name: "user",
+    component: () => import("../views/UserProfileResp.vue"),
+  },
 ];
 
 const router = new Router({
