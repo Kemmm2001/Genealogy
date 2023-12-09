@@ -13,8 +13,8 @@ const initWebRouter = (app) => {
 
     router.post('/export-pdf', authMiddleware.authenticateAndAuthorize(2), PdfController.exportPDF);
     router.post('/export-excel', authMiddleware.authenticateAndAuthorize(2), ExcelController.exportExcel);
-    router.post('/back-up', authMiddleware.authenticateAndAuthorize(2), JsonController.exportData)
-    router.post('/import', authMiddleware.authenticateAndAuthorize(2), CoreFunction.uploadExcelFile('file').single('xlsx'), JsonController.importData)
+    router.post('/back-up', JsonController.exportData)
+    router.post('/import', CoreFunction.uploadExcelFile('file').single('xlsx'), JsonController.importData)
 
     //Tiền tố đứng trước route
     app.use('/api/v1', router);
