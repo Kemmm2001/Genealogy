@@ -304,6 +304,7 @@ export default {
         });
     },
     login() {
+      console.log(111)
       // Dữ liệu cần mã hóa
       var dataToEncrypt = this.accountLogin.password;
       var secureKey = process.env.VUE_APP_KEY_SECRET
