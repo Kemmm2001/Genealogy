@@ -107,7 +107,6 @@ var addMember = async (req, res) => {
         if (dataCodeID == null || dataCodeID.length == 0) {
             return res.send(Response.dataNotFoundResponse(null, "Mã gia phả không tồn tại"));
         }
-        let dataRes = {};
         let data = await FamilyManagementService.addMember(req.body);
         // trường hợp muốn thêm thành viên mà không có trong cây gia phả
         if (req.body.Action == 'AddNormal') {
@@ -205,6 +204,7 @@ var addMember = async (req, res) => {
             await FamilyManagementService.setRole(3, data.insertId);
         }
         // kết thúc phần thêm member theo action
+        let dataRes = {};
         dataRes.MemberID = data.insertId;
         dataRes.affectedRows = data.affectedRows;
         return res.send(Response.successResponse(dataRes));
@@ -339,7 +339,10 @@ var addChild = async (req, res) => {
         // kết thúc kiểm tra birthorder
         await FamilyManagementService.setGeneration(parentGeneration + 1, data.insertId);
         await FamilyManagementService.setRole(3, data.insertId);
-        return res.send(Response.successResponse());
+        let dataRes = {};
+        dataRes.MemberID = data.insertId;
+        dataRes.affectedRows = data.affectedRows;
+        return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
         return res.send(Response.internalServerErrorResponse());
