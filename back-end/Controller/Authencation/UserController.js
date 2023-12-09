@@ -22,13 +22,15 @@ var registerUser = async (req, res) => {
       return res.send(Response.internalServerErrorResponse(null, 'Email không hợp lệ'));
     }
 
-    var decryptedBytes = CryptoJS.AES.decrypt(req.body.password, secureKey, {
-      mode: CryptoJS.mode.ECB,
-      padding: CryptoJS.pad.Pkcs7
+    const decryptedBytes = CryptoJS.AES.decrypt(req.body.password, process.env.AES256_SECRET, {
+      iv: process.env.AES256_IV,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7  
     });
-    var decryptedBytes1 = CryptoJS.AES.decrypt(req.body.repassword, secureKey, {
-      mode: CryptoJS.mode.ECB,
-      padding: CryptoJS.pad.Pkcs7
+    const decryptedBytes1 = CryptoJS.AES.decrypt(req.body.repassword, process.env.AES256_SECRET, {
+      iv: process.env.AES256_IV,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7  
     });
     // Chuyển đổi dữ liệu giải mã thành chuỗi
     var password = decryptedBytes.toString(CryptoJS.enc.Utf8);
