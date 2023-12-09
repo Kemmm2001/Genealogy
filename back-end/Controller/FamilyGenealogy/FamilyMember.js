@@ -2,7 +2,6 @@ const FamilyManagementService = require("../../service/FamilyGenealogy/FamilyMan
 const Response = require("../../Utils/Response");
 const CoreFunction = require("../../Utils/CoreFunction");
 const db = require('../../Models/ConnectDB');
-const ViewFamilyTree = require("../../service/FamilyGenealogy/ViewFamilyTree");
 const MarriageManagement = require("../../service/FamilyGenealogy/MarriageManagement");
 const GeneralInformation = require("../../service/InformationGenealogy/GeneralInformation");
 const ListAgeGroup = [
@@ -119,7 +118,6 @@ var addMember = async (req, res) => {
         // trường hợp muốn thêm thành viên đầu tiên ( tổ phụ tổ tiên)
         else if (req.body.Action == 'AddFirst') {
             await FamilyManagementService.setGeneration(1, data.insertId);
-            await ManagementFamilyHead.addForefather(data.insertId, req.body.CodeID);
             await FamilyManagementService.setRole(1, data.insertId);
         }
         // trường hợp muốn thêm thành viên mà có trong cây gia phả
