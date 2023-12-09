@@ -349,6 +349,7 @@ function ResetAllGenerationMember(CodeID) {
 function setAllGenerationMember(memberId, generation, CodeId) {
     console.log('memberId: ' + memberId)
     console.log('generation: ' + generation)
+    console.log('CodeId::::::' + CodeId)
     return new Promise((resolve, reject) => {
         const updateQuery = `UPDATE familymember SET Generation = ${generation} WHERE MemberID = ${memberId}`;
 
@@ -360,7 +361,7 @@ function setAllGenerationMember(memberId, generation, CodeId) {
             }
 
             // Tìm tất cả mối hôn nhân hiện tại
-            const findMarriesQuery = `SELECT * FROM familymember WHERE MemberID = ${memberId}`;
+            const findMarriesQuery = `SELECT * FROM genealogy.marriage where husbandID = ${memberId} or wifeID = ${memberId} and CodeID = ${CodeId};`;
             db.connection.query(findMarriesQuery, (err, marriedResult) => {
                 if (err) {
                     console.error(err);
@@ -370,11 +371,15 @@ function setAllGenerationMember(memberId, generation, CodeId) {
 
                 const promises = [];
 
-                marriedResult.forEach((child) => {
-                    if (child.MarriageID !== null) {
-                        promises.push(setAllGenerationMember(child.MarriageID, generation));
-                    }
-                });
+                if (marriedResult) {
+                    marriedResult.forEach((child) => {
+                        if (child.husbandID != null && child.husbandID == memberId) {
+                            promises.push(setAllGenerationMember(child.wifeID, generation));
+                        } else if (child.wifeID != null && child.wifeID == memberId) {
+                            promises.push(setAllGenerationMember(child.husbandID, generation));
+                        }
+                    });
+                }
 
                 // Tìm tất cả các con của thành viên hiện tại
                 const findChildrenQuery = `SELECT * FROM familymember WHERE FatherID = ${memberId} or MotherID = ${memberId}`;
