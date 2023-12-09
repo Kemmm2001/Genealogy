@@ -106,7 +106,6 @@ router-link-exact-active {
 .navbar-grid-container .navbar-item-select{
     display: flex;
     flex-direction: row;
-    padding-right: 5%;
     /* grid-template-columns: 20% 25% 30% 25%; */
     /* width: 90%; */
 }
@@ -118,7 +117,7 @@ router-link-exact-active {
 
 .navbar-item{
     align-items: center;
-    padding: 8px;
+    padding: 4px;
 }
 
 @media (min-width: 900px) {
@@ -127,51 +126,20 @@ router-link-exact-active {
     }
 }
 
-@media (min-width: 1400px) {
+@media (min-width: 1300px) {
     .navbar-grid-container{
-        font-size: 10px;
-    }
-}
-
-/* 
-@media (min-width: 900px) {
-    .navbar-grid-container .navbar-item-select{
-        width: calc(90% - 10vw);
-    }
-}
-
-@media (min-width: 1200px) {
-    .navbar-grid-container .navbar-item-select{
-        width: calc(90% - 14vw);
-    }
-}
-
-@media (min-width: 1500px) {
-    .navbar-grid-container .navbar-item-select{
-        width: calc(90% - 18vw);
+        font-size: 11px;
     }
 }
 
 @media (min-width: 1700px) {
-    .navbar-grid-container .navbar-item-select{
-        width: calc(90% - 19vw);
+    .navbar-grid-container{
+        font-size: 14px;
     }
 }
 
-@media (min-width: 1900px) {
-    .navbar-grid-container .navbar-item-select{
-        width: calc(90% - 20vw);
+@media (min-width: 2000px) {
+    .navbar-grid-container{
+        font-size: 17px;
     }
 }
-
-@media (min-width: 2100px) {
-    .navbar-grid-container .navbar-item-select{
-        width: calc(90% - 21vw);
-    }
-}
-
-@media (min-width: 2300px) {
-    .navbar-grid-container .navbar-item-select{
-        width: calc(90% - 23vw);
-    }
-} */
