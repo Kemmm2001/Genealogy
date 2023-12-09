@@ -346,7 +346,7 @@ function ResetAllGenerationMember(CodeID) {
 }
 
 //Nguyễn Lê Hùng
-function setAllGenerationMember(memberId, generation) {
+function setAllGenerationMember(memberId, generation, CodeId) {
     console.log('memberId: ' + memberId)
     console.log('generation: ' + generation)
     return new Promise((resolve, reject) => {
