@@ -1115,7 +1115,7 @@ export default {
       numberDeath: 0,
       listMember: [],
 
-      heightLarger:null,
+      heightLarger: null,
     };
   },
   methods: {
@@ -1355,7 +1355,6 @@ export default {
     },
     //Nguyễn Lê Hùng
     async setPaternalAncestor() {
-      console.log("vaof dday");
       HTTP.post("setRole", {
         memberId: this.CurrentIdMember,
         CodeId: this.CodeID,
@@ -1365,6 +1364,7 @@ export default {
             this.getListUnspecifiedMembers();
             this.getListMember();
             this.closeSelectModal();
+            this.closeCfDelModal();
             this.NotificationsScuccess(respone.data.message);
             this.mytree(this.$refs.tree, this.nodes);
           } else {
@@ -2008,7 +2008,7 @@ export default {
       }
     },
     //Nguyễn Lê Hùng
-    addMemberChild(FatherID, MotherID) {   
+    addMemberChild(FatherID, MotherID) {
       HTTP.post("add-child", {
         FatherID: FatherID,
         MotherID: MotherID,
@@ -2682,7 +2682,6 @@ export default {
     },
 
     getListMember() {
-      
       HTTP.get("getFamilyHead", {
         params: {
           CodeID: this.CodeID,
@@ -2700,7 +2699,7 @@ export default {
             },
           })
             .then((response) => {
-              console.log(111)
+              console.log(111);
               this.nodes = [];
               this.numberDeath = 0;
               if (response.data.success == true) {

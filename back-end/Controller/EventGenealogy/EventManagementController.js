@@ -510,6 +510,7 @@ var inviteMail = async (req, res) => {
 
             const data = await EventAttendence.Update(memberId, token);
             const link = `${frontEndURL}/CfEvent?token=${token}`;
+            console.log('link:::::::: ' + link)
             if (data === true) {
                 const mailOptions = {
                     to: emails[i],

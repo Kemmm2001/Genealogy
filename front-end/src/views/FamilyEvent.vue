@@ -426,7 +426,6 @@ export default {
     getListMemberToSendMessage() {
       console.log(this.CodeID);
       HTTP.get("listMemberMessage", {
-        
         params: {
           CodeID: this.CodeID,
         },
@@ -461,29 +460,31 @@ export default {
       console.log(this.currentEventID);
       if (this.numberExpire != null) {
         HTTP.get("getIdAndEmail", {
-          
           params: {
             ListMemberID: this.ListMemberToSendEmail,
             eventId: this.currentEventID,
           },
-        }).then((respone) => {
-          HTTP.post("inviteMail", {
-            
-            data: respone.data.data,
-            time: this.numberExpire + "d",
-            eventId: this.currentEventID,
-          }).then((respone) => {
-            if (respone.data.success == true) {
-              this.NotificationsScuccess("Gửi thông báo thành công");
-              this.time = null;
-              this.ListMemberToSendEmail = [];
-            }
-          }).catch((e) => {
-          console.log(e);
-        });
-        }).catch((e) => {
-          console.log(e);
-        });
+        })
+          .then((respone) => {
+            HTTP.post("inviteMail", {
+              data: respone.data.data,
+              time: this.numberExpire + "d",
+              eventId: this.currentEventID,
+            })
+              .then((respone) => {
+                if (respone.data.success == true) {
+                  this.NotificationsScuccess("Gửi thông báo thành công");
+                  this.time = null;
+                  this.ListMemberToSendEmail = [];
+                }
+              })
+              .catch((e) => {
+                console.log(e);
+              });
+          })
+          .catch((e) => {
+            console.log(e);
+          });
       } else {
         this.NotificationsDelete(
           "Bạn hãy chọn thời gian hết hạn của thông báo"
@@ -606,7 +607,6 @@ export default {
     },
     getListEvent() {
       HTTP.get("event", {
-        
         params: {
           CodeID: this.CodeID,
         },
@@ -630,7 +630,6 @@ export default {
         this.getListEvent();
       } else {
         HTTP.post("filter-event", {
-          
           Status: this.filterStatus,
           CodeID: this.CodeID,
         })
@@ -646,7 +645,6 @@ export default {
     },
     searchEvent() {
       HTTP.post("searchEvent", {
-        
         CodeID: this.CodeID,
         keySearch: this.keySearch,
       })
@@ -672,7 +670,6 @@ export default {
           this.eventFamily.Place != null
         ) {
           HTTP.post("addEvent", {
-            
             EventName: this.eventFamily.EventName,
             CodeID: this.CodeID,
             Status: 1,
@@ -711,7 +708,6 @@ export default {
         this.eventFamily.Place != null
       ) {
         HTTP.put("updateEvent", {
-          
           EventID: this.eventFamily.EventID,
           EventName: this.eventFamily.EventName,
           StartDate: this.eventFamily.StartDate,
@@ -740,7 +736,6 @@ export default {
     },
     exportExcel() {
       HTTP.post("export-excel", {
-        
         CodeID: this.CodeID,
       })
         .then((respone) => {
@@ -757,7 +752,6 @@ export default {
     },
     removeEvent() {
       HTTP.delete("removeEvent", {
-        
         params: {
           EventID: this.eventFamily.EventID,
         },
@@ -820,45 +814,47 @@ export default {
       this.eventFamily = {};
       this.titleModal = "sửa thông tin sự kiện";
       HTTP.get("inforEvent", {
-        
         params: {
           EventID: id,
         },
-      }).then((respone) => {
-        if (respone.data.success == true) {
-          let year;
-          let month;
-          let day;
-          this.eventFamily = respone.data.data;
-          this.eventFamily = this.eventFamily[0];
-          console.log(this.eventFamily);
-          this.startHour = new Date(this.eventFamily.StartDate).getHours();
-          console.log(this.startHour);
-          this.startMinute = new Date(this.eventFamily.StartDate).getMinutes();
-          year = new Date(this.eventFamily.StartDate).getFullYear();
-          month = String(
-            new Date(this.eventFamily.StartDate).getMonth() + 1
-          ).padStart(2, "0");
-          day = String(new Date(this.eventFamily.StartDate).getDate()).padStart(
-            2,
-            "0"
-          );
-          this.startDate = `${year}-${month}-${day}`;
+      })
+        .then((respone) => {
+          if (respone.data.success == true) {
+            let year;
+            let month;
+            let day;
+            this.eventFamily = respone.data.data;
+            this.eventFamily = this.eventFamily[0];
+            console.log(this.eventFamily);
+            this.startHour = new Date(this.eventFamily.StartDate).getHours();
+            console.log(this.startHour);
+            this.startMinute = new Date(
+              this.eventFamily.StartDate
+            ).getMinutes();
+            year = new Date(this.eventFamily.StartDate).getFullYear();
+            month = String(
+              new Date(this.eventFamily.StartDate).getMonth() + 1
+            ).padStart(2, "0");
+            day = String(
+              new Date(this.eventFamily.StartDate).getDate()
+            ).padStart(2, "0");
+            this.startDate = `${year}-${month}-${day}`;
 
-          this.endHour = new Date(this.eventFamily.EndDate).getHours();
-          this.endMinute = new Date(this.eventFamily.EndDate).getMinutes();
-          year = new Date(this.eventFamily.EndDate).getFullYear();
-          month = String(
-            new Date(this.eventFamily.EndDate).getMonth() + 1
-          ).padStart(2, "0");
-          day = String(new Date(this.eventFamily.EndDate).getDate()).padStart(
-            2,
-            "0"
-          );
-          this.endDate = `${year}-${month}-${day}`;
-          this.$modal.show("add-event-modal");
-        }
-      }).catch((e) => {
+            this.endHour = new Date(this.eventFamily.EndDate).getHours();
+            this.endMinute = new Date(this.eventFamily.EndDate).getMinutes();
+            year = new Date(this.eventFamily.EndDate).getFullYear();
+            month = String(
+              new Date(this.eventFamily.EndDate).getMonth() + 1
+            ).padStart(2, "0");
+            day = String(new Date(this.eventFamily.EndDate).getDate()).padStart(
+              2,
+              "0"
+            );
+            this.endDate = `${year}-${month}-${day}`;
+            this.$modal.show("add-event-modal");
+          }
+        })
+        .catch((e) => {
           console.log(e);
         });
     },
@@ -874,19 +870,20 @@ export default {
       );
       this.title = this.title.EventName;
       HTTP.get("eventAttendance", {
-        
         params: {
           EventID: EventID,
         },
-      }).then((respone) => {
-        if (respone.data.success == true) {
-          this.listEventAttendance = respone.data.data;
-          console.log(this.listEventAttendance);
-        } else {
-          console.log("vào else");
-        }
-        this.$modal.show("participant-list");
-      }).catch((e) => {
+      })
+        .then((respone) => {
+          if (respone.data.success == true) {
+            this.listEventAttendance = respone.data.data;
+            console.log(this.listEventAttendance);
+          } else {
+            console.log("vào else");
+          }
+          this.$modal.show("participant-list");
+        })
+        .catch((e) => {
           console.log(e);
         });
     },
@@ -902,16 +899,17 @@ export default {
 
     getListEventNotificationSent() {
       HTTP.get("ListEventNotiSent", {
-        
         params: {
           CodeID: this.CodeID,
         },
-      }).then((respone) => {
-        if (respone.data.success == true) {
-          console.log(respone.data.data);
-          this.ListEventNotificationSent = respone.data.data;
-        }
-      }).catch((e) => {
+      })
+        .then((respone) => {
+          if (respone.data.success == true) {
+            console.log(respone.data.data);
+            this.ListEventNotificationSent = respone.data.data;
+          }
+        })
+        .catch((e) => {
           console.log(e);
         });
     },
