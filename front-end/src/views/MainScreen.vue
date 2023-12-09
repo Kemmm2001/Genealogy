@@ -1120,6 +1120,7 @@ export default {
       listMember: [],
 
       heightLarger: null,
+      checkUpdate:false,
     };
   },
   methods: {
@@ -1216,17 +1217,21 @@ export default {
             }
           }
         }
-        if (
-          this.CoordinatesNode != null &&
-          this.nodeLength != this.listMember.length
-        ) {
-          this.family.setViewBox(this.CoordinatesNode);
-        }
-        setTimeout(() => {
-          if (this.nodeLength != this.listMember.length) {
-            this.nodeLength = this.listMember.length;
-          }
-        }, 3000);
+        // if (this.CoordinatesNode != null && this.nodeLength != this.listMember.length) {
+        //   this.family.setViewBox(this.CoordinatesNode);
+          
+        // }
+        // if(this.CoordinatesNode != null && this.checkUpdate){
+        //   this.family.setViewBox(this.CoordinatesNode);
+        // }
+        // setTimeout(() => {
+        //   if (this.nodeLength != this.listMember.length) {
+        //     this.nodeLength = this.listMember.length;
+        //   }
+        //   if(this.checkUpdate == true){
+        //     this.checkUpdate = false;
+        //   }
+        // }, 1500);
       });
 
       // right click
@@ -1264,6 +1269,7 @@ export default {
             }
           }
         } else {
+          this.isFather = null;
           this.getInforMember(arg.node.id);
         }
       });
@@ -1933,7 +1939,7 @@ export default {
           .then((response) => {
             if (response.data.success == true) {
               this.NotificationsScuccess(response.data.message);
-              this.family.load(this.nodes);
+            //  this.family.load(this.nodes);
               this.setDefautAction();
               this.getListMember();
               this.getListUnspecifiedMembers();
@@ -2241,6 +2247,7 @@ export default {
     },
     //Nguyễn Lê Hùng
     updateInformation() {
+      console.log(222)
       if (this.selectDistrictMember != null) {
         this.objMemberContact.Address =
           this.objMemberContact.Address + "-" + this.selectDistrictMember;
@@ -2289,8 +2296,8 @@ export default {
               Zalo: this.objMemberContact.Zalo,
             })
               .then(() => {
+                this.checkUpdate = true;
                 this.closeMemberModal();
-                this.family.load(this.nodes);
                 this.getListMember();
               })
               .catch(() => {
@@ -2714,6 +2721,7 @@ export default {
               this.nodes = [];
               this.numberDeath = 0;
               if (response.data.success == true) {
+                 
                 this.nodes = response.data.data;
                 console.log(this.nodes);
                 for (let i = 0; i < this.nodes.length; i++) {
@@ -2750,9 +2758,11 @@ export default {
                 }
                 this.nodes[0].tags.push("great-grandfather");
                 this.nodes[0].isGG = "true";
-                this.mytree(this.$refs.tree, this.nodes);
+                this.family.config.nodes = this.nodes
+                this.family.draw();
+              //  this.mytree(this.$refs.tree, this.nodes);
               }
-              // this.family.load(this.nodes);
+             //  this.family.load(this.nodes);
             })
             .catch((e) => {
               console.log(e);
@@ -2998,6 +3008,7 @@ export default {
     },
   },
   mounted() {
+    
     if (localStorage.getItem("CodeID") != null) {
       this.CodeID = localStorage.getItem("CodeID");
     } else {
@@ -3024,6 +3035,7 @@ export default {
       this.getAllListMember();
       this.getListMemberToSendMessage();
       this.updateStatusEvent();
+      this.mytree(this.$refs.tree, this.nodes);
     }
   },
 };
