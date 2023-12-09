@@ -36,12 +36,11 @@ async function addDataToSheet(workbook, sheetName, data) {
             const rowValues = headers.map(header => {
                 // Check if the current value is a Date object
                 if (row[header] instanceof Date) {
-                    // Format the date using toLocaleDateString
-                    return row[header].toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                    });
+                    // Format the date as yyyy-mm-dd
+                    const year = row[header].getFullYear();
+                    const month = `${row[header].getMonth() + 1}`.padStart(2, '0');
+                    const day = `${row[header].getDate()}`.padStart(2, '0');
+                    return `${year}-${month}-${day}`;
                 }
                 return row[header];
             });
@@ -142,9 +141,6 @@ async function insertDataToTable(worksheet, tableName) {
                 } else if (typeof cellValue === 'string') {
                     // Escape single quotes in string values
                     formattedValue = `'${cellValue.replace(/'/g, "''")}'`;
-                } else if (cellValue instanceof Date) {
-                    // Format date values as MySQL date strings
-                    formattedValue = `'${cellValue.toISOString().slice(0, 10)}'`;
                 } else {
                     formattedValue = cellValue;
                 }
