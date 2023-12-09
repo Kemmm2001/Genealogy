@@ -312,6 +312,7 @@ export default {
         mode: CryptoJS.mode.ECB,
         padding: CryptoJS.pad.Pkcs7
       });
+      console.log(encryptedData)
       if (this.accountLogin.email != "" && this.accountLogin.password != "") {
         HTTP.post("login", {
           email: this.accountLogin.email.replace(/\s+/g, ""),
