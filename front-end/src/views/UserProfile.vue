@@ -212,7 +212,7 @@ export default {
     },
     changeUserName() {
       HTTP.post("changeUsername", {
-        username: this.accountInfor.username,
+        username: this.accountInfor.Username,
         AccountID: this.accountID,
       })
         .then((respone) => {
@@ -255,11 +255,14 @@ export default {
       console.log(decryptPassword);
       console.log(decryptRepassword);
 
-      if (this.InputNewPassword == this.InputRe_newpassword) {
+      console.log(this.InputCurentPassword);
+      console.log(this.InputNewPassword);
+      if (this.InputRe_newpassword == this.InputNewPassword) {
         HTTP.put("changepassword", {
           accountID: this.accountID,
-          currentpassword: encryptedPassword,
+          currentPassword: encryptedPassword,
           newPassword: encryptedNewpassword,
+          Re_newPassword: encryptedNewpassword,
         })
           .then((respone) => {
             if (respone.data.success == true) {
@@ -267,6 +270,7 @@ export default {
               this.InputCurentPassword = null;
               this.InputNewPassword = null;
               this.InputRe_newpassword = null;
+              this.NotificationsScuccess(respone.data.message);
             } else {
               this.NotificationsDelete(respone.data.message);
             }
