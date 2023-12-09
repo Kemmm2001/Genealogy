@@ -32,12 +32,14 @@ var importData = async function (req, res) {
     const result = await JsonService.importData(file);
 
     if (result.success) {
-      res.json({ message: 'Nhập dữ liệu thành công' });
+      return res.send(Response.successResponse(null, 'Import thành công'));
     } else {
-      res.status(500).json({ error: 'Lỗi khi nhập dữ liệu' });
+      return res.send(Response.internalServerErrorResponse());
+
     }
   } catch (error) {
-    res.status(500).json({ error: 'Lỗi khi xử lý nhập dữ liệu' });
+    return res.send(Response.internalServerErrorResponse());
+
   }
 }
 
