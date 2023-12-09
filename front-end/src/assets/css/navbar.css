@@ -87,10 +87,9 @@ router-link-exact-active {
     display: grid;
     grid-template-columns: 15% 60% 25%;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-    font-size: 7px;
     background-color: #FFFFFF;
     text-align: center;
-    z-index: 100px;
+    z-index: 100;
 }
 
 .navbar-grid-container .navbar-item-logo{
@@ -119,26 +118,14 @@ router-link-exact-active {
     padding: 4px;
 }
 
+@media (min-width: 700px) {
+    .navbar-grid-container{
+        font-size: 13px;
+    }
+}
+
 @media (min-width: 900px) {
     .navbar-grid-container{
-        font-size: 9px;
-    }
-}
-
-@media (min-width: 1300px) {
-    .navbar-grid-container{
-        font-size: 11px;
-    }
-}
-
-@media (min-width: 1700px) {
-    .navbar-grid-container{
         font-size: 14px;
-    }
-}
-
-@media (min-width: 2000px) {
-    .navbar-grid-container{
-        font-size: 17px;
     }
 }
