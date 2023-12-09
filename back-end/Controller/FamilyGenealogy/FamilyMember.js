@@ -147,7 +147,7 @@ var addMember = async (req, res) => {
                     return res.send(Response.badRequestResponse(null, errorMessage));
                 }
                 // nếu là người ngoài gia phả, tức là ko có cha mẹ, và roleid là 3
-                if (currentMember[0].RoleID == 3 
+                if (currentMember[0].RoleID == 3
                     && !CoreFunction.isDataNumberExist(currentMember[0].FatherID) && !CoreFunction.isDataNumberExist(currentMember[0].MotherID)) {
                     let errorMessage = 'Không thể thêm vì thành viên này là người ngoài gia phả';
                     return res.send(Response.badRequestResponse(null, errorMessage));
@@ -388,6 +388,108 @@ var addChild = async (req, res) => {
         await FamilyManagementService.setGeneration(parentGeneration + 1, data.insertId);
         await FamilyManagementService.setRole(3, data.insertId);
         return res.send(Response.successResponse());
+    } catch (e) {
+        console.log("Error: " + e);
+        return res.send(Response.internalServerErrorResponse());
+    }
+}
+
+var addMarriage = async (req, res) => {
+    try {
+        db.connection.beginTransaction();
+        console.log('Request req.body: ', req.body);
+        // các trường bắt buộc phải có trong req.body
+        const requiredFields = [
+            'MemberName',
+            'IsDead',
+            'CodeID',
+            'Male',
+            'MarriageNumber',
+            'CurrentMemberID'
+        ];
+        // Kiểm tra xem có đủ các trường của FamilyMember không
+        const missingFields = CoreFunction.missingFields(requiredFields, req.body);
+        console.log(missingFields);
+        // trong trường hợp thiếu trường bắt buộc
+        if (missingFields.length) {
+            return res.send(Response.missingFieldsErrorResponse(missingFields));
+        }
+        console.log("Đã có đủ các trường bắt buộc");
+        // kiểm tra xem codeid có tồn tại ko
+        let dataCodeID = await GeneralInformation.GeneralInformation(req.body.CodeID);
+        if (dataCodeID == null || dataCodeID.length == 0) {
+            return res.send(Response.dataNotFoundResponse(null, "Mã gia phả không tồn tại"));
+        }
+        // kiểm tra xem marriagenumber có phải là số không và có >= 1 không
+        if (!CoreFunction.isDataNumberExist(req.body.MarriageNumber) || req.body.MarriageNumber < 1) {
+            return res.send(Response.badRequestResponse(null, "Số lần cưới không hợp lệ, phải là số và lớn hơn hoặc bằng 1"));
+        }
+        // kiểm tra xem Dob, LunarDob, Dod, LunarDod có phải là ngày tháng không
+        if ((CoreFunction.isDataStringExist(req.body.Dob) && !CoreFunction.isDataDateExist(req.body.Dob))
+            || (CoreFunction.isDataStringExist(req.body.LunarDob) && !CoreFunction.isDataDateExist(req.body.LunarDob))
+            || (CoreFunction.isDataStringExist(req.body.Dod) && !CoreFunction.isDataDateExist(req.body.Dod))
+            || (CoreFunction.isDataStringExist(req.body.LunarDod) && !CoreFunction.isDataDateExist(req.body.LunarDod))) {
+            return res.send(Response.badRequestResponse(null, "Ngày tháng không hợp lệ"));
+        }
+        let currentMember, memberRole;
+        currentMember = await FamilyManagementService.getMemberByMemberID(req.body.CurrentMemberID);
+        console.log("currentMember: ", currentMember);
+        if (!CoreFunction.isDataNumberExist(currentMember)) {
+            return res.send(Response.dataNotFoundResponse(null, "Thành viên hiện tại đang không tồn tại"));
+        }
+        // trường hợp ở khác gia phả
+        if (currentMember[0].CodeID != req.body.CodeID) {
+            return res.send(Response.badRequestResponse(null, "Không thể thêm thành viên ở gia phả khác"));
+        }
+        memberRole = await ViewFamilyTree.getAllMemberRole(req.body.CurrentMemberID);
+        console.log("memberRole: ", memberRole);
+
+        let dataRes = {};
+        let data = await FamilyManagementService.addMember(req.body);
+        let objData = {};
+        // trường hợp giới tính giống nhau, thì trả về thông báo ko hỗ trợ
+        if (req.body.Male == currentMember[0].Male) {
+            let errorMessage = 'Không hỗ trợ kết hôn đồng giới';
+            return res.send(Response.badRequestResponse(null, errorMessage));
+        }
+        // nếu vào trường hợp thêm chồng 
+        if (req.body.Male == 1) {
+            console.log("Đã vào trường hợp thêm chồng");
+            // tìm số lần kết hôn của vợ
+            let countMarriage = await MarriageManagement.getWifeMaxMarriageNumber(req.body.CurrentMemberID, currentMember[0].CodeID);
+            console.log("countMarriage: ", countMarriage);
+            if (!CoreFunction.isDataNumberExist(countMarriage)) {
+                countMarriage = 0;
+            }
+            objData = {
+                husbandID: data.insertId,
+                wifeID: req.body.CurrentMemberID,
+                codeID: req.body.CodeID,
+                marriageNumber: countMarriage + 1
+            }
+        }
+        // nếu vào trường hợp thêm vợ
+        else if (req.body.Male == 0) {
+            console.log("Đã vào trường hợp thêm vợ");
+            // tìm số lần kết hôn của chồng
+            let countMarriage = await MarriageManagement.getHusbandMaxMarriageNumber(req.body.CurrentMemberID, currentMember[0].CodeID);
+            console.log("countMarriage: ", countMarriage);
+            if (!CoreFunction.isDataNumberExist(countMarriage)) {
+                countMarriage = 0;
+            }
+            objData = {
+                husbandID: req.body.CurrentMemberID,
+                wifeID: data.insertId,
+                codeID: req.body.CodeID,
+                marriageNumber: countMarriage + 1
+            }
+        }
+        await FamilyManagementService.setGeneration(currentMember[0].Generation, data.insertId);
+        await MarriageManagement.addMarriage(objData);
+        await FamilyManagementService.setRole(3, data.insertId);
+        dataRes.MemberID = data.insertId;
+        dataRes.affectedRows = data.affectedRows;
+        return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
         return res.send(Response.internalServerErrorResponse());

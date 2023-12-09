@@ -28,7 +28,6 @@ module.exports = {
   },
 
   verifyAccessToken: (req, res, next) => {
-    console.log('req.headers: ' + JSON.stringify(req.headers, null, 2));
     if (!req.headers['authorization']) {
       console.log("vào đây123")
       return res.json({ error: 'Unauthorized' });
@@ -42,13 +41,13 @@ module.exports = {
     JWT.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
       if (err) {
         if (err.name === 'JsonWebTokenError') {
-            return res.json({ error: 'Unauthorized' });
+          return res.json({ error: 'Unauthorized' });
         } else if (err.name === 'TokenExpiredError') {
-            return res.json({ error: 'Token expired' });
+          return res.json({ error: 'Token expired' });
         } else {
-            return res.json({ error: err.message });
+          return res.json({ error: err.message });
         }
-    }
+      }
       req.payload = payload;
       next();
     });
@@ -68,13 +67,13 @@ module.exports = {
           console.log(err.message);
           reject(createError.InternalServerError());
         }
-         try {
-           await saveRefreshToken(insertId,token);
-           console.log(Date.now()); 
+        try {
+          await saveRefreshToken(insertId, token);
+          console.log(Date.now());
           resolve(token);
-         } catch (error) {
-         reject(createError.InternalServerError());
-         }
+        } catch (error) {
+          reject(createError.InternalServerError());
+        }
         resolve(token)
       });
     });
@@ -94,7 +93,7 @@ module.exports = {
       });
     });
   },
-  
+
 
   signRePassToken: (email) => {
     return new Promise((resolve, reject) => {
@@ -132,10 +131,10 @@ module.exports = {
     });
   }),
 
-  signInviteToken: (memberId,eventId, time ) => {
+  signInviteToken: (memberId, eventId, time) => {
     return new Promise((resolve, reject) => {
       const payload = {
-        memberId, 
+        memberId,
         eventId
       }
       const secret = process.env.INVITE_TOKEN_SECRET
@@ -203,5 +202,5 @@ module.exports = {
       });
     });
   }),
-  
+
 }
