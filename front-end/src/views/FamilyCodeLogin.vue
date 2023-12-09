@@ -204,7 +204,6 @@ export default {
             if (response.data.success == true) {
               // this.NotificationsScuccess(response.data.message);
               this.familycode = response.data.data;
-              this.moveToLeft();
               this.showFamilyCode();
               this.getHistoryCodeID();
             } else {

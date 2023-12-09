@@ -216,19 +216,55 @@ function ChangePassword(newPassword, AccountID) {
 function UpdatePassword(newPassword, email) {
   return new Promise((resolve, reject) => {
     try {
-      let query = `UPDATE genealogy.account as a SET a.Password = '${newPassword}' WHERE Email = '${email};'`;
-      db.connection.query(query, (err) => {
+      let query = `UPDATE genealogy.account AS a SET a.Password = '${newPassword}' WHERE Email = '${email}'`;
+      db.connection.query(query, (err, result) => {
         if (!err) {
-          resolve(true)
+          resolve(result.affectedRows > 0); // Trả về true nếu có hàng bị ảnh hưởng
         } else {
-          reject(false)
+          reject(err); // Trả về lỗi nếu có lỗi xảy ra
         }
-      })
+      });
     } catch (error) {
-      console.log(error)
-      reject(false)
+      console.log(error);
+      reject(false);
     }
-  })
+  });
+}
+
+function DeleteRePasssToken(email) {
+  return new Promise((resolve, reject) => {
+    try {
+      let query = `UPDATE genealogy.account AS a SET a.RePassToken = NULL WHERE Email = '${email}'`;
+      db.connection.query(query, (err, result) => {
+        if (!err) {
+          resolve(result.affectedRows > 0); // Trả về true nếu có hàng bị ảnh hưởng
+        } else {
+          reject(err); // Trả về lỗi nếu có lỗi xảy ra
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      reject(error);
+    }
+  });
+}
+
+function DeleteRegisterToken(email) {
+  return new Promise((resolve, reject) => {
+    try {
+      let query = `UPDATE genealogy.account AS a SET a.RegisterToken = NULL WHERE Email = '${email}'`;
+      db.connection.query(query, (err, result) => {
+        if (!err) {
+          resolve(result.affectedRows > 0); // Trả về true nếu có hàng bị ảnh hưởng
+        } else {
+          reject(err); // Trả về lỗi nếu có lỗi xảy ra
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      reject(error);
+    }
+  });
 }
 
 function UpdateActive(IsActive, email) {
@@ -252,10 +288,11 @@ function UpdateActive(IsActive, email) {
 function getListRoleMember(CodeID) {
   return new Promise((resolve, reject) => {
     try {
-      let query = `SELECT ac.Username,ac.Email, af.AccountID, af.CodeID, af.RoleID
+      let query = `SELECT ac.Username, ac.Email, af.AccountID, af.CodeID, af.RoleID,r.RoleName
       FROM genealogy.AccountFamilyTree AS af
       INNER JOIN genealogy.account AS ac ON af.AccountID = ac.AccountID
-      WHERE af.CodeID = '${CodeID}'
+      INNER JOIN genealogy.roleaccount AS r ON r.RoleID = af.RoleID
+      WHERE af.CodeID = ${CodeID}
       GROUP BY af.AccountID, af.CodeID, af.RoleID;`;
       db.connection.query(query, (err, result) => {
         if (!err && result.length > 0) {
@@ -474,6 +511,6 @@ module.exports = {
   checkMail, checkID, create, getUser, refreshFreeEmail, insertAccountFamily, checkCodeID,
   checkAccountID, updateRoleID, insertIntoFamily, getUserInfo, getUserCodeID, checkCodeIdCreator,
   insertAccountFamilyTree, checkCodeCreatedByID, getHistoryLoginCodeID, ChangePassword, getListRoleMember, UpdateAccount, UpdatePassword,
-  checkToken, getMemberRole, changeUsername, getInformationGenealogy, UpdateRegisterToken, checkRegisterToken, UpdateActive
+  checkToken, getMemberRole, changeUsername, getInformationGenealogy, UpdateRegisterToken, checkRegisterToken, UpdateActive, DeleteRePasssToken, DeleteRegisterToken
 
 }

@@ -57,9 +57,7 @@
                 <div class="username position-absolute">{{ m.Email }}</div>
                 <div class="role h-100 position-absolute py-1">
                   <select :disabled="m.RoleID != 1 ? false : true" v-model="m.RoleID" class="form-select h-100 px-3 py-0" @change="changeRole(m.RoleID, m.AccountID)">
-                    <option v-if="m.RoleID == 1" style="text-align: center;" value="1">Admin</option>
-                    <option v-if="m.RoleID != 1" style="text-align: center;" value="3">Thành viên</option>
-                    <option v-if="m.RoleID != 1" style="text-align: center;" value="2">Được tin cậy</option>
+                    <option style="text-align: center;" :value="m.RoleID">{{m.RoleName}}</option>
                   </select>
                 </div>
               </div>
@@ -127,6 +125,7 @@ import VueCookies from "vue-cookies";
 Vue.use(VueCookies);
 import { HTTP } from "../assets/js/baseAPI.js";
 import Snackbar from "awesome-snackbar";
+import CryptoJS from "crypto-js";
 export default {
   data() {
     return {
@@ -154,6 +153,37 @@ export default {
     };
   },
   methods: {
+    encrypt(message) {
+      const encrypted = CryptoJS.AES.encrypt(
+        message,
+        process.env.VUE_APP_KEY_SECRET,
+        {
+          iv: process.env.VUE_APP_IV,
+          mode: CryptoJS.mode.CBC,
+          padding: CryptoJS.pad.Pkcs7,
+        }
+      ).toString();
+
+      console.log("Encrypted:", encrypted);
+
+      return encrypted;
+    },
+
+    decrypt(encrypted) {
+      const decrypted = CryptoJS.AES.decrypt(
+        encrypted,
+        process.env.VUE_APP_KEY_SECRET,
+        {
+          iv: process.env.VUE_APP_IV,
+          mode: CryptoJS.mode.CBC,
+          padding: CryptoJS.pad.Pkcs7,
+        }
+      ).toString(CryptoJS.enc.Utf8);
+
+      console.log("Decrypted:", decrypted);
+
+      return decrypted;
+    },
     NotificationsDelete(messagee) {
       new Snackbar(messagee, {
         position: "bottom-right",
@@ -182,7 +212,6 @@ export default {
     },
     changeUserName() {
       HTTP.post("changeUsername", {
-        
         username: this.accountInfor.username,
         AccountID: this.accountID,
       })
@@ -200,7 +229,6 @@ export default {
     changeRole(RoleId, AccountID) {
       console.log(RoleId, AccountID);
       HTTP.post("set-role", {
-        
         RoleId: RoleId,
         accountID: AccountID,
         CodeID: this.CodeID,
@@ -217,52 +245,63 @@ export default {
         });
     },
     changePassword() {
+      var encryptedPassword = this.encrypt(this.InputCurentPassword);
+      // Mã hóa dữ liệu với khóa
+      var encryptedNewpassword = this.encrypt(this.InputNewPassword);
+
+      var decryptPassword = this.decrypt(encryptedPassword);
+      // Mã hóa dữ liệu với khóa
+      var decryptRepassword = this.decrypt(encryptedNewpassword);
+      console.log(decryptPassword);
+      console.log(decryptRepassword);
+
       if (this.InputNewPassword == this.InputRe_newpassword) {
         HTTP.put("changepassword", {
-          
           accountID: this.accountID,
-          currentpassword: this.InputCurentPassword,
-          newPassword: this.InputNewPassword,
-        }).then((respone) => {
-          if (respone.data.success == true) {
-            console.log(respone.data);
-            this.InputCurentPassword = null;
-            this.InputNewPassword = null;
-            this.InputRe_newpassword = null;
-          } else {
-            this.NotificationsDelete(respone.data.message);
-          }
-        }).catch((e) => {
-          console.log(e);
-        });
+          currentpassword: encryptedPassword,
+          newPassword: encryptedNewpassword,
+        })
+          .then((respone) => {
+            if (respone.data.success == true) {
+              console.log(respone.data);
+              this.InputCurentPassword = null;
+              this.InputNewPassword = null;
+              this.InputRe_newpassword = null;
+            } else {
+              this.NotificationsDelete(respone.data.message);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
       } else {
         this.NotificationsDelete("Nhập lại mật khẩu không đúng");
       }
     },
     getInforTree() {
       HTTP.get("inforTree", {
-        
         params: {
           CodeID: this.CodeID,
         },
-      }).then((respone) => {
-        if (respone.data.success == true) {
-          this.inforTree = respone.data.data;
-          this.inforTree = this.inforTree[0];
-          console.log(this.inforTree);
-        }
-      }).catch((e) => {
+      })
+        .then((respone) => {
+          if (respone.data.success == true) {
+            this.inforTree = respone.data.data;
+            this.inforTree = this.inforTree[0];
+            console.log(this.inforTree);
+          }
+        })
+        .catch((e) => {
           console.log(e);
         });
     },
     getInforAccount() {
       HTTP.post("get-user", {
-        
         accountID: this.accountID,
       })
         .then((respone) => {
           if (respone.data.success == true) {
-            this.accountInfor = respone.data.data;           
+            this.accountInfor = respone.data.data;
           } else {
             this.NotificationsScuccess(respone.data.message);
           }
@@ -274,16 +313,17 @@ export default {
     getListRoleMember() {
       console.log(this.CodeID);
       HTTP.get("listrole", {
-        
         params: {
           CodeID: this.CodeID,
         },
-      }).then((respone) => {
-        if (respone.data.success == true) {
-          this.listMemberRole = respone.data.data;
-          console.log(this.listMemberRole);
-        }
-      }).catch((e) => {
+      })
+        .then((respone) => {
+          if (respone.data.success == true) {
+            this.listMemberRole = respone.data.data;
+            console.log("ListMemberRole: " + this.listMemberRole);
+          }
+        })
+        .catch((e) => {
           console.log(e);
         });
     },

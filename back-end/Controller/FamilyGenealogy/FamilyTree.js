@@ -1,6 +1,7 @@
 const FamilyTreeService = require("../../service/FamilyGenealogy/ViewFamilyTree");
 const Response = require("../../Utils/Response");
 const CoreFunction = require("../../Utils/CoreFunction");
+const { Code } = require("mongodb");
 
 // Ví dụ
 var AllReligion = async (req, res) => {
@@ -11,7 +12,7 @@ var AllReligion = async (req, res) => {
         res.send(e);
     }
 };
-
+//Nguyễn Lê Hùng
 var getlistMemberToSendMessage = async (req, res) => {
     try {
         let CodeID = req.query.CodeID;
@@ -26,6 +27,7 @@ var getlistMemberToSendMessage = async (req, res) => {
         return res.send(Response.dataNotFoundResponse(error))
     }
 }
+//Nguyễn Lê Hùng
 var AllNationality = async (req, res) => {
     try {
         let data = await FamilyTreeService.getAllNationality();
@@ -34,6 +36,7 @@ var AllNationality = async (req, res) => {
         res.send(e);
     }
 }
+//Nguyễn Lê Hùng
 var GetIdPaternalAncestor = async (req, res) => {
     try {
         let CodeId = req.query.CodeId;
@@ -84,7 +87,7 @@ var getRelationShipMember = async (req, res) => {
         return res.send(Response.internalServerErrorResponse(error));
     }
 }
-
+//Nguyễn Lê Hùng
 var removeRelationship = async (req, res) => {
     try {
         let currentID = req.body.CurrentID;
@@ -117,7 +120,7 @@ var removeRelationship = async (req, res) => {
         return res.send(Response.internalServerErrorResponse(error));
     }
 }
-
+//Nguyễn Lê Hùng
 var getListMessage = async (req, res) => {
     try {
         let CodeID = req.query.CodeID;
@@ -128,7 +131,7 @@ var getListMessage = async (req, res) => {
         res.send(Response.internalServerErrorResponse(error));
     }
 }
-
+//Nguyễn Lê Hùng
 var getListHistoryEmail = async (req, res) => {
     try {
         let CodeID = req.query.CodeID;
@@ -143,7 +146,7 @@ var getListHistoryEmail = async (req, res) => {
     }
 }
 
-
+//Nguyễn Lê Hùng
 var getFamilyHead = async (req, res) => {
     try {
         let CodeID = req.query.CodeID;
@@ -159,6 +162,7 @@ var getFamilyHead = async (req, res) => {
     }
 }
 
+//Nguyễn Lê Hùng
 var AllMemberInGenelogy = async (req, res) => {
     try {
         let CodeID = req.query.CodeID;
@@ -182,7 +186,7 @@ var AllMemberInGenelogy = async (req, res) => {
     }
 }
 
-
+//Nguyễn Lê Hùng
 var AllMemberRole = async (req, res) => {
     try {
         let id = req.query.memberId
@@ -193,41 +197,39 @@ var AllMemberRole = async (req, res) => {
     }
 }
 
-
+//Nguyễn Lê Hùng
 var setRole = async (req, res) => {
     try {
+        console.log("vào api này")
         let memberId = req.body.memberId;
-        let roleId = req.body.roleId;
         let CodeId = req.body.CodeId;
-        if (roleId == 2) {
-            let existingFamilyHead = await FamilyTreeService.getRoleExist(memberId, 2);
-            if (existingFamilyHead.length > 0) {
-                return res.send(Response.dataNotFoundResponse(null, 'thành viên đã là tộc trưởng'));
-            } else {
-                await FamilyTreeService.setRoleMember(memberId, roleId, CodeId);
-                return res.send(Response.successResponse(null, 'thêm tộc trưởng thành công'));
+        console.log('memberId: ' + memberId)
+        console.log('CodeId: ' + CodeId)
+        let existingPaternalAncestor = await FamilyTreeService.getRoleExist(memberId, 1);
+        console.log('IDPaternalAncestor: ' + existingPaternalAncestor)
+        if (existingPaternalAncestor.length > 0) {
+            return res.send(Response.dataNotFoundResponse(null, 'thành viên đã là  cụ tổ'));
+        } else {
+            console.log("Thành viên chưa phải  cụ tổ")
+            let remove = await FamilyTreeService.removePaternalAncestor(CodeId);
+            let insertMemberRole = await FamilyTreeService.setRoleMember(memberId, 1, CodeId);
+            let turnOff = await FamilyTreeService.turnOffSQL_SAFE_UPDATES();
+            let resetAll = await FamilyTreeService.ResetAllGenerationMember(CodeId);
+            let turnOn = await FamilyTreeService.turnOnSQL_SAFE_UPDATES();
+            let settAll = await FamilyTreeService.setAllGenerationMember(memberId, 1, CodeId);
+            if (!remove || !insertMemberRole || !turnOff || !resetAll || !turnOn || !settAll) {
+                return res.send(Response.internalServerErrorResponse())
             }
-        } else if (roleId == 1) {
-            let existingPaternalAncestor = await FamilyTreeService.getRoleExist(memberId, 1);
-            if (existingPaternalAncestor.length > 0) {
-                return res.send(Response.dataNotFoundResponse(null, 'thành viên đã là tổ phụ'));
-            } else {
-                await FamilyTreeService.removePaternalAncestor(CodeId);
-                await FamilyTreeService.setRoleMember(memberId, roleId, CodeId);
-                await FamilyTreeService.turnOffSQL_SAFE_UPDATES();
-                await FamilyTreeService.ResetAllGenerationMember(CodeId);
-                await FamilyTreeService.turnOnSQL_SAFE_UPDATES();
-                await FamilyTreeService.setAllGenerationMember(memberId, 1);
-                return res.send(Response.successResponse(null, 'thêm tổ phụ thành công'));
-            }
+            return res.send(Response.successResponse(null, 'đặt  cụ tổ thành công'));
         }
+
     } catch (e) {
         res.send(e);
     }
 }
 
 
-
+//Nguyễn Lê Hùng
 var informationMember = async (req, res) => {
     let id = req.query.memberId
     let data = {}

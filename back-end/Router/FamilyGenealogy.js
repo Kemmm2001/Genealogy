@@ -23,14 +23,14 @@ const initWebRouter = (app) => {
 
     router.get('/memberRole', ManagerFamilyTree.AllMemberRole)
     router.get('/InforMember', ManagerFamilyTree.informationMember)
-    router.get('/searchMemberSendMessage', ManagerFamilyTree.searchMemberCanSendMessage)
-    router.post('/setRole', ManagerFamilyTree.setRole)
+    router.get('/searchMemberSendMessage',authMiddleware.authenticateAndAuthorize(2), ManagerFamilyTree.searchMemberCanSendMessage)
+    router.post('/setRole',authMiddleware.authenticateAndAuthorize(2), ManagerFamilyTree.setRole)
     router.get('/viewTree', ManagerFamilyTree.AllMemberInGenelogy)
     router.get('/getFamilyHead', ManagerFamilyTree.getFamilyHead)
 
     router.get('/listMemberMessage', ManagerFamilyTree.getlistMemberToSendMessage)
     router.get('/relationship', ManagerFamilyTree.getRelationShipMember)
-    router.put('/removeRelationship', ManagerFamilyTree.removeRelationship)
+    router.put('/removeRelationship',authMiddleware.authenticateAndAuthorize(2), ManagerFamilyTree.removeRelationship)
     router.get('/idPaternal', ManagerFamilyTree.GetIdPaternalAncestor)
     router.get('/unspecified-members', ManagerFamilyTree.getAllUnspecifiedMembers)
     router.get('/listMessage', ManagerFamilyTree.getListMessage)
@@ -39,26 +39,27 @@ const initWebRouter = (app) => {
     router.get('/compare', CompareMemberController.compareMember)
 
     router.get('/getJob', JobManagementController.ViewJobMember)
-    router.post('/addJob', JobManagementController.InsertJobMember)
-    router.put('/updateJob', JobManagementController.UpdateJobMember)
-    router.delete('/removeJob', JobManagementController.RemoveJobMember)
-    router.get('/RemoveListJob', JobManagementController.RemoveListJobMember)
+    router.post('/addJob',authMiddleware.authenticateAndAuthorize(2), JobManagementController.InsertJobMember)
+    router.put('/updateJob',authMiddleware.authenticateAndAuthorize(2), JobManagementController.UpdateJobMember)
+    router.delete('/removeJob',authMiddleware.authenticateAndAuthorize(2), JobManagementController.RemoveJobMember)
+    router.get('/RemoveListJob',authMiddleware.authenticateAndAuthorize(2), JobManagementController.RemoveListJobMember)
 
     router.get('/contact', ContactManagementController.ViewContactMember)
-    router.post('/addContact', ContactManagementController.InsertContactMember)
-    router.put('/updateContact', ContactManagementController.updateContactMember)
-    router.get('/deleteContact', ContactManagementController.removeContactMember)
+    router.post('/addContact',authMiddleware.authenticateAndAuthorize(2), ContactManagementController.InsertContactMember)
+    router.put('/updateContact',authMiddleware.authenticateAndAuthorize(2), ContactManagementController.updateContactMember)
+    router.get('/deleteContact',authMiddleware.authenticateAndAuthorize(2), ContactManagementController.removeContactMember)
 
     router.get('/education', EducationManagementController.ViewEducation)
-    router.post('/addEducation', EducationManagementController.InsertEducationMember)
-    router.put('/updateEducation', EducationManagementController.UpdateEducationMember)
-    router.delete('/deleteEducation', EducationManagementController.RemoveEducationMember)
-    router.get('/deleteListEducation', EducationManagementController.RemoveListEducationMember)
+    router.post('/addEducation',authMiddleware.authenticateAndAuthorize(2), EducationManagementController.InsertEducationMember)
+    router.put('/updateEducation',authMiddleware.authenticateAndAuthorize(2), EducationManagementController.UpdateEducationMember)
+    router.delete('/deleteEducation',authMiddleware.authenticateAndAuthorize(2), EducationManagementController.RemoveEducationMember)
+    router.get('/deleteListEducation',authMiddleware.authenticateAndAuthorize(2), EducationManagementController.RemoveListEducationMember)
 
     //API tuấn
     router.get('/member', FamilyMemberManagement.getMember);
     router.post('/member', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.addMember);
     router.post('/add-child', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.addChild);
+    router.post('/add-marriage', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.addMarriage);
     router.put('/member', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.updateMember);
     router.put('/member-photo',authMiddleware.authenticateAndAuthorize(2), CoreFunction.uploadImage("member-photo").single('Image'), FamilyMemberManagement.updateMemberPhoto);
     router.put('/memberToGenealogy', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.updateMemberToGenealogy);

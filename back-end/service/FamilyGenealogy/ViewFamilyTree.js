@@ -300,66 +300,108 @@ function getRoleExist(MemberID, Role) {
 }
 //Nguyễn Lê Hùng
 function turnOffSQL_SAFE_UPDATES() {
-    let query = "SET SQL_SAFE_UPDATES = 0";
-    db.connection.query(query, (err, result) => {
-        if (err) {
-            console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-        } else {
-            console.log("remove succesfully")
-        }
+    return new Promise((resolve, reject) => {
+        let query = "SET SQL_SAFE_UPDATES = 0";
+        db.connection.query(query, (err, result) => {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(true)
+            }
+        })
     })
 }
 //Nguyễn Lê Hùng
 function turnOnSQL_SAFE_UPDATES() {
-    let query = "SET SQL_SAFE_UPDATES = 1";
-    db.connection.query(query, (err, result) => {
-        if (err) {
-            console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-        } else {
-            console.log("remove succesfully")
-        }
+    return new Promise((resolve, reject) => {
+        let query = "SET SQL_SAFE_UPDATES = 1";
+        db.connection.query(query, (err, result) => {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(true)
+            }
+        })
     })
 }
 
 //Nguyễn Lê Hùng
 function ResetAllGenerationMember(CodeID) {
-    let query = `UPDATE familymember
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `UPDATE familymember
     SET Generation = 0
     where CodeID = '${CodeID}'`;
-    db.connection.query(query, (err, result) => {
-        if (err) {
-            console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-        } else {
-            console.log("remove succesfully")
+            db.connection.query(query, (err, result) => {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(true)
+                }
+            })
+        } catch (error) {
+            reject(error)
         }
     })
 }
 
 //Nguyễn Lê Hùng
-function setAllGenerationMember(memberId, generation) {
-    const updateQuery = `update familymember Set Generation =  ${generation}  where MemberID = ${memberId}`;
-    db.connection.query(updateQuery, (err, results) => {
-        if (err) console.log(err);;
+function setAllGenerationMember(memberId, generation, CodeId) {
+    console.log('memberId: ' + memberId)
+    console.log('generation: ' + generation)
+    console.log('CodeId::::::' + CodeId)
+    return new Promise((resolve, reject) => {
+        const updateQuery = `UPDATE familymember SET Generation = ${generation} WHERE MemberID = ${memberId}`;
 
-        //Tìm tất cả mối hôn nhân hiện tại
-        const findMarriesQuery = `SELECT * FROM familymember where MemberID = ${memberId}`;
-        db.connection.query(findMarriesQuery, (err, childResults) => {
-            if (err) console.log(err);;
+        db.connection.query(updateQuery, (err, results) => {
+            if (err) {
+                console.error(err);
+                reject(err);
+                return;
+            }
 
-            childResults.forEach((child) => {
-                if (child.MarriageID != null) {
-                    setAllGenerationMember(child.MarriageID, generation);
+            // Tìm tất cả mối hôn nhân hiện tại
+            const findMarriesQuery = `SELECT * FROM genealogy.marriage where husbandID = ${memberId} or wifeID = ${memberId} and CodeID = ${CodeId};`;
+            db.connection.query(findMarriesQuery, (err, marriedResult) => {
+                if (err) {
+                    console.error(err);
+                    reject(err);
+                    return;
                 }
-            });
-        });
 
-        // Tìm tất cả các con của thành viên hiện tại        
-        const findChildrenQuery = `SELECT * FROM familymember where ParentID = ${memberId}`;
-        db.connection.query(findChildrenQuery, (err, childResults) => {
-            if (err) console.log(err);;
+                const promises = [];
 
-            childResults.forEach((child) => {
-                setAllGenerationMember(child.MemberID, generation + 1);
+                if (marriedResult) {
+                    marriedResult.forEach((child) => {
+                        if (child.husbandID != null && child.husbandID == memberId) {
+                            promises.push(setAllGenerationMember(child.wifeID, generation));
+                        } else if (child.wifeID != null && child.wifeID == memberId) {
+                            promises.push(setAllGenerationMember(child.husbandID, generation));
+                        }
+                    });
+                }
+
+                // Tìm tất cả các con của thành viên hiện tại
+                const findChildrenQuery = `SELECT * FROM familymember WHERE FatherID = ${memberId} or MotherID = ${memberId}`;
+                db.connection.query(findChildrenQuery, (err, childResults) => {
+                    if (err) {
+                        console.error(err);
+                        reject(err);
+                        return;
+                    }
+
+                    childResults.forEach((child) => {
+                        promises.push(setAllGenerationMember(child.MemberID, generation + 1));
+                    });
+
+                    Promise.all(promises)
+                        .then(() => {
+                            resolve(true);
+                        })
+                        .catch((error) => {
+                            reject(error);
+                        });
+                });
             });
         });
     });
@@ -404,7 +446,7 @@ function getListUnspecifiedMembers(CodeID) {
         }
     })
 }
-
+//Nguyễn Lê Hùng
 async function getLivingFamilyMember(memberID) {
     return new Promise((resolve, reject) => {
         try {
@@ -596,7 +638,7 @@ function GetIdPaternalAncestor(CodeID) {
         })
     })
 }
-
+//Nguyễn Lê Hùng
 function getAllMarriage(CodeID) {
     return new Promise((resolve, reject) => {
         if (CodeID) {
@@ -616,7 +658,7 @@ function getAllMarriage(CodeID) {
         }
     })
 }
-
+//Nguyễn Lê Hùng
 async function GetGenealogy(result, dataMarriage, MemberID, ListFamily = [], visitedMembers = new Set()) {
     if (visitedMembers.has(MemberID)) {
         return ListFamily;
@@ -696,7 +738,7 @@ function getListMessage(CodeID) {
         }
     })
 }
-
+//Nguyễn Lê Hùng
 function getListNotificationEmail(CodeId) {
     return new Promise((resolve, reject) => {
         try {
@@ -739,6 +781,7 @@ async function ViewFamilyTree(CodeID) {
     });
 }
 
+//Nguyễn Lê Hùng
 // Hàm tạo đối tượng familyData từ dữ liệu thành viên
 async function createFamilyData(member, result, marriedArray) {
     try {
@@ -789,7 +832,7 @@ async function createFamilyData(member, result, marriedArray) {
     }
 }
 
-
+//Nguyễn Lê Hùng
 function formatDOB(dateString) {
 
     const date = new Date(dateString);
@@ -803,29 +846,38 @@ function formatDOB(dateString) {
     return formattedDOB;
 }
 
+//Nguyễn Lê Hùng
 async function setRoleMember(MemberId, roleId, CodeId) {
-    try {
-        let query = `INSERT INTO memberrole (MemberID, RoleID,CodeId) VALUES ('${MemberId}', '${roleId}','${CodeId}')`;
-        db.connection.query(query, (err, result) => {
-            if (err) {
-                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-            } else {
-                console.log('Đã thêm vai trò thành công.');
-            }
-        });
-    } catch (e) {
-        console.error('Lỗi trong quá trình thêm vai trò:', e);
-    }
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `INSERT INTO memberrole (MemberID, RoleID,CodeId) VALUES ('${MemberId}', '${roleId}','${CodeId}')`;
+            db.connection.query(query, (err, result) => {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(true)
+                }
+            });
+        } catch (e) {
+            console.error('Lỗi trong quá trình thêm vai trò:', e);
+        }
+    })
 }
 
-
+//Nguyễn Lê Hùng
 function removePaternalAncestor(CodeID) {
-    let query = `DELETE FROM memberrole WHERE RoleID = 1 and CodeId =  ${CodeID}`;
-    db.connection.query(query, (err, result) => {
-        if (err) {
-            console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-        } else {
-            console.log("remove succesfully")
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `DELETE FROM memberrole WHERE RoleID = 1 and CodeId =  ${CodeID}`;
+            db.connection.query(query, (err, result) => {
+                if (err) {
+                    console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+                } else {
+                    resolve(true)
+                }
+            })
+        } catch (error) {
+            reject(error)
         }
     })
 }

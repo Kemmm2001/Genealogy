@@ -61,7 +61,7 @@
       <div v-show=" nodes.length != 0" id="tree" ref="tree"></div>
       <div v-show=" nodes.length == 0" style="inset: 0; margin: auto;">
         <div @click="openMemberModal('AddFirst','cụ tổ')" class="btn bg-primary text-white d-flex flex-row align-items-center">
-          <div style="padding-right: 8px;">Thêm tổ phụ</div>
+          <div style="padding-right: 8px;">Thêm thông tin cụ tổ</div>
           <svg style="fill: white;" class="add-member-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
             <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />
           </svg>
@@ -102,14 +102,14 @@
           </div>
         </div>
       </div>
-      <!-- <div class="d-flex flex-row" style="position: absolute; bottom: 0; right: 0; align-items: end; z-index: 999;">
+      <div class="d-flex flex-row" style="position: absolute; bottom: 0; right: 0; align-items: end; z-index: 999;">
         <svg @click="togglehelp = !togglehelp" :class="{expandHelp : togglehelp}" class="help-icon p-1" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF">
           <g>
             <path d="M0,0h24v24H0V0z" fill="none" />
             <path d="M11,7h2v2h-2V7z M11,11h2v6h-2V11z M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,20 c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8S16.41,20,12,20z" />
           </g>
         </svg>
-      </div> -->
+      </div>
     </div>
     <div class="Container-select-modal">
       <modal name="Select-option-Modal">
@@ -147,7 +147,7 @@
               <div class="list-group-item" @click="openModalAddMemberFromList()">Thêm mối quan hệ từ Danh Sách</div>
               <div class="list-group-item" @click="openCfDelModal('removeMember',null,TitleModal)">Xóa thành viên (*)</div>
               <div class="list-group-item feature-overview">Các chức năng Khác</div>
-              <div class="list-group-item" @click="setPaternalAncestor(1)">Set làm tổ phụ</div>
+              <div class="list-group-item" @click="openCfDelModal('SetPaternalAncestor',null,TitleModal)">Set làm cụ tổ</div>
               <div v-if="parentRelationship">
                 <div v-for="list in parentRelationship" :key="list.id" @click="openCfDelModal('LinkRelationship',list.id,list.name)" class="list-group-item">Nối mối quan hệ với {{list.name}}</div>
               </div>
@@ -593,10 +593,10 @@
                   <h5>Ghi chú</h5>
                 </div>
               </div>
-              <div class="col-10" style="padding-top: 15px" v-if="extendedInfo">
-                <div class="d-flex flex-row">
-                  <div v-if="isEdit" class="col-4" style="padding-right: 8px;">
-                    <img style="height:316px;width:100%;margin-bottom:61px" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" @click="triggerFileInputClick()" />
+              <div class="col-10 h-100" style="padding-top: 15px" v-if="extendedInfo">
+                <div class="h-100 d-flex flex-row">
+                  <div v-if="isEdit" class="col-4" style="padding-right: 8px;height: 50%;">
+                    <img style="height:316px;width:100%;margin-bottom:61px" :class="{ fitHeight: heightLarger }" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" @click="triggerFileInputClick()" />
                     <svg v-else @click="triggerFileInputClick()" style="margin-bottom:61px" fill="#000000" height="275px" width="100%" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
                       <g>
                         <g>
@@ -615,7 +615,7 @@
                       <input ref="fileInputRef" type="file" class="form-control input-file" id="imageUpload" accept="image/*" @change="updateAvatar($event)" />
                     </div>
                   </div>
-                  <div class="d-flex flex-column justify-content-center" style="flex-grow: 1;">
+                  <div class="d-flex flex-column" style="flex-grow: 1;">
                     <div style="position: relative; margin-right:10px">
                       <input v-model="objMemberInfor.MemberName" type="text" class="form-control modal-item" placeholder />
                       <label class="form-label" for="input" :class="{ 'active': objMemberInfor.MemberName }">Tên thành viên đầy đủ</label>
@@ -627,13 +627,17 @@
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
                         <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item" placeholder />
-                        <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con Thứ</label>
+                        <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">{{this.action=="AddChild" ? 'Con thứ' : (this.isFather ? "Vợ thứ" : (this.isFather == null ? "Con thứ":"Chồng thứ"))}}</label>
                       </div>
                     </div>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
-                        <select v-model="objMemberInfor.Male" class="form-select modal-item">
+                        <select v-model="objMemberInfor.Male" class="form-select modal-item" v-if="isFather == true">
                           <option value="1">Nam</option>
+                          <option value="0" selected>Nữ</option>
+                        </select>
+                        <select v-model="objMemberInfor.Male" class="form-select modal-item" v-else>
+                          <option value="1" selected>Nam</option>
                           <option value="0">Nữ</option>
                         </select>
                         <label class="form-label" for="select">Giới Tính</label>
@@ -904,6 +908,9 @@
               <div v-else-if="isRemoveRelationship == 'LinkRelationship'" class="col-6 d-flex align-items-center justify-content-center">
                 <div class="btn bg-danger text-white" @click="linkRelationship()">Có</div>
               </div>
+              <div v-else-if="isRemoveRelationship == 'SetPaternalAncestor'" class="col-6 d-flex align-items-center justify-content-center">
+                <div class="btn bg-danger text-white" @click="setPaternalAncestor()">Có</div>
+              </div>
               <div class="col-6 d-flex align-items-center justify-content-center">
                 <div class="btn bg-primary text-white" @click="closeCfDelModal()">Không</div>
               </div>
@@ -1059,7 +1066,7 @@ export default {
       ListReligion: null,
       nodes: [],
       formData: null,
-      isFather: true,
+      isFather: null,
 
       extendedInfo: true,
       extendedContact: false,
@@ -1111,6 +1118,8 @@ export default {
 
       numberDeath: 0,
       listMember: [],
+
+      heightLarger: null,
     };
   },
   methods: {
@@ -1231,6 +1240,7 @@ export default {
               if (nodeElement.hasAttribute("data-n-id") == false) {
                 nodeElement = nodeElement.parentNode;
               }
+              this.isFather = null;
               if (nodeElement && nodeElement.hasAttribute("data-n-id")) {
                 let id = nodeElement.getAttribute("data-n-id");
                 self.idNodeWatching = id;
@@ -1268,7 +1278,6 @@ export default {
       let id = this.nodes.map((item) => item.id);
       console.log(id);
       HTTP.post("back-up", {
-
         memberIDs: id,
       })
         .then((response) => {
@@ -1329,7 +1338,6 @@ export default {
       // console.log(this.objCompareMember1);
       // console.log(this.objCompareMember2);
       HTTP.get("compare", {
-
         params: {
           MemberID1: memberId1,
           MemberID2: memberId2,
@@ -1350,20 +1358,22 @@ export default {
         });
     },
     //Nguyễn Lê Hùng
-    async setPaternalAncestor(roleId) {
+    async setPaternalAncestor() {
       HTTP.post("setRole", {
-
         memberId: this.CurrentIdMember,
-        roleId: roleId,
         CodeId: this.CodeID,
       })
-        .then(() => {
-          this.getListAfterSetPaternalAncestor(this.CurrentIdMember);
-          this.getListUnspecifiedMembers();
-          this.getListMember();
-          this.closeSelectModal();
-          this.NotificationsScuccess("Set tổ phụ thành công");
-          this.mytree(this.$refs.tree, this.nodes);
+        .then((respone) => {
+          if (respone.data.success) {
+            this.getListUnspecifiedMembers();
+            this.getListMember();
+            this.closeSelectModal();
+            this.closeCfDelModal();
+            this.NotificationsScuccess(respone.data.message);
+            this.mytree(this.$refs.tree, this.nodes);
+          } else {
+            this.NotificationsDelete(respone.data.message);
+          }
         })
         .catch(() => {
           this.NotificationsDelete("Có lỗi hệ thống");
@@ -1417,7 +1427,6 @@ export default {
     //Nguyễn Lê Hùng
     updateStatusEvent() {
       HTTP.put("updateStatusEvent", {
-
         CodeID: this.CodeID,
       })
         .then((respone) => {
@@ -1441,7 +1450,6 @@ export default {
         this.ListPhoneToSendMessage.length > 0
       ) {
         HTTP.post("send-email", {
-
           listID: this.ListPhoneToSendMessage,
           subject: this.subjectEmail,
           text: this.contentEmail,
@@ -1467,6 +1475,22 @@ export default {
         this.NotificationsDelete("Không có thông báo gì để gửi ");
       }
     },
+    getListMemberToSendMessage() {
+      console.log(this.CodeID);
+      HTTP.get("listMemberMessage", {
+        params: {
+          CodeID: this.CodeID,
+        },
+      })
+        .then((respone) => {
+          if (respone.data.success == true) {
+            this.ListMemberCanSendMessage = respone.data.data;
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     //Nguyễn Lê Hùng
     sendMessageToMember() {
       if (
@@ -1475,7 +1499,6 @@ export default {
         this.contentMessage != ""
       ) {
         HTTP.post("send-sms", {
-
           ListMemberID: this.ListPhoneToSendMessage,
           contentMessage: this.contentMessage,
           CodeID: this.CodeID,
@@ -1494,31 +1517,13 @@ export default {
         this.NotificationsDelete("Không có thông báo gì để gửi ");
       }
     },
-    //Nguyễn Lê Hùng
-    getListMemberToSendMessage() {
-      console.log(this.CodeID);
-      HTTP.get("listMemberMessage", {
 
-        params: {
-          CodeID: this.CodeID,
-        },
-      })
-        .then((respone) => {
-          if (respone.data.success == true) {
-            this.ListMemberCanSendMessage = respone.data.data;
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
     //Nguyễn Lê Hùng
     searchMember() {
       if (this.searchKeyword == "" || this.searchKeyword == null) {
         this.ListMemberCanSendMessage = this.nodes;
       } else {
         HTTP.get("searchMemberSendMessage", {
-
           params: {
             CodeID: this.CodeID,
             keySearch: this.searchKeyword,
@@ -1657,7 +1662,6 @@ export default {
       if (SelectDistinName != null) {
         this.selectDistrictMember = SelectDistinName;
         HTTP.get("district", {
-
           params: {
             cityID: this.selectCityMember,
           },
@@ -1675,7 +1679,6 @@ export default {
       this.isAdd = false;
       this.isEdit = true;
       HTTP.get("InforMember", {
-
         params: {
           memberId: id,
         },
@@ -1733,7 +1736,6 @@ export default {
     //Nguyễn Lê Hùng
     removeJobMember() {
       HTTP.delete("removeJob", {
-
         params: {
           JobID: this.JobIDToUpdate,
         },
@@ -1750,7 +1752,6 @@ export default {
     //Nguyễn Lê Hùng
     removeMember() {
       HTTP.get("deleteContact", {
-
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1765,7 +1766,6 @@ export default {
         });
 
       HTTP.get("RemoveListJob", {
-
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1780,7 +1780,6 @@ export default {
         });
 
       HTTP.get("deleteListEducation", {
-
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1795,7 +1794,6 @@ export default {
         });
 
       HTTP.get("delete-member", {
-
         params: {
           MemberID: this.CurrentIdMember,
         },
@@ -1853,7 +1851,6 @@ export default {
     //Nguyễn Lê Hùng
     getListJobMember() {
       HTTP.get("getJob", {
-
         params: {
           MemberId: this.CurrentIdMember,
         },
@@ -1868,7 +1865,6 @@ export default {
     //Nguyễn Lê Hùng
     addNewJobMember() {
       HTTP.post("addJob", {
-
         memberId: this.CurrentIdMember,
         Organization: this.objMemberJob.Organization,
         OrganizationAddress: this.objMemberJob.OrganizationAddress,
@@ -1889,7 +1885,6 @@ export default {
     //Nguyễn Lê Hùng
     getListEducationMember() {
       HTTP.get("education", {
-
         params: {
           memberId: this.CurrentIdMember,
         },
@@ -1904,7 +1899,6 @@ export default {
     //Nguyễn Lê Hùng
     addNewEducationMember() {
       HTTP.post("addEducation", {
-
         MemberID: this.CurrentIdMember,
         School: this.objMemberEducation.School,
         Description: this.objMemberEducation.Description,
@@ -1932,7 +1926,6 @@ export default {
         this.NotificationsDelete("Bạn chưa chọn mối quan hệ");
       } else {
         HTTP.put("memberToGenealogy", {
-
           InGenealogyID: this.CurrentIdMember,
           OutGenealogyID: this.newIdMember,
           Action: this.action,
@@ -1959,9 +1952,7 @@ export default {
       let formData = new FormData();
       let file = event.target.files[0];
       formData.append("xlsx", file);
-      HTTP.post("import", formData, {
-
-      })
+      HTTP.post("import", formData, {})
         .then((respone) => {
           console.log(respone.data);
           if (respone.data.success) {
@@ -1982,9 +1973,7 @@ export default {
       let file = event.target.files[0];
       formData.append("Image", file);
       formData.append("MemberID", this.CurrentIdMember);
-      HTTP.put("member-photo", formData, {
-
-      })
+      HTTP.put("member-photo", formData, {})
         .then((response) => {
           if (response.data.success == true) {
             this.getListMember();
@@ -2001,18 +1990,29 @@ export default {
         const reader = new FileReader();
         reader.onload = (e) => {
           this.avatarSrc = e.target.result; // Cập nhật ảnh avatar bằng ảnh tải lên
+
+          const img = new Image();
+          img.src = e.target.result;
+          img.onload = () => {
+            if (img.width != 0 && img.height != 0) {
+              this.checkPhotoSize(img.width, img.height);
+            }
+          };
         };
         reader.readAsDataURL(file);
       } else {
         this.avatarSrc = null;
       }
     },
+    checkPhotoSize(width, height) {
+      if (width > height) {
+        this.heightLarger = false;
+      } else {
+        this.heightLarger = true;
+      }
+    },
     //Nguyễn Lê Hùng
     addMemberChild(FatherID, MotherID) {
-      console.log(this.objMemberInfor.BirthOrder);
-      console.log(this.objMemberInfor.BirthPlace);
-      console.log(FatherID);
-      console.log(MotherID);
       HTTP.post("add-child", {
         FatherID: FatherID,
         MotherID: MotherID,
@@ -2059,7 +2059,6 @@ export default {
           ) {
             this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
             HTTP.post("addContact", {
-
               memberId: this.newIdMember,
               Address: this.objMemberContact.Address,
               Phone: this.objMemberContact.Phone,
@@ -2155,7 +2154,6 @@ export default {
             ) {
               this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
               HTTP.post("addContact", {
-
                 memberId: this.newIdMember,
                 Address: this.objMemberContact.Address,
                 Phone: this.objMemberContact.Phone,
@@ -2206,7 +2204,6 @@ export default {
     //Nguyễn Lê Hùng
     updateEducationMember() {
       HTTP.put("updateEducation", {
-
         School: this.objMemberEducation.School,
         Description: this.objMemberEducation.Description,
         StartDate: this.objMemberEducation.StartDate,
@@ -2225,7 +2222,6 @@ export default {
     //Nguyễn Lê Hùng
     updateJobMember() {
       HTTP.put("updateJob", {
-
         JobID: this.JobIDToUpdate,
         Organization: this.objMemberJob.Organization,
         OrganizationAddress: this.objMemberJob.OrganizationAddress,
@@ -2253,7 +2249,6 @@ export default {
         this.objMemberContact.Address = null;
       }
       HTTP.put("member", {
-
         MemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
         NickName: this.objMemberInfor.NickName,
@@ -2286,7 +2281,6 @@ export default {
               this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
             }
             HTTP.put("updateContact", {
-
               MemberID: this.CurrentIdMember,
               Address: this.objMemberContact.Address,
               Phone: this.objMemberContact.Phone,
@@ -2339,7 +2333,6 @@ export default {
       console.log(city);
       console.log(this.selectAdress);
       HTTP.post("filter-member", {
-
         CodeID: this.CodeID,
         BloodType: this.selectBloodType,
         selectAge: this.selectAge,
@@ -2431,29 +2424,8 @@ export default {
           }
         });
     },
-    getListAfterSetPaternalAncestor(id) {
-      HTTP.get("viewTree", {
-
-        params: {
-          CodeID: id,
-        },
-      })
-        .then((response) => {
-          if (response.data.success == true) {
-            this.nodes = response.data.data;
-            for (let i = 0; i < this.nodes.length; i++) {
-              this.nodes[i].tags = [];
-            }
-            this.mytree(this.$refs.tree, this.nodes);
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
     async getListUnspecifiedMembers() {
       HTTP.get("unspecified-members", {
-
         params: {
           CodeID: this.CodeID,
         },
@@ -2504,6 +2476,13 @@ export default {
       this.objMemberInfor = {};
       this.objMemberInfor.BirthOrder = 1;
       this.objMemberInfor.Male = 1;
+      console.log(this.isFather)
+      if(this.isFather == true && action == "AddMarriage"){
+        console.log(this.isFather)
+        this.objMemberInfor.Male = 0;
+      }else if(!this.isFather && action == "AddMarriage"){
+        this.objMemberInfor.Male = 1;
+      }
       this.objMemberInfor.BloodType = null;
       this.objMemberInfor.NationalityID = 1;
       this.objMemberInfor.ReligionID = 1;
@@ -2569,7 +2548,6 @@ export default {
     },
     linkRelationship() {
       HTTP.put("linkRelationship", {
-
         MemberID1: this.CurrentIdToLinkRelationship,
         MemberID2: this.newIdMember,
       })
@@ -2606,11 +2584,11 @@ export default {
       this.getAllMarriedInMember(foundNode.pids);
       this.setFunctionCanDo(foundNode);
       this.TitleModal = foundNode.name;
+      console.log("TitleModal: " + this.TitleModal);
       this.generationMember = foundNode.generation;
       if (this.nodeRightClickHighLight != null) {
         this.removeFromSelectedNodes(this.nodeRightClickHighLight);
       }
-      console.log(this.nodeRightClickHighLight);
       this.highLightSelectNode(id);
       this.nodeRightClickHighLight = id;
       this.$modal.show("Select-option-Modal");
@@ -2630,7 +2608,6 @@ export default {
     },
     removeRelationship() {
       HTTP.put("removeRelationship", {
-
         CurrentID: this.CurrentIdMember,
         RemoveID: this.newIdMember,
         action: this.action,
@@ -2651,8 +2628,9 @@ export default {
           console.log(e);
         });
     },
-    openCfDelModal(flag, id, name, action) {
-      this.isRemoveRelationship = flag;
+    openCfDelModal(actionCf, id, name, action) {
+      this.isRemoveRelationship = actionCf;
+      console.log(actionCf);
       if (this.isRemoveRelationship == "removeRelationship") {
         this.TitleConfirm = "Bạn có chắc chắn muốn hủy mối quan hệ với " + name;
         this.action = action;
@@ -2662,6 +2640,12 @@ export default {
       } else if (this.isRemoveRelationship == "LinkRelationship") {
         this.TitleConfirm = "Bạn chắc chắn muốn nối mối quan hệ với " + name;
         this.newIdMember = id;
+      } else if (this.isRemoveRelationship == "SetPaternalAncestor") {
+        this.TitleConfirm =
+          "Bạn chắc chắn muốn đổi " +
+          name +
+          " Thành cụ tổ " +
+          "\n Lưu ý: Tất cả thành viên cũng sẽ thay đổi theo cụ tổ";
       }
       this.$modal.show("cfdel-modal");
     },
@@ -2673,7 +2657,6 @@ export default {
     openModalRelationship() {
       this.$modal.show("modal-relationship");
       HTTP.get("relationship", {
-
         params: {
           CodeID: this.CodeID,
           memberID: this.CurrentIdMember,
@@ -2695,7 +2678,6 @@ export default {
 
     getAllListMember() {
       HTTP.get("members", {
-
         params: {
           codeID: this.CodeID,
         },
@@ -2712,7 +2694,6 @@ export default {
 
     getListMember() {
       HTTP.get("getFamilyHead", {
-
         params: {
           CodeID: this.CodeID,
         },
@@ -2729,6 +2710,7 @@ export default {
             },
           })
             .then((response) => {
+              console.log(111);
               this.nodes = [];
               this.numberDeath = 0;
               if (response.data.success == true) {
@@ -2781,9 +2763,7 @@ export default {
         });
     },
     getListAgeGroup() {
-      HTTP.get("agegroup", {
-
-      })
+      HTTP.get("agegroup", {})
         .then((response) => {
           this.ListAgeGroup = response.data;
         })
@@ -2792,9 +2772,7 @@ export default {
         });
     },
     getListBloodTypeGroup() {
-      HTTP.get("bloodtype", {
-
-      })
+      HTTP.get("bloodtype", {})
         .then((response) => {
           this.ListBloodTypeGroup = response.data;
         })
@@ -2803,9 +2781,7 @@ export default {
         });
     },
     getListNationality() {
-      HTTP.get("nationality", {
-
-      })
+      HTTP.get("nationality", {})
         .then((response) => {
           this.ListNationality = response.data;
         })
@@ -2815,7 +2791,6 @@ export default {
     },
     getListMessage() {
       HTTP.get("listMessage", {
-
         params: {
           CodeID: this.CodeID,
         },
@@ -2829,7 +2804,6 @@ export default {
     },
     getListHistoryEmail() {
       HTTP.get("listHistoryEmail", {
-
         params: {
           CodeID: this.CodeID,
         },
@@ -2858,7 +2832,6 @@ export default {
         this.ListDistrictMember = null;
       } else {
         HTTP.get("district", {
-
           params: {
             cityID: this.selectCityMember,
           },
@@ -2884,7 +2857,6 @@ export default {
         this.selectAdress = selectedCity.name;
         this.GetListFilterMember();
         HTTP.get("district", {
-
           params: {
             cityID: this.selectCity,
           },
@@ -2899,7 +2871,6 @@ export default {
     },
     getMemberRole() {
       HTTP.post("memberRole", {
-
         accountID: localStorage.getItem("accountID"),
         codeID: localStorage.getItem("CodeID"),
       })
@@ -2913,9 +2884,7 @@ export default {
         });
     },
     getListCity() {
-      HTTP.get("province", {
-
-      })
+      HTTP.get("province", {})
         .then((response) => {
           this.ListCity = response.data;
         })
@@ -2924,9 +2893,7 @@ export default {
         });
     },
     getListReligion() {
-      HTTP.get("religion", {
-
-      })
+      HTTP.get("religion", {})
         .then((response) => {
           this.ListReligion = response.data;
         })
@@ -3031,6 +2998,15 @@ export default {
     },
   },
   mounted() {
+    if (localStorage.getItem("CodeID") != null) {
+      this.CodeID = localStorage.getItem("CodeID");
+    } else {
+      if (localStorage.getItem("accountID") != null) {
+        this.$router.push("/familycode");
+      } else {
+        this.$router.push("/login");
+      }
+    }
     if (
       localStorage.getItem("CodeID") != null &&
       localStorage.getItem("accountID") != null
@@ -3049,20 +3025,10 @@ export default {
       this.getListMemberToSendMessage();
       this.updateStatusEvent();
     }
-
-    if (localStorage.getItem("CodeID") != null) {
-      this.CodeID = localStorage.getItem("CodeID");
-    } else {
-      if (localStorage.getItem("accountID") != null) {
-        this.$router.push("/familycode");
-      } else {
-        this.$router.push("/login");
-      }
-    }
   },
 };
 </script>
-
+    
 <style>
 @import "../assets/css/familytree.css";
 

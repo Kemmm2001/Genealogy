@@ -3,6 +3,9 @@ const FamilyMember = require('../../service/FamilyGenealogy/FamilyManagement');
 const EventAttendence = require('../../service/EventGenealogy/EventAttendence');
 const SystemAction = require('../../Utils/SystemOperation');
 const Response = require('../../Utils/Response');
+require('dotenv').config();
+const backEndURL = process.env.BACKEND_URL
+const frontEndURL = process.env.FRONTEND_URL
 
 const { signInviteToken, verifyInviteToken } = require('../../helper/jwt_helper')
 
@@ -506,7 +509,8 @@ var inviteMail = async (req, res) => {
             const token = await signInviteToken(memberId, eventId, time);
 
             const data = await EventAttendence.Update(memberId, token);
-            const link = `http://localhost:3006/CfEvent?token=${token}`;
+            const link = `${frontEndURL}/CfEvent?token=${token}`;
+            console.log('link:::::::: ' + link)
             if (data === true) {
                 const mailOptions = {
                     to: emails[i],
@@ -550,7 +554,7 @@ var getEventByToken = async (req, res) => {
 var UpdateIsGoing = async (req, res) => {
     try {
         let memberId = req.body.memberId;
-        let eventId = req.body.eventId;
+        let   = req.body.eventId;
         let IsGoing = req.body.IsGoing
         let data = await EventAttendence.UpdateIsGoing(memberId, eventId, IsGoing)
         if (data) {
@@ -576,19 +580,33 @@ var verifyMail = async (req, res) => {
             return res.send(Response.dataNotFoundResponse(null, 'Link không đúng'));
         }
 
-        let data = await EventAttendence.UpdateIsGoing(payload.memberId, payload.eventId, IsGoing)
+        let data;
+        try {
+            data = await EventAttendence.UpdateIsGoing(payload.memberId, payload.eventId, IsGoing);
 
-        if (data == true) {
-            return res.send(Response.successResponse());
-        } else {
-            return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+            if (data == true) {
+                let data1;
+                try {
+                    data1 = await EventAttendence.DeleteToken(payload.memberId, payload.eventId);
+                    if (data1 == true) {
+                        return res.send(Response.successResponse());
+                    }
+                    return res.send(Response.internalServerErrorResponse(null, 'Lỗi xoá Token'));
+                } catch (error) {
+                    return res.send(Response.internalServerErrorResponse(error, 'Lỗi khi xoá Token'));
+                }
+            } else {
+                return res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống'));
+            }
+        } catch (error) {
+            return res.send(Response.internalServerErrorResponse(null, 'Lỗi khi cập nhật dữ liệu'));
         }
-
     } catch (error) {
-        return res.send(Response.internalServerErrorResponse(error, error.message));
-
+        return res.send(Response.internalServerErrorResponse(null, error.message));
     }
 }
+
+
 
 
 module.exports = {

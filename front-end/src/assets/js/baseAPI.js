@@ -11,6 +11,8 @@ export const HTTP = axios.create({
   responseType: "json",
 })
 
+console.log('accessToken: ' + VueCookies.get("accessToken"))
+
 HTTP.interceptors.request.use(config => {
   config.headers.Authorization = "Bearer " + VueCookies.get("accessToken");
   return config;
