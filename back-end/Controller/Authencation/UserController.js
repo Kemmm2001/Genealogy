@@ -178,13 +178,14 @@ var loginUser = async (req, res) => {
       return res.send(Response.badRequestResponse(null, 'Tài khoản chưa được kích hoạt'));
     }
 
-    var decryptedBytes = CryptoJS.AES.decrypt(req.body.password, secureKey, {
-      mode: CryptoJS.mode.ECB,
-      padding: CryptoJS.pad.Pkcs7
+    const decryptedBytes = CryptoJS.AES.decrypt(req.body.password, process.env.AES256_SECRET, {
+      iv: process.env.AES256_IV,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7  
     });
-    console.log(decryptedBytes)
+    // Chuyển đổi dữ liệu giải mã thành chuỗi
     var password = decryptedBytes.toString(CryptoJS.enc.Utf8);
-    console.log(password)
+    
     let isPasswordMatch = await bcrypt.compare(password, data.password);
 
     if (!isPasswordMatch) {
@@ -415,19 +416,20 @@ var resetPassword = async (req, res) => {
     }
     console.log(req.body.password)
 
-    var decryptedBytes = CryptoJS.AES.decrypt(req.body.password, secureKey, {
-      mode: CryptoJS.mode.ECB,
-      padding: CryptoJS.pad.Pkcs7
+    const decryptedBytes = CryptoJS.AES.decrypt(req.body.password, process.env.AES256_SECRET, {
+      iv: process.env.AES256_IV,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7  
     });
-    var decryptedBytes1 = CryptoJS.AES.decrypt(req.body.repassword, secureKey, {
-      mode: CryptoJS.mode.ECB,
-      padding: CryptoJS.pad.Pkcs7
+    const decryptedBytes1 = CryptoJS.AES.decrypt(req.body.repassword, process.env.AES256_SECRET, {
+      iv: process.env.AES256_IV,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7  
     });
-    
     // Chuyển đổi dữ liệu giải mã thành chuỗi
     var password = decryptedBytes.toString(CryptoJS.enc.Utf8);
     var repassword = decryptedBytes1.toString(CryptoJS.enc.Utf8);
-    
+
     console.log(password)
 
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>])[a-zA-Z\d!@#$%^&*()\-_=+{};:,<.>]{8,}$/;
