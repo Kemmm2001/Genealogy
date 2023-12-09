@@ -76,7 +76,8 @@
             </div>
             <div class="d-flex align-items-center" style="padding-right: 10px;">
                 <router-link to="/event" class="h-100 w-100 d-flex flex-row align-items-center justify-content-center">
-                    <div class="d-flex align-items-center navbar-item">
+                    <div @click="setSelectedHead('/event')" :class="{ 'header-selected': currentPath === '/event' }"
+                        class="d-flex align-items-center navbar-item">
                         <svg class="navbar-icon-sm" style="margin-left: 8px;" xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 448 512">
                             <path
@@ -113,10 +114,10 @@
                 </button>
             </div>
             <div class="navbar-item-content d-flex flex-row justify-content-center">
-                <div :class="{ 'header-selected': currentPath === '/profile' }"
-                    @mouseenter="expandAccountManage = true; show()" @mouseleave="expandAccountManage = false; show();"
-                    style="overflow-x: clip; padding-right: 20px;" class="position-relative align-items-center d-flex">
-                    <div class="navbar-item d-flex flex-row w-100 p-1" style="overflow: hidden;">
+                <div @mouseenter="expandAccountManage = true;" @mouseleave="expandAccountManage = false;"
+                    style="padding-right: 20px;" class="position-relative align-items-center d-flex">
+                    <div :class="{ 'header-selected': currentPath === '/profile' }"
+                        class="navbar-item d-flex flex-row w-100 p-1" style="overflow: hidden;">
                         <div>
                             <svg class="user-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                                 <path
@@ -137,16 +138,26 @@
                                 class="navbar-extended-content p-2 m-1">Tài khoản</div>
                         </router-link>
                         <div @click="LogoutGenelogy()">
-                            <div v-show="expandAccountManage" class="navbar-extended-content p-2 m-1">Đăng xuất gia
+                            <div v-show="expandAccountManage" style="cursor: pointer;"
+                                class="navbar-extended-content p-2 m-1">
+                                Đăng xuất gia
                                 phả
                             </div>
                         </div>
                         <div @click="LogoutAccount()">
-                            <div v-show="expandAccountManage" class="navbar-extended-content p-2 m-1">Đăng xuất tài
+                            <div v-show="expandAccountManage" style="cursor: pointer;"
+                                class="navbar-extended-content p-2 m-1">
+                                Đăng xuất tài
                                 khoản</div>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="user-extended d-flex flex-column position-absolute" :class="{ expandContent: expandAccountManage }">
+                <router-link to="/profile">
+                    <div :class="{ 'header-selected': currentPath === '/profile' }" @click="setSelectedHead('/profile')"
+                        v-show="expandAccountManage" class="navbar-extended-content p-2 m-1">Tài khoản</div>
+                </router-link>
             </div>
         </div>
     </div>
