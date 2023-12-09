@@ -88,7 +88,7 @@ router-link-exact-active {
     display: grid;
     grid-template-columns: 15% 60% 25%;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-    font-size: 12px;
+    font-size: 9px;
     background-color: #FFFFFF;
 }
 
@@ -113,24 +113,49 @@ router-link-exact-active {
     grid-template-columns: 50% 50%;
 }
 
-.navbar-grid-container .item3{
-}
-
 .navbar-item{
     align-items: center;
+    padding: 8px;
 }
 
-@media (min-width: 576px) {
+@media (min-width: 900px) {
     .navbar-grid-container{
+        font-size: 10px;
     }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1100px) {
     .navbar-grid-container{
+        font-size: 12px;
     }
 }
 
-@media (min-width: 992px) {
+@media (min-width: 1300px) {
     .navbar-grid-container{
+        font-size: 15px;
+    }
+}
+
+@media (min-width: 1500px) {
+    .navbar-grid-container{
+        font-size: 17px;
+    }
+}
+
+@media (min-width: 1850px) {
+    .navbar-grid-container{
+        font-size: 20px;
+    }
+}
+
+@media (min-width: 2050px) {
+    .navbar-grid-container{
+        font-size: 23px;
+    }
+}
+
+@media (min-width: 2400px) {
+    .navbar-grid-container{
+        font-size: 27px;
     }
 }
