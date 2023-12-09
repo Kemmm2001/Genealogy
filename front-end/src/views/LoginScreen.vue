@@ -298,7 +298,7 @@ export default {
               this.accountIdToken = response.data.data;
               console.log(response.data);
               console.log(this.accountIdToken);
-              VueCookies.set("accessToken", this.accountIdToken, 3600);
+              VueCookies.set("accessToken", this.accountIdToken, 360000);
               console.log(response.data.data);
               this.accountLogin = [];
               this.$router.push("/familycode");
