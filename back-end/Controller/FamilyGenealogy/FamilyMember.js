@@ -1226,7 +1226,7 @@ var getMember = async (req, res) => {
 
 
 module.exports = {
-    addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember,
+    addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember, addMarriage,
     getListAgeGroup, getListBloodTypeGroup, getAllMemberSortByRole, GetCurrentParentMember, insertParentIdToMember,
     getMember, updateMemberToGenealogy, updateMemberPhoto, addChild, linkRelationship, getAllMembersInGenalogy
 };
