@@ -29,29 +29,29 @@ const initWebRouter = (app) => {
     // Create a new FamilyHistory
     router.post('/familyhistory', authMiddleware.authenticateAndAuthorize(2), FamilyHistoryController.addFamilyHistory);
     // Retrieve a single FamilyHistory with id
-    router.get('/familyhistory', FamilyHistoryController.getFamilyHistory);
+    router.get('/familyhistory',authMiddleware.authenticateAndAuthorize(3), FamilyHistoryController.getFamilyHistory);
     // Update a FamilyHistory with id
     router.put('/familyhistory', authMiddleware.authenticateAndAuthorize(2), FamilyHistoryController.updateFamilyHistory);
     // Delete a FamilyHistory with id
     router.get('/delete-familyhistory', authMiddleware.authenticateAndAuthorize(2), FamilyHistoryController.deleteFamilyHistory);
-    router.post('/searchHistory', FamilyHistoryController.searchHistory)
-    router.post('/filterHistory', FamilyHistoryController.filterHistory)
+    router.post('/searchHistory',authMiddleware.authenticateAndAuthorize(3), FamilyHistoryController.searchHistory)
+    router.post('/filterHistory', authMiddleware.authenticateAndAuthorize(3),FamilyHistoryController.filterHistory)
 
 
     // Create a new AlbumPhoto
     router.post('/albumphoto', authMiddleware.authenticateAndAuthorize(2), CoreFunction.uploadImage("album-photo").single('BackGroundPhoto'), AlbumPhotoController.addAlbumPhoto);
     // Retrieve a single AlbumPhoto with id
-    router.get('/albumphoto', AlbumPhotoController.getAlbumPhoto);
+    router.get('/albumphoto', authMiddleware.authenticateAndAuthorize(3),AlbumPhotoController.getAlbumPhoto);
     // Update an AlbumPhoto with id
     router.put('/albumphoto', authMiddleware.authenticateAndAuthorize(2), CoreFunction.uploadImage("album-photo").single('BackGroundPhoto'), AlbumPhotoController.updateAlbumPhoto);
     // Delete an AlbumPhoto with id
     router.get('/delete-albumphoto', authMiddleware.authenticateAndAuthorize(2), AlbumPhotoController.deleteAlbumPhoto);
-    router.get('/searchAlbum', AlbumPhotoController.searchAlbumPhoto)
+    router.get('/searchAlbum',authMiddleware.authenticateAndAuthorize(3), AlbumPhotoController.searchAlbumPhoto)
 
     // Create a new FamilyPhoto
     router.post('/familyphoto', authMiddleware.authenticateAndAuthorize(2), CoreFunction.uploadImage("family-photo").single('Photo'), FamilyPhotoController.addFamilyPhoto);
     // Retrieve a single FamilyPhoto with id
-    router.get('/familyphoto', FamilyPhotoController.getFamilyPhoto);
+    router.get('/familyphoto',authMiddleware.authenticateAndAuthorize(3), FamilyPhotoController.getFamilyPhoto);
     // Update a FamilyPhoto with id
     router.put('/familyphoto', authMiddleware.authenticateAndAuthorize(2), CoreFunction.uploadImage("family-photo").single('Photo'), FamilyPhotoController.updateFamilyPhoto);
     // Delete a FamilyPhoto with id
