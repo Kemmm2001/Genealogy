@@ -288,10 +288,11 @@ function UpdateActive(IsActive, email) {
 function getListRoleMember(CodeID) {
   return new Promise((resolve, reject) => {
     try {
-      let query = `SELECT ac.Username,ac.Email, af.AccountID, af.CodeID, af.RoleID
+      let query = `SELECT ac.Username, ac.Email, af.AccountID, af.CodeID, af.RoleID,r.RoleName
       FROM genealogy.AccountFamilyTree AS af
       INNER JOIN genealogy.account AS ac ON af.AccountID = ac.AccountID
-      WHERE af.CodeID = '${CodeID}'
+      INNER JOIN genealogy.roleaccount AS r ON r.RoleID = af.RoleID
+      WHERE af.CodeID = ${CodeID}
       GROUP BY af.AccountID, af.CodeID, af.RoleID;`;
       db.connection.query(query, (err, result) => {
         if (!err && result.length > 0) {

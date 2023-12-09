@@ -80,6 +80,7 @@
                         </div>
                     </div>
                 </router-link>
+              </div>
             </div>
             <div class="d-flex align-items-center py-1" style="padding-right: 10px;">
                 <router-link to="/event" class="h-100 w-100 d-flex flex-row align-items-center justify-content-center">
@@ -158,68 +159,88 @@
                     </div>
                 </div>
             </div>
+          </div>
+          <div class="user-extended d-flex flex-column position-absolute" :class="{ expandContent: expandAccountManage }">
+            <router-link to="/profile">
+              <div :class="{ 'header-selected': currentPath === '/profile' }" @click="setSelectedHead('/profile')" v-show="expandAccountManage" class="navbar-extended-content p-2 m-1">Tài khoản</div>
+            </router-link>
+            <div @click="LogoutGenelogy()">
+              <div v-show="expandAccountManage" class="navbar-extended-content p-2 m-1">
+                Đăng xuất gia
+                phả
+              </div>
+            </div>
+            <div @click="LogoutAccount()">
+              <div v-show="expandAccountManage" class="navbar-extended-content p-2 m-1">
+                Đăng xuất tài
+                khoản
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </template>
 <script>
 import { EventBus } from "../assets/js/MyEventBus.js";
 import { HTTP } from "../assets/js/baseAPI.js";
 export default {
-    data() {
-        return {
-            currentPath: window.location.pathname,
-            expandContent: false,
-            expandFamilyInfo: false,
-            expandMemberList: false,
-            expandEventList: false,
-            expandAccountManage: false,
-            darkMode: false,
-            AccountInfor: null,
-        };
-    },
-    mounted() {
-        this.getAccountInfor();
-        this.$nextTick(() => {
-            this.currentPath = window.location.pathname;
-            console.log(this.currentPath); // Hiển thị đường dẫn sau tên miền từ URL hiện tại
+  data() {
+    return {
+      currentPath: window.location.pathname,
+      expandContent: false,
+      expandFamilyInfo: false,
+      expandMemberList: false,
+      expandEventList: false,
+      expandAccountManage: false,
+      darkMode: false,
+      AccountInfor: null,
+    };
+  },
+  mounted() {
+    this.getAccountInfor();
+    this.$nextTick(() => {
+      this.currentPath = window.location.pathname;
+      console.log(this.currentPath); // Hiển thị đường dẫn sau tên miền từ URL hiện tại
+    });
+    EventBus.$emit("darkMode", this.darkMode);
+  },
+  methods: {
+    getAccountInfor() {
+      if (localStorage.getItem("accountID") != null) {
+        HTTP.post("get-user", {
+          accountID: localStorage.getItem("accountID"),
+        }).then((response) => {
+          if (response.data.success == true) {
+            this.AccountInfor = response.data.data;
+            console.log(this.AccountInfor);
+          }
         });
+      }
+    },
+    LogoutGenelogy() {
+      localStorage.removeItem("CodeID");
+      this.$router.push("/familycode");
+    },
+    LogoutAccount() {
+      localStorage.removeItem("CodeID");
+      localStorage.removeItem("accountID");
+      this.$router.push("/login");
+    },
+    setSelectedHead(url) {
+      this.currentPath = url;
+    },
+    show() {
+      console.log(this.expandAccountManage);
+    },
+  },
+  watch: {
+    darkMode: {
+      handler: function () {
         EventBus.$emit("darkMode", this.darkMode);
+      },
     },
-    methods: {
-        getAccountInfor() {
-            if (localStorage.getItem("accountID") != null) {
-                HTTP.post("get-user", {
-                    accountID: localStorage.getItem("accountID"),
-                }).then((response) => {
-                    if (response.data.success == true) {
-                        this.AccountInfor = response.data.data;
-                        console.log(this.AccountInfor)
-                    }
-                });
-            }
-        },
-        LogoutGenelogy() {
-            localStorage.removeItem("CodeID");
-            this.$router.push("/familycode");
-        },
-        LogoutAccount() {
-            localStorage.removeItem("CodeID");
-            localStorage.removeItem("accountID");
-            this.$router.push("/login");
-        },
-        setSelectedHead(url) {
-            this.currentPath = url;
-        },
-        show() {
-            console.log(this.expandAccountManage)
-        },
-    },
-    watch: {
-        darkMode: {
-            handler: function () {
-                EventBus.$emit("darkMode", this.darkMode);
-            },
-        },
-    },
+  },
 };
 </script>
