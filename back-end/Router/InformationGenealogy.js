@@ -50,10 +50,7 @@ const initWebRouter = (app) => {
 
     // Create a new FamilyPhoto
     router.post('/familyphoto', authMiddleware.authenticateAndAuthorize(2), CoreFunction.uploadImage("family-photo").single('Photo'), FamilyPhotoController.addFamilyPhoto);
-    // Retrieve a single FamilyPhoto with id
     router.get('/familyphoto',authMiddleware.authenticateAndAuthorize(3), FamilyPhotoController.getFamilyPhoto);
-    // Update a FamilyPhoto with id
-    router.put('/familyphoto', authMiddleware.authenticateAndAuthorize(2), CoreFunction.uploadImage("family-photo").single('Photo'), FamilyPhotoController.updateFamilyPhoto);
     // Delete a FamilyPhoto with id
     router.get('/delete-familyphoto', authMiddleware.authenticateAndAuthorize(2), FamilyPhotoController.deleteFamilyPhoto);
     // End API tuấn
