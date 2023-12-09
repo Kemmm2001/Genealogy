@@ -108,7 +108,6 @@
                   <th class="eventlist-list-th" scope="col">Trạng thái</th>
                   <th class="eventlist-list-th" scope="col">Địa điểm</th>
                   <th class="eventlist-list-th" scope="col"></th>
-                  <th class="eventlist-list-th" scope="col"></th>
                 </tr>
               </thead>
               <tbody>
@@ -318,7 +317,7 @@
                   <div class="col-2 d-flex flex-row position-relative" style="padding-bottom: 4px; padding-right: 4px;">
                     <input v-model="numberExpire" type="number" class="form-control h-100 w-100" min="0" />
                   </div>
-                  <div class="col-3 d-flex flex-row" style="padding-bottom: 4px; padding-right: 4px;">
+                  <div class="col-3 d-flex flex-row px-2" style="padding-bottom: 4px;">
                     <select class="form-select h-100 w-100">
                       <option selected>Giờ</option>
                       <option>Ngày</option>
@@ -338,6 +337,7 @@
                 </div>
               </div>
             </div>
+            <div class="position-absolute text-danger d-flex align-items-center px-2" style="bottom: 0; font-weight: bold; height: 50px; z-index: 2;">Thông báo mỗi sự kiện sẽ chỉ được gửi một lần</div>
             <div class="modal-footer position-absolute w-100" style="bottom: 0;">
               <div @click="sendMessageToConfirmEvent()" class="bg-primary text-white btn mx-2">Gửi</div>
               <div @click="closeParticipantList()" class="bg-primary text-white btn mx-2">Gửi cho tất cả</div>

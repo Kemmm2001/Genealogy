@@ -4,7 +4,6 @@
     <div class="func-container col-2 d-flex flex-column">
       <div class="menu px-3 d-flex flex-column">
         <div @click="selectProfile()" :class="{ chosen: profileSelected }" class="menu-item d-flex align-items-center mt-3 px-3 py-2" style="color: #FFFFFF;">Tài khoản cá nhân</div>
-        <!-- Phân quyền chỉ dành cho role creator -->
         <div @click="selectEditRole()" :class="{ chosen: editRoleSelected }" class="menu-item d-flex align-items-center mt-2 px-3 py-2" style="color: #FFFFFF;">Phân quyền trong gia phả</div>
         <div @click="selectChangePwd()" :class="{ chosen: changePwdSelected }" class="menu-item d-flex align-items-center mt-2 px-3 py-2" style="color: #FFFFFF;">Thay đổi mật khẩu</div>
       </div>
