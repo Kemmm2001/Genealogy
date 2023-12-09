@@ -593,10 +593,10 @@
                   <h5>Ghi chú</h5>
                 </div>
               </div>
-              <div class="col-10" style="padding-top: 15px" v-if="extendedInfo">
-                <div class="d-flex flex-row">
-                  <div v-if="isEdit" class="col-4" style="padding-right: 8px;">
-                    <img style="height:316px;width:100%;margin-bottom:61px" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" @click="triggerFileInputClick()" />
+              <div class="col-10 h-100" style="padding-top: 15px" v-if="extendedInfo">
+                <div class="h-100 d-flex flex-row">
+                  <div v-if="isEdit" class="col-4" style="padding-right: 8px;height: 50%;">
+                    <img style="height:316px;width:100%;margin-bottom:61px" :class="{ fitHeight: heightLarger }" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" @click="triggerFileInputClick()" />
                     <svg v-else @click="triggerFileInputClick()" style="margin-bottom:61px" fill="#000000" height="275px" width="100%" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
                       <g>
                         <g>
@@ -615,7 +615,7 @@
                       <input ref="fileInputRef" type="file" class="form-control input-file" id="imageUpload" accept="image/*" @change="updateAvatar($event)" />
                     </div>
                   </div>
-                  <div class="d-flex flex-column justify-content-center" style="flex-grow: 1;">
+                  <div class="d-flex flex-column" style="flex-grow: 1;">
                     <div style="position: relative; margin-right:10px">
                       <input v-model="objMemberInfor.MemberName" type="text" class="form-control modal-item" placeholder />
                       <label class="form-label" for="input" :class="{ 'active': objMemberInfor.MemberName }">Tên thành viên đầy đủ</label>
@@ -627,7 +627,7 @@
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
                         <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item" placeholder />
-                        <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con Thứ</label>
+                        <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">{{this.action=="AddChild" ? 'Con thứ' : (this.isFather ? "Vợ thứ" : "Chồng thứ")}}</label>
                       </div>
                     </div>
                     <div style="display:flex">
@@ -1114,6 +1114,8 @@ export default {
 
       numberDeath: 0,
       listMember: [],
+
+      heightLarger:null,
     };
   },
   methods: {
@@ -1983,10 +1985,25 @@ export default {
         const reader = new FileReader();
         reader.onload = (e) => {
           this.avatarSrc = e.target.result; // Cập nhật ảnh avatar bằng ảnh tải lên
+
+          const img = new Image();
+          img.src = e.target.result;
+          img.onload = () => {
+            if (img.width != 0 && img.height != 0) {
+              this.checkPhotoSize(img.width, img.height);
+            }
+          };
         };
         reader.readAsDataURL(file);
       } else {
         this.avatarSrc = null;
+      }
+    },
+    checkPhotoSize(width, height) {
+      if (width > height) {
+        this.heightLarger = false;
+      } else {
+        this.heightLarger = true;
       }
     },
     //Nguyễn Lê Hùng
