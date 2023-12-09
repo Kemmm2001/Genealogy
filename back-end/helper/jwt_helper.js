@@ -54,11 +54,11 @@ module.exports = {
     });
   },
 
-  signGenealogyToken: (insertId, codeID) => {
+  signGenealogyToken: (insertId, codeId) => {
     return new Promise((resolve, reject) => {
       const payload = {
         insertId, 
-        codeID
+        codeId
       }
       const secret = process.env.GENEALOGY_TOKEN_SECRET
       const options = {

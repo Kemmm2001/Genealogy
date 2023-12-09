@@ -3,7 +3,8 @@ const UserController = require('../Controller/Authencation/UserController'); // 
 var router = express.Router()
 const { verifyAccessToken, verifyRepassToken } = require('../helper/jwt_helper')
 
-const authMiddleware = require('../helper/author_helper')
+const authMiddleware = require('../helper/author_helper');
+const { verify } = require('crypto');
 
 const initWebRouter = (app) => {
 
@@ -15,7 +16,7 @@ const initWebRouter = (app) => {
 
 
   router.post('/register', UserController.registerUser);
-  router.post('/login', UserController.loginUser);
+  router.post('/login',verifyAccessToken ,UserController.loginUser);
   router.post('/refresh-token', UserController.refreshToken);
   // router.delete('/logout', UserController.logout);
   router.post('/forget-password', UserController.forgetPassword)
@@ -28,7 +29,7 @@ const initWebRouter = (app) => {
   router.post('get-codeID', UserController.getUserCodeID)
 
   router.post('/set-role', UserController.setRole)
-  router.post('/check-codeId', UserController.checkCodeID)
+  router.post('/check-codeId',authMiddleware.authenticateAndAuthorize(3),  UserController.checkCodeID)
   router.get('/listrole', UserController.getListRoleMember)
   router.post('/roleAccount',UserController.getRoleAccount)
   router.get('/allRoleAccount',UserController.getAllRoleAccount)

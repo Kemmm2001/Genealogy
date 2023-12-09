@@ -14,9 +14,9 @@ module.exports = {
                             return res.send(Response.badRequestResponse(null, "Unauthorized"));
                         }
                     }
-                    const insertId = req.payload.insertId;
-                    cons
-                    const roleId = await userService.getRoleID(insertId,codeID);
+                    let insertId = req.payload.insertId;
+                    let codeId = req.payload.codeId;
+                    let roleId = await userService.getRoleID(insertId,codeId);
 
                     console.log('roleId: ' + roleId)
                     
