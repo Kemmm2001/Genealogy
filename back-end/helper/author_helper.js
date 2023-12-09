@@ -15,7 +15,8 @@ module.exports = {
                         }
                     }
                     const insertId = req.payload.insertId;
-                    const roleId = await userService.getRoleID(insertId);
+                    cons
+                    const roleId = await userService.getRoleID(insertId,codeID);
 
                     console.log('roleId: ' + roleId)
                     

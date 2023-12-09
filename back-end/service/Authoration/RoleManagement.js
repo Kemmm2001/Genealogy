@@ -2,7 +2,7 @@ const db = require("../../Models/ConnectDB")
 
 function getRoleID(accountID) {
     return new Promise((resolve, reject) => {
-      const query = 'SELECT RoleID FROM genealogy.AccountFamilyTree WHERE AccountID = ?';
+      const query = 'SELECT RoleID FROM genealogy.AccountFamilyTree WHERE AccountID = ?and CodeID =??';
       const values = [accountID];
   
       db.connection.query(query, values, (err, result) => {
