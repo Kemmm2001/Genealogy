@@ -2,7 +2,6 @@ const FamilyManagementService = require("../../service/FamilyGenealogy/FamilyMan
 const Response = require("../../Utils/Response");
 const CoreFunction = require("../../Utils/CoreFunction");
 const db = require('../../Models/ConnectDB');
-const ManagementFamilyHead = require("../../service/InformationGenealogy/ManagementFamilyHead");
 const ViewFamilyTree = require("../../service/FamilyGenealogy/ViewFamilyTree");
 const MarriageManagement = require("../../service/FamilyGenealogy/MarriageManagement");
 const GeneralInformation = require("../../service/InformationGenealogy/GeneralInformation");

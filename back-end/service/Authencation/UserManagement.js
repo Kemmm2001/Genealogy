@@ -511,6 +511,6 @@ module.exports = {
   checkMail, checkID, create, getUser, refreshFreeEmail, insertAccountFamily, checkCodeID,
   checkAccountID, updateRoleID, insertIntoFamily, getUserInfo, getUserCodeID, checkCodeIdCreator,
   insertAccountFamilyTree, checkCodeCreatedByID, getHistoryLoginCodeID, ChangePassword, getListRoleMember, UpdateAccount, UpdatePassword,
-  checkToken, getMemberRole, changeUsername, getInformationGenealogy, UpdateRegisterToken, checkRegisterToken, UpdateActive, DeleteRePasssToken, DeleteRegisterToken
+  checkToken, changeUsername, getInformationGenealogy, UpdateRegisterToken, checkRegisterToken, UpdateActive, DeleteRePasssToken, DeleteRegisterToken
 
 }
