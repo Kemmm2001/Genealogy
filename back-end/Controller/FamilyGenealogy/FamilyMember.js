@@ -126,7 +126,7 @@ var addMember = async (req, res) => {
         // trường hợp muốn thêm thành viên mà có trong cây gia phả
         else {
             console.log("Đã vào trường hợp thêm thành viên có trong cây gia phả");
-            let currentMember, memberRole;
+            let currentMember;
             currentMember = await FamilyManagementService.getMemberByMemberID(req.body.CurrentMemberID);
             console.log("currentMember: ", currentMember);
             if (!CoreFunction.isDataNumberExist(currentMember)) {
@@ -135,9 +135,7 @@ var addMember = async (req, res) => {
             // trường hợp ở khác gia phả
             if (currentMember[0].CodeID != req.body.CodeID) {
                 return res.send(Response.badRequestResponse(null, "Không thể thêm thành viên ở gia phả khác"));
-            }
-            memberRole = await ViewFamilyTree.getAllMemberRole(req.body.CurrentMemberID);
-            console.log("memberRole: ", memberRole);
+            }            
             // trường hợp muốn thêm cha mẹ
             if (req.body.Action == 'AddParent') {
                 console.log("Đã vào trường hợp thêm cha mẹ");
@@ -431,7 +429,7 @@ var addMarriage = async (req, res) => {
             || (CoreFunction.isDataStringExist(req.body.LunarDod) && !CoreFunction.isDataDateExist(req.body.LunarDod))) {
             return res.send(Response.badRequestResponse(null, "Ngày tháng không hợp lệ"));
         }
-        let currentMember, memberRole;
+        let currentMember;
         currentMember = await FamilyManagementService.getMemberByMemberID(req.body.CurrentMemberID);
         console.log("currentMember: ", currentMember);
         if (!CoreFunction.isDataNumberExist(currentMember)) {
@@ -440,9 +438,7 @@ var addMarriage = async (req, res) => {
         // trường hợp ở khác gia phả
         if (currentMember[0].CodeID != req.body.CodeID) {
             return res.send(Response.badRequestResponse(null, "Không thể thêm thành viên ở gia phả khác"));
-        }
-        memberRole = await ViewFamilyTree.getAllMemberRole(req.body.CurrentMemberID);
-        console.log("memberRole: ", memberRole);
+        }       
 
         let dataRes = {};
         let data = await FamilyManagementService.addMember(req.body);
@@ -1131,16 +1127,6 @@ var filterMember = async function (req, res) {
         res.status(500).json({ success: false, message: 'Lỗi khi lọc thành viên' });
     }
 }
-var getAllMemberSortByRole = async (req, res) => {
-    try {
-        let listMemberInMemberRole = await FamilyManagementService.getAllMemberInMemberRole();
-        let listMemberNotInMemberRole = await FamilyManagementService.getAllMemberNotInMemberRole();
-        let data = listMemberInMemberRole + listMemberNotInMemberRole;
-        res.send(data)
-    } catch (error) {
-        console.log(error)
-    }
-}
 
 var getAllMembersInGenalogy = async (req, res) => {
     try {
@@ -1227,6 +1213,6 @@ var getMember = async (req, res) => {
 
 module.exports = {
     addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember, addMarriage,
-    getListAgeGroup, getListBloodTypeGroup, getAllMemberSortByRole, GetCurrentParentMember, insertParentIdToMember,
+    getListAgeGroup, getListBloodTypeGroup, GetCurrentParentMember, insertParentIdToMember,
     getMember, updateMemberToGenealogy, updateMemberPhoto, addChild, linkRelationship, getAllMembersInGenalogy
 };

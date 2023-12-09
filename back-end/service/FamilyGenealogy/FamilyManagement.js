@@ -588,44 +588,8 @@ function queryContactMembers(filterOptions) {
     });
 }
 
-function getAllMemberInMemberRole() {
-    return new Promise((resolve, reject) => {
-        let query = `
-        SELECT fm.* FROM familymember as fm
-        INNER JOIN memberrole as mr
-        on fm.MemberID = mr.MemberID
-        ORDER BY
-          CASE
-            WHEN mr.RoleID = 1 THEN 1
-            WHEN mr.RoleID = 2 THEN 2
-            WHEN mr.RoleID = 3 THEN 3 
-        END`;
-        db.connection.query(query, (err, result) => {
-            if (err) {
-                reject(err);
-                console.log(err)
-            } else {
-                resolve(result)
-            }
-        })
-    })
-}
-function getAllMemberNotInMemberRole() {
-    return new Promise((resolve, reject) => {
-        let query = `SELECT fm.*
-        FROM familymember fm
-        LEFT JOIN memberrole mr ON fm.MemberID = mr.MemberID
-        WHERE mr.MemberID IS NULL;`;
-        db.connection.query(query, (err, result) => {
-            if (err) {
-                console.log(err);
-                reject(err)
-            } else {
-                resolve(result)
-            }
-        })
-    })
-}
+
+
 
 // nguyễn anh tuấn
 const findMemberByHusbandIDAndWifeID = (husbandID, wifeID, listMember) => {
@@ -734,7 +698,7 @@ function getMemberByMemberID(memberID) {
 module.exports = {
     addMember, updateMember, deleteMember, getMember, searchMember, getMemberByMemberID,
     setGeneration, queryContactMembers,
-    getAllMember, queryFamilyMembers, getAllMemberInMemberRole, getAllMemberNotInMemberRole, GetCurrentParentMember,
+    getAllMember, queryFamilyMembers, GetCurrentParentMember,
     insertFatherIDToMember, insertMotherIDToMember, getMembersByFatherID, getMembersByMotherID,
     setBirthOrder, insertParentIdToMember, getAllMemberID, updateMemberPhoto,
     getMembersByFatherIDAndMotherID, getMembersByFatherIDOrMotherID, updateFatherIDToMotherID,
