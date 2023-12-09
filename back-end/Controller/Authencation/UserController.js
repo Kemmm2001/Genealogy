@@ -73,21 +73,7 @@ var getInformationTree = async (req, res) => {
   }
 }
 
-//Nguyễn Lê Hùng
-var getMemberRole = async (req, res) => {
-  try {
-    let accountID = req.body.accountID;
-    let codeID = req.body.codeID;
-    let data = await UserService.getMemberRole(accountID, codeID);
-    if (data) {
-      return res.send(Response.successResponse(data));
-    } else {
-      return res.send(Response.dataNotFoundResponse());
-    }
-  } catch (error) {
-    return res.send(Response.dataNotFoundResponse(error));
-  }
-}
+
 
 var changeUsername = async (req, res) => {
   try {
@@ -581,6 +567,6 @@ var setActive = async (req, res) => {
 module.exports = {
   registerUser, loginUser, refreshToken, registerGenealogy, getGenealogy, setRole,
   checkCodeID, getUserInfor, getUserCodeID, getHistoryCodeID, ChangePassword, getListRoleMember,
-  forgetPassword, resetPassword, getMemberRole, changeUsername, getInformationTree, verifyAccount, setActive
+  forgetPassword, resetPassword, changeUsername, getInformationTree, verifyAccount, setActive
 
 };
