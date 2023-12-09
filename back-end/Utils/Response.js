@@ -45,8 +45,8 @@ let dataNotFoundResponse = (data, message) => {
 let successResponse = (data, message) => {
     try {
         if (message == null) message = "Thành công";
-        if (data == null) return coreResponse(true, 200, message);
         db.connection.commit();
+        if (data == null) return coreResponse(true, 200, message);
         return coreResponse(true, 200, message, data);
     } catch (error) {
         console.log(error)
@@ -75,7 +75,27 @@ let missingFieldsErrorResponse = (missingFields) => {
     }
 }
 
+let unauthorizedResponse = (data, message) => {
+    try {
+        if (message == null) message = "Không có quyền truy cập";
+        if (data == null) return coreErrorResponse(401, message);
+        return coreErrorResponse(401, message, data);
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+let forbiddenResponse = (data, message) => {
+    try {
+        if (message == null) message = "Bạn không được thực hiện hành động này";
+        if (data == null) return coreErrorResponse(403, message);
+        return coreErrorResponse(403, message, data);
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 module.exports = {
     missingFieldsErrorResponse, badRequestResponse, dataNotFoundResponse, successResponse,
-    internalServerErrorResponse, coreResponse
+    internalServerErrorResponse, coreResponse, coreErrorResponse, unauthorizedResponse, forbiddenResponse
 };

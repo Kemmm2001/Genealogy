@@ -180,20 +180,7 @@ async function RemoveRelationshipParent(currentID, RemoveID) {
     })
 
 }
-//Nguyễn Lê Hùng
-function getAllMemberRole(id) {
-    return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM memberrole where MemberID = '${id}'`;
-        db.connection.query(query, (err, result) => {
-            if (err) {
-                console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-                reject(err);
-            } else {
-                resolve(result);
-            }
-        });
-    });
-}
+
 //Nguyễn Lê Hùng
 function getAllNationality() {
     return new Promise((resolve, reject) => {
@@ -286,14 +273,14 @@ function getEventMember(id) {
 //Nguyễn Lê Hùng
 function getRoleExist(MemberID, Role) {
     return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM memberrole
-        where MemberID = ${MemberID} and RoleID = ${Role}`;
+        let query = `SELECT * FROM genealogy.familymembe
+        where CodeID = ${MemberID} and RoleID = ${Role}`;
         db.connection.query(query, (err, result) => {
             if (err) {
                 console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
                 reject(err);
             } else {
-                resolve(result);
+                resolve(result[0]);
             }
         });
     });
@@ -309,6 +296,25 @@ function turnOffSQL_SAFE_UPDATES() {
                 resolve(true)
             }
         })
+    })
+}
+
+function setFatherIDAndMotherID(CodeID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `UPDATE familymember
+            SET  FatherID = null, MotherID = null
+            WHERE CodeID = ${CodeID}`
+            db.connection.query(query, (err, result) => {
+                if (!err) {
+                    resolve(true)
+                } else {
+                    reject(err)
+                }
+            })
+        } catch (error) {
+
+        }
     })
 }
 //Nguyễn Lê Hùng
@@ -329,9 +335,7 @@ function turnOnSQL_SAFE_UPDATES() {
 function ResetAllGenerationMember(CodeID) {
     return new Promise((resolve, reject) => {
         try {
-            let query = `UPDATE familymember
-    SET Generation = 0
-    where CodeID = '${CodeID}'`;
+            let query = `UPDATE familymember SET Generation = 0 where CodeID = '${CodeID}'`;
             db.connection.query(query, (err, result) => {
                 if (err) {
                     reject(err)
@@ -626,8 +630,8 @@ async function RelationShipMember(CodeID, memberId) {
 //Nguyễn Lê Hùng
 function GetIdPaternalAncestor(CodeID) {
     return new Promise((resolve, reject) => {
-        let query = `select MemberID from memberrole
-        where CodeId = '${CodeID}' and RoleID = 1`;
+        let query = `select MemberID from familymember
+        where CodeID = '${CodeID}' and RoleID = 1`;
         db.connection.query(query, (err, result) => {
             if (err) {
                 console.log(err)
@@ -847,10 +851,10 @@ function formatDOB(dateString) {
 }
 
 //Nguyễn Lê Hùng
-async function setRoleMember(MemberId, roleId, CodeId) {
+async function setRoleMember(MemberId) {
     return new Promise((resolve, reject) => {
         try {
-            let query = `INSERT INTO memberrole (MemberID, RoleID,CodeId) VALUES ('${MemberId}', '${roleId}','${CodeId}')`;
+            let query = `UPDATE familymember SET RoleID = 1 WHERE MemberID = ${MemberId}`;
             db.connection.query(query, (err, result) => {
                 if (err) {
                     reject(err)
@@ -865,10 +869,10 @@ async function setRoleMember(MemberId, roleId, CodeId) {
 }
 
 //Nguyễn Lê Hùng
-function removePaternalAncestor(CodeID) {
+function removePaternalAncestor(memberID) {
     return new Promise((resolve, reject) => {
         try {
-            let query = `DELETE FROM memberrole WHERE RoleID = 1 and CodeId =  ${CodeID}`;
+            let query = `UPDATE familymember SET RoleID = 3 WHERE MemberID = ${memberID}`
             db.connection.query(query, (err, result) => {
                 if (err) {
                     console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
@@ -888,9 +892,9 @@ function removePaternalAncestor(CodeID) {
 
 
 module.exports = {
-    getAllReligion, getInforMember, getContactMember, getEducationMember, getJobMember, getEventMember, getAllNationality, getAllMemberRole,
+    getAllReligion, getInforMember, getContactMember, getEducationMember, getJobMember, getEventMember, getAllNationality,
     getRoleExist, setRoleMember, removePaternalAncestor, turnOnSQL_SAFE_UPDATES, turnOffSQL_SAFE_UPDATES, getListMessage,
     setAllGenerationMember, ResetAllGenerationMember, ViewFamilyTree, getListUnspecifiedMembers, GetIdPaternalAncestor, RelationShipMember,
     RemoveRelationshipChild, RemoveRelationshipMarried, RemoveRelationshipParent, getListNotificationEmail, getAllMarriage, getFamilyHeadInGenealogy,
-    searchMemberCanSendMessage, getlistMemberToSendMessage
+    searchMemberCanSendMessage, getlistMemberToSendMessage,setFatherIDAndMotherID
 }

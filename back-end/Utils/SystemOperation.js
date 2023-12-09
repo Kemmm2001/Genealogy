@@ -2,8 +2,6 @@ var Response = require('./Response');
 const schedule = require('node-schedule');
 const UserManagement = require('../service/Authencation/UserManagement');
 const db = require('../Models/ConnectDB')
-const EmailUtils = require('./EmailUtils');
-const Mail = require('nodemailer/lib/mailer');
 const BrevoMail = require('./BrevoMail');
 const xlsx = require('xlsx');
 
@@ -83,7 +81,6 @@ let SendEmailCore = (objData) => {
             // Nếu là string thì gán luôn
             mailOptions.to = objData.to;
         }
-        // EmailUtils.sendEmail(mailOptions);
         // BrevoMail.sendEmail(mailOptions);
         BrevoMail.sendEmailBrevo(mailOptions);
         // BrevoMail.sendEmailBySendGrid(mailOptions);

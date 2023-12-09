@@ -187,15 +187,6 @@ var AllMemberInGenelogy = async (req, res) => {
 }
 
 //Nguyễn Lê Hùng
-var AllMemberRole = async (req, res) => {
-    try {
-        let id = req.query.memberId
-        let data = await FamilyTreeService.getAllMemberRole(id);
-        res.send(data)
-    } catch (e) {
-        res.send(e);
-    }
-}
 
 //Nguyễn Lê Hùng
 var setRole = async (req, res) => {
@@ -205,19 +196,20 @@ var setRole = async (req, res) => {
         let CodeId = req.body.CodeId;
         console.log('memberId: ' + memberId)
         console.log('CodeId: ' + CodeId)
-        let existingPaternalAncestor = await FamilyTreeService.getRoleExist(memberId, 1);
+        let existingPaternalAncestor = await FamilyTreeService.getRoleExist(CodeId, 1);
         console.log('IDPaternalAncestor: ' + existingPaternalAncestor)
         if (existingPaternalAncestor.length > 0) {
             return res.send(Response.dataNotFoundResponse(null, 'thành viên đã là  cụ tổ'));
         } else {
             console.log("Thành viên chưa phải  cụ tổ")
-            let remove = await FamilyTreeService.removePaternalAncestor(CodeId);
-            let insertMemberRole = await FamilyTreeService.setRoleMember(memberId, 1, CodeId);
+            let remove = await FamilyTreeService.removePaternalAncestor(existingPaternalAncestor.MemberID);
+            let insertMemberRole = await FamilyTreeService.setRoleMember(memberId);
             let turnOff = await FamilyTreeService.turnOffSQL_SAFE_UPDATES();
             let resetAll = await FamilyTreeService.ResetAllGenerationMember(CodeId);
+            let resetFatherIDandMotherID = await FamilyTreeService.setFatherIDAndMotherID(CodeId);
             let turnOn = await FamilyTreeService.turnOnSQL_SAFE_UPDATES();
             let settAll = await FamilyTreeService.setAllGenerationMember(memberId, 1, CodeId);
-            if (!remove || !insertMemberRole || !turnOff || !resetAll || !turnOn || !settAll) {
+            if (!remove || !insertMemberRole || !turnOff || !resetAll || !turnOn || !settAll || !resetFatherIDandMotherID) {
                 return res.send(Response.internalServerErrorResponse())
             }
             return res.send(Response.successResponse(null, 'đặt  cụ tổ thành công'));
@@ -246,7 +238,7 @@ var informationMember = async (req, res) => {
 }
 
 module.exports = {
-    AllReligion, informationMember, AllNationality, AllMemberRole, setRole, AllMemberInGenelogy, getAllUnspecifiedMembers,
+    AllReligion, informationMember, AllNationality, setRole, AllMemberInGenelogy, getAllUnspecifiedMembers,
     GetIdPaternalAncestor, getRelationShipMember, getListMessage, removeRelationship, getListHistoryEmail, getFamilyHead,
     searchMemberCanSendMessage, getlistMemberToSendMessage
 };

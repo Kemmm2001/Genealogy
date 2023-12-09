@@ -30,8 +30,8 @@ const initWebRouter = (app) => {
   router.post('/set-role', UserController.setRole)
   router.post('/check-codeId', UserController.checkCodeID)
   router.get('/listrole', UserController.getListRoleMember)
+  router.post('/roleAccount',UserController.getRoleAccount)
 
-  router.post('/memberRole', UserController.getMemberRole)
   router.post('/changeUsername', UserController.changeUsername)
   router.put('/changepassword', UserController.ChangePassword)
   router.get('/historyCodeID', UserController.getHistoryCodeID)

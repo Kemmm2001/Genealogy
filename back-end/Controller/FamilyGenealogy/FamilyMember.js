@@ -2,8 +2,6 @@ const FamilyManagementService = require("../../service/FamilyGenealogy/FamilyMan
 const Response = require("../../Utils/Response");
 const CoreFunction = require("../../Utils/CoreFunction");
 const db = require('../../Models/ConnectDB');
-const ManagementFamilyHead = require("../../service/InformationGenealogy/ManagementFamilyHead");
-const ViewFamilyTree = require("../../service/FamilyGenealogy/ViewFamilyTree");
 const MarriageManagement = require("../../service/FamilyGenealogy/MarriageManagement");
 const GeneralInformation = require("../../service/InformationGenealogy/GeneralInformation");
 const ListAgeGroup = [
@@ -120,13 +118,12 @@ var addMember = async (req, res) => {
         // trường hợp muốn thêm thành viên đầu tiên ( tổ phụ tổ tiên)
         else if (req.body.Action == 'AddFirst') {
             await FamilyManagementService.setGeneration(1, data.insertId);
-            await ManagementFamilyHead.addForefather(data.insertId, req.body.CodeID);
             await FamilyManagementService.setRole(1, data.insertId);
         }
         // trường hợp muốn thêm thành viên mà có trong cây gia phả
         else {
             console.log("Đã vào trường hợp thêm thành viên có trong cây gia phả");
-            let currentMember, memberRole;
+            let currentMember;
             currentMember = await FamilyManagementService.getMemberByMemberID(req.body.CurrentMemberID);
             console.log("currentMember: ", currentMember);
             if (!CoreFunction.isDataNumberExist(currentMember)) {
@@ -136,8 +133,6 @@ var addMember = async (req, res) => {
             if (currentMember[0].CodeID != req.body.CodeID) {
                 return res.send(Response.badRequestResponse(null, "Không thể thêm thành viên ở gia phả khác"));
             }
-            memberRole = await ViewFamilyTree.getAllMemberRole(req.body.CurrentMemberID);
-            console.log("memberRole: ", memberRole);
             // trường hợp muốn thêm cha mẹ
             if (req.body.Action == 'AddParent') {
                 console.log("Đã vào trường hợp thêm cha mẹ");
@@ -431,7 +426,7 @@ var addMarriage = async (req, res) => {
             || (CoreFunction.isDataStringExist(req.body.LunarDod) && !CoreFunction.isDataDateExist(req.body.LunarDod))) {
             return res.send(Response.badRequestResponse(null, "Ngày tháng không hợp lệ"));
         }
-        let currentMember, memberRole;
+        let currentMember;
         currentMember = await FamilyManagementService.getMemberByMemberID(req.body.CurrentMemberID);
         console.log("currentMember: ", currentMember);
         if (!CoreFunction.isDataNumberExist(currentMember)) {
@@ -441,8 +436,6 @@ var addMarriage = async (req, res) => {
         if (currentMember[0].CodeID != req.body.CodeID) {
             return res.send(Response.badRequestResponse(null, "Không thể thêm thành viên ở gia phả khác"));
         }
-        memberRole = await ViewFamilyTree.getAllMemberRole(req.body.CurrentMemberID);
-        console.log("memberRole: ", memberRole);
 
         let dataRes = {};
         let data = await FamilyManagementService.addMember(req.body);
@@ -510,7 +503,6 @@ var isBirthOrderExist = (memberID, birthOrder, listBirthOrderExist) => {
 // nguyễn anh tuấn
 var updateMemberPhoto = async (req, res) => {
     try {
-        console.log("vào đây")
         db.connection.beginTransaction();
         console.log('Request req.body: ', req.body);
         console.log("req.file: ", req.file);
@@ -967,11 +959,18 @@ var linkRelationship = async (req, res) => {
             return res.send(Response.badRequestResponse(null, "Không thể liên kết vì cả 2 người đều là người ngoài gia phả"));
         }
         console.log("Có thể liên kết sơ bộ");
-        const member1 = dataMember1[0];
-        const member2 = dataMember2[0];
+        let member1 = dataMember1[0];
+        let member2 = dataMember2[0];
 
         // Hàm kiểm tra giới tính của thành viên
-        const isMale = (member, gender) => member.Male == gender;
+        let isMale = (member, gender) => member.Male == gender;
+        let temp = {};
+        // luôn đảm bảo member1 là thế hệ trước và member2 là thế hệ sau
+        if (member1.Generation > member2.Generation) {
+            temp = member1;
+            member1 = member2;
+            member2 = temp;
+        }
         // So sánh thế hệ của hai thành viên
         if (member1.Generation < member2.Generation) {
             console.log("Thành viên 1 thế hệ nhỏ hơn thành viên 2");
@@ -988,9 +987,7 @@ var linkRelationship = async (req, res) => {
                 console.log("Thành viên 1 là nam");
                 // Nếu đã có bố, trả về lỗi
                 if (hasFather) return res.send(Response.badRequestResponse(null, "Thành viên 2 đã có bố"));
-                // Ngược lại, thêm FatherID là thành viên 1 cho thành viên 2
-                await FamilyManagementService.insertFatherIDToMember(member1.MemberID, member2.MemberID);
-                // => hiện tại member1 đã là cha của member2
+
                 // tìm tất cả con của member1 và mẹ của member2
                 let listChilds = await FamilyManagementService.getMembersByFatherIDAndMotherID(member1.MemberID, member2.MotherID);
                 console.log("listChilds: ", listChilds);
@@ -1003,13 +1000,13 @@ var linkRelationship = async (req, res) => {
                 console.log("maxBirthOrder: ", maxBirthOrder);
                 // thay birthorder của member2 thành maxBirthOrder + 1
                 member2.BirthOrder = ++maxBirthOrder;
+                await FamilyManagementService.insertFatherIDToMember(member1.MemberID, member2.MemberID);
+                // => hiện tại member1 đã là cha của member2
             } else if (isMale(member1, 0)) {
                 console.log("Thành viên 1 là nữ");
                 // Nếu đã có mẹ, trả về lỗi
                 if (hasMother) return res.send(Response.badRequestResponse(null, "Thành viên 2 đã có mẹ"));
-                // Ngược lại, thêm MotherID cho thành viên 2
-                await FamilyManagementService.insertMotherIDToMember(member1.MemberID, member2.MemberID);
-                // => hiện tại member1 đã là mẹ của member2
+
                 // tìm tất cả con của member1 và cha của member2
                 let listChilds = await FamilyManagementService.getMembersByFatherIDAndMotherID(member2.FatherID, member1.MemberID);
                 console.log("listChilds: ", listChilds);
@@ -1022,58 +1019,13 @@ var linkRelationship = async (req, res) => {
                 console.log("maxBirthOrder: ", maxBirthOrder);
                 // thay birthorder của member2 thành maxBirthOrder + 1
                 member2.BirthOrder = ++maxBirthOrder;
-            }
-        } else if (member1.Generation > member2.Generation) {
-            console.log("Thành viên 1 thế hệ lớn hơn thành viên 2");
-            const hasFather = CoreFunction.isDataNumberExist(member1.FatherID);
-            const hasMother = CoreFunction.isDataNumberExist(member1.MotherID);
-            // nếu thành viên 1 là người ngoài gia phả, tức là không có cha mẹ
-            if (!hasFather && !hasMother) {
-                console.log("Không thể liên kết vì thành viên 1 là người ngoài gia phả");
-                return res.send(Response.badRequestResponse(null, "Không thể liên kết vì thành viên 1 là người ngoài gia phả"));
-            }
-            // Nếu thành viên 2 là nam
-            if (isMale(member2, 1)) {
-                console.log("Thành viên 2 là nam");
-                // Nếu đã có bố, trả về lỗi
-                if (hasFather) return res.send(Response.badRequestResponse(null, "Thành viên 1 đã có bố"));
-                // Ngược lại, thêm FatherID cho thành viên 1
-                await FamilyManagementService.insertFatherIDToMember(member2.MemberID, member1.MemberID);
-                // => hiện tại member2 đã là cha của member1
-                // tìm tất cả con của member2 và mẹ của member1
-                let listChilds = await FamilyManagementService.getMembersByFatherIDAndMotherID(member2.MemberID, member1.MotherID);
-                console.log("listChilds: ", listChilds);
-                let maxBirthOrder = 0;
-                if (listChilds.length > 0) {
-                    /* Tìm giá trị BirthOrder lớn nhất trong mảng. So sánh giá trị BirthOrder của từng 
-                    đối tượng với giá trị max hiện tại và giữ lại giá trị lớn nhất.*/
-                    maxBirthOrder = listChilds.reduce((max, child) => (child.BirthOrder > max ? child.BirthOrder : max), listChilds[0].BirthOrder);
-                }
-                console.log("maxBirthOrder: ", maxBirthOrder);
-                // thay birthorder của member1 thành maxBirthOrder + 1
-                member1.BirthOrder = ++maxBirthOrder;
-            } else if (isMale(member2, 0)) {
-                console.log("Thành viên 2 là nữ");
-                // Nếu đã có mẹ, trả về lỗi
-                if (hasMother) return res.send(Response.badRequestResponse(null, "Thành viên 1 đã có mẹ"));
-                // Ngược lại, thêm MotherID cho thành viên 1
-                await FamilyManagementService.insertMotherIDToMember(member2.MemberID, member1.MemberID);
-                // => hiện tại member2 đã là mẹ của member1
-                // tìm tất cả con của member2 và cha của member1
-                let listChilds = await FamilyManagementService.getMembersByFatherIDAndMotherID(member1.FatherID, member2.MemberID);
-                console.log("listChilds: ", listChilds);
-                let maxBirthOrder = 0;
-                if (listChilds.length > 0) {
-                    /* Tìm giá trị BirthOrder lớn nhất trong mảng. So sánh giá trị BirthOrder của từng 
-                    đối tượng với giá trị max hiện tại và giữ lại giá trị lớn nhất.*/
-                    maxBirthOrder = listChilds.reduce((max, child) => (child.BirthOrder > max ? child.BirthOrder : max), listChilds[0].BirthOrder);
-                }
-                console.log("maxBirthOrder: ", maxBirthOrder);
-                // thay birthorder của member1 thành maxBirthOrder + 1
-                member1.BirthOrder = ++maxBirthOrder;
+                await FamilyManagementService.insertMotherIDToMember(member1.MemberID, member2.MemberID);
+                // => hiện tại member1 đã là mẹ của member2
             }
         }
-
+        // lưu lại thông tin 2 member 
+        await FamilyManagementService.updateMember(member1);
+        await FamilyManagementService.updateMember(member2);
         console.log("Thành công");
         return res.send(Response.successResponse());
     } catch (e) {
@@ -1129,16 +1081,6 @@ var filterMember = async function (req, res) {
     } catch (error) {
         console.error('Lỗi khi lọc thành viên:', error);
         res.status(500).json({ success: false, message: 'Lỗi khi lọc thành viên' });
-    }
-}
-var getAllMemberSortByRole = async (req, res) => {
-    try {
-        let listMemberInMemberRole = await FamilyManagementService.getAllMemberInMemberRole();
-        let listMemberNotInMemberRole = await FamilyManagementService.getAllMemberNotInMemberRole();
-        let data = listMemberInMemberRole + listMemberNotInMemberRole;
-        res.send(data)
-    } catch (error) {
-        console.log(error)
     }
 }
 
@@ -1227,6 +1169,6 @@ var getMember = async (req, res) => {
 
 module.exports = {
     addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember, addMarriage,
-    getListAgeGroup, getListBloodTypeGroup, getAllMemberSortByRole, GetCurrentParentMember, insertParentIdToMember,
+    getListAgeGroup, getListBloodTypeGroup, GetCurrentParentMember, insertParentIdToMember,
     getMember, updateMemberToGenealogy, updateMemberPhoto, addChild, linkRelationship, getAllMembersInGenalogy
 };

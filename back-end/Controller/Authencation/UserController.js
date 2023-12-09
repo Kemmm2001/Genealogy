@@ -25,12 +25,12 @@ var registerUser = async (req, res) => {
     const decryptedBytes = CryptoJS.AES.decrypt(req.body.password, process.env.AES256_SECRET, {
       iv: process.env.AES256_IV,
       mode: CryptoJS.mode.CBC,
-      padding: CryptoJS.pad.Pkcs7  
+      padding: CryptoJS.pad.Pkcs7
     });
     const decryptedBytes1 = CryptoJS.AES.decrypt(req.body.repassword, process.env.AES256_SECRET, {
       iv: process.env.AES256_IV,
       mode: CryptoJS.mode.CBC,
-      padding: CryptoJS.pad.Pkcs7  
+      padding: CryptoJS.pad.Pkcs7
     });
     // Chuyển đổi dữ liệu giải mã thành chuỗi
     var password = decryptedBytes.toString(CryptoJS.enc.Utf8);
@@ -73,19 +73,18 @@ var getInformationTree = async (req, res) => {
   }
 }
 
-//Nguyễn Lê Hùng
-var getMemberRole = async (req, res) => {
+var getRoleAccount = async (req, res) => {
   try {
     let accountID = req.body.accountID;
     let codeID = req.body.codeID;
-    let data = await UserService.getMemberRole(accountID, codeID);
+    let data = await UserService.getRoleAccount(accountID, codeID)
     if (data) {
-      return res.send(Response.successResponse(data));
+      return res.send(Response.successResponse(data))
     } else {
-      return res.send(Response.dataNotFoundResponse());
+      return res.send(Response.dataNotFoundResponse())
     }
   } catch (error) {
-    return res.send(Response.dataNotFoundResponse(error));
+    return res.send(Response.internalServerErrorResponse())
   }
 }
 
@@ -136,27 +135,67 @@ var getListRoleMember = async (req, res) => {
 
 var ChangePassword = async (req, res) => {
   try {
-    let data = await UserService.getUserInfo(req.body.accountID);
-    if (data) {
-      let isPasswordMatch = await bcrypt.compare(req.body.currentpassword, data.password);
+    let dataAccount = await UserService.getUserInfo(req.body.accountID);
+    console.log('data: ' + dataAccount.Password)
+
+    if (dataAccount) {
+      if (!req.body.currentPassword || !req.body.newPassword || !req.body.Re_newPassword) {
+        return res.send(Response.internalServerErrorResponse(null, 'Vui lòng điền đầy đủ thông tin'));
+      }
+      const decryptedBytesCurrentPassword = CryptoJS.AES.decrypt(req.body.currentPassword, process.env.AES256_SECRET, {
+        iv: process.env.AES256_IV,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+      });
+      const decryptedBytesNewpassword = CryptoJS.AES.decrypt(req.body.newPassword, process.env.AES256_SECRET, {
+        iv: process.env.AES256_IV,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+      });
+      const decryptedBytes1Re_Newpassword = CryptoJS.AES.decrypt(req.body.Re_newPassword, process.env.AES256_SECRET, {
+        iv: process.env.AES256_IV,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+      });
+      // Chuyển đổi dữ liệu giải mã thành chuỗi      
+      var inputCurrentPassword = decryptedBytesCurrentPassword.toString(CryptoJS.enc.Utf8)
+      console.log('inputCurrentPassword: ' + inputCurrentPassword)
+      console.log('password: ' + dataAccount.Password)
+      let isPasswordMatch = await bcrypt.compare(inputCurrentPassword, dataAccount.Password);
+
       if (!isPasswordMatch) {
-        return res.send(Response.dataNotFoundResponse(null, 'Mật khẩu không đúng'));
+        return res.send(Response.dataNotFoundResponse(null, 'Mật khẩu hiện tại không đúng'))
+      }
+      var newPassword = decryptedBytesNewpassword.toString(CryptoJS.enc.Utf8);
+      var Re_newPassword = decryptedBytes1Re_Newpassword.toString(CryptoJS.enc.Utf8);
+
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>])[a-zA-Z\d!@#$%^&*()\-_=+{};:,<.>]{8,}$/;
+      if (!passwordRegex.test(newPassword)) {
+        return res.send(Response.internalServerErrorResponse(null, 'Mật khẩu phải có ít nhất 8 kí tự bao gồm ít nhất: 1 chữ cái viết hoa, 1 chữ cái thường, 1 chữ số và 1 kí tự đặc biệt'));
+
+      }
+      if (newPassword !== Re_newPassword) {
+        return res.send(Response.dataNotFoundResponse(null, 'Nhập Lại Mật khẩu không trùng nhau'));
+      }
+      console.log("đã đến đây")
+      let hashedPassword = await bcrypt.hash(newPassword, 10);
+      console.log('hashedPassword: ' + hashedPassword)
+      let data = await UserService.ChangePassword(hashedPassword, req.body.accountID)
+      if (data == true) {
+        return res.send(Response.successResponse(null, 'Thay đổi mật khẩu thành công'));
       } else {
-        let hashedPassword = await bcrypt.hash(req.body.newPassword, 10);
-        let data = await UserService.ChangePassword(hashedPassword, req.body.accountID)
-        if (data == true) {
-          return res.send(Response.successResponse());
-        } else {
-          return res.send(Response.dataNotFoundResponse());
-        }
+        console.log("vào else này")
+        return res.send(Response.dataNotFoundResponse());
       }
     } else {
+      console.log("vào else")
       return res.send(Response.dataNotFoundResponse());
     }
   } catch (error) {
     return res.send(Response.dataNotFoundResponse(error));
   }
 }
+
 
 var loginUser = async (req, res) => {
   try {
@@ -181,11 +220,11 @@ var loginUser = async (req, res) => {
     const decryptedBytes = CryptoJS.AES.decrypt(req.body.password, process.env.AES256_SECRET, {
       iv: process.env.AES256_IV,
       mode: CryptoJS.mode.CBC,
-      padding: CryptoJS.pad.Pkcs7  
+      padding: CryptoJS.pad.Pkcs7
     });
     // Chuyển đổi dữ liệu giải mã thành chuỗi
     var password = decryptedBytes.toString(CryptoJS.enc.Utf8);
-    
+
     let isPasswordMatch = await bcrypt.compare(password, data.password);
 
     if (!isPasswordMatch) {
@@ -302,7 +341,7 @@ var getGenealogy = async (req, res) => {
 var setRole = async (req, res) => {
   try {
 
-    const data = req.body;
+    let data = req.body;
     console.log(data)
 
     let doesExist = await UserService.checkAccountID(data.accountID);
@@ -375,8 +414,8 @@ var forgetPassword = async (req, res) => {
       const token = await signRePassToken(email)
       try {
         console.log(token)
-        const data = await UserService.UpdateAccount(email, token)
-        const resetPasswordLink =`${frontEndURL}/reset-password?token=${token}`;
+        let data = await UserService.UpdateAccount(email, token)
+        const resetPasswordLink = `${frontEndURL}/reset-password?token=${token}`;
 
         const objData = {
           to: email,
@@ -415,16 +454,15 @@ var resetPassword = async (req, res) => {
       return res.send(Response.internalServerErrorResponse(null, 'Vui lòng điền đầy đủ thông tin'));
     }
     console.log(req.body.password)
-
     const decryptedBytes = CryptoJS.AES.decrypt(req.body.password, process.env.AES256_SECRET, {
       iv: process.env.AES256_IV,
       mode: CryptoJS.mode.CBC,
-      padding: CryptoJS.pad.Pkcs7  
+      padding: CryptoJS.pad.Pkcs7
     });
     const decryptedBytes1 = CryptoJS.AES.decrypt(req.body.repassword, process.env.AES256_SECRET, {
       iv: process.env.AES256_IV,
       mode: CryptoJS.mode.CBC,
-      padding: CryptoJS.pad.Pkcs7  
+      padding: CryptoJS.pad.Pkcs7
     });
     // Chuyển đổi dữ liệu giải mã thành chuỗi
     var password = decryptedBytes.toString(CryptoJS.enc.Utf8);
@@ -439,31 +477,32 @@ var resetPassword = async (req, res) => {
     }
     if (password !== repassword) {
       return res.send(Response.dataNotFoundResponse(null, 'Nhập Lại Mật khẩu không trùng nhau'));
-    } else {
-      console.log(req.body.password)
-      let hashedPassword = await bcrypt.hash(password, 10);
-      let data;
-      try {
-        data = await UserService.UpdatePassword(hashedPassword, payload.email);
-        if (data == true) {
-          try {
-            console.log(hashedPassword)
-            let data1 = await UserService.DeleteRePasssToken(payload.email);
-            if (data1 == true) {
-              
-              return res.send(Response.successResponse());
-            }
-            return res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống'));
-          } catch (error) {
-            return res.send(Response.internalServerErrorResponse(null, 'Lỗi khi cập nhật token'));
-          }
-        } else {
-          return res.send(Response.internalServerErrorResponse(null, 'Lỗi khi cập nhật mật khẩu'));
-        }
-      } catch (error) {
-        return res.send(Response.badRequestResponse(null, 'Lỗi khi cập nhật mật khẩu'));
-      }
     }
+
+    console.log(req.body.password)
+    let hashedPassword = await bcrypt.hash(password, 10);
+    let data;
+    try {
+      data = await UserService.UpdatePassword(hashedPassword, payload.email);
+      if (data == true) {
+        try {
+          console.log(hashedPassword)
+          let data1 = await UserService.DeleteRePasssToken(payload.email);
+          if (data1 == true) {
+
+            return res.send(Response.successResponse());
+          }
+          return res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống'));
+        } catch (error) {
+          return res.send(Response.internalServerErrorResponse(null, 'Lỗi khi cập nhật token'));
+        }
+      } else {
+        return res.send(Response.internalServerErrorResponse(null, 'Lỗi khi cập nhật mật khẩu'));
+      }
+    } catch (error) {
+      return res.send(Response.badRequestResponse(null, 'Lỗi khi cập nhật mật khẩu'));
+    }
+
   } catch (error) {
     return res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống'));
   }
@@ -490,7 +529,7 @@ var verifyAccount = async (req, res) => {
       const token = await signRegisterToken(email)
       try {
         console.log(token)
-        const data = await UserService.UpdateRegisterToken(email, token)
+        let data = await UserService.UpdateRegisterToken(email, token)
         const verifyLink = `${frontEndURL}/verify?token=${token}`;
 
         const objData = {
@@ -555,6 +594,6 @@ var setActive = async (req, res) => {
 module.exports = {
   registerUser, loginUser, refreshToken, registerGenealogy, getGenealogy, setRole,
   checkCodeID, getUserInfor, getUserCodeID, getHistoryCodeID, ChangePassword, getListRoleMember,
-  forgetPassword, resetPassword, getMemberRole, changeUsername, getInformationTree, verifyAccount, setActive
+  forgetPassword, resetPassword, changeUsername, getInformationTree, verifyAccount, setActive,getRoleAccount
 
 };
