@@ -7,24 +7,24 @@
           <div class="w-100 d-flex flex-row" style="padding-top: 8px; height: 50%;">
             <div class="col-6" style="padding-left: 8px; padding-right: 6px">
               <div class="w-100 h-100">
-                <button @click="openNotiModal()" style="width:100%; font-size: 14px;" type="button" class="p-0 btn btn-secondary h-100">Tạo thông báo</button>
+                <button @click="openNotiModal()" style="width:100%; font-size: 13px;" type="button" class="btn btn-secondary h-100">Tạo thông báo</button>
               </div>
             </div>
             <div class="col-6" style="padding-left: 6px; padding-right: 8px">
               <div class="w-100 h-100">
-                <button @click="openCompareModal()" style="width:100%; font-size: 14px;" type="button" :class="{ 'p-0': true, 'btn': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">Xác định quan hệ</button>
+                <button @click="openCompareModal()" style="width:100%; font-size: 13px;" type="button" :class="{ 'btn': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">Xác định quan hệ</button>
               </div>
             </div>
           </div>
           <div class="w-100 d-flex flex-row" style="padding-top: 8px; height: 50%;">
             <div class="col-6" style="padding-left: 8px; padding-right: 6px">
               <div class="w-100 h-100">
-                <button @click="BackUpdata()" style="width:100%; font-size: 14px; color:white" type="button" class="p-0 btn btn-secondary h-100">Lưu trữ dữ liệu</button>
+                <button @click="BackUpdata()" style="width:100%; font-size: 13px; color:white" type="button" class="btn btn-secondary h-100">Lưu trữ dữ liệu</button>
               </div>
             </div>
             <div class="col-6" style="padding-left: 6px; padding-right: 8px">
               <div class="w-100 h-100">
-                <label for="upload" style="width:100%; font-size: 14px; color:white" type="button" class="d-flex align-items-center justify-content-center p-0 btn btn-secondary h-100">Xuất dữ liệu vào</label>
+                <label for="upload" style="width:100%; font-size: 13px; color:white" type="button" class="d-flex align-items-center justify-content-center btn btn-secondary h-100">Xuất dữ liệu vào</label>
                 <input ref="importFile" id="upload" type="file" style="display: none" @change="getFileImportMember($event)" />
               </div>
             </div>
@@ -243,7 +243,7 @@
             </svg>
           </div>
         </div>
-        <div class="d-flex flex-row" style="height: calc(100% - 50px)">
+        <div class="d-flex flex-row position-relative" style="height: calc(100% - 50px)">
           <div class="col-3 h-100 d-flex flex-column" style="overflow-y: auto">
             <div class="position-relative d-flex" style="height: 48px;">
               <label for="text-search" style="position: absolute; inset: 12px;">
@@ -286,20 +286,22 @@
                 <div @click="selectSMS()" :class="{ notiSelected: smsSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0 0.375rem 0 0; cursor: pointer;">SMS</div>
                 <div @click="selectEmail()" :class="{ notiSelected: emailSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0.375rem 0 0 0; cursor: pointer;">Email</div>
               </div>
-              <div v-if="emailSelected" class="d-flex flex-column mt-2" style="height: calc(100% - 116px); overflow-y: auto;">
-                <div v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row">
+              <div style="height: calc(100% - 48px);">
+                <div v-if="emailSelected" class="d-flex flex-column mt-2" style="height: calc(100% - 60px); overflow-y: auto;">
+                <div @click="emailDetail = !emailDetail" style="cursor: pointer;" v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row">
                   <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Chủ đề: {{ e.EmailSubject }}</div>
                   <div class="col-6 h-100 d-flex align-items-center position-relative">
                     <div class="mail-content-prev">{{ e.EmailContent }}</div>
                   </div>
                   <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">{{ formatDate(e.EmailDate) }}</div>
                 </div>
-              </div>
+                </div>
 
-              <div v-if="smsSelected" class="d-flex flex-column" style="height: calc(100% - 108px); align-items: flex-end; padding-top: 6px; overflow-y: auto">
+                <div v-if="smsSelected" class="d-flex flex-column" style="height: calc(100% - 60px); align-items: flex-end; padding-top: 6px; overflow-y: auto">
                 <div v-for="m in ListMessage" :key="m.id" class="position-relative d-flex flex-row">
                   <div class="position-absolute sent-time">{{ formatDate(m.NotificationDate) }}</div>
                   <div class="sent-sms">{{ m.NotificationContent }}</div>
+                </div>
                 </div>
               </div>
             </div>
@@ -314,7 +316,7 @@
                   </svg>
                 </div>
               </div>
-              <div v-if="emailSelected" class="w-100 btn px-3 position-relative" style="height: 48px;">
+              <div v-if="emailSelected" class="w-100 btn px-3 position-relative" style="height: 42px;">
                 <div @click="expandCreateEmail = !expandCreateEmail" class="btn btn-primary px-2 py-1 position-absolute" style="right: 16px">Tạo email mới</div>
               </div>
             </div>
@@ -345,6 +347,21 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div class="col-9 email-detail position-absolute" style="bottom: 0; right: 0;" :class="{expand : emailDetail}">
+            <div class="create-mail-title d-flex align-items-center justify-content-center position-relative">
+                  <div>Chủ đề</div>
+                  <div class="create-mail-close position-absolute" @click="emailDetail = false">
+                    <div class="position-relative h-100 w-100">
+                      <svg class="create-mail-close-icon position-absolute" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                        <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div class="create-mail-content p-4 w-100">
+                  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                </div>
           </div>
         </div>
       </div>
@@ -954,9 +971,7 @@ export default {
       ListMarriedMember: null,
 
       darkMode: true,
-      togglehelp: false,
-      listhelp: false,
-      treehelp: false,
+      emailDetail: false,
 
       objMemberInfor: {
         MemberID: 0,
