@@ -62,3 +62,15 @@
     margin: 0 8px;
     border-bottom: 1px solid lightgray;
 }
+
+.email-detail{
+    height: 0;
+    background-color: #FFFFFF;
+    opacity: 0;
+    transition: 0.4s;
+}
+
+.email-detail.expand{
+    opacity: 1;
+    height: calc(100% - 48px);
+}
