@@ -144,9 +144,6 @@ function insertAlbumPhoto(ObjData) {
 function updateAlbumPhoto(ObjData) {
     return new Promise((resolve, reject) => {
         try {
-            console.log("Chạy vào hàm updateAlbumPhoto");
-            // xóa ảnh cũ
-            removeAlbumPhotoUrl(ObjData.AlbumID);
             let query = `UPDATE albumphoto SET AlbumName = ?, CodeID = ?, Description = ?, BackGroundPhoto = ? WHERE AlbumID = ?;`
             let values = [
                 ObjData.AlbumName,
