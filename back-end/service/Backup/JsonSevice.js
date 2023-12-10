@@ -7,12 +7,14 @@ async function exportData(memberIDs) {
         const educations = await queryDatabase('genealogy.education', memberIDs);
         const jobs = await queryDatabase('genealogy.job', memberIDs);
         const contacts = await queryDatabase('genealogy.contact', memberIDs);
+        const marriages = await queryDatabase('genealogy.marriage', memberIDs); 
 
         const workbook = new Excel.Workbook();
         await addDataToSheet(workbook, 'Family Member Data', familyMembers);
         await addDataToSheet(workbook, 'Education Data', educations);
         await addDataToSheet(workbook, 'Job Data', jobs);
         await addDataToSheet(workbook, 'Contact Data', contacts);
+        await addDataToSheet(workbook, 'Marriage Data', marriages);
 
         const fileName = `/uploads/excel/Backup/all_members_${uuidv4()}.xlsx`;
         await workbook.xlsx.writeFile(fileName);
@@ -36,12 +38,11 @@ async function addDataToSheet(workbook, sheetName, data) {
             const rowValues = headers.map(header => {
                 // Check if the current value is a Date object
                 if (row[header] instanceof Date) {
-                    // Format the date using toLocaleDateString
-                    return row[header].toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                    });
+                    // Format the date as yyyy-mm-dd
+                    const year = row[header].getFullYear();
+                    const month = `${row[header].getMonth() + 1}`.padStart(2, '0');
+                    const day = `${row[header].getDate()}`.padStart(2, '0');
+                    return `${year}-${month}-${day}`;
                 }
                 return row[header];
             });
@@ -52,19 +53,37 @@ async function addDataToSheet(workbook, sheetName, data) {
 
 
 async function queryDatabase(tableName, memberIDs) {
-    return new Promise((resolve, reject) => {
-        const query = `SELECT * FROM ${tableName} WHERE MemberID IN (${memberIDs.join(',')})`;
+    if (tableName === 'genealogy.marriage') {
+        // Construct a query to fetch marriages related to the provided memberIDs
+        const query = `SELECT * FROM ${tableName} WHERE husbandID IN (${memberIDs.join(',')}) OR wifeID IN (${memberIDs.join(',')})`;
 
-        db.connection.query(query, (err, rows) => {
-            if (err) {
-                console.error(`Lỗi truy vấn bảng ${tableName}:`, err);
-                reject({ error: `Lỗi truy vấn bảng ${tableName}`, originalError: err });
-            } else {
-                resolve(rows);
-            }
+        return new Promise((resolve, reject) => {
+            db.connection.query(query, (err, rows) => {
+                if (err) {
+                    console.error(`Lỗi truy vấn bảng ${tableName}:`, err);
+                    reject({ error: `Lỗi truy vấn bảng ${tableName}`, originalError: err });
+                } else {
+                    resolve(rows);
+                }
+            });
         });
-    });
+    } else {
+        // For other tables, maintain the original query logic
+        return new Promise((resolve, reject) => {
+            const query = `SELECT * FROM ${tableName} WHERE MemberID IN (${memberIDs.join(',')})`;
+
+            db.connection.query(query, (err, rows) => {
+                if (err) {
+                    console.error(`Lỗi truy vấn bảng ${tableName}:`, err);
+                    reject({ error: `Lỗi truy vấn bảng ${tableName}`, originalError: err });
+                } else {
+                    resolve(rows);
+                }
+            });
+        });
+    }
 }
+
 
 function queryWithPromise(query, params = []) {
     return new Promise((resolve, reject) => {
@@ -79,41 +98,46 @@ function queryWithPromise(query, params = []) {
 }
 
 async function truncateTablesForMember(memberID) {
+
+    await queryWithPromise('DELETE FROM marriage WHERE husbandID = ? OR wifeID = ?', [memberID, memberID]);
+
     const tableNames = ['familymember', 'contact', 'education', 'job'];
     for (const tableName of tableNames) {
         await queryWithPromise(`DELETE FROM ${tableName} WHERE memberID = ?`, [memberID]);
     }
 }
-
 async function importData(file) {
     try {
-        // Mở file excel
         const workbook = new Excel.Workbook();
         await workbook.xlsx.readFile(file);
 
-        // Đọc dữ liệu từ file excel và insert vào các bảng
         const familyWorksheet = workbook.getWorksheet('Family Member Data');
-        const contactWorksheet = workbook.getWorksheet('Contact Data');
-        const educationWorksheet = workbook.getWorksheet('Education Data');
-        const jobWorksheet = workbook.getWorksheet('Job Data');
-
         const promises = [];
 
+        // Truncate tables for each member before insertion
         familyWorksheet.eachRow(async (row, rowNumber) => {
             if (rowNumber > 1) {
                 const values = row.values;
                 const memberID = values[1];
-                await truncateTablesForMember(memberID);
+                const truncatePromise = truncateTablesForMember(memberID);
+                promises.push(truncatePromise);
             }
         });
 
-        promises.push(insertDataToTable(familyWorksheet, 'familymember'));
-        promises.push(insertDataToTable(contactWorksheet, 'contact'));
-        promises.push(insertDataToTable(educationWorksheet, 'education'));
-        promises.push(insertDataToTable(jobWorksheet, 'job'));
-
-        // Chờ cho tất cả các promises hoàn thành
+        // Wait for all truncate operations to complete
         await Promise.all(promises);
+
+        // Insert data to tables
+        const insertPromises = [
+            insertDataToTable(familyWorksheet, 'genealogy.familymember'),
+            insertDataToTable(workbook.getWorksheet('Contact Data'), 'genealogy.contact'),
+            insertDataToTable(workbook.getWorksheet('Education Data'), 'genealogy.education'),
+            insertDataToTable(workbook.getWorksheet('Job Data'), 'genealogy.job'),
+            insertDataToTable(workbook.getWorksheet('Marriage Data'), 'genealogy.marriage')
+        ];
+
+        // Wait for all insert operations to complete
+        await Promise.all(insertPromises);
 
         return { success: true };
     } catch (error) {
@@ -124,48 +148,56 @@ async function importData(file) {
 
 
 async function insertDataToTable(worksheet, tableName) {
-    const headers = worksheet.getRow(1).values.filter(header => header !== ''); // Get non-empty headers from the first row
+    try {
+        const headers = worksheet.getRow(1).values.filter(header => header !== '');
 
-    for (let rowNumber = 2; rowNumber <= worksheet.rowCount; rowNumber++) {
-        const row = worksheet.getRow(rowNumber);
+        const queries = [];
 
-        const formattedValues = [];
-        for (let i = 1; i <= headers.length; i++) {
-            const cellValue = row.getCell(i).value;
-            let formattedValue = '';
+        for (let rowNumber = 2; rowNumber <= worksheet.rowCount; rowNumber++) {
+            const row = worksheet.getRow(rowNumber);
+            const formattedValues = [];
 
-            // Update date formatting logic
-            if (typeof cellValue === 'string' && !isNaN(Date.parse(cellValue))) {
-                const formattedDate = new Date(cellValue).toISOString().split('T')[0];
-                formattedValue = `'${formattedDate}'`;
-            } else if (cellValue === null || cellValue === '') {
-                formattedValue = 'NULL';
-            } else if (typeof cellValue === 'string') {
-                formattedValue = `'${cellValue.replace(/'/g, "''")}'`;
-            } else {
-                formattedValue = cellValue;
+            for (let i = 1; i <= headers.length; i++) {
+                const cellValue = row.getCell(i).value;
+                let formattedValue = '';
+
+                if (cellValue === null || cellValue === '') {
+                    formattedValue = 'NULL';
+                } else if (typeof cellValue === 'string') {
+                    // Escape single quotes in string values
+                    formattedValue = `'${cellValue.replace(/'/g, "''")}'`;
+                } else if (cellValue instanceof Date) {
+                    const formattedDate = `${cellValue.getFullYear()}-${(cellValue.getMonth() + 1).toString().padStart(2, '0')}-${cellValue.getDate().toString().padStart(2, '0')}`;
+                    formattedValue = `'${formattedDate}'`;
+                }
+                else {
+                    formattedValue = cellValue;
+                }
+
+                formattedValues.push(formattedValue);
             }
 
-            formattedValues.push(formattedValue);
+            const query = `INSERT INTO ${tableName} (${headers.join(',')}) VALUES (${formattedValues.join(',')})`;
+            console.log(query)
+            queries.push(query);
         }
 
-        const query = `INSERT INTO ${tableName} (${headers.join(',')}) VALUES (${formattedValues.join(',')})`;
-        console.log(query)
-        try {
-            // Execute SQL query with await to maintain query execution order
-            const results = await new Promise((resolve, reject) => {
-                db.connection.query(query, (error, results) => {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        resolve(results);
-                    }
-                });
-            });
-            console.log("Inserted row:", results); // Log the result of inserting a data row
-        } catch (error) {
-            console.error("Error inserting row:", error); // Catch error if there's an issue while inserting data
-        }
+        const results = await Promise.all(queries.map(query =>
+            queryWithPromise(query)
+                .then(result => {
+                    console.log("Inserted row:", result);
+                    return result;
+                })
+                .catch(error => {
+                    console.error("Error inserting row:", error);
+                    throw error;
+                })
+        ));
+
+        return results;
+    } catch (error) {
+        console.error('Error inserting data into table', tableName, error);
+        throw error;
     }
 }
 

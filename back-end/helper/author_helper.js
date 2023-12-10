@@ -3,10 +3,10 @@ const userService = require('../service/Authoration/RoleManagement');
 const Response = require('../Utils/Response')
 
 module.exports = {
-    authenticateAndAuthorize: (requiredRole) => {
+    authenticateAndAuthorize: (requiredRole) => {        
         return async (req, res, next) => {
             try {
-                jwtUtils.verifyAccessToken(req, res, async (error) => {
+                jwtUtils.verifyGenealogyToken(req, res, async (error) => {
                     if (error) {
                         if (error === 'Token expired') {
                             return res.send(Response.badRequestResponse(null, "Token hết hạn"));
@@ -14,8 +14,10 @@ module.exports = {
                             return res.send(Response.badRequestResponse(null, "Unauthorized"));
                         }
                     }
-                    const insertId = req.payload.insertId;
-                    const roleId = await userService.getRoleID(insertId);
+                    console.log("Vào hàm này này")
+                    let insertId = req.payload.insertId;
+                    let codeId = req.payload.codeId;
+                    let roleId = await userService.getRoleID(insertId,codeId);
 
                     console.log('roleId: ' + roleId)
                     

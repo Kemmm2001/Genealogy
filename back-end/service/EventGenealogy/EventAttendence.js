@@ -21,7 +21,7 @@ function checkConfirmedEvent(EventID, MemberID, Token) {
   return new Promise((resolve, reject) => {
     let query = `SELECT IsGoing FROM genealogy.eventattendance where EventID = ${EventID} and MemberID = ${MemberID} and Token = '${Token}'`;
     db.connection.query(query, (err, result) => {
-      if (!err && result[0].IsGoing != null) {
+      if (!err && result[0].IsGoing != -1) {
         resolve(result[0].IsGoing)
         console.log("vào khác null")
       } else {

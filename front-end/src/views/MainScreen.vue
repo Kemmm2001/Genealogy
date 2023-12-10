@@ -31,7 +31,7 @@
           </div>
         </div>
       </div>
-      <div class="w-100 d-flex flex-column px-2" :class="{height100 : memberRole == 3}" style="padding: 12px; min-height: 85%; font-family: 'QuicksandBold', sans-serif;">
+      <div class="w-100 d-flex flex-column px-2" :class="{ height100: memberRole == 3 }" style="padding: 12px; min-height: 85%; font-family: 'QuicksandBold', sans-serif;">
         <div class="existing-members d-flex flex-column w-100 position-relative">
           <div class="d-flex align-items-center justify-content-center px-2 py-1 list-title">Thành viên có trên phả đồ</div>
           <div class="d-flex flex-column w-100" style="overflow-y: auto; flex-grow: 1; cursor: pointer">
@@ -58,9 +58,9 @@
       </div>
     </div>
     <div class="d-flex main-screen align-items-center h-100 w-100 position-relative">
-      <div v-show=" nodes.length != 0" id="tree" ref="tree"></div>
-      <div v-show=" nodes.length == 0" style="inset: 0; margin: auto;">
-        <div @click="openMemberModal('AddFirst','cụ tổ')" class="btn bg-primary text-white d-flex flex-row align-items-center">
+      <div v-show="nodes.length != 0" id="tree" ref="tree"></div>
+      <div v-show="nodes.length == 0" style="inset: 0; margin: auto;">
+        <div @click="openMemberModal('AddFirst', 'cụ tổ')" class="btn bg-primary text-white d-flex flex-row align-items-center">
           <div style="padding-right: 8px;">Thêm thông tin cụ tổ</div>
           <svg style="fill: white;" class="add-member-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
             <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />
@@ -68,9 +68,9 @@
         </div>
       </div>
       <div :class="{ filterExpanded: advancedFilterDown }" class="advanced-filter-container d-flex flex-column p-1 position-absolute col-3 col-sm-2 col-md-3 col-lg-4" style="cursor: pointer;">
-        <div :class="{expand : advancedFilterDown}" class="filter-item">
+        <div :class="{ expand: advancedFilterDown }" class="filter-item">
           <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
-            <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict(),GetListFilterMember()">
+            <select v-model="selectCity" class="d-flex text-center form-select dropdown p-0" @change="getListDistrict(), GetListFilterMember()">
               <option :value="null" selected>Tỉnh/Thành phố</option>
               <option v-for="city in ListCity" :key="city.id" :value="city.id">{{ city.name }}</option>
             </select>
@@ -89,7 +89,7 @@
           <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
             <select class="d-flex text-center form-select dropdown p-0" v-model="selectAge" @change="GetListFilterMember()">
               <option class="dropdown-item" :value="null">Nhóm Tuổi</option>
-              <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{ age.From != 61 ? age.From : 'Trên '+ age.From}} {{ age.End != 200 ?' - '+age.End : '' }} Tuổi</option>
+              <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{ age.From != 61 ? age.From : 'Trên ' + age.From }} {{ age.End != 200 ? ' - ' + age.End : '' }} Tuổi</option>
             </select>
           </div>
         </div>
@@ -134,14 +134,14 @@
               <div class="list-group-item" @click="openModalRelationship()">Xem các mối quan hệ</div>
               <div class="list-group-item" @click="openMemberModal('AddParent', 'phụ huynh')">Thêm phụ huynh</div>
               <div class="list-group-item" @click="openMemberModal('AddMarriage', 'hôn nhân')">Thêm hôn nhân</div>
-              <div v-for="list in ListMarriedMember" :key="list.id" class="list-group-item" @click="openMemberModal('AddChild', 'Con',list.id)">Thêm Con với {{list.name}}</div>
+              <div v-for="list in ListMarriedMember" :key="list.id" class="list-group-item" @click="openMemberModal('AddChild', 'Con', list.id)">Thêm Con với {{ list.name }}</div>
               <div class="list-group-item" @click="openMemberModal('AddChild', 'Con')">Thêm Con</div>
               <div class="list-group-item" @click="openModalAddMemberFromList()">Thêm mối quan hệ từ Danh Sách</div>
-              <div class="list-group-item" @click="openCfDelModal('removeMember',null,TitleModal)">Xóa thành viên (*)</div>
+              <div class="list-group-item" @click="openCfDelModal('removeMember', null, TitleModal)">Xóa thành viên (*)</div>
               <div class="list-group-item feature-overview">Các chức năng Khác</div>
-              <div class="list-group-item" @click="openCfDelModal('SetPaternalAncestor',null,TitleModal)">Set làm cụ tổ</div>
+              <div class="list-group-item" @click="openCfDelModal('SetPaternalAncestor', null, TitleModal)">Set làm cụ tổ</div>
               <div v-if="parentRelationship">
-                <div v-for="list in parentRelationship" :key="list.id" @click="openCfDelModal('LinkRelationship',list.id,list.name)" class="list-group-item">Nối mối quan hệ với {{list.name}}</div>
+                <div v-for="list in parentRelationship" :key="list.id" @click="openCfDelModal('LinkRelationship', list.id, list.name)" class="list-group-item">Nối mối quan hệ với {{ list.name }}</div>
               </div>
             </div>
           </div>
@@ -181,7 +181,7 @@
                       <td style="text-align: center;">{{ formatDate(ResultRelationship.Father.Dob) }}</td>
                       <td style="text-align: center;">Cha</td>
                       <td style="text-align: center;">
-                        <button class="btn btn-secondary" @click.stop="openCfDelModal('removeRelationship',ResultRelationship.Father.MemberID,ResultRelationship.Father.MemberName,'RemoveParent')">Hủy mối quan hệ</button>
+                        <button class="btn btn-secondary" @click.stop="openCfDelModal('removeRelationship', ResultRelationship.Father.MemberID, ResultRelationship.Father.MemberName, 'RemoveParent')">Hủy mối quan hệ</button>
                       </td>
                     </tr>
                     <tr v-if="ResultRelationship.Mother" class="headlist-item headlist-table-item" @click="getInforMember(ResultRelationship.Mother.MemberID)">
@@ -190,7 +190,7 @@
                       <td style="text-align: center;">{{ formatDate(ResultRelationship.Mother.Dob) }}</td>
                       <td style="text-align: center;">Mẹ</td>
                       <td style="text-align: center;">
-                        <button class="btn btn-secondary" @click.stop="openCfDelModal('removeRelationship',ResultRelationship.Mother.MemberID,ResultRelationship.Mother.MemberName,'RemoveParent')">Hủy mối quan hệ</button>
+                        <button class="btn btn-secondary" @click.stop="openCfDelModal('removeRelationship', ResultRelationship.Mother.MemberID, ResultRelationship.Mother.MemberName, 'RemoveParent')">Hủy mối quan hệ</button>
                       </td>
                     </tr>
                     <tr v-for="hus in ResultRelationship.Husband" :key="hus.MemberID" class="headlist-item headlist-table-item" @click="getInforMember(ResultRelationship.Husband.MemberID)">
@@ -199,7 +199,7 @@
                       <td style="text-align: center;">{{ formatDate(hus.Dob) }}</td>
                       <td style="text-align: center;">Chồng</td>
                       <td style="text-align: center;">
-                        <button class="btn btn-secondary" @click.stop="openCfDelModal('removeRelationship',hus.MemberID,hus.MemberName,'RemoveMarried')">Hủy mối quan hệ</button>
+                        <button class="btn btn-secondary" @click.stop="openCfDelModal('removeRelationship', hus.MemberID, hus.MemberName, 'RemoveMarried')">Hủy mối quan hệ</button>
                       </td>
                     </tr>
                     <tr v-for="Wife in ResultRelationship.Wife" :key="Wife.MemberID" class="headlist-item headlist-table-item" @click="getInforMember(ResultRelationship.Wife.MemberID)">
@@ -208,16 +208,16 @@
                       <td style="text-align: center;">{{ formatDate(Wife.Dob) }}</td>
                       <td style="text-align: center;">Vợ</td>
                       <td style="text-align: center;">
-                        <button class="btn btn-secondary" @click.stop="openCfDelModal('removeRelationship',Wife.MemberID,Wife.MemberName,'RemoveMarried')">Hủy mối quan hệ</button>
+                        <button class="btn btn-secondary" @click.stop="openCfDelModal('removeRelationship', Wife.MemberID, Wife.MemberName, 'RemoveMarried')">Hủy mối quan hệ</button>
                       </td>
                     </tr>
-                    <tr v-for="(c,index) in ResultRelationship.child" :key="index" class="headlist-item headlist-table-item" @click="getInforMember(c.MemberID)">
+                    <tr v-for="(c, index) in ResultRelationship.child" :key="index" class="headlist-item headlist-table-item" @click="getInforMember(c.MemberID)">
                       <td style="text-align: center;">{{ c.MemberName }}</td>
                       <td style="text-align: center;">{{ c.Male == 1 ? "Nam" : "Nữ" }}</td>
                       <td style="text-align: center;">{{ formatDate(c.Dob) }}</td>
                       <td style="text-align: center;">Con</td>
                       <td style="text-align: center;">
-                        <button class="btn btn-secondary" @click.stop="openCfDelModal('removeRelationship',c.MemberID,c.MemberName,'RemoveChild')">Hủy mối quan hệ</button>
+                        <button class="btn btn-secondary" @click.stop="openCfDelModal('removeRelationship', c.MemberID, c.MemberName, 'RemoveChild')">Hủy mối quan hệ</button>
                       </td>
                     </tr>
                   </tbody>
@@ -288,11 +288,11 @@
               </div>
               <div v-if="emailSelected" class="d-flex flex-column mt-2" style="height: calc(100% - 116px); overflow-y: auto;">
                 <div v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row">
-                  <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Chủ đề: {{e.EmailSubject}}</div>
+                  <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Chủ đề: {{ e.EmailSubject }}</div>
                   <div class="col-6 h-100 d-flex align-items-center position-relative">
-                    <div class="mail-content-prev">{{e.EmailContent}}</div>
+                    <div class="mail-content-prev">{{ e.EmailContent }}</div>
                   </div>
-                  <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">{{formatDate(e.EmailDate)}}</div>
+                  <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">{{ formatDate(e.EmailDate) }}</div>
                 </div>
               </div>
 
@@ -428,7 +428,7 @@
                   <input type="text" class="w-100 h-100 form-control" :value="objCompareMember2.father !== undefined ? 'Bố: ' + objCompareMember2.father : 'Không có trên phả đồ'" disabled />
                 </div>
                 <div class="compare-modal-item mx-2 mt-2">
-                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember2.mother !== undefined ? 'Mẹ: ' +  objCompareMember2.mother : 'Không có trên phả đồ'" disabled />
+                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember2.mother !== undefined ? 'Mẹ: ' + objCompareMember2.mother : 'Không có trên phả đồ'" disabled />
                 </div>
                 <div class="compare-modal-item mx-2 mt-2">
                   <input type="text" class="w-100 h-100 form-control" :value="resultCompare2 !== undefined ? 'Mối quan hệ: ' + resultCompare2 : 'Mối quan hệ: Không xác định'" disabled />
@@ -533,18 +533,17 @@
                 <div class="h-100 d-flex flex-row">
                   <div v-if="isEdit" class="col-4" style="padding-right: 8px;height: 50%;">
                     <img style="height:316px;width:100%;margin-bottom:61px" :class="{ fitHeight: heightLarger }" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" @click="triggerFileInputClick()" />
-                    <svg v-else @click="triggerFileInputClick()" style="margin-bottom:61px" fill="#000000" height="275px" width="100%" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
-                      <g>
-                        <g>
-                          <circle cx="256" cy="114.526" r="114.526" />
-                        </g>
-                      </g>
-                      <g>
-                        <g>
-                          <path d="M256,256c-111.619,0-202.105,90.487-202.105,202.105c0,29.765,24.13,53.895,53.895,53.895h296.421 c29.765,0,53.895-24.13,53.895-53.895C458.105,346.487,367.619,256,256,256z" />
-                        </g>
-                      </g>
-                    </svg>
+                    <div v-else style="margin-bottom:61px; fill: #000000; height: 275px; width: 100%;">
+                      <div @click="triggerFileInputClick()" class="w-100 h-100 position-relative" style="border: 1px dashed #7a95cd; border-radius: 0.375rem; cursor: pointer;">
+                        <div style="width: 15%; height: 15%; position: absolute; inset: 0; margin: auto;">
+                          <svg xmlns="http://www.w3.org/2000/svg" height="100%" width="100%" viewBox="0 0 448 512">
+                            <path opacity="1" fill="#7a95cd" d="M246.6 9.4c-12.5-12.5-32.8-12.5-45.3 0l-128 128c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 109.3V320c0 17.7 14.3 32 32 32s32-14.3 32-32V109.3l73.4 73.4c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-128-128zM64 352c0-17.7-14.3-32-32-32s-32 14.3-32 32v64c0 53 43 96 96 96H352c53 0 96-43 96-96V352c0-17.7-14.3-32-32-32s-32 14.3-32 32v64c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V352z" />
+                          </svg>
+                        </div>
+                        <div style="color: #7a95cd; position: absolute; inset: 45% 0 0 0; margin: auto; height: fit-content; width: fit-content;">Ảnh chân dung</div>
+                      </div>
+                    </div>
+
                     <div class="form-group" style="display:none">
                       <label style="margin-bottom:10px" v-if="objMemberInfor.Image" for="imageUpload">Thay đổi ảnh</label>
                       <label style="margin-bottom:10px" v-else for="imageUpload">Tải ảnh lên</label>
@@ -563,7 +562,11 @@
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
                         <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item" placeholder />
-                        <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">{{this.action=="AddChild" ? 'Con thứ' : (this.isFather ? "Vợ thứ" : (this.isFather == null ? "Con thứ":"Chồng thứ"))}}</label>
+                        <label class="form-label-number" for="input" v-if="objMemberInfor.FatherID == null && objMemberInfor.MotherID == null && action != 'AddMarriage' " :class="{ 'active': objMemberInfor.BirthOrder }">Vợ thứ</label>
+                        <label class="form-label-number" for="input" v-else :class="{ 'active': objMemberInfor.BirthOrder }">
+                          {{ this.action == "AddChild" ? 'Con thứ' :
+                          (this.isFather ? "Vợ thứ" : (this.isFather == null ? "Con thứ" : "Chồng thứ")) }}
+                        </label>
                       </div>
                     </div>
                     <div style="display:flex">
@@ -592,13 +595,19 @@
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
                         <select v-model="objMemberInfor.NationalityID" class="form-select modal-item">
-                          <option v-for="nation in ListNationality" :key="nation.id" :value="nation.NationalityID">{{ nation.NationalityName }}</option>
+                          <option v-for="nation in ListNationality" :key="nation.id" :value="nation.NationalityID">
+                            {{
+                            nation.NationalityName }}
+                          </option>
                         </select>
                         <label class="form-label" for="select">Quốc Tịch</label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
                         <select v-model="objMemberInfor.ReligionID" class="form-select modal-item">
-                          <option v-for="religion in ListReligion" :key="religion.id" :value="religion.ReligionID">{{ religion.ReligionName }}</option>
+                          <option v-for="religion in ListReligion" :key="religion.id" :value="religion.ReligionID">
+                            {{
+                            religion.ReligionName }}
+                          </option>
                         </select>
                         <label class="form-label-number" for="select">Tôn Giáo</label>
                       </div>
@@ -814,7 +823,7 @@
             <div class="d-flex justify-content-end" style="padding-right: 12px;">
               <button v-if="isAdd && memberRole != 3" type="button" class="btn btn-primary mr-2" @click="addMember()">Thêm</button>
               <button v-else-if="isEdit && memberRole != 3" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
-              <button v-if="nodes.length" style="margin-left:10px" type="button" class="btn btn-danger" @click="openCfDelModal('removeMember',null,objMemberInfor.MemberName)">Xóa thành viên</button>
+              <button v-if="nodes.length" style="margin-left:10px" type="button" class="btn btn-danger" @click="openCfDelModal('removeMember', null, objMemberInfor.MemberName)">Xóa thành viên</button>
             </div>
           </div>
         </div>
@@ -833,7 +842,7 @@
             </div>
           </div>
           <div class="w-100 d-flex flex-column align-items-center justify-content-center" style="height: calc(100% - 50px);">
-            <div class="d-flex align-items-center px-3" style="height: 70%; font-size: 19px;">{{TitleConfirm}}</div>
+            <div class="d-flex align-items-center px-3" style="height: 70%; font-size: 19px;">{{ TitleConfirm }}</div>
             <div class="d-flex flex-row w-100" style="height: 30%;">
               <div v-if="isRemoveRelationship == 'removeRelationship'" class="col-6 d-flex align-items-center justify-content-center">
                 <div class="btn text-white" @click="removeRelationship()" style="background-color: rgb(255, 8, 0);">Có</div>
@@ -859,6 +868,7 @@
 </template>
 
 <script>
+//import axios from 'axios';
 import Vue from "vue";
 import VueCookies from "vue-cookies";
 Vue.use(VueCookies);
@@ -1470,27 +1480,23 @@ export default {
 
     //Nguyễn Lê Hùng
     searchMember() {
-      if (this.searchKeyword == "" || this.searchKeyword == null) {
-        this.ListMemberCanSendMessage = this.nodes;
-      } else {
-        HTTP.get("searchMemberSendMessage", {
-          params: {
-            CodeID: this.CodeID,
-            keySearch: this.searchKeyword,
-          },
+      HTTP.get("searchMemberSendMessage", {
+        params: {
+          CodeID: this.CodeID,
+          keySearch: this.searchKeyword,
+        },
+      })
+        .then((response) => {
+          if (response.data.success == true) {
+            console.log(response.data.data);
+            this.ListMemberCanSendMessage = response.data.data;
+          } else {
+            this.NotificationsDelete(response.data.message);
+          }
         })
-          .then((response) => {
-            if (response.data.success == true) {
-              console.log(response.data.data);
-              this.ListMemberCanSendMessage = response.data.data;
-            } else {
-              this.NotificationsDelete(response.data.message);
-            }
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-      }
+        .catch((e) => {
+          console.log(e);
+        });
     },
     //Nguyễn Lê Hùng
     toggleSelectAll() {
@@ -1640,6 +1646,7 @@ export default {
           this.objMember = response.data;
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
+
             this.takeDataMember(this.CurrentIdMember);
             this.objMemberInfor.Dob = this.formatDate(this.objMemberInfor.Dob);
             this.objMemberInfor.LunarDob = this.formatDate(
@@ -1672,7 +1679,7 @@ export default {
         .catch((e) => {
           console.log(e);
         });
-
+      this.action = null;
       this.$modal.show("member-modal");
       this.isEdit = true;
       this.selectedInfor();
@@ -1988,6 +1995,7 @@ export default {
       })
         .then((response) => {
           if (response.data.success == true) {
+            console.log("response: " + response.data.data);
             this.action = null;
             this.getAllListMember();
             this.isUpdateAvatar = false;
@@ -2000,6 +2008,7 @@ export default {
             this.NotificationsDelete(response.data.message);
           }
           this.newIdMember = response.data.data.MemberID;
+          console.log("newIdMember: " + this.newIdMember);
           if (
             this.objMemberContact.Phone != null ||
             this.objMemberContact.Address != null ||
@@ -2511,6 +2520,7 @@ export default {
       } else if (!this.isFather && action == "AddMarriage") {
         this.objMemberInfor.Male = 1;
       }
+
       this.objMemberInfor.BloodType = null;
       this.objMemberInfor.NationalityID = 1;
       this.objMemberInfor.ReligionID = 1;
@@ -2609,6 +2619,7 @@ export default {
       } else {
         this.isFather = true;
       }
+
       this.getAllMarriedInMember(foundNode.pids);
       this.setFunctionCanDo(foundNode);
       this.TitleModal = foundNode.name;
@@ -2621,6 +2632,8 @@ export default {
       this.nodeRightClickHighLight = id;
       this.$modal.show("Select-option-Modal");
       this.CurrentIdMember = id;
+
+      this.objMemberInfor = {};
       //  this.removeFromSelectedNodes(id);
     },
     getAllMarriedInMember(membersArray) {
@@ -2981,22 +2994,18 @@ export default {
       }
     },
     getMemberRole() {
-      try {
-        HTTP.post("roleAccount", {
-          accountID: localStorage.getItem("accountID"),
-          codeID: localStorage.getItem("CodeID"),
+      HTTP.post("roleAccount", {
+        accountID: localStorage.getItem("accountID"),
+        codeID: localStorage.getItem("CodeID"),
+      })
+        .then((response) => {
+          if (response.data.success == true) {
+            this.memberRole = response.data.data.RoleID;
+          }
         })
-          .then((response) => {
-            if (response.data.success == true) {
-              this.memberRole = response.data.data.RoleID;
-            }
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-      } catch (error) {
-        console.log(error);
-      }
+        .catch((e) => {
+          console.log(e);
+        });
     },
     getListCity() {
       try {
@@ -3159,11 +3168,13 @@ export default {
 .row-selected {
   --bs-table-bg: #f0f0f0;
 }
+
 input#txt_search {
   height: 40px;
   width: 300px;
   border: 0px;
 }
+
 button.btn-x {
   display: none;
 }

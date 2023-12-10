@@ -328,13 +328,13 @@ function changeUsername(AccountId, Username) {
 }
 
 
-function getUserInfo(accountID) {
+function getUserInfo(accountID,CodeID) {
   return new Promise((resolve, reject) => {
     try {
       let query = `SELECT ac.*, ra.RoleName FROM genealogy.account as ac
         INNER JOIN AccountFamilyTree as af ON ac.AccountID = af.AccountID 
         INNER JOIN roleaccount as ra ON af.RoleID = ra.RoleID 
-        WHERE ac.AccountID = ${accountID}`;
+        WHERE ac.AccountID = ${accountID} and af.CodeID = ${CodeID}`;
       db.connection.query(query, (err, result) => {
         if (!err && result.length > 0) {
           resolve(result[0])

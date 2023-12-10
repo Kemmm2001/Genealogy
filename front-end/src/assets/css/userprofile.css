@@ -71,7 +71,6 @@
 .profile-grid-container{
     display: grid;
     grid-template-columns: 17% 83%;
-    font-size: 8px;
 }
 
 .profile-grid-container .profile-sidebar{
@@ -95,10 +94,6 @@
     color: #000 !important;
 }
 
-.profile-grid-container .profile-content input{
-    font-size: 8px;
-}
-
 .profile-grid-container .family-account{
     height: 80%;
     overflow-y: auto;
@@ -107,31 +102,12 @@
 }
 
 .profile-grid-container .family-account-item{
-    height: 8%;
     display: flex;
     align-items: center;
 }
 
 @media (min-width: 900px) {
     .profile-grid-container .profile-sidebar .btn, .profile-grid-container .profile-content .content, .profile-grid-container .profile-content input, .profile-grid-container .profile-content select, .profile-grid-container .profile-content option{
-        font-size: 12px;
-    }
-}
-
-@media (min-width: 1300px) {
-    .profile-grid-container .profile-sidebar .btn, .profile-grid-container .profile-content .content, .profile-grid-container .profile-content input, .profile-grid-container .profile-content select, .profile-grid-container .profile-content option{
-        font-size: 14px;
-    }
-}
-
-@media (min-width: 1700px) {
-    .profile-grid-container .profile-sidebar .btn, .profile-grid-container .profile-content .content, .profile-grid-container .profile-content input, .profile-grid-container .profile-content select, .profile-grid-container .profile-content option{
         font-size: 15px;
-    }
-}
-
-@media (min-width: 2000px) {
-    .profile-grid-container .profile-sidebar .btn, .profile-grid-container .profile-content .content, .profile-grid-container .profile-content input, .profile-grid-container .profile-content select, .profile-grid-container .profile-content option{
-        font-size: 16px;
     }
 }
