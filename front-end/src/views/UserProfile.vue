@@ -46,24 +46,21 @@
           </div>
         </div>
         <div v-if="editRoleSelected" class="func-detail w-100 h-100 position-relative">
-          <div class>
+          <div>
             <div class="pb-2 acc-list-container" style="font-weight: bold; height: 32px;">Tài khoản thành viên thuộc gia phả</div>
             <div class="family-account">
               <div v-for="(m, index) in listMemberRole" :key="index" :class="{
-                'family-account-item odd py-2 position-relative': index % 2 !== 0,
-                'family-account-item even py-2 position-relative': index % 2 == 0
-              }">
+        'family-account-item odd py-2 position-relative': index % 2 !== 0,
+        'family-account-item even py-2 position-relative': index % 2 == 0
+      }">
                 <div class="username position-absolute">{{ m.Email }}</div>
                 <div class="role h-100 position-absolute py-1">
                   <select :disabled="m.RoleID != 1 ? false : true" v-model="m.RoleID" class="form-select h-100 px-3 py-0" @change="changeRole(m.RoleID, m.AccountID)">
-                    <option v-for="list in listRoleAccount" :key="list.id" style="text-align: center;" :value="list.RoleID">{{m.RoleName}}</option>
+                    <option v-for="list in listRoleAccount" v-bind:key="list.id" style="text-align: center;" :value="list.RoleID">{{list.RoleName}}</option>
                   </select>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="w-100 d-flex mt-3" style="justify-content: end;">
-            <div class="btn bg-primary text-white">Lưu thay đổi</div>
           </div>
         </div>
         <div v-if="changePwdSelected" class="func-detail w-100 h-100 position-relative">
@@ -308,10 +305,12 @@ export default {
     getInforAccount() {
       HTTP.post("get-user", {
         accountID: this.accountID,
+        CodeID: this.CodeID
       })
         .then((respone) => {
           if (respone.data.success == true) {
             this.accountInfor = respone.data.data;
+            console.log('infor: ' + this.accountInfor );
           } else {
             this.NotificationsScuccess(respone.data.message);
           }

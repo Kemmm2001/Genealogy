@@ -3,12 +3,13 @@ const UserController = require('../Controller/Authencation/UserController'); // 
 var router = express.Router()
 const { verifyAccessToken, verifyRepassToken } = require('../helper/jwt_helper')
 
-const authMiddleware = require('../helper/author_helper')
+const authMiddleware = require('../helper/author_helper');
+const { verify } = require('crypto');
 
 const initWebRouter = (app) => {
 
   router.get('/protected-route', verifyAccessToken, (req, res) => {
-
+    
     const accountID = req.payload.insertId;
     res.json({ accountID });
   });
@@ -28,16 +29,16 @@ const initWebRouter = (app) => {
   router.post('get-codeID', UserController.getUserCodeID)
 
   router.post('/set-role', UserController.setRole)
-  router.post('/check-codeId', UserController.checkCodeID)
+  router.post('/check-codeId', verifyAccessToken, UserController.checkCodeID)
   router.get('/listrole', UserController.getListRoleMember)
-  router.post('/roleAccount',UserController.getRoleAccount)
-  router.get('/allRoleAccount',UserController.getAllRoleAccount)
+  router.post('/roleAccount', UserController.getRoleAccount)
+  router.get('/allRoleAccount', UserController.getAllRoleAccount)
 
   router.post('/changeUsername', UserController.changeUsername)
   router.put('/changepassword', UserController.ChangePassword)
   router.get('/historyCodeID', UserController.getHistoryCodeID)
   router.post('/get-user', UserController.getUserInfor)
-  router.get('/inforTree',UserController.getInformationTree)
+  router.get('/inforTree', UserController.getInformationTree)
 
   //api test
   router.get('/admin', authMiddleware.authenticateAndAuthorize(2), (req, res) => {
