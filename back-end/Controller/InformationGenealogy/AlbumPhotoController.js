@@ -67,17 +67,14 @@ var updateAlbumPhoto = async (req, res) => {
         // Kiểm tra xem có đủ các trường của AlbumPhoto không
         const missingFields = CoreFunction.missingFields(requiredFields, req.body);
         console.log(missingFields);
-        // trong trường hợp thiếu trường bắt buộc
-        if (missingFields.length) {
-            CoreFunction.deleteImage(req.file.path);
-            return res.send(Response.missingFieldsErrorResponse(missingFields));
-        }
-        console.log("No missing fields");
-
-
 
         if (!CoreFunction.isDataStringExist(req.file)) {
             console.log("Không có file ảnh");
+            // trong trường hợp thiếu trường bắt buộc
+            if (missingFields.length) {
+                return res.send(Response.missingFieldsErrorResponse(missingFields));
+            }
+            console.log("No missing fields");
             let albumData = await AlbumPhotoManagementService.getAlbumPhotoById(req.body.AlbumID);
             if (albumData == null || albumData.length == 0) {
                 return res.send(Response.dataNotFoundResponse());
@@ -89,6 +86,12 @@ var updateAlbumPhoto = async (req, res) => {
             req.body.BackGroundPhoto = albumData[0].BackGroundPhoto;
         } else {
             console.log("req.file: ", req.file);
+            // trong trường hợp thiếu trường bắt buộc
+            if (missingFields.length) {
+                CoreFunction.deleteImage(req.file.path);
+                return res.send(Response.missingFieldsErrorResponse(missingFields));
+            }
+            console.log("No missing fields");
             // nếu file ảnh ko thuộc png, jpg, jpeg thì ko cho update
             if (!req.file.originalname.match(/\.(jpg|jpeg|png)$/)) {
                 CoreFunction.deleteImage(req.file.path);
