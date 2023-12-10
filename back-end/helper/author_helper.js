@@ -45,7 +45,7 @@ module.exports = {
                     } 
                     else if (requiredRole === 3) {
                         // Role 3 có thể làm mọi thứ của chính nó, nhưng không làm được những gì Role 1 và Role 2 làm
-                        if (roleId === 3) {
+                        if (roleId === 3 || roleId === 2 || roleId === 1) {
                             // Người dùng có quyền, tiếp tục xử lý yêu cầu
                             next();
                         } else {
