@@ -116,19 +116,6 @@
           </div>
           <div class="card-body" style="padding: 5px;height:auto">
             <div class="list-group">
-              <!-- <div class="list-group-item feature-overview">Các chức năng chính</div>
-              <div class="list-group-item" @click="getInforMember(CurrentIdMember)">Thông tin chi tiết</div>
-              <div class="list-group-item" @click="openModalRelationship()">Xem các mối quan hệ</div>
-              <div v-if="canAddFather" class="list-group-item" @click="openMemberModal('AddParent', 'Cha')">Thêm Cha</div>
-              <div v-if="canAddMother" class="list-group-item" @click="openMemberModal('AddParent', 'Mẹ')">Thêm Mẹ</div>
-              <div v-if="canAddhusband" class="list-group-item" @click="openMemberModal('AddMarriage', 'Chồng')">Thêm Chồng</div>
-              <div v-if="canAddWife" class="list-group-item" @click="openMemberModal('AddMarriage', 'Vợ')">Thêm Vợ</div>
-              <div class="list-group-item" @click="openMemberModal('AddChild', 'Con')">Thêm Con</div>
-              <div class="list-group-item" @click="openModalAddMemberFromList()">Thêm mối quan hệ từ Danh Sách</div>
-              <div class="list-group-item" @click="openCfDelModal(false,null,TitleModal)">Xóa thành viên (*)</div>
-              <div class="list-group-item feature-overview">Các chức năng Khác</div>
-              <div class="list-group-item" style="border-top: none;" @click="setPaternalAncestor(2)">Set làm tộc trưởng</div>
-              <div class="list-group-item" @click="setPaternalAncestor(1)">Set làm tổ phụ</div>-->
               <div class="list-group-item feature-overview">Các chức năng chính</div>
               <div class="list-group-item" @click="getInforMember(CurrentIdMember)">Thông tin chi tiết</div>
               <div class="list-group-item" @click="openModalRelationship()">Xem các mối quan hệ</div>
@@ -288,20 +275,20 @@
               </div>
               <div style="height: calc(100% - 48px);">
                 <div v-if="emailSelected" class="d-flex flex-column mt-2" style="height: calc(100% - 60px); overflow-y: auto;">
-                <div @click="emailDetail = !emailDetail" style="cursor: pointer;" v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row">
-                  <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Chủ đề: {{ e.EmailSubject }}</div>
-                  <div class="col-6 h-100 d-flex align-items-center position-relative">
-                    <div class="mail-content-prev">{{ e.EmailContent }}</div>
+                  <div @click="emailDetail = !emailDetail" style="cursor: pointer;" v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row">
+                    <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Chủ đề: {{ e.EmailSubject }}</div>
+                    <div class="col-6 h-100 d-flex align-items-center position-relative">
+                      <div class="mail-content-prev">{{ e.EmailContent }}</div>
+                    </div>
+                    <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">{{ formatDate(e.EmailDate) }}</div>
                   </div>
-                  <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">{{ formatDate(e.EmailDate) }}</div>
-                </div>
                 </div>
 
                 <div v-if="smsSelected" class="d-flex flex-column" style="height: calc(100% - 60px); align-items: flex-end; padding-top: 6px; overflow-y: auto">
-                <div v-for="m in ListMessage" :key="m.id" class="position-relative d-flex flex-row">
-                  <div class="position-absolute sent-time">{{ formatDate(m.NotificationDate) }}</div>
-                  <div class="sent-sms">{{ m.NotificationContent }}</div>
-                </div>
+                  <div v-for="m in ListMessage" :key="m.id" class="position-relative d-flex flex-row">
+                    <div class="position-absolute sent-time">{{ formatDate(m.NotificationDate) }}</div>
+                    <div class="sent-sms">{{ m.NotificationContent }}</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -350,18 +337,16 @@
           </div>
           <div class="col-9 email-detail position-absolute" style="bottom: 0; right: 0;" :class="{expand : emailDetail}">
             <div class="create-mail-title d-flex align-items-center justify-content-center position-relative">
-                  <div>Chủ đề</div>
-                  <div class="create-mail-close position-absolute" @click="emailDetail = false">
-                    <div class="position-relative h-100 w-100">
-                      <svg class="create-mail-close-icon position-absolute" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                        <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-                      </svg>
-                    </div>
-                  </div>
+              <div>Chủ đề</div>
+              <div class="create-mail-close position-absolute" @click="emailDetail = false">
+                <div class="position-relative h-100 w-100">
+                  <svg class="create-mail-close-icon position-absolute" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                    <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                  </svg>
                 </div>
-                <div class="create-mail-content p-4 w-100">
-                  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-                </div>
+              </div>
+            </div>
+            <div class="create-mail-content p-4 w-100">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</div>
           </div>
         </div>
       </div>
@@ -494,10 +479,10 @@
                     <td class="d-flex justify-content-center">
                       <select v-model="m.relationship" class="form-control" style="text-align: center; width: 150px;">
                         <option selected :value="undefined">Mối quan hệ</option>
-                        <option value="AddFather">Cha</option>
-                        <option value="AddMother">Mẹ</option>
-                        <option value="AddWife">Vợ</option>
-                        <option value="AddHusband">Chồng</option>
+                        <option value="AddParent">Cha</option>
+                        <option value="AddParent">Mẹ</option>
+                        <option value="AddMarriage">Vợ</option>
+                        <option value="AddMarriage">Chồng</option>
                         <option value="AddChild">Con</option>
                       </select>
                     </td>
@@ -580,10 +565,7 @@
                       <div style="position: relative;width: 50%; margin-right: 10px;">
                         <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item" placeholder />
                         <label class="form-label-number" for="input" v-if="objMemberInfor.FatherID == null && objMemberInfor.MotherID == null && action != 'AddMarriage' " :class="{ 'active': objMemberInfor.BirthOrder }">Vợ thứ</label>
-                        <label class="form-label-number" for="input" v-else :class="{ 'active': objMemberInfor.BirthOrder }">
-                          {{ this.action == "AddChild" ? 'Con thứ' :
-                          (this.isFather ? "Vợ thứ" : (this.isFather == null ? "Con thứ" : "Chồng thứ")) }}
-                        </label>
+                        <label class="form-label-number" for="input" v-else :class="{ 'active': objMemberInfor.BirthOrder }">{{ this.action == "AddChild" ? 'Con thứ' : (this.isFather ? "Vợ thứ" : (this.isFather == null ? "Con thứ" : "Chồng thứ")) }}</label>
                       </div>
                     </div>
                     <div style="display:flex">
@@ -1182,24 +1164,7 @@ export default {
             }
           }
         }
-        // if (this.CoordinatesNode != null && this.nodeLength != this.listMember.length) {
-        //   this.family.setViewBox(this.CoordinatesNode);
-
-        // }
-        // if(this.CoordinatesNode != null && this.checkUpdate){
-        //   this.family.setViewBox(this.CoordinatesNode);
-        // }
-        // setTimeout(() => {
-        //   if (this.nodeLength != this.listMember.length) {
-        //     this.nodeLength = this.listMember.length;
-        //   }
-        //   if(this.checkUpdate == true){
-        //     this.checkUpdate = false;
-        //   }
-        // }, 1500);
       });
-
-      // right click
 
       if (this.memberRole != 3) {
         this.family.onInit(function () {
@@ -1301,13 +1266,10 @@ export default {
     },
     //Nguyễn Lê Hùng
     compareMember(memberId1, memberId2) {
-      //     this.RemoveHightLight();
       this.selectNodeHighLightCompare = [];
       this.lastClickedNodeId = null;
       this.objCompareMember1 = this.getResultMember(memberId1);
       this.objCompareMember2 = this.getResultMember(memberId2);
-      // console.log(this.objCompareMember1);
-      // console.log(this.objCompareMember2);
       HTTP.get("compare", {
         params: {
           MemberID1: memberId1,
@@ -1661,8 +1623,8 @@ export default {
         .then((response) => {
           this.selectCityMember = null;
           this.selectDistrictMember = null;
-          console.log(this.selectDistrictMember);
-          this.objMember = response.data;
+          this.objMember = response.data.data;
+          console.log("result: " + response.data.data.MarriageNumber);
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
 
@@ -1909,7 +1871,6 @@ export default {
           .then((response) => {
             if (response.data.success == true) {
               this.NotificationsScuccess(response.data.message);
-              //  this.family.load(this.nodes);
               this.setDefautAction();
               this.getListMember();
               this.getListUnspecifiedMembers();
@@ -1959,7 +1920,7 @@ export default {
       let file = event.target.files[0];
       formData.append("Image", file);
       formData.append("MemberID", this.CurrentIdMember);
-      HTTP.put("member-photo", formData, {})
+      HTTP.put("member-photo", formData)
         .then((response) => {
           if (response.data.success == true) {
             this.getListMember();
@@ -2302,7 +2263,6 @@ export default {
     },
     //Nguyễn Lê Hùng
     updateInformation() {
-      console.log(222);
       if (this.selectDistrictMember != null) {
         this.objMemberContact.Address =
           this.objMemberContact.Address + "-" + this.selectDistrictMember;
