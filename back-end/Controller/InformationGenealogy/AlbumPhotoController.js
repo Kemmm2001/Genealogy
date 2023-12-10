@@ -58,14 +58,6 @@ var updateAlbumPhoto = async (req, res) => {
         // Log ra thông tin trong req.body
         console.log('Request body: ', req.body);
         console.log("req.file: ", req.file);
-        if (!CoreFunction.isDataStringExist(req.file)) {
-            return res.send(Response.badRequestResponse(null, "File ảnh không hợp lệ"));
-        }
-        // nếu file ảnh ko thuộc png, jpg, jpeg thì ko cho update
-        if (!req.file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-            CoreFunction.deleteImage(req.file.path);
-            return res.send(Response.badRequestResponse(null, "File ảnh không hợp lệ"));
-        }
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
             'AlbumID',
@@ -81,23 +73,42 @@ var updateAlbumPhoto = async (req, res) => {
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
-        let checkAlbumIDExistResponse = await checkAlbumIDExist(req.body.AlbumID);
-        if (checkAlbumIDExistResponse.success == false) {
-            CoreFunction.deleteImage(req.file.path);
-            return res.send(checkAlbumIDExistResponse);
-        }
-        let checkCodeIDExistResponse = await checkCodeIDExist(req.body.CodeID);
-        if (checkCodeIDExistResponse.success == false) {
-            CoreFunction.deleteImage(req.file.path);
-            return res.send(checkCodeIDExistResponse);
-        }
-        // nếu có file ảnh thì lưu đường dẫn vào req.body.BackGroundPhoto
-        if (req.file != null) {
-            console.log("Đã vào trường hợp có file ảnh");
-            req.body.BackGroundPhoto = req.file.path;
+
+
+
+        if (!CoreFunction.isDataStringExist(req.file)) {
+            console.log("Không có file ảnh");
+            let albumData = await AlbumPhotoManagementService.getAlbumPhotoById(req.body.AlbumID);
+            if (albumData == null || albumData.length == 0) {
+                return res.send(Response.dataNotFoundResponse());
+            }
+            let albumCodeIDData = await AlbumPhotoManagementService.getAlbumPhotoByCodeId(req.body.CodeID);
+            if (albumCodeIDData == null || albumCodeIDData.length == 0) {
+                return res.send(Response.dataNotFoundResponse());
+            }
+            req.body.BackGroundPhoto = albumData[0].BackGroundPhoto;
         } else {
-            console.log("Đã vào trường hợp không có file ảnh");
+            console.log("req.file: ", req.file);
+            // nếu file ảnh ko thuộc png, jpg, jpeg thì ko cho update
+            if (!req.file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+                CoreFunction.deleteImage(req.file.path);
+                return res.send(Response.badRequestResponse(null, "File ảnh không hợp lệ"));
+            }
+            let albumData = await AlbumPhotoManagementService.getAlbumPhotoById(req.body.AlbumID);
+            if (albumData == null || albumData.length == 0) {
+                CoreFunction.deleteImage(req.file.path);
+                return res.send(Response.dataNotFoundResponse());
+            }
+            let albumCodeIDData = await AlbumPhotoManagementService.getAlbumPhotoByCodeId(req.body.CodeID);
+            if (albumCodeIDData == null || albumCodeIDData.length == 0) {
+                CoreFunction.deleteImage(req.file.path);
+                return res.send(Response.dataNotFoundResponse());
+            }
+
+            req.body.BackGroundPhoto = req.file.path;
         }
+
+
         // cập nhật AlbumPhoto vào database
         let dataUpdate = await AlbumPhotoManagementService.updateAlbumPhoto(req.body)
         dataRes = {
@@ -110,43 +121,7 @@ var updateAlbumPhoto = async (req, res) => {
         return res.send(Response.internalServerErrorResponse());
     }
 };
-// nguyễn anh tuấn
-var checkAlbumIDExist = async (AlbumID) => {
-    try {
-        console.log("Chạy vào hàm checkAlbumIDExist");
-        let dataAlbumID;
-        if (AlbumID != null && AlbumID != undefined && AlbumID != "") {
-            console.log(`Get AlbumPhoto by AlbumID : ${AlbumID}`);
-            dataAlbumID = await AlbumPhotoManagementService.getAlbumPhotoById(AlbumID)
-        }
-        console.log("dataAlbumID: " + dataAlbumID);
-        if (dataAlbumID == null || dataAlbumID.length == 0) {
-            return Response.dataNotFoundResponse();
-        }
-        return Response.successResponse(dataAlbumID);
-    } catch (e) {
-        console.log("Error: " + e);
-        return Response.internalServerErrorResponse();
-    }
-}
-// nguyễn anh tuấn
-var checkCodeIDExist = async (CodeID) => {
-    try {
-        console.log("Chạy vào hàm checkCodeIDExist");
-        let dataCodeID;
-        if (CodeID != null && CodeID != undefined && CodeID != "") {
-            console.log(`Get AlbumPhoto by CodeID : ${CodeID}`);
-            dataCodeID = await AlbumPhotoManagementService.getAlbumPhotoByCodeId(CodeID)
-        }
-        if (dataCodeID == null || dataCodeID.length == 0) {
-            return Response.dataNotFoundResponse();
-        }
-        return Response.successResponse(dataCodeID);
-    } catch (e) {
-        console.log("Error: " + e);
-        return Response.internalServerErrorResponse();
-    }
-}
+
 var checkFamilyTreeExist = async (req) => {
     try {
         let dataCodeID;
@@ -196,13 +171,15 @@ var deleteAlbumPhoto = async (req, res) => {
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
-        let checkAlbumIDExistResponse = await checkAlbumIDExist(req.query.AlbumID);
-        if (checkAlbumIDExistResponse.success == false) {
-            return res.send(checkAlbumIDExistResponse);
+        let albumData = await AlbumPhotoManagementService.getAlbumPhotoById(req.query.AlbumID);
+        if (albumData == null || albumData.length == 0) {
+            return res.send(Response.dataNotFoundResponse());
         }
+        // xóa ảnh
+        CoreFunction.deleteImage(albumData[0].BackGroundPhoto);
         // xóa AlbumPhoto khỏi database
         let dataDelete = await AlbumPhotoManagementService.removeAlbumPhoto(req.query.AlbumID)
-        dataRes = {
+        let dataRes = {
             affectedRows: dataDelete.affectedRows
         }
         return res.send(Response.successResponse(dataRes));
