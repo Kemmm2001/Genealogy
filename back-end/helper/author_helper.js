@@ -3,7 +3,7 @@ const userService = require('../service/Authoration/RoleManagement');
 const Response = require('../Utils/Response')
 
 module.exports = {
-    authenticateAndAuthorize: (requiredRole) => {
+    authenticateAndAuthorize: (requiredRole) => {        
         return async (req, res, next) => {
             try {
                 jwtUtils.verifyGenealogyToken(req, res, async (error) => {
@@ -14,6 +14,7 @@ module.exports = {
                             return res.send(Response.badRequestResponse(null, "Unauthorized"));
                         }
                     }
+                    console.log("Vào hàm này này")
                     let insertId = req.payload.insertId;
                     let codeId = req.payload.codeId;
                     let roleId = await userService.getRoleID(insertId,codeId);

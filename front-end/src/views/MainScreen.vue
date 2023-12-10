@@ -12,10 +12,7 @@
             </div>
             <div class="col-6" style="padding-left: 6px; padding-right: 8px">
               <div class="w-100 h-100">
-                <button @click="openCompareModal()" style="width:100%; font-size: 14px;" type="button" :class="{ 'p-0': true, 'btn': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">
-                  Xác
-                  định quan hệ
-                </button>
+                <button @click="openCompareModal()" style="width:100%; font-size: 14px;" type="button" :class="{ 'p-0': true, 'btn': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">Xác định quan hệ</button>
               </div>
             </div>
           </div>
@@ -27,10 +24,7 @@
             </div>
             <div class="col-6" style="padding-left: 6px; padding-right: 8px">
               <div class="w-100 h-100">
-                <label for="upload" style="width:100%; font-size: 14px; color:white" type="button" class="d-flex align-items-center justify-content-center p-0 btn btn-secondary h-100">
-                  Xuất dữ liệu
-                  vào
-                </label>
+                <label for="upload" style="width:100%; font-size: 14px; color:white" type="button" class="d-flex align-items-center justify-content-center p-0 btn btn-secondary h-100">Xuất dữ liệu vào</label>
                 <input ref="importFile" id="upload" type="file" style="display: none" @change="getFileImportMember($event)" />
               </div>
             </div>
@@ -89,19 +83,13 @@
           </div>
           <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
             <select v-model="selectBloodType" class="d-flex text-center form-select dropdown p-0" @change="GetListFilterMember()">
-              <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">
-                {{
-                blood.BloodType }}
-              </option>
+              <option v-for="blood in ListBloodTypeGroup" :key="blood.id" class="dropdown-item" :value="blood.id">{{ blood.BloodType }}</option>
             </select>
           </div>
           <div v-if="advancedFilterDown" class="px-2" style="padding-top: 8px;">
             <select class="d-flex text-center form-select dropdown p-0" v-model="selectAge" @change="GetListFilterMember()">
               <option class="dropdown-item" :value="null">Nhóm Tuổi</option>
-              <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">
-                {{ age.From != 61 ?
-                age.From : 'Trên ' + age.From }} {{ age.End != 200 ? ' - ' + age.End : '' }} Tuổi
-              </option>
+              <option v-for="age in ListAgeGroup" :key="age.id" class="dropdown-item" :value="age.id">{{ age.From != 61 ? age.From : 'Trên ' + age.From }} {{ age.End != 200 ? ' - ' + age.End : '' }} Tuổi</option>
             </select>
           </div>
         </div>
@@ -153,10 +141,7 @@
               <div class="list-group-item feature-overview">Các chức năng Khác</div>
               <div class="list-group-item" @click="openCfDelModal('SetPaternalAncestor', null, TitleModal)">Set làm cụ tổ</div>
               <div v-if="parentRelationship">
-                <div v-for="list in parentRelationship" :key="list.id" @click="openCfDelModal('LinkRelationship', list.id, list.name)" class="list-group-item">
-                  Nối mối quan hệ
-                  với {{ list.name }}
-                </div>
+                <div v-for="list in parentRelationship" :key="list.id" @click="openCfDelModal('LinkRelationship', list.id, list.name)" class="list-group-item">Nối mối quan hệ với {{ list.name }}</div>
               </div>
             </div>
           </div>
@@ -170,10 +155,7 @@
         <div class="form-group h-100">
           <div class="w-100 h-100 add-article-modal">
             <div class="d-flex flex-row w-100 align-items-center position-relative">
-              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">
-                Các mối quan hệ
-                của
-              </div>
+              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Các mối quan hệ của</div>
               <div class="close-add-form" @click="closeModalRelationship()">
                 <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                   <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -199,10 +181,7 @@
                       <td style="text-align: center;">{{ formatDate(ResultRelationship.Father.Dob) }}</td>
                       <td style="text-align: center;">Cha</td>
                       <td style="text-align: center;">
-                        <button class="btn btn-secondary" @click.stop="openCfDelModal('removeRelationship', ResultRelationship.Father.MemberID, ResultRelationship.Father.MemberName, 'RemoveParent')">
-                          Hủy
-                          mối quan hệ
-                        </button>
+                        <button class="btn btn-secondary" @click.stop="openCfDelModal('removeRelationship', ResultRelationship.Father.MemberID, ResultRelationship.Father.MemberName, 'RemoveParent')">Hủy mối quan hệ</button>
                       </td>
                     </tr>
                     <tr v-if="ResultRelationship.Mother" class="headlist-item headlist-table-item" @click="getInforMember(ResultRelationship.Mother.MemberID)">
@@ -211,10 +190,7 @@
                       <td style="text-align: center;">{{ formatDate(ResultRelationship.Mother.Dob) }}</td>
                       <td style="text-align: center;">Mẹ</td>
                       <td style="text-align: center;">
-                        <button class="btn btn-secondary" @click.stop="openCfDelModal('removeRelationship', ResultRelationship.Mother.MemberID, ResultRelationship.Mother.MemberName, 'RemoveParent')">
-                          Hủy
-                          mối quan hệ
-                        </button>
+                        <button class="btn btn-secondary" @click.stop="openCfDelModal('removeRelationship', ResultRelationship.Mother.MemberID, ResultRelationship.Mother.MemberName, 'RemoveParent')">Hủy mối quan hệ</button>
                       </td>
                     </tr>
                     <tr v-for="hus in ResultRelationship.Husband" :key="hus.MemberID" class="headlist-item headlist-table-item" @click="getInforMember(ResultRelationship.Husband.MemberID)">
@@ -223,10 +199,7 @@
                       <td style="text-align: center;">{{ formatDate(hus.Dob) }}</td>
                       <td style="text-align: center;">Chồng</td>
                       <td style="text-align: center;">
-                        <button class="btn btn-secondary" @click.stop="openCfDelModal('removeRelationship', hus.MemberID, hus.MemberName, 'RemoveMarried')">
-                          Hủy
-                          mối quan hệ
-                        </button>
+                        <button class="btn btn-secondary" @click.stop="openCfDelModal('removeRelationship', hus.MemberID, hus.MemberName, 'RemoveMarried')">Hủy mối quan hệ</button>
                       </td>
                     </tr>
                     <tr v-for="Wife in ResultRelationship.Wife" :key="Wife.MemberID" class="headlist-item headlist-table-item" @click="getInforMember(ResultRelationship.Wife.MemberID)">
@@ -235,10 +208,7 @@
                       <td style="text-align: center;">{{ formatDate(Wife.Dob) }}</td>
                       <td style="text-align: center;">Vợ</td>
                       <td style="text-align: center;">
-                        <button class="btn btn-secondary" @click.stop="openCfDelModal('removeRelationship', Wife.MemberID, Wife.MemberName, 'RemoveMarried')">
-                          Hủy
-                          mối quan hệ
-                        </button>
+                        <button class="btn btn-secondary" @click.stop="openCfDelModal('removeRelationship', Wife.MemberID, Wife.MemberName, 'RemoveMarried')">Hủy mối quan hệ</button>
                       </td>
                     </tr>
                     <tr v-for="(c, index) in ResultRelationship.child" :key="index" class="headlist-item headlist-table-item" @click="getInforMember(c.MemberID)">
@@ -247,10 +217,7 @@
                       <td style="text-align: center;">{{ formatDate(c.Dob) }}</td>
                       <td style="text-align: center;">Con</td>
                       <td style="text-align: center;">
-                        <button class="btn btn-secondary" @click.stop="openCfDelModal('removeRelationship', c.MemberID, c.MemberName, 'RemoveChild')">
-                          Hủy mối
-                          quan hệ
-                        </button>
+                        <button class="btn btn-secondary" @click.stop="openCfDelModal('removeRelationship', c.MemberID, c.MemberName, 'RemoveChild')">Hủy mối quan hệ</button>
                       </td>
                     </tr>
                   </tbody>
@@ -321,10 +288,7 @@
               </div>
               <div v-if="emailSelected" class="d-flex flex-column mt-2" style="height: calc(100% - 116px); overflow-y: auto;">
                 <div v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row">
-                  <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">
-                    Chủ đề:
-                    {{ e.EmailSubject }}
-                  </div>
+                  <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Chủ đề: {{ e.EmailSubject }}</div>
                   <div class="col-6 h-100 d-flex align-items-center position-relative">
                     <div class="mail-content-prev">{{ e.EmailContent }}</div>
                   </div>
@@ -480,10 +444,7 @@
       <modal name="add-from-list">
         <div class="w-100 h-100 add-head-modal">
           <div class="d-flex flex-row w-100 align-items-center position-relative">
-            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">
-              Thêm {{ TitleModal
-              }} Từ Danh Sách
-            </div>
+            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Thêm {{ TitleModal }} Từ Danh Sách</div>
             <div class="close-add-form" @click="closeModalAddMemberFromList()">
               <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -592,18 +553,12 @@
                   <div class="d-flex flex-column" style="flex-grow: 1;">
                     <div style="position: relative; margin-right:10px">
                       <input v-model="objMemberInfor.MemberName" type="text" class="form-control modal-item" placeholder />
-                      <label class="form-label" for="input" :class="{ 'active': objMemberInfor.MemberName }">
-                        Tên thành
-                        viên đầy đủ
-                      </label>
+                      <label class="form-label" for="input" :class="{ 'active': objMemberInfor.MemberName }">Tên thành viên đầy đủ</label>
                     </div>
                     <div style="display:flex">
                       <div style="position: relative; width: 50%;margin-right: 10px;">
                         <input v-model="objMemberInfor.NickName" type="text" class="form-control modal-item" placeholder />
-                        <label class="form-label" for="input" :class="{ 'active': objMemberInfor.NickName }">
-                          Tên thường
-                          gọi
-                        </label>
+                        <label class="form-label" for="input" :class="{ 'active': objMemberInfor.NickName }">Tên thường gọi</label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;">
                         <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item" placeholder />
@@ -659,16 +614,10 @@
                     </div>
                     <div style="position: relative; margin-right:10px">
                       <input v-model="objMemberInfor.Origin" type="text" class="form-control modal-item" placeholder />
-                      <label class="form-label" for="input" :class="{ 'active': objMemberInfor.Origin }">
-                        Nguyên
-                        Quán
-                      </label>
+                      <label class="form-label" for="input" :class="{ 'active': objMemberInfor.Origin }">Nguyên Quán</label>
                     </div>
                     <div class="form-group">
-                      <h6 style="margin-bottom:20px; height: 20px">
-                        Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang
-                        âm lịch và ngược lại)
-                      </h6>
+                      <h6 style="margin-bottom:20px; height: 20px">Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược lại)</h6>
                       <div style="display:flex">
                         <div style="position: relative; width: 50%;margin-right: 10px;">
                           <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar('live')" />
@@ -682,17 +631,11 @@
                     </div>
                     <div style="position: relative; margin-right:10px">
                       <input v-model="objMemberInfor.BirthPlace" type="text" class="form-control modal-item" placeholder />
-                      <label class="form-label" for="input" :class="{ 'active': objMemberInfor.BirthPlace }">
-                        Nơi
-                        sinh
-                      </label>
+                      <label class="form-label" for="input" :class="{ 'active': objMemberInfor.BirthPlace }">Nơi sinh</label>
                     </div>
                     <div class="form-check form-check-inline">
                       <input v-model="IsDead" type="checkbox" class="form-check-input" id="lostCheckbox" />
-                      <label style="font-size: 14px; margin-top: 7px;" class="form-check-label" for="lostCheckbox">
-                        Đã
-                        mất
-                      </label>
+                      <label style="font-size: 14px; margin-top: 7px;" class="form-check-label" for="lostCheckbox">Đã mất</label>
                     </div>
                     <div class="form-group" v-if="IsDead == 1">
                       <h6 style="margin-bottom:20px">Ngày Mất (*)</h6>
@@ -760,10 +703,7 @@
                   <div style="display:flex">
                     <div style="position: relative; width: 50%; margin-right: 10px;">
                       <input v-model="objMemberJob.Organization" type="text" class="form-control modal-item" placeholder />
-                      <label class="form-label" for="input" :class="{ 'active': objMemberJob.Organization }">
-                        Tên Cơ
-                        Quan
-                      </label>
+                      <label class="form-label" for="input" :class="{ 'active': objMemberJob.Organization }">Tên Cơ Quan</label>
                     </div>
                     <div style="position: relative;width: 50%; margin-right: 10px;">
                       <input v-model="objMemberJob.OrganizationAddress" type="text" class="form-control modal-item" placeholder />
@@ -773,10 +713,7 @@
                   <div style="display:flex">
                     <div style="position: relative; width: 50%;margin-right: 10px;">
                       <input v-model="objMemberJob.Role" type="text" class="form-control modal-item" placeholder />
-                      <label class="form-label" for="input" :class="{ 'active': objMemberJob.Role }">
-                        Vị trí công
-                        tác
-                      </label>
+                      <label class="form-label" for="input" :class="{ 'active': objMemberJob.Role }">Vị trí công tác</label>
                     </div>
                     <div style="position: relative;width: 50%; margin-right: 10px;">
                       <input v-model="objMemberJob.JobName" type="text" class="form-control modal-item" placeholder />

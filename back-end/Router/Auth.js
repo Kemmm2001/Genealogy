@@ -9,14 +9,14 @@ const { verify } = require('crypto');
 const initWebRouter = (app) => {
 
   router.get('/protected-route', verifyAccessToken, (req, res) => {
-
+    
     const accountID = req.payload.insertId;
     res.json({ accountID });
   });
 
 
   router.post('/register', UserController.registerUser);
-  router.post('/login',verifyAccessToken ,UserController.loginUser);
+  router.post('/login', UserController.loginUser);
   router.post('/refresh-token', UserController.refreshToken);
   // router.delete('/logout', UserController.logout);
   router.post('/forget-password', UserController.forgetPassword)
@@ -29,16 +29,16 @@ const initWebRouter = (app) => {
   router.post('get-codeID', UserController.getUserCodeID)
 
   router.post('/set-role', UserController.setRole)
-  router.post('/check-codeId',authMiddleware.authenticateAndAuthorize(3),  UserController.checkCodeID)
+  router.post('/check-codeId', verifyAccessToken, UserController.checkCodeID)
   router.get('/listrole', UserController.getListRoleMember)
-  router.post('/roleAccount',UserController.getRoleAccount)
-  router.get('/allRoleAccount',UserController.getAllRoleAccount)
+  router.post('/roleAccount', UserController.getRoleAccount)
+  router.get('/allRoleAccount', UserController.getAllRoleAccount)
 
   router.post('/changeUsername', UserController.changeUsername)
   router.put('/changepassword', UserController.ChangePassword)
   router.get('/historyCodeID', UserController.getHistoryCodeID)
   router.post('/get-user', UserController.getUserInfor)
-  router.get('/inforTree',UserController.getInformationTree)
+  router.get('/inforTree', UserController.getInformationTree)
 
   //api test
   router.get('/admin', authMiddleware.authenticateAndAuthorize(2), (req, res) => {

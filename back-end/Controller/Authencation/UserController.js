@@ -388,7 +388,7 @@ var checkCodeID = async (req, res) => {
 
       // Tạo token
       let genealogyToken = await signGenealogyToken(accountID, CodeID)
-      
+
       if (checkCodeIdCreator1 > 0 || checkCodeIdCreator2 > 0 || checkCodeIdCreator3 > 0) {
         return res.send(Response.successResponse(genealogyToken, "đã tạo Token"))
       }

@@ -34,6 +34,7 @@ module.exports = {
       return res.json({ error: 'Unauthorized' });
     }
     console.log("vào đây")
+    console.log('token: ' + req.headers['authorization'])
 
     const authHeader = req.headers['authorization'];
     const bearerToken = authHeader.split(' ');
