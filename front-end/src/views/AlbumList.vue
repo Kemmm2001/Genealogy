@@ -81,7 +81,7 @@
               </div>-->
 
               <div class="col-3 h-100 p-2">
-                <input type="file" ref="fileInput" style="display: none" @change="updateAvatar($event)" />
+                <input type="file" ref="fileInput" style="display: none"  @change="updateAvatar($event)" />
                 <img @click="triggerFileInputClick()" v-if="avatarSrc" class="h-100 w-100" :src="avatarSrc" style="cursor: pointer; object-fit: cover;" />
                 <div @click="triggerFileInputClick()" v-else class="w-100 h-100 position-relative" style="border: 1px dashed #7a95cd; border-radius: 0.375rem; cursor: pointer;">
                   <div style="width: 15%; height: 15%; position: absolute; inset: 0; margin: auto;">
@@ -350,6 +350,8 @@ export default {
       img: null,
       keySearch: null,
       avatarSrc: null,
+
+      checkBackGroundPhoto:false,
     };
   },
   methods: {
@@ -477,6 +479,7 @@ export default {
       this.$modal.hide("Album-modal");
     },
     openEditAlbumModal() {
+      this.checkBackGroundPhoto = false;
       this.listHeightLarger = [];
       this.ListCheckBoxPhoto = [];
       this.$modal.show("editAlbum-modal");
@@ -647,17 +650,17 @@ export default {
       }
     },
     updateAlbum() {
+      console.log(111)
       const formData = new FormData();
+      console.log(this.albumPhoto.BackGroundPhoto)
       formData.append("CodeID", this.CodeID);
       formData.append("AlbumID", this.albumCurrentId);
       formData.append("AlbumName", this.albumPhoto.AlbumName);
       formData.append("Description", this.albumPhoto.description);
-      if (this.albumPhoto.BackGroundPhoto != null) {
+      if (this.albumPhoto.BackGroundPhoto != null && this.checkBackGroundPhoto == true) {
         formData.append("BackGroundPhoto", this.albumPhoto.BackGroundPhoto);
       }
-      HTTP.put("albumphoto", formData, {
-        
-      })
+      HTTP.put("albumphoto", formData,)
         .then((response) => {
           if (response.data.success == true) {
             this.getAlbumPhotoByCodeId();
@@ -670,6 +673,7 @@ export default {
         .catch((e) => {
           console.log(e);
         });
+        
     },
     getAlbumPhotoByCodeId() {
       HTTP.get("albumphoto", {
@@ -724,7 +728,9 @@ export default {
           console.log(e);
         });
     },
+    
     updateAvatar(event) {
+      this.checkBackGroundPhoto = true;
       let file = event.target.files[0];
       if (this.isImage(file)) {
         this.albumPhoto.BackGroundPhoto = file;
@@ -738,7 +744,7 @@ export default {
           this.avatarSrc = null;
         }
       } else {
-        this.NotificationsDelete("Bạn chỉ được chọn file ảnh");
+        this.NotificationsDelete("File ảnh không hợp lệ");
       }
     },
     triggerFileInputClick() {
