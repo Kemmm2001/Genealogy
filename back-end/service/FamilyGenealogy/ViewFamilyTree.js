@@ -269,6 +269,35 @@ function getEventMember(id) {
     });
 }
 
+//Nguyễn Lê Hùng
+function getMarried(id) {
+    return new Promise((resolve, reject) => {
+        try {
+            let queryGender = `SELECT Male FROM genealogy.familymember where MemberID = ${id}`;
+            db.connection.query(queryGender, (err, result) => {
+                if (!err) {
+                    console.log('Male: ' + result[0].Male)
+                    let isGenderParent = result[0].Male == 1 ? "husbandID" : "wifeID";
+                    let queryMarried = `SELECT MarriageNumber FROM genealogy.marriage where ${isGenderParent} = ${id}`;
+                    console.log('queryMarried: ' + queryMarried)
+                    db.connection.query(queryMarried, (err, reusltMarried) => {
+                        console.log()
+                        if (!err && reusltMarried[0] != undefined) {
+                            resolve(reusltMarried[0].MarriageNumber)                         
+                        } else {                       
+                            resolve(false)
+                        }
+                    })
+                } else {
+                    reject(false)
+                }
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    })
+}
+
 
 //Nguyễn Lê Hùng
 function getRoleExist(MemberID, Role) {
@@ -896,5 +925,5 @@ module.exports = {
     getRoleExist, setRoleMember, removePaternalAncestor, turnOnSQL_SAFE_UPDATES, turnOffSQL_SAFE_UPDATES, getListMessage,
     setAllGenerationMember, ResetAllGenerationMember, ViewFamilyTree, getListUnspecifiedMembers, GetIdPaternalAncestor, RelationShipMember,
     RemoveRelationshipChild, RemoveRelationshipMarried, RemoveRelationshipParent, getListNotificationEmail, getAllMarriage, getFamilyHeadInGenealogy,
-    searchMemberCanSendMessage, getlistMemberToSendMessage,setFatherIDAndMotherID
+    searchMemberCanSendMessage, getlistMemberToSendMessage, setFatherIDAndMotherID, getMarried
 }

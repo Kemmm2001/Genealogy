@@ -7,24 +7,24 @@
           <div class="w-100 d-flex flex-row" style="padding-top: 8px; height: 50%;">
             <div class="col-6" style="padding-left: 8px; padding-right: 6px">
               <div class="w-100 h-100">
-                <button @click="openNotiModal()" style="width:100%; font-size: 14px;" type="button" class="p-0 btn btn-secondary h-100">Tạo thông báo</button>
+                <button @click="openNotiModal()" style="width:100%; font-size: 13px;" type="button" class="btn btn-secondary h-100">Tạo thông báo</button>
               </div>
             </div>
             <div class="col-6" style="padding-left: 6px; padding-right: 8px">
               <div class="w-100 h-100">
-                <button @click="openCompareModal()" style="width:100%; font-size: 14px;" type="button" :class="{ 'p-0': true, 'btn': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">Xác định quan hệ</button>
+                <button @click="openCompareModal()" style="width:100%; font-size: 13px;" type="button" :class="{ 'btn': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">Xác định quan hệ</button>
               </div>
             </div>
           </div>
           <div class="w-100 d-flex flex-row" style="padding-top: 8px; height: 50%;">
             <div class="col-6" style="padding-left: 8px; padding-right: 6px">
               <div class="w-100 h-100">
-                <button @click="BackUpdata()" style="width:100%; font-size: 14px; color:white" type="button" class="p-0 btn btn-secondary h-100">Lưu trữ dữ liệu</button>
+                <button @click="BackUpdata()" style="width:100%; font-size: 13px; color:white" type="button" class="btn btn-secondary h-100">Lưu trữ dữ liệu</button>
               </div>
             </div>
             <div class="col-6" style="padding-left: 6px; padding-right: 8px">
               <div class="w-100 h-100">
-                <label for="upload" style="width:100%; font-size: 14px; color:white" type="button" class="d-flex align-items-center justify-content-center p-0 btn btn-secondary h-100">Xuất dữ liệu vào</label>
+                <label for="upload" style="width:100%; font-size: 13px; color:white" type="button" class="d-flex align-items-center justify-content-center btn btn-secondary h-100">Xuất dữ liệu vào</label>
                 <input ref="importFile" id="upload" type="file" style="display: none" @change="getFileImportMember($event)" />
               </div>
             </div>
@@ -116,19 +116,6 @@
           </div>
           <div class="card-body" style="padding: 5px;height:auto">
             <div class="list-group">
-              <!-- <div class="list-group-item feature-overview">Các chức năng chính</div>
-              <div class="list-group-item" @click="getInforMember(CurrentIdMember)">Thông tin chi tiết</div>
-              <div class="list-group-item" @click="openModalRelationship()">Xem các mối quan hệ</div>
-              <div v-if="canAddFather" class="list-group-item" @click="openMemberModal('AddParent', 'Cha')">Thêm Cha</div>
-              <div v-if="canAddMother" class="list-group-item" @click="openMemberModal('AddParent', 'Mẹ')">Thêm Mẹ</div>
-              <div v-if="canAddhusband" class="list-group-item" @click="openMemberModal('AddMarriage', 'Chồng')">Thêm Chồng</div>
-              <div v-if="canAddWife" class="list-group-item" @click="openMemberModal('AddMarriage', 'Vợ')">Thêm Vợ</div>
-              <div class="list-group-item" @click="openMemberModal('AddChild', 'Con')">Thêm Con</div>
-              <div class="list-group-item" @click="openModalAddMemberFromList()">Thêm mối quan hệ từ Danh Sách</div>
-              <div class="list-group-item" @click="openCfDelModal(false,null,TitleModal)">Xóa thành viên (*)</div>
-              <div class="list-group-item feature-overview">Các chức năng Khác</div>
-              <div class="list-group-item" style="border-top: none;" @click="setPaternalAncestor(2)">Set làm tộc trưởng</div>
-              <div class="list-group-item" @click="setPaternalAncestor(1)">Set làm tổ phụ</div>-->
               <div class="list-group-item feature-overview">Các chức năng chính</div>
               <div class="list-group-item" @click="getInforMember(CurrentIdMember)">Thông tin chi tiết</div>
               <div class="list-group-item" @click="openModalRelationship()">Xem các mối quan hệ</div>
@@ -243,7 +230,7 @@
             </svg>
           </div>
         </div>
-        <div class="d-flex flex-row" style="height: calc(100% - 50px)">
+        <div class="d-flex flex-row position-relative" style="height: calc(100% - 50px)">
           <div class="col-3 h-100 d-flex flex-column" style="overflow-y: auto">
             <div class="position-relative d-flex" style="height: 48px;">
               <label for="text-search" style="position: absolute; inset: 12px;">
@@ -286,20 +273,22 @@
                 <div @click="selectSMS()" :class="{ notiSelected: smsSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0 0.375rem 0 0; cursor: pointer;">SMS</div>
                 <div @click="selectEmail()" :class="{ notiSelected: emailSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0.375rem 0 0 0; cursor: pointer;">Email</div>
               </div>
-              <div v-if="emailSelected" class="d-flex flex-column mt-2" style="height: calc(100% - 116px); overflow-y: auto;">
-                <div v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row">
-                  <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Chủ đề: {{ e.EmailSubject }}</div>
-                  <div class="col-6 h-100 d-flex align-items-center position-relative">
-                    <div class="mail-content-prev">{{ e.EmailContent }}</div>
+              <div style="height: calc(100% - 48px);">
+                <div v-if="emailSelected" class="d-flex flex-column mt-2" style="height: calc(100% - 60px); overflow-y: auto;">
+                  <div @click="emailDetail = !emailDetail" style="cursor: pointer;" v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row">
+                    <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Chủ đề: {{ e.EmailSubject }}</div>
+                    <div class="col-6 h-100 d-flex align-items-center position-relative">
+                      <div class="mail-content-prev">{{ e.EmailContent }}</div>
+                    </div>
+                    <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">{{ formatDate(e.EmailDate) }}</div>
                   </div>
-                  <div class="col-3 d-flex align-items-center" style="justify-content: end; padding-right: 8px;">{{ formatDate(e.EmailDate) }}</div>
                 </div>
-              </div>
 
-              <div v-if="smsSelected" class="d-flex flex-column" style="height: calc(100% - 108px); align-items: flex-end; padding-top: 6px; overflow-y: auto">
-                <div v-for="m in ListMessage" :key="m.id" class="position-relative d-flex flex-row">
-                  <div class="position-absolute sent-time">{{ formatDate(m.NotificationDate) }}</div>
-                  <div class="sent-sms">{{ m.NotificationContent }}</div>
+                <div v-if="smsSelected" class="d-flex flex-column" style="height: calc(100% - 60px); align-items: flex-end; padding-top: 6px; overflow-y: auto">
+                  <div v-for="m in ListMessage" :key="m.id" class="position-relative d-flex flex-row">
+                    <div class="position-absolute sent-time">{{ formatDate(m.NotificationDate) }}</div>
+                    <div class="sent-sms">{{ m.NotificationContent }}</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -314,7 +303,7 @@
                   </svg>
                 </div>
               </div>
-              <div v-if="emailSelected" class="w-100 btn px-3 position-relative" style="height: 48px;">
+              <div v-if="emailSelected" class="w-100 btn px-3 position-relative" style="height: 42px;">
                 <div @click="expandCreateEmail = !expandCreateEmail" class="btn btn-primary px-2 py-1 position-absolute" style="right: 16px">Tạo email mới</div>
               </div>
             </div>
@@ -345,6 +334,19 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div class="col-9 email-detail position-absolute" style="bottom: 0; right: 0;" :class="{expand : emailDetail}">
+            <div class="create-mail-title d-flex align-items-center justify-content-center position-relative">
+              <div>Chủ đề</div>
+              <div class="create-mail-close position-absolute" @click="emailDetail = false">
+                <div class="position-relative h-100 w-100">
+                  <svg class="create-mail-close-icon position-absolute" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                    <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="create-mail-content p-4 w-100">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</div>
           </div>
         </div>
       </div>
@@ -477,10 +479,10 @@
                     <td class="d-flex justify-content-center">
                       <select v-model="m.relationship" class="form-control" style="text-align: center; width: 150px;">
                         <option selected :value="undefined">Mối quan hệ</option>
-                        <option value="AddFather">Cha</option>
-                        <option value="AddMother">Mẹ</option>
-                        <option value="AddWife">Vợ</option>
-                        <option value="AddHusband">Chồng</option>
+                        <option value="AddParent">Cha</option>
+                        <option value="AddParent">Mẹ</option>
+                        <option value="AddMarriage">Vợ</option>
+                        <option value="AddMarriage">Chồng</option>
                         <option value="AddChild">Con</option>
                       </select>
                     </td>
@@ -560,13 +562,21 @@
                         <input v-model="objMemberInfor.NickName" type="text" class="form-control modal-item" placeholder />
                         <label class="form-label" for="input" :class="{ 'active': objMemberInfor.NickName }">Tên thường gọi</label>
                       </div>
-                      <div style="position: relative;width: 50%; margin-right: 10px;">
+                      <div style="position: relative;width: 50%; margin-right: 10px;" v-if="objMemberInfor.FatherID != null && action == null">
                         <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item" placeholder />
-                        <label class="form-label-number" for="input" v-if="objMemberInfor.FatherID == null && objMemberInfor.MotherID == null && action != 'AddMarriage' " :class="{ 'active': objMemberInfor.BirthOrder }">Vợ thứ</label>
-                        <label class="form-label-number" for="input" v-else :class="{ 'active': objMemberInfor.BirthOrder }">
-                          {{ this.action == "AddChild" ? 'Con thứ' :
-                          (this.isFather ? "Vợ thứ" : (this.isFather == null ? "Con thứ" : "Chồng thứ")) }}
-                        </label>
+                        <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con thứ</label>
+                      </div>
+                      <div style="position: relative;width: 50%; margin-right: 10px;" v-if="objMemberInfor.FatherID == null && action == null">
+                        <input v-model="objMember.MarriageNumber" type="number" min="0" class="form-control modal-item" disabled placeholder />
+                        <label class="form-label-number" for="input" v-if="objMemberInfor.FatherID == null && objMemberInfor.MotherID == null && action != 'AddMarriage' " :class="{ 'active': objMember.MarriageNumber }">{{objMemberInfor.Male == 1 ? 'Chồng thứ':'Vợ thứ'}}</label>
+                      </div>
+                      <div style="position: relative;width: 50%; margin-right: 10px;" v-if="action == 'AddChild'">
+                        <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item" placeholder />
+                        <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con thứ</label>
+                      </div>
+                      <div style="position: relative;width: 50%; margin-right: 10px;" v-if="action == 'AddMarriage'">
+                        <input v-model="objMember.MarriageNumber" type="number" min="0" class="form-control modal-item" placeholder />
+                        <label class="form-label-number" for="input" :class="{ 'active': objMember.MarriageNumber }">{{isFather == false ? 'Chồng thứ':'Vợ thứ'}}</label>
                       </div>
                     </div>
                     <div style="display:flex">
@@ -856,6 +866,9 @@
               <div v-else-if="isRemoveRelationship == 'SetPaternalAncestor'" class="col-6 d-flex align-items-center justify-content-center">
                 <div class="btn bg-danger text-white" @click="setPaternalAncestor()">Có</div>
               </div>
+              <div v-else-if="isRemoveRelationship == 'backUp'" class="col-6 d-flex align-items-center justify-content-center">
+                <div class="btn bg-danger text-white" @click="ImportMember()">Có</div>
+              </div>
               <div class="col-6 d-flex align-items-center justify-content-center">
                 <div class="btn bg-primary text-white" @click="closeCfDelModal()">Không</div>
               </div>
@@ -951,9 +964,7 @@ export default {
       ListMarriedMember: null,
 
       darkMode: true,
-      togglehelp: false,
-      listhelp: false,
-      treehelp: false,
+      emailDetail: false,
 
       objMemberInfor: {
         MemberID: 0,
@@ -1047,6 +1058,7 @@ export default {
       nodeLength: null,
       CoordinatesNode: null,
       isUpdateAvatar: false,
+      fileBackup: null,
 
       selectedNodes: [],
       notSelectedNodes: [],
@@ -1163,24 +1175,7 @@ export default {
             }
           }
         }
-        // if (this.CoordinatesNode != null && this.nodeLength != this.listMember.length) {
-        //   this.family.setViewBox(this.CoordinatesNode);
-
-        // }
-        // if(this.CoordinatesNode != null && this.checkUpdate){
-        //   this.family.setViewBox(this.CoordinatesNode);
-        // }
-        // setTimeout(() => {
-        //   if (this.nodeLength != this.listMember.length) {
-        //     this.nodeLength = this.listMember.length;
-        //   }
-        //   if(this.checkUpdate == true){
-        //     this.checkUpdate = false;
-        //   }
-        // }, 1500);
       });
-
-      // right click
 
       if (this.memberRole != 3) {
         this.family.onInit(function () {
@@ -1282,13 +1277,10 @@ export default {
     },
     //Nguyễn Lê Hùng
     compareMember(memberId1, memberId2) {
-      //     this.RemoveHightLight();
       this.selectNodeHighLightCompare = [];
       this.lastClickedNodeId = null;
       this.objCompareMember1 = this.getResultMember(memberId1);
       this.objCompareMember2 = this.getResultMember(memberId2);
-      // console.log(this.objCompareMember1);
-      // console.log(this.objCompareMember2);
       HTTP.get("compare", {
         params: {
           MemberID1: memberId1,
@@ -1642,11 +1634,13 @@ export default {
         .then((response) => {
           this.selectCityMember = null;
           this.selectDistrictMember = null;
-          console.log(this.selectDistrictMember);
-          this.objMember = response.data;
+          this.objMember = response.data.data;
+          console.log(id)
+          console.log(this.objMember)
+          this.objMember.MarriageNumber  = response.data.data.MarriageNumber
+          // console.log("result: " + response.data.data.MarriageNumber);
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
-
             this.takeDataMember(this.CurrentIdMember);
             this.objMemberInfor.Dob = this.formatDate(this.objMemberInfor.Dob);
             this.objMemberInfor.LunarDob = this.formatDate(
@@ -1890,7 +1884,6 @@ export default {
           .then((response) => {
             if (response.data.success == true) {
               this.NotificationsScuccess(response.data.message);
-              //  this.family.load(this.nodes);
               this.setDefautAction();
               this.getListMember();
               this.getListUnspecifiedMembers();
@@ -1905,15 +1898,21 @@ export default {
           });
       }
     },
-    getFileImportMember(event) {
+    ImportMember() {
       let formData = new FormData();
-      let file = event.target.files[0];
-      formData.append("xlsx", file);
-      HTTP.post("import", formData, {})
+      formData.append("xlsx", this.fileBackup);
+      HTTP.post("import", formData)
         .then((respone) => {
           console.log(respone.data);
           if (respone.data.success) {
             this.NotificationsScuccess(respone.data.message);
+            this.setDefautAction();
+            this.getListMember();
+            this.getListUnspecifiedMembers();
+            this.closeModalAddMemberFromList();
+            this.getListMemberToSendMessage();
+            this.closeCfDelModal();
+            this.fileBackup = null;
           } else {
             this.NotificationsDelete(respone.data.message);
           }
@@ -1921,7 +1920,11 @@ export default {
         .catch((e) => {
           console.log(e);
         });
-      console.log(file);
+    },
+
+    getFileImportMember(event) {
+      this.fileBackup = event.target.files[0];
+      this.openCfDelModal("backUp");
     },
     //Nguyễn Lê Hùng
     updateAvatar(event) {
@@ -1930,7 +1933,7 @@ export default {
       let file = event.target.files[0];
       formData.append("Image", file);
       formData.append("MemberID", this.CurrentIdMember);
-      HTTP.put("member-photo", formData, {})
+      HTTP.put("member-photo", formData)
         .then((response) => {
           if (response.data.success == true) {
             this.getListMember();
@@ -2273,7 +2276,6 @@ export default {
     },
     //Nguyễn Lê Hùng
     updateInformation() {
-      console.log(222);
       if (this.selectDistrictMember != null) {
         this.objMemberContact.Address =
           this.objMemberContact.Address + "-" + this.selectDistrictMember;
@@ -2687,6 +2689,9 @@ export default {
           name +
           " Thành cụ tổ " +
           "\n Lưu ý: Tất cả thành viên cũng sẽ thay đổi theo cụ tổ";
+      } else if (this.isRemoveRelationship == "backUp") {
+        this.TitleConfirm =
+          "Bạn đang chuẩn bị xuất dữ liệu mới. Hành động này có thể dẫn đến việc mất dữ liệu cũ đã tồn tại. Hãy xác nhận nếu bạn chắc chắn muốn tiếp tục";
       }
       this.$modal.show("cfdel-modal");
     },
@@ -2802,66 +2807,6 @@ export default {
               console.log(e);
             });
         })
-        .then((response) => {
-          console.log("response: " + response.data);
-          if (response.data.success == true) {
-            this.idFamilyHead = response.data.data;
-            console.log(this.idFamilyHead);
-          }
-          HTTP.get("viewTree", {
-            params: {
-              CodeID: this.CodeID,
-            },
-          })
-            .then((response) => {
-              console.log(111);
-              this.nodes = [];
-              this.numberDeath = 0;
-              if (response.data.success == true) {
-                this.nodes = response.data.data;
-                console.log(this.nodes);
-                for (let i = 0; i < this.nodes.length; i++) {
-                  if (this.nodes[i].pids.length > 1) {
-                    let listPid = [];
-                    for (let j = this.nodes[i].pids.length - 1; j >= 0; j--) {
-                      listPid.push(this.nodes[i].pids[j]);
-                    }
-                    this.nodes[i].pids = listPid;
-                  }
-                  this.nodes[i].tags = [];
-                  if (this.nodes[i].name.length > 15) {
-                    this.nodes[i].name =
-                      this.nodes[i].name.substring(0, 16) + "...";
-                  }
-                  if (this.idFamilyHead != null) {
-                    if (this.nodes[i].id == this.idFamilyHead) {
-                      this.nodes[i].isFH = "true";
-                    }
-                  }
-                  if (this.nodes[i].isDead == 1) {
-                    this.numberDeath += 1;
-                    this.nodes[i].tags.push("died");
-                  }
-                  if (this.nodes[i].img == null || this.nodes[i].img == "") {
-                    if (this.nodes[i].gender == "male") {
-                      this.nodes[i].img =
-                        "data:image/jpeg;base64,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";
-                    } else if (this.nodes[i].gender == "female") {
-                      this.nodes[i].img =
-                        "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxIHDw0PEBEREA8NEA0PDw4QDRAQDQ8OFhEWFhURExYYHjQgGBolHRUVITEiJiorLi4uFx8zODgsNyg5LisBCgoKDQ0NFQ0QFTcZFRkrKzctNystKysrLSstNy0rKysrKy03LSsrKysrKysrKysrKysrKysrKysrKysrKysrK//AABEIAOEA4QMBIgACEQEDEQH/xAAbAAEBAQEBAQEBAAAAAAAAAAAABQQDBgIBB//EADQQAQABAgMFBwMDBAMBAAAAAAABAgMEESEFEjFRcRMyQWGBkaFSscEzctEiQvDxI2KCFP/EABYBAQEBAAAAAAAAAAAAAAAAAAABAv/EABYRAQEBAAAAAAAAAAAAAAAAAAABEf/aAAwDAQACEQMRAD8A/pgDTIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN+G2dNetekfTHe9eTdRhKKP7Y9Yzn5QxCa7Gzq7ms5UxPPj7Kc4WiZid2ImJiYyjJ2NXE6NlR9U+0PivZUxwqiesZKghiDewtdnjGnONYcXpGHF7Pi5rRpVy/tn+F0xJH7VTNEzExlMcYfioAAAAAAAAAAAAAAAAAA/FXZ2E3YiurjPdjlHNiwNjt64jwjWenJdSrABFAAAAAAZMfhO3jOO/HDzjkjPSJG07HZ1b0cK+PlUsSxiAVAAAAAAAAAAAAAAAHTD2+2rpp5zr08QVdm2eyoz8a9fTwayIyGWgAAAAAAAByxNrt6KqefDr4OoDzcxl6DVtK12dyZ8KtfXxZWmQAAAAAAAAAAAAABv2RbzmqrlERHWWBY2VTu28/qmZ/H4SkbAEaAAAAAAAAAAYNr0Z001cpy9J/wBJS5j6d61X0z9pzQ1jNAFAAAAAAAAAAAABcwEZWqOn5Q13A/pUdPylI7gI0AAAAAAAAAA54mM6K/21fZ556DFzlbuftq+yAsSgCoAAAAAAAAAAAALWzZztU+W9HzKKqbIrzpqp5Tn6T/pKRQARoAAAAAAAAABl2lXu26vPKPlFU9sV6UU85mf890xYzQBQAAAAAAAAAAAAa9mXNy5EfVEx68WR1wn6lv8AdHsC+Ay0AAAAAAAAAAj7WqzuRHKmPvLG17UjK5PnFOTIrNAFAAAAAAAAAAAABS2Xhsv+Sf8AzH5TXWzia7PdnTlOsIL4m29qfVT60z+JbMPiacRnu56cc4yRp2AAAAAAAAHO/eixGdWeXDSM2K5tSI7tMz1nKAddpYftqc471PzHJHd72MrvcZyjlGkOCsgCgAAAAAAAAAAAAAD8arWOqtRERFOUf9WYBrq2lcn6Y6U/ysUcIz45Rm87RTvTTHOYj5ejSrABFAAEe5jrluqqM4nKqqNYjmsIWOp3blfXP31WJX3XtCuuJid3KeMbrKCoAAAAAAAAAAAAAAAAAAAA07Ot9pcp5U/1T+PnJbY9m4fsac571XxHhDYzVgAKAAJO1reVUVfVGXrCs4Yyx/8ARRMeMax1EqEExlnE8Y4wNIAAAAAAAAAAAAAAA+rdqq73YmekaA+RvtbMqq707vlGstlrBUWvDOedWqGJNnDV3uEac50hTwuAizrP9VXxDYGrgAigAAAAAM2KwdOI14VfVH55pl/B12fDOOcargJjzYu3sJRe40xnzjSWO7suY7tWflVx911MTh0u2KrPeiY8/D3c81AAAAAAAAB92bU3pypjOfiI5y+Kad6YiOM6R1XcJh4w9OXjOtU85QjjY2dTR3v6p8+77NlMbukaP0RoAAAAAAAAAAAAAAAA4st/AUXfDdnnH8NQCDicNOHnKeE8J8JcXoL1qL1M0z4+8TzQr1ubVU0zxj581iV8AKgAAADfsqzvTNc8KdI6/wCfdVcsLa7GimnlGvXxdWWgAAAAAAAAAAAAAAAAAAABP2rY3qYrjjTpPRQfNdO/ExPCYmJB50ftdHZzMTxiZh+NMgAD6td6n91P3AHogGWgAAAAAAAAAAAAAAAAAAAAAELH/q19Y+0OAKyAKP/Z";
-                    }
-                  }
-                }
-                this.nodes[0].tags.push("great-grandfather");
-                this.nodes[0].isGG = "true";
-                this.mytree(this.$refs.tree, this.nodes);
-              }
-              // this.family.load(this.nodes);
-            })
-            .catch((e) => {
-              console.log(e);
-            });
-        })
         .catch((e) => {
           console.log(e);
         });
@@ -2969,6 +2914,7 @@ export default {
       }
     },
     getListDistrict() {
+      this.selectDistrict = null;
       if (this.selectCity == null) {
         this.ListDistrict = null;
         this.selectDistrict = null;
@@ -2994,18 +2940,22 @@ export default {
       }
     },
     getMemberRole() {
-      HTTP.post("roleAccount", {
-        accountID: localStorage.getItem("accountID"),
-        codeID: localStorage.getItem("CodeID"),
-      })
-        .then((response) => {
-          if (response.data.success == true) {
-            this.memberRole = response.data.data.RoleID;
-          }
+      try {
+        HTTP.post("roleAccount", {
+          accountID: localStorage.getItem("accountID"),
+          codeID: localStorage.getItem("CodeID"),
         })
-        .catch((e) => {
-          console.log(e);
-        });
+          .then((response) => {
+            if (response.data.success == true) {
+              this.memberRole = response.data.data.RoleID;
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } catch (error) {
+        console.log(error);
+      }
     },
     getListCity() {
       try {

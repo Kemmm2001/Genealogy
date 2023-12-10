@@ -231,9 +231,18 @@ var informationMember = async (req, res) => {
         data.job = await FamilyTreeService.getJobMember(id);
         data.education = await FamilyTreeService.getEducationMember(id);
         data.event = await FamilyTreeService.getEventMember(id);
-        res.send(data)
+        let ManagerFamilyTree = await FamilyTreeService.getMarried(id)
+        console.log('ManagerFamilyTree: ' + ManagerFamilyTree)
+        if (ManagerFamilyTree) {
+            data.MarriageNumber = ManagerFamilyTree
+        }
+        if (data) {
+            return res.send(Response.successResponse(data))
+        } else {
+            return res.send(Response.dataNotFoundResponse())
+        }
     } catch (e) {
-        res.send(e);
+        return res.send(Response.internalServerErrorResponse())
     }
 }
 

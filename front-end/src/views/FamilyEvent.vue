@@ -573,12 +573,18 @@ export default {
       let startDate;
       let endDate;
       let selectedDate;
+      console.log(dateCheck)
+      console.log(this.listEvent)
       for (let i = 0; i < this.listEvent.length; i++) {
         startDate = new Date(this.listEvent[i].StartDate);
         startDate.setHours(0, 0, 0, 0);
-        endDate = new Date(this.listEvent[i].EndDate);
-        selectedDate = new Date(dateCheck).setHours(0, 0, 0, 0);
+        endDate = new Date(this.listEvent[i].EndDate)
+        endDate.setHours(0, 0, 0, 0);
+        selectedDate = new Date(dateCheck)
+        selectedDate.setHours(0, 0, 0, 0);
         let check = selectedDate >= startDate && selectedDate <= endDate;
+        console.log(startDate+"-"+selectedDate+"-"+endDate)
+        console.log(check)
         if (check == true) {
           this.listEventByDate.push(this.listEvent[i]);
         }
