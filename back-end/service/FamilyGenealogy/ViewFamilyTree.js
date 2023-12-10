@@ -276,17 +276,20 @@ function getMarried(id) {
             let queryGender = `SELECT Male FROM genealogy.familymember where MemberID = ${id}`;
             db.connection.query(queryGender, (err, result) => {
                 if (!err) {
+                    console.log('Male: ' + result[0].Male)
                     let isGenderParent = result[0].Male == 1 ? "husbandID" : "wifeID";
                     let queryMarried = `SELECT MarriageNumber FROM genealogy.marriage where ${isGenderParent} = ${id}`;
-                    db.connection.query(queryMarried, (err, reusltMarried) => {                 
+                    console.log('queryMarried: ' + queryMarried)
+                    db.connection.query(queryMarried, (err, reusltMarried) => {
+                        console.log()
                         if (!err && reusltMarried[0] != undefined) {
-                            resolve(reusltMarried[0].MarriageNumber)
-                        } else {
-                            reject(err)
+                            resolve(reusltMarried[0].MarriageNumber)                         
+                        } else {                       
+                            resolve(false)
                         }
                     })
                 } else {
-                    reject(err)
+                    reject(false)
                 }
             })
         } catch (error) {
