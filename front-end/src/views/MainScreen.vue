@@ -856,6 +856,9 @@
               <div v-else-if="isRemoveRelationship == 'SetPaternalAncestor'" class="col-6 d-flex align-items-center justify-content-center">
                 <div class="btn bg-danger text-white" @click="setPaternalAncestor()">Có</div>
               </div>
+              <div v-else-if="isRemoveRelationship == 'backUp'" class="col-6 d-flex align-items-center justify-content-center">
+                <div class="btn bg-danger text-white" @click="ImportMember()">Có</div>
+              </div>
               <div class="col-6 d-flex align-items-center justify-content-center">
                 <div class="btn bg-primary text-white" @click="closeCfDelModal()">Không</div>
               </div>
@@ -1047,6 +1050,7 @@ export default {
       nodeLength: null,
       CoordinatesNode: null,
       isUpdateAvatar: false,
+      fileBackup: null,
 
       selectedNodes: [],
       notSelectedNodes: [],
@@ -1905,15 +1909,21 @@ export default {
           });
       }
     },
-    getFileImportMember(event) {
+    ImportMember() {
       let formData = new FormData();
-      let file = event.target.files[0];
-      formData.append("xlsx", file);
-      HTTP.post("import", formData, {})
+      formData.append("xlsx", this.fileBackup);
+      HTTP.post("import", formData)
         .then((respone) => {
           console.log(respone.data);
           if (respone.data.success) {
             this.NotificationsScuccess(respone.data.message);
+            this.setDefautAction();
+            this.getListMember();
+            this.getListUnspecifiedMembers();
+            this.closeModalAddMemberFromList();
+            this.getListMemberToSendMessage();
+            this.closeCfDelModal();
+            this.fileBackup = null;
           } else {
             this.NotificationsDelete(respone.data.message);
           }
@@ -1921,7 +1931,11 @@ export default {
         .catch((e) => {
           console.log(e);
         });
-      console.log(file);
+    },
+
+    getFileImportMember(event) {
+      this.fileBackup = event.target.files[0];
+      this.openCfDelModal("backUp");
     },
     //Nguyễn Lê Hùng
     updateAvatar(event) {
@@ -2687,6 +2701,9 @@ export default {
           name +
           " Thành cụ tổ " +
           "\n Lưu ý: Tất cả thành viên cũng sẽ thay đổi theo cụ tổ";
+      } else if (this.isRemoveRelationship == "backUp") {
+        this.TitleConfirm =
+          "Bạn đang chuẩn bị xuất dữ liệu mới. Hành động này có thể dẫn đến việc mất dữ liệu cũ đã tồn tại. Hãy xác nhận nếu bạn chắc chắn muốn tiếp tục";
       }
       this.$modal.show("cfdel-modal");
     },
