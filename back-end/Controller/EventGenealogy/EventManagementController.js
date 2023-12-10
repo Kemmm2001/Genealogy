@@ -554,7 +554,7 @@ var getEventByToken = async (req, res) => {
 var UpdateIsGoing = async (req, res) => {
     try {
         let memberId = req.body.memberId;
-        let   = req.body.eventId;
+        let eventId = req.body.eventId;
         let IsGoing = req.body.IsGoing
         let data = await EventAttendence.UpdateIsGoing(memberId, eventId, IsGoing)
         if (data) {
@@ -563,7 +563,7 @@ var UpdateIsGoing = async (req, res) => {
             res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống'))
         }
     } catch (error) {
-
+        res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống'))
     }
 }
 
@@ -579,7 +579,6 @@ var verifyMail = async (req, res) => {
         if (tokenData == 0) {
             return res.send(Response.dataNotFoundResponse(null, 'Link không đúng'));
         }
-
         let data;
         try {
             data = await EventAttendence.UpdateIsGoing(payload.memberId, payload.eventId, IsGoing);
