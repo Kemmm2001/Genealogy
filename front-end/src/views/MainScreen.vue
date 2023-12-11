@@ -534,7 +534,7 @@
               <div class="col-10 h-100" style="padding-top: 15px" v-if="extendedInfo">
                 <div class="h-100 d-flex flex-row">
                   <div v-if="isEdit" class="col-4" style="padding-right: 8px;height: 50%;">
-                    <img style="height:316px;width:100%;margin-bottom:61px" :class="{ fitHeight: heightLarger }" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" @click="triggerFileInputClick()" />
+                    <img id="myImage" @load="getImageSize" style="height:316px;width:100%;margin-bottom:61px" :class="{ fitHeight: heightLarger }" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" @click="triggerFileInputClick()" />
                     <div v-else style="margin-bottom:61px; fill: #000000; height: 275px; width: 100%;">
                       <div @click="triggerFileInputClick()" class="w-100 h-100 position-relative" style="border: 1px dashed #7a95cd; border-radius: 0.375rem; cursor: pointer;">
                         <div style="width: 15%; height: 15%; position: absolute; inset: 0; margin: auto;">
@@ -1950,19 +1950,18 @@ export default {
         const reader = new FileReader();
         reader.onload = (e) => {
           this.avatarSrc = e.target.result; // Cập nhật ảnh avatar bằng ảnh tải lên
-
-          const img = new Image();
-          img.src = e.target.result;
-          img.onload = () => {
-            if (img.width != 0 && img.height != 0) {
-              this.checkPhotoSize(img.width, img.height);
-            }
-          };
         };
         reader.readAsDataURL(file);
       } else {
         this.avatarSrc = null;
       }
+    },
+    getImageSize(){
+      const img = document.getElementById('myImage');
+      // Lấy kích thước của hình ảnh
+      this.imgWidth = img.width;
+      this.imgHeight = img.height;
+      this.checkPhotoSize(this.imgWidth,this.imgHeight)
     },
     checkPhotoSize(width, height) {
       if (width > height) {
