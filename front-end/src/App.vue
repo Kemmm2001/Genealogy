@@ -1,7 +1,7 @@
 <!-- phùng việt khôi -->
 <template>
-  <div class="container-fluid app-grid-container p-0" :class="{ dark: darkMode }" style="overflow: hidden;">
-  <!-- <div class="container-fluid p-0" :class="{ dark: darkMode }" style="overflow: hidden;"> -->
+  <!-- <div class="container-fluid app-grid-container p-0" :class="{ dark: darkMode }" style="overflow: hidden;"> -->
+  <div class="container-fluid p-0" :class="{ dark: darkMode }" style="overflow: hidden;">
     <Navbar v-if="isIncludeRoute" />
     <router-view />
   </div>
