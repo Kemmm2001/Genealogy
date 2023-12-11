@@ -275,7 +275,7 @@
               </div>
               <div style="height: calc(100% - 48px);">
                 <div v-if="emailSelected" class="d-flex flex-column mt-2" style="height: calc(100% - 60px); overflow-y: auto;">
-                  <div @click="emailDetail = !emailDetail" style="cursor: pointer;" v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row">
+                  <div style="cursor: pointer;" v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row" @click="getInforEmail(e)">
                     <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Chủ đề: {{ e.EmailSubject }}</div>
                     <div class="col-6 h-100 d-flex align-items-center position-relative">
                       <div class="mail-content-prev">{{ e.EmailContent }}</div>
@@ -335,10 +335,10 @@
               </div>
             </div>
           </div>
-          <div class="col-9 email-detail position-absolute" style="bottom: 0; right: 0;" :class="{expand : emailDetail}">
+          <div v-if="inforEmail" class="col-9 email-detail position-absolute" style="bottom: 0; right: 0;" :class="{expand : emailDetail}">
             <div class="create-mail-title d-flex align-items-center justify-content-center position-relative">
-              <div>Chủ đề</div>
-              <div class="create-mail-close position-absolute" @click="emailDetail = false">
+              <div>{{inforEmail.EmailSubject}}</div>
+              <div class="create-mail-close position-absolute" @click="closeGetInforEmail()">
                 <div class="position-relative h-100 w-100">
                   <svg class="create-mail-close-icon position-absolute" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                     <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -346,7 +346,7 @@
                 </div>
               </div>
             </div>
-            <div class="create-mail-content p-4 w-100">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</div>
+            <div class="create-mail-content p-4 w-100">{{inforEmail.EmailContent}}</div>
           </div>
         </div>
       </div>
@@ -534,7 +534,7 @@
               <div class="col-10 h-100" style="padding-top: 15px" v-if="extendedInfo">
                 <div class="h-100 d-flex flex-row">
                   <div v-if="isEdit" class="col-4" style="padding-right: 8px;height: 50%;">
-                    <img style="height:316px;width:100%;margin-bottom:61px" :class="{ fitHeight: heightLarger }" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" @click="triggerFileInputClick()" />
+                    <img id="myImage" @load="getImageSize" style="width:100%;margin-bottom:61px" :class="{ fitHeight: heightLarger }" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" @click="triggerFileInputClick()" />
                     <div v-else style="margin-bottom:61px; fill: #000000; height: 275px; width: 100%;">
                       <div @click="triggerFileInputClick()" class="w-100 h-100 position-relative" style="border: 1px dashed #7a95cd; border-radius: 0.375rem; cursor: pointer;">
                         <div style="width: 15%; height: 15%; position: absolute; inset: 0; margin: auto;">
@@ -1017,6 +1017,7 @@ export default {
         StartDate: null,
         EndDate: null,
       },
+      inforEmail: null,
       objMember: {},
       TitleModal: null,
       ListNationality: null,
@@ -1635,9 +1636,9 @@ export default {
           this.selectCityMember = null;
           this.selectDistrictMember = null;
           this.objMember = response.data.data;
-          console.log(id)
-          console.log(this.objMember)
-          this.objMember.MarriageNumber  = response.data.data.MarriageNumber
+          console.log(id);
+          console.log(this.objMember);
+          this.objMember.MarriageNumber = response.data.data.MarriageNumber;
           // console.log("result: " + response.data.data.MarriageNumber);
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
@@ -1950,19 +1951,18 @@ export default {
         const reader = new FileReader();
         reader.onload = (e) => {
           this.avatarSrc = e.target.result; // Cập nhật ảnh avatar bằng ảnh tải lên
-
-          const img = new Image();
-          img.src = e.target.result;
-          img.onload = () => {
-            if (img.width != 0 && img.height != 0) {
-              this.checkPhotoSize(img.width, img.height);
-            }
-          };
         };
         reader.readAsDataURL(file);
       } else {
         this.avatarSrc = null;
       }
+    },
+    getImageSize() {
+      const img = document.getElementById("myImage");
+      // Lấy kích thước của hình ảnh
+      this.imgWidth = img.width;
+      this.imgHeight = img.height;
+      this.checkPhotoSize(this.imgWidth, this.imgHeight);
     },
     checkPhotoSize(width, height) {
       if (width > height) {
@@ -2380,6 +2380,15 @@ export default {
         .catch((e) => {
           console.log(e);
         });
+    },
+    getInforEmail(Infor) {
+      this.emailDetail = !this.emailDetail;
+      this.inforEmail = Infor;
+      console.log(Infor);
+    },
+    closeGetInforEmail() {
+      this.emailDetail = false;
+      this.inforEmail = null;
     },
     //Lưu tùng lâm
     RemoveHightLight() {

@@ -40,11 +40,10 @@
 }
 .member{
     display: flex;
-    margin-bottom:16px;
     align-items: center;
-    margin-bottom: 50px;
     padding: 8px;
     height: 20%;
+    border-radius: 0.2rem;
 }
 button {
   /* Các thuộc tính khác tùy chỉnh */
@@ -108,7 +107,7 @@ button.btn.d-flex.justify-content-center.align-items-center{
 .input-control{
     width: 90%;
     margin: auto;
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
 }
 .submit-control {
     text-align: center;
@@ -137,4 +136,65 @@ table{
 }
 .table-member {
     --bs-table-bg: transparent !important;
-  }
+}
+
+/* ------------------------------------------------- */
+.members-grid-container{
+    display: grid;
+    padding: 30px 60px;
+    grid-template-columns: 82% 18%;
+    grid-template-rows: 20% 80%;
+}
+
+.members-grid-container .overview{
+    background-color: #f2f2f2;
+    border-radius: 0.2rem;
+    margin: 0 4px 4px 0;
+    font-family: 'QuicksandBold';
+    display: flex;
+    flex-direction: row;
+}
+
+.members-grid-container .sorting-opts{
+    background-color: #f2f2f2;
+    border-radius: 0.2rem;
+    margin: 0 0 4px 4px;
+    display: grid;
+    grid-template-rows: 40% 60%;
+}
+
+.members-grid-container .member-list{
+    background-color: #f2f2f2;
+    border-radius: 0.2rem;
+    margin: 4px 4px 0 0;
+}
+
+.members-grid-container .member-list .content{
+    display: grid;
+    grid-template-rows: 10% 90%;
+    height: 100%;
+    padding: 8px;
+}
+
+.members-grid-container .filter{
+    background-color: #f2f2f2;
+    border-radius: 0.2rem;
+    margin: 4px 0 0 4px;
+}
+
+.edit-member-body{
+    display: grid;
+    grid-template-columns: 20% 80%;
+    height: 100%;
+}
+
+.edit-member-body .content{
+    display: grid;
+    grid-template-columns: 30% 70%;
+}
+
+@media (min-width: 900px) {
+    .members-grid-container{
+        font-size: 15px;
+    }
+}
