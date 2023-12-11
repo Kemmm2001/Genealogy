@@ -275,7 +275,7 @@
               </div>
               <div style="height: calc(100% - 48px);">
                 <div v-if="emailSelected" class="d-flex flex-column mt-2" style="height: calc(100% - 60px); overflow-y: auto;">
-                  <div @click="emailDetail = !emailDetail" style="cursor: pointer;" v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row">
+                  <div style="cursor: pointer;" v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row" @click="getInforEmail(e)">
                     <div class="col-3 d-flex align-items-center" style="height: 48px; padding-left: 8px">Chủ đề: {{ e.EmailSubject }}</div>
                     <div class="col-6 h-100 d-flex align-items-center position-relative">
                       <div class="mail-content-prev">{{ e.EmailContent }}</div>
@@ -1635,9 +1635,9 @@ export default {
           this.selectCityMember = null;
           this.selectDistrictMember = null;
           this.objMember = response.data.data;
-          console.log(id)
-          console.log(this.objMember)
-          this.objMember.MarriageNumber  = response.data.data.MarriageNumber
+          console.log(id);
+          console.log(this.objMember);
+          this.objMember.MarriageNumber = response.data.data.MarriageNumber;
           // console.log("result: " + response.data.data.MarriageNumber);
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
@@ -2380,6 +2380,10 @@ export default {
         .catch((e) => {
           console.log(e);
         });
+    },
+    getInforEmail(Infor) {
+      this.emailDetail = !this.emailDetail;
+      console.log(Infor);
     },
     //Lưu tùng lâm
     RemoveHightLight() {
