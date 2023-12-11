@@ -1,7 +1,7 @@
 <!-- phùng việt khôi -->
 <template>
-  <!-- <div class="container-fluid app-grid-container p-0" :class="{ dark: darkMode }" style="overflow: hidden;"> -->
-  <div class="container-fluid p-0" :class="{ dark: darkMode }" style="overflow: hidden;">
+  <div class="container-fluid app-grid-container p-0" :class="{ dark: darkMode }" style="overflow: hidden;">
+  <!-- <div class="container-fluid p-0" :class="{ dark: darkMode }" style="overflow: hidden;"> -->
     <Navbar v-if="isIncludeRoute" />
     <router-view />
   </div>
@@ -25,20 +25,7 @@ export default {
   },
   computed: {
     isIncludeRoute() {
-      const excludedRoutes = [
-        "/",
-        "/information/headlist",
-        "/information/articlelist",
-        "/information/albumlist",
-        "memberList",
-        "/profile",
-        "/memberList",
-        "/event",
-        "/information/history",
-        "/information/statistics",
-        "/test",
-        "/user",
-      ];
+      const excludedRoutes = ['/', '/information/headlist', '/information/articlelist', '/information/albumlist', 'memberList', '/profile', '/memberList', '/event', '/information/history', '/information/statistics', '/test', '/user', '/mem'];
       return excludedRoutes.includes(this.$route.path);
     },
   },
