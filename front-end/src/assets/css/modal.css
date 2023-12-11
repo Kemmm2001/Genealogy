@@ -183,8 +183,8 @@ label.form-label-number {
 }
 
 select:not(:placeholder-shown)~label {
-    font-size: 11px;
-    top: -4px;
+    font-size: 8px;
+    top: 0;
     transform: translateY(-30%) scale(1.1);
     background: #fff;
     color: #212529;
@@ -192,16 +192,16 @@ select:not(:placeholder-shown)~label {
 
 input:not(:placeholder-shown)~label,
 input:focus~label.form-label {
-    font-size: 11px;
-    top: -3px;
+    font-size: 8px;
+    top: 0;
     transform: translateY(-30%) scale(1.1);
     background: #fff;
     color: #212529;
 }
 
 .active {
-    font-size: 11px;
-    top: -3px;
+    font-size: 8px;
+    top: 0;
     transform: translateY(-30%) scale(1.1);
     background: #fff;
     color: #212529;
@@ -209,8 +209,8 @@ input:focus~label.form-label {
 
 input:not(:placeholder-shown)~label,
 input:focus~label.form-label-number {
-    font-size: 11px;
-    top: -3px;
+    font-size: 8px;
+    top: 0;
     transform: translateY(-30%) scale(1.1);
     background: #fff;
     color: #212529;
@@ -234,6 +234,7 @@ input:focus~label.form-label-number {
     border-right: 1px solid rgba(0, 0, 0, 0.12);
     padding-right: 0px;
     padding-top: 50px;
+    height: 100%;
 }
 
 .add-head-modal {
@@ -365,4 +366,97 @@ input:focus~label.form-label-number {
     margin: auto;
     width: 50%;
     height: 80%;
+}
+
+/* ------------------------------------------- */
+.mdl-container{
+    background-color: #FFFFFF;
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-rows: 8% 84% 8%;
+}
+
+.mdl-title{
+    background-color: rgb(174, 214, 241);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.mdl-close{
+    position: absolute;
+    right: 0;
+    padding: 8px;
+    height: 100%;
+}
+
+.mdl-item{
+    padding-bottom: 8px;
+}
+
+.mdl-footer{
+    background-color: rgb(174, 214, 241);
+}
+
+.cfdel-mdl-container{
+    background-color: #FFFFFF;
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-rows: 15% 85%;
+}
+
+.cfdel-body{
+    display: grid;
+    grid-template-rows: 70% 20% 10%;
+    height: 100%;
+    text-align: center;
+}
+
+.cfdel-container .vm--container{
+    height: 30%;
+    width: 45%;
+    inset: 0;
+    margin: auto;
+}
+
+
+@media (min-width: 1500px) {
+    .mdl-container{
+        font-size: 120% !important;
+    }
+
+    .mdl-container input:not([type=checkbox]), select{
+        font-size: 120% !important;
+        height: 120%;
+    }
+
+    .mdl-container label, button{
+        font-size: 120% !important;
+    }
+
+    .mdl-container .dob-txt, .dead-txt{
+        font-size: 120% !important;
+        padding: 12px 0 !important;
+    }
+
+    select:not(:placeholder-shown)~label {
+        top: -5px;
+    }
+
+    input:not(:placeholder-shown)~label,
+    input:focus~label.form-label {
+        top: -5px;
+    }
+
+    .active {
+        top: -5px;
+    }
+
+    input:not(:placeholder-shown)~label,
+    input:focus~label.form-label-number {
+        top: -5px;
+    }
 }
