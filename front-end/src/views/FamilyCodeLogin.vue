@@ -113,6 +113,7 @@
 
 <script>
 import { HTTP } from "../assets/js/baseAPI.js";
+import { HTTPP } from "../assets/js/baseApiLoginCode.js";
 import Vue from "vue";
 import VueCookies from "vue-cookies";
 Vue.use(VueCookies);
@@ -143,12 +144,10 @@ export default {
         this.accountID = localStorage.getItem("accountID");
         this.getHistoryCodeID();
       } else {
-        HTTP.get("protected-route", {
-          headers: {
-            Authorization: "Bearer " + VueCookies.get("accessToken"),
-          },
-        })
+        HTTPP.get("protected-route")
           .then((response) => {
+            console.log('log account: ' + JSON.stringify(response.data, null, 2))
+            console.log("Accountid: " + response.data.accountID);
             this.accountID = response.data.accountID;
             localStorage.setItem("accountID", this.accountID);
             this.getHistoryCodeID();
@@ -224,13 +223,15 @@ export default {
     loginWithCode() {
       console.log(this.codeIdLogin);
       if (this.codeIdLogin != "" && this.codeIdLogin != null) {
-        HTTP.post("check-codeId", {
+        HTTPP.post("check-codeId", {
           codeID: this.codeIdLogin,
           accountID: this.accountID,
         })
           .then((response) => {
             if (response.data.success == true) {
-              console.log(response.data);
+              console.log("data: " + response.data.data);
+              VueCookies.remove("accessToken");
+              VueCookies.set("accessToken", response.data.data, 360000);
               localStorage.setItem("CodeID", this.codeIdLogin);
               this.$router.push("/");
               this.NotificationsScuccess("Đăng nhập thành công");

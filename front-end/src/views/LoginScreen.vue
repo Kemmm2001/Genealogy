@@ -280,26 +280,28 @@ export default {
     },
     login() {
       var encryptedPassword = this.encrypt(this.accountLogin.password);
-      var decryptPassword = this.decrypt(encryptedPassword);   
-   
+      var decryptPassword = this.decrypt(encryptedPassword);
+
       console.log(decryptPassword);
       if (this.accountLogin.email != "" && this.accountLogin.password != "") {
         HTTP.post("login", {
           email: this.accountLogin.email.replace(/\s+/g, ""),
           password: encryptedPassword,
-          // password: this.accountLogin.password,
         })
           .then((response) => {
             if (response.data.success == false) {
               this.NotificationsDelete(response.data.message);
             } else {
-              VueCookies.remove("accessToken");
+              console.log("Dataaaa: " + JSON.stringify(response.data, null, 2));
+              VueCookies.remove("accessTokenLoginCode");
               localStorage.removeItem("CodeID");
               this.accountIdToken = response.data.data;
-              console.log(response.data);
-              console.log(this.accountIdToken);
-              VueCookies.set("accessToken", this.accountIdToken, 360000);
-              console.log(response.data.data);
+              console.log("Token: " + this.accountIdToken);
+              VueCookies.set(
+                "accessTokenLoginCode",
+                this.accountIdToken,
+                360000
+              );
               this.accountLogin = [];
               this.$router.push("/familycode");
             }

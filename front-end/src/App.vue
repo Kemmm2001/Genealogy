@@ -27,7 +27,7 @@ export default {
     isIncludeRoute() {
       const excludedRoutes = ['/', '/information/headlist', '/information/articlelist', '/information/albumlist', 'memberList', '/profile', '/memberList', '/event', '/information/history', '/information/statistics', '/test', '/user', '/mem'];
       return excludedRoutes.includes(this.$route.path);
-    }
+    },
   },
   created() {
     EventBus.$on("darkMode", (value) => {
@@ -42,8 +42,8 @@ export default {
     // },
   },
   mounted() {
-    document.title = 'Gia phả người Việt';
-  }
+    document.title = "Gia phả người Việt";
+  },
 };
 </script>
  

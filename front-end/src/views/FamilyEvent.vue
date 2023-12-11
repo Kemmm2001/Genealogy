@@ -95,7 +95,7 @@
         </div>
         <div class="button-list d-flex flex-row pt-3 mt-2">
           <div @click="showAddEventModal()" class="btn bg-primary text-white d-flex align-items-center">Thêm sự kiện</div>
-          <div @click="exportExcel()" class="btn bg-primary text-white d-flex align-items-center item">Xuất excel</div>
+          <!-- <div @click="exportExcel()" class="btn bg-primary text-white d-flex align-items-center item">Xuất excel</div> -->
         </div>
         <div class="pt-3" style="height: calc(100% - 96px);">
           <div v-if="listEvent.length != 0" class="h-100" style="overflow-y: auto;">
@@ -236,7 +236,7 @@
                 <div class="item d-flex justify-content-center" style="background-color: aliceblue;">Chưa phản hồi</div>
                 <div class style="overflow-y: auto; height: calc(100% -106px);">
                   <div v-for="(item, index) in listEventAttendance" :key="item.id">
-                    <div v-if="item.IsGoing == null" :class="index % 2 === 0 ? 'item odd' : 'item even'">{{ item.MemberName }}</div>
+                    <div v-if="item.IsGoing == -1" :class="index % 2 === 0 ? 'item odd' : 'item even'">{{ item.MemberName }}</div>
                   </div>
                 </div>
               </div>
@@ -310,7 +310,7 @@
             <div class="d-flex flex-column p-3" style="height: calc(100% - 100px);">
               <div class="d-flex flex-column">
                 <div class style="padding-bottom: 4px; padding-right: 4px;">
-                  <input type="text" class="form-control" placeholder="Tên thành viên" />
+                  <input v-model="searchKeyword" type="text" class="form-control" placeholder="Tên thành viên" @change="searchMember()" />
                 </div>
                 <div class="d-flex flex-row">
                   <div class="col-4 d-flex align-items-center" style="padding-left: 6px;">Thời gian hết hạn</div>
@@ -318,10 +318,10 @@
                     <input v-model="numberExpire" type="number" class="form-control h-100 w-100" min="0" />
                   </div>
                   <div class="col-3 d-flex flex-row px-2" style="padding-bottom: 4px;">
-                    <select class="form-select h-100 w-100">
-                      <option selected>Giờ</option>
-                      <option>Ngày</option>
-                      <option>Tháng</option>
+                    <select v-model="timeType" class="form-select h-100 w-100">
+                      <option value="h">Giờ</option>
+                      <option value="d">Ngày</option>
+                      <option value="m">Tháng</option>
                     </select>
                   </div>
                 </div>
@@ -337,10 +337,10 @@
                 </div>
               </div>
             </div>
-            <div class="position-absolute text-danger d-flex align-items-center px-2" style="bottom: 0; font-weight: bold; height: 50px; z-index: 2;">Thông báo mỗi sự kiện sẽ chỉ được gửi một lần</div>
+            <div class="position-absolute text-danger d-flex align-items-center px-2" style="bottom: 0; font-weight: bold; height: 50px; z-index: 2;">Lưu ý: Thông báo mỗi sự kiện sẽ chỉ được gửi một lần</div>
             <div class="modal-footer position-absolute w-100" style="bottom: 0;">
               <div @click="sendMessageToConfirmEvent()" class="bg-primary text-white btn mx-2">Gửi</div>
-              <div @click="closeParticipantList()" class="bg-primary text-white btn mx-2">Gửi cho tất cả</div>
+              <div @click="sendMessageToConfirmEvent('sendAll')" class="bg-primary text-white btn mx-2">Gửi cho tất cả</div>
             </div>
           </div>
         </div>
@@ -376,6 +376,9 @@ export default {
         Note: null,
         Place: null,
       },
+
+      timeType: "d",
+      searchKeyword: null,
       startHour: null,
       startMinute: null,
       startDate: null,
@@ -456,8 +459,31 @@ export default {
         )
       );
     },
-    sendMessageToConfirmEvent() {
-      console.log(this.currentEventID);
+    searchMember() {
+      HTTP.get("searchMemberSendMessage", {
+        params: {
+          CodeID: this.CodeID,
+          keySearch: this.searchKeyword,
+        },
+      })
+        .then((response) => {
+          if (response.data.success == true) {
+            console.log(response.data.data);
+            this.listMember = response.data.data;
+          } else {
+            this.NotificationsDelete(response.data.message);
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+    sendMessageToConfirmEvent(action) {
+      if (action != null) {
+        this.ListMemberToSendEmail = this.listMember.map(
+          (element) => element.MemberID
+        );
+      }
       if (this.numberExpire != null) {
         HTTP.get("getIdAndEmail", {
           params: {
@@ -468,12 +494,14 @@ export default {
           .then((respone) => {
             HTTP.post("inviteMail", {
               data: respone.data.data,
-              time: this.numberExpire + "d",
+              time: this.numberExpire + this.timeType,
               eventId: this.currentEventID,
             })
               .then((respone) => {
                 if (respone.data.success == true) {
                   this.NotificationsScuccess("Gửi thông báo thành công");
+                  this.closeMemberList();
+                  this.getListEvent();
                   this.time = null;
                   this.ListMemberToSendEmail = [];
                 }
@@ -545,12 +573,18 @@ export default {
       let startDate;
       let endDate;
       let selectedDate;
+      console.log(dateCheck)
+      console.log(this.listEvent)
       for (let i = 0; i < this.listEvent.length; i++) {
         startDate = new Date(this.listEvent[i].StartDate);
         startDate.setHours(0, 0, 0, 0);
-        endDate = new Date(this.listEvent[i].EndDate);
-        selectedDate = new Date(dateCheck).setHours(0, 0, 0, 0);
+        endDate = new Date(this.listEvent[i].EndDate)
+        endDate.setHours(0, 0, 0, 0);
+        selectedDate = new Date(dateCheck)
+        selectedDate.setHours(0, 0, 0, 0);
         let check = selectedDate >= startDate && selectedDate <= endDate;
+        console.log(startDate+"-"+selectedDate+"-"+endDate)
+        console.log(check)
         if (check == true) {
           this.listEventByDate.push(this.listEvent[i]);
         }
