@@ -428,35 +428,35 @@ input:focus~label.form-label-number {
         font-size: 120% !important;
     }
 
-    .mdl-container input:not([type=checkbox]), select{
+    .mdl-container input:not([type=checkbox]), .mdl-container select{
         font-size: 120% !important;
         height: 120%;
     }
 
-    .mdl-container label, button{
+    .mdl-container label, .mdl-container button{
         font-size: 120% !important;
     }
 
-    .mdl-container .dob-txt, .dead-txt{
+    .mdl-container .dob-txt, .mdl-container .dead-txt{
         font-size: 120% !important;
         padding: 12px 0 !important;
     }
 
-    select:not(:placeholder-shown)~label {
+    .mdl-container select:not(:placeholder-shown)~label {
         top: -5px;
     }
 
-    input:not(:placeholder-shown)~label,
-    input:focus~label.form-label {
+    .mdl-container input:not(:placeholder-shown)~label,
+    .mdl-container input:focus~label.form-label {
         top: -5px;
     }
 
-    .active {
+    .mdl-container .active {
         top: -5px;
     }
 
-    input:not(:placeholder-shown)~label,
-    input:focus~label.form-label-number {
+    .mdl-container input:not(:placeholder-shown)~label,
+    .mdl-container input:focus~label.form-label-number {
         top: -5px;
     }
 }

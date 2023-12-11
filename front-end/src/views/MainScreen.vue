@@ -7,24 +7,24 @@
           <div class="w-100 d-flex flex-row" style="padding-top: 8px; height: 50%;">
             <div class="col-6" style="padding-left: 8px; padding-right: 6px">
               <div class="w-100 h-100">
-                <button @click="openNotiModal()" style="width:100%; font-size: 13px;" type="button" class="btn btn-secondary h-100">Tạo thông báo</button>
+                <button @click="openNotiModal()" style="width:100%; font-size: 15px;" type="button" class="btn btn-secondary h-100">Tạo thông báo</button>
               </div>
             </div>
             <div class="col-6" style="padding-left: 6px; padding-right: 8px">
               <div class="w-100 h-100">
-                <button @click="openCompareModal()" style="width:100%; font-size: 13px;" type="button" :class="{ 'btn': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">Xác định quan hệ</button>
+                <button @click="openCompareModal()" style="width:100%; font-size: 15px;" type="button" :class="{ 'btn': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">Xác định quan hệ</button>
               </div>
             </div>
           </div>
           <div class="w-100 d-flex flex-row" style="padding-top: 8px; height: 50%;">
             <div class="col-6" style="padding-left: 8px; padding-right: 6px">
               <div class="w-100 h-100">
-                <button @click="BackUpdata()" style="width:100%; font-size: 13px; color:white" type="button" class="btn btn-secondary h-100">Lưu trữ dữ liệu</button>
+                <button @click="BackUpdata()" style="width:100%; font-size: 15px; color:white" type="button" class="btn btn-secondary h-100">Lưu trữ dữ liệu</button>
               </div>
             </div>
             <div class="col-6" style="padding-left: 6px; padding-right: 8px">
               <div class="w-100 h-100">
-                <label for="upload" style="width:100%; font-size: 13px; color:white" type="button" class="d-flex align-items-center justify-content-center btn btn-secondary h-100">Xuất dữ liệu vào</label>
+                <label for="upload" style="width:100%; font-size: 15px; color:white" type="button" class="d-flex align-items-center justify-content-center btn btn-secondary h-100">Xuất dữ liệu vào</label>
                 <input ref="importFile" id="upload" type="file" style="display: none" @change="getFileImportMember($event)" />
               </div>
             </div>
@@ -533,8 +533,8 @@
               </div>
               <div class="col-10 h-100" style="padding-top: 15px" v-if="extendedInfo">
                 <div class="h-100 d-flex flex-row">
-                  <div v-if="isEdit" class="col-4" style="padding-right: 8px;height: 50%;">
-                    <img id="myImage" @load="getImageSize" style="width:100%;margin-bottom:61px" :class="{ fitHeight: heightLarger }" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" @click="triggerFileInputClick()" />
+                  <div v-if="isEdit" class="col-4 d-flex align-items-center justify-content-center" style="padding-right: 8px;height: 50%;">
+                    <img id="myImage" @load="getImageSize" style="width:100%;" :class="{ fitHeight: heightLarger }" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" @click="triggerFileInputClick()" />
                     <div v-else style="margin-bottom:61px; fill: #000000; height: 275px; width: 100%;">
                       <div @click="triggerFileInputClick()" class="w-100 h-100 position-relative" style="border: 1px dashed #7a95cd; border-radius: 0.375rem; cursor: pointer;">
                         <div style="width: 15%; height: 15%; position: absolute; inset: 0; margin: auto;">
