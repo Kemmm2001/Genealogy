@@ -2522,6 +2522,11 @@ export default {
       this.isAdd = true;
       this.isEdit = false;
       this.objMemberInfor = {};
+      this.objMemberContact = {};
+      this.objMemberJob = {};
+      this.objMemberEducation = {};
+      this.selectDistrictMember = null;
+      this.selectCityMember = null;
       this.objMemberInfor.BirthOrder = 1;
       this.objMemberInfor.Male = 1;
       console.log(this.isFather);

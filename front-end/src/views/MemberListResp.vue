@@ -835,7 +835,7 @@ export default {
                 },
             })
                 .then((response) => {
-                    this.objMember = response.data;
+                    this.objMember = response.data.data;
                     if (this.objMember.infor.length > 0) {
                         this.objMemberInfor = this.objMember.infor[0];
                         this.takeDataMember(id);
