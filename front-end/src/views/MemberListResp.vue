@@ -60,8 +60,7 @@
             <div class="content">
                 <div class="d-flex align-items-center">
                     <div class="">
-                        <button @click="openEditMemberModal()" class="btn text-white"
-                            :disabled="isButtonDisabled"
+                        <button @click="openEditMemberModal()" class="btn text-white" :disabled="isButtonDisabled"
                             :class="{ 'bg-primary': !isButtonDisabled, 'bg-info': isButtonDisabled }">Chỉnh sửa</button>
                     </div>
                     <div class="ps-2">

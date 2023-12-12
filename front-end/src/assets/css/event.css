@@ -107,3 +107,51 @@
     background-color: #fff;
     position: absolute;
 }
+
+/* --------------------------------------- */
+.event-grid-container{
+    display: grid;
+    padding: 30px 60px;
+    grid-template-columns: 40% 60%;
+    grid-template-rows: 100% 0;
+    background-color: #bf831526
+}
+
+.event-grid-container .event-calendar{
+    background-color: rgb(242, 242, 242);
+    padding: 12px;
+    margin-right: 4px;
+}
+
+.event-grid-container .event-container{
+    background-color: rgb(242, 242, 242);
+    padding: 12px;
+    margin-left: 4px;
+}
+
+.event-grid-container .add-event-container .vm--container{
+    width: 55%;
+    inset: 0;
+    margin: auto;
+}
+
+.event-grid-container .add-event-body{
+    display: grid;
+    grid-template-rows: 8% 34% 8% 8% 8% 34%;
+    height: 100%;
+    padding: 8px;
+}
+
+.event-grid-container .participant-body{
+    height: 100%;
+}
+
+.event-grid-container .participant-body .item, .event-grid-container .view-event-body .item{
+    height: 8%;
+    padding: 4px;
+    font-size: 14px;
+}
+
+.event-grid-container .view-event-body{
+    height: 100%;
+}
