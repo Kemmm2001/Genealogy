@@ -308,12 +308,14 @@ export default {
     handleHide() {
       this.visible = false;
     },
+    //Lưu Tùng Lâm
     isImage(file) {
       const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
 
       // Kiểm tra loại MIME của file
       return allowedTypes.includes(file.type);
     },
+    //Lưu Tùng Lâm
     changeCheckAlbum(id, index) {
       if (this.ListCheckBoxAlbum[index]) {
         this.listRemoveAlbum(id, "add");
@@ -326,6 +328,7 @@ export default {
         this.isButtonDisabledAlbum = true;
       }
     },
+    //Lưu Tùng Lâm
     listRemoveAlbum(id, type) {
       if (type == "add") {
         this.ListAlbumRemove.push(id);
@@ -336,6 +339,7 @@ export default {
         );
       }
     },
+    //Lưu Tùng Lâm
     changeCheckPhotoAdd(index) {
       if (this.ListCheckBoxPhotoAdd[index]) {
         this.listRemovePhotoAdd(index, "add");
@@ -348,6 +352,7 @@ export default {
         this.isButtonDisabledPhotoAdd = true;
       }
     },
+    //Lưu Tùng Lâm
     listRemovePhotoAdd(index, type) {
       console.log(index);
       if (type == "add") {
@@ -359,6 +364,7 @@ export default {
         );
       }
     },
+    //Lưu Tùng Lâm
     changeCheckPhoto(id, index) {
       if (this.ListCheckBoxPhoto[index]) {
         this.listRemovePhoto(id, "remove");
@@ -371,6 +377,7 @@ export default {
         this.isButtonDisabledPhoto = true;
       }
     },
+    //Lưu Tùng Lâm
     listRemovePhoto(id, type) {
       console.log(type);
       if (type == "add") {
@@ -391,6 +398,7 @@ export default {
       this.indexClickPhotoAdd = index;
       this.isButtonDisabled = false;
     },
+    //Lưu Tùng Lâm
     triggerFileInput() {
       const fileInput = document.getElementById("fileAdd");
       if (fileInput != null) {
@@ -407,7 +415,7 @@ export default {
       this.getAlbumPhotoByAlbumId();
       this.getFamilyPhotoByAlbumId();
     },
-
+    //Lưu Tùng Lâm
     getPhotoCurrentId(id) {
       this.photoCurrentId = id;
       this.isButtonDisabled = false;
@@ -439,6 +447,7 @@ export default {
       this.$modal.hide("editAlbum-modal");
       this.isButtonDisabled = true;
     },
+    //Lưu Tùng Lâm
     openAddPhotoModal() {
       if (!this.checkAddPhotoModal) {
         this.FamilyPhotoListAdd = [];
@@ -453,9 +462,11 @@ export default {
     closeAddPhotoModal() {
       this.$modal.hide("addPhoto-modal");
     },
+    //Lưu Tùng Lâm
     checkAddPhotoModalOpen() {
       this.checkAddPhotoModal = false;
     },
+    //Lưu Tùng Lâm
     handleFileChangePhoto(event) {
       this.ListCheckBoxPhoto = [];
       this.ListPhotoRemove = [];
@@ -497,6 +508,7 @@ export default {
       this.ListCheckBoxPhotoAdd.push(false);
       this.getAlbumPhotoByCodeId();
     },
+    //Lưu Tùng Lâm
     checkPhotoSize(width, height) {
       if (width > height) {
         this.heightLarger = false;
@@ -505,10 +517,11 @@ export default {
       }
       this.listHeightLarger.push(this.heightLarger);
     },
-
+    //Lưu Tùng Lâm
     handleFileChangeBackGround(event) {
       this.albumPhoto.BackGroundPhoto = event.target.files[0];
     },
+    //Lưu Tùng Lâm
     removeFamilyPhotoAdd() {
       console.log(this.ListPhotoAddRemove);
       this.ListPhotoAddRemove = this.ListPhotoAddRemove.slice().sort(
@@ -527,6 +540,7 @@ export default {
       this.ListPhotoAddRemove = [];
       this.isButtonDisabled = true;
     },
+    //Lưu Tùng Lâm
     removeFamilyPhotoByPhotoId() {
       for (let i = 0; i < this.ListPhotoRemove.length; i++) {
         let length = this.ListPhotoRemove.length;
@@ -571,6 +585,7 @@ export default {
           console.log(e);
         });
     },
+    //Lưu Tùng Lâm
     removeAlbumPhotoByAlbumId() {
       for (let i = 0; i < this.ListAlbumRemove.length; i++) {
         let length = this.ListAlbumRemove.length;
@@ -597,6 +612,7 @@ export default {
           });
       }
     },
+    //Lưu Tùng Lâm
     updateAlbum() {
       const formData = new FormData();
       console.log(this.albumPhoto.BackGroundPhoto);
@@ -624,6 +640,7 @@ export default {
           console.log(e);
         });
     },
+    //Lưu Tùng Lâm
     getAlbumPhotoByCodeId() {
       HTTP.get("albumphoto", {
         params: {
@@ -646,6 +663,7 @@ export default {
           console.log(e);
         });
     },
+    //Lưu Tùng Lâm
     getAlbumPhotoByAlbumId() {
       HTTP.get("albumphoto", {
         params: {
@@ -675,7 +693,6 @@ export default {
           console.log(e);
         });
     },
-
     updateAvatar(event) {
       this.checkBackGroundPhoto = true;
       let file = event.target.files[0];
@@ -697,6 +714,7 @@ export default {
     triggerFileInputClick() {
       this.$refs.fileInput.click();
     },
+    //Lưu Tùng Lâm
     getFamilyPhotoByAlbumId() {
       this.ListImgs = [];
       HTTP.get("familyphoto", {
@@ -720,6 +738,7 @@ export default {
           console.log(e);
         });
     },
+    //Lưu Tùng Lâm
     addFamilyPhotoByAlbumId() {
       console.log(this.FamilyPhotoListAdd);
       for (let i = 0; i < this.FamilyPhotoListAdd.length; i++) {
@@ -741,6 +760,7 @@ export default {
       }
       this.closeAddPhotoModal();
     },
+    //Lưu Tùng Lâm
     addAlbumPhoto() {
       if (
         this.albumPhoto.AlbumName != null &&
