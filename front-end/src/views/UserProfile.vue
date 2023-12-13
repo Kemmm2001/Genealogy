@@ -4,7 +4,7 @@
     <div class="func-container col-2 d-flex flex-column">
       <div class="menu px-3 d-flex flex-column">
         <div @click="selectProfile()" :class="{ chosen: profileSelected }" class="menu-item d-flex align-items-center mt-3 px-3 py-2" style="color: #FFFFFF;">Tài khoản cá nhân</div>
-        <div v-if="memberRole != 3" @click="selectEditRole()" :class="{ chosen: editRoleSelected }" class="menu-item d-flex align-items-center mt-2 px-3 py-2" style="color: #FFFFFF;">Phân quyền trong gia phả</div>
+        <div v-if="memberRole == 1" @click="selectEditRole()" :class="{ chosen: editRoleSelected }" class="menu-item d-flex align-items-center mt-2 px-3 py-2" style="color: #FFFFFF;">Phân quyền trong gia phả</div>
         <div @click="selectChangePwd()" :class="{ chosen: changePwdSelected }" class="menu-item d-flex align-items-center mt-2 px-3 py-2" style="color: #FFFFFF;">Thay đổi mật khẩu</div>
       </div>
     </div>
@@ -54,9 +54,12 @@
         'family-account-item even py-2 position-relative': index % 2 == 0
       }">
                 <div class="username position-absolute">{{ m.Email }}</div>
-                <div v-if="memberRole != 3" class="role h-100 position-absolute py-1">
-                  <select :disabled="m.RoleID != 1 ? false : true" v-model="m.RoleID" class="form-select h-100 px-3 py-0" @change="changeRole(m.RoleID, m.AccountID)">
+                <div v-if="memberRole == 1" class="role h-100 position-absolute py-1">
+                  <select v-if="m.RoleID == 1" v-model="m.RoleID" class="form-select h-100 px-3 py-0" @change="changeRole(m.RoleID, m.AccountID)" disabled>
                     <option v-for="list in listRoleAccount" v-bind:key="list.id" style="text-align: center;" :value="list.RoleID">{{list.RoleName}}</option>
+                  </select>
+                  <select v-else v-model="m.RoleID" class="form-select h-100 px-3 py-0" @change="changeRole(m.RoleID, m.AccountID)">
+                    <option v-for="list in filteredRoleOptions" v-bind:key="list.id" style="text-align: center;" :value="list.RoleID">{{list.RoleName}}</option>
                   </select>
                 </div>
               </div>
@@ -170,6 +173,7 @@ export default {
       HTTP.get("allRoleAccount").then((respone) => {
         if (respone.data.success) {
           this.listRoleAccount = respone.data.data;
+          console.log(this.listRoleAccount);
         }
       });
     },
@@ -384,6 +388,12 @@ export default {
       this.newPwd2Visibility = !this.newPwd2Visibility;
       this.newPwd2VisibilityType =
         this.newPwd2VisibilityType === "text" ? "password" : "text";
+    },
+  },
+  computed: {
+    filteredRoleOptions() {
+      // Replace the condition as needed
+      return this.listRoleAccount.filter((role) => role.RoleID !== 1);
     },
   },
   mounted() {

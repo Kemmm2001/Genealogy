@@ -684,7 +684,7 @@
                     <div style="position: relative;width: 50%; margin-right: 10px;">
                       <select v-model="selectDistrictMember" class="form-select modal-item">
                         <option :value="null" selected>Quận/Huyện</option>
-                        <option v-for="d in ListDistrictMember" :key="d.id" :value="d.DistrictName">{{ d.DistrictName }}</option>
+                        <option v-for="d in ListDistrictMember" :key="d.id" :value="d.DistrictName" @click="getDistrictMember(d.DistrictName)">{{ d.DistrictName }}</option>
                       </select>
                       <label class="form-label" for="select">Địa Chỉ (Quận/Huyện)</label>
                     </div>
@@ -1989,7 +1989,7 @@ export default {
       }
     },
     //Nguyễn Lê Hùng
-    addMemberChild(FatherID, MotherID) {
+    addMemberChild(FatherID, MotherID) {    
       HTTP.post("add-child", {
         FatherID: FatherID,
         MotherID: MotherID,
@@ -2039,7 +2039,7 @@ export default {
             this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
             HTTP.post("addContact", {
               memberId: this.newIdMember,
-              Address: this.objMemberContact.Address,
+              Address: this.objMemberContact.Address + '-' + this.selectDistrictMember,
               Phone: this.objMemberContact.Phone,
               Email: this.objMemberContact.Email,
               FacebookUrl: this.objMemberContact.FacebookUrl,
@@ -2061,6 +2061,7 @@ export default {
         });
     },
     addMemberMarried() {
+      console.log(this.objMemberInfor.MarriageNumber);
       HTTP.post("add-marriage", {
         CurrentMemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
@@ -2111,7 +2112,7 @@ export default {
             this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
             HTTP.post("addContact", {
               memberId: this.newIdMember,
-              Address: this.objMemberContact.Address,
+              Address: this.objMemberContact.Address + '-' + this.selectDistrictMember,
               Phone: this.objMemberContact.Phone,
               Email: this.objMemberContact.Email,
               FacebookUrl: this.objMemberContact.FacebookUrl,
@@ -2207,7 +2208,7 @@ export default {
               this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
               HTTP.post("addContact", {
                 memberId: this.newIdMember,
-                Address: this.objMemberContact.Address,
+                Address: this.objMemberContact.Address + '-' + this.selectDistrictMember,
                 Phone: this.objMemberContact.Phone,
                 Email: this.objMemberContact.Email,
                 FacebookUrl: this.objMemberContact.FacebookUrl,
@@ -2299,7 +2300,7 @@ export default {
     },
     //Nguyễn Lê Hùng
     updateInformation() {
-      console.log(this.objMemberInfor.BirthOrder)
+      console.log(this.objMemberInfor.BirthOrder);
       if (this.selectDistrictMember != null) {
         this.objMemberContact.Address =
           this.objMemberContact.Address + "-" + this.selectDistrictMember;
@@ -2311,7 +2312,10 @@ export default {
         MemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
         NickName: this.objMemberInfor.NickName,
-        BirthOrder: this.objMemberInfor.BirthOrder == 'null' ? this.objMemberInfor.BirthOrder : 1,
+        BirthOrder:
+          this.objMemberInfor.BirthOrder == "null"
+            ? this.objMemberInfor.BirthOrder
+            : 1,
         Origin: this.objMemberInfor.Origin,
         NationalityID: this.objMemberInfor.NationalityID,
         ReligionID: this.objMemberInfor.ReligionID,
@@ -2366,6 +2370,9 @@ export default {
         .catch((e) => {
           console.log(e);
         });
+    },
+    getDistrictMember() {
+      console.log(this.selectDistrictMember)
     },
     //Nguyễn Lê Hùng
     selectRowJob(job) {

@@ -33,14 +33,12 @@
         <div class="col-2 filter">
           <p class="d-block text-decoration-underline">Thống kê đặc biệt</p>
           <p v-if="this.memberOldest.age != 0 && this.memberOldest.age != null" class="d-block">Thành viên lớn tuổi nhất: {{ this.memberOldest.name }} ({{ this.memberOldest.age }})</p>
-          <p v-else class="d-block">Thành viên lớn tuổi nhất: </p>
+          <p v-else class="d-block">Thành viên lớn tuổi nhất:</p>
           <p v-if="this.memberOldestAlive.age != 0 && this.memberOldestAlive.age != null" class="d-block">
             Thành viên lớn tuổi nhất còn sống : {{ this.memberOldestAlive.name }}
             ({{ this.memberOldestAlive.age }})
           </p>
-          <p v-else class="d-block">
-            Thành viên lớn tuổi nhất còn sống:
-          </p>
+          <p v-else class="d-block">Thành viên lớn tuổi nhất còn sống:</p>
         </div>
       </div>
     </div>
@@ -414,7 +412,7 @@ export default {
         if (this.memberList[i].isDead == 1) {
           this.numberDied += 1;
         }
-        if(this.memberList[i].dob != null){
+        if (this.memberList[i].dob != null) {
           if (
             this.ageMember(this.memberList[i].dob) >= 0 &&
             this.ageMember(this.memberList[i].dob) <= 5
@@ -455,7 +453,7 @@ export default {
             this.memberOldest.name = this.memberList[i].name;
           }
         }
-        
+
         if (
           this.ageMember(this.memberList[i].dob) > this.memberOldestAlive.age ||
           this.memberList[i].isDead == 0
@@ -479,12 +477,12 @@ export default {
       // this.numberGenerationFilter = 0,
     },
     ageMember(memberDob) {
-      if(memberDob != null){
+      if (memberDob != null) {
         let dob = new Date(this.formatDate(memberDob));
         let now = new Date();
         var age = Math.floor((now - dob) / (365.25 * 24 * 60 * 60 * 1000));
         return age;
-      }else{
+      } else {
         return null;
       }
     },
@@ -544,7 +542,6 @@ export default {
               41 <= this.ageMember(member.dob) &&
               this.ageMember(member.dob) <= 60
           );
-
         }
         if (this.ageSearch == ">60") {
           console.log(this.ageSearch);
@@ -588,7 +585,7 @@ export default {
           month += 1;
         }
         this.monthDobFilter[month - 1] += 1;
-        if(this.memberFilter[i].dob != null){
+        if (this.memberFilter[i].dob != null) {
           if (
             this.ageMember(this.memberFilter[i].dob) >= 0 &&
             this.ageMember(this.memberFilter[i].dob) <= 5
@@ -612,7 +609,7 @@ export default {
             this.ageMember(this.memberFilter[i].dob) <= 60
           ) {
             this.age41to60Filter += 1;
-            console.log(this.ageMember(this.memberFilter[i].dob))
+            console.log(this.ageMember(this.memberFilter[i].dob));
           }
           if (this.ageMember(this.memberFilter[i].dob) >= 61) {
             this.age61upFilter += 1;
@@ -640,7 +637,6 @@ export default {
     },
     getListMember() {
       HTTP.get("viewTree", {
-        
         params: {
           CodeID: this.CodeID,
         },
