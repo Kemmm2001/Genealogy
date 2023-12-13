@@ -99,6 +99,11 @@ const routes = [
     name: "his",
     component: () => import("../views/FamilyHistoryResp.vue"),
   },
+  {
+    path: "/alb",
+    name: "alb",
+    component: () => import("../views/FamilyAlbumResp.vue"),
+  },
 ];
 
 const router = new Router({

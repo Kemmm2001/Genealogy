@@ -186,7 +186,6 @@
           <div class="edit-photo-modal" style="background-color: white; height: calc(100% - 50px);">
             <div class="edit-photo-layout d-flex">
               <button class="btn btn-primary mr-2" style="margin: 10px;" @click="checkAddPhotoModalOpen(), openAddPhotoModal()">Thêm ảnh vào album</button>
-
               <button class="btn btn-danger mr-2" style="margin: 10px;" :disabled="isButtonDisabledPhoto" @click="removeFamilyPhotoByPhotoId()">Xóa Ảnh</button>
             </div>
             <div class="add-photo-list d-flex" style="height: calc(100% - 58px);">
@@ -218,7 +217,7 @@
             </div>
           </div>
           <div class="w-100 d-flex flex-column align-items-center justify-content-center" style="height: calc(100% - 50px);">
-            <div class="d-flex align-items-center px-3" style="height: 70%; font-size: 19px;">Bạn có chắc chắn muốn xóa album {{ albumPhoto.AlbumName }}</div>
+            <div class="d-flex align-items-center px-3" style="height: 70%; font-size: 19px;">Bạn có chắc chắn muốn xóa những album đã được chọn không ?</div>
             <div class="d-flex flex-row w-100" style="height: 30%;">
               <div class="col-6 d-flex align-items-center justify-content-center">
                 <div class="btn bg-danger text-white" @click="removeAlbumPhotoByAlbumId(), closeCfDelModal()">Có</div>

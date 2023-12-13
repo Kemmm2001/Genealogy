@@ -64,12 +64,8 @@
 }
 
 .history-grid-container .add-history-container .vm--container{
-    height: 60%;
+    height: 100%;
     width: 60%;
     inset: 0;
     margin: auto;
-}
-
-.history-grid-container .add-history-container .mdl-container{
-    grid-template-rows: 15% 70% 15%;
 }
