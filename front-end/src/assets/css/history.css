@@ -33,3 +33,43 @@
     right: 15px;
     font-size: 12px;
 }
+
+/* ------------------------------------------------- */
+.history-grid-container{
+    display: grid;
+    grid-template-columns: 20% 80%;
+    grid-template-rows: 100% 0;
+}
+
+.history-grid-container .search{
+    display: grid;
+    grid-template-rows: 8% 8% 8% 8% 8% 60%;
+}
+
+.history-grid-container .content{
+    background-color: rgb(242, 242, 242);
+    position: relative;
+}
+
+.history-grid-container .history-start{
+    top: 9px;
+    left: 15px;
+    font-size: 12px;
+}
+
+.history-grid-container .history-end{
+    top: 9px;
+    right: 15px;
+    font-size: 12px;
+}
+
+.history-grid-container .add-history-container .vm--container{
+    height: 60%;
+    width: 60%;
+    inset: 0;
+    margin: auto;
+}
+
+.history-grid-container .add-history-container .mdl-container{
+    grid-template-rows: 15% 70% 15%;
+}
