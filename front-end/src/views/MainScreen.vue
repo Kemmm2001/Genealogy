@@ -799,7 +799,7 @@
                     <div class="form-group" role="group">
                       <button type="button" class="btn btn-primary" @click="addNewEducationMember()" style="margin-right:10px">Thêm</button>
                       <button type="button" class="btn btn-info mr-1" @click="updateEducationMember()" style="margin-right:10px">Sửa</button>
-                      <button type="button" class="btn btn-danger mr-1" @click="deleteJobMember()" style="margin-right:10px">Xóa</button>
+                      <button type="button" class="btn btn-danger mr-1" @click="removeEducation()" style="margin-right:10px">Xóa</button>
                     </div>
                   </div>
                   <div class="form-group" style="margin-top:13px;padding-right:22px">
@@ -1692,10 +1692,12 @@ export default {
           JobID: this.JobIDToUpdate,
         },
       })
-        .then(() => {
-          this.getListJobMember();
-          this.NotificationsDelete("Xóa thông tin nghề nghiệp thành công");
-          this.refreshInputJobAndEducation();
+        .then((response) => {
+          if (response.data.success) {
+            this.getListJobMember();
+            this.NotificationsDelete(response.data.message);
+            this.refreshInputJobAndEducation();
+          }
         })
         .catch(() => {
           this.NotificationsDelete("Đã sảy ra lỗi, không thể xóa");
@@ -1808,10 +1810,29 @@ export default {
         },
       })
         .then((response) => {
-          this.ListMemberJob = response.data;
+          if (response.data.success) {
+            this.ListMemberJob = response.data.data;
+          }
         })
         .catch((e) => {
           console.log(e);
+        });
+    },
+    getListEducationMember() {
+      console.log(this.CurrentIdMember);
+      HTTP.get("education", {
+        params: {
+          memberId: this.CurrentIdMember,
+        },
+      })
+        .then((response) => {
+          console.log(response.data.data);
+          if (response.data.success) {
+            this.ListMemberEducation = response.data.data;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
         });
     },
     //Nguyễn Lê Hùng
@@ -1825,29 +1846,19 @@ export default {
         StartDate: this.objMemberJob.StartDate,
         EndDate: this.objMemberJob.EndDate,
       })
-        .then(() => {
-          this.getListJobMember();
-          this.NotificationsScuccess("Thêm thông tin nghề nghiệp thành công");
-          this.refreshInputJobAndEducation();
+        .then((response) => {
+          if (response.data.success) {
+            this.getListJobMember();
+            this.NotificationsScuccess(response.data.message);
+            this.refreshInputJobAndEducation();
+          }
         })
         .catch((err) => {
           console.log(err);
         });
     },
     //Nguyễn Lê Hùng
-    getListEducationMember() {
-      HTTP.get("education", {
-        params: {
-          memberId: this.CurrentIdMember,
-        },
-      })
-        .then((response) => {
-          this.ListMemberEducation = response.data;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
+
     //Nguyễn Lê Hùng
     addNewEducationMember() {
       HTTP.post("addEducation", {
@@ -1857,10 +1868,14 @@ export default {
         StartDate: this.objMemberEducation.StartDate,
         EndDate: this.objMemberEducation.EndDate,
       })
-        .then(() => {
-          this.getListEducationMember();
-          this.NotificationsScuccess("Thêm thông tin giáo dục thành công");
-          this.refreshInputJobAndEducation();
+        .then((response) => {
+          if (response.data.success) {
+            this.getListEducationMember();
+            this.NotificationsScuccess(response.data.message);
+            this.refreshInputJobAndEducation();
+          } else {
+            this.NotificationsDelete(response.data.message);
+          }
         })
         .catch((e) => {
           console.log(e);
@@ -2245,10 +2260,14 @@ export default {
         EndDate: this.objMemberEducation.EndDate,
         EducationID: this.EducationIdToUpdate,
       })
-        .then(() => {
-          this.getListEducationMember();
-          this.NotificationsScuccess("Sửa thông tin giáo dục thành công");
-          this.refreshInputJobAndEducation();
+        .then((respone) => {
+          if (respone.data.success) {
+            this.getListEducationMember();
+            this.NotificationsScuccess(respone.data.message);
+            this.refreshInputJobAndEducation();
+          } else {
+            this.NotificationsDelete(respone.data.message);
+          }
         })
         .catch((e) => {
           console.log(e);
@@ -2265,10 +2284,12 @@ export default {
         StartDate: this.objMemberJob.StartDate,
         EndDate: this.objMemberJob.EndDate,
       })
-        .then(() => {
-          this.getListJobMember();
-          this.NotificationsScuccess("Sửa thông tin nghề nghiệp thành công");
-          this.refreshInputJobAndEducation();
+        .then((respone) => {
+          if (respone.data.success) {
+            this.getListJobMember();
+            this.NotificationsScuccess(respone.data.message);
+            this.refreshInputJobAndEducation();
+          }
         })
         .catch((e) => {
           console.log(e);
@@ -2323,10 +2344,14 @@ export default {
               FacebookUrl: this.objMemberContact.FacebookUrl,
               Zalo: this.objMemberContact.Zalo,
             })
-              .then(() => {
-                this.checkUpdate = true;
-                this.closeMemberModal();
-                this.getListMember();
+              .then((respone) => {
+                if (respone.data.success == true) {
+                  this.checkUpdate = true;
+                  this.closeMemberModal();
+                  this.getListMember();
+                } else {
+                  this.NotificationsDelete("Có lỗi hệ thống");
+                }
               })
               .catch(() => {
                 this.NotificationsDelete("Có lỗi hệ thống");
@@ -2880,6 +2905,19 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+    removeEducation() {
+      HTTP.delete("deleteEducation", {
+        params: {
+          EducationID: this.EducationIdToUpdate,
+        },
+      }).then((response) => {
+        if (response.data.success) {
+          this.NotificationsScuccess(response.data.message);
+          this.refreshInputJobAndEducation();
+          this.getListEducationMember();
+        }
+      });
     },
     getListHistoryEmail() {
       try {

@@ -1,4 +1,7 @@
-const db = require("../../Models/ConnectDB")
+const { promises } = require("fs");
+const db = require("../../Models/ConnectDB");
+const { resolve } = require("dns");
+const { rejects } = require("assert");
 
 //Nguyễn Lê Hùng
 function GetAllJobByMemberID(memberId) {
@@ -14,66 +17,113 @@ function GetAllJobByMemberID(memberId) {
         })
     })
 }
+
+function findJob(JobID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `SELECT * FROM genealogy.job where JobID = ${JobID}`;
+            db.connection.query(query, (err, result) => {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(result)
+                }
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+//Nguyễn Lê Hùng
+async function findMember(memberID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `SELECT * FROM genealogy.familymember where MemberID = ${memberID}`;
+            db.connection.query(query, (err, result) => {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(result)
+                }
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
 //Nguyễn Lê Hùng
 async function AddJobByMemberID(ObjData) {
-    let query = `INSERT INTO job (MemberID, Organization, OrganizationAddress, Role, JobName, StartDate, EndDate) 
-                   VALUES (?, ?, ?, ?, ?, ?, ?)`;
-    let values = [
-        ObjData.memberId,
-        ObjData.Organization,
-        ObjData.OrganizationAddress,
-        ObjData.Role,
-        ObjData.JobName,
-        ObjData.StartDate,
-        ObjData.EndDate
-    ];
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `INSERT INTO job (MemberID, Organization, OrganizationAddress, Role, JobName, StartDate, EndDate) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)`;
+            let values = [
+                ObjData.memberId,
+                ObjData.Organization,
+                ObjData.OrganizationAddress,
+                ObjData.Role,
+                ObjData.JobName,
+                ObjData.StartDate,
+                ObjData.EndDate
+            ];
 
-    db.connection.query(query, values, (err, result) => {
-        if (err) {
-            console.error(err);
-            return;
-        } else {
-            console.log('Insert Successfully');
+            db.connection.query(query, values, (err, result) => {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(true)
+                }
+            });
+        } catch (error) {
+            reject(error)
         }
-    });
+    })
 }
 //Nguyễn Lê Hùng
 async function UpdateJobByID(ObjData) {
-    const query = `UPDATE job 
-                   SET Organization = ?, OrganizationAddress = ?, Role = ?, JobName = ?, StartDate = ?, EndDate = ? 
-                   WHERE JobID = ?`;
-    const values = [
-        ObjData.Organization,
-        ObjData.OrganizationAddress,
-        ObjData.Role,
-        ObjData.JobName,
-        ObjData.StartDate,
-        ObjData.EndDate,
-        ObjData.JobID
-    ];
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `UPDATE job 
+            SET Organization = ?, OrganizationAddress = ?, Role = ?, JobName = ?, StartDate = ?, EndDate = ? 
+            WHERE JobID = ?`;
+            let values = [
+                ObjData.Organization,
+                ObjData.OrganizationAddress,
+                ObjData.Role,
+                ObjData.JobName,
+                ObjData.StartDate,
+                ObjData.EndDate,
+                ObjData.JobID
+            ];
 
-    db.connection.query(query, values, (err, result) => {
-        if (err) {
-            console.error(err);
-
-            return;
-        } else {
-            console.log('Update Successfully');
+            db.connection.query(query, values, (err, result) => {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(true)
+                }
+            });
+        } catch (error) {
+            reject(error)
         }
-    });
+    })
 }
 //Nguyễn Lê Hùng
 async function DeleteJobByID(JobID) {
-    let query = `DELETE FROM job WHERE JobID = ${JobID}`
-    db.connection.query(query, (err, result) => {
-        if (err) {
-            console.error(err);
-
-            return;
-        } else {
-            console.log('Delete Successfully');
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `DELETE FROM job WHERE JobID = ${JobID}`
+            db.connection.query(query, (err, result) => {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(true)
+                }
+            });
+        } catch (error) {
+            reject(error)
         }
-    });
+    })
 }
 //Nguyễn Lê Hùng
 async function DeleteListJobByID(memberId) {
@@ -103,5 +153,5 @@ async function DeleteListJobByID(memberId) {
 
 
 module.exports = {
-    GetAllJobByMemberID, AddJobByMemberID, UpdateJobByID, DeleteJobByID, DeleteListJobByID
+    GetAllJobByMemberID, AddJobByMemberID, UpdateJobByID, DeleteJobByID, DeleteListJobByID, findMember, findJob
 }
