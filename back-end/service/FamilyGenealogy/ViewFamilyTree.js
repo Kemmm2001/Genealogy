@@ -279,12 +279,11 @@ function getMarried(id) {
                     console.log('Male: ' + result[0].Male)
                     let isGenderParent = result[0].Male == 1 ? "husbandID" : "wifeID";
                     let queryMarried = `SELECT MarriageNumber FROM genealogy.marriage where ${isGenderParent} = ${id}`;
-                    console.log('queryMarried: ' + queryMarried)
                     db.connection.query(queryMarried, (err, reusltMarried) => {
                         console.log()
                         if (!err && reusltMarried[0] != undefined) {
-                            resolve(reusltMarried[0].MarriageNumber)                         
-                        } else {                       
+                            resolve(reusltMarried[0].MarriageNumber)
+                        } else {
                             resolve(false)
                         }
                     })

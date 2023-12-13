@@ -967,7 +967,7 @@ export default {
       emailDetail: false,
 
       objMemberInfor: {
-        MarriageNumber:1,
+        MarriageNumber: 1,
         MemberID: 0,
         ParentID: null,
         MarriageID: null,
@@ -1653,7 +1653,7 @@ export default {
             this.avatarSrc = this.objMemberInfor.Image;
             console.log("avatarSrc: " + this.avatarSrc);
           }
-       //   console.log("result: " + this.objMemberInfor.MarriageNumber);
+          //   console.log("result: " + this.objMemberInfor.MarriageNumber);
           if (this.objMember.contact.length > 0) {
             this.objMemberContact = this.objMember.contact[0];
             console.log(this.objMemberContact);
@@ -1665,8 +1665,9 @@ export default {
               this.getAdressMember(this.objMemberContact.Address);
             }
           }
-          if(response.data.data.MarriageNumber != null){
-            this.objMemberInfor.MarriageNumber = response.data.data.MarriageNumber;
+          if (response.data.data.MarriageNumber != null) {
+            this.objMemberInfor.MarriageNumber =
+              response.data.data.MarriageNumber;
           }
           this.ListMemberEducation = this.objMember.education;
           this.ListMemberJob = this.objMember.job;
@@ -1992,7 +1993,7 @@ export default {
       }
     },
     //Nguyễn Lê Hùng
-    addMemberChild(FatherID, MotherID) {    
+    addMemberChild(FatherID, MotherID) {
       HTTP.post("add-child", {
         FatherID: FatherID,
         MotherID: MotherID,
@@ -2042,7 +2043,8 @@ export default {
             this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
             HTTP.post("addContact", {
               memberId: this.newIdMember,
-              Address: this.objMemberContact.Address + '-' + this.selectDistrictMember,
+              Address:
+                this.objMemberContact.Address + "-" + this.selectDistrictMember,
               Phone: this.objMemberContact.Phone,
               Email: this.objMemberContact.Email,
               FacebookUrl: this.objMemberContact.FacebookUrl,
@@ -2064,11 +2066,7 @@ export default {
         });
     },
     addMemberMarried() {
-<<<<<<< HEAD
       console.log(this.objMemberInfor.MarriageNumber);
-=======
-      console.log(this.objMemberInfor.MarriageNumber)
->>>>>>> 14a17f06c3812e274f6b3f6be934cd43ecd91529
       HTTP.post("add-marriage", {
         CurrentMemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
@@ -2119,7 +2117,8 @@ export default {
             this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
             HTTP.post("addContact", {
               memberId: this.newIdMember,
-              Address: this.objMemberContact.Address + '-' + this.selectDistrictMember,
+              Address:
+                this.objMemberContact.Address + "-" + this.selectDistrictMember,
               Phone: this.objMemberContact.Phone,
               Email: this.objMemberContact.Email,
               FacebookUrl: this.objMemberContact.FacebookUrl,
@@ -2215,7 +2214,10 @@ export default {
               this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
               HTTP.post("addContact", {
                 memberId: this.newIdMember,
-                Address: this.objMemberContact.Address + '-' + this.selectDistrictMember,
+                Address:
+                  this.objMemberContact.Address +
+                  "-" +
+                  this.selectDistrictMember,
                 Phone: this.objMemberContact.Phone,
                 Email: this.objMemberContact.Email,
                 FacebookUrl: this.objMemberContact.FacebookUrl,
@@ -2379,7 +2381,7 @@ export default {
         });
     },
     getDistrictMember() {
-      console.log(this.selectDistrictMember)
+      console.log(this.selectDistrictMember);
     },
     //Nguyễn Lê Hùng
     selectRowJob(job) {
@@ -2572,9 +2574,9 @@ export default {
       this.objMemberInfor.BirthOrder = 1;
       this.objMemberInfor.Male = 1;
       console.log(action);
-      if(action == "AddMarriage"){
+      if (action == "AddMarriage") {
         this.objMemberInfor.MarriageNumber = 1;
-        console.log("đã vào")
+        console.log("đã vào");
       }
       if (this.isFather == true && action == "AddMarriage") {
         console.log(this.isFather);

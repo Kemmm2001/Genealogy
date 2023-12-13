@@ -146,7 +146,9 @@ export default {
       } else {
         HTTPP.get("protected-route")
           .then((response) => {
-            console.log('log account: ' + JSON.stringify(response.data, null, 2))
+            console.log(
+              "log account: " + JSON.stringify(response.data, null, 2)
+            );
             console.log("Accountid: " + response.data.accountID);
             this.accountID = response.data.accountID;
             localStorage.setItem("accountID", this.accountID);
@@ -229,13 +231,18 @@ export default {
         })
           .then((response) => {
             if (response.data.success == true) {
-              console.log("data: " + response.data.data);
+              console.log("data: " + response.data);
               VueCookies.remove("accessToken");
               VueCookies.set("accessToken", response.data.data, 360000);
               localStorage.setItem("CodeID", this.codeIdLogin);
               this.$router.push("/");
               this.NotificationsScuccess("Đăng nhập thành công");
             } else {
+              console.log(response.data.status_code);
+              if (response.data.status_code == 402) {
+                console.log("vào đây")
+                this.$router.push("/login");
+              }
               this.NotificationsDelete(response.data.message);
             }
           })
