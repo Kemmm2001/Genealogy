@@ -912,7 +912,7 @@ export default {
     showEditEventModal(id) {
       this.isAdd = false;
       this.eventFamily = {};
-      this.titleModal = "sửa thông tin sự kiện";
+      this.titleModal = "Sửa thông tin sự kiện";
       HTTP.get("inforEvent", {
         params: {
           EventID: id,
@@ -951,7 +951,7 @@ export default {
               "0"
             );
             this.endDate = `${year}-${month}-${day}`;
-            this.$modal.show("add-event-modal");
+            this.$modal.show("add-event-mdl");
           }
         })
         .catch((e) => {

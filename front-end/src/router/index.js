@@ -94,6 +94,11 @@ const routes = [
     name: "eve",
     component: () => import("../views/FamilyEventResp.vue"),
   },
+  {
+    path: "/his",
+    name: "his",
+    component: () => import("../views/FamilyHistoryResp.vue"),
+  },
 ];
 
 const router = new Router({
