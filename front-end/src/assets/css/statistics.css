@@ -1,0 +1,15 @@
+.stat-grid-container{
+    padding: 30px 60px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.stat-grid-container .overview, .stat-grid-container .detail{
+    background-color: #f2f2f2;
+}
+
+.stat-grid-container .detail #graphAge,
+.stat-grid-container .detail #graphMonthDob{
+    max-height: 400px !important;
+}
