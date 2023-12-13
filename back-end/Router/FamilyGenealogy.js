@@ -63,8 +63,6 @@ const initWebRouter = (app) => {
     router.put('/memberToGenealogy', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.updateMemberToGenealogy);
     router.put('/linkRelationship', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.linkRelationship);
     router.get('/delete-member', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.deleteMember)
-    router.get('/getparent',authMiddleware.authenticateAndAuthorize(3), FamilyMemberManagement.GetCurrentParentMember)
-    router.post('/InsertParentID', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.insertParentIdToMember)
 
     //API Nhật anh
     router.get('/members', FamilyMemberManagement.getAllMember);

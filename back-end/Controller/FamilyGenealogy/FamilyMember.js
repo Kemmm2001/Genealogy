@@ -1006,29 +1006,6 @@ var linkRelationship = async (req, res) => {
     }
 }
 
-
-
-var GetCurrentParentMember = async (req, res) => {
-    try {
-        let memberID = req.query.memberID;
-        let data = await FamilyManagementService.GetCurrentParentMember(memberID);
-        res.send(data);
-    } catch (err) {
-        console.log(err)
-    }
-}
-
-var insertParentIdToMember = async (req, res) => {
-    try {
-        let ParentID = req.body.ParentID;
-        let memberID = req.body.memberID
-        await FamilyManagementService.insertParentIdToMember(ParentID, memberID);
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-
 var searchMember = async (req, res) => {
     try {
         const { searchTerm } = req.body;
@@ -1141,6 +1118,6 @@ var getMember = async (req, res) => {
 
 module.exports = {
     addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember, addMarriage,
-    getListAgeGroup, getListBloodTypeGroup, GetCurrentParentMember, insertParentIdToMember,
+    getListAgeGroup, getListBloodTypeGroup,
     getMember, updateMemberToGenealogy, updateMemberPhoto, addChild, linkRelationship, getAllMembersInGenalogy
 };

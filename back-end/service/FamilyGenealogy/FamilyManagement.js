@@ -277,17 +277,6 @@ function UpdateMemberGenerationToZero(memberId) {
 
 
 // nguyễn anh tuấn
-function GetCurrentParentMember(memberID) {
-    return new Promise(async (resolve, reject) => {
-        let query = `select * from familymember
-        where MemberID = ? and ParentID is not null`;
-        let values = [memberID];
-        let result = await coreQuery(query, values);
-        resolve(result);
-    })
-}
-
-// nguyễn anh tuấn
 function insertParentIdToMember(fatherID, motherID, memberID) {
     return new Promise(async (resolve, reject) => {
         let query = `UPDATE familymember SET FatherID = ?, MotherID = ? WHERE MemberID = ?;`
@@ -699,7 +688,7 @@ function getMemberByMemberID(memberID) {
 module.exports = {
     addMember, updateMember, deleteMember, getMember, searchMember, getMemberByMemberID,
     setGeneration, queryContactMembers,
-    getAllMember, queryFamilyMembers, GetCurrentParentMember,
+    getAllMember, queryFamilyMembers,
     insertFatherIDToMember, insertMotherIDToMember, getMembersByFatherID, getMembersByMotherID,
     setBirthOrder, insertParentIdToMember, getAllMemberID, updateMemberPhoto,
     getMembersByFatherIDAndMotherID, getMembersByFatherIDOrMotherID, updateFatherIDToMotherID,
