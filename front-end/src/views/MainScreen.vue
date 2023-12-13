@@ -2299,6 +2299,7 @@ export default {
     },
     //Nguyễn Lê Hùng
     updateInformation() {
+      console.log(this.objMemberInfor.BirthOrder)
       if (this.selectDistrictMember != null) {
         this.objMemberContact.Address =
           this.objMemberContact.Address + "-" + this.selectDistrictMember;
@@ -2310,7 +2311,7 @@ export default {
         MemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
         NickName: this.objMemberInfor.NickName,
-        BirthOrder: this.objMemberInfor.BirthOrder,
+        BirthOrder: this.objMemberInfor.BirthOrder == 'null' ? this.objMemberInfor.BirthOrder : 1,
         Origin: this.objMemberInfor.Origin,
         NationalityID: this.objMemberInfor.NationalityID,
         ReligionID: this.objMemberInfor.ReligionID,
