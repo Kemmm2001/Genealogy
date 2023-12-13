@@ -566,17 +566,25 @@
                         <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item" placeholder />
                         <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con thứ</label>
                       </div>
-                      <div style="position: relative;width: 50%; margin-right: 10px;" v-if="objMemberInfor.FatherID == null && action == null">
+                      <div style="position: relative;width: 50%; margin-right: 10px;" v-else-if="objMemberInfor.FatherID == null && action == null && objMemberInfor.MarriageNumber != null && objMemberInfor.MotherID == null">
                         <input v-model="objMemberInfor.MarriageNumber" type="number" min="0" max="20" class="form-control modal-item" disabled placeholder />
-                        <label class="form-label-number" for="input" v-if="objMemberInfor.FatherID == null && objMemberInfor.MotherID == null && action != 'AddMarriage' " :class="{ 'active': objMemberInfor.MarriageNumber }">{{objMemberInfor.Male == 1 ? 'Chồng thứ':'Vợ thứ'}}</label>
+                        <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.MarriageNumber }">{{objMemberInfor.Male == 1 ? 'Chồng thứ':'Vợ thứ'}}</label>
                       </div>
-                      <div style="position: relative;width: 50%; margin-right: 10px;" v-if="action == 'AddChild'">
+                      <div style="position: relative;width: 50%; margin-right: 10px;" v-else-if="action == 'AddChild'">
                         <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item" placeholder />
                         <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con thứ</label>
                       </div>
-                      <div style="position: relative;width: 50%; margin-right: 10px;" v-if="action == 'AddMarriage'">
-                        <input v-model="objMemberInfor.MarriageNumber" type="number" min="0" max="20" class="form-control modal-item" placeholder />
+                      <div style="position: relative;width: 50%; margin-right: 10px;" v-else-if="action == 'AddMarriage'">
+                        <input v-model="objMemberInfor.MarriageNumber" type="number" min="0" max="20" class="form-control modal-item" disabled placeholder />
                         <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.MarriageNumber }">{{isFather == false ? 'Chồng thứ':'Vợ thứ'}}</label>
+                      </div>
+                      <div style="position: relative;width: 50%; margin-right: 10px;" v-else-if="action == 'AddParent'">
+                        <input v-model="objMemberInfor.BirthOrder" disabled  type="number" min="0" class="form-control modal-item" placeholder />
+                        <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con thứ</label>
+                      </div>
+                      <div style="position: relative;width: 50%; margin-right: 10px;" v-else>
+                        <input v-model="objMemberInfor.BirthOrder" type="number" min="0" max="20" class="form-control modal-item" placeholder />
+                        <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con thứ</label>
                       </div>
                     </div>
                     <div style="display:flex">
@@ -684,7 +692,7 @@
                     <div style="position: relative;width: 50%; margin-right: 10px;">
                       <select v-model="selectDistrictMember" class="form-select modal-item">
                         <option :value="null" selected>Quận/Huyện</option>
-                        <option v-for="d in ListDistrictMember" :key="d.id" :value="d.DistrictName" @click="getDistrictMember(d.DistrictName)">{{ d.DistrictName }}</option>
+                        <option v-for="d in ListDistrictMember" :key="d.id" :value="d.DistrictName">{{ d.DistrictName }}</option>
                       </select>
                       <label class="form-label" for="select">Địa Chỉ (Quận/Huyện)</label>
                     </div>
@@ -967,7 +975,7 @@ export default {
       emailDetail: false,
 
       objMemberInfor: {
-        MarriageNumber: 1,
+        MarriageNumber:1,
         MemberID: 0,
         ParentID: null,
         MarriageID: null,
@@ -1425,6 +1433,20 @@ export default {
         this.NotificationsDelete("Không có thông báo gì để gửi ");
       }
     },
+    getMaxMarriage(id){
+      let count = 0;
+      console.log(id)
+      for(let i = 0 ;i < this.nodes.length;i++){
+        let j = 0;
+        while(j < this.nodes[i].pids.length){
+          if(this.nodes[i].pids[j] == id){
+            count++;
+          }
+          j++;
+        }
+      }
+      return count+1;
+    },
     getListMemberToSendMessage() {
       try {
         console.log(this.CodeID);
@@ -1653,7 +1675,7 @@ export default {
             this.avatarSrc = this.objMemberInfor.Image;
             console.log("avatarSrc: " + this.avatarSrc);
           }
-          //   console.log("result: " + this.objMemberInfor.MarriageNumber);
+       //   console.log("result: " + this.objMemberInfor.MarriageNumber);
           if (this.objMember.contact.length > 0) {
             this.objMemberContact = this.objMember.contact[0];
             console.log(this.objMemberContact);
@@ -1665,9 +1687,8 @@ export default {
               this.getAdressMember(this.objMemberContact.Address);
             }
           }
-          if (response.data.data.MarriageNumber != null) {
-            this.objMemberInfor.MarriageNumber =
-              response.data.data.MarriageNumber;
+          if(response.data.data.MarriageNumber != null){
+            this.objMemberInfor.MarriageNumber = response.data.data.MarriageNumber;
           }
           this.ListMemberEducation = this.objMember.education;
           this.ListMemberJob = this.objMember.job;
@@ -2043,8 +2064,7 @@ export default {
             this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
             HTTP.post("addContact", {
               memberId: this.newIdMember,
-              Address:
-                this.objMemberContact.Address + "-" + this.selectDistrictMember,
+              Address: this.objMemberContact.Address,
               Phone: this.objMemberContact.Phone,
               Email: this.objMemberContact.Email,
               FacebookUrl: this.objMemberContact.FacebookUrl,
@@ -2066,7 +2086,7 @@ export default {
         });
     },
     addMemberMarried() {
-      console.log(this.objMemberInfor.MarriageNumber);
+      console.log(this.objMemberInfor.MarriageNumber)
       HTTP.post("add-marriage", {
         CurrentMemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
@@ -2117,8 +2137,7 @@ export default {
             this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
             HTTP.post("addContact", {
               memberId: this.newIdMember,
-              Address:
-                this.objMemberContact.Address + "-" + this.selectDistrictMember,
+              Address: this.objMemberContact.Address,
               Phone: this.objMemberContact.Phone,
               Email: this.objMemberContact.Email,
               FacebookUrl: this.objMemberContact.FacebookUrl,
@@ -2214,10 +2233,7 @@ export default {
               this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
               HTTP.post("addContact", {
                 memberId: this.newIdMember,
-                Address:
-                  this.objMemberContact.Address +
-                  "-" +
-                  this.selectDistrictMember,
+                Address: this.objMemberContact.Address,
                 Phone: this.objMemberContact.Phone,
                 Email: this.objMemberContact.Email,
                 FacebookUrl: this.objMemberContact.FacebookUrl,
@@ -2309,7 +2325,7 @@ export default {
     },
     //Nguyễn Lê Hùng
     updateInformation() {
-      console.log(this.objMemberInfor.BirthOrder);
+      console.log(this.objMemberInfor.BirthOrder)
       if (this.selectDistrictMember != null) {
         this.objMemberContact.Address =
           this.objMemberContact.Address + "-" + this.selectDistrictMember;
@@ -2321,10 +2337,7 @@ export default {
         MemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
         NickName: this.objMemberInfor.NickName,
-        BirthOrder:
-          this.objMemberInfor.BirthOrder == "null"
-            ? this.objMemberInfor.BirthOrder
-            : 1,
+        BirthOrder: this.objMemberInfor.BirthOrder == 'null' ? this.objMemberInfor.BirthOrder : 1,
         Origin: this.objMemberInfor.Origin,
         NationalityID: this.objMemberInfor.NationalityID,
         ReligionID: this.objMemberInfor.ReligionID,
@@ -2379,9 +2392,6 @@ export default {
         .catch((e) => {
           console.log(e);
         });
-    },
-    getDistrictMember() {
-      console.log(this.selectDistrictMember);
     },
     //Nguyễn Lê Hùng
     selectRowJob(job) {
@@ -2574,9 +2584,10 @@ export default {
       this.objMemberInfor.BirthOrder = 1;
       this.objMemberInfor.Male = 1;
       console.log(action);
-      if (action == "AddMarriage") {
-        this.objMemberInfor.MarriageNumber = 1;
-        console.log("đã vào");
+      if(action == "AddMarriage"){
+        this.objMemberInfor.MarriageNumber = this.getMaxMarriage(this.CurrentIdMember);
+        console.log(this.getMaxMarriage(this.CurrentIdMember))
+        console.log("đã vào")
       }
       if (this.isFather == true && action == "AddMarriage") {
         console.log(this.isFather);
