@@ -266,12 +266,9 @@ export default {
       })
         .then((response) => {
           console.log(this.accountRegister.email);
-          localStorage.setItem("emailRegister", this.accountRegister.email);
           this.accountRegister = [];
           if (response.data.success == false) {
             this.NotificationsDelete(response.data.message);
-          } else {
-            this.$router.push("/verify");
           }
         })
         .catch((e) => {

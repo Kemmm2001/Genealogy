@@ -303,7 +303,7 @@ var addChild = async (req, res) => {
             if (fatherData[0].RoleID == 3
                 && !CoreFunction.isDataNumberExist(fatherData[0].FatherID) && !CoreFunction.isDataNumberExist(fatherData[0].MotherID)) {
                 console.log("Đã vào trường hợp cha là người ngoài");
-                let errorMessage = 'Không thể thêm con riêng nếu cha là người ngoài';
+                let errorMessage = 'Không thể thêm con riêng vì cha là người ngoài';
                 return res.send(Response.badRequestResponse(null, errorMessage));
             }
             listChild = await FamilyManagementService.getMembersByOnlyFatherID(req.body.FatherID);
@@ -316,7 +316,7 @@ var addChild = async (req, res) => {
             if (motherData[0].RoleID == 3
                 && !CoreFunction.isDataNumberExist(motherData[0].FatherID) && !CoreFunction.isDataNumberExist(motherData[0].MotherID)) {
                 console.log("Đã vào trường hợp mẹ là người ngoài");
-                let errorMessage = 'Không thể thêm con riêng nếu mẹ là người ngoài';
+                let errorMessage = 'Không thể thêm con riêng vì mẹ là người ngoài';
                 return res.send(Response.badRequestResponse(null, errorMessage));
             }
             listChild = await FamilyManagementService.getMembersByOnlyMotherID(req.body.MotherID);
@@ -395,7 +395,7 @@ var addMarriage = async (req, res) => {
         // nếu là người ngoài gia phả, tức là ko có cha mẹ và roleid là 3
         if (currentMember[0].RoleID == 3 
             && !CoreFunction.isDataNumberExist(currentMember[0].FatherID) && !CoreFunction.isDataNumberExist(currentMember[0].MotherID)) {
-            let errorMessage = 'Không thể thêm vợ chồng nếu thành viên hiện tại là người ngoài gia phả';
+            let errorMessage = 'Không thể thêm vì thành viên hiện tại là người ngoài gia phả';
             return res.send(Response.badRequestResponse(null, errorMessage));
         }
         // trường hợp ở khác gia phả
@@ -652,6 +652,11 @@ var updateMemberToGenealogy = async (req, res) => {
         let outGenealogyMemeber = await FamilyManagementService.getMemberByMemberID(req.body.OutGenealogyID);
         if (inGenealogyMemeber == null || inGenealogyMemeber.length == 0 || outGenealogyMemeber == null || outGenealogyMemeber.length == 0) {
             return res.send(Response.dataNotFoundResponse(null, "Thành viên không tồn tại"));
+        }
+        // nếu vào trường hợp là người ngoài gia phả không được thực hiện gì cả
+        if (inGenealogyMemeber[0].RoleID == 3) {
+            let errorMessage = 'Không thể thêm vì thành viên hiện tại là người ngoài gia phả';
+            return res.send(Response.badRequestResponse(null, errorMessage));
         }
         // nếu không cùng gia phả, tức là không cùng CodeID
         if (inGenealogyMemeber[0].CodeID != outGenealogyMemeber[0].CodeID) {
