@@ -567,16 +567,16 @@
                         <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con thứ</label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;" v-if="objMemberInfor.FatherID == null && action == null">
-                        <input v-model="objMember.MarriageNumber" type="number" min="0" class="form-control modal-item" disabled placeholder />
-                        <label class="form-label-number" for="input" v-if="objMemberInfor.FatherID == null && objMemberInfor.MotherID == null && action != 'AddMarriage' " :class="{ 'active': objMember.MarriageNumber }">{{objMemberInfor.Male == 1 ? 'Chồng thứ':'Vợ thứ'}}</label>
+                        <input v-model="objMemberInfor.MarriageNumber" type="number" min="0" max="20" class="form-control modal-item" disabled placeholder />
+                        <label class="form-label-number" for="input" v-if="objMemberInfor.FatherID == null && objMemberInfor.MotherID == null && action != 'AddMarriage' " :class="{ 'active': objMemberInfor.MarriageNumber }">{{objMemberInfor.Male == 1 ? 'Chồng thứ':'Vợ thứ'}}</label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;" v-if="action == 'AddChild'">
                         <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item" placeholder />
                         <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con thứ</label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;" v-if="action == 'AddMarriage'">
-                        <input v-model="objMember.MarriageNumber" type="number" min="0" class="form-control modal-item" placeholder />
-                        <label class="form-label-number" for="input" :class="{ 'active': objMember.MarriageNumber }">{{isFather == false ? 'Chồng thứ':'Vợ thứ'}}</label>
+                        <input v-model="objMemberInfor.MarriageNumber" type="number" min="0" max="20" class="form-control modal-item" placeholder />
+                        <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.MarriageNumber }">{{isFather == false ? 'Chồng thứ':'Vợ thứ'}}</label>
                       </div>
                     </div>
                     <div style="display:flex">
@@ -1638,7 +1638,7 @@ export default {
           this.objMember = response.data.data;
           console.log(id);
           console.log(this.objMember);
-          this.objMember.MarriageNumber = response.data.data.MarriageNumber;
+          this.objMemberInfor.MarriageNumber = response.data.data.MarriageNumber;
           // console.log("result: " + response.data.data.MarriageNumber);
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
@@ -2061,6 +2061,7 @@ export default {
         });
     },
     addMemberMarried() {
+      console.log(this.objMemberInfor.MarriageNumber)
       HTTP.post("add-marriage", {
         CurrentMemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
@@ -2557,7 +2558,11 @@ export default {
       this.selectCityMember = null;
       this.objMemberInfor.BirthOrder = 1;
       this.objMemberInfor.Male = 1;
-      console.log(this.isFather);
+      console.log(action);
+      if(action == "AddMarriage"){
+        this.objMemberInfor.MarriageNumber = 1;
+        console.log("đã vào")
+      }
       if (this.isFather == true && action == "AddMarriage") {
         console.log(this.isFather);
         this.objMemberInfor.Male = 0;
