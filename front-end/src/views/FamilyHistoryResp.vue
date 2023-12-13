@@ -40,9 +40,9 @@
                             :style="{ 'width': '49%', 'float': element.HistoryID % 2 === 0 ? 'right' : 'left' }">
                             <div class="position-absolute history-start">{{ formatDate(element.startDate) }}</div>
                             <div class="position-absolute history-end">{{ formatDate(element.endDate) }}</div>
-                            <div class="d-flex align-items-center" style="min-height: inherit; padding-top: 25px;">{{
-                                element.Description
-                            }}</div>
+                            <div class="d-flex align-items-center" style="min-height: inherit; padding-top: 25px;">
+                                <div class="ellipsis-text">{{ element.Description }}</div>
+                            </div>
                         </div>
                     </div>
                 </draggable>
@@ -62,8 +62,7 @@
             <modal name="add-history-mdl">
                 <div class="mdl-container">
                     <div class="mdl-title">
-                        <div style="font-family: 'QuicksandBold'; font-size: 17px;">Sự kiện trong ngày {{
-                            formatDate(dateSelected) }}
+                        <div style="font-family: 'QuicksandBold'; font-size: 17px;">Thông tin sự kiện
                         </div>
                         <div class="mdl-close" @click="closeAddHistoryModal()">
                             <svg class="h-100" style="cursor: pointer;" xmlns="http://www.w3.org/2000/svg"
