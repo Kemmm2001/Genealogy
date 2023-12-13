@@ -27,15 +27,15 @@ const initWebRouter = (app) => {
 
     //API tuấn
     // Create a new FamilyHistory
-    router.post('/familyhistory', FamilyHistoryController.addFamilyHistory);
+    router.post('/familyhistory', authMiddleware.authenticateAndAuthorize(2),FamilyHistoryController.addFamilyHistory);
     // Retrieve a single FamilyHistory with id
-    router.get('/familyhistory', FamilyHistoryController.getFamilyHistory);
+    router.get('/familyhistory',authMiddleware.authenticateAndAuthorize(3), FamilyHistoryController.getFamilyHistory);
     // Update a FamilyHistory with id
-    router.put('/familyhistory', FamilyHistoryController.updateFamilyHistory);
+    router.put('/familyhistory',authMiddleware.authenticateAndAuthorize(2), FamilyHistoryController.updateFamilyHistory);
     // Delete a FamilyHistory with id
     router.get('/delete-familyhistory', FamilyHistoryController.deleteFamilyHistory);
-    router.post('/searchHistory', FamilyHistoryController.searchHistory)
-    router.post('/filterHistory',FamilyHistoryController.filterHistory)
+    router.post('/searchHistory',authMiddleware.authenticateAndAuthorize(3), FamilyHistoryController.searchHistory)
+    router.post('/filterHistory',authMiddleware.authenticateAndAuthorize(3),FamilyHistoryController.filterHistory)
 
 
     // Create a new AlbumPhoto
