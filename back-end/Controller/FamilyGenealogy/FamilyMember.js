@@ -654,7 +654,8 @@ var updateMemberToGenealogy = async (req, res) => {
             return res.send(Response.dataNotFoundResponse(null, "Thành viên không tồn tại"));
         }
         // nếu vào trường hợp là người ngoài gia phả không được thực hiện gì cả
-        if (inGenealogyMemeber[0].RoleID == 3) {
+        if (inGenealogyMemeber[0].RoleID == 3 
+            && !CoreFunction.isDataNumberExist(inGenealogyMemeber[0].FatherID) && !CoreFunction.isDataNumberExist(inGenealogyMemeber[0].MotherID) ) {
             let errorMessage = 'Không thể thêm vì thành viên hiện tại là người ngoài gia phả';
             return res.send(Response.badRequestResponse(null, errorMessage));
         }
