@@ -94,7 +94,7 @@
           </div>
         </div>
         <div class="button-list d-flex flex-row pt-3 mt-2">
-          <div @click="showAddEventModal()" class="btn bg-primary text-white d-flex align-items-center">Thêm sự kiện</div>
+          <div v-if="memberRole != 3" @click="showAddEventModal()" class="btn bg-primary text-white d-flex align-items-center">Thêm sự kiện</div>
           <!-- <div @click="exportExcel()" class="btn bg-primary text-white d-flex align-items-center item">Xuất excel</div> -->
         </div>
         <div class="pt-3" style="height: calc(100% - 96px);">
@@ -107,7 +107,7 @@
                   <th class="eventlist-list-th" scope="col">Thời gian bắt đầu</th>
                   <th class="eventlist-list-th" scope="col">Trạng thái</th>
                   <th class="eventlist-list-th" scope="col">Địa điểm</th>
-                  <th class="eventlist-list-th" scope="col"></th>
+                  <th v-if="memberRole != 3" class="eventlist-list-th" scope="col"></th>
                 </tr>
               </thead>
               <tbody>
@@ -120,11 +120,9 @@
                   </td>
                   <td>{{ event.Status == 1 ? "Chưa kết thúc" : "Đã Kết Thúc" }}</td>
                   <td @click="showEditEventModal(event.EventID)">{{ event.Place }}</td>
-                  <td>
-                    <!-- <div v-if="checkEventNotificationSent(event.EventID)" @click="showParticipantList(event.EventID)" class="btn bg-primary text-white">Tham gia sự kiện</div>
-                    <div v-else-if="!checkEventNotificationSent(event.EventID) && event.Status == 1" @click="showMemberList(event.EventID)" class="btn bg-primary text-white">Thông báo</div> -->
-                    <div @click="showParticipantList(event.EventID)"
-                      class="btn bg-primary text-white">Tham gia sự kiện</div>
+                  <td v-if="memberRole != 3">
+                    <div v-if="checkEventNotificationSent(event.EventID)" @click="showParticipantList(event.EventID)" class="btn bg-primary text-white">Tham gia sự kiện</div>
+                    <div v-else-if="!checkEventNotificationSent(event.EventID) && event.Status == 1" @click="showMemberList(event.EventID)" class="btn bg-primary text-white">Thông báo</div>
                   </td>
                 </tr>
               </tbody>
@@ -195,7 +193,7 @@
                 <textarea v-model="eventFamily.Note" class="w-100 h-100 text-area" placeholder="Ghi chú"></textarea>
               </div>
             </div>
-            <div class="modal-footer position-absolute w-100" style="bottom: 0;">
+            <div v-if="memberRole != 3" class="modal-footer position-absolute w-100" style="bottom: 0;">
               <div v-if="isAdd" @click="addEvent()" class="bg-primary text-white btn mx-2">Thêm</div>
               <div v-else @click="updateEvent()" class="bg-primary text-white btn mx-2">Lưu</div>
               <div @click="removeEvent()" class="bg-danger text-white btn mx-2">Xóa sự kiện</div>
@@ -405,6 +403,7 @@ export default {
       chooseDate: null,
       indexClickDay: null,
       indexClickWeek: null,
+      memberRole: null,
 
       currentEventId: null,
       listEvent: [],
@@ -481,44 +480,48 @@ export default {
         });
     },
     sendMessageToConfirmEvent(action) {
-      if (action != null) {
-        this.ListMemberToSendEmail = this.listMember.map(
-          (element) => element.MemberID
-        );
-      }
-      if (this.numberExpire != null) {
-        HTTP.get("getIdAndEmail", {
-          params: {
-            ListMemberID: this.ListMemberToSendEmail,
-            eventId: this.currentEventID,
-          },
-        })
-          .then((respone) => {
-            HTTP.post("inviteMail", {
-              data: respone.data.data,
-              time: this.numberExpire + this.timeType,
+      if (this.ListMemberToSendEmail.length == 0) {
+        if (this.numberExpire != null) {
+          if (action != null) {
+            this.ListMemberToSendEmail = this.listMember.map(
+              (element) => element.MemberID
+            );
+          }
+          HTTP.get("getIdAndEmail", {
+            params: {
+              ListMemberID: this.ListMemberToSendEmail,
               eventId: this.currentEventID,
-            })
-              .then((respone) => {
-                if (respone.data.success == true) {
-                  this.NotificationsScuccess("Gửi thông báo thành công");
-                  this.closeMemberList();
-                  this.getListEvent();
-                  this.time = null;
-                  this.ListMemberToSendEmail = [];
-                }
-              })
-              .catch((e) => {
-                console.log(e);
-              });
+            },
           })
-          .catch((e) => {
-            console.log(e);
-          });
+            .then((respone) => {
+              HTTP.post("inviteMail", {
+                data: respone.data.data,
+                time: this.numberExpire + this.timeType,
+                eventId: this.currentEventID,
+              })
+                .then((respone) => {
+                  if (respone.data.success == true) {
+                    this.NotificationsScuccess("Gửi thông báo thành công");
+                    this.closeMemberList();
+                    this.getListEvent();
+                    this.time = null;
+                    this.ListMemberToSendEmail = [];
+                  }
+                })
+                .catch((e) => {
+                  console.log(e);
+                });
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        } else {
+          this.NotificationsDelete(
+            "Bạn hãy chọn thời gian hết hạn của thông báo"
+          );
+        }
       } else {
-        this.NotificationsDelete(
-          "Bạn hãy chọn thời gian hết hạn của thông báo"
-        );
+        this.NotificationsDelete("Bạn hãy chọn người để gửi thông báo");
       }
     },
     toggleSelection(id) {
@@ -575,18 +578,18 @@ export default {
       let startDate;
       let endDate;
       let selectedDate;
-      console.log(dateCheck)
-      console.log(this.listEvent)
+      console.log(dateCheck);
+      console.log(this.listEvent);
       for (let i = 0; i < this.listEvent.length; i++) {
         startDate = new Date(this.listEvent[i].StartDate);
         startDate.setHours(0, 0, 0, 0);
-        endDate = new Date(this.listEvent[i].EndDate)
+        endDate = new Date(this.listEvent[i].EndDate);
         endDate.setHours(0, 0, 0, 0);
-        selectedDate = new Date(dateCheck)
+        selectedDate = new Date(dateCheck);
         selectedDate.setHours(0, 0, 0, 0);
         let check = selectedDate >= startDate && selectedDate <= endDate;
-        console.log(startDate+"-"+selectedDate+"-"+endDate)
-        console.log(check)
+        console.log(startDate + "-" + selectedDate + "-" + endDate);
+        console.log(check);
         if (check == true) {
           this.listEventByDate.push(this.listEvent[i]);
         }
@@ -949,6 +952,24 @@ export default {
           console.log(e);
         });
     },
+    getMemberRole() {
+      try {
+        HTTP.post("roleAccount", {
+          accountID: localStorage.getItem("accountID"),
+          codeID: localStorage.getItem("CodeID"),
+        })
+          .then((response) => {
+            if (response.data.success == true) {
+              this.memberRole = response.data.data.RoleID;
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    },
     closeParticipantList() {
       this.$modal.hide("participant-list");
     },
@@ -976,11 +997,17 @@ export default {
         this.$router.push("/login");
       }
     }
-    this.getListMemberToSendMessage();
-    this.setUpDate();
-    this.getDayOfMonth();
-    this.getListEvent();
-    this.getListEventNotificationSent();
+    if (
+      localStorage.getItem("CodeID") != null &&
+      localStorage.getItem("accountID") != null
+    ) {
+      this.getMemberRole();
+      this.getListMemberToSendMessage();
+      this.setUpDate();
+      this.getDayOfMonth();
+      this.getListEvent();
+      this.getListEventNotificationSent();
+    }
   },
 };
 </script>

@@ -2,19 +2,15 @@
 <template>
   <div class="history-screen d-flex h-100 w-100 p-0 position-relative" style="overflow-y: auto;">
     <div class="h-100 position-absolute" style="top: 0; left: 0; width: 20%;">
-      <div class="pt-2 px-2 d-flex flex-row align-items-center justify-content-center"
-        style="height: 50px; font-size: 20px; font-weight: bold;">Lịch sử gia phả</div>
+      <div class="pt-2 px-2 d-flex flex-row align-items-center justify-content-center" style="height: 50px; font-size: 20px; font-weight: bold;">Lịch sử gia phả</div>
       <div class="position-relative p-2 d-flex">
         <label for="text-search" style="position: absolute; inset: 12px;">
-          <svg class="text-search-icon h-100 d-flex align-items-center" xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 512 512">
-            <path
-              d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
+          <svg class="text-search-icon h-100 d-flex align-items-center" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+            <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
           </svg>
         </label>
         <div class="w-100" style="height: 48px;">
-          <input v-model="keySearch" @change="searchHistory()" class="form-control px-5 py-0 w-100 h-100" id="text-search"
-            type="text" />
+          <input v-model="keySearch" @change="searchHistory()" class="form-control px-5 py-0 w-100 h-100" id="text-search" type="text" />
         </div>
       </div>
       <div class="pb-2 px-2 d-flex flex-row">
@@ -26,32 +22,24 @@
         <input @change="filterHistory()" v-model="filterEndDate" class="form-control" type="date" />
       </div>
       <div class="pb-2 px-2 d-flex justify-content-center">
-        <div @click="showAddHistoryModal('Thêm lịch sử dòng họ', 'add')" class="btn bg-primary text-white"
-          style="margin-right: 10px;">Thêm</div>
+        <div v-if="memberRole != 3" @click="showAddHistoryModal('Thêm lịch sử dòng họ', 'add')" class="btn bg-primary text-white" style="margin-right: 10px;">Thêm</div>
         <div @click="resertHistory()" class="btn bg-primary text-white">Làm mới</div>
       </div>
     </div>
-    <div v-if="listHistory" class="h-100 position-absolute p-2"
-      style="top: 0; right: 0; width: 80%; background-color: #f2f2f2;">
-      <draggable :list="listHistory" :disabled="!enabled" class="list-group h-100" style="overflow-y: auto;"
-        ghost-class="ghost" :move="checkMove" @start="dragging = true" @end="dragging = false">
-        <div v-for="element in listHistory" :key="element.HistoryID" class="w-100"
-          :style="{ 'min-height': '72px', 'float': element.HistoryID % 2 === 0 ? 'right' : 'left' }">
-          <div @click="getInforHistory(element.HistoryID)" class="list-group-item position-relative h-100"
-            :style="{ 'width': '49%', 'float': element.HistoryID % 2 === 0 ? 'right' : 'left' }">
+    <div v-if="listHistory" class="h-100 position-absolute p-2" style="top: 0; right: 0; width: 80%; background-color: #f2f2f2;">
+      <draggable :list="listHistory" :disabled="!enabled" class="list-group h-100" style="overflow-y: auto;" ghost-class="ghost" :move="checkMove" @start="dragging = true" @end="dragging = false">
+        <div v-for="element in listHistory" :key="element.HistoryID" class="w-100" :style="{ 'min-height': '72px', 'float': element.HistoryID % 2 === 0 ? 'right' : 'left' }">
+          <div @click="getInforHistory(element.HistoryID)" class="list-group-item position-relative h-100" :style="{ 'width': '49%', 'float': element.HistoryID % 2 === 0 ? 'right' : 'left' }">
             <div class="position-absolute history-start">{{ formatDate(element.startDate) }}</div>
             <div class="position-absolute history-end">{{ formatDate(element.endDate) }}</div>
-            <div class="d-flex align-items-center" style="min-height: inherit; padding-top: 25px;">{{ element.Description
-            }}</div>
+            <div class="d-flex align-items-center" style="min-height: inherit; padding-top: 25px;">{{ element.Description }}</div>
           </div>
         </div>
       </draggable>
     </div>
     <div v-else class="h-100 position-absolute p-2" style="top: 0; right: 0; width: 80%; background-color: #f2f2f2;">
       <div class="h-100 w-100 position-relative">
-        <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content; font-size: 19px;">
-          Gia phả của bạn chưa được tạo lịch sử
-        </div>
+        <div style="inset: 0; margin: auto; position: absolute; height: fit-content; width: fit-content; font-size: 19px;">Gia phả của bạn chưa được tạo lịch sử</div>
       </div>
     </div>
     <div class="addHistory-container">
@@ -59,12 +47,10 @@
         <div class="form-group h-100">
           <div class="w-100 h-100 modal-bg position-relative">
             <div class="d-flex flex-row w-100 align-items-center position-relative">
-              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">{{ TitleModal }}
-              </div>
+              <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">{{ TitleModal }}</div>
               <div class="close-add-form" @click="closeAddHistoryModal()">
                 <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                  <path
-                    d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                  <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
                 </svg>
               </div>
             </div>
@@ -78,11 +64,10 @@
                 <input v-model="endDate" type="date" class="form-control" @change="filterHistory()" />
               </div>
               <div class="pt-2 px-2" style="height: 120px;">
-                <textarea v-model="descriptionModal" class="w-100 h-100 text-area description form-control"
-                  placeholder="Mô tả"></textarea>
+                <textarea v-model="descriptionModal" class="w-100 h-100 text-area description form-control" placeholder="Mô tả"></textarea>
               </div>
             </div>
-            <div class="modal-footer position-absolute w-100" style="bottom: 0;">
+            <div v-if="memberRole!= 3" class="modal-footer position-absolute w-100" style="bottom: 0;">
               <div v-if="isAdd" @click="addHistory()" class="bg-primary text-white btn mx-2">Thêm</div>
               <div v-else @click="updateHistory()" class="bg-primary text-white btn mx-2">sửa</div>
               <div v-if="!isAdd" @click="removeHistory()" class="bg-danger text-white btn mx-2">Xóa lịch sử</div>
@@ -120,6 +105,7 @@ export default {
       keySearch: null,
       filterStartDate: null,
       filterEndDate: null,
+      memberRole: null,
     };
   },
   methods: {
@@ -151,11 +137,28 @@ export default {
         },
       });
     },
+    getMemberRole() {
+      try {
+        HTTP.post("roleAccount", {
+          accountID: localStorage.getItem("accountID"),
+          codeID: localStorage.getItem("CodeID"),
+        })
+          .then((response) => {
+            if (response.data.success == true) {
+              this.memberRole = response.data.data.RoleID;
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    },
     //nguyễn lê hùng
     filterHistory() {
       if (this.filterEndDate != null && this.filterStartDate != null) {
         HTTP.post("filterHistory", {
-          
           startDate: this.filterStartDate,
           endDate: this.filterEndDate,
         })
@@ -174,7 +177,6 @@ export default {
     //nguyễn lê hùng
     searchHistory() {
       HTTP.post("searchHistory", {
-        
         CodeID: this.CodeID,
         keySearch: this.keySearch,
       })
@@ -193,7 +195,6 @@ export default {
     //nguyễn lê hùng
     removeHistory() {
       HTTP.get("delete-familyhistory", {
-        
         params: {
           FamilyHistoryID: this.historyID,
         },
@@ -222,20 +223,21 @@ export default {
       this.isAdd = false;
       this.historyID = historyID;
       HTTP.get("familyhistory", {
-        
         params: {
           FamilyHistoryID: historyID,
         },
-      }).then((response) => {
-        if (response.data.success == true) {
-          let data = response.data.data;
-          data = data[0];
-          this.endDate = this.formatDate(data.endDate);
-          this.startDate = this.formatDate(data.startDate);
-          this.descriptionModal = data.Description;
-          this.showAddHistoryModal("Thông tin lịch sử");
-        }
-      }).catch((e) => {
+      })
+        .then((response) => {
+          if (response.data.success == true) {
+            let data = response.data.data;
+            data = data[0];
+            this.endDate = this.formatDate(data.endDate);
+            this.startDate = this.formatDate(data.startDate);
+            this.descriptionModal = data.Description;
+            this.showAddHistoryModal("Thông tin lịch sử");
+          }
+        })
+        .catch((e) => {
           console.log(e);
         });
     },
@@ -248,7 +250,6 @@ export default {
         this.descriptionModal != ""
       ) {
         HTTP.put("familyhistory", {
-          
           FamilyHistoryID: this.historyID,
           Description: this.descriptionModal,
           startDate: this.startDate,
@@ -282,7 +283,6 @@ export default {
           this.descriptionModal != ""
         ) {
           HTTP.post("familyhistory", {
-            
             CodeID: this.CodeID,
             Description: this.descriptionModal,
             startDate: this.startDate,
@@ -317,7 +317,6 @@ export default {
     },
     getListHistory() {
       HTTP.get("familyhistory", {
-        
         params: {
           CodeID: this.CodeID,
         },
@@ -354,7 +353,13 @@ export default {
         this.$router.push("/login");
       }
     }
-    this.getListHistory();
+    if (
+      localStorage.getItem("CodeID") != null &&
+      localStorage.getItem("accountID") != null
+    ) {
+      this.getMemberRole();
+      this.getListHistory();
+    }
   },
 };
 </script>

@@ -4,7 +4,7 @@
     <div class="func-container col-2 d-flex flex-column">
       <div class="menu px-3 d-flex flex-column">
         <div @click="selectProfile()" :class="{ chosen: profileSelected }" class="menu-item d-flex align-items-center mt-3 px-3 py-2" style="color: #FFFFFF;">Tài khoản cá nhân</div>
-        <div @click="selectEditRole()" :class="{ chosen: editRoleSelected }" class="menu-item d-flex align-items-center mt-2 px-3 py-2" style="color: #FFFFFF;">Phân quyền trong gia phả</div>
+        <div v-if="memberRole != 3" @click="selectEditRole()" :class="{ chosen: editRoleSelected }" class="menu-item d-flex align-items-center mt-2 px-3 py-2" style="color: #FFFFFF;">Phân quyền trong gia phả</div>
         <div @click="selectChangePwd()" :class="{ chosen: changePwdSelected }" class="menu-item d-flex align-items-center mt-2 px-3 py-2" style="color: #FFFFFF;">Thay đổi mật khẩu</div>
       </div>
     </div>
@@ -54,7 +54,7 @@
         'family-account-item even py-2 position-relative': index % 2 == 0
       }">
                 <div class="username position-absolute">{{ m.Email }}</div>
-                <div class="role h-100 position-absolute py-1">
+                <div v-if="memberRole != 3" class="role h-100 position-absolute py-1">
                   <select :disabled="m.RoleID != 1 ? false : true" v-model="m.RoleID" class="form-select h-100 px-3 py-0" @change="changeRole(m.RoleID, m.AccountID)">
                     <option v-for="list in listRoleAccount" v-bind:key="list.id" style="text-align: center;" :value="list.RoleID">{{list.RoleName}}</option>
                   </select>
@@ -133,6 +133,7 @@ export default {
       accountInfor: null,
       CodeID: null,
       inforTree: null,
+      memberRole: null,
 
       getCurrentPassword: null,
 
@@ -305,12 +306,12 @@ export default {
     getInforAccount() {
       HTTP.post("get-user", {
         accountID: this.accountID,
-        CodeID: this.CodeID
+        CodeID: this.CodeID,
       })
         .then((respone) => {
           if (respone.data.success == true) {
             this.accountInfor = respone.data.data;
-            console.log('infor: ' + this.accountInfor );
+            console.log("infor: " + this.accountInfor);
           } else {
             this.NotificationsScuccess(respone.data.message);
           }
@@ -318,6 +319,24 @@ export default {
         .catch((e) => {
           console.log(e);
         });
+    },
+    getMemberRole() {
+      try {
+        HTTP.post("roleAccount", {
+          accountID: localStorage.getItem("accountID"),
+          codeID: localStorage.getItem("CodeID"),
+        })
+          .then((response) => {
+            if (response.data.success == true) {
+              this.memberRole = response.data.data.RoleID;
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } catch (error) {
+        console.log(error);
+      }
     },
     getListRoleMember() {
       console.log(this.CodeID);
@@ -381,10 +400,16 @@ export default {
         this.$router.push("/login");
       }
     }
-    this.getListRoleMember();
-    this.getInforAccount();
-    this.getInforTree();
-    this.getAllRoleAccount();
+    if (
+      localStorage.getItem("CodeID") != null &&
+      localStorage.getItem("accountID") != null
+    ) {
+      this.getMemberRole();
+      this.getListRoleMember();
+      this.getInforAccount();
+      this.getInforTree();
+      this.getAllRoleAccount();
+    }
   },
 };
 </script>

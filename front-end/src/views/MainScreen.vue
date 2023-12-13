@@ -2,10 +2,10 @@
 <template>
   <div class="d-flex h-100 w-100 position-relative">
     <div class="list h-100 d-flex flex-column align-items-center">
-      <div v-if="memberRole != 3" class="w-100 d-flex flex-column" style="height: 15%;">
+      <div class="w-100 d-flex flex-column" style="height: 15%;">
         <div class="w-100 h-100 d-flex flex-column" style="align-items: center">
           <div class="w-100 d-flex flex-row" style="padding-top: 8px; height: 50%;">
-            <div class="col-6" style="padding-left: 8px; padding-right: 6px">
+            <div v-if="memberRole != 3" class="col-6" style="padding-left: 8px; padding-right: 6px">
               <div class="w-100 h-100">
                 <button @click="openNotiModal()" style="width:100%; font-size: 15px;" type="button" class="btn btn-secondary h-100">Tạo thông báo</button>
               </div>
@@ -16,7 +16,7 @@
               </div>
             </div>
           </div>
-          <div class="w-100 d-flex flex-row" style="padding-top: 8px; height: 50%;">
+          <div v-if="memberRole != 3" class="w-100 d-flex flex-row" style="padding-top: 8px; height: 50%;">
             <div class="col-6" style="padding-left: 8px; padding-right: 6px">
               <div class="w-100 h-100">
                 <button @click="BackUpdata()" style="width:100%; font-size: 15px; color:white" type="button" class="btn btn-secondary h-100">Lưu trữ dữ liệu</button>
@@ -833,7 +833,7 @@
             <div class="d-flex justify-content-end" style="padding-right: 12px;">
               <button v-if="isAdd && memberRole != 3" type="button" class="btn btn-primary mr-2" @click="addMember()">Thêm</button>
               <button v-else-if="isEdit && memberRole != 3" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
-              <button v-if="nodes.length" style="margin-left:10px" type="button" class="btn btn-danger" @click="openCfDelModal('removeMember', null, objMemberInfor.MemberName)">Xóa thành viên</button>
+              <button v-if="nodes.length && memberRole != 3" style="margin-left:10px" type="button" class="btn btn-danger" @click="openCfDelModal('removeMember', null, objMemberInfor.MemberName)">Xóa thành viên</button>
             </div>
           </div>
         </div>
@@ -1944,32 +1944,34 @@ export default {
     },
     //Nguyễn Lê Hùng
     updateAvatar(event) {
-      let formData = new FormData();
-      this.isUpdateAvatar = true;
-      let file = event.target.files[0];
-      formData.append("Image", file);
-      formData.append("MemberID", this.CurrentIdMember);
-      HTTP.put("member-photo", formData)
-        .then((response) => {
-          if (response.data.success == true) {
-            this.getListMember();
-            this.NotificationsScuccess(response.data.message);
-          } else {
-            this.NotificationsScuccess(response.data.message);
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+      if (this.memberRole != 3) {
+        let formData = new FormData();
+        this.isUpdateAvatar = true;
+        let file = event.target.files[0];
+        formData.append("Image", file);
+        formData.append("MemberID", this.CurrentIdMember);
+        HTTP.put("member-photo", formData)
+          .then((response) => {
+            if (response.data.success == true) {
+              this.getListMember();
+              this.NotificationsScuccess(response.data.message);
+            } else {
+              this.NotificationsScuccess(response.data.message);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
 
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.avatarSrc = e.target.result; // Cập nhật ảnh avatar bằng ảnh tải lên
-        };
-        reader.readAsDataURL(file);
-      } else {
-        this.avatarSrc = null;
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            this.avatarSrc = e.target.result; // Cập nhật ảnh avatar bằng ảnh tải lên
+          };
+          reader.readAsDataURL(file);
+        } else {
+          this.avatarSrc = null;
+        }
       }
     },
     getImageSize() {
