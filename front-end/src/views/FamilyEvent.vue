@@ -252,7 +252,7 @@
       </modal>
     </div>
 
-    <div class="event-modal-container">
+    <div class="event-modal-container" style="z-index: 100px;">
       <modal name="event-modal">
         <div class="w-100 h-100 add-head-modal">
           <div class="d-flex flex-row w-100 align-items-center position-relative">
@@ -276,13 +276,13 @@
                 </thead>
                 <tbody>
                   <tr style="cursor: pointer;" class="eventlist-item eventlist-table-item odd" v-for="(event, index) in listEventByDate" :key="event.EventID">
-                    <td>{{ index + 1 }}</td>
-                    <td>{{ event.EventName }}</td>
-                    <td>
+                    <td @click="showEditEventModal(event.EventID)">{{ index + 1 }}</td>
+                    <td @click="showEditEventModal(event.EventID)">{{ event.EventName }}</td>
+                    <td @click="showEditEventModal(event.EventID)">
                       <div>{{ formattedCreatedAt(event.StartDate) }} (DL)</div>
                       <div>{{ formattedCreatedAt(convertSolarToLunar(event.StartDate)) }} (AL)</div>
                     </td>
-                    <td>
+                    <td @click="showEditEventModal(event.EventID)">
                       <div>{{ formattedCreatedAt(event.EndDate) }} (DL)</div>
                       <div>{{ formattedCreatedAt(convertSolarToLunar(event.EndDate)) }} (AL)</div>
                     </td>
@@ -1060,5 +1060,8 @@ td.ngaythang {
 td.ngaythang:hover {
   cursor: pointer;
   background-color: lightblue;
+}
+.event-screen .event-modal-container .vm--container {
+    z-index: 100;
 }
 </style>
