@@ -270,7 +270,7 @@ function DeleteRegisterToken(email) {
 function UpdateActive(IsActive, email) {
   return new Promise((resolve, reject) => {
     try {
-      let query = `UPDATE genealogy.account as a SET a.IsActive = '${IsActive}' WHERE Email = '${email};'`;
+      let query = `UPDATE genealogy.account as a SET a.IsActive = '${IsActive}' WHERE Email = '${email}'`;
       db.connection.query(query, (err) => {
         if (!err) {
           resolve(true)

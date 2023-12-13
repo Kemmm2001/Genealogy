@@ -2,12 +2,12 @@
 <template>
   <div class="w-100 h-100 position-relative verify-background" style="min-height: inherit;">
     <div class="position-absolute verify-container d-flex align-items-center flex-column" style="opacity: 93%; justify-content: space-around; font-size: 18px;">
-      <div style="font-weight: bold;">Chúng tôi đã gửi email xác nhận tới tài khoản {{ email }}</div>
-      <div style="padding: 0 10%;">
-        Nhấn vào đường dẫn trong hòm thư để xác nhận tài khoản. Nếu bạn không thể tìm thấy email, hãy check trong thư mục spam hoặc bấm vào
-        <span @click="verifyAccount()" class="text-primary" style="cursor: pointer; text-decoration: underline;">đây</span> để gửi lại.
+      <div v-if="isActive" style="font-weight: bold;">Cảm ơn bạn đã dùng ứng dụng của chúng tôi. Chúng tôi đã xác nhận tới tài khoản {{ email }}</div>
+      <div v-else>
+        Bạn đã hết thời gian xác nhận tài khoản. Click
+        <a @click="verify_EmailAgain()" style="color:red;cursor: pointer">vào đây</a> để gửi lại email xác nhận
       </div>
-      <div>
+      <div v-if="isActive">
         <div class="btn bg-primary text-white" @click="comeBackLogin()">Trở về trang đăng nhập</div>
       </div>
     </div>
@@ -15,34 +15,67 @@
 </template>
 <script>
 import { HTTP } from "../assets/js/baseAPI.js";
+import Snackbar from "awesome-snackbar";
 export default {
   data() {
     return {
       email: null,
+      isActive: true,
     };
   },
   methods: {
-    comeBackLogin() {
-      localStorage.removeItem("emailRegister"), this.$router.push("/login");
+    NotificationsDelete(messagee) {
+      new Snackbar(messagee, {
+        position: "bottom-right",
+        theme: "light",
+        style: {
+          container: [
+            ["background-color", "#ff4d4d"],
+            ["border-radius", "5px"],
+          ],
+          message: [["color", "#fff"]],
+        },
+      });
     },
-    verifyAccount() {
-      HTTP.post("verify-account", {
-        email: this.email,
-      })
-        .then((response) => {
-          console.log(response.data.success);
-          console.log(this.email);
-          if (response.data.success == false) {
-            this.NotificationsDelete(response.data.message);
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+    NotificationsScuccess(messagee) {
+      new Snackbar(messagee, {
+        position: "bottom-right",
+        theme: "light",
+        style: {
+          container: [
+            ["background-color", "#1abc9c"],
+            ["border-radius", "5px"],
+          ],
+          message: [["color", "#fff"]],
+        },
+      });
+    },
+    verify_EmailAgain() {
+      HTTP.post("re_verify-account", {
+        token: this.token,
+      }).then((resspone) => {
+        if (resspone.data.success) {
+          this.NotificationsScuccess("Gửi lại email xác nhận thành công");
+        } else {
+          this.NotificationsDelete(resspone.data.message);
+        }
+      });
+    },
+    comeBackLogin() {
+      this.$router.push("/login");
     },
   },
   mounted() {
-    this.email = localStorage.getItem("emailRegister");
+    this.token = this.$route.query.token;
+    HTTP.post("setActive", {
+      token: this.token,
+    }).then((resspone) => {
+      if (resspone.data.success) {
+        this.isActive = true;
+      } else {
+        this.isActive = false;
+      }
+    });
   },
 };
 </script>
