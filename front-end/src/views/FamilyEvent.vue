@@ -319,9 +319,9 @@
                   </div>
                   <div class="col-3 d-flex flex-row px-2" style="padding-bottom: 4px;">
                     <select v-model="timeType" class="form-select h-100 w-100">
+                      <option value="m">phút</option>
                       <option value="h">Giờ</option>
-                      <option value="d">Ngày</option>
-                      <option value="m">Tháng</option>
+                      <option value="d">Ngày</option>                      
                     </select>
                   </div>
                 </div>
