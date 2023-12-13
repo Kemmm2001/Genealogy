@@ -967,6 +967,7 @@ export default {
       emailDetail: false,
 
       objMemberInfor: {
+        MarriageNumber:1,
         MemberID: 0,
         ParentID: null,
         MarriageID: null,
@@ -1638,8 +1639,6 @@ export default {
           this.objMember = response.data.data;
           console.log(id);
           console.log(this.objMember);
-          this.objMemberInfor.MarriageNumber = response.data.data.MarriageNumber;
-          // console.log("result: " + response.data.data.MarriageNumber);
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
             this.takeDataMember(this.CurrentIdMember);
@@ -1654,6 +1653,7 @@ export default {
             this.avatarSrc = this.objMemberInfor.Image;
             console.log("avatarSrc: " + this.avatarSrc);
           }
+       //   console.log("result: " + this.objMemberInfor.MarriageNumber);
           if (this.objMember.contact.length > 0) {
             this.objMemberContact = this.objMember.contact[0];
             console.log(this.objMemberContact);
@@ -1664,6 +1664,9 @@ export default {
             ) {
               this.getAdressMember(this.objMemberContact.Address);
             }
+          }
+          if(response.data.data.MarriageNumber != null){
+            this.objMemberInfor.MarriageNumber = response.data.data.MarriageNumber;
           }
           this.ListMemberEducation = this.objMember.education;
           this.ListMemberJob = this.objMember.job;
