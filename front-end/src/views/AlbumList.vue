@@ -186,7 +186,6 @@
           <div class="edit-photo-modal" style="background-color: white; height: calc(100% - 50px);">
             <div class="edit-photo-layout d-flex">
               <button class="btn btn-primary mr-2" style="margin: 10px;" @click="checkAddPhotoModalOpen(), openAddPhotoModal()">Thêm ảnh vào album</button>
-
               <button class="btn btn-danger mr-2" style="margin: 10px;" :disabled="isButtonDisabledPhoto" @click="removeFamilyPhotoByPhotoId()">Xóa Ảnh</button>
             </div>
             <div class="add-photo-list d-flex" style="height: calc(100% - 58px);">
