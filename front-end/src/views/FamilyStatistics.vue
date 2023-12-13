@@ -461,7 +461,7 @@ export default {
           this.memberList[i].isDead == 0
         ) {
           this.memberOldestAlive.age = this.ageMember(this.memberList[i].dob);
-          this.memberOldest.name = this.memberList[i].name;
+          this.memberOldestAlive.name = this.memberList[i].name;
         }
       }
       console.log(this.monthDob);

@@ -2065,7 +2065,7 @@ export default {
         CurrentMemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
         NickName: this.objMemberInfor.NickName,
-        MarriageNumber: this.objMemberInfor.BirthOrder,
+        MarriageNumber: this.objMemberInfor.MarriageNumber,
         Origin: this.objMemberInfor.Origin,
         NationalityID: this.objMemberInfor.NationalityID,
         ReligionID: this.objMemberInfor.ReligionID,
