@@ -85,6 +85,16 @@ let unauthorizedResponse = (data, message) => {
     }
 }
 
+let tokenExpiredTime = (data, message) => {
+    try {
+        if (message == null) message = "Token hết hạn";
+        if (data == null) return coreErrorResponse(402, message);
+        return coreErrorResponse(402, message, data);
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 let forbiddenResponse = (data, message) => {
     try {
         if (message == null) message = "Bạn không được thực hiện hành động này";
@@ -97,5 +107,5 @@ let forbiddenResponse = (data, message) => {
 
 module.exports = {
     missingFieldsErrorResponse, badRequestResponse, dataNotFoundResponse, successResponse,
-    internalServerErrorResponse, coreResponse, coreErrorResponse, unauthorizedResponse, forbiddenResponse
+    internalServerErrorResponse, coreResponse, coreErrorResponse, unauthorizedResponse, forbiddenResponse, tokenExpiredTime
 };

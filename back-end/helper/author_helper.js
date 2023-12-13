@@ -9,9 +9,9 @@ module.exports = {
                 jwtUtils.verifyGenealogyToken(req, res, async (error) => {
                     if (error) {
                         if (error === 'Token expired') {
-                            return res.send(Response.badRequestResponse(null, "Token hết hạn"));
+                            return res.send(Response.tokenExpiredTime());
                         } else {
-                            return res.send(Response.badRequestResponse(null, "Unauthorized"));
+                            return res.send(Response.unauthorizedResponse());
                         }
                     }
                     console.log("Vào hàm này này")
