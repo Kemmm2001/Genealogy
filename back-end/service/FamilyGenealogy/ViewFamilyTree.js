@@ -275,7 +275,7 @@ function getMarried(id) {
         try {
             let queryGender = `SELECT Male FROM genealogy.familymember where MemberID = ${id}`;
             db.connection.query(queryGender, (err, result) => {
-                if (!err) {
+                if (!err && result.length > 0) {
                     console.log('Male: ' + result[0].Male)
                     let isGenderParent = result[0].Male == 1 ? "husbandID" : "wifeID";
                     let queryMarried = `SELECT MarriageNumber FROM genealogy.marriage where ${isGenderParent} = ${id}`;
