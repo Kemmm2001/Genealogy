@@ -88,11 +88,11 @@ module.exports = {
     JWT.verify(token, process.env.GENEALOGY_TOKEN_SECRET, (err, payload) => {
       if (err) {
         if (err.name === 'JsonWebTokenError') {
-          return res.json({ error: 'Unauthorized' });
+          return res.send(Response.inValidToken())
         } else if (err.name === 'TokenExpiredError') {
-          return res.json({ error: 'Token expired' });
+          return res.send(Response.tokenExpiredTime())
         } else {
-          return res.json({ error: 'forbidden' });
+          return res.send(Response.forbiddenResponse())
         }
       }
       req.payload = payload;
