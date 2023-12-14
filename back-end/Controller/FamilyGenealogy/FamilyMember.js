@@ -414,6 +414,23 @@ var addMarriage = async (req, res) => {
         // nếu vào trường hợp thêm chồng 
         if (req.body.Male == 1) {
             console.log("Đã vào trường hợp thêm chồng");
+            // tìm tất cả chồng
+            let listMarriageHusband = await MarriageManagement.getMarriageByWifeID(req.body.CurrentMemberID);
+            let listHusband = [];
+            if(Array.isArray(listMarriageHusband) && listMarriageHusband.length > 0){
+                for(let i = 0; i < listMarriageHusband.length; i++){
+                   let husband = await FamilyManagementService.getMemberByMemberID(listMarriageHusband[i].HusbandID);
+                     listHusband.push(husband[0]);
+                }
+            }
+            // nếu vẫn có người sống thì trả về lỗi
+            if(Array.isArray(listHusband) && listHusband.length > 0){
+                for(let i = 0; i < listHusband.length; i++){
+                    if(listHusband[i].IsDead == 0){
+                        return res.send(Response.badRequestResponse(null, "Vẫn còn chồng đang sống, không thể thêm chồng"));
+                    }
+                }
+            }
             // tìm số lần kết hôn của vợ
             let countMarriage = await MarriageManagement.getWifeMaxMarriageNumber(req.body.CurrentMemberID, currentMember[0].CodeID);
             console.log("countMarriage: ", countMarriage);
@@ -430,6 +447,23 @@ var addMarriage = async (req, res) => {
         // nếu vào trường hợp thêm vợ
         else if (req.body.Male == 0) {
             console.log("Đã vào trường hợp thêm vợ");
+            // tìm tất cả chồng
+            let listMarriageWife = await MarriageManagement.getMarriageByHusbandID(req.body.CurrentMemberID);
+            let listWife = [];
+            if(Array.isArray(listMarriageWife) && listMarriageWife.length > 0){
+                for(let i = 0; i < listMarriageWife.length; i++){
+                     let wife = await FamilyManagementService.getMemberByMemberID(listMarriageWife[i].WifeID);
+                        listWife.push(wife[0]);
+                }
+            }
+            // nếu vẫn có người sống thì trả về lỗi
+            if(Array.isArray(listWife) && listWife.length > 0){
+                for(let i = 0; i < listWife.length; i++){
+                    if(listWife[i].IsDead == 0){
+                        return res.send(Response.badRequestResponse(null, "Vẫn còn vợ đang sống, không thể thêm vợ"));
+                    }
+                }
+            }
             // tìm số lần kết hôn của chồng
             let countMarriage = await MarriageManagement.getHusbandMaxMarriageNumber(req.body.CurrentMemberID, currentMember[0].CodeID);
             console.log("countMarriage: ", countMarriage);
