@@ -812,8 +812,9 @@ var deleteMember = async (req, res) => {
         console.log("dataMember: ", dataMember[0].MemberID);
         // xóa ảnh cũ
         await CoreFunction.deleteImage(dataMember[0].Image);
-        // nếu người được xóa là người ngoài gia phả, tức là ko có cha mẹ
-        if (!CoreFunction.isDataNumberExist(dataMember[0].FatherID) && !CoreFunction.isDataNumberExist(dataMember[0].MotherID)) {
+        // nếu người được xóa là người ngoài gia phả, tức là ko có cha mẹ và roleid là 3
+        if ( dataMember[0].RoleID == 3
+             && !CoreFunction.isDataNumberExist(dataMember[0].FatherID) && !CoreFunction.isDataNumberExist(dataMember[0].MotherID)) {
             console.log("Đã vào trường hợp người ngoài gia phả");
             // nếu có vợ chồng thì những đứa con của vợ chồng đó sẽ được thêm vào vợ hoặc chồng của người được xóa
             let listMarriage = await MarriageManagement.getMarriageByHusbandIDOrWifeID(dataMember[0].MemberID, dataMember[0].MemberID);
