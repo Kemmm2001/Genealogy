@@ -85,6 +85,16 @@ let unauthorizedResponse = (data, message) => {
     }
 }
 
+let authorizedResponse = (data, message) => {
+    try {
+        if (message == null) message = "Chưa có Authorization header ";
+        if (data == null) return coreErrorResponse(404, message);
+        return coreErrorResponse(401, message, data);
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 let tokenExpiredTime = (data, message) => {
     try {
         if (message == null) message = "Token hết hạn";
@@ -107,5 +117,5 @@ let forbiddenResponse = (data, message) => {
 
 module.exports = {
     missingFieldsErrorResponse, badRequestResponse, dataNotFoundResponse, successResponse,
-    internalServerErrorResponse, coreResponse, coreErrorResponse, unauthorizedResponse, forbiddenResponse, tokenExpiredTime
+    internalServerErrorResponse, coreResponse, coreErrorResponse, unauthorizedResponse, forbiddenResponse, tokenExpiredTime,authorizedResponse
 };

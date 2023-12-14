@@ -2,8 +2,7 @@ const UserService = require('../../service/Authencation/UserManagement');
 const createError = require('http-errors')
 const validator = require('validator');
 const bcrypt = require('bcrypt');
-const { signAccessToken, signRefreshToken, signRePassToken, signRegisterToken, verifyRegisterToken, verifyRepassToken, verifyRefreshToken } = require('../../helper/jwt_helper')
-const Response = require('../../Utils/Response')
+const { signAccessToken, signRefreshToken, signRePassToken, signRegisterToken, signGenealogyToken, verifyRegisterToken, verifyRepassToken, verifyRefreshToken } = require('../../helper/jwt_helper')
 const sendMail = require('../../Utils/SystemOperation');
 require('dotenv').config();
 const backEndURL = process.env.BACKEND_URL
