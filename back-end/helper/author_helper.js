@@ -10,8 +10,10 @@ module.exports = {
                     if (error) {
                         if (error === 'Token expired') {
                             return res.send(Response.tokenExpiredTime());
-                        } else {
+                        } else if (error == 'JsonWebTokenError') {
                             return res.send(Response.unauthorizedResponse());
+                        } else {
+                            return res.send(Response.forbiddenResponse());
                         }
                     }
                     console.log("Vào hàm này này")

@@ -55,8 +55,8 @@ const clearTree = async function (req, res) {
 var importData = async function (req, res) {
   try {
      const file = req.file.path;
-  
-     let result = await JsonService.importData(file);
+    let codeID = req.body.codeID;
+     let result = await JsonService.importData(file, codeID);
 
     if (result.success) {
       return res.send(Response.successResponse(null, 'Import thành công'));
