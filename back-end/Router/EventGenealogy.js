@@ -22,8 +22,8 @@ const initWebRouter = (app) => {
     router.get('/ListEventNotiSent', authMiddleware.authenticateAndAuthorize(3), EventManagementController.getListEventNotificationSent)
     // router.get('/getEmail',EventManagementController)
 
-    router.get('/birthday',authMiddleware.authenticateAndAuthorize(3), EventManagementController.GetBirthDayInMonth)
-    router.get('/deadDay',authMiddleware.authenticateAndAuthorize(3), EventManagementController.GetDeadDayInMonth)
+    router.get('/birthday', authMiddleware.authenticateAndAuthorize(3), EventManagementController.GetBirthDayInMonth)
+    router.get('/deadDay', authMiddleware.authenticateAndAuthorize(3), EventManagementController.GetDeadDayInMonth)
     router.post('/send-sms', authMiddleware.authenticateAndAuthorize(2), EventManagementController.SendSMSToMember)
     //API tuấn
     // router.post('/send-sms', EventManagementController.SendSMS)
@@ -37,7 +37,7 @@ const initWebRouter = (app) => {
     router.post('/addAttendence', authMiddleware.authenticateAndAuthorize(2), EventManagementController.addAttendence)
     router.post('/inviteMail', authMiddleware.authenticateAndAuthorize(2), EventManagementController.inviteMail)
     router.post('/verify-invite', EventManagementController.verifyMail)
-    router.get('/getEventByToken',authMiddleware.authenticateAndAuthorize(3), EventManagementController.getEventByToken)
+    router.get('/getEventByToken', authMiddleware.authenticateAndAuthorize(3), EventManagementController.getEventByToken)
     //Tiền tố đứng trước route
     app.use('/api/v1', router);
 }

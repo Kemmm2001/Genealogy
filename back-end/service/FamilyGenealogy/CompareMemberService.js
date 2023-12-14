@@ -277,7 +277,7 @@ async function getResultCompareToMember(DefferenceGeneration, Generation1, Gener
             }
         } else {
             if (Gender2 == 1) {
-                index2 = calculateIndex(Generation1, Generation2, Flag, 17, 14, 6, 7);
+                index2 = calculateIndex(Generation1, Generation2, Flag, 17, 14, 7, 6);
             } else {
                 index2 = calculateIndex(Generation1, Generation2, Flag, 15, 16, 6, 7);
             }
@@ -295,10 +295,10 @@ async function getResultCompareToMember(DefferenceGeneration, Generation1, Gener
             }
         } else {
             if (Gender1 == 1) {
-                index1 = calculateIndex(Generation1, Generation2, Flag, 7, 6, 7, 6);
+                index1 = calculateIndex(Generation1, Generation2, Flag, 7, 6, 16, 14);
             } else {
                 console.log("vào else này")
-                index1 = calculateIndex(Generation1, Generation2, Flag, 7, 6, 6, 7);
+                index1 = calculateIndex(Generation1, Generation2, Flag, 7, 6, 14, 16);
             }
         }
         setResult(objResult, index1, index2);
@@ -476,7 +476,7 @@ async function getMarriageNumber(husbandID, wifeID) {
             let query = `select MarriageNumber from marriage where husbandID = ${husbandID} and wifeID = ${wifeID}`
             console.log('query: ' + query)
             db.connection.query(query, (err, result) => {
-                if (!err) {
+                if (!err && result[0].MarriageNumber) {
                     resolve(result[0].MarriageNumber)
                 } else {
                     reject(err)
@@ -488,13 +488,62 @@ async function getMarriageNumber(husbandID, wifeID) {
     })
 }
 
+
+//nguyễn lê hùng
+async function getDateOfBirth(MemberID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `SELECT Dob FROM genealogy.familymember where MemberID = ${MemberID}`;
+            db.connection.query(query, (err, result) => {
+                if (!err && result[0].Dob) {
+                    resolve(result[0].Dob)
+                } else {
+                    resolve(false)
+                }
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+
 //Nguyễn Lê Hùng
-async function GetResultCompare(MemberId1, MemberId2, DifferenceGeneration, Flag, Gender1, Gender2, resultCheck) {
+async function GetResultCompare(MemberId1, MemberId2, DifferenceGeneration, Flag, Gender1, Gender2, resultCheck, currentIdMember1, currentIdMember2) {
     console.log('MemberId1: ' + MemberId1)
     console.log('MemberId2: ' + MemberId2)
+    console.log('DifferenceGeneration: ' + DifferenceGeneration)
     try {
         if (MemberId1 == MemberId2) {
-            let result = await getResultCompareWithMemberID1SameID2(DifferenceGeneration, Gender1, Gender2);
+            let result = {};           
+            if (DifferenceGeneration == -1) {
+                let result = await getParentId(currentIdMember1);
+                if (currentIdMember2 != result.FatherID && currentIdMember2 != result.MotherID) {                   
+                    if (Gender2 == 1) {
+                        result.result1 = "Con";
+                        result.result2 = "Bố dượng";
+                        return result;
+                    } else {
+                        result.result1 = "Con";
+                        result.result2 = "Mẹ Kế";
+                        return result;
+                    }
+                }
+            } else if(DifferenceGeneration == 1) {
+                let result = await getParentId(currentIdMember2);
+                if (currentIdMember1 != result.FatherID && currentIdMember1 != result.MotherID) {                   
+                    if (Gender1 == 1) {
+                        result.result1 = "Bố dượng";
+                        result.result2 = "Con";
+                        return result;
+                    } else {
+                        result.result1 = "Mẹ Kế";
+                        result.result2 = "Con";
+                        return result;
+                    }
+                }
+            }
+            result = await getResultCompareWithMemberID1SameID2(DifferenceGeneration, Gender1, Gender2);
             console.log('DifferenceGeneration: ' + DifferenceGeneration)
             console.log("Vào == nhau")
             console.log("Kết quả:", result);
@@ -525,6 +574,7 @@ async function GetResultCompare(MemberId1, MemberId2, DifferenceGeneration, Flag
         if (parentID1 !== parentID2) {
             return await GetResultCompare(parentID1, parentID2, DifferenceGeneration, Flag, Gender1, Gender2, resultCheck);
         } else {
+            console.log("Vào else này ")
             let getGeneration1 = await getBirthOrderByID(MemberId1);
             let getGeneration2 = await getBirthOrderByID(MemberId2);
             getGeneration1 = getGeneration1.BirthOrder
@@ -537,14 +587,20 @@ async function GetResultCompare(MemberId1, MemberId2, DifferenceGeneration, Flag
                     console.log("Kết quả:", result);
                     return result;
                 } else {
-                    let MarriageNumber1 = await getMarriageNumber(result1.FatherID, result1.MotherID);
-                    let MarriageNumber2 = await getMarriageNumber(result2.FatherID, result2.MotherID)
-                    console.log("vào else 1")
-                    console.log('MarriageNumber1: ' + MarriageNumber1)
-                    console.log('MarriageNumber2: ' + MarriageNumber2)
-                    let result = await getResultCompareToMember(DifferenceGeneration, MarriageNumber1, MarriageNumber2, Flag, Gender1, Gender2, resultCheck);
-                    console.log("Kết quả:", result);
-                    return result;
+                    console.log("vào if 2")
+                    let BirthOrder1 = await getDateOfBirth(MemberId1);
+                    let BirthOrder2 = await getDateOfBirth(MemberId2);
+                    if (!BirthOrder1 || !BirthOrder2) {
+                        let result = {};
+                        result.result1 = "Không có dữ liệu ngày sinh để xác định mối quan hệ";
+                        result.result2 = "Không đủ dữ liệu ngày sinh để xác định mối quan hệ";
+                        return result;
+                    } else {
+                        let result = await getResultCompareToMember(DifferenceGeneration, BirthOrder1, BirthOrder2, Flag, Gender1, Gender2, resultCheck);
+                        console.log("Kết quả:", result);
+                        return result;
+                    }
+
                 }
             } else {
                 console.log("vào else 2")

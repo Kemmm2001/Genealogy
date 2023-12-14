@@ -388,13 +388,7 @@
                   </div>
                 </div>
               </div>
-              <div class="d-flex flex-column" style="flex-grow: 1; background-color: #f2f2f2;">
-                <div class="compare-modal-item mx-2 mt-2">
-                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember1.father !== undefined ? 'Bố: ' + objCompareMember1.father : 'Bố: Không có trên phả đồ'" disabled />
-                </div>
-                <div class="compare-modal-item mx-2 mt-2">
-                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember1.mother !== undefined ? 'Mẹ: ' + objCompareMember1.mother : 'Mẹ: Không có trên phả đồ'" disabled />
-                </div>
+              <div class="d-flex flex-column" style="flex-grow: 1; background-color: #f2f2f2;">               
                 <div class="compare-modal-item mx-2 mt-2">
                   <input type="text" class="w-100 h-100 form-control" :value="resultCompare1 !== undefined ? 'Mối quan hệ: ' + resultCompare1 : 'Không xác định'" disabled />
                 </div>
@@ -425,13 +419,7 @@
                   </div>
                 </div>
               </div>
-              <div class="d-flex flex-column" style="flex-grow: 1; background-color: #f2f2f2;">
-                <div class="compare-modal-item mx-2 mt-2">
-                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember2.father !== undefined ? 'Bố: ' + objCompareMember2.father : 'Không có trên phả đồ'" disabled />
-                </div>
-                <div class="compare-modal-item mx-2 mt-2">
-                  <input type="text" class="w-100 h-100 form-control" :value="objCompareMember2.mother !== undefined ? 'Mẹ: ' + objCompareMember2.mother : 'Không có trên phả đồ'" disabled />
-                </div>
+              <div class="d-flex flex-column" style="flex-grow: 1; background-color: #f2f2f2;">               
                 <div class="compare-modal-item mx-2 mt-2">
                   <input type="text" class="w-100 h-100 form-control" :value="resultCompare2 !== undefined ? 'Mối quan hệ: ' + resultCompare2 : 'Mối quan hệ: Không xác định'" disabled />
                 </div>
