@@ -1,6 +1,6 @@
 const JsonService = require('../../service/Backup/JsonSevice')
 const Response = require('../../Utils/Response')
-
+const UserService = require('../../service/Authencation/UserManagement')
 const exportData = async function (req, res) {
   try {
     const { memberIDs } = req.body;
@@ -56,14 +56,18 @@ var importData = async function (req, res) {
   try {
      const file = req.file.path;
     let codeID = req.body.codeID;
-     let result = await JsonService.importData(file, codeID);
+    console.log(codeID)
+    let doesExist = await UserService.checkCodeID(codeID);
+    if(doesExist > 0){
+      let result = await JsonService.importData(file, codeID);
 
-    if (result.success) {
-      return res.send(Response.successResponse(null, 'Import thành công'));
-    } else {
-      return res.send(Response.internalServerErrorResponse());
-
+      if (result) {
+        return res.send(Response.successResponse(null, 'Import thành công'));
+      } else {
+        return res.send(Response.internalServerErrorResponse());
+      }
     }
+    return res.send(Response.dataNotFoundResponse(null, 'Không có codeId'));
   } catch (error) {
     return res.send(Response.internalServerErrorResponse());
 

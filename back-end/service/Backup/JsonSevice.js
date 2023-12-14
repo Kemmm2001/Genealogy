@@ -201,9 +201,11 @@ async function importData(file, codeID) {
         if (!allInsertsSuccessful) {
             return false;
         }
+        console.log(allInsertsSuccessful)
 
         const codeIDFromExcel = familyWorksheet.getRow(2).getCell(22).value;
-        if (codeIDFromExcel === codeID) {
+        console.log(codeIDFromExcel)
+        if (codeIDFromExcel !== codeID) {
             const updateCodeIDPromises = [];
             for (let rowNumber = 2; rowNumber <= familyWorksheet.rowCount; rowNumber++) {
                 const row = familyWorksheet.getRow(rowNumber);
@@ -215,7 +217,7 @@ async function importData(file, codeID) {
 
             const updateResults = await Promise.all(updateCodeIDPromises);
             const allUpdatesSuccessful = updateResults.every(result => result);
-
+            console.log(allUpdatesSuccessful)
             return allUpdatesSuccessful;
         }
 
