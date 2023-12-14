@@ -26,10 +26,37 @@ const exportData = async function (req, res) {
   }
 };
 
+const clearTree = async function (req, res) {
+  try {
+    const { memberIDs } = req.body;
+    if (!Array.isArray(memberIDs) || memberIDs.length < 1) {
+      return res.send(Response.internalServerErrorResponse('Invalid memberIDs format. Expecting an array with multiple elements.'));
+    }
+    console.log(memberIDs);
+    
+    let result;
+    try {
+      result = await JsonService.clearTree(memberIDs);
+      console.log(result)
+    } catch (error) {
+      return res.send(Response.internalServerErrorResponse());
+    }
+
+    if (result == true) {
+      return res.send(Response.successResponse(null, 'Xóa cây gia phả thành công'));
+    } else {
+      return res.send(Response.dataNotFoundResponse());
+    }
+  } catch (error) {
+    return res.send(Response.internalServerErrorResponse());
+  }
+};
+
 var importData = async function (req, res) {
   try {
-    const file = req.file.path;
-    const result = await JsonService.importData(file);
+     const file = req.file.path;
+  
+     let result = await JsonService.importData(file);
 
     if (result.success) {
       return res.send(Response.successResponse(null, 'Import thành công'));
@@ -43,4 +70,4 @@ var importData = async function (req, res) {
   }
 }
 
-module.exports = { exportData, importData };
+module.exports = { exportData, clearTree, importData };
