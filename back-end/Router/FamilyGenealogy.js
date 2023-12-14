@@ -65,9 +65,9 @@ const initWebRouter = (app) => {
     router.get('/delete-member', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.deleteMember)
 
     //API Nhật anh
-    router.get('/members', FamilyMemberManagement.getAllMember);
-    router.post('/search-member', FamilyMemberManagement.searchMember);
-    router.post('/filter-member', FamilyMemberManagement.filterMember);
+    router.get('/members',authMiddleware.authenticateAndAuthorize(3), FamilyMemberManagement.getAllMember);
+    router.post('/search-member',authMiddleware.authenticateAndAuthorize(3), FamilyMemberManagement.searchMember);
+    router.post('/filter-member', authMiddleware.authenticateAndAuthorize(3),FamilyMemberManagement.filterMember);
     // router.post('/sort-member', FamilyMemberManagement.sortMembers);
 
     //Tiền tố đứng trước route
