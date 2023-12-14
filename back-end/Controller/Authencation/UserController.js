@@ -8,6 +8,7 @@ require('dotenv').config();
 const backEndURL = process.env.BACKEND_URL
 const frontEndURL = process.env.FRONTEND_URL
 const secureKey = process.env.KEY_SECRET
+const Response = require('../../Utils/Response');
 const CryptoJS = require('crypto-js')
 
 var registerUser = async (req, res) => {
