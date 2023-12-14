@@ -270,7 +270,7 @@ function DeleteRegisterToken(email) {
 function UpdateActive(IsActive, email) {
   return new Promise((resolve, reject) => {
     try {
-      let query = `UPDATE genealogy.account as a SET a.IsActive = '${IsActive}' WHERE Email = '${email};'`;
+      let query = `UPDATE genealogy.account as a SET a.IsActive = '${IsActive}' WHERE Email = '${email}'`;
       db.connection.query(query, (err) => {
         if (!err) {
           resolve(true)
@@ -328,7 +328,7 @@ function changeUsername(AccountId, Username) {
 }
 
 
-function getUserInfo(accountID,CodeID) {
+function getUserInfo(accountID, CodeID) {
   return new Promise((resolve, reject) => {
     try {
       let query = `SELECT ac.*, ra.RoleName FROM genealogy.account as ac
@@ -370,17 +370,38 @@ function getUserCodeID(accountID) {
 }
 
 function refreshFreeEmail(usesTime) {
-  return new Promise((resolve, reject) => {
+  return new Promise(async(resolve, reject) => {
     const query = 'UPDATE genealogy.account SET FreeEmail = ?';
     const values = [usesTime];
-    db.connection.query(query, values, (err, result) => {
-      if (err) {
-        console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-        reject(err);
-      } else {
-        resolve(result);
-      }
-    });
+    const results = await coreQuery(query, values);
+    resolve(results);
+  });
+}
+
+function refreshFreeSMS(usesTime) {
+  return new Promise(async(resolve, reject) => {
+    const query = 'UPDATE genealogy.account SET FreeSMS = ?';
+    const values = [usesTime];
+    const results = await coreQuery(query, values);
+    resolve(results);
+  });
+}
+
+function setFreeEmail(usesTime, accountID) {
+  return new Promise(async(resolve, reject) => {
+    const query = 'UPDATE genealogy.account SET FreeEmail = ? WHERE AccountID = ?';
+    const values = [usesTime, accountID];
+    const results = await coreQuery(query, values);
+    resolve(results);
+  });
+}
+
+function setFreeSMS(usesTime, accountID) {
+  return new Promise(async(resolve, reject) => {
+    const query = 'UPDATE genealogy.account SET FreeSMS = ? WHERE AccountID = ?';
+    const values = [usesTime, accountID];
+    const results = await coreQuery(query, values);
+    resolve(results);
   });
 }
 
@@ -423,22 +444,6 @@ function getHistoryLoginCodeID(AccountID) {
     }
   });
 }
-function getMemberRole(AccountID, CodeID) {
-  return new Promise((resolve, reject) => {
-    try {
-      let query = `select RoleID from AccountFamilyTree where AccountID = ${AccountID} and CodeID = ${CodeID}`;
-      db.connection.query(query, (err, result) => {
-        if (!err && result.length > 0) {
-          resolve(result[0].RoleID)
-        } else {
-          reject(err)
-        }
-      })
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
 
 function getInformationGenealogy(CodeID) {
   return new Promise((resolve, reject) => {
@@ -456,6 +461,41 @@ function getInformationGenealogy(CodeID) {
     }
   })
 }
+
+// nguyễn anh tuấn
+function getAccountByAccountID(accountID) {
+  return new Promise(async (resolve, reject) => {
+      const query = `SELECT * FROM genealogy.account WHERE AccountID = ?`;
+      const values = [accountID];
+      const result = await coreQuery(query, values);
+      resolve(result);
+  })
+}
+// nguyễn anh tuấn
+function coreQuery(query, values) {
+  return new Promise((resolve, reject) => {
+    if (values == null) {
+      db.connection.query(query, (err, result) => {
+        if (err) {
+          console.log(err);
+          reject(err)
+        } else {
+          resolve(result)
+        }
+      })
+    } else {
+      db.connection.query(query, values, (err, result) => {
+        if (err) {
+          console.log(err);
+          reject(err)
+        } else {
+          resolve(result)
+        }
+      })
+    }
+  })
+}
+
 
 function getRoleAccount(AccountID, CodeID) {
   return new Promise((resolve, reject) => {
@@ -546,6 +586,6 @@ module.exports = {
   checkAccountID, updateRoleID, insertIntoFamily, getUserInfo, getUserCodeID, checkCodeIdCreator,
   insertAccountFamilyTree, checkCodeCreatedByID, getHistoryLoginCodeID, ChangePassword, getListRoleMember, UpdateAccount, UpdatePassword,
   checkToken, changeUsername, getInformationGenealogy, UpdateRegisterToken, checkRegisterToken,
-  UpdateActive, DeleteRePasssToken, DeleteRegisterToken, getRoleAccount,getAllRoleAccount
-
+  UpdateActive, DeleteRePasssToken, DeleteRegisterToken, getRoleAccount, getAllRoleAccount, getAccountByAccountID, refreshFreeSMS,
+  setFreeEmail, setFreeSMS
 }

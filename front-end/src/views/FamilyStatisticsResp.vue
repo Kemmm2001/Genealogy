@@ -1,37 +1,34 @@
-<!-- phùng việt khôi -->
 <template>
-  <div class="container-fluid" style="overflow-y: auto;">
-    <div class="m-5 bg-colored">
-      <h1 class="pt-4">Thống kê chung</h1>
-      <div class="d-flex flex-row m-4">
-        <div class="col-2 filter">
-          <p class="d-block text-decoration-underline">Thống kê thành viên</p>
+  <div class="stat-grid-container">
+    <div class="overview mb-4">
+      <div class="p-2">
+        <h4 style="font-weight: bold; font-family: 'QuicksandBold';">Thống kê chung</h4>
+      </div>
+      <div class="d-flex">
+        <div class="col-3 ps-2 pb-2">
           <p class="d-block">Tổng số thành viên: {{ this.totalMember }} người</p>
           <p class="d-block">Số đời: {{ this.numberGeneration }}</p>
           <p class="d-block">Đời nhiều thành viên nhất: {{ this.maxMemberGeneration }}</p>
-          <p class="d-block">Còn sống: {{ this.numberAlive }} người ({{this.totalMember != 0 ? (this.numberAlive != 0 ?(this.numberAlive / this.totalMember*100).toFixed(1) : 0) : 0 }}%)</p>
-          <p class="d-block">Đã mất: {{ this.numberDied }} người ({{this.totalMember != 0 ? (this.numberDied != 0 ?(this.numberDied / this.totalMember*100).toFixed(1) : 0) : 0 }}%)</p>
+          <p class="d-block">Còn sống: {{ this.numberAlive }} người ({{ this.totalMember != 0 ? (this.numberAlive != 0 ? (this.numberAlive / this.totalMember * 100).toFixed(1) : 0) : 0 }}%)</p>
+          <p class="d-block">Đã mất: {{ this.numberDied }} người ({{ this.totalMember != 0 ? (this.numberDied != 0 ? (this.numberDied / this.totalMember * 100).toFixed(1) : 0) : 0 }}%)</p>
         </div>
-        <div class="col-2 filter">
-          <p class="d-block text-decoration-underline">Thống kê giới tính</p>
-          <p class="d-block">Nam: {{ this.numberMale }} người ({{this.totalMember != 0 ? (this.numberMale != 0 ? (this.numberMale / this.totalMember*100).toFixed(1) : 0) : 0 }}%)</p>
-          <p class="d-block">Nữ: {{ this.numberFemale }} người ({{this.totalMember != 0 ? ( this.numberFemale != 0 ? (this.numberFemale / this.totalMember*100).toFixed(1) : 0) : 0 }}%)</p>
+        <div class="col-3 ps-2 pb-2">
+          <p class="d-block">Nam: {{ this.numberMale }} người ({{ this.totalMember != 0 ? (this.numberMale != 0 ? (this.numberMale / this.totalMember * 100).toFixed(1) : 0) : 0 }}%)</p>
+          <p class="d-block">Nữ: {{ this.numberFemale }} người ({{ this.totalMember != 0 ? (this.numberFemale != 0 ? (this.numberFemale / this.totalMember * 100).toFixed(1) : 0) : 0 }}%)</p>
+          <p class="d-block">Rể: {{ this.numberSonInLaw }} người ({{ this.totalMember != 0 ? (this.numberSonInLaw != 0 ? (this.numberSonInLaw / this.totalMember * 100).toFixed(1) : 0) : 0 }}%)</p>
+          <p class="d-block">
+            Dâu: {{ this.numberDaughterInLaw }} người ({{ this.totalMember != 0 ? (this.numberDaughterInLaw != 0 ? (this.numberDaughterInLaw / this.totalMember * 100).toFixed(1) : 0) : 0
+            }}%)
+          </p>
         </div>
-        <div class="col-2 filter">
-          <p class="d-block text-decoration-underline">Thống kê dâu rể</p>
-          <p class="d-block">Rể: {{ this.numberSonInLaw }} người ({{this.totalMember != 0 ? (this.numberSonInLaw != 0 ? (this.numberSonInLaw / this.totalMember*100).toFixed(1) : 0) : 0 }}%)</p>
-          <p class="d-block">Dâu: {{ this.numberDaughterInLaw }} người ({{this.totalMember != 0 ? (this.numberDaughterInLaw != 0 ?(this.numberDaughterInLaw / this.totalMember*100).toFixed(1) : 0) : 0 }}%)</p>
+        <div class="col-3 ps-2 pb-2">
+          <p class="d-block">Từ 0-5: {{ this.age0to5 }} người ({{ this.totalMember != 0 ? (this.age0to5 != 0 ? (this.age0to5 / this.totalMember * 100).toFixed(1) : 0) : 0 }}%)</p>
+          <p class="d-block">Từ 6-17: {{ this.age61up }} người ({{ this.totalMember != 0 ? (this.age61up != 0 ? (this.age61up / this.totalMember * 100).toFixed(1) : 0) : 0 }}%)</p>
+          <p class="d-block">Từ 18-40: {{ this.age18to40 }} người ({{ this.totalMember != 0 ? (this.age18to40 != 0 ? (this.age18to40 / this.totalMember * 100).toFixed(1) : 0) : 0 }}%)</p>
+          <p class="d-block">Từ 41-60: {{ this.age41to60 }} người ({{ this.totalMember != 0 ? (this.age41to60 != 0 ? (this.age41to60 / this.totalMember * 100).toFixed(1) : 0) : 0 }}%)</p>
+          <p class="d-block">Trên 61: {{ this.age61up }} người ({{ this.totalMember != 0 ? (this.age61up != 0 ? (this.age61up / this.totalMember * 100).toFixed(1) : 0) : 0 }}%)</p>
         </div>
-        <div class="col-2 filter">
-          <p class="d-block text-decoration-underline">Thống kê độ tuổi</p>
-          <p class="d-block">Từ 0-5: {{ this.age0to5 }} người ({{ this.totalMember != 0 ? (this.age0to5 != 0 ? (this.age0to5 / this.totalMember*100).toFixed(1): 0) : 0 }}%)</p>
-          <p class="d-block">Từ 6-17: {{ this.age61up }} người ({{this.totalMember != 0 ? (this.age61up != 0 ? (this.age61up / this.totalMember*100).toFixed(1) : 0) : 0 }}%)</p>
-          <p class="d-block">Từ 18-40: {{ this.age18to40 }} người ({{this.totalMember != 0 ? (this.age18to40 != 0 ? (this.age18to40 / this.totalMember*100).toFixed(1) : 0) : 0 }}%)</p>
-          <p class="d-block">Từ 41-60: {{ this.age41to60 }} người ({{this.totalMember != 0 ? (this.age41to60 != 0 ? (this.age41to60 / this.totalMember*100).toFixed(1) : 0) : 0 }}%)</p>
-          <p class="d-block">Trên 61: {{ this.age61up }} người ({{this.totalMember != 0 ? (this.age61up != 0 ? (this.age61up / this.totalMember*100).toFixed(1) : 0) : 0 }}%)</p>
-        </div>
-        <div class="col-2 filter">
-          <p class="d-block text-decoration-underline">Thống kê đặc biệt</p>
+        <div class="col-3 ps-2 pb-2">
           <p v-if="this.memberOldest.age != 0 && this.memberOldest.age != null" class="d-block">Thành viên lớn tuổi nhất: {{ this.memberOldest.name }} ({{ this.memberOldest.age }})</p>
           <p v-else class="d-block">Thành viên lớn tuổi nhất:</p>
           <p v-if="this.memberOldestAlive.age != 0 && this.memberOldestAlive.age != null" class="d-block">
@@ -42,92 +39,103 @@
         </div>
       </div>
     </div>
-    <div class="m-5 bg-colored" style="min-height: 100vh; ">
-      <h2 class="pt-4">Thống kê chi tiết</h2>
-      <div class="m-4">
-        <div>
-          <span>* Chọn các ô bên dưới để lọc dữ liệu biểu đồ</span>
-          <br />
-          <span>* Click vào biểu đồ để xem chi tiết:</span>
+    <div class="detail">
+      <div class="p-2">
+        <h4 style="font-weight: bold; font-family: 'QuicksandBold';">Thống kê chi tiết</h4>
+      </div>
+      <div class="ps-2 pb-2">
+        <div>* Chọn các ô bên dưới để lọc dữ liệu biểu đồ</div>
+        <div>* Trỏ chuột vào biểu đồ để xem thông tin chi tiết hơn</div>
+      </div>
+      <div class="px-2 pb-2 d-flex">
+        <div class="col-2">
+          <select v-model="monthSearch" class="form-select filter" @change="filter()">
+            <option value="0">Toàn bộ</option>
+            <option value="1">Tháng 1</option>
+            <option value="2">Tháng 2</option>
+            <option value="3">Tháng 3</option>
+            <option value="4">Tháng 4</option>
+            <option value="5">Tháng 5</option>
+            <option value="6">Tháng 6</option>
+            <option value="7">Tháng 7</option>
+            <option value="8">Tháng 8</option>
+            <option value="9">Tháng 9</option>
+            <option value="10">Tháng 10</option>
+            <option value="11">Tháng 11</option>
+            <option value="12">Tháng 12</option>
+            <!-- <option value="0">Không rõ</option> -->
+          </select>
         </div>
-        <div class="d-flex">
-          <div class="filter-form m-2">
-            <select v-model="monthSearch" class="form-select filter">
-              <option value="0">Toàn bộ</option>
-              <option value="1">Tháng 1</option>
-              <option value="2">Tháng 2</option>
-              <option value="3">Tháng 3</option>
-              <option value="4">Tháng 4</option>
-              <option value="5">Tháng 5</option>
-              <option value="6">Tháng 6</option>
-              <option value="7">Tháng 7</option>
-              <option value="8">Tháng 8</option>
-              <option value="9">Tháng 9</option>
-              <option value="10">Tháng 10</option>
-              <option value="11">Tháng 11</option>
-              <option value="12">Tháng 12</option>
-              <!-- <option value="0">Không rõ</option> -->
-            </select>
-          </div>
-          <div class="filter-form m-2">
-            <select v-model="generationSearch" class="form-select filter">
-              <option value="0">Toàn bộ</option>
-              <option :value="index" v-for="index in this.numberGeneration" :key="index">{{index}}</option>
-            </select>
-          </div>
-          <div class="filter-form m-2">
-            <select v-model="genderSearch" class="form-select filter">
-              <option value="all">Toàn bộ</option>
-              <option value="male">Nam</option>
-              <option value="female">Nữ</option>
-            </select>
-          </div>
-          <div class="filter-form m-2">
-            <select v-model="isDeadSearch" class="form-select filter">
-              <option value="all">Toàn bộ</option>
-              <option value="1">Còn sống</option>
-              <option value="0">Đã mất</option>
-            </select>
-          </div>
-          <div class="filter-form m-2">
-            <select v-model="ageSearch" class="form-select filter">
-              <option value="all">Toàn bộ</option>
-              <option value="0-5">0-5 tuổi</option>
-              <option value="6-17">6-17 tuổi</option>
-              <option value="18-40">18-40 tuổi</option>
-              <option value="41-60">41-60 tuổi</option>
-              <option value=">60">Trên 60 tuổi</option>
-            </select>
-          </div>
-          <div class="filter-form m-2">
-            <button class="btn click-color bg-primary text-white m-0" @click="filter()">Lọc</button>
-          </div>
-          <div class="filter-form m-2">
-            <button class="btn click-color bg-primary text-white m-0" @click="refreshSelect()">Làm mới</button>
+        <div class="col-2">
+          <select v-model="generationSearch" class="form-select filter" @change="filter()">
+            <option value="0">Toàn bộ</option>
+            <option :value="index" v-for="index in this.numberGeneration" :key="index">{{ index }}</option>
+          </select>
+        </div>
+        <div class="col-2">
+          <select v-model="genderSearch" class="form-select filter" @change="filter()">
+            <option value="all">Toàn bộ</option>
+            <option value="male">Nam</option>
+            <option value="female">Nữ</option>
+          </select>
+        </div>
+        <div class="col-2">
+          <select v-model="isDeadSearch" class="form-select filter" @change="filter()">
+            <option value="all">Toàn bộ</option>
+            <option value="1">Còn sống</option>
+            <option value="0">Đã mất</option>
+          </select>
+        </div>
+        <div class="col-2">
+          <select v-model="ageSearch" class="form-select filter" @change="filter()">
+            <option value="all">Toàn bộ</option>
+            <option value="0-5">0-5 tuổi</option>
+            <option value="6-17">6-17 tuổi</option>
+            <option value="18-40">18-40 tuổi</option>
+            <option value="41-60">41-60 tuổi</option>
+            <option value=">60">Trên 60 tuổi</option>
+          </select>
+        </div>
+        <div class="col-2">
+          <div class="center-content">
+            <button class="btn bg-primary text-white m-0" @click="refreshSelect()">Làm mới</button>
           </div>
         </div>
-        <div class="d-flex row" style="min-width: 100vh;">
-          <div class="graph justify-content-center" style="height: 400px; max-width: 300px;flex: 1;border: 1px solid #ccc;">
-            <Bar id="my-chart-id" :options="graphGender.chartOptions" :data="graphGender.chartData" :style="myGenderStyle" />
-            <b style="margin:20%">1.Biểu đồ giới tính</b>
+      </div>
+      <div class="px-2 pb-2">
+        <div class="d-flex" style="max-height: 400px;">
+          <div class="col-6 pb-2 pe-2 flex-column">
+            <div class="h-100" style="border: 1px solid #ccc;">
+              <Bar id="my-chart-id" :options="graphGender.chartOptions" :data="graphGender.chartData" :style="myGenderStyle" />
+            </div>
           </div>
-          <div class="graph" style="height: 400px; max-width: 300px;flex: 1;border: 1px solid #ccc;">
-            <Bar id="graphAlive" :options="graphAlive.chartOptions" :data="graphAlive.chartData" :style="myAliveStyle" />
-            <b style="margin:20%">2.Biểu đồ trạng thái</b>
+          <div class="col-6 pb-2 flex-column">
+            <div class="h-100" style="border: 1px solid #ccc;">
+              <Bar id="graphAlive" :options="graphAlive.chartOptions" :data="graphAlive.chartData" :style="myAliveStyle" />
+            </div>
           </div>
-          <div class="graph" style="height: 400px;max-width: 700px;flex: 1;border: 1px solid #ccc;">
-            <Bar id="graphAge" :options="graphAge.chartOptions" :data="graphAge.chartData" :style="myAgeStyle" />
-            <b style="margin:20%">3.Biểu đồ độ tuổi</b>
+        </div>
+        <div style="max-height: 400px;">
+          <div class="pb-2">
+            <div class="h-100 pb-2" style="border: 1px solid #ccc;">
+              <Bar id="graphAge" :options="graphAge.chartOptions" :data="graphAge.chartData" :style="myAgeStyle" />
+            </div>
           </div>
-          <div class="graph" style="height: 600px;max-width: 2000px;margin-top: 100px;padding-bottom: 100px;flex: 1;border: 1px solid #ccc;">
-            <Bar id="graphMonthDob" :options="graphMonthDob.chartOptions" :data="graphMonthDob.chartData" :style="myMonthStyle" />
-            <b>4.Biểu đồ tháng sinh</b>
+        </div>
+        <div style="max-height: 400px;">
+          <div class="pb-2">
+            <div style="border: 1px solid #ccc;">
+              <div class="h-100 pb-2" style="border: 1px solid #ccc;">
+                <Bar id="graphMonthDob" :options="graphMonthDob.chartOptions" :data="graphMonthDob.chartData" :style="myMonthStyle" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
 <script>
 import Vue from "vue";
 import VueCookies from "vue-cookies";

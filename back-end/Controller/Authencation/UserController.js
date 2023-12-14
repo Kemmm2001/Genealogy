@@ -524,7 +524,54 @@ var resetPassword = async (req, res) => {
   }
 }
 
+var re_verifyAccount = async (req, res) => {
+  try {
+    let email
+    const token = req.body.token;
+    const payload = await verifyRegisterToken(token)
+    if (payload) {
+      email = payload.email
+    }
+    console.log('email: ' + email)
+    if (!email) {
+      return res.send(Response.internalServerErrorResponse(null, 'Vui lòng nhập email'));
+    }
 
+    if (!validator.isEmail(email)) {
+      return res.send(Response.internalServerErrorResponse(null, 'Email không hợp lệ'));
+    }
+    let checkEmail = await UserService.checkMail(email);
+
+    if (checkEmail == 0) {
+      return res.send(Response.dataNotFoundResponse(null, 'Email không tồn tại'));
+    }
+    else {
+      const token = await signRegisterToken(email)
+      try {
+        console.log(token)
+        let data = await UserService.UpdateRegisterToken(email, token)
+        const verifyLink = `${frontEndURL}/verify?token=${token}`;
+
+        const objData = {
+          to: email,
+          subject: "For verify account",
+          html: `<p> Hii, Please click the link to <a href="${verifyLink}">verify account</a></p>`
+        };
+        sendMail.SendEmailCore(objData)
+        if (data == true) {
+          return res.send(Response.successResponse(null, 'Vui lòng kiểm tra hộp thư đến trong gmail của bạn'));
+        }
+        return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+      } catch (error) {
+        return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+      }
+    }
+
+  } catch (error) {
+    return res.send(Response.internalServerErrorResponse(error, 'Lỗi hệ thống'));
+
+  }
+}
 
 var verifyAccount = async (req, res) => {
   try {
@@ -571,8 +618,9 @@ var verifyAccount = async (req, res) => {
 
 var setActive = async (req, res) => {
   try {
-    const token = req.query.token;
+    const token = req.body.token;
     const payload = await verifyRegisterToken(token)
+    console.log('payload: ' + payload.email)
     if (payload.error === 'Token expired') {
       return res.send(Response.internalServerErrorResponse(null, "Link đã hết hạn"));
     }
@@ -584,7 +632,8 @@ var setActive = async (req, res) => {
 
     let data;
     try {
-      data = await UserService.UpdateActive(req.body.IsActive, payload.email);
+      data = await UserService.UpdateActive(1, payload.email);
+      console.log('data: ' + data)
       if (data == true) {
         try {
           let data1 = await UserService.DeleteRegisterToken(payload.email);
@@ -610,6 +659,6 @@ var setActive = async (req, res) => {
 module.exports = {
   registerUser, loginUser, refreshToken, registerGenealogy, getGenealogy, setRole,
   checkCodeID, getUserInfor, getUserCodeID, getHistoryCodeID, ChangePassword, getListRoleMember,
-  forgetPassword, resetPassword, changeUsername, getInformationTree, verifyAccount, setActive, getRoleAccount, getAllRoleAccount
+  forgetPassword, resetPassword, changeUsername, getInformationTree, verifyAccount, setActive, getRoleAccount, getAllRoleAccount,re_verifyAccount
 
 };

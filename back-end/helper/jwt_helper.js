@@ -7,6 +7,8 @@ const timeRefreshToken = process.env.TIME_REFRESH_TOKEN
 const timeRePassToken = process.env.TIME_REPASS_TOKEN
 const timeRegisterToken = process.env.TIME_REGISTER_TOKEN
 const timeGenealogyToken = process.env.TIME_GENEALOGY_TOKEN
+const Response = require('../Utils/Response');
+const { time } = require('console');
 
 module.exports = {
   signAccessToken: (insertId) => {
@@ -16,7 +18,7 @@ module.exports = {
       }
       const secret = process.env.ACCESS_TOKEN_SECRET
       const options = {
-        expiresIn: "1d",
+        expiresIn: timeAccessToken,
       }
       JWT.sign(payload, secret, options, (err, token) => {
         if (err) {
@@ -43,11 +45,11 @@ module.exports = {
     JWT.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
       if (err) {
         if (err.name === 'JsonWebTokenError') {
-          return res.json({ error: 'Unauthorized' });
+          return res.send(Response.unauthorizedResponse())
         } else if (err.name === 'TokenExpiredError') {
-          return res.json({ error: 'Token expired' });
+          return res.send(Response.tokenExpiredTime())
         } else {
-          return res.json({ error: err.message });
+          return res.send((Response.forbiddenResponse()));
         }
       }
       req.payload = payload;
@@ -63,7 +65,7 @@ module.exports = {
       }
       const secret = process.env.GENEALOGY_TOKEN_SECRET
       const options = {
-        expiresIn: "8h" ,
+        expiresIn: timeGenealogyToken ,
       }
       JWT.sign(payload, secret, options, (err, token) => {
         if (err) {
@@ -86,11 +88,11 @@ module.exports = {
     JWT.verify(token, process.env.GENEALOGY_TOKEN_SECRET, (err, payload) => {
       if (err) {
         if (err.name === 'JsonWebTokenError') {
-          return res.json({ error: 'Unauthorized' });
+          return res.send(Response.unauthorizedResponse())
         } else if (err.name === 'TokenExpiredError') {
-          return res.json({ error: 'Token expired' });
+          return res.send(Response.tokenExpiredTime())
         } else {
-          return res.json({ error: err.message });
+          return res.send((Response.forbiddenResponse()));
         }
       }
       req.payload = payload;
@@ -130,9 +132,9 @@ module.exports = {
       JWT.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, payload) => {
         if (err) {
           if (err.name === 'TokenExpiredError') {
-            return reject(createError.Unauthorized('Token has expired'));
+            reject(Response.tokenExpiredTime());
           }
-          return reject(createError.Unauthorized('Invalid token'));
+          reject(Response.forbiddenResponse());
         }
         resolve(payload);
       });
@@ -165,9 +167,9 @@ module.exports = {
       JWT.verify(token, process.env.REPASS_TOKEN_SECRET, (err, payload) => {
         if (err) {
           if (err.name === 'TokenExpiredError') {
-            reject({ error: 'Token expired' });
+            reject(Response.tokenExpiredTime());
           } else {
-            resolve({ error: 'Invalid token' });
+            reject(Response.forbiddenResponse());
           }
         } else {
           resolve(payload);
@@ -201,9 +203,9 @@ module.exports = {
       JWT.verify(token, process.env.INVITE_TOKEN_SECRET, (err, payload) => {
         if (err) {
           if (err.name === 'TokenExpiredError') {
-            reject({ error: 'Token expired' });
+            reject(Response.tokenExpiredTime());
           } else {
-            resolve({ error: 'Invalid token' });
+            reject(Response.forbiddenResponse());
           }
         } else {
           resolve(payload);
@@ -237,9 +239,9 @@ module.exports = {
       JWT.verify(token, process.env.REGISTER_TOKEN_SECRET, (err, payload) => {
         if (err) {
           if (err.name === 'TokenExpiredError') {
-            reject({ error: 'Token expired' });
+            reject(Response.tokenExpiredTime());
           } else {
-            resolve({ error: 'Invalid token' });
+            reject(Response.forbiddenResponse());
           }
         } else {
           resolve(payload);

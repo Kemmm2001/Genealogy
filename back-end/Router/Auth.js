@@ -9,7 +9,7 @@ const { verify } = require('crypto');
 const initWebRouter = (app) => {
 
   router.get('/protected-route', verifyAccessToken, (req, res) => {
-    
+
     const accountID = req.payload.insertId;
     res.json({ accountID });
   });
@@ -22,6 +22,7 @@ const initWebRouter = (app) => {
   router.post('/forget-password', UserController.forgetPassword)
   router.post('/reset-password', UserController.resetPassword)
   router.post('/verify-account', UserController.verifyAccount)
+  router.post('/re_verify-account', UserController.re_verifyAccount)
   router.post('/setActive', UserController.setActive)
 
   router.post('/register-genealogy', UserController.registerGenealogy)
