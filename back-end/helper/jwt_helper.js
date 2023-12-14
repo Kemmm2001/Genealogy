@@ -92,7 +92,7 @@ module.exports = {
         } else if (err.name === 'TokenExpiredError') {
           return res.json({ error: 'Token expired' });
         } else {
-          return res.send((Response.forbiddenResponse()));
+          return res.json({ error: 'forbidden' });
         }
       }
       req.payload = payload;
