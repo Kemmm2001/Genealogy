@@ -94,7 +94,7 @@
               </thead>
               <tbody>
                 <tr v-for="h in HistoryCode" :key="h.id">
-                  <td>{{ h.AccessTime }}</td>
+                  <td>{{ formatDate(h.AccessTime) }}</td>
                   <td @click="LoginFastCodeID(h.CodeID)" style="cursor: pointer">{{ h.CodeID }}</td>
                 </tr>
               </tbody>
@@ -240,7 +240,7 @@ export default {
             } else {
               console.log(response.data.status_code);
               if (response.data.status_code == 402) {
-                console.log("vào đây")
+                console.log("vào đây");
                 this.$router.push("/login");
               }
               this.NotificationsDelete(response.data.message);
@@ -267,6 +267,19 @@ export default {
       setTimeout(() => {
         this.right = true;
       }, 300);
+    },
+    formatDate(dateString) {
+      if (dateString == null) {
+        return null;
+      }
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      const hours = String(date.getHours()).padStart(2, "0");
+      const minutes = String(date.getMinutes()).padStart(2, "0");
+      // const seconds = String(date.getSeconds()).padStart(2, "0");     
+      return `${hours} Giờ :${minutes} Phút Ngày: ${day}-${month}-${year}`
     },
 
     moveToLeft() {
