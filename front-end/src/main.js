@@ -23,6 +23,7 @@ import "./assets/css/userprofile.css";
 import "./assets/css/familytree.css";
 import "./assets/css/event.css";
 import "./assets/css/history.css";
+import "./assets/css/statistics.css";
 
 import "./assets/css-dark/memberlist.css";
 import './assets/css-dark/style.css';

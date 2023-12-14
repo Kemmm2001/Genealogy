@@ -4,8 +4,9 @@ const UserManagement = require('../service/Authencation/UserManagement');
 const db = require('../Models/ConnectDB')
 const BrevoMail = require('./BrevoMail');
 const xlsx = require('xlsx');
+const CoreFunction = require('./CoreFunction');
 
-let SendSMSCore = (objData) => {
+let SendSMSCore = (objData, accountID) => {
     try {
         require('dotenv').config();
         let client = require('twilio')(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
@@ -17,6 +18,22 @@ let SendSMSCore = (objData) => {
         if (missingFields.length) {
             return false;
         }
+        // đếm số lần gửi sms
+        let count = 1;
+        // nếu có accountid thì check xem có đủ lần gửi sms ko
+        if (CoreFunction.isDataNumberExist(accountID)) {
+            let accountData = UserManagement.getAccountByAccountID(accountID);
+            if(accountData != null && accountData.length > 0){
+                let account = accountData[0];
+                if(account.FreeSMS < count){
+                    return false;
+                }else{
+                    account.FreeSMS = account.FreeSMS - count;
+                    UserManagement.setFreeSMS(account.FreeSMS, accountID);
+                }
+            }
+        }
+        // gửi sms
         client.messages.create({
             body: objData.Message,
             from: process.env.PHONE_NUMBER,
@@ -64,7 +81,7 @@ function SetHistorySendEmail(EmailSubject, EmailContent, CodeID) {
 
 
 
-let SendEmailCore = (objData) => {
+let SendEmailCore = (objData, accountID) => {
     console.log(objData)
     try {
         var mailOptions = {
@@ -73,13 +90,30 @@ let SendEmailCore = (objData) => {
             text: objData.text,
             html: objData.html,
         };
+        // đếm số lần gửi email
+        let count = 0;
         // Kiểm tra xem có phải mảng hay không
         if (Array.isArray(objData.to)) {
             // Nếu là mảng thì join
             mailOptions.to = objData.to.join(',');
+            count = objData.to.length;
         } else {
             // Nếu là string thì gán luôn
             mailOptions.to = objData.to;
+            count = 1;
+        }
+        // nếu có accountid thì check xem có đủ lần gửi mail ko
+        if (CoreFunction.isDataNumberExist(accountID)) {
+            let accountData = UserManagement.getAccountByAccountID(accountID);
+            if(accountData != null && accountData.length > 0){
+                let account = accountData[0];
+                if(account.FreeEmail < count){
+                    return false;
+                }else{
+                    account.FreeEmail = account.FreeEmail - count;
+                    UserManagement.setFreeEmail(account.FreeEmail, accountID);
+                }
+            }
         }
         // BrevoMail.sendEmail(mailOptions);
         BrevoMail.sendEmailBrevo(mailOptions);
@@ -94,8 +128,8 @@ let SendEmailCore = (objData) => {
 // schedule sẽ chạy vào mỗi 0h hằng ngày
 schedule.scheduleJob('0 0 * * *', () => {
     try {
-        console.log("Refresh free email : " + process.env.FREE_EMAIL_EVERY_DAY);
         UserManagement.refreshFreeEmail(process.env.FREE_EMAIL_EVERY_DAY);
+        UserManagement.refreshFreeSMS(process.env.FREE_SMS_EVERY_DAY);
     } catch (error) {
         console.log("error : " + error);
     }

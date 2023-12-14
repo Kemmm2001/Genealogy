@@ -36,7 +36,7 @@
       <div v-else-if="isExpired" class="h-100 w-100">
         <div class="w-100 d-flex flex-column align-items-center justify-content-center" style="height: 50%;">
           <div class="d-flex flex-column align-items-center justify-content-center px-3" style="height: 70%; font-size: 20px;">
-            <div>Bạn đã không phản hồi sự kiện {{inforEvent.EventName}} diễn ra vào {{hour}}:{{minute}} ngày {{day}}/{{month}}/{{year}}.</div>
+            <div>Bạn đã không phản hồi sự kiện. Lời mời đã hết hạn</div>
           </div>
         </div>
         <div class="d-flex align-items-center" style="justify-content: end; padding-right: 32px; height: 50%;">
@@ -180,7 +180,7 @@ export default {
         },
       })
         .then((respone) => {
-          console.log(respone.data);
+          console.log(respone.data.success);
           if (respone.data.success == true) {
             this.isExpired = false;
             this.eventId = respone.data.data.eventId;
@@ -188,7 +188,9 @@ export default {
             this.getInforEvent();
           } else {
             this.isExpired = true;
+            
           }
+          console.log(this.isExpired);
         })
         .catch((e) => {
           console.log(e);

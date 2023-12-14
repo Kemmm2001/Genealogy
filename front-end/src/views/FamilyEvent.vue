@@ -480,7 +480,8 @@ export default {
         });
     },
     sendMessageToConfirmEvent(action) {
-      if (this.ListMemberToSendEmail.length == 0) {
+      console.log(this.ListMemberToSendEmail.length)
+      if (this.ListMemberToSendEmail.length > 0) {
         if (this.numberExpire != null) {
           if (action != null) {
             this.ListMemberToSendEmail = this.listMember.map(

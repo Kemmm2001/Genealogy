@@ -654,7 +654,8 @@ var updateMemberToGenealogy = async (req, res) => {
             return res.send(Response.dataNotFoundResponse(null, "Thành viên không tồn tại"));
         }
         // nếu vào trường hợp là người ngoài gia phả không được thực hiện gì cả
-        if (inGenealogyMemeber[0].RoleID == 3) {
+        if (inGenealogyMemeber[0].RoleID == 3 
+            && !CoreFunction.isDataNumberExist(inGenealogyMemeber[0].FatherID) && !CoreFunction.isDataNumberExist(inGenealogyMemeber[0].MotherID) ) {
             let errorMessage = 'Không thể thêm vì thành viên hiện tại là người ngoài gia phả';
             return res.send(Response.badRequestResponse(null, errorMessage));
         }
@@ -811,8 +812,9 @@ var deleteMember = async (req, res) => {
         console.log("dataMember: ", dataMember[0].MemberID);
         // xóa ảnh cũ
         await CoreFunction.deleteImage(dataMember[0].Image);
-        // nếu người được xóa là người ngoài gia phả, tức là ko có cha mẹ
-        if (!CoreFunction.isDataNumberExist(dataMember[0].FatherID) && !CoreFunction.isDataNumberExist(dataMember[0].MotherID)) {
+        // nếu người được xóa là người ngoài gia phả, tức là ko có cha mẹ và roleid là 3
+        if ( dataMember[0].RoleID == 3
+             && !CoreFunction.isDataNumberExist(dataMember[0].FatherID) && !CoreFunction.isDataNumberExist(dataMember[0].MotherID)) {
             console.log("Đã vào trường hợp người ngoài gia phả");
             // nếu có vợ chồng thì những đứa con của vợ chồng đó sẽ được thêm vào vợ hoặc chồng của người được xóa
             let listMarriage = await MarriageManagement.getMarriageByHusbandIDOrWifeID(dataMember[0].MemberID, dataMember[0].MemberID);
@@ -1005,29 +1007,6 @@ var linkRelationship = async (req, res) => {
     }
 }
 
-
-
-var GetCurrentParentMember = async (req, res) => {
-    try {
-        let memberID = req.query.memberID;
-        let data = await FamilyManagementService.GetCurrentParentMember(memberID);
-        res.send(data);
-    } catch (err) {
-        console.log(err)
-    }
-}
-
-var insertParentIdToMember = async (req, res) => {
-    try {
-        let ParentID = req.body.ParentID;
-        let memberID = req.body.memberID
-        await FamilyManagementService.insertParentIdToMember(ParentID, memberID);
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-
 var searchMember = async (req, res) => {
     try {
         const { searchTerm } = req.body;
@@ -1121,25 +1100,25 @@ var getAllMember = async (req, res) => {
 //     return sortedMembers;
 // }
 
-var getMember = async (req, res) => {
-    try {
-        // Log ra thông tin trong req.body
-        let dataMember = await FamilyManagementService.getMemberByMemberID(req.query.MemberID);
-        console.log(dataMember)
-        if (dataMember == null || dataMember.length == 0) {
-            return res.send(Response.dataNotFoundResponse());
-        }
-        return res.send(Response.successResponse(dataMember));
-    } catch (e) {
-        console.log("Error: " + e);
-        return res.send(Response.internalServerErrorResponse());
-    }
+// var getMember = async (req, res) => {
+//     try {
+//         // Log ra thông tin trong req.body
+//         let dataMember = await FamilyManagementService.getMemberByMemberID(req.query.MemberID);
+//         console.log(dataMember)
+//         if (dataMember == null || dataMember.length == 0) {
+//             return res.send(Response.dataNotFoundResponse());
+//         }
+//         return res.send(Response.successResponse(dataMember));
+//     } catch (e) {
+//         console.log("Error: " + e);
+//         return res.send(Response.internalServerErrorResponse());
+//     }
 
-}
+// }
 
 
 module.exports = {
     addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember, addMarriage,
-    getListAgeGroup, getListBloodTypeGroup, GetCurrentParentMember, insertParentIdToMember,
-    getMember, updateMemberToGenealogy, updateMemberPhoto, addChild, linkRelationship, getAllMembersInGenalogy
+    getListAgeGroup, getListBloodTypeGroup,
+    updateMemberToGenealogy, updateMemberPhoto, addChild, linkRelationship, getAllMembersInGenalogy
 };

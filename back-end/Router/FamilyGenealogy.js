@@ -54,7 +54,7 @@ const initWebRouter = (app) => {
     router.get('/deleteListEducation',authMiddleware.authenticateAndAuthorize(2), EducationManagementController.RemoveListEducationMember)
 
     //API tuấn
-    router.get('/member',authMiddleware.authenticateAndAuthorize(3), FamilyMemberManagement.getMember);
+    // router.get('/member',authMiddleware.authenticateAndAuthorize(3), FamilyMemberManagement.getMember);
     router.post('/member', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.addMember);
     router.post('/add-child', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.addChild);
     router.post('/add-marriage', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.addMarriage);
@@ -63,13 +63,11 @@ const initWebRouter = (app) => {
     router.put('/memberToGenealogy', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.updateMemberToGenealogy);
     router.put('/linkRelationship', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.linkRelationship);
     router.get('/delete-member', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.deleteMember)
-    router.get('/getparent',authMiddleware.authenticateAndAuthorize(3), FamilyMemberManagement.GetCurrentParentMember)
-    router.post('/InsertParentID', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.insertParentIdToMember)
 
     //API Nhật anh
-    router.get('/members', FamilyMemberManagement.getAllMember);
-    router.post('/search-member', FamilyMemberManagement.searchMember);
-    router.post('/filter-member', FamilyMemberManagement.filterMember);
+    router.get('/members',authMiddleware.authenticateAndAuthorize(3), FamilyMemberManagement.getAllMember);
+    router.post('/search-member',authMiddleware.authenticateAndAuthorize(3), FamilyMemberManagement.searchMember);
+    router.post('/filter-member', authMiddleware.authenticateAndAuthorize(3),FamilyMemberManagement.filterMember);
     // router.post('/sort-member', FamilyMemberManagement.sortMembers);
 
     //Tiền tố đứng trước route

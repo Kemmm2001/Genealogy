@@ -2,7 +2,7 @@
   <div class="profile-grid-container w-100">
     <div class="profile-sidebar px-3">
       <div @click="selectProfile()" :class="{ chosen: profileSelected }" class="btn w-100 mt-3 text-white" style="text-align: start;">Tài khoản cá nhân</div>
-      <div @click="selectEditRole()" :class="{ chosen: editRoleSelected }" class="btn w-100 mt-3 text-white" style="text-align: start;">Phân quyền trong gia phả</div>
+      <div v-if="memberRole == 1" @click="selectEditRole()" :class="{ chosen: editRoleSelected }" class="btn w-100 mt-3 text-white" style="text-align: start;">Phân quyền trong gia phả</div>
       <div @click="selectChangePwd()" :class="{ chosen: changePwdSelected }" class="btn w-100 mt-3 text-white" style="text-align: start;">Thay đổi mật khẩu</div>
     </div>
     <div class="profile-content">
@@ -45,23 +45,20 @@
       </div>
       <div v-if="editRoleSelected" class="content" style="height: 80%;">
         <div class="w-100 h-100 position-relative">
-          <div class="pb-2" style="font-weight: bold;">
-            Tài khoản thành viên
-            thuộc gia phả
-          </div>
+          <div class="pb-2" style="font-weight: bold;">Tài khoản thành viên thuộc gia phả</div>
           <div class="family-account">
             <div v-for="(m, index) in listMemberRole" :key="index" :class="{
                             'family-account-item odd position-relative': index % 2 !== 0,
                             'family-account-item even position-relative': index % 2 == 0
                         }">
               <div class="h-100 w-100" style="display: grid; grid-template-columns: 65% 35%; text-align: center;">
-                <div class="h-100 d-flex align-items-center px-2" style="justify-content: start;">
-                  {{ m.Email
-                  }}
-                </div>
-                <div class="h-100 d-flex align-items-center p-2" style="justify-content: end;">
-                  <select :disabled="m.RoleID != 1 ? false : true" v-model="m.RoleID" class="form-select h-100 px-3 py-0" @change="changeRole(m.RoleID, m.AccountID)">
-                    <option style="text-align: center;" :value="m.RoleID">{{ m.RoleName }}</option>
+                <div class="h-100 d-flex align-items-center px-2" style="justify-content: start;">{{ m.Email }}</div>
+                <div v-if="memberRole == 1" class="h-100 d-flex align-items-center p-2" style="justify-content: end;">
+                  <select v-if="m.RoleID == 1" v-model="m.RoleID" class="form-select h-100 px-3 py-0" @change="changeRole(m.RoleID, m.AccountID)" disabled>
+                    <option v-for="list in listRoleAccount" v-bind:key="list.id" style="text-align: center;" :value="list.RoleID">{{list.RoleName}}</option>
+                  </select>
+                  <select v-else v-model="m.RoleID" class="form-select h-100 px-3 py-0" @change="changeRole(m.RoleID, m.AccountID)">
+                    <option v-for="list in filteredRoleOptions" v-bind:key="list.id" style="text-align: center;" :value="list.RoleID">{{list.RoleName}}</option>
                   </select>
                 </div>
               </div>
@@ -144,6 +141,7 @@ export default {
       accountInfor: null,
       CodeID: null,
       inforTree: null,
+      memberRole: null,
 
       getCurrentPassword: null,
 
@@ -157,6 +155,7 @@ export default {
       oldPwdVisibilityType: "password",
       newPwdVisibilityType: "password",
       newPwd2VisibilityType: "password",
+      listRoleAccount: null,
     };
   },
   methods: {
@@ -175,7 +174,14 @@ export default {
 
       return encrypted;
     },
-
+    getAllRoleAccount() {
+      HTTP.get("allRoleAccount").then((respone) => {
+        if (respone.data.success) {
+          this.listRoleAccount = respone.data.data;
+          console.log(this.listRoleAccount);
+        }
+      });
+    },
     decrypt(encrypted) {
       const decrypted = CryptoJS.AES.decrypt(
         encrypted,
@@ -219,7 +225,7 @@ export default {
     },
     changeUserName() {
       HTTP.post("changeUsername", {
-        username: this.accountInfor.username,
+        username: this.accountInfor.Username,
         AccountID: this.accountID,
       })
         .then((respone) => {
@@ -262,11 +268,14 @@ export default {
       console.log(decryptPassword);
       console.log(decryptRepassword);
 
-      if (this.InputNewPassword == this.InputRe_newpassword) {
+      console.log(this.InputCurentPassword);
+      console.log(this.InputNewPassword);
+      if (this.InputRe_newpassword == this.InputNewPassword) {
         HTTP.put("changepassword", {
           accountID: this.accountID,
-          currentpassword: encryptedPassword,
+          currentPassword: encryptedPassword,
           newPassword: encryptedNewpassword,
+          Re_newPassword: encryptedNewpassword,
         })
           .then((respone) => {
             if (respone.data.success == true) {
@@ -274,6 +283,7 @@ export default {
               this.InputCurentPassword = null;
               this.InputNewPassword = null;
               this.InputRe_newpassword = null;
+              this.NotificationsScuccess(respone.data.message);
             } else {
               this.NotificationsDelete(respone.data.message);
             }
@@ -305,10 +315,12 @@ export default {
     getInforAccount() {
       HTTP.post("get-user", {
         accountID: this.accountID,
+        CodeID: this.CodeID,
       })
         .then((respone) => {
           if (respone.data.success == true) {
             this.accountInfor = respone.data.data;
+            console.log("infor: " + this.accountInfor);
           } else {
             this.NotificationsScuccess(respone.data.message);
           }
@@ -316,6 +328,24 @@ export default {
         .catch((e) => {
           console.log(e);
         });
+    },
+    getMemberRole() {
+      try {
+        HTTP.post("roleAccount", {
+          accountID: localStorage.getItem("accountID"),
+          codeID: localStorage.getItem("CodeID"),
+        })
+          .then((response) => {
+            if (response.data.success == true) {
+              this.memberRole = response.data.data.RoleID;
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } catch (error) {
+        console.log(error);
+      }
     },
     getListRoleMember() {
       console.log(this.CodeID);
@@ -365,6 +395,12 @@ export default {
         this.newPwd2VisibilityType === "text" ? "password" : "text";
     },
   },
+  computed: {
+    filteredRoleOptions() {
+      // Replace the condition as needed
+      return this.listRoleAccount.filter((role) => role.RoleID !== 1);
+    },
+  },
   mounted() {
     if (
       localStorage.getItem("CodeID") != null &&
@@ -379,9 +415,16 @@ export default {
         this.$router.push("/login");
       }
     }
-    this.getListRoleMember();
-    this.getInforAccount();
-    this.getInforTree();
+    if (
+      localStorage.getItem("CodeID") != null &&
+      localStorage.getItem("accountID") != null
+    ) {
+      this.getMemberRole();
+      this.getListRoleMember();
+      this.getInforAccount();
+      this.getInforTree();
+      this.getAllRoleAccount();
+    }
   },
 };
 </script>

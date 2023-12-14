@@ -22,8 +22,8 @@ const initWebRouter = (app) => {
     router.get('/ListEventNotiSent', authMiddleware.authenticateAndAuthorize(3), EventManagementController.getListEventNotificationSent)
     // router.get('/getEmail',EventManagementController)
 
-    router.get('/birthday', EventManagementController.GetBirthDayInMonth)
-    router.get('/deadDay', EventManagementController.GetDeadDayInMonth)
+    router.get('/birthday',authMiddleware.authenticateAndAuthorize(3), EventManagementController.GetBirthDayInMonth)
+    router.get('/deadDay',authMiddleware.authenticateAndAuthorize(3), EventManagementController.GetDeadDayInMonth)
     router.post('/send-sms', authMiddleware.authenticateAndAuthorize(2), EventManagementController.SendSMSToMember)
     //API tuấn
     // router.post('/send-sms', EventManagementController.SendSMS)

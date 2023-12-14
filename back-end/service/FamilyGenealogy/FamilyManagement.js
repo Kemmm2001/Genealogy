@@ -277,17 +277,6 @@ function UpdateMemberGenerationToZero(memberId) {
 
 
 // nguyễn anh tuấn
-function GetCurrentParentMember(memberID) {
-    return new Promise(async (resolve, reject) => {
-        let query = `select * from familymember
-        where MemberID = ? and ParentID is not null`;
-        let values = [memberID];
-        let result = await coreQuery(query, values);
-        resolve(result);
-    })
-}
-
-// nguyễn anh tuấn
 function insertParentIdToMember(fatherID, motherID, memberID) {
     return new Promise(async (resolve, reject) => {
         let query = `UPDATE familymember SET FatherID = ?, MotherID = ? WHERE MemberID = ?;`
@@ -348,14 +337,6 @@ function setBirthOrder(birthOrder, memberId) {
         let result = await coreQuery(query, values);
         resolve(result);
     })
-}
-
-function getMember(memberId) {
-    return new Promise(async (resolve, reject) => {
-        const query = 'select * from familymember where memberid = ?';
-        let result = await coreQuery(query);
-        resolve(result);
-    });
 }
 
 // nguyễn anh tuấn
@@ -590,24 +571,6 @@ function queryContactMembers(filterOptions) {
 }
 
 
-
-
-// nguyễn anh tuấn
-const findMemberByHusbandIDAndWifeID = (husbandID, wifeID, listMember) => {
-    console.log(`Vào hàm findMemberByHusbandIDOrWifeID với những thông tin sau: husbandID = ${husbandID}, wifeID = ${wifeID}, listMember = ${JSON.stringify(listMember)}`)
-    // nếu listMember không phải array
-    if (!Array.isArray(listMember)) return [];
-    const matchingMembers = [];
-    for (let i = 0; i < listMember.length; i++) {
-        const member = listMember[i];
-        if (member.husbandID === husbandID && member.wifeID === wifeID) {
-            matchingMembers.push(member);
-        }
-    }
-
-    return matchingMembers;
-};
-
 // nguyễn anh tuấn
 const findMemberByHusbandIDOrWifeID = (husbandID, wifeID, listMember) => {
     console.log(`Vào hàm findMemberByHusbandIDOrWifeID với những thông tin sau: husbandID = ${husbandID}, wifeID = ${wifeID}, listMember = ${JSON.stringify(listMember)}`)
@@ -623,7 +586,8 @@ const findMemberByHusbandIDOrWifeID = (husbandID, wifeID, listMember) => {
 
     return matchingMembers;
 };
-123
+
+// nguyễn anh tuấn
 function getAllMember(codeID) {
     return new Promise((resolve, reject) => {
         try {
@@ -643,6 +607,7 @@ function getAllMember(codeID) {
         }
     });
 }
+
 
 function getAllMembersInGenalogy(CodeID) {
     return new Promise((resolve, reject) => {
@@ -697,9 +662,9 @@ function getMemberByMemberID(memberID) {
 }
 
 module.exports = {
-    addMember, updateMember, deleteMember, getMember, searchMember, getMemberByMemberID,
+    addMember, updateMember, deleteMember, searchMember, getMemberByMemberID,
     setGeneration, queryContactMembers,
-    getAllMember, queryFamilyMembers, GetCurrentParentMember,
+    getAllMember, queryFamilyMembers,
     insertFatherIDToMember, insertMotherIDToMember, getMembersByFatherID, getMembersByMotherID,
     setBirthOrder, insertParentIdToMember, getAllMemberID, updateMemberPhoto,
     getMembersByFatherIDAndMotherID, getMembersByFatherIDOrMotherID, updateFatherIDToMotherID,

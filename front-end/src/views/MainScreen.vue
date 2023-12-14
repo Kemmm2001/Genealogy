@@ -566,17 +566,25 @@
                         <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item" placeholder />
                         <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con thứ</label>
                       </div>
-                      <div style="position: relative;width: 50%; margin-right: 10px;" v-if="objMemberInfor.FatherID == null && action == null">
-                        <input v-model="objMember.MarriageNumber" type="number" min="0" class="form-control modal-item" disabled placeholder />
-                        <label class="form-label-number" for="input" v-if="objMemberInfor.FatherID == null && objMemberInfor.MotherID == null && action != 'AddMarriage' " :class="{ 'active': objMember.MarriageNumber }">{{objMemberInfor.Male == 1 ? 'Chồng thứ':'Vợ thứ'}}</label>
+                      <div style="position: relative;width: 50%; margin-right: 10px;" v-else-if="objMemberInfor.FatherID == null && action == null && objMemberInfor.MarriageNumber != null && objMemberInfor.MotherID == null">
+                        <input v-model="objMemberInfor.MarriageNumber" type="number" min="0" max="20" class="form-control modal-item" disabled placeholder />
+                        <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.MarriageNumber }">{{objMemberInfor.Male == 1 ? 'Chồng thứ':'Vợ thứ'}}</label>
                       </div>
-                      <div style="position: relative;width: 50%; margin-right: 10px;" v-if="action == 'AddChild'">
+                      <div style="position: relative;width: 50%; margin-right: 10px;" v-else-if="action == 'AddChild'">
                         <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item" placeholder />
                         <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con thứ</label>
                       </div>
-                      <div style="position: relative;width: 50%; margin-right: 10px;" v-if="action == 'AddMarriage'">
-                        <input v-model="objMember.MarriageNumber" type="number" min="0" class="form-control modal-item" placeholder />
-                        <label class="form-label-number" for="input" :class="{ 'active': objMember.MarriageNumber }">{{isFather == false ? 'Chồng thứ':'Vợ thứ'}}</label>
+                      <div style="position: relative;width: 50%; margin-right: 10px;" v-else-if="action == 'AddMarriage'">
+                        <input v-model="objMemberInfor.MarriageNumber" type="number" min="0" max="20" class="form-control modal-item" disabled placeholder />
+                        <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.MarriageNumber }">{{isFather == false ? 'Chồng thứ':'Vợ thứ'}}</label>
+                      </div>
+                      <div style="position: relative;width: 50%; margin-right: 10px;" v-else-if="action == 'AddParent'">
+                        <input v-model="objMemberInfor.BirthOrder" disabled type="number" min="0" class="form-control modal-item" placeholder />
+                        <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con thứ</label>
+                      </div>
+                      <div style="position: relative;width: 50%; margin-right: 10px;" v-else>
+                        <input v-model="objMemberInfor.BirthOrder" type="number" min="0" max="20" class="form-control modal-item" placeholder />
+                        <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con thứ</label>
                       </div>
                     </div>
                     <div style="display:flex">
@@ -833,7 +841,7 @@
             <div class="d-flex justify-content-end" style="padding-right: 12px;">
               <button v-if="isAdd && memberRole != 3" type="button" class="btn btn-primary mr-2" @click="addMember()">Thêm</button>
               <button v-else-if="isEdit && memberRole != 3" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
-              <button v-if="nodes.length && memberRole != 3" style="margin-left:10px" type="button" class="btn btn-danger" @click="openCfDelModal('removeMember', null, objMemberInfor.MemberName)">Xóa thành viên</button>
+              <button v-if="this.action != 'AddFirst' && memberRole != 3" style="margin-left:10px" type="button" class="btn btn-danger" @click="openCfDelModal('removeMember', null, objMemberInfor.MemberName)">Xóa thành viên</button>
             </div>
           </div>
         </div>
@@ -967,6 +975,7 @@ export default {
       emailDetail: false,
 
       objMemberInfor: {
+        MarriageNumber: 1,
         MemberID: 0,
         ParentID: null,
         MarriageID: null,
@@ -1424,6 +1433,20 @@ export default {
         this.NotificationsDelete("Không có thông báo gì để gửi ");
       }
     },
+    getMaxMarriage(id) {
+      let count = 0;
+      console.log(id);
+      for (let i = 0; i < this.nodes.length; i++) {
+        let j = 0;
+        while (j < this.nodes[i].pids.length) {
+          if (this.nodes[i].pids[j] == id) {
+            count++;
+          }
+          j++;
+        }
+      }
+      return count + 1;
+    },
     getListMemberToSendMessage() {
       try {
         console.log(this.CodeID);
@@ -1638,8 +1661,6 @@ export default {
           this.objMember = response.data.data;
           console.log(id);
           console.log(this.objMember);
-          this.objMember.MarriageNumber = response.data.data.MarriageNumber;
-          // console.log("result: " + response.data.data.MarriageNumber);
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
             this.takeDataMember(this.CurrentIdMember);
@@ -1654,6 +1675,7 @@ export default {
             this.avatarSrc = this.objMemberInfor.Image;
             console.log("avatarSrc: " + this.avatarSrc);
           }
+          //   console.log("result: " + this.objMemberInfor.MarriageNumber);
           if (this.objMember.contact.length > 0) {
             this.objMemberContact = this.objMember.contact[0];
             console.log(this.objMemberContact);
@@ -1664,6 +1686,10 @@ export default {
             ) {
               this.getAdressMember(this.objMemberContact.Address);
             }
+          }
+          if (response.data.data.MarriageNumber != null) {
+            this.objMemberInfor.MarriageNumber =
+              response.data.data.MarriageNumber;
           }
           this.ListMemberEducation = this.objMember.education;
           this.ListMemberJob = this.objMember.job;
@@ -2061,11 +2087,12 @@ export default {
         });
     },
     addMemberMarried() {
+      console.log(this.objMemberInfor.MarriageNumber);
       HTTP.post("add-marriage", {
         CurrentMemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
         NickName: this.objMemberInfor.NickName,
-        MarriageNumber: this.objMemberInfor.BirthOrder,
+        MarriageNumber: this.objMemberInfor.MarriageNumber,
         Origin: this.objMemberInfor.Origin,
         NationalityID: this.objMemberInfor.NationalityID,
         ReligionID: this.objMemberInfor.ReligionID,
@@ -2299,6 +2326,10 @@ export default {
     },
     //Nguyễn Lê Hùng
     updateInformation() {
+      if (this.objMemberInfor.BirthOrder == null) {
+        console.log("vào đây")
+        this.objMemberInfor.BirthOrder = 1;
+      }
       if (this.selectDistrictMember != null) {
         this.objMemberContact.Address =
           this.objMemberContact.Address + "-" + this.selectDistrictMember;
@@ -2556,7 +2587,13 @@ export default {
       this.selectCityMember = null;
       this.objMemberInfor.BirthOrder = 1;
       this.objMemberInfor.Male = 1;
-      console.log(this.isFather);
+      if (action == "AddMarriage") {
+        this.objMemberInfor.MarriageNumber = this.getMaxMarriage(
+          this.CurrentIdMember
+        );
+        console.log(this.getMaxMarriage(this.CurrentIdMember));
+        console.log("đã vào");
+      }
       if (this.isFather == true && action == "AddMarriage") {
         console.log(this.isFather);
         this.objMemberInfor.Male = 0;
