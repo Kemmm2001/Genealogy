@@ -156,8 +156,7 @@ export default {
           })
           .catch((e) => {
             console.log(e);
-          });
-        console.log(this.accountID);
+          });        
       }
     },
     NotificationsDelete(messagee) {
@@ -231,7 +230,7 @@ export default {
         })
           .then((response) => {
             if (response.data.success == true) {
-              console.log("data: " + response.data);
+              console.log("data: " + response.data.data);
               VueCookies.remove("accessToken");
               VueCookies.set("accessToken", response.data.data, 360000);
               localStorage.setItem("CodeID", this.codeIdLogin);
