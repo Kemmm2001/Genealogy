@@ -244,7 +244,7 @@ var loginUser = async (req, res) => {
     if (!isPasswordMatch) {
       return res.send(Response.dataNotFoundResponse(null, 'Mật khẩu không đúng'));
     }
-    let accessToken = await signAccessToken(codeID,data.accountID)
+    let accessToken = await signAccessToken(data.accountID)
     // let refreshToken = await signRefreshToken(data.accountID)
     console.log(refreshToken)
     return res.send(Response.successResponse(accessToken, 'Login thành công'));

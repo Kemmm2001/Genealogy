@@ -8,12 +8,12 @@ const { verify } = require('crypto');
 
 const initWebRouter = (app) => {
 
-  router.get('/protected-route', verifyAccessToken, (req, res) => {
+  router.get('/protected-route', verifyGenealogyToken, (req, res) => {
 
     const accountID = req.payload.insertId;
-    res.json({ accountID });
+    const codeID = req.payload.codeID;
+    res.json({ accountID, codeID });
   });
-
 
   router.post('/register', UserController.registerUser);
   router.post('/login', UserController.loginUser);
