@@ -2,8 +2,7 @@ const UserService = require('../../service/Authencation/UserManagement');
 const createError = require('http-errors')
 const validator = require('validator');
 const bcrypt = require('bcrypt');
-const { signAccessToken, signRefreshToken, signRePassToken, signRegisterToken, verifyRegisterToken, verifyRepassToken, verifyRefreshToken } = require('../../helper/jwt_helper')
-const Response = require('../../Utils/Response')
+const { signAccessToken, signRefreshToken, signRePassToken, signRegisterToken, signGenealogyToken, verifyRegisterToken, verifyRepassToken, verifyRefreshToken } = require('../../helper/jwt_helper')
 const sendMail = require('../../Utils/SystemOperation');
 require('dotenv').config();
 const backEndURL = process.env.BACKEND_URL
@@ -386,14 +385,18 @@ var checkCodeID = async (req, res) => {
       let checkCodeIdCreator1 = await UserService.checkCodeIdCreator(accountID, CodeID, 1);
       let checkCodeIdCreator2 = await UserService.checkCodeIdCreator(accountID, CodeID, 2);
       let checkCodeIdCreator3 = await UserService.checkCodeIdCreator(accountID, CodeID, 3);
-      
+
       console.log('checkCodeIdCreator: ' + checkCodeIdCreator1)
+
+      // Tạo token
+      let genealogyToken = await signGenealogyToken(accountID, CodeID)
+
       if (checkCodeIdCreator1 > 0 || checkCodeIdCreator2 > 0 || checkCodeIdCreator3 > 0) {
-        return res.send(Response.successResponse())
+        return res.send(Response.successResponse(genealogyToken, "đã tạo Token"))
       }
       else {
         await UserService.insertAccountFamily(accountID, CodeID, 3);
-        return res.send(Response.successResponse())
+        return res.send(Response.successResponse(genealogyToken, "Da tao Token"))
       }
     } else {
       return res.send(Response.dataNotFoundResponse(CodeID, `Mã ${CodeID} Không tồn tại`))
