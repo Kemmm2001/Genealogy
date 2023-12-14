@@ -94,8 +94,8 @@ let SendEmailCore = (objData) => {
 // schedule sẽ chạy vào mỗi 0h hằng ngày
 schedule.scheduleJob('0 0 * * *', () => {
     try {
-        console.log("Refresh free email : " + process.env.FREE_EMAIL_EVERY_DAY);
         UserManagement.refreshFreeEmail(process.env.FREE_EMAIL_EVERY_DAY);
+        UserManagement.refreshFreeSMS(process.env.FREE_SMS_EVERY_DAY);
     } catch (error) {
         console.log("error : " + error);
     }
