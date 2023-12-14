@@ -33,7 +33,7 @@ module.exports = {
   verifyAccessToken: (req, res, next) => {
     if (!req.headers['authorization']) {
       console.log("vào đây123")
-      return res.json({ error: 'Unauthorized' });
+      return res.send(Response.authorizedResponse())
     }
     console.log("vào đây")
     console.log('token: ' + req.headers['authorization'])
@@ -79,7 +79,7 @@ module.exports = {
 
   verifyGenealogyToken: (req, res, next) => {
     if (!req.headers['authorization']) {
-      return res.json({ error: 'Unauthorized' });
+      return res.send(Response.authorizedResponse())
     }
     const authHeader = req.headers['authorization'];
     const bearerToken = authHeader.split(' ');
