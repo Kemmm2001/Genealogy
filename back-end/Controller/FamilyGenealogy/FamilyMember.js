@@ -1099,25 +1099,25 @@ var getAllMember = async (req, res) => {
 //     return sortedMembers;
 // }
 
-var getMember = async (req, res) => {
-    try {
-        // Log ra thông tin trong req.body
-        let dataMember = await FamilyManagementService.getMemberByMemberID(req.query.MemberID);
-        console.log(dataMember)
-        if (dataMember == null || dataMember.length == 0) {
-            return res.send(Response.dataNotFoundResponse());
-        }
-        return res.send(Response.successResponse(dataMember));
-    } catch (e) {
-        console.log("Error: " + e);
-        return res.send(Response.internalServerErrorResponse());
-    }
+// var getMember = async (req, res) => {
+//     try {
+//         // Log ra thông tin trong req.body
+//         let dataMember = await FamilyManagementService.getMemberByMemberID(req.query.MemberID);
+//         console.log(dataMember)
+//         if (dataMember == null || dataMember.length == 0) {
+//             return res.send(Response.dataNotFoundResponse());
+//         }
+//         return res.send(Response.successResponse(dataMember));
+//     } catch (e) {
+//         console.log("Error: " + e);
+//         return res.send(Response.internalServerErrorResponse());
+//     }
 
-}
+// }
 
 
 module.exports = {
     addMember, updateMember, deleteMember, searchMember, filterMember, getAllMember, addMarriage,
     getListAgeGroup, getListBloodTypeGroup,
-    getMember, updateMemberToGenealogy, updateMemberPhoto, addChild, linkRelationship, getAllMembersInGenalogy
+    updateMemberToGenealogy, updateMemberPhoto, addChild, linkRelationship, getAllMembersInGenalogy
 };

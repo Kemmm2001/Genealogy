@@ -54,7 +54,7 @@ const initWebRouter = (app) => {
     router.get('/deleteListEducation',authMiddleware.authenticateAndAuthorize(2), EducationManagementController.RemoveListEducationMember)
 
     //API tuấn
-    router.get('/member',authMiddleware.authenticateAndAuthorize(3), FamilyMemberManagement.getMember);
+    // router.get('/member',authMiddleware.authenticateAndAuthorize(3), FamilyMemberManagement.getMember);
     router.post('/member', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.addMember);
     router.post('/add-child', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.addChild);
     router.post('/add-marriage', authMiddleware.authenticateAndAuthorize(2), FamilyMemberManagement.addMarriage);
