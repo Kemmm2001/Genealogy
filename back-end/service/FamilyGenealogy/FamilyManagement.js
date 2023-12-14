@@ -339,14 +339,6 @@ function setBirthOrder(birthOrder, memberId) {
     })
 }
 
-function getMember(memberId) {
-    return new Promise(async (resolve, reject) => {
-        const query = 'select * from familymember where memberid = ?';
-        let result = await coreQuery(query);
-        resolve(result);
-    });
-}
-
 // nguyễn anh tuấn
 function getMembersByFatherID(fatherID) {
     return new Promise(async (resolve, reject) => {
@@ -686,7 +678,7 @@ function getMemberByMemberID(memberID) {
 }
 
 module.exports = {
-    addMember, updateMember, deleteMember, getMember, searchMember, getMemberByMemberID,
+    addMember, updateMember, deleteMember, searchMember, getMemberByMemberID,
     setGeneration, queryContactMembers,
     getAllMember, queryFamilyMembers,
     insertFatherIDToMember, insertMotherIDToMember, getMembersByFatherID, getMembersByMotherID,
