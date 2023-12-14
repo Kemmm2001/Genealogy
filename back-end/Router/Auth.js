@@ -1,19 +1,26 @@
 const express = require('express')
 const UserController = require('../Controller/Authencation/UserController'); // Import controller
 var router = express.Router()
-const { verifyAccessToken, verifyRepassToken } = require('../helper/jwt_helper')
+const { verifyAccessToken, verifyRepassToken, verifyGenealogyToken } = require('../helper/jwt_helper')
 
 const authMiddleware = require('../helper/author_helper');
 const { verify } = require('crypto');
 
 const initWebRouter = (app) => {
 
-  router.get('/protected-route', verifyGenealogyToken, (req, res) => {
+  router.get('/protected-route', verifyAccessToken, (req, res) => {
 
-    const accountID = req.payload.insertId;
-    const codeID = req.payload.codeID;
+    let accountID = req.payload.insertId;
+    res.json({ accountID });
+  });
+
+  router.get('/getCodeID', verifyGenealogyToken, (req, res) => {
+
+    let accountID = req.payload.insertId;
+    let codeID = req.payload.codeId;
     res.json({ accountID, codeID });
   });
+
 
   router.post('/register', UserController.registerUser);
   router.post('/login', UserController.loginUser);
