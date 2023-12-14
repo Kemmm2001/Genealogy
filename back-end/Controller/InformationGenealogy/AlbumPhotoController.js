@@ -107,7 +107,8 @@ var updateAlbumPhoto = async (req, res) => {
                 CoreFunction.deleteImage(req.file.path);
                 return res.send(Response.dataNotFoundResponse());
             }
-
+            // xóa ảnh cũ
+            CoreFunction.deleteImage(albumData[0].BackGroundPhoto);
             req.body.BackGroundPhoto = req.file.path;
         }
 
