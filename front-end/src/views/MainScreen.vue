@@ -841,7 +841,7 @@
             <div class="d-flex justify-content-end" style="padding-right: 12px;">
               <button v-if="isAdd && memberRole != 3" type="button" class="btn btn-primary mr-2" @click="addMember()">Thêm</button>
               <button v-else-if="isEdit && memberRole != 3" type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
-              <button v-if="nodes.length && memberRole != 3" style="margin-left:10px" type="button" class="btn btn-danger" @click="openCfDelModal('removeMember', null, objMemberInfor.MemberName)">Xóa thành viên</button>
+              <button v-if="this.action != 'AddFirst' && memberRole != 3" style="margin-left:10px" type="button" class="btn btn-danger" @click="openCfDelModal('removeMember', null, objMemberInfor.MemberName)">Xóa thành viên</button>
             </div>
           </div>
         </div>
@@ -2582,8 +2582,7 @@ export default {
       this.selectDistrictMember = null;
       this.selectCityMember = null;
       this.objMemberInfor.BirthOrder = 1;
-      this.objMemberInfor.Male = 1;
-      console.log(action);
+      this.objMemberInfor.Male = 1;    
       if(action == "AddMarriage"){
         this.objMemberInfor.MarriageNumber = this.getMaxMarriage(this.CurrentIdMember);
         console.log(this.getMaxMarriage(this.CurrentIdMember))
