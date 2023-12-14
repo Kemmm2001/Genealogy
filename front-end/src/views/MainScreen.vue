@@ -579,7 +579,7 @@
                         <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.MarriageNumber }">{{isFather == false ? 'Chồng thứ':'Vợ thứ'}}</label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;" v-else-if="action == 'AddParent'">
-                        <input v-model="objMemberInfor.BirthOrder" disabled  type="number" min="0" class="form-control modal-item" placeholder />
+                        <input v-model="objMemberInfor.BirthOrder" disabled type="number" min="0" class="form-control modal-item" placeholder />
                         <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con thứ</label>
                       </div>
                       <div style="position: relative;width: 50%; margin-right: 10px;" v-else>
@@ -975,7 +975,7 @@ export default {
       emailDetail: false,
 
       objMemberInfor: {
-        MarriageNumber:1,
+        MarriageNumber: 1,
         MemberID: 0,
         ParentID: null,
         MarriageID: null,
@@ -1433,19 +1433,19 @@ export default {
         this.NotificationsDelete("Không có thông báo gì để gửi ");
       }
     },
-    getMaxMarriage(id){
+    getMaxMarriage(id) {
       let count = 0;
-      console.log(id)
-      for(let i = 0 ;i < this.nodes.length;i++){
+      console.log(id);
+      for (let i = 0; i < this.nodes.length; i++) {
         let j = 0;
-        while(j < this.nodes[i].pids.length){
-          if(this.nodes[i].pids[j] == id){
+        while (j < this.nodes[i].pids.length) {
+          if (this.nodes[i].pids[j] == id) {
             count++;
           }
           j++;
         }
       }
-      return count+1;
+      return count + 1;
     },
     getListMemberToSendMessage() {
       try {
@@ -1675,7 +1675,7 @@ export default {
             this.avatarSrc = this.objMemberInfor.Image;
             console.log("avatarSrc: " + this.avatarSrc);
           }
-       //   console.log("result: " + this.objMemberInfor.MarriageNumber);
+          //   console.log("result: " + this.objMemberInfor.MarriageNumber);
           if (this.objMember.contact.length > 0) {
             this.objMemberContact = this.objMember.contact[0];
             console.log(this.objMemberContact);
@@ -1687,8 +1687,9 @@ export default {
               this.getAdressMember(this.objMemberContact.Address);
             }
           }
-          if(response.data.data.MarriageNumber != null){
-            this.objMemberInfor.MarriageNumber = response.data.data.MarriageNumber;
+          if (response.data.data.MarriageNumber != null) {
+            this.objMemberInfor.MarriageNumber =
+              response.data.data.MarriageNumber;
           }
           this.ListMemberEducation = this.objMember.education;
           this.ListMemberJob = this.objMember.job;
@@ -2086,7 +2087,7 @@ export default {
         });
     },
     addMemberMarried() {
-      console.log(this.objMemberInfor.MarriageNumber)
+      console.log(this.objMemberInfor.MarriageNumber);
       HTTP.post("add-marriage", {
         CurrentMemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
@@ -2325,7 +2326,10 @@ export default {
     },
     //Nguyễn Lê Hùng
     updateInformation() {
-      console.log(this.objMemberInfor.BirthOrder)
+      if (this.objMemberInfor.BirthOrder == null) {
+        console.log("vào đây")
+        this.objMemberInfor.BirthOrder = 1;
+      }
       if (this.selectDistrictMember != null) {
         this.objMemberContact.Address =
           this.objMemberContact.Address + "-" + this.selectDistrictMember;
@@ -2337,7 +2341,7 @@ export default {
         MemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
         NickName: this.objMemberInfor.NickName,
-        BirthOrder: this.objMemberInfor.BirthOrder == 'null' ? 1 : this.objMemberInfor.BirthOrder,
+        BirthOrder: this.objMemberInfor.BirthOrder,
         Origin: this.objMemberInfor.Origin,
         NationalityID: this.objMemberInfor.NationalityID,
         ReligionID: this.objMemberInfor.ReligionID,
@@ -2582,11 +2586,13 @@ export default {
       this.selectDistrictMember = null;
       this.selectCityMember = null;
       this.objMemberInfor.BirthOrder = 1;
-      this.objMemberInfor.Male = 1;    
-      if(action == "AddMarriage"){
-        this.objMemberInfor.MarriageNumber = this.getMaxMarriage(this.CurrentIdMember);
-        console.log(this.getMaxMarriage(this.CurrentIdMember))
-        console.log("đã vào")
+      this.objMemberInfor.Male = 1;
+      if (action == "AddMarriage") {
+        this.objMemberInfor.MarriageNumber = this.getMaxMarriage(
+          this.CurrentIdMember
+        );
+        console.log(this.getMaxMarriage(this.CurrentIdMember));
+        console.log("đã vào");
       }
       if (this.isFather == true && action == "AddMarriage") {
         console.log(this.isFather);
