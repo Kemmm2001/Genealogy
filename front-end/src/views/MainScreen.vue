@@ -2337,7 +2337,7 @@ export default {
         MemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
         NickName: this.objMemberInfor.NickName,
-        BirthOrder: this.objMemberInfor.BirthOrder == 'null' ? this.objMemberInfor.BirthOrder : 1,
+        BirthOrder: this.objMemberInfor.BirthOrder == 'null' ? 1 : this.objMemberInfor.BirthOrder,
         Origin: this.objMemberInfor.Origin,
         NationalityID: this.objMemberInfor.NationalityID,
         ReligionID: this.objMemberInfor.ReligionID,
