@@ -105,6 +105,16 @@ let tokenExpiredTime = (data, message) => {
     }
 }
 
+let inValidToken = (data, message) => {
+    try {
+        if (message == null) message = "Token không hợp lệ";
+        if (data == null) return coreErrorResponse(402, message);
+        return coreErrorResponse(402, message, data);
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 let forbiddenResponse = (data, message) => {
     try {
         if (message == null) message = "Bạn không được thực hiện hành động này";
@@ -117,5 +127,5 @@ let forbiddenResponse = (data, message) => {
 
 module.exports = {
     missingFieldsErrorResponse, badRequestResponse, dataNotFoundResponse, successResponse,
-    internalServerErrorResponse, coreResponse, coreErrorResponse, unauthorizedResponse, forbiddenResponse, tokenExpiredTime,authorizedResponse
+    internalServerErrorResponse, coreResponse, coreErrorResponse, unauthorizedResponse, forbiddenResponse, tokenExpiredTime,authorizedResponse, inValidToken
 };
