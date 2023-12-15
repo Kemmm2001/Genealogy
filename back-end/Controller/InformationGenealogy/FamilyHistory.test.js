@@ -1,5 +1,14 @@
 const FamilyHistory = require('./FamilyHistory');
 const FamilyHistoryManagementService = require("../../service/InformationGenealogy/FamilyHistoryManagement");
+const { format, addDays, subDays } = require('date-fns');
+
+// Tạo ngẫu nhiên một ngày trong khoảng từ start đến end
+const randomDateInRange = (start, end) => {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    const randomTime = startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime());
+    return new Date(randomTime);
+};
 
 // 5 truong la HistoryID, CodeID, Description, startDate, endDate
 
@@ -11,12 +20,15 @@ const createMockReqRes = (body, query) => {
 
 
 async function addNewFamilyHistoryToGetFamilyHistoryData() {
+
+    // Tạo đối tượng req với startDate và endDate ngẫu nhiên
     let req = {
         "CodeID": "207693",
         "Description": "Test",
-        "startDate": "2020-11-11",
-        "endDate": "2020-11-11"
-    }
+        "startDate": format(randomDateInRange("1500-11-11", "1800-12-31"), 'yyyy-MM-dd'),
+        "endDate": format(randomDateInRange("1801-11-11", "2020-12-31"), 'yyyy-MM-dd')
+    };
+
     let data = await FamilyHistoryManagementService.insertFamilyHistory(req);
     let historyData = await FamilyHistoryManagementService.getFamilyHistoryById(data.insertId);
     return historyData[0];
@@ -1052,19 +1064,19 @@ describe('updateFamilyHistory function', () => {
 
 describe('deleteFamilyHistory function', () => {
     it('return success = false for missing FamilyHistoryID required param', async () => {
-        const { req, res } = createMockReqRes(null,{});
+        const { req, res } = createMockReqRes(null, {});
         await FamilyHistory.deleteFamilyHistory(req, res);
         expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false }));
     });
     it('return success = false for invalid FamilyHistoryID', async () => {
-        const { req, res } = createMockReqRes(null,{
+        const { req, res } = createMockReqRes(null, {
             "FamilyHistoryID": "1a",
         });
         await FamilyHistory.deleteFamilyHistory(req, res);
         expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false }));
     });
     it('return success = false for FamilyHistoryID not exist', async () => {
-        const { req, res } = createMockReqRes(null,{
+        const { req, res } = createMockReqRes(null, {
             "FamilyHistoryID": "1",
         });
         await FamilyHistory.deleteFamilyHistory(req, res);
@@ -1072,35 +1084,35 @@ describe('deleteFamilyHistory function', () => {
     });
     it('return success = true for valid FamilyHistoryID', async () => {
         let historyData = await addNewFamilyHistoryToGetFamilyHistoryData();
-        const { req, res } = createMockReqRes(null,{
+        const { req, res } = createMockReqRes(null, {
             "FamilyHistoryID": historyData.HistoryID,
         });
         await FamilyHistory.deleteFamilyHistory(req, res);
         expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
     });
     it('return success = false for FamilyHistoryID < 0', async () => {
-        const { req, res } = createMockReqRes(null,{
+        const { req, res } = createMockReqRes(null, {
             "FamilyHistoryID": "-1",
         });
         await FamilyHistory.deleteFamilyHistory(req, res);
         expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false }));
     });
     it('return success = false for FamilyHistoryID = "" ', async () => {
-        const { req, res } = createMockReqRes(null,{
+        const { req, res } = createMockReqRes(null, {
             "FamilyHistoryID": "",
         });
         await FamilyHistory.deleteFamilyHistory(req, res);
         expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false }));
     });
     it('return success = false for FamilyHistoryID = "            "', async () => {
-        const { req, res } = createMockReqRes(null,{
+        const { req, res } = createMockReqRes(null, {
             "FamilyHistoryID": "            ",
         });
         await FamilyHistory.deleteFamilyHistory(req, res);
         expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false }));
     });
     it('return success = false for FamilyHistoryID = null', async () => {
-        const { req, res } = createMockReqRes(null,{
+        const { req, res } = createMockReqRes(null, {
             "FamilyHistoryID": null,
         });
         await FamilyHistory.deleteFamilyHistory(req, res);
@@ -1197,7 +1209,7 @@ describe('searchHistory function', () => {
         expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: expect.any(Boolean) }));
     });
     it('return success = boolean for keySearch = "Test"', async () => {
-       let data = addNewFamilyHistoryToGetFamilyHistoryData();
+        let data = addNewFamilyHistoryToGetFamilyHistoryData();
         const { req, res } = createMockReqRes({
             "CodeID": "207693",
             "keySearch": "Test",
@@ -1210,4 +1222,92 @@ describe('searchHistory function', () => {
 
 // filter bởi startDate và endDate
 describe('filterHistory function', () => {
+    it('return success = boolean for missing startDate required param', async () => {
+        const { req, res } = createMockReqRes({
+            "endDate": "2020-11-15",
+        });
+        await FamilyHistory.filterHistory(req, res);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: expect.any(Boolean) }));
+    });
+    it('return success = boolean for invalid startDate', async () => {
+        const { req, res } = createMockReqRes({
+            "startDate": "2020-11-15a",
+            "endDate": "2020-11-15",
+        });
+        await FamilyHistory.filterHistory(req, res);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: expect.any(Boolean) }));
+    });
+    it('return success = boolean for startDate = ""', async () => {
+        const { req, res } = createMockReqRes({
+            "startDate": "",
+            "endDate": "2020-11-15",
+        });
+        await FamilyHistory.filterHistory(req, res);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: expect.any(Boolean) }));
+    });
+    it("return success = boolean for startDate = '            '", async () => {
+        const { req, res } = createMockReqRes({
+            "startDate": "            ",
+            "endDate": "2020-11-15",
+        });
+        await FamilyHistory.filterHistory(req, res);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: expect.any(Boolean) }));
+    });
+    it('return success = boolean for startDate = null', async () => {
+        const { req, res } = createMockReqRes({
+            "startDate": null,
+            "endDate": "2020-11-15",
+        });
+        await FamilyHistory.filterHistory(req, res);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: expect.any(Boolean) }));
+    });
+    // endDate
+    it('return success = boolean for missing endDate required param', async () => {
+        const { req, res } = createMockReqRes({
+            "startDate": "2020-11-15",
+        });
+        await FamilyHistory.filterHistory(req, res);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: expect.any(Boolean) }));
+    });
+    it('return success = boolean for invalid endDate', async () => {
+        const { req, res } = createMockReqRes({
+            "startDate": "2020-11-15",
+            "endDate": "2020-11-15a",
+        });
+        await FamilyHistory.filterHistory(req, res);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: expect.any(Boolean) }));
+    });
+    it('return success = boolean for endDate = ""', async () => {
+        const { req, res } = createMockReqRes({
+            "startDate": "2020-11-15",
+            "endDate": "",
+        });
+        await FamilyHistory.filterHistory(req, res);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: expect.any(Boolean) }));
+    });
+    it("return success = boolean for endDate = '            '", async () => {
+        const { req, res } = createMockReqRes({
+            "startDate": "2020-11-15",
+            "endDate": "            ",
+        });
+        await FamilyHistory.filterHistory(req, res);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: expect.any(Boolean) }));
+    });
+    it('return success = boolean for endDate = null', async () => {
+        const { req, res } = createMockReqRes({
+            "startDate": "2020-11-15",
+            "endDate": null,
+        });
+        await FamilyHistory.filterHistory(req, res);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: expect.any(Boolean) }));
+    });
+    it('return success = boolean for only startDate and endDate param', async () => {
+        const { req, res } = createMockReqRes({
+            "startDate": "2020-11-15",
+            "endDate": "2020-11-15",
+        });
+        await FamilyHistory.filterHistory(req, res);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: expect.any(Boolean) }));
+    });
+
 });

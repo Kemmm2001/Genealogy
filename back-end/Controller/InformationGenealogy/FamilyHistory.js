@@ -202,20 +202,8 @@ var getFamilyHistory = async (req, res) => {
 };
 
 
-var getAllFamilyHistories = async (req, res) => {
-    try {
-        // lấy thông tin tất cả FamilyHistory từ database
-        let data = await FamilyHistoryManagementService.getAllFamilyHistory();
-        return res.send(Response.successResponse(data));
-    } catch (e) {
-        console.log("Error: " + e);
-        return res.send(Response.internalServerErrorResponse(e));
-    }
-};
-
-
 
 module.exports = {
-    addFamilyHistory, updateFamilyHistory, deleteFamilyHistory, getFamilyHistory, getAllFamilyHistories,
+    addFamilyHistory, updateFamilyHistory, deleteFamilyHistory, getFamilyHistory,
     searchHistory, filterHistory
 };

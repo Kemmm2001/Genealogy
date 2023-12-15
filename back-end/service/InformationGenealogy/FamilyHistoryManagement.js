@@ -45,20 +45,6 @@ function getFamilyHistoryByIdAndCodeId(historyId, codeId) {
         })
     })
 }
-function getAllFamilyHistory() {
-    return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM familyhistory`
-        db.connection.query(query, (err, result) => {
-            if (err) {
-                console.log("Have err : " + err);
-                reject(err)
-            } else {
-                resolve(result)
-            }
-        })
-    })
-}
-
 
 function insertFamilyHistory(ObjData, maxPositon) {
     return new Promise((resolve, reject) => {
@@ -156,7 +142,6 @@ module.exports = {
     getFamilyHistoryByCodeId,
     getFamilyHistoryById,
     getFamilyHistoryByIdAndCodeId,
-    getAllFamilyHistory,
     insertFamilyHistory,
     updateFamilyHistory,
     removeFamilyHistory,
