@@ -138,6 +138,7 @@ function searchHistory(codeID, keySearch) {
 
 function removeFamilyHistory(historyId) {
     return new Promise((resolve, reject) => {
+        console.log('historyId: ' + historyId)
         let query = `DELETE FROM familyhistory WHERE HistoryID = ${historyId};`
         db.connection.query(query, (err, result) => {
             if (err) {

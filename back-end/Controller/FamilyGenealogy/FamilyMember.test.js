@@ -1,6 +1,12 @@
 const FamilyMember = require('./FamilyMember');
 const FamilyManagementService = require("../../service/FamilyGenealogy/FamilyManagement");
 
+const createMockReqRes = (body) => {
+    const req = { body };
+    const res = { send: jest.fn() };
+    return { req, res };
+};
+
 async function addNewNormalMemberToGetMemberData() {
     let req = {
         'MemberName': 'Nguyễn Văn A',
@@ -26,95 +32,220 @@ describe('updateMember function', () => {
     //     'IsDead',
     //     'Male'
     // ];
-    it('should return success = false for a invalid request', async () => {
-        const req = {
-            body: {
-                "MemberID": 761
-            },
-        };
-        const res = {
-            send: jest.fn(),
-        };
+    it('return success = false for missing 4 required params', async () => {
+        const { req, res } = createMockReqRes({
+            "MemberID": 761
+        });
         await FamilyMember.updateMember(req, res);
         expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false }));
     });
-    it('should return success = false for a invalid request', async () => {
-        const req = {
-            body: {
-                "MemberID": 761,
-                "MemberName": "Nguyễn Văn A",
-            },
-        };
-        const res = {
-            send: jest.fn(),
-        };
+    it('return success = false missing 3 required params', async () => {
+        const { req, res } = createMockReqRes({
+            "MemberID": 761,
+            "MemberName": "Nguyễn Văn A",
+        });
         await FamilyMember.updateMember(req, res);
         expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false }));
     });
-    it('should return success = false for a invalid request', async () => {
-        const req = {
-            body: {
-                "MemberID": 761,
-                "MemberName": "Nguyễn Văn A",
-                "BirthOrder": 1
-            },
-        };
-        const res = {
-            send: jest.fn(),
-        };
+    it('return success = false missing 2 required params', async () => {
+        const { req, res } = createMockReqRes({
+            "MemberID": 761,
+            "MemberName": "Nguyễn Văn A",
+            "BirthOrder": 1
+        });
         await FamilyMember.updateMember(req, res);
         expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false }));
     });
-    it('should return success = false for a invalid request', async () => {
-        const req = {
-            body: {
-                "MemberID": 761,
-                "MemberName": "Nguyễn Văn A",
-                "BirthOrder": 1,
-                "IsDead": true
-            },
-        };
-        const res = {
-            send: jest.fn(),
-        };
+    it('return success = false missing 1 required params', async () => {
+        const { req, res } = createMockReqRes({
+            "MemberID": 761,
+            "MemberName": "Nguyễn Văn A",
+            "BirthOrder": 1,
+            "IsDead": true
+        });
         await FamilyMember.updateMember(req, res);
         expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false }));
     });
-    it('should return success = true for a valid request', async () => {
-        const data = await addNewNormalMemberToGetMemberData();
-        const req = {
-            body: {
-                "MemberID": data.MemberID,
-                "MemberName": "Nguyễn Văn A",
-                "BirthOrder": 1,
-                "IsDead": true,
-                "Male": 1
-            },
-        };
-        const res = {
-            send: jest.fn(),
-        };
+    it('return success = true for a valid request', async () => {
+        let data = await addNewNormalMemberToGetMemberData();
+        const { req, res } = createMockReqRes({
+            "MemberID": data.MemberID,
+            "MemberName": "Nguyễn Văn A",
+            "BirthOrder": 1,
+            "IsDead": true,
+            "Male": 1
+        });
         await FamilyMember.updateMember(req, res);
         expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
+        FamilyManagementService.deleteMember(data.MemberID);
     }
     );
-    it('should return success = false for a memberid not exist', async () => {
-        const req = {
-            body: {
-                "MemberID": 9999999999,
-                "MemberName": "Nguyễn Văn A",
-                "BirthOrder": 1,
-                "IsDead": true,
-                "Male": 1
-            },
-        };
-        const res = {
-            send: jest.fn(),
-        };
+    it('return success = false for a memberid not exist', async () => {
+        const { req, res } = createMockReqRes({
+            "MemberID": 9999999999,
+            "MemberName": "Nguyễn Văn A",
+            "BirthOrder": 1,
+            "IsDead": true,
+            "Male": 1
+        });
         await FamilyMember.updateMember(req, res);
         expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false }));
     }
     );
-
-
+    it('return success = false when Male is > 1', async () => {
+        const { req, res } = createMockReqRes({
+            "MemberID": 432,
+            "MemberName": "Nguyễn Văn A",
+            "BirthOrder": 1,
+            "IsDead": true,
+            "Male": 2
+        });
+        await FamilyMember.updateMember(req, res);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false }));
+    }
+    );
+    it('return success = false when Male is < 0', async () => {
+        const { req, res } = createMockReqRes({
+            "MemberID": 432,
+            "MemberName": "Nguyễn Văn A",
+            "BirthOrder": 1,
+            "IsDead": 1,
+            "Male": -1
+        });
+        await FamilyMember.updateMember(req, res);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false }));
+    }
+    );
+    it('return success = true when Male is = 0', async () => {
+        let data = await addNewNormalMemberToGetMemberData();
+        const { req, res } = createMockReqRes({
+            "MemberID": data.MemberID,
+            "MemberName": "Nguyễn Văn A",
+            "BirthOrder": 1,
+            "IsDead": 1,
+            "Male": 0
+        });
+        await FamilyMember.updateMember(req, res);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
+        FamilyManagementService.deleteMember(data.MemberID);
+    }
+    );
+    it('return success = true when Male is = 1', async () => {
+        let data = await addNewNormalMemberToGetMemberData();
+        const { req, res } = createMockReqRes({
+            "MemberID": data.MemberID,
+            "MemberName": "Nguyễn Văn A",
+            "BirthOrder": 1,
+            "IsDead": 1,
+            "Male": 1
+        });
+        await FamilyMember.updateMember(req, res);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
+        FamilyManagementService.deleteMember(data.MemberID);
+    }
+    );
+    it('return success = true when Male is = true', async () => {
+        let data = await addNewNormalMemberToGetMemberData();
+        const { req, res } = createMockReqRes({
+            "MemberID": data.MemberID,
+            "MemberName": "Nguyễn Văn A",
+            "BirthOrder": 1,
+            "IsDead": 1,
+            "Male": true
+        });
+        await FamilyMember.updateMember(req, res);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
+        FamilyManagementService.deleteMember(data.MemberID);
+    }
+    );
+    it('return success = true when Male is = false', async () => {
+        let data = await addNewNormalMemberToGetMemberData();
+        const { req, res } = createMockReqRes({
+            "MemberID": data.MemberID,
+            "MemberName": "Nguyễn Văn A",
+            "BirthOrder": 1,
+            "IsDead": 1,
+            "Male": false
+        });
+        await FamilyMember.updateMember(req, res);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
+        FamilyManagementService.deleteMember(data.MemberID);
+    }
+    );
+    it('return success = false when IsDead is > 1', async () => {
+        const { req, res } = createMockReqRes({
+            "MemberID": 432,
+            "MemberName": "Nguyễn Văn A",
+            "BirthOrder": 1,
+            "IsDead": 2,
+            "Male": 1
+        });
+        await FamilyMember.updateMember(req, res);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false }));
+    }
+    );
+    it('return success = false when IsDead is < 0', async () => {
+        const { req, res } = createMockReqRes({
+            "MemberID": 432,
+            "MemberName": "Nguyễn Văn A",
+            "BirthOrder": 1,
+            "IsDead": -1,
+            "Male": 1
+        });
+        await FamilyMember.updateMember(req, res);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false }));
+    }
+    );
+    it('return success = true when IsDead = true', async () => { 
+        let data = await addNewNormalMemberToGetMemberData();
+        const { req, res } = createMockReqRes({
+            "MemberID": data.MemberID,
+            "MemberName": "Nguyễn Văn A",
+            "BirthOrder": 1,
+            "IsDead": true,
+            "Male": 1
+        });
+        await FamilyMember.updateMember(req, res);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
+        FamilyManagementService.deleteMember(data.MemberID);
+    });
+    it('return success = true when IsDead = false', async () => { 
+        let data = await addNewNormalMemberToGetMemberData();
+        const { req, res } = createMockReqRes({
+            "MemberID": data.MemberID,
+            "MemberName": "Nguyễn Văn A",
+            "BirthOrder": 1,
+            "IsDead": false,
+            "Male": 1
+        });
+        await FamilyMember.updateMember(req, res);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
+        FamilyManagementService.deleteMember(data.MemberID);
+    });
+    it('return success = true when IsDead = 1', async () => { 
+        let data = await addNewNormalMemberToGetMemberData();
+        const { req, res } = createMockReqRes({
+            "MemberID": data.MemberID,
+            "MemberName": "Nguyễn Văn A",
+            "BirthOrder": 1,
+            "IsDead": 1,
+            "Male": 1
+        });
+        await FamilyMember.updateMember(req, res);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
+        FamilyManagementService.deleteMember(data.MemberID);
+    });
+    it('return success = true when IsDead = 0', async () => { 
+        let data = await addNewNormalMemberToGetMemberData();
+        const { req, res } = createMockReqRes({
+            "MemberID": data.MemberID,
+            "MemberName": "Nguyễn Văn A",
+            "BirthOrder": 1,
+            "IsDead": 0,
+            "Male": 1
+        });
+        await FamilyMember.updateMember(req, res);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
+        FamilyManagementService.deleteMember(data.MemberID);
+    });
 });

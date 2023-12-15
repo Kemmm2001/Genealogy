@@ -4,7 +4,7 @@
   "description": "Here is back-end project",
   "main": "index.js",
   "scripts": {
-    "test": "jest --coverage --forceExit  --watchAll=false",
+    "test": "jest --coverage --forceExit  --watchAll=false --silent ",
     "start": "nodemon server.js"
   },
   "author": "",

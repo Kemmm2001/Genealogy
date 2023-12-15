@@ -55,7 +55,7 @@ let successResponse = (data, message) => {
 
 let internalServerErrorResponse = (data, message) => {
     try {
-        if (message == null) message = "Lỗi hệ thống";
+        if (message == null) message = "Có lỗi xảy ra";
         if (data == null) return coreErrorResponse(500, message);
         return coreErrorResponse(500, message, data);
     } catch (error) {

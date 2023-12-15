@@ -150,7 +150,7 @@ const isDataNumberExist = (data) => {
 
 // nguyễn anh tuấn
 const isDataDateExist = (data) => {
-    return moment(data, "yyyy-MM-dd").isValid();
+    return data != null && data != undefined && moment(data, "yyyy-MM-dd").isValid();
 }
 
 
