@@ -39,14 +39,14 @@ const initWebRouter = (app) => {
 
 
     // Create a new AlbumPhoto
-    router.post('/albumphoto', authMiddleware.authenticateAndAuthorize(2), CoreFunction.uploadImage("album-photo").single('BackGroundPhoto'), AlbumPhotoController.addAlbumPhoto);
+    router.post('/albumphoto',  CoreFunction.uploadImage("album-photo").single('BackGroundPhoto'), AlbumPhotoController.addAlbumPhoto);
     // Retrieve a single AlbumPhoto with id
-    router.get('/albumphoto', authMiddleware.authenticateAndAuthorize(3), AlbumPhotoController.getAlbumPhoto);
+    router.get('/albumphoto',  AlbumPhotoController.getAlbumPhoto);
     // Update an AlbumPhoto with id
-    router.put('/albumphoto', authMiddleware.authenticateAndAuthorize(2), CoreFunction.uploadImage("album-photo").single('BackGroundPhoto'), AlbumPhotoController.updateAlbumPhoto);
+    router.put('/albumphoto',  CoreFunction.uploadImage("album-photo").single('BackGroundPhoto'), AlbumPhotoController.updateAlbumPhoto);
     // Delete an AlbumPhoto with id
-    router.get('/delete-albumphoto', authMiddleware.authenticateAndAuthorize(2), AlbumPhotoController.deleteAlbumPhoto);
-    router.get('/searchAlbum', authMiddleware.authenticateAndAuthorize(3), AlbumPhotoController.searchAlbumPhoto)
+    router.get('/delete-albumphoto',  AlbumPhotoController.deleteAlbumPhoto);
+    router.get('/searchAlbum',  AlbumPhotoController.searchAlbumPhoto)
 
     // Create a new FamilyPhoto
     router.post('/familyphoto', authMiddleware.authenticateAndAuthorize(2), CoreFunction.uploadImage("family-photo").single('Photo'), FamilyPhotoController.addFamilyPhoto);
