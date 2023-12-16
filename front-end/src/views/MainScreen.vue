@@ -2845,7 +2845,7 @@ export default {
                     this.nodes[i].pids = listPid;
                   }
                   this.nodes[i].tags = [];
-                  if (this.nodes[i].name.length > 15) {
+                  if (this.nodes[i].name.length > 16) {
                     this.nodes[i].name =
                       this.nodes[i].name.substring(0, 16) + "...";
                   }
@@ -2868,10 +2868,17 @@ export default {
                     }
                   }
                 }
+                
                 this.nodes[0].tags.push("great-grandfather");
                 this.nodes[0].isGG = "true";
                 this.family.config.nodes = this.nodes;
+                 console.log(this.family.config.nodes)
+                 this.family.config.roots = this.nodes[0].id
+                
+                console.log(1)
                 this.family.draw();
+                console.log(this.family.config.nodes)
+                console.log(1)
                 //  this.mytree(this.$refs.tree, this.nodes);
               }
               //  this.family.load(this.nodes);

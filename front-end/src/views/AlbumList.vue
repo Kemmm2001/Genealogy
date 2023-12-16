@@ -309,7 +309,7 @@ export default {
     },
     //Lưu Tùng Lâm
     isImage(file) {
-      const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+      const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
 
       // Kiểm tra loại MIME của file
       return allowedTypes.includes(file.type);
