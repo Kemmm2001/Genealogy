@@ -8,7 +8,7 @@ const exportData = async function (req, res) {
       return res.send(Response.internalServerErrorResponse('Invalid memberIDs format. Expecting an array with multiple elements.'));
     }
     console.log(memberIDs);
-    
+
     let result;
     try {
       result = await JsonService.exportData(memberIDs);
@@ -33,7 +33,7 @@ const clearTree = async function (req, res) {
       return res.send(Response.internalServerErrorResponse('Invalid memberIDs format. Expecting an array with multiple elements.'));
     }
     console.log(memberIDs);
-    
+
     let result;
     try {
       result = await JsonService.clearTree(memberIDs);
@@ -54,11 +54,11 @@ const clearTree = async function (req, res) {
 
 var importData = async function (req, res) {
   try {
-     const file = req.file.path;
+    const file = req.file.path;
     let codeID = req.body.codeID;
-    console.log(codeID)
+    console.log('codeID: ' + codeID)
     let doesExist = await UserService.checkCodeID(codeID);
-    if(doesExist > 0){
+    if (doesExist > 0) {
       let result = await JsonService.importData(file, codeID);
 
       if (result) {

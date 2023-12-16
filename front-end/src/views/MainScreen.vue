@@ -388,7 +388,7 @@
                   </div>
                 </div>
               </div>
-              <div class="d-flex flex-column" style="flex-grow: 1; background-color: #f2f2f2;">               
+              <div class="d-flex flex-column" style="flex-grow: 1; background-color: #f2f2f2;">
                 <div class="compare-modal-item mx-2 mt-2">
                   <input type="text" class="w-100 h-100 form-control" :value="resultCompare1 !== undefined ? 'Mối quan hệ: ' + resultCompare1 : 'Không xác định'" disabled />
                 </div>
@@ -419,7 +419,7 @@
                   </div>
                 </div>
               </div>
-              <div class="d-flex flex-column" style="flex-grow: 1; background-color: #f2f2f2;">               
+              <div class="d-flex flex-column" style="flex-grow: 1; background-color: #f2f2f2;">
                 <div class="compare-modal-item mx-2 mt-2">
                   <input type="text" class="w-100 h-100 form-control" :value="resultCompare2 !== undefined ? 'Mối quan hệ: ' + resultCompare2 : 'Mối quan hệ: Không xác định'" disabled />
                 </div>
@@ -862,7 +862,7 @@
               <div v-else-if="isRemoveRelationship == 'SetPaternalAncestor'" class="col-6 d-flex align-items-center justify-content-center">
                 <div class="btn bg-danger text-white" @click="setPaternalAncestor()">Có</div>
               </div>
-              <div v-else-if="isRemoveRelationship == 'backUp'" class="col-6 d-flex align-items-center justify-content-center">
+              <div v-else-if="isRemoveRelationship == 'importData'" class="col-6 d-flex align-items-center justify-content-center">
                 <div class="btn bg-danger text-white" @click="ImportMember()">Có</div>
               </div>
               <div class="col-6 d-flex align-items-center justify-content-center">
@@ -1217,7 +1217,30 @@ export default {
     getViewBox() {
       return this.family.getViewBox();
     },
-    importData() {},
+    ImportMember() {
+      let formData = new FormData();
+      formData.append("xlsx", this.fileBackup);
+      formData.append("codeID", this.CodeID);
+      HTTP.post("import", formData)
+        .then((respone) => {
+          console.log(respone.data);
+          if (respone.data.success) {
+            this.NotificationsScuccess(respone.data.message);
+            this.setDefautAction();
+            this.getListMember();
+            this.getListUnspecifiedMembers();
+            this.closeModalAddMemberFromList();
+            this.getListMemberToSendMessage();
+            this.closeCfDelModal();
+            this.fileBackup = null;
+          } else {
+            this.NotificationsDelete(respone.data.message);
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     //Nguyễn Lê Hùng
     BackUpdata() {
       let id = this.nodes.map((item) => item.id);
@@ -1928,33 +1951,10 @@ export default {
           });
       }
     },
-    ImportMember() {
-      let formData = new FormData();
-      formData.append("xlsx", this.fileBackup);
-      HTTP.post("import", formData)
-        .then((respone) => {
-          console.log(respone.data);
-          if (respone.data.success) {
-            this.NotificationsScuccess(respone.data.message);
-            this.setDefautAction();
-            this.getListMember();
-            this.getListUnspecifiedMembers();
-            this.closeModalAddMemberFromList();
-            this.getListMemberToSendMessage();
-            this.closeCfDelModal();
-            this.fileBackup = null;
-          } else {
-            this.NotificationsDelete(respone.data.message);
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
 
     getFileImportMember(event) {
       this.fileBackup = event.target.files[0];
-      this.openCfDelModal("backUp");
+      this.openCfDelModal("importData");
     },
     //Nguyễn Lê Hùng
     updateAvatar(event) {
@@ -2315,7 +2315,7 @@ export default {
     //Nguyễn Lê Hùng
     updateInformation() {
       if (this.objMemberInfor.BirthOrder == null) {
-        console.log("vào đây")
+        console.log("vào đây");
         this.objMemberInfor.BirthOrder = 1;
       }
       if (this.selectDistrictMember != null) {
@@ -2755,7 +2755,7 @@ export default {
           name +
           " Thành cụ tổ " +
           "\n Lưu ý: Tất cả thành viên cũng sẽ thay đổi theo cụ tổ";
-      } else if (this.isRemoveRelationship == "backUp") {
+      } else if (this.isRemoveRelationship == "importData") {
         this.TitleConfirm =
           "Bạn đang chuẩn bị xuất dữ liệu mới. Hành động này có thể dẫn đến việc mất dữ liệu cũ đã tồn tại. Hãy xác nhận nếu bạn chắc chắn muốn tiếp tục";
       }
@@ -2815,8 +2815,15 @@ export default {
         },
       })
         .then((response) => {
+          console.log("respone: " + response.data.success);
           if (response.data.success == true) {
             this.idFamilyHead = response.data.data;
+          } else {
+            if (response.data.status_code == 402) {
+              localStorage.removeItem("CodeID");
+              localStorage.removeItem("accountID");
+              this.$router.push("/login");
+            }
           }
           HTTP.get("viewTree", {
             params: {
@@ -2828,7 +2835,7 @@ export default {
               this.numberDeath = 0;
               if (response.data.success == true) {
                 this.nodes = response.data.data;
-                console.log(this.nodes);
+                console.log("node: " + this.nodes);
                 for (let i = 0; i < this.nodes.length; i++) {
                   if (this.nodes[i].pids.length > 1) {
                     let listPid = [];
@@ -2924,7 +2931,9 @@ export default {
           },
         })
           .then((response) => {
-            this.ListMessage = response.data;
+            if (response.data.success == true) {
+              this.ListMessage = response.data.data;
+            }
           })
           .catch((e) => {
             console.log(e);
@@ -3172,6 +3181,7 @@ export default {
       localStorage.getItem("CodeID") != null &&
       localStorage.getItem("accountID") != null
     ) {
+      this.getListMember();
       this.getListMessage();
       this.getListCity();
       this.getListNationality();
@@ -3181,7 +3191,6 @@ export default {
       this.getListUnspecifiedMembers();
       this.getMemberRole();
       this.getListHistoryEmail();
-      this.getListMember();
       this.getAllListMember();
       this.getListMemberToSendMessage();
       this.updateStatusEvent();
