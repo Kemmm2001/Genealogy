@@ -47,7 +47,7 @@ function checkRegisterToken(token) {
     });
   });
 }
-
+//Nguyễn Lê Hùng
 function insertAccountFamilyTree(AccountID, CodeID) {
   return new Promise((resolve, reject) => {
     const query = `INSERT INTO AccountFamilyTree (AccountID, CodeID, RoleID)
@@ -63,7 +63,7 @@ function insertAccountFamilyTree(AccountID, CodeID) {
     });
   });
 }
-
+//Nguyễn Lê Hùng
 function UpdateAccount(email, token) {
   return new Promise((resolve, reject) => {
     const query = `UPDATE genealogy.account as a SET a.RePassToken = '${token}' WHERE Email = '${email}'`;
@@ -78,6 +78,7 @@ function UpdateAccount(email, token) {
   });
 }
 
+//Nguyễn Lê Hùng
 function UpdateRegisterToken(email, token) {
   return new Promise((resolve, reject) => {
     const query = `UPDATE genealogy.account as a SET a.RegisterToken = '${token}' WHERE Email = '${email}'`;
@@ -92,6 +93,7 @@ function UpdateRegisterToken(email, token) {
   });
 }
 
+//Nguyễn Lê Hùng
 function checkCodeIdCreator(AccountID, CodeID, RoleID) {
   return new Promise((resolve, reject) => {
     const query = `select COUNT(*) AS count from AccountFamilyTree where AccountID = ${AccountID} and CodeID = ${CodeID} and RoleID = ${RoleID}`;
@@ -106,6 +108,8 @@ function checkCodeIdCreator(AccountID, CodeID, RoleID) {
     });
   });
 }
+
+//Nguyễn Lê Hùng
 function checkCodeCreatedByID(AccountID) {
   return new Promise((resolve, reject) => {
     const query = `select COUNT(*) AS count from AccountFamilyTree where RoleID = 1 AND CodeID IS NOT NULL  and AccountID = ${AccountID}`;
@@ -370,7 +374,7 @@ function getUserCodeID(accountID) {
 }
 
 function refreshFreeEmail(usesTime) {
-  return new Promise(async(resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     const query = 'UPDATE genealogy.account SET FreeEmail = ?';
     const values = [usesTime];
     const results = await coreQuery(query, values);
@@ -379,7 +383,7 @@ function refreshFreeEmail(usesTime) {
 }
 
 function refreshFreeSMS(usesTime) {
-  return new Promise(async(resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     const query = 'UPDATE genealogy.account SET FreeSMS = ?';
     const values = [usesTime];
     const results = await coreQuery(query, values);
@@ -388,7 +392,7 @@ function refreshFreeSMS(usesTime) {
 }
 
 function setFreeEmail(usesTime, accountID) {
-  return new Promise(async(resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     const query = 'UPDATE genealogy.account SET FreeEmail = ? WHERE AccountID = ?';
     const values = [usesTime, accountID];
     const results = await coreQuery(query, values);
@@ -397,7 +401,7 @@ function setFreeEmail(usesTime, accountID) {
 }
 
 function setFreeSMS(usesTime, accountID) {
-  return new Promise(async(resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     const query = 'UPDATE genealogy.account SET FreeSMS = ? WHERE AccountID = ?';
     const values = [usesTime, accountID];
     const results = await coreQuery(query, values);
@@ -405,24 +409,63 @@ function setFreeSMS(usesTime, accountID) {
   });
 }
 
+function formatMySQLDatetime(date) {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  const seconds = date.getSeconds().toString().padStart(2, '0');
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+//Nguyễn lê Hung
+function updateDateLoginGenealogy(AccountID, CodeID) {
+  return new Promise((resolve, reject) => {
+    try {
+      let currentDate = new Date();      
+      let formattedDate = formatMySQLDatetime(currentDate);
+
+      console.log('formattedDate:', formattedDate);
+      let query = `UPDATE AccountFamilyTree
+      SET AccessTime = '${formattedDate}'
+      WHERE AccountID = ${AccountID} and CodeID = ${CodeID};`
+      db.connection.query(query, (err, result) => {
+        if (!err) {
+          resolve(true)
+        } else {
+          resolve(false)
+        }
+      })
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
 
 
 function insertAccountFamily(accountID, codeID, roleID) {
   return new Promise((resolve, reject) => {
-    let currentDate = new Date();
-    currentDate = currentDate.toISOString().slice(0, 19).replace("T", " ");
-    const query = 'INSERT INTO genealogy.AccountFamilyTree (AccountID,CodeID ,RoleID,AccessTime) VALUES (?,?,?,?)';
-    const values = [accountID, codeID, roleID, currentDate];
+    try { 
+      let currentDate = new Date();      
+      let formattedDate = formatMySQLDatetime(currentDate);
+      const query = 'INSERT INTO genealogy.AccountFamilyTree (AccountID,CodeID ,RoleID,AccessTime) VALUES (?,?,?,?)';
+      const values = [accountID, codeID, roleID, formattedDate];
 
-    db.connection.query(query, values, (err, results) => {
-      if (err) {
-        console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-        reject(err);
-      } else {
-        console.log('Dữ liệu đã được cập nhật thành công.');
-        resolve(results);
-      }
-    });
+      db.connection.query(query, values, (err, results) => {
+        if (err) {
+          console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+          reject(err);
+        } else {
+          console.log('Dữ liệu đã được cập nhật thành công.');
+          resolve(results);
+        }
+      });
+    } catch (error) {
+      reject(error)
+    }
   });
 }
 function getHistoryLoginCodeID(AccountID) {
@@ -465,10 +508,10 @@ function getInformationGenealogy(CodeID) {
 // nguyễn anh tuấn
 function getAccountByAccountID(accountID) {
   return new Promise(async (resolve, reject) => {
-      const query = `SELECT * FROM genealogy.account WHERE AccountID = ?`;
-      const values = [accountID];
-      const result = await coreQuery(query, values);
-      resolve(result);
+    const query = `SELECT * FROM genealogy.account WHERE AccountID = ?`;
+    const values = [accountID];
+    const result = await coreQuery(query, values);
+    resolve(result);
   })
 }
 // nguyễn anh tuấn
@@ -587,5 +630,5 @@ module.exports = {
   insertAccountFamilyTree, checkCodeCreatedByID, getHistoryLoginCodeID, ChangePassword, getListRoleMember, UpdateAccount, UpdatePassword,
   checkToken, changeUsername, getInformationGenealogy, UpdateRegisterToken, checkRegisterToken,
   UpdateActive, DeleteRePasssToken, DeleteRegisterToken, getRoleAccount, getAllRoleAccount, getAccountByAccountID, refreshFreeSMS,
-  setFreeEmail, setFreeSMS
+  setFreeEmail, setFreeSMS, updateDateLoginGenealogy
 }

@@ -29,7 +29,7 @@ module.exports = {
                     }
 
                     if (requiredRole === 1) {
-                        if (roleId === 1) {
+                        if (roleId === 1) {                           
                             next();
                         } else {
                             return res.send(Response.badRequestResponse(null, "Bạn không có quyền"));

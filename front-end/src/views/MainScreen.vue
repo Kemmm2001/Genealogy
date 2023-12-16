@@ -1330,8 +1330,8 @@ export default {
       })
         .then((respone) => {
           if (respone.data.success) {
-            this.getListUnspecifiedMembers();
             this.getListMember();
+            this.getListUnspecifiedMembers();
             this.closeSelectModal();
             this.closeCfDelModal();
             this.NotificationsScuccess(respone.data.message);
@@ -1489,6 +1489,7 @@ export default {
           ListMemberID: this.ListPhoneToSendMessage,
           contentMessage: this.contentMessage,
           CodeID: this.CodeID,
+          accountID: localStorage.getItem("accountID"),
         })
           .then(() => {
             this.contentMessage = null;
@@ -2835,7 +2836,6 @@ export default {
               this.numberDeath = 0;
               if (response.data.success == true) {
                 this.nodes = response.data.data;
-                console.log("node: " + this.nodes);
                 for (let i = 0; i < this.nodes.length; i++) {
                   if (this.nodes[i].pids.length > 1) {
                     let listPid = [];

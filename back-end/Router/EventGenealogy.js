@@ -24,11 +24,11 @@ const initWebRouter = (app) => {
 
     router.get('/birthday', authMiddleware.authenticateAndAuthorize(3), EventManagementController.GetBirthDayInMonth)
     router.get('/deadDay', authMiddleware.authenticateAndAuthorize(3), EventManagementController.GetDeadDayInMonth)
-    router.post('/send-sms', authMiddleware.authenticateAndAuthorize(2), EventManagementController.SendSMSToMember)
+    router.post('/send-sms', authMiddleware.authenticateAndAuthorize(1), EventManagementController.SendSMSToMember)
     //API tuấn
     // router.post('/send-sms', EventManagementController.SendSMS)
     // router.post('/send-email', EventManagementController.SendEmail)
-    router.post('/send-email', authMiddleware.authenticateAndAuthorize(2), EventManagementController.sendEmailToMember)
+    router.post('/send-email', authMiddleware.authenticateAndAuthorize(1), EventManagementController.sendEmailToMember)
     router.post('/send-email-core', authMiddleware.authenticateAndAuthorize(2), EventManagementController.SendEmail)
     router.post('/read-xlsx', authMiddleware.authenticateAndAuthorize(2), CoreFunction.uploadExcelFile('family-member-xlsx').single('xlsx'), EventManagementController.ReadXLSX)
 

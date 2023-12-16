@@ -18,21 +18,7 @@ let SendSMSCore = (objData, accountID) => {
         if (missingFields.length) {
             return false;
         }
-        // đếm số lần gửi sms
-        let count = 1;
-        // nếu có accountid thì check xem có đủ lần gửi sms ko
-        if (CoreFunction.isDataNumberExist(accountID)) {
-            let accountData = UserManagement.getAccountByAccountID(accountID);
-            if(accountData != null && accountData.length > 0){
-                let account = accountData[0];
-                if(account.FreeSMS < count){
-                    return false;
-                }else{
-                    account.FreeSMS = account.FreeSMS - count;
-                    UserManagement.setFreeSMS(account.FreeSMS, accountID);
-                }
-            }
-        }
+        // đếm số lần gửi sms        
         // gửi sms
         client.messages.create({
             body: objData.Message,

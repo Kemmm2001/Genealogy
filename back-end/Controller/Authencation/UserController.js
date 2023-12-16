@@ -393,6 +393,10 @@ var checkCodeID = async (req, res) => {
       let genealogyToken = await signGenealogyToken(accountID, CodeID)
 
       if (checkCodeIdCreator1 > 0 || checkCodeIdCreator2 > 0 || checkCodeIdCreator3 > 0) {
+        let updateAccesstime = await UserService.updateDateLoginGenealogy(accountID, CodeID);
+        if (!updateAccesstime) {
+          return res.send(Response.internalServerErrorResponse())
+        }
         return res.send(Response.successResponse(genealogyToken, "đã tạo Token"))
       }
       else {

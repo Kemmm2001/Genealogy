@@ -269,6 +269,25 @@ function getEventMember(id) {
     });
 }
 
+function getGenderMember(id) {
+    return new Promise((resolve, reject) => {
+        try {
+            if (id) {
+                let query = `SELECT Male FROM genealogy.familymember where MemberID = ${id}`;
+                db.connection.query(query, (error, result) => {
+                    if (!error) {
+                        resolve(result[0])
+                    } else {
+                        resolve(false)
+                    }
+                })
+            }
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 //Nguyễn Lê Hùng
 function getMarried(id) {
     return new Promise((resolve, reject) => {
@@ -332,7 +351,7 @@ function setFatherIDAndMotherID(CodeID) {
         try {
             let query = `UPDATE familymember
             SET  FatherID = null, MotherID = null
-            WHERE CodeID = ${CodeID}`
+            WHERE CodeID = ${CodeID} and Generation = 0`
             db.connection.query(query, (err, result) => {
                 if (!err) {
                     resolve(true)
@@ -393,7 +412,8 @@ function setAllGenerationMember(memberId, generation, CodeId) {
             }
 
             // Tìm tất cả mối hôn nhân hiện tại
-            const findMarriesQuery = `SELECT * FROM genealogy.marriage where husbandID = ${memberId} or wifeID = ${memberId} and CodeID = ${CodeId};`;
+            const findMarriesQuery = `SELECT * FROM genealogy.marriage where husbandID = ${memberId} and CodeID = ${CodeId}`;
+            console.log('findMarriesQuery: ' + findMarriesQuery)
             db.connection.query(findMarriesQuery, (err, marriedResult) => {
                 if (err) {
                     console.error(err);
@@ -403,27 +423,26 @@ function setAllGenerationMember(memberId, generation, CodeId) {
 
                 const promises = [];
 
-                if (marriedResult) {
+                console.log('marriedResult: ' + marriedResult)
+                if (marriedResult.length > 0) {
                     marriedResult.forEach((child) => {
-                        if (child.husbandID != null && child.husbandID == memberId) {
-                            promises.push(setAllGenerationMember(child.wifeID, generation));
-                        } else if (child.wifeID != null && child.wifeID == memberId) {
-                            promises.push(setAllGenerationMember(child.husbandID, generation));
-                        }
+                        promises.push(setAllGenerationMember(child.wifeID, generation, CodeId));
                     });
                 }
 
                 // Tìm tất cả các con của thành viên hiện tại
                 const findChildrenQuery = `SELECT * FROM familymember WHERE FatherID = ${memberId} or MotherID = ${memberId}`;
+                console.log('findChildrenQuery: ' + findChildrenQuery)
                 db.connection.query(findChildrenQuery, (err, childResults) => {
                     if (err) {
                         console.error(err);
                         reject(err);
                         return;
                     }
+                    console.log('childResults: ' + childResults)
 
                     childResults.forEach((child) => {
-                        promises.push(setAllGenerationMember(child.MemberID, generation + 1));
+                        promises.push(setAllGenerationMember(child.MemberID, generation + 1, CodeId));
                     });
 
                     Promise.all(promises)
@@ -924,5 +943,5 @@ module.exports = {
     getRoleExist, setRoleMember, removePaternalAncestor, turnOnSQL_SAFE_UPDATES, turnOffSQL_SAFE_UPDATES, getListMessage,
     setAllGenerationMember, ResetAllGenerationMember, ViewFamilyTree, getListUnspecifiedMembers, GetIdPaternalAncestor, RelationShipMember,
     RemoveRelationshipChild, RemoveRelationshipMarried, RemoveRelationshipParent, getListNotificationEmail, getAllMarriage, getFamilyHeadInGenealogy,
-    searchMemberCanSendMessage, getlistMemberToSendMessage, setFatherIDAndMotherID, getMarried
+    searchMemberCanSendMessage, getlistMemberToSendMessage, setFatherIDAndMotherID, getMarried, getGenderMember
 }
