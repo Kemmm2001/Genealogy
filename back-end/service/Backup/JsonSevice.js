@@ -1,13 +1,13 @@
 const db = require("../../Models/ConnectDB");
 const Excel = require('exceljs');
-const { v4: uuidv4 } = require('uuid'); 
+const { v4: uuidv4 } = require('uuid');
 async function exportData(memberIDs) {
     try {
         const familyMembers = await queryDatabase('genealogy.familymember', memberIDs);
         const educations = await queryDatabase('genealogy.education', memberIDs);
         const jobs = await queryDatabase('genealogy.job', memberIDs);
         const contacts = await queryDatabase('genealogy.contact', memberIDs);
-        const marriages = await queryDatabase('genealogy.marriage', memberIDs); 
+        const marriages = await queryDatabase('genealogy.marriage', memberIDs);
 
         const workbook = new Excel.Workbook();
         await addDataToSheet(workbook, 'Family Member Data', familyMembers);
@@ -98,36 +98,95 @@ function queryWithPromise(query, params = []) {
 }
 
 async function truncateTablesForMember(memberID) {
+    try {
+        await queryWithPromise('DELETE FROM marriage WHERE husbandID = ? OR wifeID = ?', [memberID, memberID]);
 
-    await queryWithPromise('DELETE FROM marriage WHERE husbandID = ? OR wifeID = ?', [memberID, memberID]);
+        const tableNames = ['familymember', 'contact', 'education', 'job'];
+        let successCount = 0; // Tạo biến đếm
 
-    const tableNames = ['familymember', 'contact', 'education', 'job'];
-    for (const tableName of tableNames) {
-        await queryWithPromise(`DELETE FROM ${tableName} WHERE memberID = ?`, [memberID]);
+        for (const tableName of tableNames) {
+            const result = await queryWithPromise(`DELETE FROM ${tableName} WHERE memberID = ?`, [memberID]);
+            console.log(`Deleted from ${tableName}. Result:`, result);
+
+            if (result.affectedRows > 0) {
+                successCount++; // Tăng biến đếm nếu có hàng bị xóa
+            }
+        }
+
+        // Nếu không có bảng nào cần xóa, trả về false
+        if (successCount === 0) {
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Error truncating tables for member:', error);
+        throw error;
     }
 }
-async function importData(file) {
+
+async function clearTree(memberIDs) {
+    try {
+        const truncatePromises = [];
+
+        // Loop through each member ID to truncate tables
+        for (const memberID of memberIDs) {
+            const truncatePromise = truncateTablesForMember(memberID);
+            truncatePromises.push(truncatePromise);
+        }
+
+        // Wait for all truncate operations to complete
+        const results = await Promise.all(truncatePromises);
+
+        // Kiểm tra kết quả từ mỗi lời hứa
+        for (const result of results) {
+            if (!result) {
+                return false; // Nếu một bảng không xóa được, trả về false
+            }
+        }
+        return true; // Nếu tất cả đều xóa thành công
+    } catch (error) {
+        console.error('Error clearing tables:', error);
+        throw error;
+    }
+}
+
+async function updateCodeIDForMember(memberID, newCodeID) {
+    try {
+        const updateResult = await queryWithPromise('UPDATE genealogy.familymember SET codeID = ? WHERE memberID = ?', [newCodeID, memberID]);
+        console.log('Updated codeID for memberID in familymember table:', updateResult);
+
+        return updateResult !== null && updateResult !== undefined; // Kiểm tra xem truy vấn đã thành công không
+    } catch (error) {
+        console.error('Error updating codeID for member in familymember table:', error);
+        throw error;
+    }
+}
+
+
+async function importData(file, codeID) {
     try {
         const workbook = new Excel.Workbook();
         await workbook.xlsx.readFile(file);
 
         const familyWorksheet = workbook.getWorksheet('Family Member Data');
-        const promises = [];
 
-        // Truncate tables for each member before insertion
-        familyWorksheet.eachRow(async (row, rowNumber) => {
-            if (rowNumber > 1) {
-                const values = row.values;
-                const memberID = values[1];
-                const truncatePromise = truncateTablesForMember(memberID);
-                promises.push(truncatePromise);
-            }
-        });
+        const truncatePromises = [];
+        for (let rowNumber = 2; rowNumber <= familyWorksheet.rowCount; rowNumber++) {
+            const row = familyWorksheet.getRow(rowNumber);
+            const values = row.values;
+            const memberID = values[1];
+            const truncatePromise = truncateTablesForMember(memberID);
+            truncatePromises.push(truncatePromise);
+        }
 
-        // Wait for all truncate operations to complete
-        await Promise.all(promises);
+        const truncateResults = await Promise.all(truncatePromises);
+        const allTruncatesSuccessful = truncateResults.every(result => result);
 
-        // Insert data to tables
+        if (!allTruncatesSuccessful) {
+            return false;
+        }
+
         const insertPromises = [
             insertDataToTable(familyWorksheet, 'genealogy.familymember'),
             insertDataToTable(workbook.getWorksheet('Contact Data'), 'genealogy.contact'),
@@ -136,15 +195,39 @@ async function importData(file) {
             insertDataToTable(workbook.getWorksheet('Marriage Data'), 'genealogy.marriage')
         ];
 
-        // Wait for all insert operations to complete
-        await Promise.all(insertPromises);
+        const insertResults = await Promise.all(insertPromises);
+        const allInsertsSuccessful = insertResults.every(result => result.every(res => res));
 
-        return { success: true };
+        if (!allInsertsSuccessful) {
+            return false;
+        }
+        console.log(allInsertsSuccessful)
+
+        const codeIDFromExcel = familyWorksheet.getRow(2).getCell(22).value;
+        console.log(codeIDFromExcel)
+        if (codeIDFromExcel !== codeID) {
+            const updateCodeIDPromises = [];
+            for (let rowNumber = 2; rowNumber <= familyWorksheet.rowCount; rowNumber++) {
+                const row = familyWorksheet.getRow(rowNumber);
+                const values = row.values;
+                const memberID = values[1];
+                const updatePromise = updateCodeIDForMember(memberID, codeID);
+                updateCodeIDPromises.push(updatePromise);
+            }
+
+            const updateResults = await Promise.all(updateCodeIDPromises);
+            const allUpdatesSuccessful = updateResults.every(result => result);
+            console.log(allUpdatesSuccessful)
+            return allUpdatesSuccessful;
+        }
+
+        return allInsertsSuccessful;
     } catch (error) {
         console.error('Lỗi khi xử lý dữ liệu:', error);
         throw error;
     }
 }
+
 
 
 async function insertDataToTable(worksheet, tableName) {
@@ -202,4 +285,4 @@ async function insertDataToTable(worksheet, tableName) {
 }
 
 
-module.exports = { exportData, importData };
+module.exports = { exportData, clearTree, importData };

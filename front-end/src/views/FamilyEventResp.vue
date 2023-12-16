@@ -987,6 +987,12 @@ export default {
           .then((response) => {
             if (response.data.success == true) {
               this.memberRole = response.data.data.RoleID;
+            } else {
+              if (response.data.status_code == 402) {
+                localStorage.removeItem("CodeID");
+                localStorage.removeItem("accountID");
+                this.$router.push("/login");
+              }
             }
           })
           .catch((e) => {

@@ -322,8 +322,17 @@ export default {
         },
       })
         .then((response) => {
-          this.listHistory = response.data.data;
-          console.log(this.listHistory);
+          if (
+            response.data.success == false &&
+            response.data.status_code == 402
+          ) {
+            localStorage.removeItem("CodeID");
+            localStorage.removeItem("accountID");
+            this.$router.push("/login");
+          } else {
+            this.listHistory = response.data.data;
+            console.log(this.listHistory);
+          }
         })
         .catch((e) => {
           console.log(e);

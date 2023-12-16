@@ -321,7 +321,7 @@
                     <select v-model="timeType" class="form-select h-100 w-100">
                       <option value="m">phút</option>
                       <option value="h">Giờ</option>
-                      <option value="d">Ngày</option>                      
+                      <option value="d">Ngày</option>
                     </select>
                   </div>
                 </div>
@@ -480,7 +480,7 @@ export default {
         });
     },
     sendMessageToConfirmEvent(action) {
-      console.log(this.ListMemberToSendEmail.length)
+      console.log(this.ListMemberToSendEmail.length);
       if (this.ListMemberToSendEmail.length > 0) {
         if (this.numberExpire != null) {
           if (action != null) {
@@ -962,6 +962,12 @@ export default {
           .then((response) => {
             if (response.data.success == true) {
               this.memberRole = response.data.data.RoleID;
+            } else {
+              if (response.data.status_code == 402) {
+                localStorage.removeItem("CodeID");
+                localStorage.removeItem("accountID");
+                this.$router.push("/login");
+              }
             }
           })
           .catch((e) => {
@@ -1063,6 +1069,6 @@ td.ngaythang:hover {
   background-color: lightblue;
 }
 .event-screen .event-modal-container .vm--container {
-    z-index: 100;
+  z-index: 100;
 }
 </style>

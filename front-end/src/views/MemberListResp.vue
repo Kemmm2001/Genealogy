@@ -958,6 +958,11 @@ export default {
           console.log(this.memberList);
           this.takeInforList();
         } else {
+          if (response.data.status_code == 402) {
+            localStorage.removeItem("CodeID");
+            localStorage.removeItem("accountID");
+            this.$router.push("/login");
+          }
           this.memberList = [];
           this.memberFilter = this.memberList;
           this.CurrentIdMember = null;

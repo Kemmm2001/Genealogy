@@ -688,6 +688,11 @@ export default {
               this.ListCheckBoxAlbum.push(false);
             }
           } else {
+            if (response.data.status_code == 402) {
+              localStorage.removeItem("CodeID");
+              localStorage.removeItem("accountID");
+              this.$router.push("/login");
+            }
             this.AlbumPhotoList = [];
           }
         })

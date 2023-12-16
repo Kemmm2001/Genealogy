@@ -3,10 +3,12 @@ const createError = require('http-errors')
 const validator = require('validator');
 const bcrypt = require('bcrypt');
 const { signAccessToken, signRefreshToken, signRePassToken, signRegisterToken, signGenealogyToken, verifyRegisterToken, verifyRepassToken, verifyRefreshToken } = require('../../helper/jwt_helper')
-const Response = require('../../Utils/Response')
 const sendMail = require('../../Utils/SystemOperation');
 require('dotenv').config();
+const backEndURL = process.env.BACKEND_URL
 const frontEndURL = process.env.FRONTEND_URL
+const secureKey = process.env.KEY_SECRET
+const Response = require('../../Utils/Response');
 const CryptoJS = require('crypto-js')
 
 var registerUser = async (req, res) => {
@@ -244,6 +246,7 @@ var loginUser = async (req, res) => {
     }
     let accessToken = await signAccessToken(data.accountID)
     // let refreshToken = await signRefreshToken(data.accountID)
+    console.log(refreshToken)
     return res.send(Response.successResponse(accessToken, 'Login thành công'));
 
   } catch (error) {
@@ -660,6 +663,6 @@ var setActive = async (req, res) => {
 module.exports = {
   registerUser, loginUser, refreshToken, registerGenealogy, getGenealogy, setRole,
   checkCodeID, getUserInfor, getUserCodeID, getHistoryCodeID, ChangePassword, getListRoleMember,
-  forgetPassword, resetPassword, changeUsername, getInformationTree, verifyAccount, setActive, getRoleAccount, getAllRoleAccount,re_verifyAccount
+  forgetPassword, resetPassword, changeUsername, getInformationTree, verifyAccount, setActive, getRoleAccount, getAllRoleAccount, re_verifyAccount
 
 };

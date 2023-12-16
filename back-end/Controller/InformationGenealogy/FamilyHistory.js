@@ -1,7 +1,6 @@
 const FamilyHistoryManagementService = require("../../service/InformationGenealogy/FamilyHistoryManagement");
 const Response = require("../../Utils/Response");
 const CoreFunction = require("../../Utils/CoreFunction");
-const { addAlbumPhoto } = require("./AlbumPhotoController");
 
 
 var addFamilyHistory = async (req, res) => {
@@ -21,6 +20,22 @@ var addFamilyHistory = async (req, res) => {
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
+        if(req.body.startDate != null){
+            if(!CoreFunction.isDataDateExist(req.body.startDate)){
+                return res.send(Response.badRequestResponse(null, "Ngày bắt đầu không hợp lệ"));
+            }
+        }
+        if(req.body.endDate != null){
+            if(!CoreFunction.isDataDateExist(req.body.endDate)){
+                return res.send(Response.badRequestResponse(null, "Ngày kết thúc không hợp lệ"));
+            }
+        }
+        // nếu ngày bắt đầu lớn hơn ngày kết thúc
+        if (CoreFunction.isDataDateExist(req.body.startDate) && CoreFunction.isDataDateExist(req.body.endDate)) {
+            if (req.body.startDate > req.body.endDate) {
+                return res.send(Response.badRequestResponse(null, "Ngày bắt đầu không được lớn hơn ngày kết thúc"));
+            }
+        }
 
         // thêm FamilyHistory vào database
         let data = await FamilyHistoryManagementService.insertFamilyHistory(req.body)
@@ -31,7 +46,7 @@ var addFamilyHistory = async (req, res) => {
         return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
-        return res.send(Response.internalServerErrorResponse(e));
+        return res.send(Response.internalServerErrorResponse());
     }
 };
 
@@ -42,7 +57,8 @@ var updateFamilyHistory = async (req, res) => {
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
             'FamilyHistoryID',
-            'Description'
+            'Description',
+            'CodeID'
         ];
         // Kiểm tra xem có đủ các trường của FamilyHistory không
         const missingFields = CoreFunction.missingFields(requiredFields, req.body);
@@ -52,6 +68,28 @@ var updateFamilyHistory = async (req, res) => {
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
+        // kiểm tra xem codeid có tồn tại không
+        let code = await FamilyHistoryManagementService.getFamilyHistoryByCodeId(req.body.CodeID)
+        if (code == null || code.length == 0) {
+            return res.send(Response.dataNotFoundResponse());
+        }
+        if(req.body.startDate != null){
+            if(!CoreFunction.isDataDateExist(req.body.startDate)){
+                return res.send(Response.badRequestResponse(null, "Ngày bắt đầu không hợp lệ"));
+            }
+        }
+        if(req.body.endDate != null){
+            if(!CoreFunction.isDataDateExist(req.body.endDate)){
+                return res.send(Response.badRequestResponse(null, "Ngày kết thúc không hợp lệ"));
+            }
+        }
+        // nếu ngày bắt đầu lớn hơn ngày kết thúc
+        if (CoreFunction.isDataDateExist(req.body.startDate) && CoreFunction.isDataDateExist(req.body.endDate)) {
+            if (req.body.startDate > req.body.endDate) {
+                return res.send(Response.badRequestResponse(null, "Ngày bắt đầu không được lớn hơn ngày kết thúc"));
+            }
+        }
+
         // lấy thông tin FamilyHistory từ database
         let data = await FamilyHistoryManagementService.getFamilyHistoryById(req.body.FamilyHistoryID)
         if (data == null || data.length == 0) {
@@ -164,20 +202,8 @@ var getFamilyHistory = async (req, res) => {
 };
 
 
-var getAllFamilyHistories = async (req, res) => {
-    try {
-        // lấy thông tin tất cả FamilyHistory từ database
-        let data = await FamilyHistoryManagementService.getAllFamilyHistory();
-        return res.send(Response.successResponse(data));
-    } catch (e) {
-        console.log("Error: " + e);
-        return res.send(Response.internalServerErrorResponse(e));
-    }
-};
-
-
 
 module.exports = {
-    addFamilyHistory, updateFamilyHistory, deleteFamilyHistory, getFamilyHistory, getAllFamilyHistories,
+    addFamilyHistory, updateFamilyHistory, deleteFamilyHistory, getFamilyHistory,
     searchHistory, filterHistory
 };

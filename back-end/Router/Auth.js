@@ -1,7 +1,7 @@
 const express = require('express')
 const UserController = require('../Controller/Authencation/UserController'); // Import controller
 var router = express.Router()
-const { verifyAccessToken, verifyRepassToken } = require('../helper/jwt_helper')
+const { verifyAccessToken, verifyRepassToken, verifyGenealogyToken } = require('../helper/jwt_helper')
 
 const authMiddleware = require('../helper/author_helper');
 const { verify } = require('crypto');
@@ -10,8 +10,15 @@ const initWebRouter = (app) => {
 
   router.get('/protected-route', verifyAccessToken, (req, res) => {
 
-    const accountID = req.payload.insertId;
+    let accountID = req.payload.insertId;
     res.json({ accountID });
+  });
+
+  router.get('/getCodeID', verifyGenealogyToken, (req, res) => {
+
+    let accountID = req.payload.insertId;
+    let codeID = req.payload.codeId;
+    res.json({ accountID, codeID });
   });
 
 
@@ -25,7 +32,7 @@ const initWebRouter = (app) => {
   router.post('/re_verify-account', UserController.re_verifyAccount)
   router.post('/setActive', UserController.setActive)
 
-  router.post('/register-genealogy', UserController.registerGenealogy)
+  router.post('/register-genealogy',verifyAccessToken, UserController.registerGenealogy)
   router.post('/get-genealogy', UserController.getGenealogy)
   router.post('get-codeID', UserController.getUserCodeID)
 

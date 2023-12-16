@@ -6,8 +6,10 @@ var addAlbumPhoto = async (req, res) => {
     try {
         // Log ra thông tin trong req.body
         console.log('Request body: ', req.body);
+        console.log("req.file: ", req.file);
         // nếu có file ảnh thì lưu đường dẫn vào req.body.BackGroundPhoto, còn ko thì gán null
-        if (req.file != null) {
+        if (CoreFunction.isDataStringExist(req.file)) {
+            console.log("File có tồn tại")
             // nếu file ảnh ko thuộc png, jpg, jpeg thì ko cho update
             if (!req.file.originalname.match(/\.(jpg|jpeg|png)$/)) {
                 CoreFunction.deleteImage(req.file.path);
@@ -28,13 +30,17 @@ var addAlbumPhoto = async (req, res) => {
         console.log(missingFields);
         // trong trường hợp thiếu trường bắt buộc
         if (missingFields.length) {
-            CoreFunction.deleteImage(req.file.path);
+            if (CoreFunction.isDataStringExist(req.file)) {
+                CoreFunction.deleteImage(req.file.path);
+            }
             return res.send(Response.missingFieldsErrorResponse(missingFields));
         }
         console.log("No missing fields");
         let checkCodeIDExistResponse = await checkFamilyTreeExist(req);
         if (checkCodeIDExistResponse.success == false) {
-            CoreFunction.deleteImage(req.file.path);
+            if (CoreFunction.isDataStringExist(req.file)) {
+                CoreFunction.deleteImage(req.file.path);
+            }
             return res.send(checkCodeIDExistResponse);
         }
         // Thêm thông tin vào bảng albumphoto
@@ -46,7 +52,9 @@ var addAlbumPhoto = async (req, res) => {
         return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
-        CoreFunction.deleteImage(req.file.path);
+        if(CoreFunction.isDataStringExist(req.file)){
+            CoreFunction.deleteImage(req.file.path);
+        }
         return res.send(Response.internalServerErrorResponse());
     }
 };
@@ -121,7 +129,9 @@ var updateAlbumPhoto = async (req, res) => {
         return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
-        CoreFunction.deleteImage(req.file.path);
+        if(CoreFunction.isDataStringExist(req.file)){
+            CoreFunction.deleteImage(req.file.path);
+        }
         return res.send(Response.internalServerErrorResponse());
     }
 };

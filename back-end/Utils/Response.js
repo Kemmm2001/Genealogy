@@ -55,7 +55,7 @@ let successResponse = (data, message) => {
 
 let internalServerErrorResponse = (data, message) => {
     try {
-        if (message == null) message = "Lỗi hệ thống";
+        if (message == null) message = "Có lỗi xảy ra";
         if (data == null) return coreErrorResponse(500, message);
         return coreErrorResponse(500, message, data);
     } catch (error) {
@@ -85,9 +85,29 @@ let unauthorizedResponse = (data, message) => {
     }
 }
 
+let authorizedResponse = (data, message) => {
+    try {
+        if (message == null) message = "Chưa có Authorization header ";
+        if (data == null) return coreErrorResponse(404, message);
+        return coreErrorResponse(401, message, data);
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 let tokenExpiredTime = (data, message) => {
     try {
         if (message == null) message = "Token hết hạn";
+        if (data == null) return coreErrorResponse(402, message);
+        return coreErrorResponse(402, message, data);
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+let inValidToken = (data, message) => {
+    try {
+        if (message == null) message = "Token không hợp lệ";
         if (data == null) return coreErrorResponse(402, message);
         return coreErrorResponse(402, message, data);
     } catch (error) {
@@ -107,5 +127,5 @@ let forbiddenResponse = (data, message) => {
 
 module.exports = {
     missingFieldsErrorResponse, badRequestResponse, dataNotFoundResponse, successResponse,
-    internalServerErrorResponse, coreResponse, coreErrorResponse, unauthorizedResponse, forbiddenResponse, tokenExpiredTime
+    internalServerErrorResponse, coreResponse, coreErrorResponse, unauthorizedResponse, forbiddenResponse, tokenExpiredTime,authorizedResponse, inValidToken
 };

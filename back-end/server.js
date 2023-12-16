@@ -18,7 +18,6 @@ app.use((req, res, next) => {
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(express.json());
-app.listen(port);
 app.use(cors())
 
 initWebFamilyTree(app);
@@ -27,3 +26,4 @@ initWebEvent(app);
 initWebConfig(app);
 initWebAuthen(app);
 console.log('Server started at http://localhost:' + port);
+app.listen(port);

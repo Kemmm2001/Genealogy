@@ -125,7 +125,11 @@ var getListMessage = async (req, res) => {
     try {
         let CodeID = req.query.CodeID;
         let data = await FamilyTreeService.getListMessage(CodeID);
-        res.send(data);
+        if (data) {
+            return res.send(Response.successResponse(data))
+        } else {
+            res.send(Response.dataNotFoundResponse());
+        }
     } catch (error) {
         console.log(error);
         res.send(Response.internalServerErrorResponse(error));
