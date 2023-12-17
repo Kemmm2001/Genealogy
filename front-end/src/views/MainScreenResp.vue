@@ -5,14 +5,14 @@
                 <div class="w-100 d-flex flex-row pt-2">
                     <div v-if="memberRole != 3" class="col-6 ps-2 pe-1">
                         <div class="w-100 h-100">
-                            <button @click="openNotiModal()" type="button" class="btn btn-secondary w-100 h-100">Tạo thông
-                                báo</button>
+                            <button @click="openNotiModal()" style="width:100%; font-size: 15px; color:white"
+                             type="button" class="m-0 d-flex align-items-center justify-content-center btn btn-secondary w-100 h-100">Tạo thông báo</button>
                         </div>
                     </div>
                     <div class="col-6 ps-1 pe-2">
                         <div class="w-100 h-100">
-                            <button @click="openCompareModal()" type="button"
-                                :class="{ 'btn': true, ' w-100': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">Xác
+                            <button @click="openCompareModal()" type="button" style="width:100%; font-size: 15px; color:white" class="d-flex align-items-center justify-content-center"
+                                :class="{ 'm-0': true, 'btn': true, ' w-100': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">Xác
                                 định quan hệ</button>
                         </div>
                     </div>
@@ -21,7 +21,7 @@
                     <div class="col-6 ps-2 pe-1">
                         <div class="w-100 h-100">
                             <button @click="BackUpdata()" style="width:100%; font-size: 15px; color:white" type="button"
-                                class="btn btn-secondary h-100">Lưu trữ dữ liệu</button>
+                                class="btn btn-secondary h-100 m-0 d-flex align-items-center justify-content-center">Lưu trữ dữ liệu</button>
                         </div>
                     </div>
                     <div class="col-6 ps-1 pe-2">
@@ -879,8 +879,8 @@
                                                 :class="{ 'active': objMemberInfor.Origin }">Nguyên Quán</label>
                                         </div>
                                         <div class="form-group">
-                                            <h6 style="height: 40%">Ngày Sinh (Hệ thống sẽ tự đổi từ
-                                                ngày dương lịch sang âm lịch và ngược lại)</h6>
+                                            <div style="height: 40%; font-family: 'QuicksandBold';">Ngày Sinh (Hệ thống sẽ tự đổi từ
+                                                ngày dương lịch sang âm lịch và ngược lại)</div>
                                             <div class="pb-2" style="height: 60%; display: flex;">
                                                 <div style="position: relative; width: 50%;margin-right: 10px;">
                                                     <input v-model="objMemberInfor.Dob" type="date"
@@ -909,7 +909,7 @@
                                                 for="lostCheckbox">Đã mất</label>
                                         </div>
                                         <div class="form-group pb-2" v-if="IsDead == 1">
-                                            <div style="height: 20%;">Ngày Mất (*)</div>
+                                            <div style="height: 20%; font-family: 'QuicksandBold';">Ngày Mất (*)</div>
                                             <div class="pb-2" style="display:flex; height: 28%;">
                                                 <div style="position: relative; width: 50%; margin-right: 10px;">
                                                     <input v-model="objMemberInfor.Dod" type="date"
@@ -938,10 +938,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-9" style="padding-top: 15px" v-else-if="extendedContact">
-                                <div class="row">
+                            <div class="col-10" style="padding-top: 15px" v-else-if="extendedContact">
+                                <div class="row h-100 px-2" style="display: grid; grid-template-rows: 8% 8% 8% 8% 8%;">
                                     <div style="display:flex">
-                                        <div style="position: relative; width: 50%;margin-right: 10px;">
+                                        <div class="pb-2 pe-1" style="position: relative; width: 50%;">
                                             <select v-model="selectCityMember" class="form-select modal-item"
                                                 @change="getListDistrictMember()">
                                                 <option :value="null" selected>Thành Phố/Tỉnh</option>
@@ -950,7 +950,7 @@
                                             </select>
                                             <label class="form-label" for="select">Địa Chỉ (Thành Phố/Tỉnh)</label>
                                         </div>
-                                        <div style="position: relative;width: 50%; margin-right: 10px;">
+                                        <div class="pb-2 ps-1" style="position: relative; width: 50%;">
                                             <select v-model="selectDistrictMember" class="form-select modal-item">
                                                 <option :value="null" selected>Quận/Huyện</option>
                                                 <option v-for="d in ListDistrictMember" :key="d.id" :value="d.DistrictName">
@@ -960,24 +960,24 @@
                                         </div>
                                     </div>
                                     <div style="display:flex">
-                                        <div style="position: relative; width: 50%;margin-right: 10px;">
+                                        <div class="pb-2 pe-1" style="position: relative; width: 50%;">
                                             <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone"
                                                 v-bind="props"></VuePhoneNumberInput>
                                         </div>
-                                        <div style="position: relative;width: 50%; margin-right: 10px;">
+                                        <div class="pb-2 ps-1" style="position: relative;width: 50%;">
                                             <input v-model="objMemberContact.Email" type="email"
                                                 class="form-control modal-item" placeholder />
                                             <label class="form-label" for="input"
                                                 :class="{ 'active': objMemberContact.Email }">Email</label>
                                         </div>
                                     </div>
-                                    <div style="position: relative; padding-right: 23px;">
+                                    <div class="pb-2" style="position: relative;">
                                         <input v-model="objMemberContact.FacebookUrl" type="text"
                                             class="form-control modal-item" placeholder />
                                         <label style="left: 25px;" class="form-label" for="input"
                                             :class="{ 'active': objMemberContact.FacebookUrl }">Facebook</label>
                                     </div>
-                                    <div style="position: relative; padding-right: 23px;">
+                                    <div class="pb-2" style="position: relative;">
                                         <input v-model="objMemberContact.Zalo" type="text" class="form-control modal-item"
                                             placeholder />
                                         <label style="left: 25px;" class="form-label" for="input"
@@ -985,16 +985,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-9" style="padding-top: 15px" v-else-if="extendedJob">
-                                <div class="row">
-                                    <div style="display:flex">
-                                        <div style="position: relative; width: 50%; margin-right: 10px;">
+                            <div class="col-10" style="padding-top: 15px" v-else-if="extendedJob">
+                                <div class="row h-100 px-2" style="display: grid; grid-template-rows: 8% 8% 13% 8% 8% 55%;">
+                                    <div style="display: flex">
+                                        <div class="pb-2 pe-1" style="position: relative; width: 50%;">
                                             <input v-model="objMemberJob.Organization" type="text"
                                                 class="form-control modal-item" placeholder />
                                             <label class="form-label" for="input"
                                                 :class="{ 'active': objMemberJob.Organization }">Tên Cơ Quan</label>
                                         </div>
-                                        <div style="position: relative;width: 50%; margin-right: 10px;">
+                                        <div class="pb-2 ps-1" style="position: relative; width: 50%;">
                                             <input v-model="objMemberJob.OrganizationAddress" type="text"
                                                 class="form-control modal-item" placeholder />
                                             <label class="form-label" min="0" for="input"
@@ -1002,13 +1002,13 @@
                                         </div>
                                     </div>
                                     <div style="display:flex">
-                                        <div style="position: relative; width: 50%;margin-right: 10px;">
+                                        <div class="pb-2 pe-1" style="position: relative; width: 50%;">
                                             <input v-model="objMemberJob.Role" type="text" class="form-control modal-item"
                                                 placeholder />
                                             <label class="form-label" for="input"
                                                 :class="{ 'active': objMemberJob.Role }">Vị trí công tác</label>
                                         </div>
-                                        <div style="position: relative;width: 50%; margin-right: 10px;">
+                                        <div class="pb-2 ps-1" style="position: relative; width: 50%;">
                                             <input v-model="objMemberJob.JobName" type="text"
                                                 class="form-control modal-item" placeholder />
                                             <label class="form-label-number" min="0" for="input"
@@ -1016,14 +1016,14 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <h6 style="margin-bottom:20px">Thời gian công tác</h6>
-                                        <div style="display:flex">
-                                            <div style="position: relative; width: 50%;margin-right: 10px;">
+                                        <div class="pb-2" style="height: 40%; font-family: 'QuicksandBold';">Thời gian công tác</div>
+                                        <div style="display:flex; height: 60%;">
+                                            <div class="pb-2 pe-1" style="position: relative; width: 50%;">
                                                 <input v-model="objMemberJob.StartDate" type="date"
                                                     class="form-control modal-item" placeholder />
                                                 <label class="form-label" for="input">Từ ngày</label>
                                             </div>
-                                            <div style="position: relative;width: 50%; margin-right: 10px;">
+                                            <div class="pb-2 ps-1" style="position: relative; width: 50%;">
                                                 <input v-model="objMemberJob.EndDate" type="date"
                                                     class="form-control modal-item" placeholder />
                                                 <label class="form-label-number" min="0" for="input">Đến ngày</label>
@@ -1031,7 +1031,7 @@
                                         </div>
                                     </div>
                                     <div class="d-flex justify-content-end">
-                                        <div class="form-group" role="group">
+                                        <div class="form-group d-flex align-items-center" role="group">
                                             <button type="button" class="btn btn-primary" @click="addNewJobMember()"
                                                 style="margin-right:10px">Thêm</button>
                                             <button type="button" class="btn btn-info mr-1" @click="updateJobMember()"
@@ -1040,7 +1040,7 @@
                                                 style="margin-right:10px">Xóa</button>
                                         </div>
                                     </div>
-                                    <div class="form-group" style="margin-top:13px;padding-right:22px">
+                                    <div class="form-group pb-2" style="margin-top: 13px; padding-right: 22px">
                                         <table class="table">
                                             <thead>
                                                 <tr>
@@ -1063,29 +1063,29 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-9" style="padding-top: 15px" v-else-if="extendedEdu">
-                                <div class="row">
-                                    <div style="position: relative;padding-right: 20px;">
+                            <div class="col-10" style="padding-top: 15px" v-else-if="extendedEdu">
+                                <div class="row h-100 px-2" style="display: grid; grid-template-rows: 8% 8% 13% 8% 8% 55%;">
+                                    <div class="pb-2" style="position: relative;">
                                         <input v-model="objMemberEducation.School" type="text"
                                             class="form-control modal-item" placeholder />
                                         <label style="left: 20px;" class="form-label" for="input"
                                             :class="{ 'active': objMemberEducation.School }">Tên trường</label>
                                     </div>
-                                    <div style="position: relative;padding-right: 20px;">
+                                    <div class="pb-2" style="position: relative;">
                                         <input v-model="objMemberEducation.Description" type="text"
                                             class="form-control modal-item" placeholder />
                                         <label style="left: 20px;" class="form-label" for="input"
                                             :class="{ 'active': objMemberEducation.Description }">Mô tả</label>
                                     </div>
                                     <div class="form-group">
-                                        <h6 style="margin-bottom:20px">Thời gian học tập</h6>
-                                        <div style="display:flex">
-                                            <div style="position: relative; width: 50%;margin-right: 10px;">
+                                        <div class="pb-2" style="height: 40%; font-family: 'QuicksandBold';">Thời gian học tập</div>
+                                        <div style="display: flex; height: 60%;">
+                                            <div class="pb-2 pe-1" style="position: relative; width: 50%;">
                                                 <input v-model="objMemberEducation.StartDate" type="date"
                                                     class="form-control modal-item" placeholder />
                                                 <label class="form-label" for="input">Từ ngày</label>
                                             </div>
-                                            <div style="position: relative;width: 50%; margin-right: 10px;">
+                                            <div class="pb-2 ps-1" style="position: relative; width: 50%;">
                                                 <input v-model="objMemberEducation.EndDate" type="date"
                                                     class="form-control modal-item" placeholder />
                                                 <label class="form-label-number" min="0" for="input">Đến ngày</label>
@@ -1093,7 +1093,7 @@
                                         </div>
                                     </div>
                                     <div class="d-flex justify-content-end">
-                                        <div class="form-group" role="group">
+                                        <div class="form-group d-flex align-items-center" role="group">
                                             <button type="button" class="btn btn-primary" @click="addNewEducationMember()"
                                                 style="margin-right:10px">Thêm</button>
                                             <button type="button" class="btn btn-info mr-1" @click="updateEducationMember()"
@@ -1102,7 +1102,7 @@
                                                 style="margin-right:10px">Xóa</button>
                                         </div>
                                     </div>
-                                    <div class="form-group" style="margin-top:13px;padding-right:22px">
+                                    <div class="form-group" style="margin-top: 13px; padding-right: 22px">
                                         <table class="table">
                                             <thead>
                                                 <tr>
@@ -1124,9 +1124,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-9" style="padding-top: 15px" v-else>
-                                <div class="form-group" style="margin-top:13px;padding-right:22px">
-                                    <textarea v-model="objMemberInfor.Note" style="height:300px"
+                            <div class="col-10" style="padding-top: 15px" v-else>
+                                <div class="form-group px-2" style="">
+                                    <textarea v-model="objMemberInfor.Note" style="min-height: 300px; overflow-y: auto;"
                                         class="form-control modal-item" id="lichSuCongTac" rows="5"
                                         placeholder="Ghi Chú"></textarea>
                                 </div>
@@ -1199,18 +1199,18 @@ import { HTTP } from "../assets/js/baseAPI.js";
 import { LunarDate } from "vietnamese-lunar-calendar";
 import { convertLunar2Solar } from "vietnamese-lunar-calendar/build/solar-lunar";
 import { getLocalTimezone } from "vietnamese-lunar-calendar/build/solar-lunar/utils";
-// import VuePhoneNumberInput from "vue-phone-number-input";
+import VuePhoneNumberInput from "vue-phone-number-input";
 import "vue-phone-number-input/dist/vue-phone-number-input.css";
 
 export default {
     components: {
-        // VuePhoneNumberInput,
+        VuePhoneNumberInput,
     },
     data() {
         return {
             props: {
                 clearable: true,
-                // fetchCountry: true,
+                fetchCountry: true,
                 preferredCountries: ["US", "GB"],
                 noExample: false,
                 translations: {
