@@ -421,7 +421,7 @@ input:focus~label.form-label-number {
     inset: 0;
     margin: auto;
 }
-
+/* 
 @media (min-width: 1500px) {
     .mdl-container{
         font-size: 120% !important;
@@ -458,4 +458,4 @@ input:focus~label.form-label-number {
     .mdl-container input:focus~label.form-label-number {
         top: -5px;
     }
-}
+} */

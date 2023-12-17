@@ -1,39 +1,47 @@
 <template>
-  <div class="history-grid-container">
-    <div class="search">
-      <div class="pt-2 px-2 d-flex flex-row align-items-center justify-content-center" style="font-weight: bold;">Lịch sử gia phả</div>
-      <div class="position-relative p-2 d-flex" style="max-height: 56px;">
-        <label class="d-flex align-items-center" for="text-search" style="position: absolute; inset: 12px;">
-          <svg class="text-search-icon d-flex align-items-center" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-            <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
+  <div class="history-grid-container" :class="{ expand: expandSearch }">
+    <div class="search" @mouseover="searchHover()" @mouseleave="searchLeave()">
+      <div  class="pt-2 px-2 d-flex flex-row align-items-center justify-content-center content-display" style="font-weight: bold;">Lịch sử
+        gia phả</div>
+      <div class="position-relative py-2 pe-2 d-flex content-display" style="max-height: 56px; padding-left: calc(15% - 8px);">
+        <label class="d-flex align-items-center" for="text-search" style="position: absolute; inset: 0 15%;">
+          <svg class="text-search-icon d-flex align-items-center" xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 512 512">
+            <path
+              d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
           </svg>
         </label>
         <div class="w-100">
-          <input v-model="keySearch" @change="searchHistory()" class="form-control px-5 py-0 w-100 h-100" id="text-search" type="text" />
+          <input v-model="keySearch" @change="searchHistory()" class="form-control px-5 py-0 w-100 h-100" id="text-search"
+            type="text" />
         </div>
       </div>
       <div class="pb-2 px-2 d-flex flex-row" style="max-height: 56px;">
-        <div class="d-flex align-items-center pe-2">Từ</div>
-        <input @change="filterHistory()" v-model="filterStartDate" class="form-control" type="date" />
+        <div class="d-flex align-items-center pe-2 content-hide justify-content-center" style="width: 15%;">Từ</div>
+        <input @change="filterHistory()" v-model="filterStartDate" class="form-control content-display" type="date" />
       </div>
       <div class="pb-2 px-2 d-flex flex-row" style="max-height: 56px;">
-        <div class="d-flex align-items-center pe-2">Đến</div>
-        <input @change="filterHistory()" v-model="filterEndDate" class="form-control" type="date" />
+        <div class="d-flex align-items-center pe-2 content-hide justify-content-center" style="width: 15%;">Đến</div>
+        <input @change="filterHistory()" v-model="filterEndDate" class="form-control content-display" type="date" />
       </div>
-      <div class="pb-2 px-2 d-flex justify-content-center" style="max-height: 56px;">
-        <div v-if="memberRole != 3" @click="showAddHistoryModal('Thêm lịch sử dòng họ', 'add')" class="btn bg-primary text-white" style="margin-right: 10px;">Thêm</div>
+      <div class="pb-2 px-2 d-flex justify-content-center content-display" style="max-height: 56px;">
+        <div v-if="memberRole != 3" @click="showAddHistoryModal('Thêm lịch sử dòng họ', 'add')"
+          class="btn bg-primary text-white" style="margin-right: 10px;">Thêm</div>
         <div @click="resertHistory()" class="btn bg-primary text-white">Làm mới</div>
       </div>
     </div>
     <div class="content">
-      <div v-if="listHistory" class="h-100 w-100 position-absolute p-2" style="top: 0; background-color: #f2f2f2;">
-        <draggable :list="listHistory" :disabled="!enabled" class="list-group h-100" style="overflow-y: auto;" ghost-class="ghost" :move="checkMove" @start="dragging = true" @end="dragging = false">
-          <div v-for="element in listHistory" :key="element.HistoryID" class="w-100" :style="{ 'min-height': '10%', 'float': element.HistoryID % 2 === 0 ? 'right' : 'left' }">
-            <div @click="getInforHistory(element.HistoryID)" class="list-group-item position-relative h-100" :style="{ 'width': '49%', 'float': element.HistoryID % 2 === 0 ? 'right' : 'left' }">
+      <div v-if="listHistory" class="h-100 w-100 position-absolute ps-2 py-2" style="top: 0; background-color: #f2f2f2;">
+        <draggable :list="listHistory" :disabled="!enabled" class="list-group h-100" style="overflow-y: auto;"
+          ghost-class="ghost" :move="checkMove" @start="dragging = true" @end="dragging = false">
+          <div v-for="element in listHistory" :key="element.HistoryID" class="w-100 pt-1"
+            :style="{ 'float': element.HistoryID % 2 === 0 ? 'right' : 'left' }">
+            <div @click="getInforHistory(element.HistoryID)" class="list-group-item position-relative h-100"
+              :style="{ 'width': '49%', 'float': element.HistoryID % 2 === 0 ? 'right' : 'left' }">
               <div class="position-absolute history-start">{{ formatDate(element.startDate) }}</div>
               <div class="position-absolute history-end">{{ formatDate(element.endDate) }}</div>
               <div class="d-flex align-items-center" style="min-height: inherit; padding-top: 25px;">
-                <div class="ellipsis-text">{{ element.Description }}</div>
+                <div class="pe-2 w-100" style="overflow-x: hidden;">{{ element.Description }}</div>
               </div>
             </div>
           </div>
@@ -54,27 +62,29 @@
             <div style="font-family: 'QuicksandBold'; font-size: 17px;">Thông tin sự kiện</div>
             <div class="mdl-close" @click="closeAddHistoryModal()">
               <svg class="h-100" style="cursor: pointer;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                <path
+                  d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
               </svg>
             </div>
           </div>
           <div class="mdl-body">
             <div class="d-flex flex-column h-100">
               <div class="d-flex flex-row pt-2 px-2">
-                <div>Ngày bắt đầu</div>
+                <div class="pe-1 d-flex align-items-center" style="width: 20%; text-align: center;">Ngày bắt đầu</div>
                 <input v-model="startDate" type="date" class="form-control" @change="filterHistory()" />
               </div>
               <div class="d-flex flex-row pt-2 px-2">
-                <div>Ngày kết thúc</div>
+                <div class="pe-1 d-flex align-items-center" style="width: 20%; text-align: center;">Ngày kết thúc</div>
                 <input v-model="endDate" type="date" class="form-control" @change="filterHistory()" />
               </div>
               <div class="p-2 flex-grow-1">
-                <textarea v-model="descriptionModal" class="w-100 h-100 text-area description form-control" placeholder="Mô tả"></textarea>
+                <textarea v-model="descriptionModal" class="w-100 h-100 text-area description form-control"
+                  placeholder="Mô tả"></textarea>
               </div>
             </div>
           </div>
           <div class="mdl-footer">
-            <div v-if="memberRole!= 3" class="h-100 d-flex align-items-center justify-content-end">
+            <div v-if="memberRole != 3" class="h-100 d-flex align-items-center justify-content-end">
               <div v-if="isAdd" class="pe-2">
                 <div @click="addHistory()" class="bg-primary text-white btn mx-2">Thêm</div>
               </div>
@@ -119,9 +129,19 @@ export default {
       filterStartDate: null,
       filterEndDate: null,
       memberRole: null,
+      expandSearch: false,
     };
   },
   methods: {
+    // Hàm thay đổi sidebar
+    searchHover() {
+      if (window.innerWidth <= 1080) {
+        this.expandSearch = true;
+      }
+    },
+    searchLeave() {
+      this.expandSearch = false;
+    },
     //nguyễn lê hùng
     NotificationsDelete(messagee) {
       new Snackbar(messagee, {
