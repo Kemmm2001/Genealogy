@@ -69,7 +69,6 @@
 }
 
 .main-grid-container .view-member-body input:not([type=checkbox]),
-.main-grid-container .view-member-body label,
 .main-grid-container .view-member-body select{
     font-size: 100% !important;
     height: 100% !important;
@@ -78,8 +77,20 @@
 .main-grid-container .view-member-body label{
     height: fit-content !important;
 }
-/* ----------Media------------- */
 
+.main-grid-container .view-member-body .vue-phone-number-input,
+.main-grid-container .view-member-body .country-selector,
+.main-grid-container .view-member-body .input-phone-number{
+    height: 100%;
+}
+
+.main-grid-container .relation-container .vm--container{
+    height: 65%;
+    inset: 0;
+    margin: auto;
+}
+/* ----------Media------------- */
+/* 
 @media screen and (max-height: 1000px){
     .main-grid-container .sidebar button,
     .main-grid-container .sidebar label,
@@ -89,18 +100,18 @@
     }
 }
 
-@media screen and (max-height: 700px){
-    .main-grid-container .sidebar button,
-    .main-grid-container .sidebar label,
-    .main-grid-container .sidebar .mems,
-    .main-grid-container .filter-text{
-        font-size: 75% !important;
-    }
-}
+    @media screen and (max-height: 700px){
+        .main-grid-container .sidebar button,
+        .main-grid-container .sidebar label,
+        .main-grid-container .sidebar .mems,
+        .main-grid-container .filter-text{
+            font-size: 75% !important;
+        }
+    } */
 
 @media screen and (max-width: 1080px){
     .main-grid-container .sidebar{
-        width: 5%;
+        width: 5% !important;
     }
 
     .main-grid-container .content-display{

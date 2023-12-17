@@ -114,6 +114,11 @@ const routes = [
     name: "main",
     component: () => import("../views/MainScreenResp.vue"),
   },
+  {
+    path: "/nav",
+    name: "main",
+    component: () => import("../components/NavbarComponent.vue"),
+  },
 ];
 
 const router = new Router({
