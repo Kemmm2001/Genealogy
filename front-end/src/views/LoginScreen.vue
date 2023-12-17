@@ -15,8 +15,8 @@
         </div>
 
         <div v-if="!right" class="login-form h-100 d-flex flex-column align-items-center justify-content-center">
-          <div class="d-flex justify-content-center mt-3 mb-2" style="font-size: 36px; font-weight: bold; color: #fea94e;">Đăng nhập</div>
-          <div class="d-flex flex-column" style="width: 420px;">
+          <div class="d-flex justify-content-center mt-3 mb-2" style="font-size: 36px; font-weight: bold; color: #fea94e; text-align: center;">Đăng nhập</div>
+          <div class="d-flex flex-column" style="width: 80%;">
             <div class="d-flex mb-2" style="position: relative;">
               <input v-model="accountLogin.email" id="username" type="text" class="form-control py-2 px-5 position-relative" placeholder="Nhập email" />
               <div class="position-absolute d-flex align-items-center justify-content-center h-100" style="left: 0; width: 3rem;">
@@ -55,8 +55,8 @@
         </div>
 
         <div v-if="right" class="login-form h-100 d-flex flex-column align-items-center justify-content-center" style="left: 0;">
-          <div class="d-flex justify-content-center mt-3 mb-2" style="font-size: 36px; font-weight: bold; color: #84e9c0;">Đăng kí tài khoản</div>
-          <div class="d-flex flex-column" style="width: 420px;">
+          <div class="d-flex justify-content-center mt-3 mb-2" style="font-size: 36px; font-weight: bold; color: #84e9c0; text-align: center;">Đăng kí tài khoản</div>
+          <div class="d-flex flex-column" style="width: 80%;">
             <div class="d-flex mb-2" style="position: relative;">
               <input v-model="accountRegister.username" id="username" type="text" class="form-control py-2 px-5 position-relative" placeholder="Tên tài khoản" />
               <div class="position-absolute d-flex align-items-center justify-content-center h-100" style="left: 0; width: 3rem;">
