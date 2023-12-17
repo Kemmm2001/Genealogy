@@ -109,6 +109,11 @@ const routes = [
     name: "stat",
     component: () => import("../views/FamilyStatisticsResp.vue"),
   },
+  {
+    path: "/main",
+    name: "main",
+    component: () => import("../views/MainScreenResp.vue"),
+  },
 ];
 
 const router = new Router({

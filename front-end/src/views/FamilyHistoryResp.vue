@@ -359,10 +359,10 @@ export default {
         this.descriptionModal = null;
         this.isAdd = true;
       }
-      this.$modal.show("addHistory-modal");
+      this.$modal.show("add-history-mdl");
     },
     closeAddHistoryModal() {
-      this.$modal.hide("addHistory-modal");
+      this.$modal.hide("add-history-mdl");
     },
   },
   mounted() {

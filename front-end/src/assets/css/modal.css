@@ -30,7 +30,7 @@
 }
 
 .modal-item {
-    height: 41px;
+    height: 100%;
     outline: none;
     border: 1px solid lightsteelblue;
     margin-bottom: 14px;
@@ -294,7 +294,7 @@ input:focus~label.form-label-number {
 }
 
 .compare-modal-item{
-    height: 48px;
+    /* height: 48px; */
 }
 
 .odd-table-row{
@@ -316,16 +316,16 @@ input:focus~label.form-label-number {
 
 .sent-sms{
     border-radius: 0.375rem;
-    background-color: #E8C77B;
-    max-width: 450px;
+    background-color: lavender;
+    max-width: 60%;
     padding: 18px 12px 8px 12px;
     margin: 6px 12px;
     min-width: 85px;
 }
 
 .sent-time{
-    top: 9px;
-    left: 24px;
+    top: 3px;
+    left: 40%;
     font-size: 12px;
 }
 
@@ -421,7 +421,6 @@ input:focus~label.form-label-number {
     inset: 0;
     margin: auto;
 }
-
 
 @media (min-width: 1500px) {
     .mdl-container{
