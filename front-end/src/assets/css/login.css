@@ -176,8 +176,8 @@
 .loginhistory-container .vm--container{
     inset: 0;
     margin: auto;
-    height: 352px;
-    width: 1048px;
+    height: 35%;
+    width: 40%;
 }
 
 .loginhistory-container .vm--modal{
@@ -191,7 +191,8 @@
 /* -------------------------------------------------- */
 
 @media (max-width: 1360px) {
-    .login-form-container{
+    .login-form-container,
+    .loginhistory-container .vm--container{
         width: 65% !important;
     }
 }
@@ -199,5 +200,11 @@
 @media (max-height: 900px) {
     .login-form-container{
         height: 60% !important;
+    }
+}
+
+@media (max-height: 900px) {
+    .loginhistory-container .vm--container{
+        height: 45% !important;
     }
 }
