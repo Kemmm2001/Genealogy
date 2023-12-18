@@ -32,7 +32,7 @@ const initWebRouter = (app) => {
   router.post('/re_verify-account', UserController.re_verifyAccount)
   router.post('/setActive', UserController.setActive)
 
-  router.post('/register-genealogy',verifyAccessToken, UserController.registerGenealogy)
+  router.post('/register-genealogy', UserController.registerGenealogy)
   router.post('/get-genealogy', UserController.getGenealogy)
   router.post('get-codeID', UserController.getUserCodeID)
 

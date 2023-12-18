@@ -2151,6 +2151,7 @@ export default {
     //Nguyễn Lê Hùng
     addMember() {
       console.log("Token: " + VueCookies.get("accessToken"));
+      this.removeFromSelectedNodes(this.idNodeWatching);
       let FatherID;
       let MotherID;
       if (this.action == "AddNormal") {
@@ -2239,6 +2240,7 @@ export default {
                   console.log(e);
                 });
             }
+            
           })
           .catch((e) => {
             console.log(e);
