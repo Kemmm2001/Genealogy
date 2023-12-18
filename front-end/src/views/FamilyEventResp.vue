@@ -30,8 +30,8 @@
             <div class="center-content">Tháng {{ this.currentMonth }} - {{ this.currentYear }}</div>
           </div>
           <div class="h-100 w-50 ps-1">
-            <div class="center-content py-1" style="align-items: unset !important;">
-              <button class="btn bg-primary d-flex align-items-center text-white m-0" @click="setUpDate(), getDayOfMonth()">Hôm nay</button>
+            <div class="center-content py-1">
+              <button class="btn bg-primary d-flex text-white m-0" style="height: fit-content" @click="setUpDate(), getDayOfMonth()">Hôm nay</button>
             </div>
           </div>
         </div>
@@ -89,14 +89,14 @@
                 <option value="0">Đã kết thúc</option>
               </select>
             </div>
-            <div class="py-1 ps-1 d-flex">
-              <button class="btn bg-primary text-white d-flex align-items-center m-0">Làm mới</button>
+            <div class="py-1 ps-1 d-flex align-items-center">
+              <button class="btn bg-primary text-white d-flex align-items-center m-0" style="height: fit-content;">Làm mới</button>
             </div>
           </div>
         </div>
         <div class="h-100 d-flex">
-          <div class="py-1 d-flex" @click="showAddEventModal()">
-            <button class="btn bg-primary text-white d-flex align-items-center m-0">Thêm sự kiện</button>
+          <div class="py-1 d-flex align-items-center" @click="showAddEventModal()">
+            <button class="btn bg-primary text-white d-flex align-items-center m-0" style="height: fit-content;">Thêm sự kiện</button>
           </div>
         </div>
         <div class="h-100">
@@ -122,7 +122,7 @@
                   </td>
                   <td>{{ event.Status == 1 ? "Chưa kết thúc" : "Đã Kết Thúc" }}</td>
                   <td @click="showEditEventModal(event.EventID)">{{ event.Place }}</td>
-                  <td v-if="memberRole != 3">
+                  <td v-if="memberRole != 3" class="d-flex align-items-center justify-content-center">
                     <div v-if="checkEventNotificationSent(event.EventID)" @click="showParticipantList(event.EventID)" class="btn bg-primary text-white">Tham gia sự kiện</div>
                     <div v-else-if="!checkEventNotificationSent(event.EventID) && event.Status == 1" @click="showMemberList(event.EventID)" class="btn bg-primary text-white">Thông báo</div>
                   </td>
@@ -766,38 +766,45 @@ export default {
     updateEvent() {
       this.eventFamily.StartDate = `${this.startDate} ${this.startHour}:${this.startMinute}`;
       this.eventFamily.EndDate = `${this.endDate} ${this.endHour}:${this.endMinute}`;
-      if (
-        this.eventFamily.EventName != null &&
-        this.eventFamily.StartDate != null &&
-        this.eventFamily.EndDate != null &&
-        this.eventFamily.Place != null
-      ) {
-        HTTP.put("updateEvent", {
-          EventID: this.eventFamily.EventID,
-          EventName: this.eventFamily.EventName,
-          StartDate: this.eventFamily.StartDate,
-          EndDate: this.eventFamily.EndDate,
-          Description: this.eventFamily.Description,
-          Note: this.eventFamily.Note,
-          Place: this.eventFamily.Place,
-          IsImportant: this.eventFamily.IsImportant,
-          Status: this.eventFamily.Status,
-        })
-          .then((respone) => {
-            if (respone.data.success == true) {
-              this.NotificationsScuccess(respone.data.message);
-              this.closeAddEventModal();
-              this.getListEvent();
-            } else {
-              this.NotificationsDelete(respone.data.message);
-            }
+      console.log(this.eventFamily.StartDate )
+      console.log(this.eventFamily.EndDate )
+      if (this.eventFamily.StartDate > this.eventFamily.EndDate) {
+        this.NotificationsDelete("Ngày bắt đầu đang lớn hơn ngày kết thúc");
+      }else{
+        if (
+          this.eventFamily.EventName != null &&
+          this.eventFamily.StartDate != null &&
+          this.eventFamily.EndDate != null &&
+          this.eventFamily.Place != null
+        ) {
+          HTTP.put("updateEvent", {
+            EventID: this.eventFamily.EventID,
+            EventName: this.eventFamily.EventName,
+            StartDate: this.eventFamily.StartDate,
+            EndDate: this.eventFamily.EndDate,
+            Description: this.eventFamily.Description,
+            Note: this.eventFamily.Note,
+            Place: this.eventFamily.Place,
+            IsImportant: this.eventFamily.IsImportant,
+            Status: this.eventFamily.Status,
           })
-          .catch((e) => {
-            console.log(e);
-          });
-      } else {
-        this.NotificationsDelete("bạn nhập thiếu trường (*)");
+            .then((respone) => {
+              if (respone.data.success == true) {
+                this.NotificationsScuccess(respone.data.message);
+                this.closeAddEventModal();
+                this.getListEvent();
+              } else {
+                this.NotificationsDelete(respone.data.message);
+              }
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        } else {
+          this.NotificationsDelete("bạn nhập thiếu trường (*)");
+        }
       }
+      
     },
     exportExcel() {
       HTTP.post("export-excel", {
@@ -869,10 +876,10 @@ export default {
       this.endDate = null;
       this.isAdd = true;
       this.titleModal = "Thêm sự kiện";
-      this.$modal.show("add-event-modal");
+      this.$modal.show("add-event-mdl");
     },
     closeAddEventModal() {
-      this.$modal.hide("add-event-modal");
+      this.$modal.hide("add-event-mdl");
     },
     showEditEventModal(id) {
       this.isAdd = false;
@@ -916,7 +923,7 @@ export default {
               "0"
             );
             this.endDate = `${year}-${month}-${day}`;
-            this.$modal.show("add-event-modal");
+            this.$modal.show("add-event-mdl");
           }
         })
         .catch((e) => {
@@ -1013,10 +1020,10 @@ export default {
     },
     showMemberList(EventID) {
       this.currentEventID = EventID;
-      this.$modal.show("member-list");
+      this.$modal.show("view-member-mdl");
     },
     closeMemberList() {
-      this.$modal.hide("member-list");
+      this.$modal.hide("view-member-mdl");
     },
   },
   mounted() {
