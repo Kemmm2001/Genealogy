@@ -30,8 +30,8 @@
             <div class="center-content">Tháng {{ this.currentMonth }} - {{ this.currentYear }}</div>
           </div>
           <div class="h-100 w-50 ps-1">
-            <div class="center-content py-1" style="align-items: unset !important;">
-              <button class="btn bg-primary d-flex align-items-center text-white m-0" @click="setUpDate(), getDayOfMonth()">Hôm nay</button>
+            <div class="center-content py-1">
+              <button class="btn bg-primary d-flex text-white m-0" style="height: fit-content" @click="setUpDate(), getDayOfMonth()">Hôm nay</button>
             </div>
           </div>
         </div>
@@ -89,14 +89,14 @@
                 <option value="0">Đã kết thúc</option>
               </select>
             </div>
-            <div class="py-1 ps-1 d-flex">
-              <button class="btn bg-primary text-white d-flex align-items-center m-0">Làm mới</button>
+            <div class="py-1 ps-1 d-flex align-items-center">
+              <button class="btn bg-primary text-white d-flex align-items-center m-0" style="height: fit-content;">Làm mới</button>
             </div>
           </div>
         </div>
         <div class="h-100 d-flex">
-          <div class="py-1 d-flex" @click="showAddEventModal()">
-            <button class="btn bg-primary text-white d-flex align-items-center m-0">Thêm sự kiện</button>
+          <div class="py-1 d-flex align-items-center" @click="showAddEventModal()">
+            <button class="btn bg-primary text-white d-flex align-items-center m-0" style="height: fit-content;">Thêm sự kiện</button>
           </div>
         </div>
         <div class="h-100">
@@ -122,7 +122,7 @@
                   </td>
                   <td>{{ event.Status == 1 ? "Chưa kết thúc" : "Đã Kết Thúc" }}</td>
                   <td @click="showEditEventModal(event.EventID)">{{ event.Place }}</td>
-                  <td v-if="memberRole != 3">
+                  <td v-if="memberRole != 3" class="d-flex align-items-center justify-content-center">
                     <div v-if="checkEventNotificationSent(event.EventID)" @click="showParticipantList(event.EventID)" class="btn bg-primary text-white">Tham gia sự kiện</div>
                     <div v-else-if="!checkEventNotificationSent(event.EventID) && event.Status == 1" @click="showMemberList(event.EventID)" class="btn bg-primary text-white">Thông báo</div>
                   </td>

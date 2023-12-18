@@ -29,8 +29,8 @@
 }
 
 .main-grid-container .sidebar.expand .content-display{
-    opacity: 1;
-    font-size: 100%;
+    opacity: 1 !important;
+    font-size: 100% !important;
 }
 
 .main-grid-container .content{
@@ -90,7 +90,7 @@
     margin: auto;
 }
 /* ----------Media------------- */
-/* 
+
 @media screen and (max-height: 1000px){
     .main-grid-container .sidebar button,
     .main-grid-container .sidebar label,
@@ -100,14 +100,14 @@
     }
 }
 
-    @media screen and (max-height: 700px){
-        .main-grid-container .sidebar button,
-        .main-grid-container .sidebar label,
-        .main-grid-container .sidebar .mems,
-        .main-grid-container .filter-text{
-            font-size: 75% !important;
-        }
-    } */
+@media screen and (max-height: 700px){
+    .main-grid-container .sidebar button,
+    .main-grid-container .sidebar label,
+    .main-grid-container .sidebar .mems,
+    .main-grid-container .filter-text{
+        font-size: 75% !important;
+    }
+}
 
 @media screen and (max-width: 1080px){
     .main-grid-container .sidebar{
@@ -127,3 +127,10 @@
         display: none !important;
     }
 }
+/* 
+@media (max-width: 1540px){
+    .main-grid-container .sidebar button,
+    .main-grid-container .sidebar label{
+        font-size: 14px !important;
+    }
+} */
