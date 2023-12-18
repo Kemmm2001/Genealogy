@@ -766,38 +766,45 @@ export default {
     updateEvent() {
       this.eventFamily.StartDate = `${this.startDate} ${this.startHour}:${this.startMinute}`;
       this.eventFamily.EndDate = `${this.endDate} ${this.endHour}:${this.endMinute}`;
-      if (
-        this.eventFamily.EventName != null &&
-        this.eventFamily.StartDate != null &&
-        this.eventFamily.EndDate != null &&
-        this.eventFamily.Place != null
-      ) {
-        HTTP.put("updateEvent", {
-          EventID: this.eventFamily.EventID,
-          EventName: this.eventFamily.EventName,
-          StartDate: this.eventFamily.StartDate,
-          EndDate: this.eventFamily.EndDate,
-          Description: this.eventFamily.Description,
-          Note: this.eventFamily.Note,
-          Place: this.eventFamily.Place,
-          IsImportant: this.eventFamily.IsImportant,
-          Status: this.eventFamily.Status,
-        })
-          .then((respone) => {
-            if (respone.data.success == true) {
-              this.NotificationsScuccess(respone.data.message);
-              this.closeAddEventModal();
-              this.getListEvent();
-            } else {
-              this.NotificationsDelete(respone.data.message);
-            }
+      console.log(this.eventFamily.StartDate )
+      console.log(this.eventFamily.EndDate )
+      if (this.eventFamily.StartDate > this.eventFamily.EndDate) {
+        this.NotificationsDelete("Ngày bắt đầu đang lớn hơn ngày kết thúc");
+      }else{
+        if (
+          this.eventFamily.EventName != null &&
+          this.eventFamily.StartDate != null &&
+          this.eventFamily.EndDate != null &&
+          this.eventFamily.Place != null
+        ) {
+          HTTP.put("updateEvent", {
+            EventID: this.eventFamily.EventID,
+            EventName: this.eventFamily.EventName,
+            StartDate: this.eventFamily.StartDate,
+            EndDate: this.eventFamily.EndDate,
+            Description: this.eventFamily.Description,
+            Note: this.eventFamily.Note,
+            Place: this.eventFamily.Place,
+            IsImportant: this.eventFamily.IsImportant,
+            Status: this.eventFamily.Status,
           })
-          .catch((e) => {
-            console.log(e);
-          });
-      } else {
-        this.NotificationsDelete("bạn nhập thiếu trường (*)");
+            .then((respone) => {
+              if (respone.data.success == true) {
+                this.NotificationsScuccess(respone.data.message);
+                this.closeAddEventModal();
+                this.getListEvent();
+              } else {
+                this.NotificationsDelete(respone.data.message);
+              }
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        } else {
+          this.NotificationsDelete("bạn nhập thiếu trường (*)");
+        }
       }
+      
     },
     exportExcel() {
       HTTP.post("export-excel", {
@@ -869,10 +876,10 @@ export default {
       this.endDate = null;
       this.isAdd = true;
       this.titleModal = "Thêm sự kiện";
-      this.$modal.show("add-event-modal");
+      this.$modal.show("add-event-mdl");
     },
     closeAddEventModal() {
-      this.$modal.hide("add-event-modal");
+      this.$modal.hide("add-event-mdl");
     },
     showEditEventModal(id) {
       this.isAdd = false;
@@ -916,7 +923,7 @@ export default {
               "0"
             );
             this.endDate = `${year}-${month}-${day}`;
-            this.$modal.show("add-event-modal");
+            this.$modal.show("add-event-mdl");
           }
         })
         .catch((e) => {
@@ -1013,10 +1020,10 @@ export default {
     },
     showMemberList(EventID) {
       this.currentEventID = EventID;
-      this.$modal.show("member-list");
+      this.$modal.show("view-member-mdl");
     },
     closeMemberList() {
-      this.$modal.hide("member-list");
+      this.$modal.hide("view-member-mdl");
     },
   },
   mounted() {

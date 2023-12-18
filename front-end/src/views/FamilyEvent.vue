@@ -741,37 +741,41 @@ export default {
     updateEvent() {
       this.eventFamily.StartDate = `${this.startDate} ${this.startHour}:${this.startMinute}`;
       this.eventFamily.EndDate = `${this.endDate} ${this.endHour}:${this.endMinute}`;
-      if (
-        this.eventFamily.EventName != null &&
-        this.eventFamily.StartDate != null &&
-        this.eventFamily.EndDate != null &&
-        this.eventFamily.Place != null
-      ) {
-        HTTP.put("updateEvent", {
-          EventID: this.eventFamily.EventID,
-          EventName: this.eventFamily.EventName,
-          StartDate: this.eventFamily.StartDate,
-          EndDate: this.eventFamily.EndDate,
-          Description: this.eventFamily.Description,
-          Note: this.eventFamily.Note,
-          Place: this.eventFamily.Place,
-          IsImportant: this.eventFamily.IsImportant,
-          Status: this.eventFamily.Status,
-        })
-          .then((respone) => {
-            if (respone.data.success == true) {
-              this.NotificationsScuccess(respone.data.message);
-              this.closeAddEventModal();
-              this.getListEvent();
-            } else {
-              this.NotificationsDelete(respone.data.message);
-            }
+      if (this.eventFamily.StartDate > this.eventFamily.EndDate) {
+        this.NotificationsDelete("Ngày bắt đầu đang lớn hơn ngày kết thúc");
+      }else{
+        if (
+          this.eventFamily.EventName != null &&
+          this.eventFamily.StartDate != null &&
+          this.eventFamily.EndDate != null &&
+          this.eventFamily.Place != null
+        ) {
+          HTTP.put("updateEvent", {
+            EventID: this.eventFamily.EventID,
+            EventName: this.eventFamily.EventName,
+            StartDate: this.eventFamily.StartDate,
+            EndDate: this.eventFamily.EndDate,
+            Description: this.eventFamily.Description,
+            Note: this.eventFamily.Note,
+            Place: this.eventFamily.Place,
+            IsImportant: this.eventFamily.IsImportant,
+            Status: this.eventFamily.Status,
           })
-          .catch((e) => {
-            console.log(e);
-          });
-      } else {
-        this.NotificationsDelete("bạn nhập thiếu trường (*)");
+            .then((respone) => {
+              if (respone.data.success == true) {
+                this.NotificationsScuccess(respone.data.message);
+                this.closeAddEventModal();
+                this.getListEvent();
+              } else {
+                this.NotificationsDelete(respone.data.message);
+              }
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        } else {
+          this.NotificationsDelete("bạn nhập thiếu trường (*)");
+        }
       }
     },
     exportExcel() {
