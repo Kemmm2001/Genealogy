@@ -17,7 +17,7 @@
         <div v-if="!right" class="login-form h-100 d-flex flex-column align-items-center justify-content-center">
           <div class="d-flex flex-column align-items-center">
             <div class="d-flex justify-content-center mt-3 mb-2" style="font-size: 36px; font-weight: bold; color: #fea94e;">Mã gia phả</div>
-            <div class="d-flex flex-column" style="width: 420px;">
+            <div class="d-flex flex-column" style="width: 100%;">
               <div class="d-flex flex-row mb-3">
                 <div class="w-100 h-100 d-flex flex-row">
                   <input v-model="codeIdLogin" type="text" class="form-control" />
@@ -39,7 +39,7 @@
         <div v-if="right" class="login-form h-100 d-flex flex-column align-items-center justify-content-center" style="left: 0;">
           <div class="d-flex flex-column align-items-center">
             <div class="d-flex justify-content-center mt-3 mb-2" style="font-size: 36px; font-weight: bold; color: #84e9c0;">Đăng kí gia phả</div>
-            <div class="d-flex flex-column" style="width: 420px;">
+            <div class="d-flex flex-column" style="width: 100%;">
               <div class="d-flex flex-row mb-2">
                 <div class="d-flex align-items-center" style="padding-right: 30.79px;">Gia phả họ</div>
                 <div class="h-100" style="flex-grow: 1;">

@@ -6,17 +6,17 @@ Vue.use(Router);
 
 const routes = [
   {
-    path: "/",
+    path: "/main",
     name: "tree",
     component: () => import("../views/MainScreen.vue"),
   },
   {
-    path: "/information/statistics",
+    path: "/stat",
     name: "statistics",
     component: () => import("../views/FamilyStatistics.vue"),
   },
   {
-    path: "/information/albumlist",
+    path: "/alb",
     name: "albumlist",
     component: () => import("../views/AlbumList.vue"),
   },
@@ -35,17 +35,17 @@ const routes = [
     component: () => import("../views/NotFound.vue"),
   },
   {
-    path: "/memberList",
+    path: "/mem",
     name: "member",
     component: () => import("../views/MemberList.vue"),
   },
   {
-    path: "/profile",
+    path: "/user",
     name: "userprofile",
     component: () => import("../views/UserProfile.vue"),
   },
   {
-    path: "/event",
+    path: "/eve",
     name: "event",
     component: () => import("../views/FamilyEvent.vue"),
   },
@@ -80,17 +80,17 @@ const routes = [
     component: () => import("../views/VerifyAccount.vue"),
   },
   {
-    path: "/user",
+    path: "/profile",
     name: "user",
     component: () => import("../views/UserProfileResp.vue"),
   },
   {
-    path: "/mem",
+    path: "/memberList",
     name: "mem",
     component: () => import("../views/MemberListResp.vue"),
   },
   {
-    path: "/eve",
+    path: "/event",
     name: "eve",
     component: () => import("../views/FamilyEventResp.vue"),
   },
@@ -100,14 +100,19 @@ const routes = [
     component: () => import("../views/FamilyHistoryResp.vue"),
   },
   {
-    path: "/alb",
+    path: "/information/albumlist",
     name: "alb",
     component: () => import("../views/FamilyAlbumResp.vue"),
   },
   {
-    path: "/stat",
+    path: "/information/statistics",
     name: "stat",
     component: () => import("../views/FamilyStatisticsResp.vue"),
+  },
+  {
+    path: "/",
+    name: "main",
+    component: () => import("../views/MainScreenResp.vue"),
   },
 ];
 

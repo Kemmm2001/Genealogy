@@ -2,7 +2,9 @@ const EventManagementService = require('../../service/EventGenealogy/EventManage
 const FamilyMember = require('../../service/FamilyGenealogy/FamilyManagement');
 const EventAttendence = require('../../service/EventGenealogy/EventAttendence');
 const SystemAction = require('../../Utils/SystemOperation');
+const UserManagement = require('../../service/Authencation/UserManagement');
 const Response = require('../../Utils/Response');
+const CoreFunction = require('../../Utils/CoreFunction');
 require('dotenv').config();
 const backEndURL = process.env.BACKEND_URL
 const frontEndURL = process.env.FRONTEND_URL
@@ -279,9 +281,28 @@ var filterEvent = async function (req, res) {
 }
 var SendSMSToMember = async (req, res) => {
     try {
+        console.log("vào đây")
         let id = req.body.ListMemberID;
         let contentMessage = req.body.contentMessage;
         let CodeID = req.body.CodeID;
+        let accountID = req.body.accountID
+
+        let count = id.length
+        if (CoreFunction.isDataNumberExist(accountID)) {
+            let accountData = await UserManagement.getAccountByAccountID(accountID);
+            console.log('accountData: ' + accountData)
+            if (accountData != null && accountData.length > 0) {
+                let account = accountData[0];
+                if (account.FreeSMS < count) {
+                    console.log('false')
+                    return res.send(Response.internalServerErrorResponse(null, 'Tài khoản để hết số lượt gửi sms miễn phí trong ngày'))
+                } else {
+                    console.log('true')
+                    account.FreeSMS = account.FreeSMS - count;
+                    UserManagement.setFreeSMS(account.FreeSMS, accountID);
+                }
+            }
+        }
 
         let data = await EventManagementService.getListPhone(id);
         for (let i = 0; i < data.length; i++) {
@@ -303,6 +324,21 @@ var sendEmailToMember = async (req, res) => {
         objData.text = req.body.text;
         objData.html = req.body.html;
         let CodeID = req.body.CodeID;
+        let count = listID.length;
+
+        // nếu có accountid thì check xem có đủ lần gửi mail ko
+        if (CoreFunction.isDataNumberExist(accountID)) {
+            let accountData = await UserManagement.getAccountByAccountID(accountID);
+            if (accountData != null && accountData.length > 0) {
+                let account = accountData[0];
+                if (account.FreeEmail < count) {
+                    return res.send(Response.internalServerErrorResponse(null, "Tài khoản để hết số lượt gửi email miễn phí trong ngày"))
+                } else {
+                    account.FreeEmail = account.FreeEmail - count;
+                    UserManagement.setFreeEmail(account.FreeEmail, accountID);
+                }
+            }
+        }
         let data = await EventManagementService.getListEmail(listID);
 
         if (data) {

@@ -49,10 +49,10 @@ const initWebRouter = (app) => {
     router.get('/searchAlbum',  AlbumPhotoController.searchAlbumPhoto)
 
     // Create a new FamilyPhoto
-    router.post('/familyphoto', authMiddleware.authenticateAndAuthorize(2), CoreFunction.uploadImage("family-photo").single('Photo'), FamilyPhotoController.addFamilyPhoto);
-    router.get('/familyphoto', authMiddleware.authenticateAndAuthorize(3), FamilyPhotoController.getFamilyPhoto);
+    router.post('/familyphoto', CoreFunction.uploadImage("family-photo").single('Photo'), FamilyPhotoController.addFamilyPhoto);
+    router.get('/familyphoto', FamilyPhotoController.getFamilyPhoto);
     // Delete a FamilyPhoto with id
-    router.get('/delete-familyphoto', authMiddleware.authenticateAndAuthorize(2), FamilyPhotoController.deleteFamilyPhoto);
+    router.get('/delete-familyphoto', FamilyPhotoController.deleteFamilyPhoto);
     // End API tuấn
 
 

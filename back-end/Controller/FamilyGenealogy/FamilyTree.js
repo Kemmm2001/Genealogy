@@ -200,8 +200,18 @@ var setRole = async (req, res) => {
         let CodeId = req.body.CodeId;
         console.log('memberId: ' + memberId)
         console.log('CodeId: ' + CodeId)
+        //Check gender member
+        let gender = await FamilyTreeService.getGenderMember(memberId);
+        console.log('gender: ' + gender)
+        if (gender) {
+            if (gender.Male == 0) {
+                return res.send(Response.internalServerErrorResponse(null, 'Khong thể đặt con gái làm cụ tổ'))
+            }
+        } else {
+            return res.send(Response.dataNotFoundResponse(null, 'Không tìm thấy member'))
+        }
+
         let existingPaternalAncestor = await FamilyTreeService.getRoleExist(CodeId, 1);
-        console.log('IDPaternalAncestor: ' + existingPaternalAncestor)
         if (existingPaternalAncestor.length > 0) {
             return res.send(Response.dataNotFoundResponse(null, 'thành viên đã là  cụ tổ'));
         } else {
@@ -209,10 +219,18 @@ var setRole = async (req, res) => {
             let remove = await FamilyTreeService.removePaternalAncestor(existingPaternalAncestor.MemberID);
             let insertMemberRole = await FamilyTreeService.setRoleMember(memberId);
             let turnOff = await FamilyTreeService.turnOffSQL_SAFE_UPDATES();
-            let resetAll = await FamilyTreeService.ResetAllGenerationMember(CodeId);
+            let resetAll = await FamilyTreeService.ResetAllGenerationMember(CodeId);           
+            let settAll = await FamilyTreeService.setAllGenerationMember(memberId, 1, CodeId);            
             let resetFatherIDandMotherID = await FamilyTreeService.setFatherIDAndMotherID(CodeId);
             let turnOn = await FamilyTreeService.turnOnSQL_SAFE_UPDATES();
-            let settAll = await FamilyTreeService.setAllGenerationMember(memberId, 1, CodeId);
+            console.log('settAll: ' + settAll)
+            console.log('remove: ' + remove)
+            console.log('insertMemberRole: ' + insertMemberRole)
+            console.log('turnOff: ' + turnOff)
+            console.log('resetAll: ' + resetAll)
+            console.log('turnOn: ' + turnOn)
+
+            console.log('resetFatherIDandMotherID: ' + resetFatherIDandMotherID)
             if (!remove || !insertMemberRole || !turnOff || !resetAll || !turnOn || !settAll || !resetFatherIDandMotherID) {
                 return res.send(Response.internalServerErrorResponse())
             }

@@ -1,0 +1,129 @@
+.main-grid-container{
+    display: flex;
+    position: relative;
+    height: 100%;
+}
+
+.main-grid-container .sidebar{
+    background-color: #3A4B54;
+    position: absolute;
+    left: 0;
+    width: 20%;
+    height: 100%;
+    display: grid;
+    grid-template-rows: 12% 88%;
+    transition: 0.3s;
+    z-index: 10;
+}
+
+.main-grid-container .sidebar .content-display{
+    transition: 0.2s;
+}
+
+.main-grid-container .sidebar.expand .content-display{
+    transition: 0.6s;
+}
+
+.main-grid-container .sidebar.expand{
+    width: 20% !important;
+}
+
+.main-grid-container .sidebar.expand .content-display{
+    opacity: 1;
+    font-size: 100%;
+}
+
+.main-grid-container .content{
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+.main-grid-container .sidebar .mems{
+    display: grid;
+    grid-template-rows: 10% 90%;
+}
+
+.main-grid-container .bft-search{
+    left: calc(20% + 12px);
+    top: 12px;
+}
+
+.main-grid-container .select-opts-container .vm--container{
+    width: 40%;
+    height: 67%;
+    inset: 0;
+    margin: auto;
+}
+
+.main-grid-container .send-noti-container .mdl-container{
+    grid-template-rows: 8% 92% !important;
+}
+
+.main-grid-container .relation-body{
+    display: flex !important;
+}
+
+.main-grid-container .view-member-body{
+    display: flex !important;
+}
+
+.main-grid-container .view-member-body input:not([type=checkbox]),
+.main-grid-container .view-member-body select{
+    font-size: 100% !important;
+    height: 100% !important;
+}
+
+.main-grid-container .view-member-body label{
+    height: fit-content !important;
+}
+
+.main-grid-container .view-member-body .vue-phone-number-input,
+.main-grid-container .view-member-body .country-selector,
+.main-grid-container .view-member-body .input-phone-number{
+    height: 100%;
+}
+
+.main-grid-container .relation-container .vm--container{
+    height: 65%;
+    inset: 0;
+    margin: auto;
+}
+/* ----------Media------------- */
+/* 
+@media screen and (max-height: 1000px){
+    .main-grid-container .sidebar button,
+    .main-grid-container .sidebar label,
+    .main-grid-container .sidebar .mems,
+    .main-grid-container .filter-text{
+        font-size: 100% !important;
+    }
+}
+
+    @media screen and (max-height: 700px){
+        .main-grid-container .sidebar button,
+        .main-grid-container .sidebar label,
+        .main-grid-container .sidebar .mems,
+        .main-grid-container .filter-text{
+            font-size: 75% !important;
+        }
+    } */
+
+@media screen and (max-width: 1080px){
+    .main-grid-container .sidebar{
+        width: 5% !important;
+    }
+
+    .main-grid-container .content-display{
+        opacity: 0 !important;
+        font-size: 0 !important;
+    }
+
+    .main-grid-container .bft-search{
+        left: calc(5% + 12px) !important;
+    }
+
+    .main-grid-container .filter-text{
+        display: none !important;
+    }
+}

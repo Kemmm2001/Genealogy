@@ -309,7 +309,7 @@ export default {
     },
     //Lưu Tùng Lâm
     isImage(file) {
-      const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+      const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
 
       // Kiểm tra loại MIME của file
       return allowedTypes.includes(file.type);
@@ -768,7 +768,7 @@ export default {
     addAlbumPhoto() {
       if (
         this.albumPhoto.AlbumName != null &&
-        this.albumPhoto.AlbumName != ""
+        this.albumPhoto.AlbumName.trim() != ""
       ) {
         let formData = new FormData();
         formData.append("AlbumName", this.albumPhoto.AlbumName);

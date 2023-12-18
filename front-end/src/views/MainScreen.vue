@@ -623,7 +623,7 @@
                       <label class="form-label" for="input" :class="{ 'active': objMemberInfor.Origin }">Nguyên Quán</label>
                     </div>
                     <div class="form-group">
-                      <h6 style="margin-bottom:20px; height: 20px">Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược lại)</h6>
+                      <div style=" height: 20px">Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược lại) </div>
                       <div style="display:flex">
                         <div style="position: relative; width: 50%;margin-right: 10px;">
                           <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar('live')" />
@@ -1330,8 +1330,8 @@ export default {
       })
         .then((respone) => {
           if (respone.data.success) {
-            this.getListUnspecifiedMembers();
             this.getListMember();
+            this.getListUnspecifiedMembers();
             this.closeSelectModal();
             this.closeCfDelModal();
             this.NotificationsScuccess(respone.data.message);
@@ -1489,6 +1489,7 @@ export default {
           ListMemberID: this.ListPhoneToSendMessage,
           contentMessage: this.contentMessage,
           CodeID: this.CodeID,
+          accountID: localStorage.getItem("accountID"),
         })
           .then(() => {
             this.contentMessage = null;
@@ -2150,6 +2151,7 @@ export default {
     //Nguyễn Lê Hùng
     addMember() {
       console.log("Token: " + VueCookies.get("accessToken"));
+      this.removeFromSelectedNodes(this.idNodeWatching);
       let FatherID;
       let MotherID;
       if (this.action == "AddNormal") {
@@ -2238,6 +2240,7 @@ export default {
                   console.log(e);
                 });
             }
+            
           })
           .catch((e) => {
             console.log(e);
@@ -2835,7 +2838,6 @@ export default {
               this.numberDeath = 0;
               if (response.data.success == true) {
                 this.nodes = response.data.data;
-                console.log("node: " + this.nodes);
                 for (let i = 0; i < this.nodes.length; i++) {
                   if (this.nodes[i].pids.length > 1) {
                     let listPid = [];
@@ -2845,7 +2847,7 @@ export default {
                     this.nodes[i].pids = listPid;
                   }
                   this.nodes[i].tags = [];
-                  if (this.nodes[i].name.length > 15) {
+                  if (this.nodes[i].name.length > 16) {
                     this.nodes[i].name =
                       this.nodes[i].name.substring(0, 16) + "...";
                   }
@@ -2868,10 +2870,17 @@ export default {
                     }
                   }
                 }
+                
                 this.nodes[0].tags.push("great-grandfather");
                 this.nodes[0].isGG = "true";
                 this.family.config.nodes = this.nodes;
+                 console.log(this.family.config.nodes)
+                 this.family.config.roots = this.nodes[0].id
+                
+                console.log(1)
                 this.family.draw();
+                console.log(this.family.config.nodes)
+                console.log(1)
                 //  this.mytree(this.$refs.tree, this.nodes);
               }
               //  this.family.load(this.nodes);
