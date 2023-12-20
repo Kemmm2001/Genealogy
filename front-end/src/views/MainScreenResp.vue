@@ -691,7 +691,7 @@
                         </div>
                       </div>
                       <div class="pb-2" style="position: relative; height: 26%;">
-                        <input v-model="objMemberInfor.PlaceOfDeadth" type="text" class="form-control modal-item" placeholder />
+                        <input v-model="objMemberInfor.PlaceOfDeath" type="text" class="form-control modal-item" placeholder />
                         <label class="form-label" for="input">Nơi Mất</label>
                       </div>
                       <div class="pb-2" style="position: relative; height: 26%;">
@@ -1021,7 +1021,7 @@ export default {
         IsDead: 0,
         Dod: null,
         LunarDod: null,
-        PlaceOfDeadth: null,
+        PlaceOfDeath: null,
         GraveSite: null,
         Note: null,
         Generation: 0,
@@ -1707,7 +1707,7 @@ export default {
             this.avatarSrc = this.objMemberInfor.Image;
             console.log("avatarSrc: " + this.avatarSrc);
           }
-          //   console.log("result: " + this.objMemberInfor.MarriageNumber);
+          console.log("result: " + this.objMemberInfor.PlaceOfDeath);
           if (this.objMember.contact.length > 0) {
             this.objMemberContact = this.objMember.contact[0];
             console.log(this.objMemberContact);
@@ -2062,7 +2062,7 @@ export default {
         IsDead: this.IsDead,
         Dod: this.objMemberInfor.Dod,
         LunarDod: this.objMemberInfor.LunarDod,
-        PlaceOfDeath: this.objMemberInfor.PlaceOfDeadth,
+        PlaceOfDeath: this.objMemberInfor.PlaceOfDeath,
         GraveSite: this.objMemberInfor.GraveSite,
         Note: this.objMemberInfor.Note,
         CurrentGeneration: this.generationMember,
@@ -2133,7 +2133,7 @@ export default {
         IsDead: this.IsDead,
         Dod: this.objMemberInfor.Dod,
         LunarDod: this.objMemberInfor.LunarDod,
-        PlaceOfDeath: this.objMemberInfor.PlaceOfDeadth,
+        PlaceOfDeath: this.objMemberInfor.PlaceOfDeath,
         GraveSite: this.objMemberInfor.GraveSite,
         Note: this.objMemberInfor.Note,
         CurrentGeneration: this.generationMember,
@@ -2228,7 +2228,7 @@ export default {
           IsDead: this.IsDead,
           Dod: this.objMemberInfor.Dod,
           LunarDod: this.objMemberInfor.LunarDod,
-          PlaceOfDeath: this.objMemberInfor.PlaceOfDeadth,
+          PlaceOfDeath: this.objMemberInfor.PlaceOfDeath,
           GraveSite: this.objMemberInfor.GraveSite,
           Note: this.objMemberInfor.Note,
           CurrentGeneration: this.generationMember,
@@ -2405,7 +2405,7 @@ export default {
         IsDead: this.IsDead,
         Dod: this.objMemberInfor.Dod,
         LunarDod: this.objMemberInfor.LunarDod,
-        PlaceOfDeath: this.objMemberInfor.PlaceOfDeadth,
+        PlaceOfDeath: this.objMemberInfor.PlaceOfDeath,
         GraveSite: this.objMemberInfor.GraveSite,
         Note: this.objMemberInfor.Note,
         CurrentGeneration: this.generationMember,
@@ -2914,7 +2914,7 @@ export default {
                       this.nodes[i].name.substring(0, 16) + "...";
                   }
                   if (this.idFamilyHead != null) {
-                    if (this.nodes[i].id == this.idFamilyHead) {
+                    if (this.nodes[i].id == this.idFamilyHead && i != 0) {
                       this.nodes[i].isFH = "true";
                     }
                   }
@@ -2935,6 +2935,7 @@ export default {
                 this.nodes[0].tags.push("great-grandfather");
                 this.nodes[0].isGG = "true";
                 this.family.config.nodes = this.nodes;
+                this.family.config.roots = this.nodes[0].id
                 this.family.draw();
                 //  this.mytree(this.$refs.tree, this.nodes);
               }
