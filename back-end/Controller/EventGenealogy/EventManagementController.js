@@ -26,6 +26,42 @@ var getAllEventGenealogy = async (req, res) => {
     }
 }
 
+var getNumberRemainingSMSSendss = async (req, res) => {
+    try {
+        let AccountID = req.payload.insertId;
+        if (AccountID) {
+            let result = await EventManagementService.NumberOfRemainingSMSSSends(AccountID)
+            if (result) {
+                return res.send(Response.successResponse(result))
+            } else {
+                return res.send(Response.dataNotFoundResponse())
+            }
+        } else {
+            return res.send(Response.dataNotFoundResponse())
+        }
+    } catch (error) {
+        return res.send(Response.internalServerErrorResponse())
+    }
+}
+
+var getNumberRemainingEmailSends = async (req, res) => {
+    try {
+        let AccountID = req.payload.insertId;
+        if (AccountID) {
+            let result = await EventManagementService.NumberOfRemainingEmailSends(AccountID)
+            if (result) {
+                return res.send(Response.successResponse(result))
+            } else {
+                return res.send(Response.dataNotFoundResponse())
+            }
+        } else {
+            return res.send(Response.dataNotFoundResponse())
+        }
+    } catch (error) {
+        return res.send(Response.internalServerErrorResponse())
+    }
+}
+
 var getListEventNotificationSent = async (req, res) => {
     try {
         let CodeID = req.query.CodeID;
@@ -657,5 +693,6 @@ module.exports = {
     getAllEventGenealogy, InsertEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth, GetDeadDayInMonth,
     SendSMS, SendEmail, searchEvent, filterEvent, SendSMSToMember, getInformationEvent, sendEmailToMember
     , addAttendence, inviteMail, verifyMail, ReadXLSX, updateStatusEventGenealogy, getEventAttendance,
-    getListMemberIDAndEmail, getEventByToken, checkConfirmedEvent, UpdateIsGoing, getListEventNotificationSent
+    getListMemberIDAndEmail, getEventByToken, checkConfirmedEvent, UpdateIsGoing, getListEventNotificationSent,
+    getNumberRemainingSMSSendss, getNumberRemainingEmailSends
 }

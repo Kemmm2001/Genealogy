@@ -127,7 +127,7 @@
               <div class="list-group-item" @click="openCfDelModal('removeMember', null, TitleModal)">Xóa thành viên (*)</div>
               <div class="list-group-item feature-overview">Các chức năng Khác</div>
               <div class="list-group-item" @click="openCfDelModal('SetPaternalAncestor', null, TitleModal)">Set làm cụ tổ</div>
-              <div v-if="parentRelationship">
+              <div v-if="parentRelationship.length != 0 ">
                 <div v-for="list in parentRelationship" :key="list.id" @click="openCfDelModal('LinkRelationship', list.id, list.name)" class="list-group-item">Nối mối quan hệ với {{ list.name }}</div>
               </div>
             </div>
@@ -1068,7 +1068,7 @@ export default {
       helpExist: false,
       helpNonExist: false,
       helpTree: false,
-      parentRelationship: null,
+      parentRelationship: [],
 
       idNodeWatching: null,
 
@@ -2685,6 +2685,7 @@ export default {
       let foundNode = this.nodes.find((node) => node.id == id);
       this.CurrentIdToLinkRelationship = foundNode.id;
       this.getLinkRelationship(foundNode);
+      console.log( 'parentRelationship: ' + this.parentRelationship);
       if (foundNode.gender == "female") {
         this.isFather = false;
       } else {

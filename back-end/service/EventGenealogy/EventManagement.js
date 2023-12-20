@@ -2,6 +2,7 @@ const { promises } = require('nodemailer/lib/xoauth2');
 const db = require('../../Models/ConnectDB');
 const { resolve } = require('path/posix');
 const { rejects } = require('assert');
+const { error } = require('console');
 
 //Tạ Nhật Anh
 function getAllEvent(CodeID) {
@@ -16,6 +17,41 @@ function getAllEvent(CodeID) {
             }
         });
     });
+}
+
+//Nguyễn Lê Hùng
+function NumberOfRemainingSMSSSends(AccountID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `SELECT FreeSMS FROM genealogy.account where AccountID = ${AccountID}`;
+            db.connection.query(query, (error, result) => {
+                if (!error && result[0]) {
+                    resolve(result[0].FreeSMS)
+                } else {
+                    resolve(false)
+                }
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+function NumberOfRemainingEmailSends(AccountID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `SELECT FreeEmail FROM genealogy.account where AccountID = ${AccountID}`;
+            db.connection.query(query, (error, result) => {
+                if (!error && result[0]) {
+                    resolve(result[0].FreeEmail)
+                } else {
+                    resolve(false)
+                }
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
 }
 
 //Tạ Nhật Anh
@@ -358,5 +394,5 @@ module.exports = {
     getAllEvent, InsertNewEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth,
     GetDeadDayInMonth, searchEvent, filterEvent, getListPhone,
     getInformationEvent, getListEmail, getCodeID, updateStatusEvent,
-    getEventAttendance, getListEmailAndMemberID, getListEventNotificationSent
+    getEventAttendance, getListEmailAndMemberID, getListEventNotificationSent, NumberOfRemainingSMSSSends,NumberOfRemainingEmailSends
 }
