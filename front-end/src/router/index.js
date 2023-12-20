@@ -55,7 +55,7 @@ const routes = [
     component: () => import("../views/ForgotPwd.vue"),
   },
   {
-    path: "/information/history",
+    path: "/his",
     name: "history",
     component: () => import("../views/FamilyHistory.vue"),
   },
@@ -95,7 +95,7 @@ const routes = [
     component: () => import("../views/FamilyEventResp.vue"),
   },
   {
-    path: "/his",
+    path: "/information/history",
     name: "his",
     component: () => import("../views/FamilyHistoryResp.vue"),
   },
