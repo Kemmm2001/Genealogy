@@ -83,7 +83,7 @@
     height: 100%;
     width: 100%;
     cursor: pointer;
-    border-bottom: 1px solid lightgray;
+    border-top: 1px solid lightgray;
 }
 
 .send-noti-mdl-member:hover{
@@ -92,4 +92,5 @@
 
 .send-noti-mdl-member.chosen{
     background-color: #3393FF;
+    color: #FFFFFF;
 }

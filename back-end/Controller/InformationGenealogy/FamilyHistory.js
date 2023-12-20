@@ -54,11 +54,11 @@ var updateFamilyHistory = async (req, res) => {
     try {
         // Log ra thông tin trong req.body
         console.log('Request body: ', req.body);
+        console.log("CodeID: " + req.payload.codeId)
         // các trường bắt buộc phải có trong req.body
         const requiredFields = [
             'FamilyHistoryID',
-            'Description',
-            'CodeID'
+            'Description',            
         ];
         // Kiểm tra xem có đủ các trường của FamilyHistory không
         const missingFields = CoreFunction.missingFields(requiredFields, req.body);
@@ -69,8 +69,9 @@ var updateFamilyHistory = async (req, res) => {
         }
         console.log("No missing fields");
         // kiểm tra xem codeid có tồn tại không
-        let code = await FamilyHistoryManagementService.getFamilyHistoryByCodeId(req.body.CodeID)
+        let code = await FamilyHistoryManagementService.getFamilyHistoryByCodeId(req.payload.codeId)
         if (code == null || code.length == 0) {
+            console.log("vào đây")
             return res.send(Response.dataNotFoundResponse());
         }
         if(req.body.startDate != null){

@@ -954,7 +954,14 @@ export default {
       }).then((response) => {
         if (response.data.success == true) {
           this.memberList = response.data.data;
+          for(let i = 0 ; i < this.memberList.length;i++){
+            if (this.memberList[i].MemberName.length > 13) {
+              this.memberList[i].MemberName =
+              this.memberList[i].MemberName.substring(0, 12) + "...";
+            }
+          }
           this.memberFilter = this.memberList;
+          
           console.log(this.memberList);
           this.takeInforList();
         } else {

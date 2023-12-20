@@ -331,6 +331,22 @@ function changeUsername(AccountId, Username) {
   });
 }
 
+function getAccount(AccountID) {
+  return new Promise((resolve, reject) => {
+    try {
+      let query = `select * from account where AccountID = ${AccountID}`;
+      db.connection.query(query, (err, result) => {
+        if (!err && result.length > 0) {
+          resolve(result[0])
+        } else {
+          resolve(false)
+        }
+      })
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
 
 function getUserInfo(accountID, CodeID) {
   return new Promise((resolve, reject) => {
@@ -424,7 +440,7 @@ function formatMySQLDatetime(date) {
 function updateDateLoginGenealogy(AccountID, CodeID) {
   return new Promise((resolve, reject) => {
     try {
-      let currentDate = new Date();      
+      let currentDate = new Date();
       let formattedDate = formatMySQLDatetime(currentDate);
 
       console.log('formattedDate:', formattedDate);
@@ -448,8 +464,8 @@ function updateDateLoginGenealogy(AccountID, CodeID) {
 
 function insertAccountFamily(accountID, codeID, roleID) {
   return new Promise((resolve, reject) => {
-    try { 
-      let currentDate = new Date();      
+    try {
+      let currentDate = new Date();
       let formattedDate = formatMySQLDatetime(currentDate);
       const query = 'INSERT INTO genealogy.AccountFamilyTree (AccountID,CodeID ,RoleID,AccessTime) VALUES (?,?,?,?)';
       const values = [accountID, codeID, roleID, formattedDate];
@@ -630,5 +646,5 @@ module.exports = {
   insertAccountFamilyTree, checkCodeCreatedByID, getHistoryLoginCodeID, ChangePassword, getListRoleMember, UpdateAccount, UpdatePassword,
   checkToken, changeUsername, getInformationGenealogy, UpdateRegisterToken, checkRegisterToken,
   UpdateActive, DeleteRePasssToken, DeleteRegisterToken, getRoleAccount, getAllRoleAccount, getAccountByAccountID, refreshFreeSMS,
-  setFreeEmail, setFreeSMS, updateDateLoginGenealogy
+  setFreeEmail, setFreeSMS, updateDateLoginGenealogy,getAccount
 }

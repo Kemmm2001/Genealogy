@@ -2,7 +2,9 @@ const db = require('../../Models/ConnectDB')
 
 function getFamilyHistoryByCodeId(codeId) {
     return new Promise((resolve, reject) => {
-        let query = `SELECT * FROM genealogy.familyhistory WHERE CodeID = '${codeId}'`
+        let query = `SELECT * FROM genealogy.familyhistory
+        WHERE CodeID = '${codeId}'
+        ORDER BY endDate ASC, startDate ASC`
         db.connection.query(query, (err, result) => {
             console.log('result' + result)
             if (err) {

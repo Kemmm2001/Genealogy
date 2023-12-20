@@ -90,13 +90,16 @@
               </select>
             </div>
             <div class="py-1 ps-1 d-flex align-items-center">
-              <button class="btn bg-primary text-white d-flex align-items-center m-0" style="height: fit-content;">Làm mới</button>
+              <button class="btn bg-primary text-white d-flex align-items-center m-0" @click="refresh()" style="height: fit-content;">Làm mới</button>
             </div>
           </div>
         </div>
         <div class="h-100 d-flex">
           <div class="py-1 d-flex align-items-center" @click="showAddEventModal()">
             <button class="btn bg-primary text-white d-flex align-items-center m-0" style="height: fit-content;">Thêm sự kiện</button>
+          </div>
+          <div class="py-1 d-flex align-items-center" @click="exportPdf()">
+            <button class="btn bg-primary text-white d-flex align-items-center m-0" style="height: fit-content;">Export PDF</button>
           </div>
         </div>
         <div class="h-100">
@@ -109,7 +112,7 @@
                   <th class="eventlist-list-th" scope="col">Thời gian bắt đầu</th>
                   <th class="eventlist-list-th" scope="col">Trạng thái</th>
                   <th class="eventlist-list-th" scope="col">Địa điểm</th>
-                  <th v-if="memberRole != 3" class="eventlist-list-th" scope="col"></th>
+                  <th v-if="memberRole != 3" class="eventlist-list-th" scope="col">Khác</th>
                 </tr>
               </thead>
               <tbody>
@@ -319,7 +322,7 @@
       <modal name="view-member-mdl">
         <div class="mdl-container">
           <div class="mdl-title">
-            <div style="font-family: 'QuicksandBold'; font-size: 17px;">Sự kiện trong ngày {{ formatDate(dateSelected) }}</div>
+            <div style="font-family: 'QuicksandBold'; font-size: 17px;">Thành viên trong gia phả</div>
             <div class="mdl-close" @click="closeMemberList()">
               <svg class="h-100" style="cursor: pointer;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -366,6 +369,50 @@
               <div class="pe-2">
                 <div @click="sendMessageToConfirmEvent('sendAll')" class="bg-primary text-white btn mx-2">Gửi cho tất cả</div>
               </div>
+            </div>
+          </div>
+        </div>
+      </modal>
+    </div>
+
+    <!-- Danh sách sự kiện có trong ngày -->
+    <div class="event-modal-container">
+      <modal name="event-modal">
+        <div class="w-100 h-100 add-head-modal">
+          <div class="d-flex flex-row w-100 align-items-center position-relative">
+            <div class="col-md-12 modal-title d-flex align-items-center justify-content-center w-100">Sự kiện trong ngày {{ formatDate(dateSelected) }}</div>
+            <div class="close-add-form" @click="closeEventModal()">
+              <svg class="close-add-form-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+              </svg>
+            </div>
+          </div>
+          <div class="w-100 d-flex flex-column align-items-center justify-content-center" style="height: calc(100% - 50px);">
+            <div class="d-flex h-100 align-items-center px-3" style="overflow-y: auto; font-size: 19px;">
+              <table class="table table-eventlist eventlist-list m-0">
+                <thead style="position: sticky; top: 0;">
+                  <tr class="eventlist-item">
+                    <th class="eventlist-list-th" scope="col">#</th>
+                    <th class="eventlist-list-th" scope="col">Tên sự kiện</th>
+                    <th class="eventlist-list-th" scope="col">Thời gian bắt đầu</th>
+                    <th class="eventlist-list-th" scope="col">Thời gian kết thúc</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="cursor: pointer;" class="eventlist-item eventlist-table-item odd" v-for="(event, index) in listEventByDate" :key="event.EventID">
+                    <td @click="showEditEventModal(event.EventID)">{{ index + 1 }}</td>
+                    <td @click="showEditEventModal(event.EventID)">{{ event.EventName }}</td>
+                    <td @click="showEditEventModal(event.EventID)">
+                      <div>{{ formattedCreatedAt(event.StartDate) }} (DL)</div>
+                      <div>{{ formattedCreatedAt(convertSolarToLunar(event.StartDate)) }} (AL)</div>
+                    </td>
+                    <td @click="showEditEventModal(event.EventID)">
+                      <div>{{ formattedCreatedAt(event.EndDate) }} (DL)</div>
+                      <div>{{ formattedCreatedAt(convertSolarToLunar(event.EndDate)) }} (AL)</div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -438,7 +485,7 @@ export default {
       listMember: null,
       checkAll: false,
       ListMemberToSendEmail: [],
-      listEventAttendance: null,
+      listEventAttendance: [],
       ListEventNotificationSent: null,
       currentEventID: null,
     };
@@ -561,6 +608,11 @@ export default {
       }
       console.log(this.ListMemberToSendEmail);
     },
+    async refresh() {
+      this.filterStatus = null;
+      this.keySearch = null;
+      this.getListEvent();
+    },
 
     convertSolarToLunar(dateConvert) {
       let Dob = new Date(dateConvert);
@@ -671,6 +723,7 @@ export default {
       });
     },
     getListEvent() {
+      console.log(11)
       HTTP.get("event", {
         params: {
           CodeID: this.CodeID,
@@ -684,6 +737,7 @@ export default {
             this.listEvent = [];
             this.listEventFilter = this.listEvent;
           }
+          console.log(this.listEvent)
         })
         .catch((e) => {
           console.log(e);
@@ -722,10 +776,39 @@ export default {
           console.log(e);
         });
     },
+    getTimeFormat(datetime) {
+      let startYear = datetime.getFullYear();
+      let startMonth = datetime.getMonth() + 1; // Tháng bắt đầu từ 0, cần cộng thêm 1
+      let startDay = datetime.getDate();
+      let startHours = datetime.getHours();
+      let startMinutes = datetime.getMinutes();
+      let startSeconds = datetime.getSeconds();
+      return `${startYear}-${startMonth.toString().padStart(2, "0")}-${startDay
+        .toString()
+        .padStart(2, "0")} ${startHours
+        .toString()
+        .padStart(2, "0")}:${startMinutes
+        .toString()
+        .padStart(2, "0")}:${startSeconds.toString().padStart(2, "0")}`;
+    },
     addEvent() {
-      this.eventFamily.StartDate = `${this.startDate} ${this.startHour}:${this.startMinute}`;
-      this.eventFamily.EndDate = `${this.endDate} ${this.endHour}:${this.endMinute}`;
-      if (this.eventFamily.StartDate > this.eventFamily.EndDate) {
+      let startDateObj = new Date(
+        `${this.startDate}T${String(this.startHour).padStart(2, "0")}:${String(
+          this.startMinute
+        ).padStart(2, "0")}`
+      );
+
+      // Tạo đối tượng Date từ ngày và giờ kết thúc
+      let endDateObj = new Date(
+        `${this.endDate}T${String(this.endHour).padStart(2, "0")}:${String(
+          this.endMinute
+        ).padStart(2, "0")}`
+      );
+
+      this.eventFamily.StartDate = this.getTimeFormat(startDateObj);
+      this.eventFamily.EndDate = this.getTimeFormat(endDateObj);
+
+      if (this.eventFamily.StartDate >= this.eventFamily.EndDate) {
         this.NotificationsDelete("Ngày bắt đầu đang lớn hơn ngày kết thúc");
       } else {
         if (
@@ -764,13 +847,23 @@ export default {
       }
     },
     updateEvent() {
-      this.eventFamily.StartDate = `${this.startDate} ${this.startHour}:${this.startMinute}`;
-      this.eventFamily.EndDate = `${this.endDate} ${this.endHour}:${this.endMinute}`;
-      console.log(this.eventFamily.StartDate )
-      console.log(this.eventFamily.EndDate )
-      if (this.eventFamily.StartDate > this.eventFamily.EndDate) {
+      let startDateObj = new Date(
+        `${this.startDate}T${String(this.startHour).padStart(2, "0")}:${String(
+          this.startMinute
+        ).padStart(2, "0")}`
+      );
+      // Tạo đối tượng Date từ ngày và giờ kết thúc
+      let endDateObj = new Date(
+        `${this.endDate}T${String(this.endHour).padStart(2, "0")}:${String(
+          this.endMinute
+        ).padStart(2, "0")}`
+      );
+      this.eventFamily.StartDate = this.getTimeFormat(startDateObj);
+      this.eventFamily.EndDate = this.getTimeFormat(endDateObj);
+     
+      if (this.eventFamily.StartDate >= this.eventFamily.EndDate) {
         this.NotificationsDelete("Ngày bắt đầu đang lớn hơn ngày kết thúc");
-      }else{
+      } else {
         if (
           this.eventFamily.EventName != null &&
           this.eventFamily.StartDate != null &&
@@ -804,14 +897,43 @@ export default {
           this.NotificationsDelete("bạn nhập thiếu trường (*)");
         }
       }
-      
     },
-    exportExcel() {
-      HTTP.post("export-excel", {
-        CodeID: this.CodeID,
+    async exportPdf() {
+      var eventInfor = '<h1 style="display:flex;justify-content:center">Danh sách sự kiện</h1>';
+      for(let i = 0 ;i < this.listEvent.length;i++){
+        eventInfor += '<b>'+(i+1)+', Tên sự kiện: '+this.listEvent[i].EventName+'</b>'+
+        '<p> Diễn ra từ '+this.formattedCreatedAt(this.listEvent[i].StartDate)+' đến '+this.formattedCreatedAt(this.listEvent[i].EndDate)+'</p>'+
+        '<p> Địa điểm: '+this.listEvent[i].Place+'</p>'+
+        '<p> Quan trọng: '+ (this.listEvent[i].IsImportant ? 'Có' : 'Không') +'</p'+
+        '<p> Note: '+this.listEvent[i].Note+'</p>'+
+        '<b>Danh sách người tham gia sự kiện</b>';
+        await HTTP.get("eventAttendance", {
+          params: {
+            EventID: this.listEvent[i].EventID,
+          },
+        })
+          .then((respone) => {
+            if (respone.data.success == true) {
+              this.listEventAttendance = respone.data.data;
+              console.log(this.listEventAttendance);
+              for(let j = 0; j < this.listEventAttendance.length;j++){
+                eventInfor += '<p>'+this.listEventAttendance[j].MemberName+'</p>'
+              }
+            } else {
+              console.log("vào else");
+            }
+            this.$modal.show("participant-mdl");
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+        
+      }
+      await HTTP.post("export-pdf", {
+        htmlContent: eventInfor,
       })
         .then((respone) => {
-          console.log(this.CodeID);
+          console.log(11111111);
           if (respone.data.success == true) {
             this.NotificationsScuccess(respone.data.message);
           } else {
@@ -936,7 +1058,7 @@ export default {
     showParticipantList(EventID) {
       console.log(EventID);
       this.currentEventID = EventID;
-      this.listEventAttendance = null;
+      this.listEventAttendance = [];
       this.title = this.listEventFilter.find(
         (element) => element.EventID === EventID
       );
@@ -953,7 +1075,7 @@ export default {
           } else {
             console.log("vào else");
           }
-          this.$modal.show("participant-list");
+          this.$modal.show("participant-mdl");
         })
         .catch((e) => {
           console.log(e);
@@ -1010,7 +1132,7 @@ export default {
       }
     },
     closeParticipantList() {
-      this.$modal.hide("participant-list");
+      this.$modal.hide("participant-mdl");
     },
     showEventModal() {
       this.$modal.show("event-modal");

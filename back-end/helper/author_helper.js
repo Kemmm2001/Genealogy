@@ -25,11 +25,12 @@ module.exports = {
                     console.log('roleId: ' + roleId)
 
                     if (!roleId) {
-                        res.send(Response.dataNotFoundResponse(null, "Chưa có roleID"));
+                        return res.send(Response.dataNotFoundResponse(null, "Chưa có roleID"));
                     }
 
                     if (requiredRole === 1) {
-                        if (roleId === 1) {                           
+                        if (roleId === 1) {
+
                             next();
                         } else {
                             return res.send(Response.badRequestResponse(null, "Bạn không có quyền"));

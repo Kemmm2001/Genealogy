@@ -41,7 +41,7 @@
 
 .main-grid-container .sidebar .mems{
     display: grid;
-    grid-template-rows: 10% 90%;
+    grid-template-rows: 15% 85%;
 }
 
 .main-grid-container .bft-search{
@@ -50,10 +50,29 @@
 }
 
 .main-grid-container .select-opts-container .vm--container{
-    width: 40%;
-    height: 67%;
+    width: 30% !important;
+    height: 70%;
     inset: 0;
     margin: auto;
+}
+
+.main-grid-container .select-opts-container .vm--modal,
+.main-grid-container .relation-container .vm--modal{
+    height: fit-content !important;
+}
+
+.main-grid-container .select-opts-container .mdl-container,
+.main-grid-container .relation-container .mdl-container{
+    display: flex;
+    flex-direction: column;
+}
+
+.main-grid-container .select-opts-container .mdl-title{
+    min-height: 42px;
+}
+
+.main-grid-container .select-opts-container .mdl-body{
+    padding: 6px;
 }
 
 .main-grid-container .send-noti-container .mdl-container{
@@ -86,6 +105,7 @@
 
 .main-grid-container .relation-container .vm--container{
     height: 65%;
+    width: 65%;
     inset: 0;
     margin: auto;
 }
@@ -100,7 +120,7 @@
     }
 }
 
-@media screen and (max-height: 700px){
+@media screen and (max-height: 800px){
     .main-grid-container .sidebar button,
     .main-grid-container .sidebar label,
     .main-grid-container .sidebar .mems,
@@ -125,6 +145,25 @@
 
     .main-grid-container .filter-text{
         display: none !important;
+    }
+}
+
+@media screen and (min-width: 1800px){
+    .main-grid-container .mems .title{
+        font-size: 120% !important;
+    }
+
+    .main-grid-container .select-opts-container .vm--container{
+        width: 20% !important;
+    }
+
+    .main-grid-container .relation-container .vm--container{
+        width: 85%;
+        height: 50%;
+    }
+
+    .main-grid-container .relation-container input{
+        height: 54px;
     }
 }
 /* 

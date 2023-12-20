@@ -292,10 +292,6 @@ input:focus~label.form-label-number {
     background-color: #E8C77B;
 }
 
-.compare-modal-item{
-    /* height: 48px; */
-}
-
 .odd-table-row{
     height: 40px;
     align-items: center;
@@ -309,22 +305,27 @@ input:focus~label.form-label-number {
 }
 
 .notiSelected{
-    background-color: #007bff;
+    background-color: #34c759;
+    color: #FFFFFF;
+}
+
+.enotiSelected{
+    background-color: #3393FF;
     color: #FFFFFF;
 }
 
 .sent-sms{
     border-radius: 0.375rem;
-    background-color: lavender;
+    background-color: #34c759;
+    color: #fff;
     max-width: 60%;
     padding: 18px 12px 8px 12px;
     margin: 6px 12px;
-    min-width: 85px;
+    min-width: 15%;
 }
 
 .sent-time{
     top: 3px;
-    left: 40%;
     font-size: 12px;
 }
 
@@ -382,13 +383,21 @@ input:focus~label.form-label-number {
     align-items: center;
     justify-content: center;
     position: relative;
+    font-size: 17px;
 }
 
 .mdl-close{
     position: absolute;
     right: 0;
     padding: 8px;
-    height: 100%;
+    height: 75%;
+    display: flex;
+    align-items: center;
+}
+
+.mdl-close svg{
+    min-height: 20px;
+    min-width: 20px;
 }
 
 .mdl-item{
@@ -420,41 +429,9 @@ input:focus~label.form-label-number {
     inset: 0;
     margin: auto;
 }
-/* 
-@media (min-width: 1500px) {
-    .mdl-container{
-        font-size: 120% !important;
-    }
 
-    .mdl-container input:not([type=checkbox]), .mdl-container select{
-        font-size: 120% !important;
-        height: 120%;
+@media screen and (min-width: 1800px){
+    .mdl-title{
+        font-size: 150% !important;
     }
-
-    .mdl-container label, .mdl-container button{
-        font-size: 120% !important;
-    }
-
-    .mdl-container .dob-txt, .mdl-container .dead-txt{
-        font-size: 120% !important;
-        padding: 12px 0 !important;
-    }
-
-    .mdl-container select:not(:placeholder-shown)~label {
-        top: -5px;
-    }
-
-    .mdl-container input:not(:placeholder-shown)~label,
-    .mdl-container input:focus~label.form-label {
-        top: -5px;
-    }
-
-    .mdl-container .active {
-        top: -5px;
-    }
-
-    .mdl-container input:not(:placeholder-shown)~label,
-    .mdl-container input:focus~label.form-label-number {
-        top: -5px;
-    }
-} */
+}

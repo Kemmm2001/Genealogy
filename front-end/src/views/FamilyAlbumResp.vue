@@ -196,10 +196,7 @@
       <modal name="add-photo-mdl">
         <div class="mdl-container">
           <div class="mdl-title">
-            <div style="font-family: 'QuicksandBold'; font-size: 17px;">
-              Thêm ảnh vào album {{
-              albumPhoto.AlbumName }}
-            </div>
+            <div style="font-family: 'QuicksandBold'; font-size: 17px;">Thêm ảnh vào album {{ albumPhoto.AlbumName }}</div>
             <div class="mdl-close" @click="closeAddPhotoModal()">
               <svg class="h-100" style="cursor: pointer;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -249,7 +246,7 @@
           </div>
           <div class="mdl-body">
             <div class="cfdel-body">
-              <div class="d-flex align-items-center justify-content-center">Bạn có chắc chắn muốn xóa album {{ albumPhoto.AlbumName }}</div>
+              <div class="d-flex align-items-center justify-content-center">Bạn có chắc chắn muốn xóa album không</div>
               <div class="d-flex align-items-center justify-content-evenly">
                 <div class="p-2">
                   <button class="btn text-white bg-danger" @click="removeAlbumPhotoByAlbumId(), closeCfDelModal()">Có</button>
@@ -455,29 +452,32 @@ export default {
     openAddAlbumModal() {
       this.albumPhoto = {};
       this.avatarSrc = null;
-      this.$modal.show("addAlbum-modal");
+      this.$modal.show("add-album-mdl");
     },
     closeAddAlbumModal() {
-      this.$modal.hide("addAlbum-modal");
+      this.$modal.hide("add-album-mdl");
     },
     openAlbumModal() {
       this.avatarSrc = null;
       this.setDefaultAlbum();
-      this.$modal.show("Album-modal");
+      this.$modal.show("view-detail-mdl");
     },
     closeAlbumModal() {
-      this.$modal.hide("Album-modal");
+      this.$modal.hide("view-detail-mdl");
     },
     openEditAlbumModal() {
       this.checkBackGroundPhoto = false;
       this.listHeightLarger = [];
       this.ListCheckBoxPhoto = [];
-      this.$modal.show("editAlbum-modal");
+      this.$modal.show("edit-album-mdl");
       this.isButtonDisabledPhoto = true;
     },
     closeEditAlbumModal() {
-      this.$modal.hide("editAlbum-modal");
+      this.$modal.hide("edit-album-mdl");
       this.isButtonDisabled = true;
+    },
+    exportPDF(){
+      let abc = `<h2> ${abc.nam} qưeqwewqewq </h2>`
     },
     //Lưu Tùng Lâm
     openAddPhotoModal() {
@@ -489,10 +489,10 @@ export default {
         this.ListCheckBoxPhotoAdd = [];
       }
       this.checkAddPhotoModal = true;
-      this.$modal.show("addPhoto-modal");
+      this.$modal.show("add-photo-mdl");
     },
     closeAddPhotoModal() {
-      this.$modal.hide("addPhoto-modal");
+      this.$modal.hide("add-photo-mdl");
     },
     //Lưu Tùng Lâm
     checkAddPhotoModalOpen() {
@@ -801,7 +801,7 @@ export default {
     addAlbumPhoto() {
       if (
         this.albumPhoto.AlbumName != null &&
-        this.albumPhoto.AlbumName != ""
+        this.albumPhoto.AlbumName.replace(/\s/g, "") != ""
       ) {
         let formData = new FormData();
         formData.append("AlbumName", this.albumPhoto.AlbumName);
@@ -814,6 +814,7 @@ export default {
               this.NotificationsScuccess(response.data.message);
               this.getAlbumPhotoByCodeId();
               this.avatarSrc = null;
+              this.closeAddAlbumModal();
             } else {
               this.NotificationsDelete(response.data.message);
             }
@@ -821,16 +822,15 @@ export default {
           .catch((e) => {
             console.log(e);
           });
-        this.closeAddAlbumModal();
       } else {
         this.NotificationsDelete("Tên album không được để trống");
       }
     },
     showCfDel() {
-      this.$modal.show("cfdel-modal");
+      this.$modal.show("cfdel-mdl");
     },
     closeCfDelModal() {
-      this.$modal.hide("cfdel-modal");
+      this.$modal.hide("cfdel-mdl");
     },
     NotificationsDelete(messagee) {
       new Snackbar(messagee, {

@@ -179,6 +179,7 @@ input::-ms-reveal, input::-ms-clear {
     display: grid;
     height: 100%;
     grid-template-rows: 8% 92%;
+    background-color: #f2f2f2;
 }
 
 .center-content{
