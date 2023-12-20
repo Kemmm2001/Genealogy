@@ -803,7 +803,7 @@ export default {
       this.eventFamily.StartDate = this.getTimeFormat(startDateObj);
       this.eventFamily.EndDate = this.getTimeFormat(endDateObj);
 
-      if (this.eventFamily.StartDate > this.eventFamily.EndDate) {
+      if (this.eventFamily.StartDate >= this.eventFamily.EndDate) {
         this.NotificationsDelete("Ngày bắt đầu đang lớn hơn ngày kết thúc");
       } else {
         if (
@@ -842,11 +842,21 @@ export default {
       }
     },
     updateEvent() {
-      this.eventFamily.StartDate = `${this.startDate} ${this.startHour}:${this.startMinute}`;
-      this.eventFamily.EndDate = `${this.endDate} ${this.endHour}:${this.endMinute}`;
-      console.log(this.eventFamily.StartDate);
-      console.log(this.eventFamily.EndDate);
-      if (this.eventFamily.StartDate > this.eventFamily.EndDate) {
+      let startDateObj = new Date(
+        `${this.startDate}T${String(this.startHour).padStart(2, "0")}:${String(
+          this.startMinute
+        ).padStart(2, "0")}`
+      );
+      // Tạo đối tượng Date từ ngày và giờ kết thúc
+      let endDateObj = new Date(
+        `${this.endDate}T${String(this.endHour).padStart(2, "0")}:${String(
+          this.endMinute
+        ).padStart(2, "0")}`
+      );
+      this.eventFamily.StartDate = this.getTimeFormat(startDateObj);
+      this.eventFamily.EndDate = this.getTimeFormat(endDateObj);
+     
+      if (this.eventFamily.StartDate >= this.eventFamily.EndDate) {
         this.NotificationsDelete("Ngày bắt đầu đang lớn hơn ngày kết thúc");
       } else {
         if (
