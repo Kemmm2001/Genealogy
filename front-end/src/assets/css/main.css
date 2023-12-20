@@ -158,7 +158,12 @@
     }
 
     .main-grid-container .relation-container .vm--container{
-        width: 50%;
+        width: 85%;
+        height: 50%;
+    }
+
+    .main-grid-container .relation-container input{
+        height: 54px;
     }
 }
 /* 
