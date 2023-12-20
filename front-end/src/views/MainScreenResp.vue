@@ -109,7 +109,7 @@
       <modal name="select-opts-mdl">
         <div class="mdl-container">
           <div class="mdl-title">
-            <div style="font-family: 'QuicksandBold'; font-size: 17px;">{{ TitleModal }}</div>
+            <div style="font-family: 'QuicksandBold';">{{ TitleModal }}</div>
             <div class="mdl-close" @click="closeSelectModal()">
               <svg class="h-100" style="cursor: pointer;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -142,7 +142,7 @@
       <modal name="view-relas-mdl">
         <div class="mdl-container">
           <div class="mdl-title">
-            <div style="font-family: 'QuicksandBold'; font-size: 17px;">{{ TitleModal }}</div>
+            <div style="font-family: 'QuicksandBold';">{{ TitleModal }}</div>
             <div class="mdl-close" @click="closeModalRelationship()">
               <svg class="h-100" style="cursor: pointer;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -227,7 +227,7 @@
       <modal name="send-noti-mdl">
         <div class="mdl-container">
           <div class="mdl-title">
-            <div style="font-family: 'QuicksandBold'; font-size: 17px;">Thông báo tới thành viên</div>
+            <div style="font-family: 'QuicksandBold';">Thông báo tới thành viên</div>
             <div class="mdl-close" @click="closeNotiModal()">
               <svg class="h-100" style="cursor: pointer;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -367,7 +367,7 @@
       <modal name="relation-mdl">
         <div class="mdl-container">
           <div class="mdl-title">
-            <div style="font-family: 'QuicksandBold'; font-size: 17px;">Xác định mối quan hệ giữa 2 thành viên</div>
+            <div style="font-family: 'QuicksandBold';">Xác định mối quan hệ giữa 2 thành viên</div>
             <div class="mdl-close" @click="closeCompareModal()">
               <svg class="h-100" style="cursor: pointer;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -378,7 +378,7 @@
             <div class="relation-body" style="flex-grow: 1; background-color: #FFFFFF;">
               <div class="col-6">
                 <div class="h-100 d-flex flex-column p-2" style="background-color: #FFFFFF; border-radius: 0.375rem;">
-                  <div class="d-flex flex-row pb-2">
+                  <div class="d-flex flex-row pb-2" style="height: 176px;">
                     <div class="h-100 col-4" style="background-color: gray; border-radius: 0.375rem;">
                       <img style="width: 100%; height: 100%" :src="objCompareMember1.img" alt />
                     </div>
@@ -400,14 +400,8 @@
                       </div>
                     </div>
                   </div>
-                  <div class="d-flex flex-column" style="flex-grow: 1; background-color: #f2f2f2;">
-                    <div class="compare-modal-item mx-2 mt-2">
-                      <input type="text" class="w-100 h-100 form-control" :value="objCompareMember1.father !== undefined ? 'Bố: ' + objCompareMember1.father : 'Bố: Không có trên phả đồ'" disabled />
-                    </div>
-                    <div class="compare-modal-item mx-2 mt-2">
-                      <input type="text" class="w-100 h-100 form-control" :value="objCompareMember1.mother !== undefined ? 'Mẹ: ' + objCompareMember1.mother : 'Mẹ: Không có trên phả đồ'" disabled />
-                    </div>
-                    <div class="compare-modal-item mx-2 mt-2">
+                  <div class="d-flex flex-column pt-2" style="flex-grow: 1;">
+                    <div class="compare-modal-item">
                       <input type="text" class="w-100 h-100 form-control" :value="resultCompare1 !== undefined ? 'Mối quan hệ: ' + resultCompare1 : 'Không xác định'" disabled />
                     </div>
                   </div>
@@ -415,7 +409,7 @@
               </div>
               <div class="col-6">
                 <div class="h-100 d-flex flex-column p-2" style="background-color: #FFFFFF; border-radius: 0.375rem;">
-                  <div class="d-flex flex-row pb-2">
+                  <div class="d-flex flex-row pb-2" style="height: 176px;">
                     <div class="h-100 col-4" style="background-color: gray; border-radius: 0.375rem;">
                       <img style="width: 100%; height: 100%" :src="objCompareMember2.img" alt />
                     </div>
@@ -437,25 +431,12 @@
                       </div>
                     </div>
                   </div>
-                  <div class="d-flex flex-column pb-2" style="flex-grow: 1; background-color: #f2f2f2;">
-                    <div class="compare-modal-item mx-2 mt-2">
-                      <input type="text" class="w-100 h-100 form-control" :value="objCompareMember2.father !== undefined ? 'Bố: ' + objCompareMember2.father : 'Không có trên phả đồ'" disabled />
-                    </div>
-                    <div class="compare-modal-item mx-2 mt-2">
-                      <input type="text" class="w-100 h-100 form-control" :value="objCompareMember2.mother !== undefined ? 'Mẹ: ' + objCompareMember2.mother : 'Không có trên phả đồ'" disabled />
-                    </div>
-                    <div class="compare-modal-item mx-2 mt-2">
+                  <div class="d-flex flex-column pt-2" style="flex-grow: 1;">
+                    <div class="compare-modal-item">
                       <input type="text" class="w-100 h-100 form-control" :value="resultCompare2 !== undefined ? 'Mối quan hệ: ' + resultCompare2 : 'Mối quan hệ: Không xác định'" disabled />
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-          <div class="mdl-footer">
-            <div class="h-100 d-flex align-items-center justify-content-end">
-              <div class="pe-2">
-                <button @click="closeCompareModal()" type="button" class="btn btn-secondary mt-0">Đóng</button>
               </div>
             </div>
           </div>
@@ -468,7 +449,7 @@
       <modal name="add-relation-mdl">
         <div class="mdl-container">
           <div class="mdl-title">
-            <div style="font-family: 'QuicksandBold'; font-size: 17px;">Thêm {{ TitleModal }} Từ Danh Sách</div>
+            <div style="font-family: 'QuicksandBold';">Thêm {{ TitleModal }} Từ Danh Sách</div>
             <div class="mdl-close" @click="closeModalAddMemberFromList()">
               <svg class="h-100" style="cursor: pointer;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -534,7 +515,7 @@
       <modal name="view-member-mdl">
         <div class="mdl-container">
           <div class="mdl-title">
-            <div style="font-family: 'QuicksandBold'; font-size: 17px;">{{ TitleModal }}</div>
+            <div style="font-family: 'QuicksandBold';">{{ TitleModal }}</div>
             <div class="mdl-close" @click="closeMemberModal()">
               <svg class="h-100" style="cursor: pointer;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -562,7 +543,7 @@
               </div>
               <div class="col-10 h-100" style="padding-top: 15px" v-if="extendedInfo">
                 <div class="h-100 d-flex flex-row">
-                  <div v-if="isEdit" class="col-4 px-2 d-flex align-items-center justify-content-center" style="height: 50%;">
+                  <div v-if="isEdit" class="col-4 ps-2 d-flex align-items-center justify-content-center" style="height: 50%;">
                     <img id="myImage" @load="getImageSize" style="width:100%;" :class="{ fitHeight: heightLarger }" v-if="avatarSrc" :src="avatarSrc" alt="Avatar" @click="triggerFileInputClick()" />
                     <div v-else style="fill: #000000; height: 100%; width: 100%;">
                       <div @click="triggerFileInputClick()" class="w-100 h-100 position-relative" style="border: 1px dashed #7a95cd; border-radius: 0.375rem; cursor: pointer;">
@@ -587,37 +568,37 @@
                       <label class="form-label" for="input" :class="{ 'active': objMemberInfor.MemberName }">Tên thành viên đầy đủ</label>
                     </div>
                     <div class="pb-2" style="display:flex">
-                      <div style="position: relative; width: 50%;">
+                      <div class="pe-1" style="position: relative; width: 50%;">
                         <input v-model="objMemberInfor.NickName" type="text" class="form-control modal-item" placeholder />
                         <label class="form-label" for="input" :class="{ 'active': objMemberInfor.NickName }">Tên thường gọi</label>
                       </div>
-                      <div style="position: relative;width: 50%;" v-if="objMemberInfor.FatherID != null && action == null">
+                      <div class="ps-1" style="position: relative;width: 50%;" v-if="objMemberInfor.FatherID != null && action == null">
                         <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item" placeholder />
                         <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con thứ</label>
                       </div>
-                      <div style="position: relative;width: 50%;" v-else-if="objMemberInfor.FatherID == null && action == null && objMemberInfor.MarriageNumber != null && objMemberInfor.MotherID == null">
+                      <div class="ps-1" style="position: relative;width: 50%;" v-else-if="objMemberInfor.FatherID == null && action == null && objMemberInfor.MarriageNumber != null && objMemberInfor.MotherID == null">
                         <input v-model="objMemberInfor.MarriageNumber" type="number" min="0" max="20" class="form-control modal-item" disabled placeholder />
                         <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.MarriageNumber }">{{ objMemberInfor.Male == 1 ? 'Chồng thứ' : 'Vợ thứ' }}</label>
                       </div>
-                      <div style="position: relative;width: 50%;" v-else-if="action == 'AddChild'">
+                      <div class="ps-1" style="position: relative;width: 50%;" v-else-if="action == 'AddChild'">
                         <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item" placeholder />
                         <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con thứ</label>
                       </div>
-                      <div style="position: relative;width: 50%;" v-else-if="action == 'AddMarriage'">
+                      <div class="ps-1" style="position: relative;width: 50%;" v-else-if="action == 'AddMarriage'">
                         <input v-model="objMemberInfor.MarriageNumber" type="number" min="0" max="20" class="form-control modal-item" disabled placeholder />
                         <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.MarriageNumber }">{{ isFather == false ? 'Chồng thứ' : 'Vợ thứ' }}</label>
                       </div>
-                      <div style="position: relative;width: 50%;" v-else-if="action == 'AddParent'">
+                      <div class="ps-1" style="position: relative;width: 50%;" v-else-if="action == 'AddParent'">
                         <input v-model="objMemberInfor.BirthOrder" disabled type="number" min="0" class="form-control modal-item" placeholder />
                         <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con thứ</label>
                       </div>
-                      <div style="position: relative;width: 50%;" v-else>
+                      <div class="ps-1" style="position: relative;width: 50%;" v-else>
                         <input v-model="objMemberInfor.BirthOrder" type="number" min="0" max="20" class="form-control modal-item" placeholder />
                         <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con thứ</label>
                       </div>
                     </div>
                     <div class="pb-2" style="display:flex">
-                      <div style="position: relative; width: 50%;">
+                      <div class="pe-1" style="position: relative; width: 50%;">
                         <select v-model="objMemberInfor.Male" class="form-select modal-item" v-if="isFather == true">
                           <option value="1">Nam</option>
                           <option value="0" selected>Nữ</option>
@@ -628,7 +609,7 @@
                         </select>
                         <label class="form-label" for="select">Giới Tính</label>
                       </div>
-                      <div style="position: relative;width: 50%;">
+                      <div class="ps-1" style="position: relative; width: 50%;">
                         <select v-model="objMemberInfor.BloodType" id="bloodtype" class="form-select modal-item">
                           <option :value="null">Chọn Nhóm Máu</option>
                           <option value="A">A</option>
@@ -640,13 +621,13 @@
                       </div>
                     </div>
                     <div class="pb-2" style="display:flex">
-                      <div style="position: relative; width: 50%;">
+                      <div class="pe-1" style="position: relative; width: 50%;">
                         <select v-model="objMemberInfor.NationalityID" class="form-select modal-item">
                           <option v-for="nation in ListNationality" :key="nation.id" :value="nation.NationalityID">{{ nation.NationalityName }}</option>
                         </select>
                         <label class="form-label" for="select">Quốc Tịch</label>
                       </div>
-                      <div style="position: relative;width: 50%;">
+                      <div class="ps-1" style="position: relative; width: 50%;">
                         <select v-model="objMemberInfor.ReligionID" class="form-select modal-item">
                           <option v-for="religion in ListReligion" :key="religion.id" :value="religion.ReligionID">{{ religion.ReligionName }}</option>
                         </select>
@@ -660,11 +641,11 @@
                     <div class="form-group">
                       <div style="height: 40%; font-family: 'QuicksandBold';">Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược lại)</div>
                       <div class="pb-2" style="height: 60%; display: flex;">
-                        <div style="position: relative; width: 50%;">
+                        <div class="pe-1" style="position: relative; width: 50%;">
                           <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar('live')" />
                           <label class="form-label" for="input">Dương Lịch</label>
                         </div>
-                        <div style="position: relative;width: 50%;">
+                        <div class="ps-1" style="position: relative;width: 50%;">
                           <input v-model="objMemberInfor.LunarDob" type="date" class="form-control modal-item" placeholder @change="convertLunarToSolar('live')" />
                           <label class="form-label-number" min="0" for="input">Âm lịch</label>
                         </div>
@@ -681,11 +662,11 @@
                     <div class="form-group pb-2" v-if="IsDead == 1">
                       <div style="height: 20%; font-family: 'QuicksandBold';">Ngày Mất (*)</div>
                       <div class="pb-2" style="display:flex; height: 28%;">
-                        <div style="position: relative; width: 50%;">
+                        <div class="pe-1" style="position: relative; width: 50%;">
                           <input v-model="objMemberInfor.Dod" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar('died')" />
                           <label class="form-label" for="input">Dương Lịch</label>
                         </div>
-                        <div style="position: relative;width: 50%;">
+                        <div class="ps-1" style="position: relative;width: 50%;">
                           <input v-model="objMemberInfor.LunarDod" type="date" class="form-control modal-item" placeholder @change="convertLunarToSolar('died')" />
                           <label class="form-label-number" min="0" for="input">Âm lịch</label>
                         </div>
