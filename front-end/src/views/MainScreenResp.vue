@@ -500,10 +500,10 @@
                       <td style="text-align: center;">
                         <select v-model="m.relationship" class="form-control" style="text-align: center; width: 150px; margin: auto">
                           <option selected :value="undefined">Mối quan hệ</option>
-                          <option value="AddParent">Cha</option>
-                          <option value="AddParent">Mẹ</option>
-                          <option value="AddMarriage">Vợ</option>
-                          <option value="AddMarriage">Chồng</option>
+                          <option v-if="m.Male === 1" value="AddParent">Cha</option>
+                          <option v-if="m.Male === 0" value="AddParent">Mẹ</option>
+                          <option v-if="m.Male === 0" value="AddMarriage">Vợ</option>
+                          <option v-if="m.Male === 1" value="AddMarriage">Chồng</option>
                           <option value="AddChild">Con</option>
                         </select>
                       </td>
