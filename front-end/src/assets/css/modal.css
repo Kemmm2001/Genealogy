@@ -305,13 +305,19 @@ input:focus~label.form-label-number {
 }
 
 .notiSelected{
-    background-color: #007bff;
+    background-color: #34c759;
+    color: #FFFFFF;
+}
+
+.enotiSelected{
+    background-color: #3393FF;
     color: #FFFFFF;
 }
 
 .sent-sms{
     border-radius: 0.375rem;
-    background-color: lavender;
+    background-color: #34c759;
+    color: #fff;
     max-width: 60%;
     padding: 18px 12px 8px 12px;
     margin: 6px 12px;

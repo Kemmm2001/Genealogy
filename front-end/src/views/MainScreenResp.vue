@@ -276,9 +276,9 @@
                 <div class="position-absolute w-100 d-flex flex-column h-100" style="top: 0; height: 90%;">
                   <div class="d-flex flex-row" style="background-color: #FFFFFF; height: 8%;">
                     <div @click="selectSMS()" :class="{ notiSelected: smsSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0 0.375rem 0 0; cursor: pointer;">SMS ({{remainingSMS}})</div>
-                    <div @click="selectEmail()" :class="{ notiSelected: emailSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0.375rem 0 0 0; cursor: pointer;">Email ({{remainingEmail}})</div>
+                    <div @click="selectEmail()" :class="{ enotiSelected: emailSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0.375rem 0 0 0; cursor: pointer;">Email ({{remainingEmail}})</div>
                   </div>
-                  <div class="pt-2" style="height: 92%;">
+                  <div class="pt-2" style="height: 92%; background: #fff">
                     <div style="overflow-y: auto; height: 100%;">
                       <div v-if="emailSelected" class="d-flex flex-column">
                         <div style="cursor: pointer;" v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row" @click="getInforEmail(e)">
@@ -378,7 +378,7 @@
             <div class="relation-body" style="flex-grow: 1; background-color: #FFFFFF;">
               <div class="col-6">
                 <div class="h-100 d-flex flex-column p-2" style="background-color: #FFFFFF; border-radius: 0.375rem;">
-                  <div class="d-flex flex-row pb-2" style="height: 176px;">
+                  <div class="d-flex flex-row pb-2">
                     <div class="h-100 col-4" style="background-color: gray; border-radius: 0.375rem;">
                       <img style="width: 100%; height: 100%" :src="objCompareMember1.img" alt />
                     </div>
@@ -402,14 +402,14 @@
                   </div>
                   <div class="d-flex flex-column pt-2" style="flex-grow: 1;">
                     <div class="compare-modal-item">
-                      <input type="text" class="w-100 h-100 form-control" :value="resultCompare1 !== undefined ? 'Mối quan hệ: ' + resultCompare1 : 'Không xác định'" disabled />
+                      <input type="text" class="w-100 form-control" :value="resultCompare1 !== undefined ? 'Mối quan hệ: ' + resultCompare1 : 'Không xác định'" disabled />
                     </div>
                   </div>
                 </div>
               </div>
               <div class="col-6">
                 <div class="h-100 d-flex flex-column p-2" style="background-color: #FFFFFF; border-radius: 0.375rem;">
-                  <div class="d-flex flex-row pb-2" style="height: 176px;">
+                  <div class="d-flex flex-row pb-2">
                     <div class="h-100 col-4" style="background-color: gray; border-radius: 0.375rem;">
                       <img style="width: 100%; height: 100%" :src="objCompareMember2.img" alt />
                     </div>
@@ -433,7 +433,7 @@
                   </div>
                   <div class="d-flex flex-column pt-2" style="flex-grow: 1;">
                     <div class="compare-modal-item">
-                      <input type="text" class="w-100 h-100 form-control" :value="resultCompare2 !== undefined ? 'Mối quan hệ: ' + resultCompare2 : 'Mối quan hệ: Không xác định'" disabled />
+                      <input type="text" class="w-100 form-control" :value="resultCompare2 !== undefined ? 'Mối quan hệ: ' + resultCompare2 : 'Mối quan hệ: Không xác định'" disabled />
                     </div>
                   </div>
                 </div>
