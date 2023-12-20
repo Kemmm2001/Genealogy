@@ -515,52 +515,76 @@ async function GetResultCompare(MemberId1, MemberId2, DifferenceGeneration, Flag
     console.log('MemberId2: ' + MemberId2)
     console.log('currentIdMember1: ' + currentIdMember1)
     console.log('currentIdMember2: ' + currentIdMember2)
-    console.log('DifferenceGeneration: ' + DifferenceGeneration)    
+    console.log('DifferenceGeneration: ' + DifferenceGeneration)
     try {
-        let Flag = false;
         if (MemberId1 == MemberId2) {
             let result = {};
             if (DifferenceGeneration == -1) {
-                let resultParent = await getParentId(currentIdMember1);
-                if (resultParent.FatherID == null && resultParent.MotherID == null) {
-                    let id = await getMarried(currentIdMember1);
-                    resultParent
-                }
-                if (currentIdMember2 != resultParent.FatherID && currentIdMember2 != resultParent.MotherID) {
+                let result = await getParentId(currentIdMember1);
+                if (currentIdMember2 != result.FatherID && currentIdMember2 != result.MotherID) {
                     result.result1 = "Con";
                     if (result.FatherID == null && result.MotherID == null) {
                         if (Gender1 == 1) {
-                            result.result1 = "Con rể"
+                            result.result1 = "Con rể";
                         } else {
-                            result.result1 = "Con dâu"
+                            result.result1 = "Con dâu";
                         }
                     }
-                    if (Gender2 == 1) {
-                        result.result2 = "Bố dượng";
-                        return result;
-                    } else {
-                        result.result2 = "Mẹ Kế";
+                    let idChild1 = await getMarried(currentIdMember1);
+                    let idChild2 = await getChild(currentIdMember2);
+                    if (idChild1 && idChild2) {
+                        if (idChild2.some(child => (idChild1.husbandID && idChild1.husbandID === child.MemberID) || (idChild1.wifeID && idChild1.wifeID === child.MemberID))) {
+                            if (Gender2 == 1) {
+                                result.result2 = "Bố";
+                            } else {
+                                result.result2 = "Mẹ";
+                            }
+                        } else {
+                            if (Gender2 == 1) {
+                                result.result2 = "Bố dượng";
+                            } else {
+                                result.result2 = "Mẹ Kế";
+                            }
+                        }
+
                         return result;
                     }
                 }
 
             } else if (DifferenceGeneration == 1) {
                 let result = await getParentId(currentIdMember2);
-                console.log('resultParent: ' + JSON.stringify(result, null, 2))
-                if (currentIdMember1 != result.FatherID && currentIdMember1 != result.MotherID && result.FatherID != null && result.MotherID != null) {
+                if (currentIdMember1 != result.FatherID && currentIdMember1 != result.MotherID) {
                     result.result2 = "Con";
+                    console.log(result + JSON.stringify(result, null, 2))
                     if (result.FatherID == null && result.MotherID == null) {
                         if (Gender2 == 1) {
-                            result2 = "Con rể"
+                            result.result2 = "Con rể";
                         } else {
-                            result2 = "Con dâu"
+                            result.result2 = "Con dâu";
                         }
+
                     }
-                    if (Gender1 == 1) {
-                        result.result1 = "Bố dượng";
-                        return result;
-                    } else {
-                        result.result1 = "Mẹ Kế";
+                    let idChild1 = await getMarried(currentIdMember2);
+                    let idChild2 = await getChild(currentIdMember1);
+                    console.log('idChild1: ' + idChild1)
+                    console.log('idChild2: ' + JSON.stringify(idChild2, null, 2))
+                    if (idChild1 && idChild2) {
+                        if (idChild2.some(child => (idChild1.husbandID && idChild1.husbandID === child.MemberID) || (idChild1.wifeID && idChild1.wifeID === child.MemberID))) {
+                            console.log("vào if")
+                            if (Gender1 == 1) {
+                                result.result1 = "Bố";
+                            } else {
+                                result.result1 = "Mẹ";
+                            }
+                        } else {
+                            console.log("vào else")
+                            if (Gender1 == 1) {
+                                result.result1 = "Bố dượng";
+                            } else {
+                                result.result1 = "Mẹ Kế";
+                            }
+                        }
+
                         return result;
                     }
                 }
