@@ -483,10 +483,10 @@
                       <td style="text-align: center;">
                         <select v-model="m.relationship" class="form-control" style="text-align: center; width: 150px; margin: auto">
                           <option selected :value="undefined">Mối quan hệ</option>
-                          <option value="AddParent">Cha</option>
-                          <option value="AddParent">Mẹ</option>
-                          <option value="AddMarriage">Vợ</option>
-                          <option value="AddMarriage">Chồng</option>
+                          <option v-if="m.Male === 1" value="AddParent">Cha</option>
+                          <option v-if="m.Male === 0" value="AddParent">Mẹ</option>
+                          <option v-if="m.Male === 0" value="AddMarriage">Vợ</option>
+                          <option v-if="m.Male === 1" value="AddMarriage">Chồng</option>
                           <option value="AddChild">Con</option>
                         </select>
                       </td>
@@ -683,7 +683,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-10" style="padding-top: 15px" v-else-if="extendedContact">
+              <div class="col-10" style="padding-top: 15px" v-show="extendedContact">
                 <div class="row h-100 px-2" style="display: grid; grid-template-rows: 8% 8% 8% 8% 8%;">
                   <div style="display:flex">
                     <div class="pb-2 pe-1" style="position: relative; width: 50%;">
@@ -720,7 +720,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-10" style="padding-top: 15px" v-else-if="extendedJob">
+              <div class="col-10" style="padding-top: 15px" v-show="extendedJob">
                 <div class="row h-100 px-2" style="display: grid; grid-template-rows: 8% 8% 13% 8% 8% 55%;">
                   <div style="display: flex">
                     <div class="pb-2 pe-1" style="position: relative; width: 50%;">
@@ -784,7 +784,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-10" style="padding-top: 15px" v-else-if="extendedEdu">
+              <div class="col-10" style="padding-top: 15px" v-if="extendedEdu">
                 <div class="row h-100 px-2" style="display: grid; grid-template-rows: 8% 8% 13% 8% 8% 55%;">
                   <div class="pb-2" style="position: relative;">
                     <input v-model="objMemberEducation.School" type="text" class="form-control modal-item" placeholder />
@@ -834,7 +834,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-10" style="padding-top: 15px" v-else>
+              <div class="col-10" style="padding-top: 15px" v-if="extendedNote">
                 <div class="form-group px-2" style>
                   <textarea v-model="objMemberInfor.Note" style="min-height: 300px; overflow-y: auto;" class="form-control modal-item" id="lichSuCongTac" rows="5" placeholder="Ghi Chú"></textarea>
                 </div>
@@ -1058,6 +1058,7 @@ export default {
       canAddhusband: true,
       canAddWife: true,
       ListMemberCanSendMessage: null,
+      canSendMessage: true,
 
       lastClickedNodeId: null,
       isCompare: false,
@@ -1096,7 +1097,6 @@ export default {
       idNodeWatching: null,
 
       numberDeath: 0,
-      listMember: [],
 
       heightLarger: null,
       checkUpdate: false,
@@ -1411,37 +1411,45 @@ export default {
     },
     //Nguyễn Lê Hùng
     sendEmailToMember() {
-      if (
-        this.subjectEmail != null &&
-        this.subjectEmail != "" &&
-        this.contentEmail != null &&
-        this.contentEmail != "" &&
-        this.ListPhoneToSendMessage.length > 0
-      ) {
-        HTTP.post("send-email", {
-          listID: this.ListPhoneToSendMessage,
-          subject: this.subjectEmail,
-          text: this.contentEmail,
-          CodeID: this.CodeID,
-        })
-          .then((response) => {
-            if (response.data.success == true) {
-              this.subjectEmail = null;
-              this.contentEmail = null;
-              this.NotificationsScuccess("Gửi email thành công");
-              this.expandCreateEmail = false;
-              this.getListHistoryEmail();
-            } else {
-              this.NotificationsDelete(response.data.message);
-            }
+      if (this.canSendMessage) {
+        this.canSendMessage = false;
+        if (
+          this.subjectEmail != null &&
+          this.subjectEmail != "" &&
+          this.contentEmail != null &&
+          this.contentEmail != "" &&
+          this.ListPhoneToSendMessage.length > 0
+        ) {
+          HTTP.post("send-email", {
+            listID: this.ListPhoneToSendMessage,
+            subject: this.subjectEmail,
+            text: this.contentEmail,
+            CodeID: this.CodeID,
           })
-          .catch((e) => {
-            console.log(e);
-          });
-      } else if (this.ListPhoneToSendMessage.length == 0) {
-        this.NotificationsDelete("Hãy chọn những người bạn muốn gửi thông báo");
-      } else {
-        this.NotificationsDelete("Không có thông báo gì để gửi ");
+            .then((response) => {
+              if (response.data.success == true) {
+                this.ListPhoneToSendMessage = []
+                this.subjectEmail = null;
+                this.contentEmail = null;
+                this.NotificationsScuccess("Gửi email thành công");
+                this.expandCreateEmail = false;
+                this.getListHistoryEmail();
+                this.getRemainingEmail();
+                this.canSendMessage = true;
+              } else {
+                this.NotificationsDelete(response.data.message);
+              }
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        } else if (this.ListPhoneToSendMessage.length == 0) {
+          this.NotificationsDelete(
+            "Hãy chọn những người bạn muốn gửi thông báo"
+          );
+        } else {
+          this.NotificationsDelete("Không có thông báo gì để gửi ");
+        }
       }
     },
     getMaxMarriage(id) {
@@ -1480,28 +1488,38 @@ export default {
     },
     //Nguyễn Lê Hùng
     sendMessageToMember() {
-      if (
-        this.contentMessage != null &&
-        this.ListPhoneToSendMessage.length > 0 &&
-        this.contentMessage != ""
-      ) {
-        HTTP.post("send-sms", {
-          ListMemberID: this.ListPhoneToSendMessage,
-          contentMessage: this.contentMessage,
-          CodeID: this.CodeID,
-        })
-          .then(() => {
-            this.contentMessage = null;
-            this.getListMessage();
-            this.NotificationsScuccess("Gửi thông báo thành công");
+      if (this.canSendMessage) {
+        this.canSendMessage = false;
+        if (
+          this.contentMessage != null &&
+          this.ListPhoneToSendMessage.length > 0 &&
+          this.contentMessage != ""
+        ) {
+          HTTP.post("send-sms", {
+            ListMemberID: this.ListPhoneToSendMessage,
+            contentMessage: this.contentMessage,
+            CodeID: this.CodeID,
           })
-          .catch((e) => {
-            console.log(e);
-          });
-      } else if (this.ListPhoneToSendMessage.length == 0) {
-        this.NotificationsDelete("Hãy chọn những người bạn muốn gửi thông báo");
-      } else {
-        this.NotificationsDelete("Không có thông báo gì để gửi ");
+            .then((response) => {
+              if (response.data.success == true) {
+                this.ListPhoneToSendMessage = []
+                this.contentMessage = null;
+                this.getListMessage();
+                this.NotificationsScuccess("Gửi thông báo thành công");
+                this.canSendMessage = true;
+                this.getRemainingSMS();
+              }
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        } else if (this.ListPhoneToSendMessage.length == 0) {
+          this.NotificationsDelete(
+            "Hãy chọn những người bạn muốn gửi thông báo"
+          );
+        } else {
+          this.NotificationsDelete("Không có thông báo gì để gửi ");
+        }
       }
     },
 
@@ -1800,7 +1818,6 @@ export default {
             this.$modal.hide("select-opts-mdl");
             this.$modal.hide("view-member-mdl");
             this.getListMember();
-            this.getAllListMember();
             this.closeCfDelModal();
             this.getListMemberToSendMessage();
           } else {
@@ -2055,7 +2072,6 @@ export default {
           if (response.data.success == true) {
             console.log("response: " + response.data.data);
             this.action = null;
-            this.getAllListMember();
             this.isUpdateAvatar = false;
             this.$modal.hide("view-member-mdl");
             this.$modal.hide("select-opts-mdl");
@@ -2127,7 +2143,6 @@ export default {
             this.getListUnspecifiedMembers();
           }
           if (response.data.success == true) {
-            this.getAllListMember();
             this.isUpdateAvatar = false;
             this.action = null;
             this.$modal.hide("view-member-mdl");
@@ -2223,7 +2238,6 @@ export default {
               this.getListUnspecifiedMembers();
             }
             if (response.data.success == true) {
-              this.getAllListMember();
               this.isUpdateAvatar = false;
               this.action = null;
               this.$modal.hide("view-member-mdl");
@@ -2834,26 +2848,6 @@ export default {
       this.$modal.hide("view-relas-mdl");
     },
 
-    getAllListMember() {
-      try {
-        HTTP.get("members", {
-          params: {
-            codeID: this.CodeID,
-          },
-        })
-          .then((response) => {
-            if (response.data.success == true) {
-              this.listMember = response.data.data;
-            }
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
     getListMember() {
       HTTP.get("getFamilyHead", {
         params: {
@@ -2916,7 +2910,7 @@ export default {
                 this.nodes[0].tags.push("great-grandfather");
                 this.nodes[0].isGG = "true";
                 this.family.config.nodes = this.nodes;
-                this.family.config.roots = this.nodes[0].id
+                this.family.config.roots = this.nodes[0].id;
                 this.family.draw();
                 //  this.mytree(this.$refs.tree, this.nodes);
               }
@@ -3212,7 +3206,6 @@ export default {
       this.getListUnspecifiedMembers();
       this.getMemberRole();
       this.getListHistoryEmail();
-      this.getAllListMember();
       this.getListMemberToSendMessage();
       this.updateStatusEvent();
       this.getRemainingSMS();
