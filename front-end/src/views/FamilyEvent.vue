@@ -743,7 +743,7 @@ export default {
       this.eventFamily.EndDate = `${this.endDate} ${this.endHour}:${this.endMinute}`;
       if (this.eventFamily.StartDate > this.eventFamily.EndDate) {
         this.NotificationsDelete("Ngày bắt đầu đang lớn hơn ngày kết thúc");
-      }else{
+      } else {
         if (
           this.eventFamily.EventName != null &&
           this.eventFamily.StartDate != null &&

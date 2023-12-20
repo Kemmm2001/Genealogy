@@ -146,11 +146,14 @@ var InsertEvent = async (req, res) => {
 var searchEvent = async (req, res) => {
     try {
         console.log(req.body)
-        let data = await EventManagementService.searchEvent(req.body.CodeID, req.body.keySearch);
+        let keySearch = req.body.keySearch;
+        keySearch = keySearch.replace(/\s/g, '');
+        console.log('keySearch: ' + keySearch)
+        let data = await EventManagementService.searchEvent(req.body.CodeID, keySearch);
         if (data) {
             return res.send(Response.successResponse(data));
         } else {
-            return res.send(Response.internalServerErrorResponse)
+            return res.send(Response.internalServerErrorResponse())
         }
     } catch (error) {
         return res.send(Response.internalServerErrorResponse(error))
@@ -281,14 +284,15 @@ var filterEvent = async function (req, res) {
 }
 var SendSMSToMember = async (req, res) => {
     try {
-        console.log("vào đây")
         let id = req.body.ListMemberID;
+
         let contentMessage = req.body.contentMessage;
         let CodeID = req.body.CodeID;
         let accountID = req.body.accountID
 
         let count = id.length
         if (CoreFunction.isDataNumberExist(accountID)) {
+            console.log('false1')
             let accountData = await UserManagement.getAccountByAccountID(accountID);
             console.log('accountData: ' + accountData)
             if (accountData != null && accountData.length > 0) {
@@ -318,27 +322,32 @@ var SendSMSToMember = async (req, res) => {
 
 var sendEmailToMember = async (req, res) => {
     try {
+        console.log("đã vào send email")
+        console.log("req.body: " + req.body)
         let objData = {};
         let listID = req.body.listID;
         objData.subject = req.body.subject;
         objData.text = req.body.text;
         objData.html = req.body.html;
         let CodeID = req.body.CodeID;
-        let count = listID.length;
 
+        let count = listID.length;
         // nếu có accountid thì check xem có đủ lần gửi mail ko
         if (CoreFunction.isDataNumberExist(accountID)) {
             let accountData = await UserManagement.getAccountByAccountID(accountID);
             if (accountData != null && accountData.length > 0) {
                 let account = accountData[0];
                 if (account.FreeEmail < count) {
+                    console.log()
                     return res.send(Response.internalServerErrorResponse(null, "Tài khoản để hết số lượt gửi email miễn phí trong ngày"))
                 } else {
+                    console.log("true")
                     account.FreeEmail = account.FreeEmail - count;
                     UserManagement.setFreeEmail(account.FreeEmail, accountID);
                 }
             }
         }
+        console.log("qua đây")
         let data = await EventManagementService.getListEmail(listID);
 
         if (data) {
