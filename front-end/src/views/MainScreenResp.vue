@@ -32,7 +32,7 @@
       <div class="content-display" style="display: grid; grid-template-rows: 50% 50%;">
         <div class="mems pt-2 pb-1 px-2">
           <div class="title p-0 d-flex align-items-center justify-content-center" style="background-color: #AED6F1; font-family: 'QuicksandBold'; text-align: center;">Thành viên có trên phả đồ</div>
-          <div class="h-100 w-100" style="overflow-y: auto; background-color: #FFFFFF;">
+          <div class="h-100 w-100" style="overflow-y: auto; background-color: #FFFFFF; font-family: 'QuicksandBold';">
             <div v-for="(n, index) in nodes" :key="n.id">
               <div @click="handleLeftClick(n.id)" @contextmenu.prevent="handleRightClick(n.id)" style="cursor: pointer;" :class="{ 'list-item': true, 'selected-list': n.id == CurrentIdMember, 'ancestor-member': index === 0, 'ellipsis-text': true, 'w-100': true }">{{ n.name }}</div>
             </div>
@@ -42,13 +42,13 @@
         <div class="mems pt-1 pb-2 px-2">
           <div class="title d-flex p-0 justify-content-center" style="background-color: #AED6F1; font-family: 'QuicksandBold'; text-align: center; position: relative;">
             <div class="d-flex align-items-center">Thành viên không có trên phả đồ</div>
-            <div v-if="memberRole != 3" class="d-flex align-items-center h-100 ps-1" style="cursor:pointer" @click="openMemberModal('AddNormal', ' thành viên không có trên phả đồ')">
+            <div v-if="memberRole != 3" class="d-flex align-items-center h-100 ps-1" style="cursor: pointer;" @click="openMemberModal('AddNormal', ' thành viên không có trên phả đồ')">
               <svg class="add-member-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                 <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />
               </svg>
             </div>
           </div>
-          <div class="h-100 w-100" style="overflow-y: auto; background-color: #FFFFFF;">
+          <div class="h-100 w-100" style="overflow-y: auto; background-color: #FFFFFF; font-family: 'QuicksandBold';">
             <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto; flex-grow: 1; cursor: pointer">
               <div v-for="list in ListUnspecifiedMembers" :key="list.id" @click="handleLeftClickUnspecifiedMembers(list.MemberID)" class="list-item ellipsis-text w-100">{{ list.MemberName }}</div>
             </div>
@@ -236,7 +236,7 @@
           </div>
           <div class="mdl-body">
             <div class="d-flex flex-row position-relative h-100" style="overflow: hidden;">
-              <div class="col-3 h-100 d-flex flex-column" style="display: grid; grid-template-rows: 8% 8% 8% 8% 68%;">
+              <div class="col-3 h-100" style="display: grid; grid-template-rows: 7% 7% 7% 79%;">
                 <div class="position-relative d-flex">
                   <label for="text-search" style="position: absolute; inset: 12px;">
                     <svg class="text-search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -275,11 +275,11 @@
               <div class="col-9 h-100 position-relative" style="background: #ebebeb;">
                 <div class="position-absolute w-100 d-flex flex-column h-100" style="top: 0; height: 90%;">
                   <div class="d-flex flex-row" style="background-color: #FFFFFF; height: 8%;">
-                    <div @click="selectSMS()" :class="{ notiSelected: smsSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0 0.375rem 0 0; cursor: pointer;">SMS({{remainingSMS}})</div>
-                    <div @click="selectEmail()" :class="{ notiSelected: emailSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0.375rem 0 0 0; cursor: pointer;">Email({{remainingEmail}})</div>
+                    <div @click="selectSMS()" :class="{ notiSelected: smsSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0 0.375rem 0 0; cursor: pointer;">SMS ({{remainingSMS}})</div>
+                    <div @click="selectEmail()" :class="{ notiSelected: emailSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0.375rem 0 0 0; cursor: pointer;">Email ({{remainingEmail}})</div>
                   </div>
                   <div class="pt-2" style="height: 92%;">
-                    <div style="overflow-y: auto; height: 90%;">
+                    <div style="overflow-y: auto; height: 100%;">
                       <div v-if="emailSelected" class="d-flex flex-column">
                         <div style="cursor: pointer;" v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row" @click="getInforEmail(e)">
                           <div class="col-3 d-flex align-items-center ellipsis-text" style="padding-left: 8px; margin: auto;">Chủ đề: {{ e.EmailSubject }}</div>
@@ -290,16 +290,18 @@
                         </div>
                       </div>
                       <div v-if="smsSelected" class="d-flex flex-column">
-                        <div v-for="m in ListMessage" :key="m.id" class="position-relative d-flex flex-row justify-content-end">
-                          <div class="position-absolute sent-time">{{ formatDate(m.NotificationDate) }}</div>
-                          <div class="sent-sms">{{ m.NotificationContent }}</div>
+                        <div v-for="m in ListMessage" :key="m.id" class="d-flex flex-row justify-content-end">
+                          <div class="position-relative sent-sms">
+                            <div>{{ m.NotificationContent }}</div>
+                            <div class="position-absolute sent-time">{{ formatDate(m.NotificationDate) }}</div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="position-absolute w-100" style="bottom: 0">
-                  <div v-if="smsSelected" class="w-100 px-3 py-2 d-flex flex-row">
+                <div class="position-absolute w-100" style="bottom: 0; height: 8%">
+                  <div v-if="smsSelected" class="h-100 w-100 px-3 py-2 d-flex flex-row">
                     <div style="flex-grow: 1;">
                       <input type="text" class="h-100 w-100 form-control" placeholder="..." v-model="contentMessage" />
                     </div>
@@ -309,8 +311,8 @@
                       </svg>
                     </div>
                   </div>
-                  <div v-if="emailSelected" class="w-100 btn px-3 d-flex justify-content-end">
-                    <div @click="expandCreateEmail = !expandCreateEmail" class="btn btn-primary px-2 py-1">Tạo email mới</div>
+                  <div v-if="emailSelected" class="h-100 w-100 btn px-3 d-flex justify-content-end">
+                    <div @click="expandCreateEmail = !expandCreateEmail" class="btn btn-primary px-2 py-1 d-flex align-items-center">Tạo email mới</div>
                   </div>
                 </div>
                 <div class="position-absolute create-mail" :class="{ expanded: expandCreateEmail }">
@@ -573,49 +575,49 @@
                       </div>
                     </div>
 
-                    <div class="form-group" style="display:none">
+                    <div class="form-group" style="display: none">
                       <label style="margin-bottom:10px" v-if="objMemberInfor.Image" for="imageUpload">Thay đổi ảnh</label>
                       <label style="margin-bottom:10px" v-else for="imageUpload">Tải ảnh lên</label>
                       <input ref="fileInputRef" type="file" class="form-control input-file" id="imageUpload" accept="image/*" @change="updateAvatar($event)" />
                     </div>
                   </div>
-                  <div class="w-100" style="display: grid; grid-template-rows: 8% 8% 8% 8% 8% 15% 8% 8% 29%">
-                    <div class="pb-2" style="position: relative; margin-right:10px">
+                  <div class="w-100 px-2" style="display: grid; grid-template-rows: 8% 8% 8% 8% 8% 15% 8% 8% 29%">
+                    <div class="pb-2" style="position: relative;">
                       <input v-model="objMemberInfor.MemberName" type="text" class="form-control modal-item" placeholder />
                       <label class="form-label" for="input" :class="{ 'active': objMemberInfor.MemberName }">Tên thành viên đầy đủ</label>
                     </div>
                     <div class="pb-2" style="display:flex">
-                      <div style="position: relative; width: 50%;margin-right: 10px;">
+                      <div style="position: relative; width: 50%;">
                         <input v-model="objMemberInfor.NickName" type="text" class="form-control modal-item" placeholder />
                         <label class="form-label" for="input" :class="{ 'active': objMemberInfor.NickName }">Tên thường gọi</label>
                       </div>
-                      <div style="position: relative;width: 50%; margin-right: 10px;" v-if="objMemberInfor.FatherID != null && action == null">
+                      <div style="position: relative;width: 50%;" v-if="objMemberInfor.FatherID != null && action == null">
                         <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item" placeholder />
                         <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con thứ</label>
                       </div>
-                      <div style="position: relative;width: 50%; margin-right: 10px;" v-else-if="objMemberInfor.FatherID == null && action == null && objMemberInfor.MarriageNumber != null && objMemberInfor.MotherID == null">
+                      <div style="position: relative;width: 50%;" v-else-if="objMemberInfor.FatherID == null && action == null && objMemberInfor.MarriageNumber != null && objMemberInfor.MotherID == null">
                         <input v-model="objMemberInfor.MarriageNumber" type="number" min="0" max="20" class="form-control modal-item" disabled placeholder />
                         <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.MarriageNumber }">{{ objMemberInfor.Male == 1 ? 'Chồng thứ' : 'Vợ thứ' }}</label>
                       </div>
-                      <div style="position: relative;width: 50%; margin-right: 10px;" v-else-if="action == 'AddChild'">
+                      <div style="position: relative;width: 50%;" v-else-if="action == 'AddChild'">
                         <input v-model="objMemberInfor.BirthOrder" type="number" min="0" class="form-control modal-item" placeholder />
                         <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con thứ</label>
                       </div>
-                      <div style="position: relative;width: 50%; margin-right: 10px;" v-else-if="action == 'AddMarriage'">
+                      <div style="position: relative;width: 50%;" v-else-if="action == 'AddMarriage'">
                         <input v-model="objMemberInfor.MarriageNumber" type="number" min="0" max="20" class="form-control modal-item" disabled placeholder />
                         <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.MarriageNumber }">{{ isFather == false ? 'Chồng thứ' : 'Vợ thứ' }}</label>
                       </div>
-                      <div style="position: relative;width: 50%; margin-right: 10px;" v-else-if="action == 'AddParent'">
+                      <div style="position: relative;width: 50%;" v-else-if="action == 'AddParent'">
                         <input v-model="objMemberInfor.BirthOrder" disabled type="number" min="0" class="form-control modal-item" placeholder />
                         <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con thứ</label>
                       </div>
-                      <div style="position: relative;width: 50%; margin-right: 10px;" v-else>
+                      <div style="position: relative;width: 50%;" v-else>
                         <input v-model="objMemberInfor.BirthOrder" type="number" min="0" max="20" class="form-control modal-item" placeholder />
                         <label class="form-label-number" for="input" :class="{ 'active': objMemberInfor.BirthOrder }">Con thứ</label>
                       </div>
                     </div>
                     <div class="pb-2" style="display:flex">
-                      <div style="position: relative; width: 50%;margin-right: 10px;">
+                      <div style="position: relative; width: 50%;">
                         <select v-model="objMemberInfor.Male" class="form-select modal-item" v-if="isFather == true">
                           <option value="1">Nam</option>
                           <option value="0" selected>Nữ</option>
@@ -626,7 +628,7 @@
                         </select>
                         <label class="form-label" for="select">Giới Tính</label>
                       </div>
-                      <div style="position: relative;width: 50%; margin-right: 10px;">
+                      <div style="position: relative;width: 50%;">
                         <select v-model="objMemberInfor.BloodType" id="bloodtype" class="form-select modal-item">
                           <option :value="null">Chọn Nhóm Máu</option>
                           <option value="A">A</option>
@@ -638,37 +640,37 @@
                       </div>
                     </div>
                     <div class="pb-2" style="display:flex">
-                      <div style="position: relative; width: 50%;margin-right: 10px;">
+                      <div style="position: relative; width: 50%;">
                         <select v-model="objMemberInfor.NationalityID" class="form-select modal-item">
                           <option v-for="nation in ListNationality" :key="nation.id" :value="nation.NationalityID">{{ nation.NationalityName }}</option>
                         </select>
                         <label class="form-label" for="select">Quốc Tịch</label>
                       </div>
-                      <div style="position: relative;width: 50%; margin-right: 10px;">
+                      <div style="position: relative;width: 50%;">
                         <select v-model="objMemberInfor.ReligionID" class="form-select modal-item">
                           <option v-for="religion in ListReligion" :key="religion.id" :value="religion.ReligionID">{{ religion.ReligionName }}</option>
                         </select>
                         <label class="form-label-number" for="select">Tôn Giáo</label>
                       </div>
                     </div>
-                    <div class="pb-2" style="position: relative; margin-right:10px">
+                    <div class="pb-2" style="position: relative;">
                       <input v-model="objMemberInfor.Origin" type="text" class="form-control modal-item" placeholder />
                       <label class="form-label" for="input" :class="{ 'active': objMemberInfor.Origin }">Nguyên Quán</label>
                     </div>
                     <div class="form-group">
                       <div style="height: 40%; font-family: 'QuicksandBold';">Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược lại)</div>
                       <div class="pb-2" style="height: 60%; display: flex;">
-                        <div style="position: relative; width: 50%;margin-right: 10px;">
+                        <div style="position: relative; width: 50%;">
                           <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar('live')" />
                           <label class="form-label" for="input">Dương Lịch</label>
                         </div>
-                        <div style="position: relative;width: 50%; margin-right: 10px;">
+                        <div style="position: relative;width: 50%;">
                           <input v-model="objMemberInfor.LunarDob" type="date" class="form-control modal-item" placeholder @change="convertLunarToSolar('live')" />
                           <label class="form-label-number" min="0" for="input">Âm lịch</label>
                         </div>
                       </div>
                     </div>
-                    <div class="pb-2" style="position: relative; margin-right:10px">
+                    <div class="pb-2" style="position: relative;">
                       <input v-model="objMemberInfor.BirthPlace" type="text" class="form-control modal-item" placeholder />
                       <label class="form-label" for="input" :class="{ 'active': objMemberInfor.BirthPlace }">Nơi sinh</label>
                     </div>
@@ -679,20 +681,20 @@
                     <div class="form-group pb-2" v-if="IsDead == 1">
                       <div style="height: 20%; font-family: 'QuicksandBold';">Ngày Mất (*)</div>
                       <div class="pb-2" style="display:flex; height: 28%;">
-                        <div style="position: relative; width: 50%; margin-right: 10px;">
+                        <div style="position: relative; width: 50%;">
                           <input v-model="objMemberInfor.Dod" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar('died')" />
                           <label class="form-label" for="input">Dương Lịch</label>
                         </div>
-                        <div style="position: relative;width: 50%; margin-right: 10px;">
+                        <div style="position: relative;width: 50%;">
                           <input v-model="objMemberInfor.LunarDod" type="date" class="form-control modal-item" placeholder @change="convertLunarToSolar('died')" />
                           <label class="form-label-number" min="0" for="input">Âm lịch</label>
                         </div>
                       </div>
-                      <div class="pb-2" style="position: relative; margin-right: 10px; height: 26%;">
+                      <div class="pb-2" style="position: relative; height: 26%;">
                         <input v-model="objMemberInfor.PlaceOfDeadth" type="text" class="form-control modal-item" placeholder />
                         <label class="form-label" for="input">Nơi Mất</label>
                       </div>
-                      <div class="pb-2" style="position: relative; margin-right: 10px; height: 26%;">
+                      <div class="pb-2" style="position: relative; height: 26%;">
                         <input v-model="objMemberInfor.GraveSite" type="text" class="form-control modal-item" placeholder />
                         <label class="form-label" for="input">Mộ Phần</label>
                       </div>
