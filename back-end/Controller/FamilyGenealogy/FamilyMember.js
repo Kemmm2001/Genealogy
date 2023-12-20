@@ -4,6 +4,7 @@ const CoreFunction = require("../../Utils/CoreFunction");
 const db = require('../../Models/ConnectDB');
 const MarriageManagement = require("../../service/FamilyGenealogy/MarriageManagement");
 const GeneralInformation = require("../../service/InformationGenealogy/GeneralInformation");
+const e = require("express");
 const ListAgeGroup = [
     {
         From: 0,
@@ -419,7 +420,7 @@ var addMarriage = async (req, res) => {
             let listHusband = [];
             if (Array.isArray(listMarriageHusband) && listMarriageHusband.length > 0) {
                 for (let i = 0; i < listMarriageHusband.length; i++) {
-                    let husband = await FamilyManagementService.getMemberByMemberID(listMarriageHusband[i].HusbandID);
+                    let husband = await FamilyManagementService.getMemberByMemberID(listMarriageHusband[i].husbandID);
                     listHusband.push(husband[0]);
                 }
             }
@@ -452,7 +453,7 @@ var addMarriage = async (req, res) => {
             let listWife = [];
             if (Array.isArray(listMarriageWife) && listMarriageWife.length > 0) {
                 for (let i = 0; i < listMarriageWife.length; i++) {
-                    let wife = await FamilyManagementService.getMemberByMemberID(listMarriageWife[i].WifeID);
+                    let wife = await FamilyManagementService.getMemberByMemberID(listMarriageWife[i].wifeID);
                     listWife.push(wife[0]);
                 }
             }
@@ -598,38 +599,41 @@ var updateMember = async (req, res) => {
         // trường hợp không có cha và mẹ, và role là 3
         else if (!CoreFunction.isDataNumberExist(dataMember[0].FatherID) && !CoreFunction.isDataNumberExist(dataMember[0].MotherID)
             && dataMember[0].RoleID == 3) {
-            console.log("Đã vào trường hợp không có cha và mẹ, và role là 3");
+            console.log("Đã vào trường hợp không có cha và mẹ, và role là 3, tức là người ngoài gia phả");
             // lấy list marriage, lấy list vợ nếu là nam, lấy list chồng nếu là nữ
-            let listMarriage = await MarriageManagement.getMarriageByHusbandIDOrWifeID(dataMember[0].MemberID, dataMember[0].MemberID);
-            if(Array.isArray(listMarriage) && listMarriage.length > 0){
-                let listMarriageID = [];
-                for(let i = 0; i < listMarriage.length; i++){
-                    listMarriageID.push(listMarriage[i].MarriageID);
+            let marriageDetail = await MarriageManagement.getMarriageByHusbandIDOrWifeID(dataMember[0].MemberID, dataMember[0].MemberID);
+            if(Array.isArray(marriageDetail) && marriageDetail.length > 0){
+                let member = [];
+                // lấy list marriage của người còn lại, tức là người trong gia phả, marriageDetail kia luôn chỉ có 1 phần tử
+                if (marriageDetail[0].husbandID == dataMember[0].MemberID) {
+                    member = await FamilyManagementService.getMemberByMemberID(marriageDetail[0].wifeID);
+                } else {
+                    member = await FamilyManagementService.getMemberByMemberID(marriageDetail[0].husbandID);
                 }
-                let listMarriageDetail = await MarriageManagement.getMarriageDetailByMarriageID(listMarriageID);
+                // lấy thông tin list marriage của người trong gia phả
+                let listMarriage = await MarriageManagement.getMarriageByHusbandIDOrWifeID(member[0].MemberID, member[0].MemberID);
+                // lấy thông tin detail của những người cưới đó
+                let listMarriageDetail = [];
+                if(Array.isArray(listMarriage) && listMarriage.length > 0){
+                    for(let i = 0; i < listMarriage.length; i++){
+                        // nếu là người trong gia phả là nam thì lấy thông tin chi tiết của vợ
+                        if(member[0].Male == 1){
+                            let wife = await FamilyManagementService.getMemberByMemberID(listMarriage[i].wifeID);
+                            listMarriageDetail.push(wife[0]);
+                        }else{
+                            let husband = await FamilyManagementService.getMemberByMemberID(listMarriage[i].husbandID);
+                            listMarriageDetail.push(husband[0]);
+                        }
+                       
+                    }
+                }
+                // nếu trong danh sách cưới đó có người còn sống và ko phải người hiện tại thì không hợp lệ
                 if(Array.isArray(listMarriageDetail) && listMarriageDetail.length > 0){
-                    let listHusband = [];
-                    let listWife = [];
                     for(let i = 0; i < listMarriageDetail.length; i++){
-                        if(listMarriageDetail[i].HusbandID == dataMember[0].MemberID){
-                            listHusband.push(listMarriageDetail[i]);
-                        }
-                        if(listMarriageDetail[i].WifeID == dataMember[0].MemberID){
-                            listWife.push(listMarriageDetail[i]);
-                        }
-                    }
-                    if(Array.isArray(listHusband) && listHusband.length > 0){
-                        for(let i = 0; i < listHusband.length; i++){
-                            if(listHusband[i].IsDead == 0){
-                                return res.send(Response.badRequestResponse(null, "Vẫn còn vợ đang sống, không thể thay đổi giới tính"));
-                            }
-                        }
-                    }
-                    if(Array.isArray(listWife) && listWife.length > 0){
-                        for(let i = 0; i < listWife.length; i++){
-                            if(listWife[i].IsDead == 0){
-                                return res.send(Response.badRequestResponse(null, "Vẫn còn chồng đang sống, không thể thay đổi giới tính"));
-                            }
+                        if(listMarriageDetail[i].IsDead == 0 && listMarriageDetail[i].MemberID != dataMember[0].MemberID
+                            && req.body.IsDead == 0){
+                            let errorMessage = 'Không hỗ trợ cưới 2 người cùng lúc';
+                            return res.send(Response.badRequestResponse(null, errorMessage));
                         }
                     }
                 }

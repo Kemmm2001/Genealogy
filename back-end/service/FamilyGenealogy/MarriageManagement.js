@@ -177,7 +177,27 @@ const getMarriageByMarriageID = async (marriageID) => {
         }
     });
 };
-
+const getMarriagesByMarriageID = async (listMarriageID) => {
+   // truyền vào list id, dùng câu lệnh mysql in
+    // SELECT * FROM marriage WHERE marriageID IN (1, 2, 3)
+    return new Promise((resolve, reject) => {
+        try {
+            const query = "SELECT * FROM marriage WHERE marriageID IN (?)";
+            const values = [listMarriageID];
+            db.connection.query(query, values, (err, result) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                } else { 
+                    resolve(result);
+                }
+            });
+        } catch (error) {
+            console.log(error);
+            reject(error);
+        }
+    });
+};
 // nguyễn anh tuấn
 // Get a marriage record by husbandID or wifeID
 const getMarriageByHusbandIDOrWifeID = async (husbandID, wifeID) => {
@@ -281,5 +301,6 @@ module.exports = {
     getMarriageByHusbandIDAndWifeID,
     getMarriageByHusbandIDOrWifeID,
     getHusbandMaxMarriageNumber,
-    getWifeMaxMarriageNumber
+    getWifeMaxMarriageNumber,
+    getMarriagesByMarriageID
 };
