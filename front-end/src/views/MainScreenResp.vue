@@ -2912,7 +2912,7 @@ export default {
                       this.nodes[i].name.substring(0, 16) + "...";
                   }
                   if (this.idFamilyHead != null) {
-                    if (this.nodes[i].id == this.idFamilyHead) {
+                    if (this.nodes[i].id == this.idFamilyHead && i != 0) {
                       this.nodes[i].isFH = "true";
                     }
                   }
@@ -2933,6 +2933,7 @@ export default {
                 this.nodes[0].tags.push("great-grandfather");
                 this.nodes[0].isGG = "true";
                 this.family.config.nodes = this.nodes;
+                this.family.config.roots = this.nodes[0].id
                 this.family.draw();
                 //  this.mytree(this.$refs.tree, this.nodes);
               }

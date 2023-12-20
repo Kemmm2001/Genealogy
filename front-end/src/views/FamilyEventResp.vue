@@ -98,6 +98,9 @@
           <div class="py-1 d-flex align-items-center" @click="showAddEventModal()">
             <button class="btn bg-primary text-white d-flex align-items-center m-0" style="height: fit-content;">Thêm sự kiện</button>
           </div>
+          <div class="py-1 d-flex align-items-center" @click="exportPdf()">
+            <button class="btn bg-primary text-white d-flex align-items-center m-0" style="height: fit-content;">Export PDF</button>
+          </div>
         </div>
         <div class="h-100">
           <div v-if="listEvent.length != 0" class="h-100" style="overflow-y: auto;">
@@ -482,7 +485,7 @@ export default {
       listMember: null,
       checkAll: false,
       ListMemberToSendEmail: [],
-      listEventAttendance: null,
+      listEventAttendance: [],
       ListEventNotificationSent: null,
       currentEventID: null,
     };
@@ -605,7 +608,7 @@ export default {
       }
       console.log(this.ListMemberToSendEmail);
     },
-    refresh() {
+    async refresh() {
       this.filterStatus = null;
       this.keySearch = null;
       this.getListEvent();
@@ -720,6 +723,7 @@ export default {
       });
     },
     getListEvent() {
+      console.log(11)
       HTTP.get("event", {
         params: {
           CodeID: this.CodeID,
@@ -733,6 +737,7 @@ export default {
             this.listEvent = [];
             this.listEventFilter = this.listEvent;
           }
+          console.log(this.listEvent)
         })
         .catch((e) => {
           console.log(e);
@@ -883,12 +888,42 @@ export default {
         }
       }
     },
-    exportExcel() {
-      HTTP.post("export-excel", {
-        CodeID: this.CodeID,
+    async exportPdf() {
+      var eventInfor = '<h1 style="display:flex;justify-content:center">Danh sách sự kiện</h1>';
+      for(let i = 0 ;i < this.listEvent.length;i++){
+        eventInfor += '<b>'+(i+1)+', Tên sự kiện: '+this.listEvent[i].EventName+'</b>'+
+        '<p> Diễn ra từ '+this.formattedCreatedAt(this.listEvent[i].StartDate)+' đến '+this.formattedCreatedAt(this.listEvent[i].EndDate)+'</p>'+
+        '<p> Địa điểm: '+this.listEvent[i].Place+'</p>'+
+        '<p> Quan trọng: '+ (this.listEvent[i].IsImportant ? 'Có' : 'Không') +'</p'+
+        '<p> Note: '+this.listEvent[i].Note+'</p>'+
+        '<b>Danh sách người tham gia sự kiện</b>';
+        await HTTP.get("eventAttendance", {
+          params: {
+            EventID: this.listEvent[i].EventID,
+          },
+        })
+          .then((respone) => {
+            if (respone.data.success == true) {
+              this.listEventAttendance = respone.data.data;
+              console.log(this.listEventAttendance);
+              for(let j = 0; j < this.listEventAttendance.length;j++){
+                eventInfor += '<p>'+this.listEventAttendance[j].MemberName+'</p>'
+              }
+            } else {
+              console.log("vào else");
+            }
+            this.$modal.show("participant-mdl");
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+        
+      }
+      await HTTP.post("export-pdf", {
+        htmlContent: eventInfor,
       })
         .then((respone) => {
-          console.log(this.CodeID);
+          console.log(11111111);
           if (respone.data.success == true) {
             this.NotificationsScuccess(respone.data.message);
           } else {
@@ -1013,7 +1048,7 @@ export default {
     showParticipantList(EventID) {
       console.log(EventID);
       this.currentEventID = EventID;
-      this.listEventAttendance = null;
+      this.listEventAttendance = [];
       this.title = this.listEventFilter.find(
         (element) => element.EventID === EventID
       );
