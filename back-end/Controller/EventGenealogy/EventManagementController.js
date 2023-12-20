@@ -324,7 +324,7 @@ var SendSMSToMember = async (req, res) => {
 
         let contentMessage = req.body.contentMessage;
         let CodeID = req.body.CodeID;
-        let accountID = req.body.accountID
+        let accountID = req.payload.insertId;
 
         let count = id.length
         if (CoreFunction.isDataNumberExist(accountID)) {
@@ -349,6 +349,7 @@ var SendSMSToMember = async (req, res) => {
             ExecuteSendSNS(data[i], contentMessage);
         }
         await SetHistorySendEmailandSMS(contentMessage, CodeID, res);
+        return res.send(Response.successResponse())
     } catch (error) {
         console.log(error);
         res.send(Response.internalServerErrorResponse(error));
@@ -366,6 +367,7 @@ var sendEmailToMember = async (req, res) => {
         objData.text = req.body.text;
         objData.html = req.body.html;
         let CodeID = req.body.CodeID;
+        let accountID = req.payload.insertId;
 
         let count = listID.length;
         // nếu có accountid thì check xem có đủ lần gửi mail ko

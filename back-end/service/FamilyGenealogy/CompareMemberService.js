@@ -123,20 +123,6 @@ async function getIdToCompare(NumberIterations, MemberId) {
         throw error;
     }
 }
-//Nguyễn Lê Hùng
-async function isInLaw(MemberID) {
-    return new Promise((resolve, reject) => {
-        let query = `select ParentID,MarriageID from familymember WHERE MemberID = ${MemberID}`;
-        db.connection.query(query, (err, result) => {
-            if (err) {
-                console.log(err)
-                reject(err)
-            } else {
-                resolve(result[0])
-            }
-        })
-    })
-}
 
 //Nguyễn Lê Hùng
 function getBirthOrderByID(MemberId) {
@@ -469,25 +455,6 @@ async function checkMarriageRelationship(memberId1, memberId2) {
         });
     });
 }
-//Nguyễn Lê Hùng
-async function getMarriageNumber(husbandID, wifeID) {
-    return new Promise((resolve, reject) => {
-        try {
-            let query = `select MarriageNumber from marriage where husbandID = ${husbandID} and wifeID = ${wifeID}`
-            console.log('query: ' + query)
-            db.connection.query(query, (err, result) => {
-                if (!err && result[0].MarriageNumber) {
-                    resolve(result[0].MarriageNumber)
-                } else {
-                    reject(err)
-                }
-            })
-        } catch (error) {
-            console.log(error)
-        }
-    })
-}
-
 
 //nguyễn lê hùng
 async function getDateOfBirth(MemberID) {
@@ -507,41 +474,121 @@ async function getDateOfBirth(MemberID) {
     })
 }
 
+async function getMarried(memberID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `SELECT * FROM genealogy.marriage where husbandID = ${memberID} or wifeID = ${memberID}`;
+            db.connection.query(query, (err, result) => {
+                if (!err && result.length > 0) {
+                    resolve(result[0])
+                } else {
+                    resolve(false)
+                }
+            })
+        } catch (error) {
+            resolve(error)
+        }
+    })
+}
+
+async function getChild(memberID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `SELECT * FROM genealogy.familymember where FatherID = ${memberID} or MotherID = ${memberID}`;
+            db.connection.query(query, (err, result) => {
+                if (!err && result.length > 0) {
+                    resolve(result)
+                } else {
+                    resolve(false)
+                }
+            })
+        } catch (error) {
+            resolve(error)
+        }
+    })
+}
+
 
 //Nguyễn Lê Hùng
 async function GetResultCompare(MemberId1, MemberId2, DifferenceGeneration, Flag, Gender1, Gender2, resultCheck, currentIdMember1, currentIdMember2) {
     console.log('MemberId1: ' + MemberId1)
     console.log('MemberId2: ' + MemberId2)
+    console.log('currentIdMember1: ' + currentIdMember1)
+    console.log('currentIdMember2: ' + currentIdMember2)
     console.log('DifferenceGeneration: ' + DifferenceGeneration)
     try {
         if (MemberId1 == MemberId2) {
-            let result = {};           
+            let result = {};
             if (DifferenceGeneration == -1) {
                 let result = await getParentId(currentIdMember1);
-                if (currentIdMember2 != result.FatherID && currentIdMember2 != result.MotherID) {                   
-                    if (Gender2 == 1) {
-                        result.result1 = "Con";
-                        result.result2 = "Bố dượng";
-                        return result;
-                    } else {
-                        result.result1 = "Con";
-                        result.result2 = "Mẹ Kế";
+                if (currentIdMember2 != result.FatherID && currentIdMember2 != result.MotherID) {
+                    result.result1 = "Con";
+                    if (result.FatherID == null && result.MotherID == null) {
+                        if (Gender1 == 1) {
+                            result.result1 = "Con rể";
+                        } else {
+                            result.result1 = "Con dâu";
+                        }
+                    }
+                    let idChild1 = await getMarried(currentIdMember1);
+                    let idChild2 = await getChild(currentIdMember2);
+                    if (idChild1 && idChild2) {
+                        if (idChild2.some(child => (idChild1.husbandID && idChild1.husbandID === child.MemberID) || (idChild1.wifeID && idChild1.wifeID === child.MemberID))) {
+                            if (Gender2 == 1) {
+                                result.result2 = "Bố";
+                            } else {
+                                result.result2 = "Mẹ";
+                            }
+                        } else {
+                            if (Gender2 == 1) {
+                                result.result2 = "Bố dượng";
+                            } else {
+                                result.result2 = "Mẹ Kế";
+                            }
+                        }
+
                         return result;
                     }
                 }
-            } else if(DifferenceGeneration == 1) {
+
+            } else if (DifferenceGeneration == 1) {
                 let result = await getParentId(currentIdMember2);
-                if (currentIdMember1 != result.FatherID && currentIdMember1 != result.MotherID) {                   
-                    if (Gender1 == 1) {
-                        result.result1 = "Bố dượng";
-                        result.result2 = "Con";
-                        return result;
-                    } else {
-                        result.result1 = "Mẹ Kế";
-                        result.result2 = "Con";
+                if (currentIdMember1 != result.FatherID && currentIdMember1 != result.MotherID) {
+                    result.result2 = "Con";
+                    console.log(result + JSON.stringify(result, null, 2))
+                    if (result.FatherID == null && result.MotherID == null) {
+                        if (Gender2 == 1) {
+                            result.result2 = "Con rể";
+                        } else {
+                            result.result2 = "Con dâu";
+                        }
+
+                    }
+                    let idChild1 = await getMarried(currentIdMember2);
+                    let idChild2 = await getChild(currentIdMember1);
+                    console.log('idChild1: ' + idChild1)
+                    console.log('idChild2: ' + JSON.stringify(idChild2, null, 2))
+                    if (idChild1 && idChild2) {
+                        if (idChild2.some(child => (idChild1.husbandID && idChild1.husbandID === child.MemberID) || (idChild1.wifeID && idChild1.wifeID === child.MemberID))) {
+                            console.log("vào if")
+                            if (Gender1 == 1) {
+                                result.result1 = "Bố";
+                            } else {
+                                result.result1 = "Mẹ";
+                            }
+                        } else {
+                            console.log("vào else")
+                            if (Gender1 == 1) {
+                                result.result1 = "Bố dượng";
+                            } else {
+                                result.result1 = "Mẹ Kế";
+                            }
+                        }
+
                         return result;
                     }
                 }
+
             }
             result = await getResultCompareWithMemberID1SameID2(DifferenceGeneration, Gender1, Gender2);
             console.log('DifferenceGeneration: ' + DifferenceGeneration)
@@ -642,5 +689,5 @@ async function GetResultCompare(MemberId1, MemberId2, DifferenceGeneration, Flag
 }
 
 module.exports = {
-    getGenerationByID, GetResultCompare, getIdToCompare, isInLaw, checkBrideOrGroom, checkMaternalOrPaternal
+    getGenerationByID, GetResultCompare, getIdToCompare, checkBrideOrGroom, checkMaternalOrPaternal
 }
