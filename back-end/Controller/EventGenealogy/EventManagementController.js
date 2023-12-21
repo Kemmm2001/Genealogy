@@ -9,7 +9,8 @@ require('dotenv').config();
 const backEndURL = process.env.BACKEND_URL
 const frontEndURL = process.env.FRONTEND_URL
 
-const { signInviteToken, verifyInviteToken } = require('../../helper/jwt_helper')
+const { signInviteToken, verifyInviteToken } = require('../../helper/jwt_helper');
+const { assign } = require('nodemailer/lib/shared');
 
 var getAllEventGenealogy = async (req, res) => {
     try {
@@ -418,7 +419,7 @@ var SendSMSToMember = async (req, res) => {
                 return res.send(Response.internalServerErrorResponse())
             }
         }
-        await SetHistorySendEmailandSMS(contentMessage, CodeID, res);       
+        await SetHistorySendEmailandSMS(contentMessage, CodeID, res);
     } catch (error) {
         console.log(error);
         res.send(Response.internalServerErrorResponse(error));
@@ -455,7 +456,7 @@ var sendEmailToMember = async (req, res) => {
                     UserManagement.setFreeEmail(account.FreeEmail, accountID);
                 }
             }
-        }       
+        }
 
         if (ListEmail) {
             for (let i = 0; i < ListEmail.length; i++) {
@@ -652,10 +653,18 @@ var inviteMail = async (req, res) => {
         const memberIds = requestBody.data.map(item => item.MemberID);
         const eventId = requestBody.eventId;
         const time = requestBody.time;
+        let datetime = req.body.datetime;
+
 
         console.log('eventId: ' + eventId)
 
+
         console.log('requestBody: ' + requestBody)
+        let updateFormEndDate = await EventAttendence.UpdateFormEndDate(datetime, eventId)
+        if (!updateFormEndDate) {
+            return res.send(Response.internalServerErrorResponse())
+        }
+
         for (let i = 0; i < memberIds.length; i++) {
             const memberId = memberIds[i];
             const token = await signInviteToken(memberId, eventId, time);
@@ -686,13 +695,16 @@ var inviteMail = async (req, res) => {
 var getEventByToken = async (req, res) => {
     try {
         let token = req.query.token;
-        console.log('token: ' + token)
         let payload = await verifyInviteToken(token);
+        console.log('token: ' + token)
         console.log('payload: ' + payload.memberId)
         console.log('Result:', JSON.stringify(payload, null, 2));
-        if (payload.error === 'Token expired') {
+
+        let checkExpair = await EventAttendence.checkExpairEvent(payload.eventId);
+        if (!checkExpair) {
             return res.send(Response.internalServerErrorResponse(null, "Link đã hết hạn"));
         }
+       
         let tokenData = await EventAttendence.checkTokenEvent(token);
         if (tokenData == 0) {
             return res.send(Response.dataNotFoundResponse(null, 'Link không đúng'));
