@@ -168,6 +168,11 @@
     flex-direction: column;
 }
 
+.event-grid-container th{
+    background-color: #90CAF9;
+    text-align: center;
+}
+
 @media screen and (min-width: 1300px){
     .event-grid-container .participant-container .title{
         min-height: 42px !important;
