@@ -39,20 +39,20 @@ const initWebRouter = (app) => {
 
 
     // Create a new AlbumPhoto
-    router.post('/albumphoto', CoreFunction.uploadImage("album-photo").single('BackGroundPhoto'), AlbumPhotoController.addAlbumPhoto);
+    router.post('/albumphoto', authMiddleware.authenticateAndAuthorize(2), CoreFunction.uploadImage("album-photo").single('BackGroundPhoto'), AlbumPhotoController.addAlbumPhoto);
     // Retrieve a single AlbumPhoto with id
-    router.get('/albumphoto', AlbumPhotoController.getAlbumPhoto);
+    router.get('/albumphoto', authMiddleware.authenticateAndAuthorize(3), AlbumPhotoController.getAlbumPhoto);
     // Update an AlbumPhoto with id
-    router.put('/albumphoto', CoreFunction.uploadImage("album-photo").single('BackGroundPhoto'), AlbumPhotoController.updateAlbumPhoto);
+    router.put('/albumphoto', authMiddleware.authenticateAndAuthorize(2), CoreFunction.uploadImage("album-photo").single('BackGroundPhoto'), AlbumPhotoController.updateAlbumPhoto);
     // Delete an AlbumPhoto with id
-    router.get('/delete-albumphoto', AlbumPhotoController.deleteAlbumPhoto);
-    router.get('/searchAlbum', AlbumPhotoController.searchAlbumPhoto)
+    router.get('/delete-albumphoto', authMiddleware.authenticateAndAuthorize(2), AlbumPhotoController.deleteAlbumPhoto);
+    router.get('/searchAlbum', authMiddleware.authenticateAndAuthorize(3), AlbumPhotoController.searchAlbumPhoto)
 
     // Create a new FamilyPhoto
-    router.post('/familyphoto', CoreFunction.uploadImage("family-photo").single('Photo'), FamilyPhotoController.addFamilyPhoto);
-    router.get('/familyphoto', FamilyPhotoController.getFamilyPhoto);
+    router.post('/familyphoto', authMiddleware.authenticateAndAuthorize(2), CoreFunction.uploadImage("family-photo").single('Photo'), FamilyPhotoController.addFamilyPhoto);
+    router.get('/familyphoto', authMiddleware.authenticateAndAuthorize(3), FamilyPhotoController.getFamilyPhoto);
     // Delete a FamilyPhoto with id
-    router.get('/delete-familyphoto', FamilyPhotoController.deleteFamilyPhoto);
+    router.get('/delete-familyphoto', authMiddleware.authenticateAndAuthorize(2), FamilyPhotoController.deleteFamilyPhoto);
     // End API tuấn
 
 
