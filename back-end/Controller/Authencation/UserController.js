@@ -149,8 +149,7 @@ var getListRoleMember = async (req, res) => {
 //Nguyễn Lê Hùng
 var ChangePassword = async (req, res) => {
   try {
-    console.log('req.body: ' + req.body.accountID)
-    console
+    console.log('req.body: ' + req.body.accountID)    
     let dataAccount = await UserService.getAccount(req.body.accountID);
     console.log('data: ' + dataAccount.Password)
 

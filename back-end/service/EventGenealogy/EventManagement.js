@@ -37,6 +37,7 @@ function NumberOfRemainingSMSSSends(AccountID) {
     })
 }
 
+////Nguyễn Lê Hùng
 function NumberOfRemainingEmailSends(AccountID) {
     return new Promise((resolve, reject) => {
         try {
@@ -50,6 +51,89 @@ function NumberOfRemainingEmailSends(AccountID) {
             })
         } catch (error) {
             reject(error)
+        }
+    })
+}
+
+function searchMemberHasPhone(CodeID, keySearch) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `SELECT m.MemberID, m.MemberName, c.Phone FROM genealogy.familymember as m
+            Inner join contact as c
+            ON m.MemberID = c.MemberID
+            where m.CodeID = ${CodeID} and m.Generation != 0 and m.IsDead = 0 and c.Phone is not null and m.MemberName like '%${keySearch}%' AND c.Phone != ''`;
+            db.connection.query(query, (err, result) => {
+                if (!err && result.length > 0) {
+                    resolve(result)
+                } else {
+                    resolve(false)
+                }
+            })
+        } catch (error) {
+            reject(false)
+        }
+    })
+}
+
+
+//Nguyễn Lê Hùng
+function searchMemberHasEmail(CodeID, keySearch) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `SELECT m.MemberID, m.MemberName, c.Email FROM genealogy.familymember as m
+            Inner join contact as c
+            ON m.MemberID = c.MemberID
+            where m.CodeID = ${CodeID} and m.Generation != 0 and m.IsDead = 0 and c.Email is not null and m.MemberName like '%${keySearch}%' AND c.Email != ''`;
+            db.connection.query(query, (err, result) => {
+                if (!err && result.length > 0) {
+                    resolve(result)
+                } else {
+                    resolve(false)
+                }
+            })
+        } catch (error) {
+            reject(false)
+        }
+    })
+}
+
+//Nguyễn Lê Hùng
+function getListMemberHasEmail(CodeID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `SELECT m.MemberID, m.MemberName, c.Email FROM genealogy.familymember as m
+            Inner join contact as c
+            ON m.MemberID = c.MemberID
+            where m.CodeID = ${CodeID} and m.Generation != 0 and m.IsDead = 0 and c.Email is not null AND c.Email != ''`;
+            db.connection.query(query, (err, result) => {
+                if (!err && result.length > 0) {
+                    resolve(result)
+                } else {
+                    resolve(false)
+                }
+            })
+        } catch (error) {
+            reject(false)
+        }
+    })
+}
+
+function getListMemberHasPhone(CodeID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `SELECT m.MemberID, m.MemberName, c.Phone FROM genealogy.familymember as m
+            Inner join contact as c
+            ON m.MemberID = c.MemberID
+            where m.CodeID = ${CodeID} and m.Generation != 0 and m.IsDead = 0 and c.Phone is not null AND c.Phone != ''`;
+            db.connection.query(query, (err, result) => {
+                if (!err && result.length > 0) {
+                    resolve(result)
+                } else {
+                    resolve(false)
+                }
+            })
+        } catch (error) {
+            reject(false)
         }
     })
 }
@@ -394,5 +478,7 @@ module.exports = {
     getAllEvent, InsertNewEvent, UpdateEvent, RemoveEvent, GetBirthDayInMonth,
     GetDeadDayInMonth, searchEvent, filterEvent, getListPhone,
     getInformationEvent, getListEmail, getCodeID, updateStatusEvent,
-    getEventAttendance, getListEmailAndMemberID, getListEventNotificationSent, NumberOfRemainingSMSSSends,NumberOfRemainingEmailSends
+    getEventAttendance, getListEmailAndMemberID, getListEventNotificationSent,
+    NumberOfRemainingSMSSSends, NumberOfRemainingEmailSends, getListMemberHasEmail,
+    getListMemberHasPhone, searchMemberHasEmail, searchMemberHasPhone
 }
