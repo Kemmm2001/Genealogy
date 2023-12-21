@@ -921,7 +921,6 @@ export default {
             } else {
               console.log("vào else");
             }
-            this.$modal.show("participant-mdl");
           })
           .catch((e) => {
             console.log(e);
@@ -981,6 +980,7 @@ export default {
       console.log(this.dayOfMonth);
     },
     showAddEventModal() {
+      console.log(11111)
       this.eventFamily = {};
       this.eventFamily.Status = 1;
       this.startHour = null;
