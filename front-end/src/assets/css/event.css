@@ -156,6 +156,18 @@
     height: 100%;
 }
 
+.event-grid-container .view-member-container .vm--container{
+    width: 45%;
+    inset: 0;
+    margin: auto;
+}
+
+.event-grid-container .view-member-body{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
 @media screen and (min-width: 1300px){
     .event-grid-container .participant-container .title{
         min-height: 42px !important;
