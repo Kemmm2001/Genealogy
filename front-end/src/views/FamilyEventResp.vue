@@ -900,7 +900,7 @@ export default {
           "</p>" +
           "<p> Quan trọng: " +
           (this.listEvent[i].IsImportant ? "Có" : "Không") +
-          "</p" +
+          "</p>" +
           "<p> Note: " +
           this.listEvent[i].Note +
           "</p>" +
@@ -930,7 +930,6 @@ export default {
         htmlContent: eventInfor,
       })
         .then((respone) => {
-          console.log(11111111);
           if (respone.data.success == true) {
             this.NotificationsScuccess(respone.data.message);
           } else {

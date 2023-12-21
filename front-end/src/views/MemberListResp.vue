@@ -75,13 +75,13 @@
                 <div class="h-100" v-if="member.Male == 0">
                   <img class="h-100" src="../assets/image/270x270-female-avatar.png" />
                 </div>
-                <div class="px-2">
+                <div class="px-2 ellipsis-text">
                   <b>{{ member.MemberName }}</b>
                   <br />
                   <a>Đời thứ : {{ member.Generation }}</a>
                   <br />
                   <a v-if="formatDate(member.Dob) != null">
-                    Ngày sinh : {{ new
+                    {{ new
                       Date(formatDate(member.Dob)).getDate() + "-" + (new
                         Date(formatDate(member.Dob)).getMonth() + 1) + "-" + new
                           Date(formatDate(member.Dob)).getFullYear() }}
@@ -664,7 +664,7 @@ export default {
       memberRole: null,
 
       CodeID: null,
-
+      isUpdateAvatar: false,
       objMemberInfor: {
         MemberID: 0,
         ParentID: null,
@@ -743,6 +743,23 @@ export default {
   },
 
   methods: {
+    getImageSize() {
+      const img = document.getElementById("myImage");
+      // Lấy kích thước của hình ảnh
+      this.imgWidth = img.width;
+      this.imgHeight = img.height;
+      this.checkPhotoSize(this.imgWidth, this.imgHeight);
+    },
+    checkPhotoSize(width, height) {
+      if (width > height) {
+        this.heightLarger = false;
+      } else {
+        this.heightLarger = true;
+      }
+    },
+    triggerFileInputClick() {
+      this.$refs.fileInputRef.click();
+    },
     getListReligion() {
       HTTP.get("religion", {})
         .then((response) => {
@@ -903,6 +920,37 @@ export default {
         this.NotificationsScuccess("Sửa thông tin giáo dục thành công");
         this.refreshInputJobAndEducation();
       });
+    },
+    updateAvatar(event) {
+      if (this.memberRole != 3) {
+        let formData = new FormData();
+        this.isUpdateAvatar = true;
+        let file = event.target.files[0];
+        formData.append("Image", file);
+        formData.append("MemberID", this.CurrentIdMember);
+        HTTP.put("member-photo", formData)
+          .then((response) => {
+            if (response.data.success == true) {
+              this.getListMember();
+              this.NotificationsScuccess(response.data.message);
+            } else {
+              this.NotificationsScuccess(response.data.message);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            this.avatarSrc = e.target.result; // Cập nhật ảnh avatar bằng ảnh tải lên
+          };
+          reader.readAsDataURL(file);
+        } else {
+          this.avatarSrc = null;
+        }
+      }
     },
     updateJobMember() {
       HTTP.put("updateJob", {

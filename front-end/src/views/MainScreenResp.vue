@@ -885,7 +885,7 @@
               <div v-else-if="isEdit && memberRole != 3" class="pe-2">
                 <button type="button" class="btn btn-primary mr-2" @click="updateInformation()">Sửa</button>
               </div>
-              <div v-if="nodes.length && memberRole != 3" class="pe-2">
+              <div v-if="nodes.length && memberRole != 3 && !isAdd" class="pe-2">
                 <button style="margin-left:10px" type="button" class="btn btn-danger" @click="openCfDelModal('removeMember', null, objMemberInfor.MemberName)">Xóa thành viên</button>
               </div>
             </div>
