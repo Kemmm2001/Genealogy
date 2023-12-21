@@ -803,19 +803,31 @@ var updateMemberToGenealogy = async (req, res) => {
         }
         // trường hợp muốn thêm con cái
         else if (req.body.Action == 'AddChild') {
-            // nếu birthorder đã tồn tại thì ko thể add
-            let listChild = await FamilyManagementService.getMembersByFatherIDOrMotherID(inGenealogyMemeber[0].MemberID, inGenealogyMemeber[0].MemberID);
-            if (isBirthOrderExist(outGenealogyMemeber[0].MemberID, outGenealogyMemeber[0].BirthOrder, listChild)) {
-                let errorMessage = `Con thứ ${outGenealogyMemeber[0].BirthOrder} đã tồn tại`;
-                return res.send(Response.badRequestResponse(null, errorMessage));
-            }
+            let birthOrder;
             if (inGenealogyMemeber[0].Male == 1) {
+                // lấy con thứ cao nhất
+                let maxBirthOrder = await FamilyManagementService.getMaxBirthOrderByFatherID(inGenealogyMemeber[0].MemberID);
+                // cho thông tin là con thứ cao hơn
+                if (CoreFunction.isDataNumberExist(maxBirthOrder)) {
+                    birthOrder = maxBirthOrder + 1;
+                } else {
+                    birthOrder = 1;
+                }
                 FamilyManagementService.insertFatherIDToMember(inGenealogyMemeber[0].MemberID, outGenealogyMemeber[0].MemberID);
+                FamilyManagementService.updateBirthOrder(birthOrder,inGenealogyMemeber[0].MemberID);
             } else if (inGenealogyMemeber[0].Male == 0) {
+                // lấy con thứ cao nhất
+                let maxBirthOrder = await FamilyManagementService.getMaxBirthOrderByFatherID(inGenealogyMemeber[0].MemberID);
+                // cho thông tin là con thứ cao hơn
+                if (CoreFunction.isDataNumberExist(maxBirthOrder)) {
+                    birthOrder = maxBirthOrder + 1;
+                } else {
+                    birthOrder = 1;
+                }
                 FamilyManagementService.insertMotherIDToMember(inGenealogyMemeber[0].MemberID, outGenealogyMemeber[0].MemberID);
+                FamilyManagementService.updateBirthOrder(birthOrder,inGenealogyMemeber[0].MemberID);
             }
             await FamilyManagementService.setGeneration(inGenealogyMemeber[0].Generation + 1, outGenealogyMemeber[0].MemberID);
-            // await FamilyManagementService.insertParentIdToMember(inGenealogyMemeber[0].MemberID, outGenealogyMemeber[0].MemberID);
         }
         // trường hợp muốn thêm vợ chồng
         else if (req.body.Action == 'AddMarriage') {
