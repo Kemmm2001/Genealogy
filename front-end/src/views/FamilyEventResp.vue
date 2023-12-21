@@ -99,7 +99,7 @@
             <button class="btn bg-primary text-white d-flex align-items-center m-0" style="height: fit-content;">Thêm sự kiện</button>
           </div>
           <div class="py-1 d-flex align-items-center" @click="exportPdf()">
-            <button class="btn bg-primary text-white d-flex align-items-center m-0" style="height: fit-content;">Export PDF</button>
+            <button class="btn bg-primary text-white d-flex align-items-center m-0" style="height: fit-content;margin-left:10%">Export PDF</button>
           </div>
         </div>
         <div class="h-100">
@@ -922,7 +922,6 @@ export default {
             } else {
               console.log("vào else");
             }
-            this.$modal.show("participant-mdl");
           })
           .catch((e) => {
             console.log(e);
@@ -983,6 +982,7 @@ export default {
       console.log(this.dayOfMonth);
     },
     showAddEventModal() {
+      console.log(11111)
       this.eventFamily = {};
       this.eventFamily.Status = 1;
       this.startHour = null;
