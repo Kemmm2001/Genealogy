@@ -44,6 +44,73 @@ var getNumberRemainingSMSSendss = async (req, res) => {
     }
 }
 
+var searchMemberHasEmail = async (req, res) => {
+    try {
+        let keySearch = req.query.keySearch;
+        let CodeID = req.payload.codeId;
+        if (CodeID) {
+            let result = await EventManagementService.searchMemberHasEmail(CodeID, keySearch);
+            if (result) {
+                return res.send(Response.successResponse(result))
+            } else {
+                return res.send(Response.dataNotFoundResponse())
+            }
+        }
+    } catch (error) {
+        return res.send(Response.internalServerErrorResponse())
+    }
+}
+var searchMemberHasPhone = async (req, res) => {
+    try {
+        let keySearch = req.query.keySearch;
+        let CodeID = req.payload.codeId;
+        if (CodeID) {
+            let result = await EventManagementService.searchMemberHasPhone(CodeID, keySearch);
+            if (result) {
+                return res.send(Response.successResponse(result))
+            } else {
+                return res.send(Response.dataNotFoundResponse())
+            }
+        }
+    } catch (error) {
+        return res.send(Response.internalServerErrorResponse())
+    }
+}
+
+
+
+var getListMemberHasEmail = async (req, res) => {
+    try {
+        let CodeID = req.payload.codeId;
+        if (CodeID) {
+            let result = await EventManagementService.getListMemberHasEmail(CodeID);
+            if (result) {
+                return res.send(Response.successResponse(result))
+            } else {
+                return res.send(Response.dataNotFoundResponse())
+            }
+        }
+    } catch (error) {
+        return res.send(Response.internalServerErrorResponse())
+    }
+}
+
+var getListMemberHasPhone = async (req, res) => {
+    try {
+        let CodeID = req.payload.codeId;
+        if (CodeID) {
+            let result = await EventManagementService.getListMemberHasPhone(CodeID);
+            if (result) {
+                return res.send(Response.successResponse(result))
+            } else {
+                return res.send(Response.dataNotFoundResponse())
+            }
+        }
+    } catch (error) {
+        return res.send(Response.internalServerErrorResponse())
+    }
+}
+
 var getNumberRemainingEmailSends = async (req, res) => {
     try {
         let AccountID = req.payload.insertId;
@@ -276,13 +343,13 @@ async function SetHistorySendEmailandSMS(Content, CodeID, res) {
     try {
         let data = await SystemAction.SetHistorySendEmailandSMS(Content, CodeID);
         if (data == true) {
-            res.send(Response.successResponse(null, "gửi thông báo thành công!"));
+            return res.send(Response.successResponse(null, "gửi thông báo thành công!"));
         } else {
-            res.send(Response.internalServerErrorResponse());
+            return res.send(Response.internalServerErrorResponse());
         }
     } catch (error) {
         console.log(error);
-        res.send(Response.internalServerErrorResponse(error));
+        return res.send(Response.internalServerErrorResponse(error));
     }
 }
 
@@ -293,9 +360,9 @@ function ExecuteSendSNS(ToPhoneNumber, Message) {
         objData.Message = Message;
         let result = SystemAction.SendSMSCore(objData);
         if (result == true) {
-            console.log("Send SMS successfully!");
+            return true;
         } else {
-            console.log("Send SMS failed!");
+            return false
         }
     } catch (error) {
         console.log(error);
@@ -320,13 +387,14 @@ var filterEvent = async function (req, res) {
 }
 var SendSMSToMember = async (req, res) => {
     try {
-        let id = req.body.ListMemberID;
+        console.log('body: ' + req.body)
+        let ListPhone = req.body.ListPhone;
 
         let contentMessage = req.body.contentMessage;
         let CodeID = req.body.CodeID;
         let accountID = req.payload.insertId;
 
-        let count = id.length
+        let count = ListPhone.length
         if (CoreFunction.isDataNumberExist(accountID)) {
             console.log('false1')
             let accountData = await UserManagement.getAccountByAccountID(accountID);
@@ -344,12 +412,13 @@ var SendSMSToMember = async (req, res) => {
             }
         }
 
-        let data = await EventManagementService.getListPhone(id);
-        for (let i = 0; i < data.length; i++) {
-            ExecuteSendSNS(data[i], contentMessage);
+        for (let i = 0; i < ListPhone.length; i++) {
+            let sendSms = ExecuteSendSNS(ListPhone[i], contentMessage);
+            if (!sendSms) {
+                return res.send(Response.internalServerErrorResponse())
+            }
         }
-        await SetHistorySendEmailandSMS(contentMessage, CodeID, res);
-        return res.send(Response.successResponse())
+        await SetHistorySendEmailandSMS(contentMessage, CodeID, res);       
     } catch (error) {
         console.log(error);
         res.send(Response.internalServerErrorResponse(error));
@@ -362,14 +431,16 @@ var sendEmailToMember = async (req, res) => {
         console.log("đã vào send email")
         console.log("req.body: " + req.body)
         let objData = {};
-        let listID = req.body.listID;
+        let ListEmail = req.body.ListEmail;
         objData.subject = req.body.subject;
         objData.text = req.body.text;
         objData.html = req.body.html;
         let CodeID = req.body.CodeID;
         let accountID = req.payload.insertId;
 
-        let count = listID.length;
+        let count = ListEmail.length;
+
+        console.log('ListEmail: ' + ListEmail)
         // nếu có accountid thì check xem có đủ lần gửi mail ko
         if (CoreFunction.isDataNumberExist(accountID)) {
             let accountData = await UserManagement.getAccountByAccountID(accountID);
@@ -384,13 +455,11 @@ var sendEmailToMember = async (req, res) => {
                     UserManagement.setFreeEmail(account.FreeEmail, accountID);
                 }
             }
-        }
-        console.log("qua đây")
-        let data = await EventManagementService.getListEmail(listID);
+        }       
 
-        if (data) {
-            for (let i = 0; i < data.length; i++) {
-                ExecuteSendEmail(data[i], objData.subject, objData.text, objData.html, res);
+        if (ListEmail) {
+            for (let i = 0; i < ListEmail.length; i++) {
+                ExecuteSendEmail(ListEmail[i], objData.subject, objData.text, objData.html, res);
             }
         } else {
             return res.send(Response.dataNotFoundResponse())
@@ -696,5 +765,6 @@ module.exports = {
     SendSMS, SendEmail, searchEvent, filterEvent, SendSMSToMember, getInformationEvent, sendEmailToMember
     , addAttendence, inviteMail, verifyMail, ReadXLSX, updateStatusEventGenealogy, getEventAttendance,
     getListMemberIDAndEmail, getEventByToken, checkConfirmedEvent, UpdateIsGoing, getListEventNotificationSent,
-    getNumberRemainingSMSSendss, getNumberRemainingEmailSends
+    getNumberRemainingSMSSendss, getNumberRemainingEmailSends, getListMemberHasEmail, getListMemberHasPhone,
+    searchMemberHasEmail, searchMemberHasPhone
 }

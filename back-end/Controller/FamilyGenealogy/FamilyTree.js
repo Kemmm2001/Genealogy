@@ -58,21 +58,6 @@ var getAllUnspecifiedMembers = async (req, res) => {
 }
 
 //Nguyễn Lê Hùng
-var searchMemberCanSendMessage = async (req, res) => {
-    try {
-        let CodeID = req.query.CodeID;
-        let keySearch = req.query.keySearch;
-        let data = await FamilyTreeService.searchMemberCanSendMessage(CodeID, keySearch);
-        if (data) {
-            return res.send(Response.successResponse(data))
-        } else {
-            return res.send(Response.dataNotFoundResponse())
-        }
-    } catch (error) {
-        return res.send(Response.dataNotFoundResponse(error))
-    }
-}
-//Nguyễn Lê Hùng
 var getRelationShipMember = async (req, res) => {
     try {
         let memberID = req.query.memberID;
@@ -271,5 +256,5 @@ var informationMember = async (req, res) => {
 module.exports = {
     AllReligion, informationMember, AllNationality, setRole, AllMemberInGenelogy, getAllUnspecifiedMembers,
     GetIdPaternalAncestor, getRelationShipMember, getListMessage, removeRelationship, getListHistoryEmail, getFamilyHead,
-    searchMemberCanSendMessage, getlistMemberToSendMessage
+    getlistMemberToSendMessage
 };

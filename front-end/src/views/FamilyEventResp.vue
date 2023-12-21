@@ -98,8 +98,8 @@
           <div class="py-1 d-flex align-items-center" @click="showAddEventModal()">
             <button class="btn bg-primary text-white d-flex align-items-center m-0" style="height: fit-content;">Thêm sự kiện</button>
           </div>
-          <div class="py-1 d-flex align-items-center" @click="exportPdf()">
-            <button class="btn bg-primary text-white d-flex align-items-center m-0" style="height: fit-content;margin-left:10%">Export PDF</button>
+          <div class="ps-2 y-1 d-flex align-items-center" @click="exportPdf()">
+            <button class="btn bg-primary text-white d-flex align-items-center m-0" style="height: fit-content;">Export PDF</button>
           </div>
         </div>
         <div class="h-100">
@@ -125,9 +125,11 @@
                   </td>
                   <td>{{ event.Status == 1 ? "Chưa kết thúc" : "Đã Kết Thúc" }}</td>
                   <td @click="showEditEventModal(event.EventID)">{{ event.Place }}</td>
-                  <td v-if="memberRole != 3" class="d-flex align-items-center justify-content-center">
-                    <div v-if="checkEventNotificationSent(event.EventID)" @click="showParticipantList(event.EventID)" class="btn bg-primary text-white">Tham gia sự kiện</div>
-                    <div v-else-if="!checkEventNotificationSent(event.EventID) && event.Status == 1" @click="showMemberList(event.EventID)" class="btn bg-primary text-white">Thông báo</div>
+                  <td>
+                    <div v-if="memberRole != 3" class="h-100 w-100 d-flex align-items-center justify-content-center">
+                      <div v-if="checkEventNotificationSent(event.EventID)" @click="showParticipantList(event.EventID)" class="btn bg-primary text-white">Tham gia sự kiện</div>
+                      <div v-else-if="!checkEventNotificationSent(event.EventID) && event.Status == 1" @click="showMemberList(event.EventID)" class="btn bg-primary text-white">Thông báo</div>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -146,7 +148,7 @@
       <modal name="add-event-mdl">
         <div class="mdl-container">
           <div class="mdl-title">
-            <div style="font-family: 'QuicksandBold'; font-size: 17px;">{{ titleModal }}</div>
+            <div style="font-family: 'QuicksandBold';">{{ titleModal }}</div>
             <div class="mdl-close" @click="closeAddEventModal()">
               <svg class="h-100" style="cursor: pointer;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -162,7 +164,7 @@
                 </div>
               </div>
               <div class="pt-2">
-                <textarea v-model="eventFamily.Description" class="w-100 h-100 text-area description" placeholder="Mô tả"></textarea>
+                <textarea v-model="eventFamily.Description" class="form-control w-100 h-100 text-area description" placeholder="Mô tả"></textarea>
               </div>
               <div class="d-flex pt-2">
                 <div class="d-flex align-items-center me-2">Từ(*)</div>
@@ -195,7 +197,7 @@
                 </div>
               </div>
               <div class="pt-2">
-                <textarea v-model="eventFamily.Note" class="w-100 h-100 text-area" placeholder="Ghi chú"></textarea>
+                <textarea v-model="eventFamily.Note" class="form-control w-100 h-100 text-area" placeholder="Ghi chú"></textarea>
               </div>
             </div>
           </div>
@@ -221,7 +223,7 @@
       <modal name="participant-mdl">
         <div class="mdl-container">
           <div class="mdl-title">
-            <div style="font-family: 'QuicksandBold'; font-size: 17px;">Danh sách thành viên tham gia sự kiện {{ title }}</div>
+            <div style="font-family: 'QuicksandBold';">Danh sách thành viên tham gia sự kiện {{ title }}</div>
             <div class="mdl-close" @click="closeParticipantList()">
               <svg class="h-100" style="cursor: pointer;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -232,7 +234,7 @@
             <div class="participant-body">
               <div v-if="listEventAttendance" class="h-100 w-100 d-flex">
                 <div class="col-4 h-100 py-2 d-flex flex-column ps-2 pe-1">
-                  <div class="d-flex justify-content-center" style="background-color: aliceblue;">Có tham gia</div>
+                  <div class="d-flex align-items-center justify-content-center title p-0" style="background-color: aliceblue;">Có tham gia</div>
                   <div class="h-100" style="overflow-y: auto; font-size: 0;">
                     <div v-for="(item, index) in listEventAttendance" :key="item.id">
                       <div v-if="item.IsGoing == 1" :class="index % 2 === 0 ? 'item w-100 odd' : 'item w-100 even'">{{ item.MemberName }}</div>
@@ -240,7 +242,7 @@
                   </div>
                 </div>
                 <div class="col-4 py-2 d-flex flex-column px-1">
-                  <div class="d-flex justify-content-center" style="background-color: aliceblue;">Không tham gia</div>
+                  <div class="d-flex align-items-center justify-content-center title p-0" style="background-color: aliceblue;">Không tham gia</div>
                   <div class="h-100" style="overflow-y: auto; font-size: 0;">
                     <div v-for="(item, index) in listEventAttendance" :key="item.id">
                       <div v-if="item.IsGoing == 0" :class="index % 2 === 0 ? 'item w-100 odd' : 'item w-100 even'">{{ item.MemberName }}</div>
@@ -248,7 +250,7 @@
                   </div>
                 </div>
                 <div class="col-4 py-2 d-flex flex-column ps-1 pe-2">
-                  <div class="d-flex justify-content-center" style="background-color: aliceblue;">Chưa phản hồi</div>
+                  <div class="d-flex align-items-center justify-content-center title p-0" style="background-color: aliceblue;">Chưa phản hồi</div>
                   <div class="h-100" style="overflow-y: auto; font-size: 0;">
                     <div v-for="(item, index) in listEventAttendance" :key="item.id">
                       <div v-if="item.IsGoing == -1" :class="index % 2 === 0 ? 'item w-100 odd' : 'item w-100 even'">{{ item.MemberName }}</div>
@@ -275,7 +277,7 @@
       <modal name="view-event-mdl">
         <div class="mdl-container">
           <div class="mdl-title">
-            <div style="font-family: 'QuicksandBold'; font-size: 17px;">Sự kiện trong ngày {{ formatDate(dateSelected) }}</div>
+            <div style="font-family: 'QuicksandBold';">Sự kiện trong ngày {{ formatDate(dateSelected) }}</div>
             <div class="mdl-close" @click="closeEventModal()">
               <svg class="h-100" style="cursor: pointer;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -322,7 +324,7 @@
       <modal name="view-member-mdl">
         <div class="mdl-container">
           <div class="mdl-title">
-            <div style="font-family: 'QuicksandBold'; font-size: 17px;">Thành viên trong gia phả</div>
+            <div style="font-family: 'QuicksandBold';">Thành viên trong gia phả</div>
             <div class="mdl-close" @click="closeMemberList()">
               <svg class="h-100" style="cursor: pointer;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -387,8 +389,8 @@
               </svg>
             </div>
           </div>
-          <div class="w-100 d-flex flex-column align-items-center justify-content-center" style="height: calc(100% - 50px);">
-            <div class="d-flex h-100 align-items-center px-3" style="overflow-y: auto; font-size: 19px;">
+          <div class="w-100 d-flex flex-column align-items-center justify-content-center">
+            <div class="d-flex w-100 h-100 align-items-center" style="overflow-y: auto; font-size: 19px;">
               <table class="table table-eventlist eventlist-list m-0">
                 <thead style="position: sticky; top: 0;">
                   <tr class="eventlist-item">
@@ -1006,7 +1008,7 @@ export default {
     showEditEventModal(id) {
       this.isAdd = false;
       this.eventFamily = {};
-      this.titleModal = "sửa thông tin sự kiện";
+      this.titleModal = "Sửa thông tin sự kiện";
       HTTP.get("inforEvent", {
         params: {
           EventID: id,

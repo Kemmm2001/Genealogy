@@ -50,17 +50,19 @@
 }
 
 .main-grid-container .select-opts-container .vm--container{
-    width: 40%;
+    width: 30% !important;
     height: 70%;
     inset: 0;
     margin: auto;
 }
 
-.main-grid-container .select-opts-container .vm--modal{
+.main-grid-container .select-opts-container .vm--modal,
+.main-grid-container .relation-container .vm--modal{
     height: fit-content !important;
 }
 
-.main-grid-container .select-opts-container .mdl-container{
+.main-grid-container .select-opts-container .mdl-container,
+.main-grid-container .relation-container .mdl-container{
     display: flex;
     flex-direction: column;
 }
@@ -103,6 +105,7 @@
 
 .main-grid-container .relation-container .vm--container{
     height: 65%;
+    width: 65%;
     inset: 0;
     margin: auto;
 }
@@ -145,9 +148,22 @@
     }
 }
 
-@media screen and (max-height: 1800px){
+@media screen and (min-width: 1800px){
     .main-grid-container .mems .title{
         font-size: 120% !important;
+    }
+
+    .main-grid-container .select-opts-container .vm--container{
+        width: 28% !important;
+    }
+
+    .main-grid-container .relation-container .vm--container{
+        width: 85%;
+        height: 50%;
+    }
+
+    .main-grid-container .relation-container input{
+        height: 54px;
     }
 }
 /* 
