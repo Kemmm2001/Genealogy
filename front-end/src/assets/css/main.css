@@ -2,6 +2,7 @@
     display: flex;
     position: relative;
     height: 100%;
+    background-color: #f2f2f2;
 }
 
 .main-grid-container .sidebar{
@@ -151,10 +152,11 @@
 @media screen and (min-width: 1800px){
     .main-grid-container .mems .title{
         font-size: 120% !important;
+        min-height: 64px;
     }
 
     .main-grid-container .select-opts-container .vm--container{
-        width: 20% !important;
+        width: 28% !important;
     }
 
     .main-grid-container .relation-container .vm--container{

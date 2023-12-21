@@ -155,3 +155,15 @@
 .event-grid-container .view-event-body{
     height: 100%;
 }
+
+@media screen and (min-width: 1300px){
+    .event-grid-container .participant-container .title{
+        min-height: 42px !important;
+    }
+}
+
+@media screen and (min-width: 1800px){
+    .event-grid-container .participant-container .title{
+        min-height: 54px !important;
+    }
+}

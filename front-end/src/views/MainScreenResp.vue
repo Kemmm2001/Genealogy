@@ -259,15 +259,51 @@
                     <div style="padding-left: 8px">Chọn theo bộ lọc</div>
                   </div>
                 </div>
-                <div class="h-100" style="overflow-y: auto;">
-                  <div class="d-flex align-items-center justify-content-center" style="height: 10%" v-for="(n, index) in ListMemberCanSendMessage" :key="n.id">
-                    <div v-if="n.isDead != 1" :tabindex="index" class="send-noti-mdl-member d-flex flex-row align-items-center px-2" :class="{ chosen: ListPhoneToSendMessage.includes(n.MemberID) }" @click="toggleSelection(n.MemberID)">
+                <div class="h-100" style="overflow-y: auto;" v-if="smsSelected && listMemberHasPhone.length">
+                  <div class="d-flex align-items-center justify-content-center" style="height: 10%" v-for="(n, index) in listMemberHasPhone" :key="n.id">
+                    <div :tabindex="index" class="send-noti-mdl-member d-flex flex-row align-items-center px-2" :class="{ chosen: ListPhoneToSendMessage.includes(n.MemberID) }" @click="toggleSelection(n.MemberID)">
                       <div>
                         <svg class="send-noti-mdl-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                           <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
                         </svg>
                       </div>
                       <div class="d-flex justify-content-center w-100">{{ n.MemberName }}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="h-100" style="overflow-y: auto;" v-else-if="smsSelected && listMemberHasPhone.length == 0">
+                  <div class="d-flex align-items-center justify-content-center" style="height: 10%">
+                    <div class="send-noti-mdl-member d-flex flex-row align-items-center px-2">
+                      <div>
+                        <svg class="send-noti-mdl-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                          <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
+                        </svg>
+                      </div>
+                      <div class="d-flex justify-content-center w-100">Chưa có thành viên nào có thông tin liên hệ số điện thoại</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="h-100" style="overflow-y: auto;" v-else-if="emailSelected && listMemberHasEmail.length">
+                  <div class="d-flex align-items-center justify-content-center" style="height: 10%" v-for="(n, index) in listMemberHasEmail" :key="n.id">
+                    <div :tabindex="index" class="send-noti-mdl-member d-flex flex-row align-items-center px-2" :class="{ chosen: ListPhoneToSendMessage.includes(n.MemberID) }" @click="toggleSelection(n.MemberID)">
+                      <div>
+                        <svg class="send-noti-mdl-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                          <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
+                        </svg>
+                      </div>
+                      <div class="d-flex justify-content-center w-100">{{ n.MemberName }}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="h-100" style="overflow-y: auto;" v-else-if="emailSelected && listMemberHasEmail.length == 0">
+                  <div class="d-flex align-items-center justify-content-center" style="height: 10%">
+                    <div class="send-noti-mdl-member d-flex flex-row align-items-center px-2">
+                      <div>
+                        <svg class="send-noti-mdl-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                          <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
+                        </svg>
+                      </div>
+                      <div class="d-flex justify-content-center w-100">Chưa có thành viên nào có thông tin liên hệ số Email</div>
                     </div>
                   </div>
                 </div>
@@ -278,8 +314,8 @@
                     <div @click="selectSMS()" :class="{ notiSelected: smsSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0 0.375rem 0 0; cursor: pointer;">SMS ({{remainingSMS}})</div>
                     <div @click="selectEmail()" :class="{ enotiSelected: emailSelected }" class="col-6 d-flex align-items-center justify-content-center" style="border-radius: 0.375rem 0 0 0; cursor: pointer;">Email ({{remainingEmail}})</div>
                   </div>
-                  <div class="pt-2" style="height: 92%; background: #fff">
-                    <div style="overflow-y: auto; height: 100%;">
+                  <div class="pt-2" style="height: 92%; background: #f2f2f2">
+                    <div style="overflow-y: auto; height: 100%">
                       <div v-if="emailSelected" class="d-flex flex-column">
                         <div style="cursor: pointer;" v-for="e in ListHistoryEmail" :key="e.id" class="sent-mail d-flex flex-row" @click="getInforEmail(e)">
                           <div class="col-3 d-flex align-items-center ellipsis-text" style="padding-left: 8px; margin: auto;">Chủ đề: {{ e.EmailSubject }}</div>
@@ -1057,7 +1093,6 @@ export default {
       canAddMother: true,
       canAddhusband: true,
       canAddWife: true,
-      ListMemberCanSendMessage: null,
       canSendMessage: true,
 
       lastClickedNodeId: null,
@@ -1076,6 +1111,8 @@ export default {
       resultCompare1: null,
       resultCompare2: null,
       selectedRowIndex: null,
+      listMemberHasEmail: [],
+      listMemberHasPhone: [],
 
       nodeLength: null,
       CoordinatesNode: null,
@@ -1410,48 +1447,6 @@ export default {
       }
     },
     //Nguyễn Lê Hùng
-    sendEmailToMember() {
-      if (this.canSendMessage) {
-        this.canSendMessage = false;
-        if (
-          this.subjectEmail != null &&
-          this.subjectEmail != "" &&
-          this.contentEmail != null &&
-          this.contentEmail != "" &&
-          this.ListPhoneToSendMessage.length > 0
-        ) {
-          HTTP.post("send-email", {
-            listID: this.ListPhoneToSendMessage,
-            subject: this.subjectEmail,
-            text: this.contentEmail,
-            CodeID: this.CodeID,
-          })
-            .then((response) => {
-              if (response.data.success == true) {
-                this.ListPhoneToSendMessage = []
-                this.subjectEmail = null;
-                this.contentEmail = null;
-                this.NotificationsScuccess("Gửi email thành công");
-                this.expandCreateEmail = false;
-                this.getListHistoryEmail();
-                this.getRemainingEmail();
-                this.canSendMessage = true;
-              } else {
-                this.NotificationsDelete(response.data.message);
-              }
-            })
-            .catch((e) => {
-              console.log(e);
-            });
-        } else if (this.ListPhoneToSendMessage.length == 0) {
-          this.NotificationsDelete(
-            "Hãy chọn những người bạn muốn gửi thông báo"
-          );
-        } else {
-          this.NotificationsDelete("Không có thông báo gì để gửi ");
-        }
-      }
-    },
     getMaxMarriage(id) {
       let count = 0;
       console.log(id);
@@ -1466,43 +1461,81 @@ export default {
       }
       return count + 1;
     },
-    getListMemberToSendMessage() {
-      try {
-        console.log(this.CodeID);
-        HTTP.get("listMemberMessage", {
-          params: {
+    //Nguyễn Lê Hùng:
+    sendEmailToMember() {
+      if (this.canSendMessage) {
+        this.canSendMessage = false;
+        if (
+          this.subjectEmail != null &&
+          this.subjectEmail != "" &&
+          this.contentEmail != null &&
+          this.contentEmail != "" &&
+          this.ListPhoneToSendMessage.length > 0
+        ) {
+          let filteredMembers = this.listMemberHasEmail.filter((member) =>
+            this.ListPhoneToSendMessage.includes(member.MemberID)
+          );       
+          let ListEmail = filteredMembers.map((member) => member.Email);
+          console.log("ListEmail: " + ListEmail);
+          HTTP.post("send-email", {
+            ListEmail: ListEmail,
+            subject: this.subjectEmail,
+            text: this.contentEmail,
             CodeID: this.CodeID,
-          },
-        })
-          .then((respone) => {
-            if (respone.data.success == true) {
-              this.ListMemberCanSendMessage = respone.data.data;
-            }
           })
-          .catch((e) => {
-            console.log(e);
-          });
-      } catch (error) {
-        console.log(error);
+            .then((response) => {
+              if (response.data.success == true) {
+                this.ListPhoneToSendMessage = [];
+                this.subjectEmail = null;
+                this.contentEmail = null;
+                this.NotificationsScuccess("Gửi email thành công");
+                this.expandCreateEmail = false;
+                this.getListHistoryEmail();
+                this.getRemainingEmail();
+                this.canSendMessage = true;
+              } else {
+                this.canSendMessage = true;
+                this.NotificationsDelete(response.data.message);
+              }
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        } else if (this.ListPhoneToSendMessage.length == 0) {
+          this.canSendMessage = true;
+          this.NotificationsDelete(
+            "Hãy chọn những người bạn muốn gửi thông báo"
+          );
+        } else {
+          this.canSendMessage = true;
+          this.NotificationsDelete("Không có thông báo gì để gửi ");
+        }
       }
     },
+
     //Nguyễn Lê Hùng
     sendMessageToMember() {
       if (this.canSendMessage) {
+        console.log("vào đoạn này");
         this.canSendMessage = false;
         if (
           this.contentMessage != null &&
           this.ListPhoneToSendMessage.length > 0 &&
           this.contentMessage != ""
         ) {
+          let filteredMembers = this.listMemberHasPhone.filter((member) =>
+            this.ListPhoneToSendMessage.includes(member.MemberID)
+          );
+          let ListPhone = filteredMembers.map((member) => member.Phone);
+          console.log("ListPhone: " + ListPhone);
           HTTP.post("send-sms", {
-            ListMemberID: this.ListPhoneToSendMessage,
+            ListPhone: ListPhone,
             contentMessage: this.contentMessage,
             CodeID: this.CodeID,
           })
             .then((response) => {
               if (response.data.success == true) {
-                this.ListPhoneToSendMessage = []
+                this.ListPhoneToSendMessage = [];
                 this.contentMessage = null;
                 this.getListMessage();
                 this.NotificationsScuccess("Gửi thông báo thành công");
@@ -1514,10 +1547,12 @@ export default {
               console.log(e);
             });
         } else if (this.ListPhoneToSendMessage.length == 0) {
+          this.canSendMessage = true;
           this.NotificationsDelete(
             "Hãy chọn những người bạn muốn gửi thông báo"
           );
         } else {
+          this.canSendMessage = true;
           this.NotificationsDelete("Không có thông báo gì để gửi ");
         }
       }
@@ -1525,16 +1560,26 @@ export default {
 
     //Nguyễn Lê Hùng
     searchMember() {
-      HTTP.get("searchMemberSendMessage", {
+      let api;
+      if (this.smsSelected) {
+        api = "searchMemberPhone";
+        this.getListMemberHasEmail();
+      } else {
+        api = "searchMemberEmail";
+        this.getListMemberHasPhone();
+      }
+      HTTP.get(api, {
         params: {
-          CodeID: this.CodeID,
           keySearch: this.searchKeyword,
         },
       })
         .then((response) => {
           if (response.data.success == true) {
-            console.log(response.data.data);
-            this.ListMemberCanSendMessage = response.data.data;
+            if (this.smsSelected) {
+              this.listMemberHasPhone = response.data.data;
+            } else {
+              this.listMemberHasEmail = response.data.data;
+            }
           } else {
             this.NotificationsDelete(response.data.message);
           }
@@ -1819,7 +1864,8 @@ export default {
             this.$modal.hide("view-member-mdl");
             this.getListMember();
             this.closeCfDelModal();
-            this.getListMemberToSendMessage();
+            this.getListMemberHasPhone();
+            this.getListMemberHasEmail();
           } else {
             this.NotificationsDelete(response.data.message);
           }
@@ -1959,7 +2005,8 @@ export default {
               this.getListMember();
               this.getListUnspecifiedMembers();
               this.closeModalAddMemberFromList();
-              this.getListMemberToSendMessage();
+              this.getListMemberHasPhone();
+              this.getListMemberHasEmail();
             } else {
               this.NotificationsDelete(response.data.message);
             }
@@ -1981,7 +2028,8 @@ export default {
             this.getListMember();
             this.getListUnspecifiedMembers();
             this.closeModalAddMemberFromList();
-            this.getListMemberToSendMessage();
+            this.getListMemberHasPhone();
+            this.getListMemberHasEmail();
             this.closeCfDelModal();
             this.fileBackup = null;
           } else {
@@ -2077,7 +2125,6 @@ export default {
             this.$modal.hide("select-opts-mdl");
             this.getListMember();
             this.NotificationsScuccess(response.data.message);
-            this.getListMemberToSendMessage();
           } else {
             this.NotificationsDelete(response.data.message);
           }
@@ -2101,7 +2148,8 @@ export default {
             })
               .then((response) => {
                 if (response.data.success == true) {
-                  //     this.setDefauValueInModal();
+                  this.getListMemberHasPhone();
+                  this.getListMemberHasEmail();
                   this.selectDistrictMember = null;
                 }
               })
@@ -2150,7 +2198,6 @@ export default {
             console.log("getlist");
             this.getListMember();
             this.NotificationsScuccess(response.data.message);
-            this.getListMemberToSendMessage();
           } else {
             this.NotificationsDelete(response.data.message);
           }
@@ -2173,7 +2220,8 @@ export default {
             })
               .then((response) => {
                 if (response.data.success == true) {
-                  //     this.setDefauValueInModal();
+                  this.getListMemberHasPhone();
+                  this.getListMemberHasEmail();
                   this.selectDistrictMember = null;
                 }
               })
@@ -2240,12 +2288,12 @@ export default {
             if (response.data.success == true) {
               this.isUpdateAvatar = false;
               this.action = null;
+              this.$modal.hide("select-opts-mdl");
               this.$modal.hide("view-member-mdl");
               this.$modal.hide("select-opts-mdl");
               console.log("getlist");
               this.getListMember();
               this.NotificationsScuccess(response.data.message);
-              this.getListMemberToSendMessage();
             } else {
               this.NotificationsDelete(response.data.message);
             }
@@ -2268,7 +2316,8 @@ export default {
               })
                 .then((response) => {
                   if (response.data.success == true) {
-                    //     this.setDefauValueInModal();
+                    this.getListMemberHasPhone();
+                    this.getListMemberHasEmail();
                     this.selectDistrictMember = null;
                   }
                 })
@@ -2413,7 +2462,6 @@ export default {
           if (response.data.success == true) {
             this.isUpdateAvatar = false;
             this.getListUnspecifiedMembers();
-            this.getListMemberToSendMessage();
             this.NotificationsScuccess(response.data.message);
             if (this.objMemberContact.Phone != null) {
               this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
@@ -2429,8 +2477,11 @@ export default {
               .then((respone) => {
                 if (respone.data.success == true) {
                   this.checkUpdate = true;
+                  console.log("vào đâyyyy");
                   this.closeMemberModal();
                   this.getListMember();
+                  this.getListMemberHasPhone();
+                  this.getListMemberHasEmail();
                 } else {
                   this.NotificationsDelete("Có lỗi hệ thống");
                 }
@@ -2898,12 +2949,12 @@ export default {
                     this.nodes[i].tags.push("died");
                   }
                   if (this.nodes[i].img == null || this.nodes[i].img == "") {
-                    if (this.nodes[i].gender == "male") {
+                    if (this.nodes[i].gender == "female") {
                       this.nodes[i].img =
-                        "data:image/jpeg;base64,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";
-                    } else if (this.nodes[i].gender == "female") {
+                        'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxIHDw0PEBEREA8NEA0PDw4QDRAQDQ8OFhEWFhURExYYHjQgGBolHRUVITEiJiorLi4uFx8zODgsNyg5LisBCgoKDQ0NFQ0QFTcZFRkrKzctNystKysrLSstNy0rKysrKy03LSsrKysrKysrKysrKysrKysrKysrKysrKysrK//AABEIAOEA4QMBIgACEQEDEQH/xAAbAAEBAQEBAQEBAAAAAAAAAAAABQQDBgIBB//EADQQAQABAgMFBwMDBAMBAAAAAAABAgMEESEFEjFRcRMyQWGBkaFSscEzctEiQvDxI2KCFP/EABYBAQEBAAAAAAAAAAAAAAAAAAABAv/EABYRAQEBAAAAAAAAAAAAAAAAAAABEf/aAAwDAQACEQMRAD8A/pgDTIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN+G2dNetekfTHe9eTdRhKKP7Y9Yzn5QxCa7Gzq7ms5UxPPj7Kc4WiZid2ImJiYyjJ2NXE6NlR9U+0PivZUxwqiesZKghiDewtdnjGnONYcXpGHF7Pi5rRpVy/tn+F0xJH7VTNEzExlMcYfioAAAAAAAAAAAAAAAAAA/FXZ2E3YiurjPdjlHNiwNjt64jwjWenJdSrABFAAAAAAZMfhO3jOO/HDzjkjPSJG07HZ1b0cK+PlUsSxiAVAAAAAAAAAAAAAAAHTD2+2rpp5zr08QVdm2eyoz8a9fTwayIyGWgAAAAAAAByxNrt6KqefDr4OoDzcxl6DVtK12dyZ8KtfXxZWmQAAAAAAAAAAAAABv2RbzmqrlERHWWBY2VTu28/qmZ/H4SkbAEaAAAAAAAAAAYNr0Z001cpy9J/wBJS5j6d61X0z9pzQ1jNAFAAAAAAAAAAAABcwEZWqOn5Q13A/pUdPylI7gI0AAAAAAAAAA54mM6K/21fZ556DFzlbuftq+yAsSgCoAAAAAAAAAAAALWzZztU+W9HzKKqbIrzpqp5Tn6T/pKRQARoAAAAAAAAABl2lXu26vPKPlFU9sV6UU85mf890xYzQBQAAAAAAAAAAAAa9mXNy5EfVEx68WR1wn6lv8AdHsC+Ay0AAAAAAAAAAj7WqzuRHKmPvLG17UjK5PnFOTIrNAFAAAAAAAAAAAABS2Xhsv+Sf8AzH5TXWzia7PdnTlOsIL4m29qfVT60z+JbMPiacRnu56cc4yRp2AAAAAAAAHO/eixGdWeXDSM2K5tSI7tMz1nKAddpYftqc471PzHJHd72MrvcZyjlGkOCsgCgAAAAAAAAAAAAAD8arWOqtRERFOUf9WYBrq2lcn6Y6U/ysUcIz45Rm87RTvTTHOYj5ejSrABFAAEe5jrluqqM4nKqqNYjmsIWOp3blfXP31WJX3XtCuuJid3KeMbrKCoAAAAAAAAAAAAAAAAAAAA07Ot9pcp5U/1T+PnJbY9m4fsac571XxHhDYzVgAKAAJO1reVUVfVGXrCs4Yyx/8ARRMeMax1EqEExlnE8Y4wNIAAAAAAAAAAAAAAA+rdqq73YmekaA+RvtbMqq707vlGstlrBUWvDOedWqGJNnDV3uEac50hTwuAizrP9VXxDYGrgAigAAAAAM2KwdOI14VfVH55pl/B12fDOOcargJjzYu3sJRe40xnzjSWO7suY7tWflVx911MTh0u2KrPeiY8/D3c81AAAAAAAAB92bU3pypjOfiI5y+Kad6YiOM6R1XcJh4w9OXjOtU85QjjY2dTR3v6p8+77NlMbukaP0RoAAAAAAAAAAAAAAAA4st/AUXfDdnnH8NQCDicNOHnKeE8J8JcXoL1qL1M0z4+8TzQr1ubVU0zxj581iV8AKgAAADfsqzvTNc8KdI6/wCfdVcsLa7GimnlGvXxdWWgAAAAAAAAAAAAAAAAAAABP2rY3qYrjjTpPRQfNdO/ExPCYmJB50ftdHZzMTxiZh+NMgAD6td6n91P3AHogGWgAAAAAAAAAAAAAAAAAAAAAELH/q19Y+0OAKyAKP/Z';
+                    } else if (this.nodes[i].gender == "male") {
                       this.nodes[i].img =
-                        "data:image/jpeg;base64,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";
+                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlfQwbzHL77Hp4BXuYFAJvuclF2vJXwDV0Ng&usqp=CAU";
                     }
                   }
                 }
@@ -3003,7 +3054,7 @@ export default {
           },
         })
           .then((response) => {
-            if (response.data.success == true) {
+            if (response.data.success == true) {             
               this.ListHistoryEmail = response.data.data;
             }
           })
@@ -3013,6 +3064,21 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+    getListMemberHasEmail() {
+      HTTP.get("listMemberEmail").then((response) => {
+        if (response.data.success == true) {
+          this.listMemberHasEmail = response.data.data;
+        }
+      });
+    },
+    getListMemberHasPhone() {
+      HTTP.get("listMemberPhone").then((response) => {
+        if (response.data.success == true) {
+          console.log(response.data.data);
+          this.listMemberHasPhone = response.data.data;
+        }
+      });
     },
     getListDistrictMember() {
       let selectedCity = this.ListCity.find(
@@ -3205,8 +3271,9 @@ export default {
       this.getListBloodTypeGroup();
       this.getListUnspecifiedMembers();
       this.getMemberRole();
+      this.getListMemberHasEmail();
+      this.getListMemberHasPhone();
       this.getListHistoryEmail();
-      this.getListMemberToSendMessage();
       this.updateStatusEvent();
       this.getRemainingSMS();
       this.getRemainingEmail();

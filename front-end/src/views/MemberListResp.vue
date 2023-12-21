@@ -56,7 +56,7 @@
       <div class="content">
         <div v-if="memberRole != 3" class="d-flex align-items-center">
           <div class>
-            <button @click="openEditMemberModal()" class="btn text-white" :disabled="isButtonDisabled" :class="{ 'bg-primary': !isButtonDisabled, 'bg-info': isButtonDisabled }">Chỉnh sửa</button>
+            <button @click="openEditHeadModal()" class="btn text-white" :disabled="isButtonDisabled" :class="{ 'bg-primary': !isButtonDisabled, 'bg-info': isButtonDisabled }">Chỉnh sửa</button>
           </div>
         </div>
         <div class="pt-2">
@@ -167,7 +167,7 @@
         <div class="mdl-container">
           <div class="mdl-title">
             <div style="font-family: 'QuicksandBold'; font-size: 17px;">{{ TitleModal }}</div>
-            <div class="mdl-close" @click="closeEditMemberModal()">
+            <div class="mdl-close" @click="closeEditHeadModal()">
               <svg class="h-100" style="cursor: pointer;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
               </svg>
@@ -685,6 +685,7 @@ export default {
     },
 
     updateInformation() {
+      console.log(111)
       if (this.selectDistrictMember != null) {
         this.objMemberContact.Address =
           this.objMemberContact.Address + "-" + this.selectDistrictMember;
@@ -715,7 +716,6 @@ export default {
         .then((response) => {
           if (response.data.success == true) {
             this.isUpdateAvatar = false;
-            this.getListUnspecifiedMembers();
             this.NotificationsScuccess(response.data.message);
             if (this.objMemberContact.Phone != null) {
               this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
@@ -728,8 +728,7 @@ export default {
               FacebookUrl: this.objMemberContact.FacebookUrl,
               Zalo: this.objMemberContact.Zalo,
             }).then(() => {
-              this.closeMemberModal();
-              this.family.load(this.nodes);
+              this.$modal.hide("edit-member-mdl");
               this.getListMemberInGenalogy();
             });
           } else {
@@ -811,10 +810,10 @@ export default {
       this.itemChoose = index;
     },
     openEditHeadModal() {
-      this.$modal.show("editHead-modal");
+      this.$modal.show("edit-member-mdl");
     },
     closeEditHeadModal() {
-      this.$modal.hide("editHead-modal");
+      this.$modal.hide("edit-member-mdl");
     },
     closeCfDelModal() {
       this.$modal.hide("cfdel-modal");
@@ -993,12 +992,6 @@ export default {
       } catch (error) {
         console.log(error);
       }
-    },
-    openMemberModal() {
-      this.$modal.show("member-modal");
-    },
-    closeMemberModal() {
-      this.$modal.hide("member-modal");
     },
   },
 
