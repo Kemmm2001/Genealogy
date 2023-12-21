@@ -547,6 +547,17 @@ function queryFamilyMembers(filterOptions) {
     });
 }
 
+// nguyễn anh tuấn
+function updateBirthOrder( birthOrder, memberId) {
+    return new Promise(async (resolve, reject) => {
+        console.log("Vào hàm updateBirthOrder với birthOrder: " + birthOrder + " và memberId: " + memberId);
+        const query = 'UPDATE familymember SET BirthOrder = ? WHERE MemberID = ?';
+        const values = [birthOrder, memberId];
+        let result = await coreQuery(query, values);
+        resolve(result);
+    })
+}
+
 
 
 function queryContactMembers(filterOptions) {
@@ -668,5 +679,6 @@ module.exports = {
     setBirthOrder, insertParentIdToMember, getAllMemberID, updateMemberPhoto,
     getMembersByFatherIDAndMotherID, getMembersByFatherIDOrMotherID, updateFatherIDToMotherID,
     updateMotherIDToFatherID, UpdateMemberRelated, getMaxBirthOrderByFatherIdOrMotherId, getMaxBirthOrderByFatherID,
-    getMaxBirthOrderByMotherID, getMembersByOnlyFatherID, getMembersByOnlyMotherID, setRole, getAllMembersInGenalogy
+    getMaxBirthOrderByMotherID, getMembersByOnlyFatherID, getMembersByOnlyMotherID, setRole, getAllMembersInGenalogy,
+    updateBirthOrder
 };
