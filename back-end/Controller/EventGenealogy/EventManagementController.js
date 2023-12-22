@@ -78,6 +78,19 @@ var searchMemberHasPhone = async (req, res) => {
     }
 }
 
+var getInforEventattendance = async (req, res) => {
+    try {
+        let EventID = req.query.EventID
+        let result = await EventManagementService.getInforEventattendance(EventID);
+        if (result) {
+            return res.send(Response.successResponse(result));
+        } else {
+            return res.send(Response.dataNotFoundResponse())
+        }
+    } catch (error) {
+        return res.send(Response.internalServerErrorResponse())
+    }
+}
 
 
 var getListMemberHasEmail = async (req, res) => {
@@ -704,7 +717,7 @@ var getEventByToken = async (req, res) => {
         if (!checkExpair) {
             return res.send(Response.internalServerErrorResponse(null, "Link đã hết hạn"));
         }
-       
+
         let tokenData = await EventAttendence.checkTokenEvent(token);
         if (tokenData == 0) {
             return res.send(Response.dataNotFoundResponse(null, 'Link không đúng'));
@@ -778,5 +791,5 @@ module.exports = {
     , addAttendence, inviteMail, verifyMail, ReadXLSX, updateStatusEventGenealogy, getEventAttendance,
     getListMemberIDAndEmail, getEventByToken, checkConfirmedEvent, UpdateIsGoing, getListEventNotificationSent,
     getNumberRemainingSMSSendss, getNumberRemainingEmailSends, getListMemberHasEmail, getListMemberHasPhone,
-    searchMemberHasEmail, searchMemberHasPhone
+    searchMemberHasEmail, searchMemberHasPhone, getInforEventattendance
 }

@@ -265,6 +265,9 @@
           </div>
           <div class="mdl-footer">
             <div class="h-100 d-flex align-items-center justify-content-end">
+              <button @click="getInforEventattendance(title)" class="bg-secondary text-white btn my-0 me-2">Thay đổi thông báo</button>
+            </div>
+            <div class="h-100 d-flex align-items-center justify-content-end">
               <button @click="closeParticipantList()" class="bg-secondary text-white btn my-0 me-2">Đóng</button>
             </div>
           </div>
@@ -325,6 +328,62 @@
         <div class="mdl-container">
           <div class="mdl-title">
             <div style="font-family: 'QuicksandBold';">Thành viên trong gia phả</div>
+            <div class="mdl-close" @click="closeMemberList()">
+              <svg class="h-100" style="cursor: pointer;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+              </svg>
+            </div>
+          </div>
+          <div class="mdl-body">
+            <div class="view-member-body">
+              <div class="d-flex flex-column">
+                <div class="pt-2 px-2">
+                  <input v-model="searchKeyword" type="text" class="form-control" placeholder="Tên thành viên" @change="searchMember()" />
+                </div>
+                <div class="d-flex flex-column pt-2 px-2">
+                  <div class="d-flex pt-2">
+                    <div class="d-flex align-items-center me-2">Hết hạn:</div>
+                    <input v-model="formHour" class="form-control time-input py-1 pe-0 ps-2" type="number" min="00" max="23" placeholder="Giờ" />
+                    <div class="d-flex align-items-center px-1">:</div>
+                    <input v-model="formMinute" class="form-control time-input py-1 pe-0 ps-2" type="number" min="00" max="59" placeholder="Phút" />
+                    <div class="d-flex flex-grow-1 ps-2">
+                      <input v-model="formDate" type="date" class="form-control h-100 w-100" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="w-100 pt-2" style="overflow-y: auto; flex-grow: 1;">
+                <div v-for="list in listMemberHasEmail" :key="list.id" class="noti-modal-member d-flex flex-row align-items-center px-2" :class="{ chosen: ListMemberToSendEmail.includes(list.MemberID) }" @click="toggleSelection(list.MemberID)">
+                  <div>
+                    <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                      <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
+                    </svg>
+                  </div>
+                  <div class="d-flex justify-content-center" style="flex-grow: 1;">{{ list.MemberName }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mdl-footer">
+            <div class="h-100 d-flex align-items-center justify-content-end">
+              <div class="pe-2">
+                <div @click="sendMessageToConfirmEvent()" class="bg-primary text-white btn mx-2">Gửi</div>
+              </div>
+              <div class="pe-2">
+                <div @click="sendMessageToConfirmEvent('sendAll')" class="bg-primary text-white btn mx-2">Gửi cho tất cả</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </modal>
+    </div>
+
+    <!-- View danh sách chi tiết (sửa thông báo) -->
+    <div class="view-member-container">
+      <modal name="view-detail-mdl">
+        <div class="mdl-container">
+          <div class="mdl-title">
+            <div style="font-family: 'QuicksandBold';">{{titleInfor}}</div>
             <div class="mdl-close" @click="closeMemberList()">
               <svg class="h-100" style="cursor: pointer;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -448,6 +507,7 @@ export default {
         Place: null,
       },
       listMemberHasEmail: null,
+      titleInfor: null,
 
       searchKeyword: null,
       startHour: null,
@@ -759,6 +819,19 @@ export default {
             console.log(e);
           });
       }
+    },
+    getInforEventattendance(title) {
+      this.titleInfor = title;
+      HTTP.get("inforEventattendance", {
+        params: {
+          EventID: this.currentEventID,
+        },
+      }).then((respone) => {
+        if (respone.data.success) {
+          this.$modal.show("view-detail-mdl");
+          console.log(respone.data);
+        }
+      });
     },
     searchEvent() {
       HTTP.post("searchEvent", {

@@ -24,6 +24,8 @@ const initWebRouter = (app) => {
     router.get('/listMemberPhone', authMiddleware.authenticateAndAuthorize(1), EventManagementController.getListMemberHasPhone)
     router.get('/searchMemberEmail', authMiddleware.authenticateAndAuthorize(1), EventManagementController.searchMemberHasEmail)
     router.get('/searchMemberPhone', authMiddleware.authenticateAndAuthorize(1), EventManagementController.searchMemberHasPhone)
+    router.get('/inforEventattendance',authMiddleware.authenticateAndAuthorize(1),EventManagementController.getInforEventattendance)
+
     // router.get('/getEmail',EventManagementController)
 
     router.get('/birthday', authMiddleware.authenticateAndAuthorize(3), EventManagementController.GetBirthDayInMonth)
