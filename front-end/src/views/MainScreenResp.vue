@@ -2243,56 +2243,60 @@ export default {
         this.addMemberMarried();
       } else {
         console.log("vào add mare");
-        HTTP.post("member", {
-          CurrentMemberID: this.CurrentIdMember,
-          MemberName: this.objMemberInfor.MemberName,
-          NickName: this.objMemberInfor.NickName,
-          BirthOrder: this.objMemberInfor.BirthOrder,
-          Origin: this.objMemberInfor.Origin,
-          NationalityID: this.objMemberInfor.NationalityID,
-          ReligionID: this.objMemberInfor.ReligionID,
-          Dob: this.objMemberInfor.Dob,
-          LunarDob: this.objMemberInfor.LunarDob,
-          birthPlace: this.objMemberInfor.BirthPlace,
-          IsDead: this.IsDead,
-          Dod: this.objMemberInfor.Dod,
-          LunarDod: this.objMemberInfor.LunarDod,
-          PlaceOfDeath: this.objMemberInfor.PlaceOfDeath,
-          GraveSite: this.objMemberInfor.GraveSite,
-          Note: this.objMemberInfor.Note,
-          CurrentGeneration: this.generationMember,
-          BloodType: this.objMemberInfor.BloodType,
-          Male: this.objMemberInfor.Male,
-          CodeID: this.CodeID,
-          Action: this.action,
-        })
-          .then((response) => {
-            if (this.action == "AddNormal") {
-              this.getListUnspecifiedMembers();
-            }
-            if (response.data.success == true) {
-              this.isUpdateAvatar = false;
-              this.action = null;
-              this.$modal.hide("select-opts-mdl");
-              this.$modal.hide("view-member-mdl");
-              this.$modal.hide("select-opts-mdl");
-              console.log("getlist");
-              this.newIdMember = response.data.data.MemberID;
-              this.addContact();
-              if (this.generationMember == 1) {
-                this.CurrentIdMember = this.newIdMember;
-                this.setPaternalAncestor();
-              } else {
-                this.getListMember();
-              }
-              this.NotificationsScuccess(response.data.message);
-            } else {
-              this.NotificationsDelete(response.data.message);
-            }
+        if (this.objMemberInfor.Male == 0 && this.generationMember == 1) {
+          this.NotificationsDelete("Cụ tổ không thể thêm mẹ");
+        } else {
+          HTTP.post("member", {
+            CurrentMemberID: this.CurrentIdMember,
+            MemberName: this.objMemberInfor.MemberName,
+            NickName: this.objMemberInfor.NickName,
+            BirthOrder: this.objMemberInfor.BirthOrder,
+            Origin: this.objMemberInfor.Origin,
+            NationalityID: this.objMemberInfor.NationalityID,
+            ReligionID: this.objMemberInfor.ReligionID,
+            Dob: this.objMemberInfor.Dob,
+            LunarDob: this.objMemberInfor.LunarDob,
+            birthPlace: this.objMemberInfor.BirthPlace,
+            IsDead: this.IsDead,
+            Dod: this.objMemberInfor.Dod,
+            LunarDod: this.objMemberInfor.LunarDod,
+            PlaceOfDeath: this.objMemberInfor.PlaceOfDeath,
+            GraveSite: this.objMemberInfor.GraveSite,
+            Note: this.objMemberInfor.Note,
+            CurrentGeneration: this.generationMember,
+            BloodType: this.objMemberInfor.BloodType,
+            Male: this.objMemberInfor.Male,
+            CodeID: this.CodeID,
+            Action: this.action,
           })
-          .catch((e) => {
-            console.log(e);
-          });
+            .then((response) => {
+              if (this.action == "AddNormal") {
+                this.getListUnspecifiedMembers();
+              }
+              if (response.data.success == true) {
+                this.isUpdateAvatar = false;
+                this.action = null;
+                this.$modal.hide("select-opts-mdl");
+                this.$modal.hide("view-member-mdl");
+                this.$modal.hide("select-opts-mdl");
+                console.log("getlist");
+                this.newIdMember = response.data.data.MemberID;
+                this.addContact();
+                if (this.generationMember == 1) {
+                  this.CurrentIdMember = this.newIdMember;
+                  this.setPaternalAncestor();
+                } else {
+                  this.getListMember();
+                }
+                this.NotificationsScuccess(response.data.message);
+              } else {
+                this.NotificationsDelete(response.data.message);
+              }
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        }
       }
     },
     getRemainingEmail() {
