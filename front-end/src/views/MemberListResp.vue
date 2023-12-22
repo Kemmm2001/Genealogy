@@ -909,13 +909,14 @@ export default {
       this.filter();
     },
     updateEducationMember() {
-      HTTP.put("updateEducation", {
+      let data = {
         School: this.objMemberEducation.School,
         Description: this.objMemberEducation.Description,
         StartDate: this.objMemberEducation.StartDate,
         EndDate: this.objMemberEducation.EndDate,
         EducationID: this.EducationIdToUpdate,
-      }).then(() => {
+      };
+      HTTP.put("updateEducation", data).then(() => {
         this.getListEducationMember();
         this.NotificationsScuccess("Sửa thông tin giáo dục thành công");
         this.refreshInputJobAndEducation();
@@ -953,7 +954,7 @@ export default {
       }
     },
     updateJobMember() {
-      HTTP.put("updateJob", {
+      let data = {
         JobID: this.JobIDToUpdate,
         Organization: this.objMemberJob.Organization,
         OrganizationAddress: this.objMemberJob.OrganizationAddress,
@@ -961,7 +962,8 @@ export default {
         JobName: this.objMemberJob.JobName,
         StartDate: this.objMemberJob.StartDate,
         EndDate: this.objMemberJob.EndDate,
-      }).then(() => {
+      };
+      HTTP.put("updateJob", data).then(() => {
         this.getListJobMember();
         this.NotificationsScuccess("Sửa thông tin nghề nghiệp thành công");
         this.refreshInputJobAndEducation();
@@ -974,7 +976,7 @@ export default {
         this.objMemberContact.Address =
           this.objMemberContact.Address + "-" + this.selectDistrictMember;
       }
-      HTTP.put("member", {
+      let data = {
         MemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
         NickName: this.objMemberInfor.NickName,
@@ -996,7 +998,8 @@ export default {
         Male: this.objMemberInfor.Male,
         CodeID: this.CodeID,
         Action: this.action,
-      })
+      };
+      HTTP.put("member", data)
         .then((response) => {
           if (response.data.success == true) {
             this.isUpdateAvatar = false;
@@ -1004,14 +1007,15 @@ export default {
             if (this.objMemberContact.Phone != null) {
               this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
             }
-            HTTP.put("updateContact", {
+            data = {
               MemberID: this.CurrentIdMember,
               Address: this.objMemberContact.Address,
               Phone: this.objMemberContact.Phone,
               Email: this.objMemberContact.Email,
               FacebookUrl: this.objMemberContact.FacebookUrl,
               Zalo: this.objMemberContact.Zalo,
-            }).then(() => {
+            };
+            HTTP.put("updateContact", data).then(() => {
               this.$modal.hide("view-member-mdl");
               this.getListMemberInGenalogy();
             });
@@ -1058,10 +1062,11 @@ export default {
     },
     getInforMember(id) {
       this.CurrentIdMember = id;
+      let params = {
+        memberId: id,
+      };
       HTTP.get("InforMember", {
-        params: {
-          memberId: id,
-        },
+        params
       })
         .then((response) => {
           this.objMember = response.data.data;
@@ -1230,10 +1235,11 @@ export default {
     },
 
     getListMemberInGenalogy() {
+      let params = {
+        CodeID: this.CodeID,
+      };
       HTTP.get("membersInGenealogy", {
-        params: {
-          CodeID: this.CodeID,
-        },
+        params
       }).then((response) => {
         if (response.data.success == true) {
           this.memberList = response.data.data;
@@ -1261,10 +1267,11 @@ export default {
     },
     getMemberRole() {
       try {
-        HTTP.post("roleAccount", {
+        let data = {
           accountID: localStorage.getItem("accountID"),
           codeID: localStorage.getItem("CodeID"),
-        })
+        };
+        HTTP.post("roleAccount", data)
           .then((response) => {
             if (response.data.success == true) {
               this.memberRole = response.data.data.RoleID;
