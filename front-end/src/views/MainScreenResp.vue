@@ -1277,7 +1277,39 @@ export default {
     getViewBox() {
       return this.family.getViewBox();
     },
-    importData() {},
+    ImportMember() {
+      let formData = new FormData();
+      formData.append("xlsx", this.fileBackup);
+      let id = this.nodes.map((item) => item.id);
+      HTTP.post("clear-tree", {
+        memberIDs: id,
+      }).then((respone) => {
+        if (respone.data.success) {
+          HTTP.post("import", formData)
+            .then((respone) => {
+              console.log(respone.data);
+              if (respone.data.success) {
+                this.NotificationsScuccess(respone.data.message);
+                this.setDefautAction();
+                this.getListMember();
+                this.getListUnspecifiedMembers();
+                this.closeModalAddMemberFromList();
+                this.getListMemberHasPhone();
+                this.getListMemberHasEmail();
+                this.closeCfDelModal();
+                this.fileBackup = null;
+              } else {
+                this.NotificationsDelete(respone.data.message);
+              }
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        } else {
+          this.NotificationsDelete("có lỗi sẩy ra");
+        }
+      });
+    },
     //Nguyễn Lê Hùng
     BackUpdata() {
       let id = this.nodes.map((item) => item.id);
@@ -2016,30 +2048,6 @@ export default {
           });
       }
     },
-    ImportMember() {
-      let formData = new FormData();
-      formData.append("xlsx", this.fileBackup);
-      HTTP.post("import", formData)
-        .then((respone) => {
-          console.log(respone.data);
-          if (respone.data.success) {
-            this.NotificationsScuccess(respone.data.message);
-            this.setDefautAction();
-            this.getListMember();
-            this.getListUnspecifiedMembers();
-            this.closeModalAddMemberFromList();
-            this.getListMemberHasPhone();
-            this.getListMemberHasEmail();
-            this.closeCfDelModal();
-            this.fileBackup = null;
-          } else {
-            this.NotificationsDelete(respone.data.message);
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
 
     getFileImportMember(event) {
       this.fileBackup = event.target.files[0];
@@ -2091,6 +2099,35 @@ export default {
         this.heightLarger = true;
       }
     },
+    addContact() {
+      if (
+        this.objMemberContact.Phone != null ||
+        this.objMemberContact.Address != null ||
+        this.objMemberContact.Email != null ||
+        this.FacebookUrl != null ||
+        this.objMemberContact.Zalo != null
+      ) {
+        this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
+        HTTP.post("addContact", {
+          memberId: this.newIdMember,
+          Address: this.objMemberContact.Address,
+          Phone: this.objMemberContact.Phone,
+          Email: this.objMemberContact.Email,
+          FacebookUrl: this.objMemberContact.FacebookUrl,
+          Zalo: this.objMemberContact.Zalo,
+        })
+          .then((response) => {
+            if (response.data.success == true) {
+              this.getListMemberHasPhone();
+              this.getListMemberHasEmail();
+              this.selectDistrictMember = null;
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
+    },
     //Nguyễn Lê Hùng
     addMemberChild(FatherID, MotherID) {
       HTTP.post("add-child", {
@@ -2130,33 +2167,7 @@ export default {
           }
           this.newIdMember = response.data.data.MemberID;
           console.log("newIdMember: " + this.newIdMember);
-          if (
-            this.objMemberContact.Phone != null ||
-            this.objMemberContact.Address != null ||
-            this.objMemberContact.Email != null ||
-            this.FacebookUrl != null ||
-            this.objMemberContact.Zalo != null
-          ) {
-            this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
-            HTTP.post("addContact", {
-              memberId: this.newIdMember,
-              Address: this.objMemberContact.Address,
-              Phone: this.objMemberContact.Phone,
-              Email: this.objMemberContact.Email,
-              FacebookUrl: this.objMemberContact.FacebookUrl,
-              Zalo: this.objMemberContact.Zalo,
-            })
-              .then((response) => {
-                if (response.data.success == true) {
-                  this.getListMemberHasPhone();
-                  this.getListMemberHasEmail();
-                  this.selectDistrictMember = null;
-                }
-              })
-              .catch((e) => {
-                console.log(e);
-              });
-          }
+          this.addContact();
         })
         .catch((e) => {
           console.log(e);
@@ -2202,33 +2213,7 @@ export default {
             this.NotificationsDelete(response.data.message);
           }
           this.newIdMember = response.data.data.MemberID;
-          if (
-            this.objMemberContact.Phone != null ||
-            this.objMemberContact.Address != null ||
-            this.objMemberContact.Email != null ||
-            this.FacebookUrl != null ||
-            this.objMemberContact.Zalo != null
-          ) {
-            this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
-            HTTP.post("addContact", {
-              memberId: this.newIdMember,
-              Address: this.objMemberContact.Address,
-              Phone: this.objMemberContact.Phone,
-              Email: this.objMemberContact.Email,
-              FacebookUrl: this.objMemberContact.FacebookUrl,
-              Zalo: this.objMemberContact.Zalo,
-            })
-              .then((response) => {
-                if (response.data.success == true) {
-                  this.getListMemberHasPhone();
-                  this.getListMemberHasEmail();
-                  this.selectDistrictMember = null;
-                }
-              })
-              .catch((e) => {
-                console.log(e);
-              });
-          }
+          this.addContact();
         })
         .catch((e) => {
           console.log(e);
@@ -2292,38 +2277,17 @@ export default {
               this.$modal.hide("view-member-mdl");
               this.$modal.hide("select-opts-mdl");
               console.log("getlist");
-              this.getListMember();
+              this.newIdMember = response.data.data.MemberID;
+              this.addContact();
+              if (this.generationMember == 1) {
+                this.CurrentIdMember = this.newIdMember;
+                this.setPaternalAncestor();
+              } else {
+                this.getListMember();
+              }
               this.NotificationsScuccess(response.data.message);
             } else {
               this.NotificationsDelete(response.data.message);
-            }
-            this.newIdMember = response.data.data.MemberID;
-            if (
-              this.objMemberContact.Phone != null ||
-              this.objMemberContact.Address != null ||
-              this.objMemberContact.Email != null ||
-              this.FacebookUrl != null ||
-              this.objMemberContact.Zalo != null
-            ) {
-              this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
-              HTTP.post("addContact", {
-                memberId: this.newIdMember,
-                Address: this.objMemberContact.Address,
-                Phone: this.objMemberContact.Phone,
-                Email: this.objMemberContact.Email,
-                FacebookUrl: this.objMemberContact.FacebookUrl,
-                Zalo: this.objMemberContact.Zalo,
-              })
-                .then((response) => {
-                  if (response.data.success == true) {
-                    this.getListMemberHasPhone();
-                    this.getListMemberHasEmail();
-                    this.selectDistrictMember = null;
-                  }
-                })
-                .catch((e) => {
-                  console.log(e);
-                });
             }
           })
           .catch((e) => {

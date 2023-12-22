@@ -55,7 +55,7 @@ const clearTree = async function (req, res) {
 var importData = async function (req, res) {
   try {
     const file = req.file.path;
-    let codeID = req.body.codeID;
+    let codeID = req.payload.codeId;
     console.log('codeID: ' + codeID)
     let doesExist = await UserService.checkCodeID(codeID);
     if (doesExist > 0) {
