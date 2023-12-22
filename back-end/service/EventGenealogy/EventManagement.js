@@ -75,6 +75,24 @@ function searchMemberHasPhone(CodeID, keySearch) {
     })
 }
 
+function updateTimeEventattendance(EventID, datetime) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `UPDATE eventfamily SET FormEndDate = '${datetime}' WHERE EventID = ${EventID}`;
+            console.log(query )
+            db.connection.query(query, (err) => {
+                if (!err) {
+                    resolve(true)
+                } else {
+                    resolve(false)
+                }
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 function getInforEventattendance(EventID) {
     return new Promise((resolve, reject) => {
         try {
@@ -500,5 +518,6 @@ module.exports = {
     getInformationEvent, getListEmail, getCodeID, updateStatusEvent,
     getEventAttendance, getListEmailAndMemberID, getListEventNotificationSent,
     NumberOfRemainingSMSSSends, NumberOfRemainingEmailSends, getListMemberHasEmail,
-    getListMemberHasPhone, searchMemberHasEmail, searchMemberHasPhone, getInforEventattendance
+    getListMemberHasPhone, searchMemberHasEmail, searchMemberHasPhone, getInforEventattendance,
+    updateTimeEventattendance
 }

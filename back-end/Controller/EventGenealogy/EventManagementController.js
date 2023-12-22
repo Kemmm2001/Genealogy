@@ -92,6 +92,22 @@ var getInforEventattendance = async (req, res) => {
     }
 }
 
+var updateTimeEventattendance = async (req, res) => {
+    try {
+        console.log('req: ' + req.body)
+        let EventID = req.body.EventID;
+        let datetime = req.body.NewDateTime;
+        let result = await EventManagementService.updateTimeEventattendance(EventID, datetime)
+        if (result) {
+            return res.send(Response.successResponse())
+        } else {
+            return res.send(Response.internalServerErrorResponse())
+        }
+    } catch (error) {
+        return res.send(Response.internalServerErrorResponse())
+    }
+}
+
 
 var getListMemberHasEmail = async (req, res) => {
     try {
@@ -678,24 +694,26 @@ var inviteMail = async (req, res) => {
             return res.send(Response.internalServerErrorResponse())
         }
 
-        for (let i = 0; i < memberIds.length; i++) {
-            const memberId = memberIds[i];
-            const token = await signInviteToken(memberId, eventId, time);
+        if (memberIds.length > 0) {
+            for (let i = 0; i < memberIds.length; i++) {
+                const memberId = memberIds[i];
+                const token = await signInviteToken(memberId, eventId, time);
 
-            const data = await EventAttendence.Update(memberId, token);
-            const link = `${frontEndURL}/CfEvent?token=${token}`;
-            console.log('link:::::::: ' + link)
-            if (data === true) {
-                const mailOptions = {
-                    to: emails[i],
-                    subject: 'Your Invite Link',
-                    text: `Here is your invite link: ${link}`,
-                    html: `<p>Bạn có thông báo mới về sự kiện sắp diễn ra. Click <a href="${link}">here</a> để biết thêm chi tiết.</p>`,
-                };
-                SystemAction.SendEmailCore(mailOptions);
-                console.log(`Token generated for member ${memberId}: ${token}`);
-            } else {
-                return res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống'));
+                const data = await EventAttendence.Update(memberId, token);
+                const link = `${frontEndURL}/CfEvent?token=${token}`;
+                console.log('link:::::::: ' + link)
+                if (data === true) {
+                    const mailOptions = {
+                        to: emails[i],
+                        subject: 'Your Invite Link',
+                        text: `Here is your invite link: ${link}`,
+                        html: `<p>Bạn có thông báo mới về sự kiện sắp diễn ra. Click <a href="${link}">here</a> để biết thêm chi tiết.</p>`,
+                    };
+                    SystemAction.SendEmailCore(mailOptions);
+                    console.log(`Token generated for member ${memberId}: ${token}`);
+                } else {
+                    return res.send(Response.internalServerErrorResponse(null, 'Lỗi hệ thống'));
+                }
             }
         }
         return res.send(Response.successResponse(null, 'Đã gửi mail mời mọi người'));
@@ -791,5 +809,5 @@ module.exports = {
     , addAttendence, inviteMail, verifyMail, ReadXLSX, updateStatusEventGenealogy, getEventAttendance,
     getListMemberIDAndEmail, getEventByToken, checkConfirmedEvent, UpdateIsGoing, getListEventNotificationSent,
     getNumberRemainingSMSSendss, getNumberRemainingEmailSends, getListMemberHasEmail, getListMemberHasPhone,
-    searchMemberHasEmail, searchMemberHasPhone, getInforEventattendance
+    searchMemberHasEmail, searchMemberHasPhone, getInforEventattendance, updateTimeEventattendance
 }
