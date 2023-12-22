@@ -24,6 +24,9 @@ const initWebRouter = (app) => {
     router.get('/listMemberPhone', authMiddleware.authenticateAndAuthorize(1), EventManagementController.getListMemberHasPhone)
     router.get('/searchMemberEmail', authMiddleware.authenticateAndAuthorize(1), EventManagementController.searchMemberHasEmail)
     router.get('/searchMemberPhone', authMiddleware.authenticateAndAuthorize(1), EventManagementController.searchMemberHasPhone)
+    router.get('/inforEventattendance',authMiddleware.authenticateAndAuthorize(1),EventManagementController.getInforEventattendance)
+    router.put('/updateTimeEvent',authMiddleware.authenticateAndAuthorize(1),EventManagementController.updateTimeEventattendance)
+
     // router.get('/getEmail',EventManagementController)
 
     router.get('/birthday', authMiddleware.authenticateAndAuthorize(3), EventManagementController.GetBirthDayInMonth)
@@ -42,7 +45,7 @@ const initWebRouter = (app) => {
     //API Nhật anh  
     router.post('/filter-event', authMiddleware.authenticateAndAuthorize(3), EventManagementController.filterEvent);
     router.post('/addAttendence', authMiddleware.authenticateAndAuthorize(2), EventManagementController.addAttendence)
-    router.post('/inviteMail', authMiddleware.authenticateAndAuthorize(2), EventManagementController.inviteMail)
+    router.post('/inviteMail', authMiddleware.authenticateAndAuthorize(1), EventManagementController.inviteMail)
     router.post('/verify-invite', EventManagementController.verifyMail)
     router.get('/getEventByToken', authMiddleware.authenticateAndAuthorize(3), EventManagementController.getEventByToken)
     //Tiền tố đứng trước route

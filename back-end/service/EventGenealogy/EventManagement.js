@@ -75,6 +75,44 @@ function searchMemberHasPhone(CodeID, keySearch) {
     })
 }
 
+function updateTimeEventattendance(EventID, datetime) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `UPDATE eventfamily SET FormEndDate = '${datetime}' WHERE EventID = ${EventID}`;
+            console.log(query )
+            db.connection.query(query, (err) => {
+                if (!err) {
+                    resolve(true)
+                } else {
+                    resolve(false)
+                }
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+function getInforEventattendance(EventID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let query = `SELECT et.MemberID,ef.FormEndDate FROM genealogy.eventattendance as et
+            inner join eventfamily as ef
+            on et.EventID = ef.EventID
+             WHERE ef.EventID = ${EventID}`;
+            db.connection.query(query, (err, result) => {
+                if (!err && result.length > 0) {
+                    resolve(result)
+                } else {
+                    resolve(false)
+                }
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 
 //Nguyễn Lê Hùng
 function searchMemberHasEmail(CodeID, keySearch) {
@@ -480,5 +518,6 @@ module.exports = {
     getInformationEvent, getListEmail, getCodeID, updateStatusEvent,
     getEventAttendance, getListEmailAndMemberID, getListEventNotificationSent,
     NumberOfRemainingSMSSSends, NumberOfRemainingEmailSends, getListMemberHasEmail,
-    getListMemberHasPhone, searchMemberHasEmail, searchMemberHasPhone
+    getListMemberHasPhone, searchMemberHasEmail, searchMemberHasPhone, getInforEventattendance,
+    updateTimeEventattendance
 }

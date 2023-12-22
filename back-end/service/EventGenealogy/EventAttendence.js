@@ -62,6 +62,24 @@ function Update(memberId, token) {
   });
 }
 
+function UpdateFormEndDate(FormEndDate, EventID) {
+  return new Promise((resolve, reject) => {
+    try {
+      let query = `UPDATE eventfamily SET FormEndDate = '${FormEndDate}' WHERE EventID = ${EventID}`;
+      console.log('query: ' + query)
+      db.connection.query(query, (err) => {
+        if (err) {
+          resolve(false)
+        } else {
+          resolve(true)
+        }
+      })
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
 function checkToken(token) {
   return new Promise((resolve, reject) => {
     const query = `SELECT COUNT(*) AS count FROM genealogy.account WHERE RePassToken = ?`;
@@ -80,18 +98,41 @@ function checkToken(token) {
 
 function checkTokenEvent(token) {
   return new Promise((resolve, reject) => {
-    const query = `SELECT COUNT(*) AS count FROM genealogy.eventattendance WHERE Token = ?`;
+    let query = `SELECT COUNT(*) AS count FROM genealogy.eventattendance WHERE Token = ?`;
     db.connection.query(query, [token], (err, results) => {
       if (err) {
         console.log(err)
         reject(err);
 
       } else {
-        const count = results[0].count;
+        let count = results[0].count;
         resolve(count);
       }
     });
   });
+}
+
+function checkExpairEvent(eventId) {
+  return new Promise((resolve, reject) => {
+    try {
+      let query = `SELECT FormEndDate FROM genealogy.eventfamily where EventID = ${eventId}`;
+      db.connection.query(query, (err, result) => {
+        if (!err) {
+          let endDate = new Date(result[0].FormEndDate);
+          let currentDate = new Date();
+          if (endDate > currentDate) {
+            resolve(true)
+          } else {
+            resolve(false)
+          }
+        } else {
+          resolve(false)
+        }
+      })
+    } catch (error) {
+      reject(error)
+    }
+  })
 }
 
 function UpdateIsGoing(memberId, eventId, IsGoing) {
@@ -125,4 +166,7 @@ function DeleteToken(memberId, eventId) {
   });
 }
 
-module.exports = { insertMemberAttend, checkEventID, Update, checkToken, checkTokenEvent, UpdateIsGoing, checkConfirmedEvent, DeleteToken }
+module.exports = {
+  insertMemberAttend, checkEventID, Update, checkToken, checkTokenEvent,
+  UpdateIsGoing, checkConfirmedEvent, DeleteToken, UpdateFormEndDate,checkExpairEvent
+}

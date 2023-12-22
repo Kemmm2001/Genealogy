@@ -19,7 +19,7 @@ const initWebRouter = (app) => {
     router.get('/religion',authMiddleware.authenticateAndAuthorize(3), ManagerFamilyTree.AllReligion)
     router.get('/agegroup',authMiddleware.authenticateAndAuthorize(3), FamilyMemberManagement.getListAgeGroup)
     router.get('/bloodtype',authMiddleware.authenticateAndAuthorize(3), FamilyMemberManagement.getListBloodTypeGroup)
-    router.get('/membersInGenealogy',authMiddleware.authenticateAndAuthorize(3), FamilyMemberManagement.getAllMembersInGenalogy)
+    router.get('/membersInGenealogy', FamilyMemberManagement.getAllMembersInGenalogy)
 
     router.get('/InforMember',authMiddleware.authenticateAndAuthorize(3), ManagerFamilyTree.informationMember)    
     router.post('/setRole',authMiddleware.authenticateAndAuthorize(2), ManagerFamilyTree.setRole)

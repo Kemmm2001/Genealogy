@@ -183,7 +183,7 @@ table{
     margin: 4px 0 0 4px;
 }
 
-.edit-member-body{
+/* .edit-member-body{
     display: grid;
     grid-template-columns: 20% 80%;
     height: 100%;
@@ -192,7 +192,29 @@ table{
 .edit-member-body .content{
     display: grid;
     grid-template-columns: 30% 70%;
+} */
+
+
+.main-grid-container .view-member-body{
+    display: flex !important;
 }
+
+.main-grid-container .view-member-body input:not([type=checkbox]),
+.main-grid-container .view-member-body select{
+    font-size: 100% !important;
+    height: 100% !important;
+}
+
+.main-grid-container .view-member-body label{
+    height: fit-content !important;
+}
+
+.main-grid-container .view-member-body .vue-phone-number-input,
+.main-grid-container .view-member-body .country-selector,
+.main-grid-container .view-member-body .input-phone-number{
+    height: 100%;
+}
+
 
 @media (min-width: 900px) {
     .members-grid-container{

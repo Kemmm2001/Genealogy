@@ -180,7 +180,7 @@ export default {
         },
       })
         .then((respone) => {
-          console.log(respone.data.success);
+          console.log('success: ' + respone.data.success);
           if (respone.data.success == true) {
             this.isExpired = false;
             this.eventId = respone.data.data.eventId;
@@ -188,7 +188,6 @@ export default {
             this.getInforEvent();
           } else {
             this.isExpired = true;
-            
           }
           console.log(this.isExpired);
         })
