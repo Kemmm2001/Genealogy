@@ -27,8 +27,6 @@ function encrypt(message) {
     }
   ).toString();
 
-  console.log('Encrypted:', encrypted);
-
   return encrypted;
 }
 

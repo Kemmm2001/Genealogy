@@ -623,7 +623,7 @@
                       <label class="form-label" for="input" :class="{ 'active': objMemberInfor.Origin }">Nguyên Quán</label>
                     </div>
                     <div class="form-group">
-                      <div style=" height: 20px">Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược lại) </div>
+                      <div style=" height: 20px">Ngày Sinh (Hệ thống sẽ tự đổi từ ngày dương lịch sang âm lịch và ngược lại)</div>
                       <div style="display:flex">
                         <div style="position: relative; width: 50%;margin-right: 10px;">
                           <input v-model="objMemberInfor.Dob" type="date" class="form-control modal-item" placeholder @change="convertSolarToLunar('live')" />
@@ -2240,7 +2240,6 @@ export default {
                   console.log(e);
                 });
             }
-            
           })
           .catch((e) => {
             console.log(e);
@@ -2685,7 +2684,7 @@ export default {
       let foundNode = this.nodes.find((node) => node.id == id);
       this.CurrentIdToLinkRelationship = foundNode.id;
       this.getLinkRelationship(foundNode);
-      console.log( 'parentRelationship: ' + this.parentRelationship);
+      console.log("parentRelationship: " + this.parentRelationship);
       if (foundNode.gender == "female") {
         this.isFather = false;
       } else {
@@ -2871,17 +2870,17 @@ export default {
                     }
                   }
                 }
-                
+
                 this.nodes[0].tags.push("great-grandfather");
                 this.nodes[0].isGG = "true";
                 this.family.config.nodes = this.nodes;
-                 console.log(this.family.config.nodes)
-                 this.family.config.roots = this.nodes[0].id
-                
-                console.log(1)
+                console.log(this.family.config.nodes);
+                this.family.config.roots = this.nodes[0].id;
+
+                console.log(1);
                 this.family.draw();
-                console.log(this.family.config.nodes)
-                console.log(1)
+                console.log(this.family.config.nodes);
+                console.log(1);
                 //  this.mytree(this.$refs.tree, this.nodes);
               }
               //  this.family.load(this.nodes);
