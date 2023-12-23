@@ -2224,7 +2224,10 @@ export default {
     },
     //Nguyễn Lê Hùng
     addMember() {
-      let result = this.isEmailValid(this.objMemberContact.Email);
+      let result = true;
+      if (this.objMemberContact.Email) {
+        result = this.isEmailValid(this.objMemberContact.Email);
+      }
       if (result) {
         console.log("Token: " + VueCookies.get("accessToken"));
         let FatherID;
@@ -2405,7 +2408,10 @@ export default {
     },
     //Nguyễn Lê Hùng
     updateInformation() {
-      let result = this.isEmailValid(this.objMemberContact.Email);
+      let result = true;
+      if (this.objMemberContact.Email) {
+        result = this.isEmailValid(this.objMemberContact.Email);
+      }
       if (result) {
         if (this.objMemberInfor.BirthOrder == null) {
           console.log("vào đây");
@@ -2451,6 +2457,8 @@ export default {
                   "+84" + this.objMemberContact.Phone;
               }
               console.log("CurrentIdMember: " + this.CurrentIdMember);
+              this.closeMemberModal();
+              this.getListMember();
               HTTP.put("updateContact", {
                 MemberID: this.CurrentIdMember,
                 Address: this.objMemberContact.Address,
@@ -2463,8 +2471,6 @@ export default {
                   if (respone.data.success == true) {
                     this.checkUpdate = true;
                     console.log("vào đâyyyy");
-                    this.closeMemberModal();
-                    this.getListMember();
                     this.getListMemberHasPhone();
                     this.getListMemberHasEmail();
                   }
