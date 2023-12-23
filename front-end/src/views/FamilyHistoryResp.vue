@@ -24,8 +24,8 @@
         <input @change="filterHistory()" v-model="filterEndDate" class="form-control content-display" type="date" />
       </div>
       <div class="pb-2 px-2 d-flex justify-content-center content-display" style="max-height: 56px;">
-        <div v-if="memberRole != 3" @click="showAddHistoryModal('Thêm lịch sử dòng họ', 'add')" class="btn bg-primary text-white" style="margin-right: 10px;">Thêm</div>
-        <div @click="resertHistory()" class="btn bg-primary text-white">Làm mới</div>
+        <div v-if="memberRole != 3" @click="showAddHistoryModal('Thêm lịch sử dòng họ', 'add')" class="btn bg-primary text-white d-flex align-items-center" style="margin-right: 10px;">Thêm</div>
+        <div @click="resertHistory()" class="btn bg-primary text-white d-flex align-items-center">Làm mới</div>
       </div>
     </div>
     <div class="content">
