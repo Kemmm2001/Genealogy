@@ -1283,31 +1283,27 @@ export default {
       let id = this.nodes.map((item) => item.id);
       HTTP.post("clear-tree", {
         memberIDs: id,
-      }).then((respone) => {
-        if (respone.data.success) {
-          HTTP.post("import", formData)
-            .then((respone) => {
-              console.log(respone.data);
-              if (respone.data.success) {
-                this.NotificationsScuccess(respone.data.message);
-                this.setDefautAction();
-                this.getListMember();
-                this.getListUnspecifiedMembers();
-                this.closeModalAddMemberFromList();
-                this.getListMemberHasPhone();
-                this.getListMemberHasEmail();
-                this.closeCfDelModal();
-                this.fileBackup = null;
-              } else {
-                this.NotificationsDelete(respone.data.message);
-              }
-            })
-            .catch((e) => {
-              console.log(e);
-            });
-        } else {
-          this.NotificationsDelete("có lỗi sẩy ra");
-        }
+      }).then(() => {
+        HTTP.post("import", formData)
+          .then((respone) => {
+            console.log(respone.data);
+            if (respone.data.success) {
+              this.NotificationsScuccess(respone.data.message);
+              this.setDefautAction();
+              this.getListMember();
+              this.getListUnspecifiedMembers();
+              this.closeModalAddMemberFromList();
+              this.getListMemberHasPhone();
+              this.getListMemberHasEmail();
+              this.closeCfDelModal();
+              this.fileBackup = null;
+            } else {
+              this.NotificationsDelete(respone.data.message);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
       });
     },
     //Nguyễn Lê Hùng
@@ -1891,7 +1887,7 @@ export default {
             // this.nodes.length = this.nodes.length - 1;
             this.removeFromSelectedNodes(this.CurrentIdMember);
             this.NotificationsScuccess(response.data.message);
-            
+
             this.$modal.hide("select-opts-mdl");
             this.$modal.hide("view-member-mdl");
             this.getListMember();
@@ -2604,8 +2600,8 @@ export default {
         })
           .then((response) => {
             this.ListUnspecifiedMembers = response.data;
-            console.log("111111111")
-            console.log(this.ListUnspecifiedMembers)
+            console.log("111111111");
+            console.log(this.ListUnspecifiedMembers);
           })
           .catch((e) => {
             console.log(e);

@@ -4,7 +4,7 @@ const Response = require('../Utils/Response')
 
 module.exports = {
     authenticateAndAuthorize: (requiredRole) => {
-        return async (req, res, next) => {
+        return async (req, res, next) => {           
             try {
                 jwtUtils.verifyGenealogyToken(req, res, async (error) => {
                     if (error) {
