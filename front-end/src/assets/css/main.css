@@ -167,6 +167,10 @@
     .main-grid-container .relation-container input{
         height: 54px;
     }
+
+    .main-grid-container .relation-container .mdl-title{
+        height: 64px;
+    }
 }
 /* 
 @media (max-width: 1540px){

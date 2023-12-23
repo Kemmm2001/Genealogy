@@ -738,8 +738,12 @@
                     </div>
                   </div>
                   <div style="display:flex">
-                    <div class="pb-2 pe-1" style="position: relative; width: 50%;">
-                      <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" v-bind="props"></VuePhoneNumberInput>
+                    <div class="pb-2 pe-1 d-flex" style="position: relative; width: 50%;">
+                      <!-- <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" v-bind="props"></VuePhoneNumberInput> -->
+                      <div class="col-2 d-flex align-items-center justify-content-center">(+84)</div>
+                      <div class="col-10">
+                        <input class="form-control modal-item w-100 h-100" type="text"/>
+                      </div>
                     </div>
                     <div class="pb-2 ps-1" style="position: relative;width: 50%;">
                       <input v-model="objMemberContact.Email" type="email" class="form-control modal-item" placeholder />
@@ -943,27 +947,27 @@ import { HTTP } from "../assets/js/baseAPI.js";
 import { LunarDate } from "vietnamese-lunar-calendar";
 import { convertLunar2Solar } from "vietnamese-lunar-calendar/build/solar-lunar";
 import { getLocalTimezone } from "vietnamese-lunar-calendar/build/solar-lunar/utils";
-import VuePhoneNumberInput from "vue-phone-number-input";
+// import VuePhoneNumberInput from "vue-phone-number-input";
 import "vue-phone-number-input/dist/vue-phone-number-input.css";
 
 export default {
   components: {
-    VuePhoneNumberInput,
+    // VuePhoneNumberInput,
   },
-  data() {
+  data() {      
     return {
-      props: {
-        clearable: true,
-        fetchCountry: true,
-        preferredCountries: ["US", "GB"],
-        noExample: false,
-        translations: {
-          countrySelectorLabel: "Country code",
-          countrySelectorError: "Error",
-          phoneNumberLabel: "Nhập số điện thoại",
-          example: "Example:",
-        },
-      },
+        // props: {
+  //       clearable: true,
+  //       fetchCountry: true,
+  //       preferredCountries: ["US", "GB"],
+  //       noExample: false,
+  //       translations: {
+  //         countrySelectorLabel: "Country code",
+  //         countrySelectorError: "Error",
+  //         phoneNumberLabel: "Nhập số điện thoại",
+  //         example: "Example:",
+  //       },
+  //     },
       idParent: null,
       ResultRelationship: null,
       ListCity: null,
