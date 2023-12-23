@@ -52,7 +52,7 @@
             <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto; flex-grow: 1; cursor: pointer">
               <div v-for="list in ListUnspecifiedMembers" :key="list.id" @click="handleLeftClickUnspecifiedMembers(list.MemberID)" class="list-item ellipsis-text w-100">{{ list.MemberName }}</div>
             </div>
-            <div class="center-content" v-if="nodes.length == 0">Danh sách chưa có thành viên</div>
+            <div class="center-content" v-if="ListUnspecifiedMembers.length == 0">Danh sách chưa có thành viên</div>
           </div>
         </div>
       </div>
@@ -1277,7 +1277,39 @@ export default {
     getViewBox() {
       return this.family.getViewBox();
     },
-    importData() {},
+    ImportMember() {
+      let formData = new FormData();
+      formData.append("xlsx", this.fileBackup);
+      let id = this.nodes.map((item) => item.id);
+      HTTP.post("clear-tree", {
+        memberIDs: id,
+      }).then((respone) => {
+        if (respone.data.success) {
+          HTTP.post("import", formData)
+            .then((respone) => {
+              console.log(respone.data);
+              if (respone.data.success) {
+                this.NotificationsScuccess(respone.data.message);
+                this.setDefautAction();
+                this.getListMember();
+                this.getListUnspecifiedMembers();
+                this.closeModalAddMemberFromList();
+                this.getListMemberHasPhone();
+                this.getListMemberHasEmail();
+                this.closeCfDelModal();
+                this.fileBackup = null;
+              } else {
+                this.NotificationsDelete(respone.data.message);
+              }
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        } else {
+          this.NotificationsDelete("có lỗi sẩy ra");
+        }
+      });
+    },
     //Nguyễn Lê Hùng
     BackUpdata() {
       let id = this.nodes.map((item) => item.id);
@@ -1806,7 +1838,7 @@ export default {
         });
     },
     //Nguyễn Lê Hùng
-    removeMember() {
+    async removeMember() {
       HTTP.get("deleteContact", {
         params: {
           MemberID: this.CurrentIdMember,
@@ -1859,13 +1891,14 @@ export default {
             // this.nodes.length = this.nodes.length - 1;
             this.removeFromSelectedNodes(this.CurrentIdMember);
             this.NotificationsScuccess(response.data.message);
-            this.getListUnspecifiedMembers();
+            
             this.$modal.hide("select-opts-mdl");
             this.$modal.hide("view-member-mdl");
             this.getListMember();
             this.closeCfDelModal();
             this.getListMemberHasPhone();
             this.getListMemberHasEmail();
+            this.getListUnspecifiedMembers();
           } else {
             this.NotificationsDelete(response.data.message);
           }
@@ -2016,30 +2049,6 @@ export default {
           });
       }
     },
-    ImportMember() {
-      let formData = new FormData();
-      formData.append("xlsx", this.fileBackup);
-      HTTP.post("import", formData)
-        .then((respone) => {
-          console.log(respone.data);
-          if (respone.data.success) {
-            this.NotificationsScuccess(respone.data.message);
-            this.setDefautAction();
-            this.getListMember();
-            this.getListUnspecifiedMembers();
-            this.closeModalAddMemberFromList();
-            this.getListMemberHasPhone();
-            this.getListMemberHasEmail();
-            this.closeCfDelModal();
-            this.fileBackup = null;
-          } else {
-            this.NotificationsDelete(respone.data.message);
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
 
     getFileImportMember(event) {
       this.fileBackup = event.target.files[0];
@@ -2091,6 +2100,35 @@ export default {
         this.heightLarger = true;
       }
     },
+    addContact() {
+      if (
+        this.objMemberContact.Phone != null ||
+        this.objMemberContact.Address != null ||
+        this.objMemberContact.Email != null ||
+        this.FacebookUrl != null ||
+        this.objMemberContact.Zalo != null
+      ) {
+        this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
+        HTTP.post("addContact", {
+          memberId: this.newIdMember,
+          Address: this.objMemberContact.Address,
+          Phone: this.objMemberContact.Phone,
+          Email: this.objMemberContact.Email,
+          FacebookUrl: this.objMemberContact.FacebookUrl,
+          Zalo: this.objMemberContact.Zalo,
+        })
+          .then((response) => {
+            if (response.data.success == true) {
+              this.getListMemberHasPhone();
+              this.getListMemberHasEmail();
+              this.selectDistrictMember = null;
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
+    },
     //Nguyễn Lê Hùng
     addMemberChild(FatherID, MotherID) {
       HTTP.post("add-child", {
@@ -2130,33 +2168,7 @@ export default {
           }
           this.newIdMember = response.data.data.MemberID;
           console.log("newIdMember: " + this.newIdMember);
-          if (
-            this.objMemberContact.Phone != null ||
-            this.objMemberContact.Address != null ||
-            this.objMemberContact.Email != null ||
-            this.FacebookUrl != null ||
-            this.objMemberContact.Zalo != null
-          ) {
-            this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
-            HTTP.post("addContact", {
-              memberId: this.newIdMember,
-              Address: this.objMemberContact.Address,
-              Phone: this.objMemberContact.Phone,
-              Email: this.objMemberContact.Email,
-              FacebookUrl: this.objMemberContact.FacebookUrl,
-              Zalo: this.objMemberContact.Zalo,
-            })
-              .then((response) => {
-                if (response.data.success == true) {
-                  this.getListMemberHasPhone();
-                  this.getListMemberHasEmail();
-                  this.selectDistrictMember = null;
-                }
-              })
-              .catch((e) => {
-                console.log(e);
-              });
-          }
+          this.addContact();
         })
         .catch((e) => {
           console.log(e);
@@ -2202,33 +2214,7 @@ export default {
             this.NotificationsDelete(response.data.message);
           }
           this.newIdMember = response.data.data.MemberID;
-          if (
-            this.objMemberContact.Phone != null ||
-            this.objMemberContact.Address != null ||
-            this.objMemberContact.Email != null ||
-            this.FacebookUrl != null ||
-            this.objMemberContact.Zalo != null
-          ) {
-            this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
-            HTTP.post("addContact", {
-              memberId: this.newIdMember,
-              Address: this.objMemberContact.Address,
-              Phone: this.objMemberContact.Phone,
-              Email: this.objMemberContact.Email,
-              FacebookUrl: this.objMemberContact.FacebookUrl,
-              Zalo: this.objMemberContact.Zalo,
-            })
-              .then((response) => {
-                if (response.data.success == true) {
-                  this.getListMemberHasPhone();
-                  this.getListMemberHasEmail();
-                  this.selectDistrictMember = null;
-                }
-              })
-              .catch((e) => {
-                console.log(e);
-              });
-          }
+          this.addContact();
         })
         .catch((e) => {
           console.log(e);
@@ -2258,77 +2244,60 @@ export default {
         this.addMemberMarried();
       } else {
         console.log("vào add mare");
-        HTTP.post("member", {
-          CurrentMemberID: this.CurrentIdMember,
-          MemberName: this.objMemberInfor.MemberName,
-          NickName: this.objMemberInfor.NickName,
-          BirthOrder: this.objMemberInfor.BirthOrder,
-          Origin: this.objMemberInfor.Origin,
-          NationalityID: this.objMemberInfor.NationalityID,
-          ReligionID: this.objMemberInfor.ReligionID,
-          Dob: this.objMemberInfor.Dob,
-          LunarDob: this.objMemberInfor.LunarDob,
-          birthPlace: this.objMemberInfor.BirthPlace,
-          IsDead: this.IsDead,
-          Dod: this.objMemberInfor.Dod,
-          LunarDod: this.objMemberInfor.LunarDod,
-          PlaceOfDeath: this.objMemberInfor.PlaceOfDeath,
-          GraveSite: this.objMemberInfor.GraveSite,
-          Note: this.objMemberInfor.Note,
-          CurrentGeneration: this.generationMember,
-          BloodType: this.objMemberInfor.BloodType,
-          Male: this.objMemberInfor.Male,
-          CodeID: this.CodeID,
-          Action: this.action,
-        })
-          .then((response) => {
-            if (this.action == "AddNormal") {
-              this.getListUnspecifiedMembers();
-            }
-            if (response.data.success == true) {
-              this.isUpdateAvatar = false;
-              this.action = null;
-              this.$modal.hide("select-opts-mdl");
-              this.$modal.hide("view-member-mdl");
-              this.$modal.hide("select-opts-mdl");
-              console.log("getlist");
-              this.getListMember();
-              this.NotificationsScuccess(response.data.message);
-            } else {
-              this.NotificationsDelete(response.data.message);
-            }
-            this.newIdMember = response.data.data.MemberID;
-            if (
-              this.objMemberContact.Phone != null ||
-              this.objMemberContact.Address != null ||
-              this.objMemberContact.Email != null ||
-              this.FacebookUrl != null ||
-              this.objMemberContact.Zalo != null
-            ) {
-              this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
-              HTTP.post("addContact", {
-                memberId: this.newIdMember,
-                Address: this.objMemberContact.Address,
-                Phone: this.objMemberContact.Phone,
-                Email: this.objMemberContact.Email,
-                FacebookUrl: this.objMemberContact.FacebookUrl,
-                Zalo: this.objMemberContact.Zalo,
-              })
-                .then((response) => {
-                  if (response.data.success == true) {
-                    this.getListMemberHasPhone();
-                    this.getListMemberHasEmail();
-                    this.selectDistrictMember = null;
-                  }
-                })
-                .catch((e) => {
-                  console.log(e);
-                });
-            }
+        if (this.objMemberInfor.Male == 0 && this.generationMember == 1) {
+          this.NotificationsDelete("Cụ tổ không thể thêm mẹ");
+        } else {
+          HTTP.post("member", {
+            CurrentMemberID: this.CurrentIdMember,
+            MemberName: this.objMemberInfor.MemberName,
+            NickName: this.objMemberInfor.NickName,
+            BirthOrder: this.objMemberInfor.BirthOrder,
+            Origin: this.objMemberInfor.Origin,
+            NationalityID: this.objMemberInfor.NationalityID,
+            ReligionID: this.objMemberInfor.ReligionID,
+            Dob: this.objMemberInfor.Dob,
+            LunarDob: this.objMemberInfor.LunarDob,
+            birthPlace: this.objMemberInfor.BirthPlace,
+            IsDead: this.IsDead,
+            Dod: this.objMemberInfor.Dod,
+            LunarDod: this.objMemberInfor.LunarDod,
+            PlaceOfDeath: this.objMemberInfor.PlaceOfDeath,
+            GraveSite: this.objMemberInfor.GraveSite,
+            Note: this.objMemberInfor.Note,
+            CurrentGeneration: this.generationMember,
+            BloodType: this.objMemberInfor.BloodType,
+            Male: this.objMemberInfor.Male,
+            CodeID: this.CodeID,
+            Action: this.action,
           })
-          .catch((e) => {
-            console.log(e);
-          });
+            .then((response) => {
+              if (this.action == "AddNormal") {
+                this.getListUnspecifiedMembers();
+              }
+              if (response.data.success == true) {
+                this.isUpdateAvatar = false;
+                this.action = null;
+                this.$modal.hide("select-opts-mdl");
+                this.$modal.hide("view-member-mdl");
+                this.$modal.hide("select-opts-mdl");
+                console.log("getlist");
+                this.newIdMember = response.data.data.MemberID;
+                this.addContact();
+                if (this.generationMember == 1) {
+                  this.CurrentIdMember = this.newIdMember;
+                  this.setPaternalAncestor();
+                } else {
+                  this.getListMember();
+                }
+                this.NotificationsScuccess(response.data.message);
+              } else {
+                this.NotificationsDelete(response.data.message);
+              }
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        }
       }
     },
     getRemainingEmail() {
@@ -2635,6 +2604,8 @@ export default {
         })
           .then((response) => {
             this.ListUnspecifiedMembers = response.data;
+            console.log("111111111")
+            console.log(this.ListUnspecifiedMembers)
           })
           .catch((e) => {
             console.log(e);
