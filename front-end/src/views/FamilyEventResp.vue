@@ -144,7 +144,7 @@
 
     <!-- Modal -->
     <!-- Thêm sự kiện -->
-    <div class="add-event-container">
+    <div class="add-event-container" style="z-index:10">
       <modal name="add-event-mdl">
         <div class="mdl-container">
           <div class="mdl-title">
@@ -442,7 +442,7 @@
     </div>
 
     <!-- Danh sách sự kiện có trong ngày -->
-    <div class="event-modal-container">
+    <div class="event-modal-container" style="z-index:5">
       <modal name="event-modal">
         <div class="w-100 h-100 add-head-modal">
           <div class="d-flex flex-row w-100 align-items-center position-relative">
