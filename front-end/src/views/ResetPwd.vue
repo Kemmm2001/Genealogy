@@ -71,12 +71,8 @@ export default {
         {
           password: encryptedPassword,
           repassword: encryptedResetpassword,
-        },
-        {
-          params: {
-            token: this.token,
-          },
-        }
+          token: this.token,
+        },       
       )
         .then((response) => {
           if (response.data.success == true) {
