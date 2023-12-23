@@ -83,6 +83,7 @@ var getInforEventattendance = async (req, res) => {
         let EventID = req.query.EventID
         let result = await EventManagementService.getInforEventattendance(EventID);
         if (result) {
+            console.log('result: ' + result[0].FormEndDate)
             return res.send(Response.successResponse(result));
         } else {
             return res.send(Response.dataNotFoundResponse())

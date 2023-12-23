@@ -610,6 +610,13 @@ export default {
               (element) => element.MemberID
             );
           }
+          if (this.formHour === null) {
+            this.formHour = 0;
+          }
+
+          if (this.formMinute === null) {
+            this.formMinute = 0;
+          }
           let result = new Date(
             `${this.formDate}T${String(this.formHour).padStart(
               2,
@@ -618,7 +625,8 @@ export default {
           );
 
           let currentDateTime = new Date();
-
+          console.log("result: " + result);
+          console.log("currentDateTime: " + currentDateTime);
           if (result > currentDateTime) {
             HTTP.get("getIdAndEmail", {
               params: {
@@ -793,6 +801,13 @@ export default {
         this.sendMessageToConfirmEvent();
       } else {
         console.log("vào dâyy");
+        if (this.formHour == null) {
+          this.formHour = 0;
+        }
+
+        if (this.formMinute == null) {
+          this.formMinute = 0;
+        }
         let startDateObj = new Date(
           `${this.formDate}T${String(this.formHour).padStart(2, "0")}:${String(
             this.formMinute
@@ -804,7 +819,7 @@ export default {
           EventID: this.currentEventID,
           NewDateTime: newDateTime,
         }).then((respone) => {
-          if (respone.data.success) {            
+          if (respone.data.success) {
             this.NotificationsScuccess("Cập nhập thành công");
           } else {
             this.NotificationsScuccess("Có lỗi sẩy ra");
@@ -874,9 +889,11 @@ export default {
           console.log(respone.data);
           this.listMemberHasSentInvitations = respone.data.data;
           let dateForm = respone.data.data[0].FormEndDate;
-          this.formHour = new Date(dateForm).getUTCHours();
-          this.formMinute = new Date(dateForm).getUTCMinutes();
-          this.formDate = new Date(dateForm).toISOString().split("T")[0];
+          let dateFromBackend = new Date(dateForm);
+
+          this.formHour = dateFromBackend.getHours();
+          this.formMinute = dateFromBackend.getMinutes();
+          this.formDate = dateFromBackend.toISOString().split("T")[0];
           this.$modal.show("view-detail-mdl");
         }
       });
@@ -1287,6 +1304,9 @@ export default {
     showMemberList(EventID) {
       this.currentEventID = EventID;
       this.ListMemberToSendEmail = [];
+      this.formDate = null;
+      this.formHour = null;
+      this.formMinute = null;
       this.$modal.show("view-member-mdl");
     },
     closeMemberList() {

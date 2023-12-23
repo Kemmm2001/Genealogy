@@ -465,7 +465,7 @@ var forgetPassword = async (req, res) => {
 
 var resetPassword = async (req, res) => {
   try {
-    const token = req.query.token;
+    const token = req.body.token;
     const payload = await verifyRepassToken(token)
     if (payload.error === 'Token expired') {
       return res.send(Response.internalServerErrorResponse(null, "Link đã hết hạn"));

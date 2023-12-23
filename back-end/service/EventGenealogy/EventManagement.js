@@ -102,6 +102,7 @@ function getInforEventattendance(EventID) {
              WHERE ef.EventID = ${EventID}`;
             db.connection.query(query, (err, result) => {
                 if (!err && result.length > 0) {
+                    console.log("ResultResult: " + result[0].FormEndDate)
                     resolve(result)
                 } else {
                     resolve(false)

@@ -1,3 +1,5 @@
+const FreeSMS = process.env.FREE_SMS_EVERY_DAY
+const FreeEmail = process.env.FREE_EMAIL_EVERY_DAY
 const db = require("../../Models/ConnectDB")
 
 function checkMail(email) {
@@ -158,7 +160,7 @@ function checkAccountID(accountID) {
 function create(username, email, password) {
   return new Promise((resolve, reject) => {
     const query = 'INSERT INTO genealogy.account (Username, Email, Password,FreeSMS,FreeEmail, IsActive) VALUES (?, ?, ? , ? , ?, 0)';
-    const values = [username, email, password, 5, 5];
+    const values = [username, email, password, FreeSMS, FreeEmail];
 
     db.connection.query(query, values, (err, results) => {
       if (err) {
@@ -172,7 +174,7 @@ function create(username, email, password) {
   });
 }
 
-function getUser(email) {
+function getUser(email) { 
   return new Promise((resolve, reject) => {
     const query = 'SELECT accountID, Password, IsActive FROM genealogy.account WHERE Email = ?';
     const values = [email];
