@@ -125,7 +125,17 @@ let forbiddenResponse = (data, message) => {
     }
 }
 
+let checkSumErrorResponse = (data, message) => {
+    try {
+        if (message == null) message = "Checksum không hợp lệ";
+        if (data == null) return coreErrorResponse(403, message);
+        return coreErrorResponse(403, message, data);
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 module.exports = {
-    missingFieldsErrorResponse, badRequestResponse, dataNotFoundResponse, successResponse,
+    missingFieldsErrorResponse, badRequestResponse, dataNotFoundResponse, successResponse, checkSumErrorResponse,
     internalServerErrorResponse, coreResponse, coreErrorResponse, unauthorizedResponse, forbiddenResponse, tokenExpiredTime,authorizedResponse, inValidToken
 };
