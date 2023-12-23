@@ -1060,8 +1060,7 @@ export default {
           "</p>" +
           "<p> Note: " +
           this.listEvent[i].Note +
-          "</p>" +
-          "<b>Danh sách người tham gia sự kiện</b>";
+          "</p>";
         await HTTP.get("eventAttendance", {
           params: {
             EventID: this.listEvent[i].EventID,
@@ -1071,10 +1070,47 @@ export default {
             if (respone.data.success == true) {
               this.listEventAttendance = respone.data.data;
               console.log(this.listEventAttendance);
+              eventInfor += "<b>Danh sách người tham gia sự kiện</b>"
+              let check = 0;
               for (let j = 0; j < this.listEventAttendance.length; j++) {
-                eventInfor +=
+                if(this.listEventAttendance[j].IsGoing == 1){
+                  eventInfor +=
                   "<p>" + this.listEventAttendance[j].MemberName + "</p>";
+                  check = 1;
+                }
               }
+              if(check == 0){
+                eventInfor += '<p></p>'
+              }else{
+                check = 0;
+              }
+              eventInfor += "<b>Danh sách người không tham gia sự kiện</b>"
+              for (let j = 0; j < this.listEventAttendance.length; j++) {
+                if(this.listEventAttendance[j].IsGoing == 0){
+                  eventInfor +=
+                  "<p>" + this.listEventAttendance[j].MemberName + "</p>";
+                  check = 1;
+                }
+              }
+              if(check == 0){
+                eventInfor += '<p></p>'
+              }else{
+                check = 0;
+              }
+              eventInfor += "<b>Danh sách người chưa phản hồi</b>"
+              for (let j = 0; j < this.listEventAttendance.length; j++) {
+                if(this.listEventAttendance[j].IsGoing == -1){
+                  eventInfor +=
+                  "<p>" + this.listEventAttendance[j].MemberName + "</p>";
+                  check = 1
+                }
+              }
+              if(check == 0){
+                eventInfor += '<p></p>'
+              }else{
+                check = 0;
+              }
+              console.log(eventInfor)
             } else {
               console.log("vào else");
             }
