@@ -26,8 +26,6 @@ function encrypt(message) {
       padding: CryptoJS.pad.Pkcs7,
     }
   ).toString();
-    console.log('message:', message);
-  console.log('Encrypted:', encrypted);
 
   return encrypted;
 }

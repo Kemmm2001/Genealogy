@@ -174,7 +174,7 @@ function create(username, email, password) {
   });
 }
 
-function getUser(email) { 
+function getUser(email) {
   return new Promise((resolve, reject) => {
     const query = 'SELECT accountID, Password, IsActive FROM genealogy.account WHERE Email = ?';
     const values = [email];
@@ -475,7 +475,7 @@ function insertAccountFamily(accountID, codeID, roleID) {
       db.connection.query(query, values, (err, results) => {
         if (err) {
           console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-          reject(err);
+          resolve(false);
         } else {
           console.log('Dữ liệu đã được cập nhật thành công.');
           resolve(results);
@@ -648,5 +648,5 @@ module.exports = {
   insertAccountFamilyTree, checkCodeCreatedByID, getHistoryLoginCodeID, ChangePassword, getListRoleMember, UpdateAccount, UpdatePassword,
   checkToken, changeUsername, getInformationGenealogy, UpdateRegisterToken, checkRegisterToken,
   UpdateActive, DeleteRePasssToken, DeleteRegisterToken, getRoleAccount, getAllRoleAccount, getAccountByAccountID, refreshFreeSMS,
-  setFreeEmail, setFreeSMS, updateDateLoginGenealogy,getAccount
+  setFreeEmail, setFreeSMS, updateDateLoginGenealogy, getAccount
 }
