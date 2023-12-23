@@ -149,7 +149,7 @@ var getListRoleMember = async (req, res) => {
 //Nguyễn Lê Hùng
 var ChangePassword = async (req, res) => {
   try {
-    console.log('req.body: ' + req.body.accountID)    
+    console.log('req.body: ' + req.body.accountID)
     let dataAccount = await UserService.getAccount(req.body.accountID);
     console.log('data: ' + dataAccount.Password)
 
@@ -318,10 +318,9 @@ var registerGenealogy = async (req, res) => {
       let data1 = await UserService.insertIntoFamily(value, codeID);
       if (data1) {
         try {
-          await UserService.insertAccountFamily(value.accountID, codeID, 1);
           let InsertHistory = await UserService.insertAccountFamily(req.body.accountID, codeID, 1);
           if (!InsertHistory) {
-            console.log("Lỗi Insert history")
+            return res.send(Response.internalServerErrorResponse("Có lỗi khi đăng ký"))
           }
           return res.send(Response.successResponse(codeID, 'Đăng ký gia phả thành công'));
 
