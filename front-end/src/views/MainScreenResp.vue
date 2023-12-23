@@ -52,7 +52,7 @@
             <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto; flex-grow: 1; cursor: pointer">
               <div v-for="list in ListUnspecifiedMembers" :key="list.id" @click="handleLeftClickUnspecifiedMembers(list.MemberID)" class="list-item ellipsis-text w-100">{{ list.MemberName }}</div>
             </div>
-            <div class="center-content" v-if="nodes.length == 0">Danh sách chưa có thành viên</div>
+            <div class="center-content" v-if="ListUnspecifiedMembers.length == 0">Danh sách chưa có thành viên</div>
           </div>
         </div>
       </div>
@@ -1838,7 +1838,7 @@ export default {
         });
     },
     //Nguyễn Lê Hùng
-    removeMember() {
+    async removeMember() {
       HTTP.get("deleteContact", {
         params: {
           MemberID: this.CurrentIdMember,
@@ -1891,13 +1891,14 @@ export default {
             // this.nodes.length = this.nodes.length - 1;
             this.removeFromSelectedNodes(this.CurrentIdMember);
             this.NotificationsScuccess(response.data.message);
-            this.getListUnspecifiedMembers();
+            
             this.$modal.hide("select-opts-mdl");
             this.$modal.hide("view-member-mdl");
             this.getListMember();
             this.closeCfDelModal();
             this.getListMemberHasPhone();
             this.getListMemberHasEmail();
+            this.getListUnspecifiedMembers();
           } else {
             this.NotificationsDelete(response.data.message);
           }
@@ -2603,6 +2604,8 @@ export default {
         })
           .then((response) => {
             this.ListUnspecifiedMembers = response.data;
+            console.log("111111111")
+            console.log(this.ListUnspecifiedMembers)
           })
           .catch((e) => {
             console.log(e);
