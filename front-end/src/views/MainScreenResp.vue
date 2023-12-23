@@ -1137,7 +1137,7 @@ export default {
 
       heightLarger: null,
       checkUpdate: false,
-      checkNodes:null,
+      checkNodes: null,
     };
   },
   methods: {
@@ -1492,6 +1492,10 @@ export default {
     },
     //Nguyễn Lê Hùng:
     sendEmailToMember() {
+      let filteredMembers = this.listMemberHasEmail.filter((member) =>
+        this.ListPhoneToSendMessage.includes(member.MemberID)
+      );
+      let ListEmail = filteredMembers.map((member) => member.Email);
       if (this.canSendMessage) {
         this.canSendMessage = false;
         if (
@@ -1499,12 +1503,8 @@ export default {
           this.subjectEmail != "" &&
           this.contentEmail != null &&
           this.contentEmail != "" &&
-          this.ListPhoneToSendMessage.length > 0
+          ListEmail.length > 0
         ) {
-          let filteredMembers = this.listMemberHasEmail.filter((member) =>
-            this.ListPhoneToSendMessage.includes(member.MemberID)
-          );
-          let ListEmail = filteredMembers.map((member) => member.Email);
           console.log("ListEmail: " + ListEmail);
           HTTP.post("send-email", {
             ListEmail: ListEmail,
@@ -1530,7 +1530,7 @@ export default {
             .catch((e) => {
               console.log(e);
             });
-        } else if (this.ListPhoneToSendMessage.length == 0) {
+        } else if (ListEmail == 0) {
           this.canSendMessage = true;
           this.NotificationsDelete(
             "Hãy chọn những người bạn muốn gửi thông báo"
@@ -1544,19 +1544,17 @@ export default {
 
     //Nguyễn Lê Hùng
     sendMessageToMember() {
+      let filteredMembers = this.listMemberHasPhone.filter((member) =>
+        this.ListPhoneToSendMessage.includes(member.MemberID)
+      );
+      let ListPhone = filteredMembers.map((member) => member.Phone);
       if (this.canSendMessage) {
-        console.log("vào đoạn này");
         this.canSendMessage = false;
         if (
           this.contentMessage != null &&
-          this.ListPhoneToSendMessage.length > 0 &&
+          ListPhone.length > 0 &&
           this.contentMessage != ""
         ) {
-          let filteredMembers = this.listMemberHasPhone.filter((member) =>
-            this.ListPhoneToSendMessage.includes(member.MemberID)
-          );
-          let ListPhone = filteredMembers.map((member) => member.Phone);
-          console.log("ListPhone: " + ListPhone);
           HTTP.post("send-sms", {
             ListPhone: ListPhone,
             contentMessage: this.contentMessage,
@@ -1575,7 +1573,7 @@ export default {
             .catch((e) => {
               console.log(e);
             });
-        } else if (this.ListPhoneToSendMessage.length == 0) {
+        } else if (ListPhone.length == 0) {
           this.canSendMessage = true;
           this.NotificationsDelete(
             "Hãy chọn những người bạn muốn gửi thông báo"
@@ -2933,7 +2931,7 @@ export default {
                 this.family.config.roots = this.nodes[0].id;
                 this.family.draw();
                 //  this.mytree(this.$refs.tree, this.nodes);
-              }else{
+              } else {
                 this.checkNodes = 0;
               }
               //  this.family.load(this.nodes);
