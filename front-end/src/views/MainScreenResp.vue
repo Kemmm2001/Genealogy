@@ -59,7 +59,7 @@
     </div>
     <div class="content">
       <div v-show="nodes.length != 0" id="tree" ref="tree"></div>
-      <div v-show="nodes.length == 0" class="center-content">
+      <div v-show="checkNodes == 0" class="center-content">
         <div @click="openMemberModal('AddFirst', 'cụ tổ')" class="btn bg-primary text-white d-flex flex-row align-items-center">
           <div style="padding-right: 8px;">Thêm thông tin cụ tổ</div>
           <svg style="fill: white;" class="add-member-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -1137,6 +1137,7 @@ export default {
 
       heightLarger: null,
       checkUpdate: false,
+      checkNodes:null,
     };
   },
   methods: {
@@ -2892,6 +2893,7 @@ export default {
               this.numberDeath = 0;
               if (response.data.success == true) {
                 this.nodes = response.data.data;
+                this.checkNodes = 1;
                 console.log(this.nodes);
                 for (let i = 0; i < this.nodes.length; i++) {
                   if (this.nodes[i].pids.length > 1) {
@@ -2931,6 +2933,8 @@ export default {
                 this.family.config.roots = this.nodes[0].id;
                 this.family.draw();
                 //  this.mytree(this.$refs.tree, this.nodes);
+              }else{
+                this.checkNodes = 0;
               }
               //  this.family.load(this.nodes);
             })
