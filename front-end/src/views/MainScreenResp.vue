@@ -1205,22 +1205,13 @@ export default {
       this.family.onRedraw(() => {
         var nodeElement;
         if (this.selectedNodes.length != 0) {
+          console.log(this.selectedNodes)
           for (let i = 0; i < this.selectedNodes.length; i++) {
             nodeElement = document.querySelector(
               '[data-n-id="' + this.selectedNodes[i] + '"]'
             );
             if (nodeElement != null) {
               nodeElement.classList.add("selected");
-            }
-          }
-        }
-        if (this.selectedNodesCompare.length != 0) {
-          for (let i = 0; i < this.selectedNodesCompare.length; i++) {
-            nodeElement = document.querySelector(
-              '[data-n-id="' + this.selectedNodesCompare[i] + '"]'
-            );
-            if (nodeElement != null) {
-              nodeElement.classList.add("selected-compare");
             }
           }
         }
@@ -1234,6 +1225,18 @@ export default {
             }
           }
         }
+        
+        if (this.selectedNodesCompare.length != 0) {
+          for (let i = 0; i < this.selectedNodesCompare.length; i++) {
+            nodeElement = document.querySelector(
+              '[data-n-id="' + this.selectedNodesCompare[i] + '"]'
+            );
+            if (nodeElement != null) {
+              nodeElement.classList.add("selected-compare");
+            }
+          }
+        }
+        
       });
 
       if (this.memberRole != 3) {
@@ -2579,15 +2582,15 @@ export default {
         this.nodes.forEach((node) => {
           if (memberIds.includes(node.id)) {
             nodeElement = this.family.getNodeElement(node.id);
+            this.selectedNodes.push(node.id);
             if (nodeElement != null) {
               nodeElement.classList.add("selected");
-              this.selectedNodes.push(node.id);
             }
           } else {
             nodeElement = this.family.getNodeElement(node.id);
+            this.notSelectedNodes.push(node.id);
             if (nodeElement != null) {
               nodeElement.classList.add("notselected");
-              this.notSelectedNodes.push(node.id);
             }
           }
         });
