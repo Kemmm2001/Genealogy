@@ -3,6 +3,10 @@ const crypto = require('crypto');
 const fs = require('fs');
 const db = require('../Models/ConnectDB');
 const moment = require('moment');
+const SecureUtil = require('./SecureUtil');
+const Response = require('./Response');
+const util = require('util');
+const queryString = require('querystring');
 
 // nguyễn anh tuấn
 const missingFields = (requiredFields, data) => {
@@ -41,7 +45,7 @@ const uploadExcelFile = (destinationFolder) => {
                 let fileName = generateRandomFileName(file);
 
                 // Kiểm tra tồn tại
-                if(!fs.existsSync(`/uploads/excel/${destinationFolder}`)){
+                if (!fs.existsSync(`/uploads/excel/${destinationFolder}`)) {
                     fs.mkdirSync(`/uploads/excel/${destinationFolder}`);
                 }
 
@@ -71,7 +75,7 @@ const uploadImage = (destinationFolder) => {
                 let fileName = generateRandomFileName(file);
 
                 // Kiểm tra tồn tại
-                if(!fs.existsSync(`/uploads/images/${destinationFolder}`)){
+                if (!fs.existsSync(`/uploads/images/${destinationFolder}`)) {
                     fs.mkdirSync(`/uploads/images/${destinationFolder}`);
                 }
                 const destPath = `/uploads/images/${destinationFolder}/${fileName}`;
@@ -153,6 +157,29 @@ const isDataDateExist = (data) => {
     return data != null && data != undefined && moment(data, "yyyy-MM-dd").isValid();
 }
 
+const isChecksumValid = (req, res, next) => {
+    try {
+        const encryptedData = req.headers['encryptdata'];
+        if (!isDataStringExist(encryptedData)) return res.send(Response.badRequestResponse(null, "Missing encrypt data"));
+        const secretKey = process.env.SECRET_KEY;
+        console.log('encryptedData: ' + encryptedData);
+        const decryptedData = SecureUtil.decrypt(encryptedData, secretKey);
+        console.log('decryptedData: ' + decryptedData);
+        if (!isDataStringExist(decryptedData)) return res.send(Response.badRequestResponse(null, "Invalid encrypt data"));
+        console.log('req.body: ' + JSON.stringify(req.body));
+        if (isDataStringExist(req.body) && JSON.stringify(req.body) != '{}' && req.body) {
+            const bodyData = JSON.stringify(req.body);
+            if (bodyData != decryptedData) return res.send(Response.badRequestResponse(null, "Invalid encrypt body"));
+        }
+        next();
+    } catch (error) {
+        console.log(error);
+        return res.send(Response.internalServerErrorResponse());
+    }
 
-module.exports = { missingFields, uploadImage, deleteImage, isEmptyOrNullOrSpaces, isDataStringExist, 
-    isDataNumberExist, uploadExcelFile, isDataDateExist };
+}
+
+module.exports = {
+    missingFields, uploadImage, deleteImage, isEmptyOrNullOrSpaces, isDataStringExist, isChecksumValid,
+    isDataNumberExist, uploadExcelFile, isDataDateExist
+};

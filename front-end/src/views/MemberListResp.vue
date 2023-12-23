@@ -359,9 +359,9 @@
                     </div>
                   </div>
                   <div style="display:flex">
-                    <div class="pb-2 pe-1" style="position: relative; width: 50%;">
+                    <!-- <div class="pb-2 pe-1" style="position: relative; width: 50%;">
                       <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" v-bind="props"></VuePhoneNumberInput>
-                    </div>
+                    </div> -->
                     <div class="pb-2 ps-1" style="position: relative;width: 50%;">
                       <input v-model="objMemberContact.Email" type="email" class="form-control modal-item" placeholder />
                       <label class="form-label" for="input" :class="{ 'active': objMemberContact.Email }">Email</label>
@@ -739,10 +739,95 @@ export default {
       dobSort: true,
       genAscending: false,
       dobAscending: true,
+
+      props: {
+        clearable: true,
+        fetchCountry: true,
+        preferredCountries: ["US", "GB"],
+        noExample: false,
+        translations: {
+          countrySelectorLabel: "Country code",
+          countrySelectorError: "Error",
+          phoneNumberLabel: "Nhập số điện thoại",
+          example: "Example:",
+        },
+      },
+      ListCity: null,
+      selectCityMember: null,
+      selectDistrictMember: null,
+      isFather: null,
+      action: null,
+      ListDistrictMember: null,
+      heightLarger: null,
     };
   },
 
   methods: {
+    getAdressMember(addressString) {
+      let addressParts = addressString.split("-");
+      let SelectCityName = addressParts[0].trim();
+      let SelectDistinName =
+        addressParts.length > 1 ? addressParts[1].trim() : null;
+
+      this.selectCityMember = this.ListCity.find(
+        (city) => city.name === SelectCityName
+      );
+      this.selectCityMember = this.selectCityMember.id;
+      if (SelectDistinName != null) {
+        this.selectDistrictMember = SelectDistinName;
+        HTTP.get("district", {
+          params: {
+            cityID: this.selectCityMember,
+          },
+        })
+          .then((response) => {
+            this.ListDistrictMember = response.data;
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
+    },
+    getListCity() {
+      try {
+        HTTP.get("province", {})
+          .then((response) => {
+            this.ListCity = response.data;
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    getListDistrictMember() {
+      let selectedCity = this.ListCity.find(
+        (city) => city.id == this.selectCityMember
+      );
+      console.log(this.selectCityMember);
+      if (selectedCity != null) {
+        this.objMemberContact.Address = selectedCity.name;
+      } else {
+        this.objMemberContact.Address = null;
+      }
+
+      if (this.selectCityMember == null) {
+        this.ListDistrictMember = null;
+      } else {
+        HTTP.get("district", {
+          params: {
+            cityID: this.selectCityMember,
+          },
+        })
+          .then((response) => {
+            this.ListDistrictMember = response.data;
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
+    },
     getImageSize() {
       const img = document.getElementById("myImage");
       // Lấy kích thước của hình ảnh
@@ -972,10 +1057,17 @@ export default {
 
     updateInformation() {
       console.log(111)
-      if (this.selectDistrictMember != null) {
-        this.objMemberContact.Address =
-          this.objMemberContact.Address + "-" + this.selectDistrictMember;
-      }
+      if (this.objMemberInfor.BirthOrder == null) {
+          console.log("vào đây");
+          this.objMemberInfor.BirthOrder = 1;
+        }
+        if (this.selectDistrictMember != null) {
+          this.objMemberContact.Address =
+            this.objMemberContact.Address + "-" + this.selectDistrictMember;
+        }
+        if (this.selectCityMember == null) {
+          this.objMemberContact.Address = null;
+        }
       let data = {
         MemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
@@ -1069,6 +1161,8 @@ export default {
         params
       })
         .then((response) => {
+          this.selectCityMember = null;
+          this.selectDistrictMember = null;
           this.objMember = response.data.data;
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
@@ -1078,9 +1172,23 @@ export default {
               this.objMemberInfor.LunarDob
             );
             this.objMemberInfor.Dod = this.formatDate(this.objMemberInfor.Dod);
+            this.objMemberInfor.LunarDod = this.formatDate(
+              this.objMemberInfor.LunarDod)
+            this.avatarSrc = this.objMemberInfor.Image;
+            console.log("avatarSrc: " + this.avatarSrc);
           }
           if (this.objMember.contact.length > 0) {
             this.objMemberContact = this.objMember.contact[0];
+            if (
+              this.objMemberContact.Address != undefined &&
+              this.objMemberContact.Address != null
+            ) {
+              this.getAdressMember(this.objMemberContact.Address);
+            }
+          }
+          if (response.data.data.MarriageNumber != null) {
+            this.objMemberInfor.MarriageNumber =
+              response.data.data.MarriageNumber;
           }
           this.ListMemberEducation = this.objMember.education;
           this.ListMemberJob = this.objMember.job;
@@ -1304,6 +1412,7 @@ export default {
       this.getListNationality();
       this.getListReligion();
       this.getMemberRole();
+      this.getListCity();
     }
   },
 };

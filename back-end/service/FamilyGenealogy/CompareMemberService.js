@@ -46,10 +46,10 @@ function checkBrideOrGroom(MemberID) {
             db.connection.query(query, (err, result) => {
                 if (err) {
                     console.error(err);
-                    reject(err);
+                    resolve(false);
                 } else {
                     if (result.length === 0) {
-                        reject("Member not found");
+                        resolve(false);
                     } else {
                         let member = result[0];
                         if (member.FatherID !== null || member.MotherID !== null) {
@@ -60,10 +60,10 @@ function checkBrideOrGroom(MemberID) {
                                 `SELECT husbandID AS marriedID FROM genealogy.marriage WHERE wifeID = ${MemberID}`;
                             db.connection.query(getMarriedIDQuery, (err, marriedResult) => {
                                 if (err) {
-                                    reject(err);
+                                    resolve(err);
                                 } else {
                                     if (marriedResult.length === 0) {
-                                        reject("Not married");
+                                        resolve(false);
                                     } else {
                                         console.log('result' + marriedResult[0].marriedID)
                                         resolve(marriedResult[0].marriedID);
