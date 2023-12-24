@@ -2479,11 +2479,13 @@ export default {
                     console.log("vào đâyyyy");
                     this.getListMemberHasPhone();
                     this.getListMemberHasEmail();
+                    this.GetListFilterMember();
                   }
                 })
                 .catch(() => {
                   this.NotificationsDelete("Có lỗi hệ thống");
                 });
+                this.GetListFilterMember();
             } else {
               this.NotificationsDelete(response.data.message);
             }

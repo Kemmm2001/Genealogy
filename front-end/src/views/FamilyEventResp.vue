@@ -144,7 +144,7 @@
 
     <!-- Modal -->
     <!-- Thêm sự kiện -->
-    <div class="add-event-container" style="z-index:10">
+    <div class="add-event-container" style="z-index:999">
       <modal name="add-event-mdl">
         <div class="mdl-container">
           <div class="mdl-title">
@@ -209,7 +209,7 @@
               <div v-else class="pe-2">
                 <button @click="updateEvent()" class="bg-primary text-white btn mx-2">Lưu</button>
               </div>
-              <div class="pe-2">
+              <div v-if="!isAdd && !isView" class="pe-2">
                 <button @click="removeEvent()" class="bg-danger text-white btn mx-2">Xóa sự kiện</button>
               </div>
             </div>
@@ -442,7 +442,7 @@
     </div>
 
     <!-- Danh sách sự kiện có trong ngày -->
-    <div class="event-modal-container" style="z-index:5">
+    <div class="event-modal-container" style="z-index:998">
       <modal name="event-modal">
         <div class="w-100 h-100 add-head-modal">
           <div class="d-flex flex-row w-100 align-items-center position-relative">
@@ -558,6 +558,7 @@ export default {
       listEventAttendance: [],
       ListEventNotificationSent: null,
       currentEventID: null,
+      isView:false,
     };
   },
   computed: {
@@ -749,6 +750,7 @@ export default {
       if (dateCheck == "30/11/2023") {
         console.log(1);
       }
+      this.isView = true;
       this.showEventModal();
     },
     checkDateEvent(dateCheck) {
@@ -1061,6 +1063,8 @@ export default {
           "<p> Note: " +
           this.listEvent[i].Note +
           "</p>";
+          eventInfor += '<table style="border: 1px solid black;">'
+          eventInfor += '<tr><th style="border: 1px solid black;">Danh sách người tham gia sự kiện</th><th style="border: 1px solid black;">Danh sách người không tham gia sự kiện</th><th style="border: 1px solid black;">Danh sách người chưa phản hồi</th></tr>'
         await HTTP.get("eventAttendance", {
           params: {
             EventID: this.listEvent[i].EventID,
@@ -1070,45 +1074,133 @@ export default {
             if (respone.data.success == true) {
               this.listEventAttendance = respone.data.data;
               console.log(this.listEventAttendance);
-              eventInfor += "<b>Danh sách người tham gia sự kiện</b>"
-              let check = 0;
+              
+              // let check = 0;
+              // for (let j = 0; j < this.listEventAttendance.length; j++) {
+              //   if(this.listEventAttendance[j].IsGoing == 1){
+              //     eventInfor +=
+              //     '<p>' + this.listEventAttendance[j].MemberName + '</p>';
+              //     check = 1;
+              //   }
+              // }
+              // if(check == 0){
+              //   eventInfor += '<p></p>'
+              // }else{
+              //   check = 0;
+              // }
+              // eventInfor += '<b>Danh sách người không tham gia sự kiện</b>'
+              // for (let j = 0; j < this.listEventAttendance.length; j++) {
+              //   if(this.listEventAttendance[j].IsGoing == 0){
+              //     eventInfor +=
+              //     '<p>' + this.listEventAttendance[j].MemberName + '</p>';
+              //     check = 1;
+              //   }
+              // }
+              // if(check == 0){
+              //   eventInfor += '<p></p>'
+              // }else{
+              //   check = 0;
+              // }
+              // eventInfor += '<b>Danh sách người chưa phản hồi</b>'
+              let listJoin = [];
+              let listUnJoin = [];
+              let listUnResponse = [];
               for (let j = 0; j < this.listEventAttendance.length; j++) {
                 if(this.listEventAttendance[j].IsGoing == 1){
-                  eventInfor +=
-                  "<p>" + this.listEventAttendance[j].MemberName + "</p>";
-                  check = 1;
+                  listJoin.push(this.listEventAttendance[j].MemberName)
                 }
-              }
-              if(check == 0){
-                eventInfor += '<p></p>'
-              }else{
-                check = 0;
-              }
-              eventInfor += "<b>Danh sách người không tham gia sự kiện</b>"
-              for (let j = 0; j < this.listEventAttendance.length; j++) {
                 if(this.listEventAttendance[j].IsGoing == 0){
-                  eventInfor +=
-                  "<p>" + this.listEventAttendance[j].MemberName + "</p>";
-                  check = 1;
+                  listUnJoin.push(this.listEventAttendance[j].MemberName)
                 }
-              }
-              if(check == 0){
-                eventInfor += '<p></p>'
-              }else{
-                check = 0;
-              }
-              eventInfor += "<b>Danh sách người chưa phản hồi</b>"
-              for (let j = 0; j < this.listEventAttendance.length; j++) {
                 if(this.listEventAttendance[j].IsGoing == -1){
-                  eventInfor +=
-                  "<p>" + this.listEventAttendance[j].MemberName + "</p>";
-                  check = 1
+                  listUnResponse.push(this.listEventAttendance[j].MemberName)
                 }
               }
-              if(check == 0){
-                eventInfor += '<p></p>'
-              }else{
-                check = 0;
+              console.log(listJoin)
+              console.log(listUnJoin)
+              console.log(listUnResponse)
+              // if(check == 0){
+              //   eventInfor += '<p></p>'
+              // }else{
+              //   check = 0;
+              // }
+              let maxValue = Math.max(listJoin.length,listUnJoin.length,listUnResponse.length)
+              console.log("max"+maxValue)
+              if(maxValue == listJoin.length){
+                for(let i = 0; i < listJoin.length;i++){
+                  eventInfor+='<tr>'
+                  eventInfor+='<td style="border: 1px solid black;">'+listJoin[i]+'</td>'
+                  if(listJoin.length != 0){
+                    if(i < listUnJoin.length){
+                      eventInfor+='<td style="border: 1px solid black;">'+listUnJoin[i]+'</td>'
+                    }else{
+                      eventInfor+='<td style="border: 1px solid black;"></td>'
+                    }
+                  }else{
+                    eventInfor+='<td style="border: 1px solid black;"></td>'
+                  }
+                  if(listJoin.length != 0){
+                    if(i < listUnResponse.length - 1){
+                      eventInfor+='<td style="border: 1px solid black;">'+listUnResponse[i]+'</td>'
+                    }else{
+                      eventInfor+='<td style="border: 1px solid black;"></td>'
+                    }
+                  }else{
+                    eventInfor+='<td style="border: 1px solid black;"></td>'
+                  }
+                  eventInfor+='</tr>'
+                }
+              }
+              if(maxValue == listUnJoin.length){
+                for(let i = 0; i < listUnJoin.length;i++){
+                  eventInfor+='<tr>'
+                  if(listJoin.length != 0){
+                    if(i < listJoin.length){
+                      eventInfor+='<td style="border: 1px solid black;">'+listJoin[i]+'</td>'
+                    }else{
+                      eventInfor+='<td style="border: 1px solid black;"></td>'
+                    }
+                  }else{
+                    eventInfor+='<td style="border: 1px solid black;"></td>'
+                  }
+                  eventInfor+='<td style="border: 1px solid black;">'+listUnJoin[i]+'</td>'
+                  if(listUnResponse.length != 0){
+                    if(i < listUnResponse.length - 1){
+                      eventInfor+='<td style="border: 1px solid black;">'+listUnResponse[i]+'</td>'
+                    }else{
+                      eventInfor+='<td style="border: 1px solid black;"></td>'
+                    }
+                  }else{
+                    eventInfor+='<td style="border: 1px solid black;"></td>'
+                  }
+                  eventInfor+='</tr>'
+                }
+              }
+              if(maxValue == listUnResponse.length){
+                for(let i = 0; i < listUnResponse.length;i++){
+                  console.log(listUnResponse)
+                  eventInfor+='<tr>'
+                  if(listJoin.length != 0){
+                    if(i < listJoin.length - 1){
+                      eventInfor+='<td style="border: 1px solid black;">'+listJoin[i]+'</td>'
+                    }else{
+                      eventInfor+='<td style="border: 1px solid black;"></td>'
+                    }
+                  }else{
+                    eventInfor+='<td style="border: 1px solid black;"></td>'
+                  }
+                  if(listUnJoin.length != 0){
+                    if(i < listUnJoin.length){
+                      eventInfor+='<td style="border: 1px solid black;">'+listUnJoin[i]+'</td>'
+                    }else{
+                      eventInfor+='<td style="border: 1px solid black;"></td>'
+                    }
+                  }else{
+                    eventInfor+='<td style="border: 1px solid black;"></td>'
+                  } 
+                  eventInfor+='<td style="border: 1px solid black;">'+listUnResponse[i]+'</td>'
+                  eventInfor+='</tr>'
+                }
               }
               console.log(eventInfor)
             } else {
@@ -1118,6 +1210,7 @@ export default {
           .catch((e) => {
             console.log(e);
           });
+          eventInfor+='</table>'
       }
       await HTTP.post("export-pdf", {
         htmlContent: eventInfor,
@@ -1195,6 +1288,7 @@ export default {
     },
     showEditEventModal(id) {
       this.isAdd = false;
+      this.isView = false;
       this.eventFamily = {};
       this.titleModal = "Sửa thông tin sự kiện";
       HTTP.get("inforEvent", {
