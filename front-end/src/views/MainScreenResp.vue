@@ -749,7 +749,7 @@
                         <div>(+84)</div>
                       </div>
                       <div class="col-10 position-relative">
-                        <input v-model="objMemberContact.Phone" type="text" class="form-control modal-item w-100 h-100" placeholder />
+                        <input v-model="objMemberContact.Phone" type="number" class="form-control modal-item w-100 h-100 phonenum" placeholder />
                         <label class="form-label" for="input" :class="{ 'active': objMemberContact.Phone }">Số điện thoại</label>
                       </div>
                     </div>
