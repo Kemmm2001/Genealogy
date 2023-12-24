@@ -159,15 +159,15 @@ const isDataDateExist = (data) => {
 
 const isChecksumValid = (req, res, next) => {
     try {
-        const encryptedData = req.headers['encryptdata'];
-        if (!isDataStringExist(encryptedData)) return res.send(Response.badRequestResponse(null, "Missing encrypt data"));
-        const secretKey = process.env.SECRET_KEY;
-        console.log('encryptedData: ' + encryptedData);
-        const decryptedData = SecureUtil.decrypt(encryptedData, secretKey);
-        console.log('decryptedData: ' + decryptedData);
-        if (!isDataStringExist(decryptedData)) return res.send(Response.badRequestResponse(null, "Invalid encrypt data"));
         console.log('req.body: ' + JSON.stringify(req.body));
         if (isDataStringExist(req.body) && JSON.stringify(req.body) != '{}' && req.body) {
+            const encryptedData = req.headers['encryptdata'];
+            if (!isDataStringExist(encryptedData)) return res.send(Response.badRequestResponse(null, "Missing encrypt data"));
+            const secretKey = process.env.SECRET_KEY;
+            console.log('encryptedData: ' + encryptedData);
+            const decryptedData = SecureUtil.decrypt(encryptedData, secretKey);
+            console.log('decryptedData: ' + decryptedData);
+            if (!isDataStringExist(decryptedData)) return res.send(Response.badRequestResponse(null, "Invalid encrypt data"));
             const bodyData = JSON.stringify(req.body);
             if (bodyData != decryptedData) return res.send(Response.badRequestResponse(null, "Invalid encrypt body"));
         }
