@@ -603,12 +603,12 @@ var updateMember = async (req, res) => {
         // trường hợp có cha nhưng ko có mẹ 
         if (CoreFunction.isDataNumberExist(dataMember[0].FatherID) && !CoreFunction.isDataNumberExist(dataMember[0].MotherID)) {
             console.log("Đã vào trường hợp có cha những ko có mẹ");
-            listChild = await FamilyManagementService.getMembersByFatherID(dataMember[0].FatherID);
+            listChild = await FamilyManagementService.getMembersByOnlyFatherID(dataMember[0].FatherID);
         }
         // trường hợp có mẹ những ko có cha
         else if (!CoreFunction.isDataNumberExist(dataMember[0].FatherID) && CoreFunction.isDataNumberExist(dataMember[0].MotherID)) {
             console.log("Đã vào trường hợp có mẹ những ko có cha");
-            listChild = await FamilyManagementService.getMembersByMotherID(dataMember[0].MotherID);
+            listChild = await FamilyManagementService.getMembersByOnlyMotherID(dataMember[0].MotherID);
         }
         // trường hợp có cả cha và mẹ
         else if (CoreFunction.isDataNumberExist(dataMember[0].FatherID) && CoreFunction.isDataNumberExist(dataMember[0].MotherID)) {
