@@ -95,10 +95,10 @@
           </div>
         </div>
         <div class="h-100 d-flex">
-          <div class="py-1 d-flex align-items-center" @click="showAddEventModal()">
+          <div v-if="memberRole != 3" class="py-1 d-flex align-items-center" @click="showAddEventModal()">
             <button class="btn bg-primary text-white d-flex align-items-center m-0" style="height: fit-content;">Thêm sự kiện</button>
           </div>
-          <div class="ps-2 y-1 d-flex align-items-center" @click="exportPdf()">
+          <div v-if="memberRole != 3" class="ps-2 y-1 d-flex align-items-center" @click="exportPdf()">
             <button class="btn bg-primary text-white d-flex align-items-center m-0" style="height: fit-content;">Export PDF</button>
           </div>
         </div>
@@ -126,9 +126,9 @@
                   <td>{{ event.Status == 1 ? "Chưa kết thúc" : "Đã Kết Thúc" }}</td>
                   <td @click="showEditEventModal(event.EventID)">{{ event.Place }}</td>
                   <td>
-                    <div v-if="memberRole != 3" class="h-100 w-100 d-flex align-items-center justify-content-center">
+                    <div class="h-100 w-100 d-flex align-items-center justify-content-center">
                       <div v-if="checkEventNotificationSent(event.EventID)" @click="showParticipantList(event.EventID)" class="btn bg-primary text-white">Tham gia sự kiện</div>
-                      <div v-else-if="!checkEventNotificationSent(event.EventID) && event.Status == 1" @click="showMemberList(event.EventID)" class="btn bg-primary text-white">Thông báo</div>
+                      <div v-else-if="!checkEventNotificationSent(event.EventID) && event.Status == 1 && memberRole == 1" @click="showMemberList(event.EventID)" class="btn bg-primary text-white">Thông báo</div>
                     </div>
                   </td>
                 </tr>
@@ -202,7 +202,7 @@
             </div>
           </div>
           <div class="mdl-footer">
-            <div class="h-100 d-flex align-items-center justify-content-end">
+            <div v-if="memberRole != 3" class="h-100 d-flex align-items-center justify-content-end">
               <div v-if="isAdd" class="pe-2">
                 <button @click="addEvent()" class="bg-primary text-white btn mx-2">Thêm</button>
               </div>
@@ -558,7 +558,7 @@ export default {
       listEventAttendance: [],
       ListEventNotificationSent: null,
       currentEventID: null,
-      isView:false,
+      isView: false,
     };
   },
   computed: {
@@ -1063,8 +1063,9 @@ export default {
           "<p> Note: " +
           this.listEvent[i].Note +
           "</p>";
-          eventInfor += '<table style="border: 1px solid black;">'
-          eventInfor += '<tr><th style="border: 1px solid black;">Danh sách người tham gia sự kiện</th><th style="border: 1px solid black;">Danh sách người không tham gia sự kiện</th><th style="border: 1px solid black;">Danh sách người chưa phản hồi</th></tr>'
+        eventInfor += '<table style="border: 1px solid black;">';
+        eventInfor +=
+          '<tr><th style="border: 1px solid black;">Danh sách người tham gia sự kiện</th><th style="border: 1px solid black;">Danh sách người không tham gia sự kiện</th><th style="border: 1px solid black;">Danh sách người chưa phản hồi</th></tr>';
         await HTTP.get("eventAttendance", {
           params: {
             EventID: this.listEvent[i].EventID,
@@ -1074,7 +1075,7 @@ export default {
             if (respone.data.success == true) {
               this.listEventAttendance = respone.data.data;
               console.log(this.listEventAttendance);
-              
+
               // let check = 0;
               // for (let j = 0; j < this.listEventAttendance.length; j++) {
               //   if(this.listEventAttendance[j].IsGoing == 1){
@@ -1106,103 +1107,140 @@ export default {
               let listUnJoin = [];
               let listUnResponse = [];
               for (let j = 0; j < this.listEventAttendance.length; j++) {
-                if(this.listEventAttendance[j].IsGoing == 1){
-                  listJoin.push(this.listEventAttendance[j].MemberName)
+                if (this.listEventAttendance[j].IsGoing == 1) {
+                  listJoin.push(this.listEventAttendance[j].MemberName);
                 }
-                if(this.listEventAttendance[j].IsGoing == 0){
-                  listUnJoin.push(this.listEventAttendance[j].MemberName)
+                if (this.listEventAttendance[j].IsGoing == 0) {
+                  listUnJoin.push(this.listEventAttendance[j].MemberName);
                 }
-                if(this.listEventAttendance[j].IsGoing == -1){
-                  listUnResponse.push(this.listEventAttendance[j].MemberName)
+                if (this.listEventAttendance[j].IsGoing == -1) {
+                  listUnResponse.push(this.listEventAttendance[j].MemberName);
                 }
               }
-              console.log(listJoin)
-              console.log(listUnJoin)
-              console.log(listUnResponse)
+              console.log(listJoin);
+              console.log(listUnJoin);
+              console.log(listUnResponse);
               // if(check == 0){
               //   eventInfor += '<p></p>'
               // }else{
               //   check = 0;
               // }
-              let maxValue = Math.max(listJoin.length,listUnJoin.length,listUnResponse.length)
-              console.log("max"+maxValue)
-              if(maxValue == listJoin.length){
-                for(let i = 0; i < listJoin.length;i++){
-                  eventInfor+='<tr>'
-                  eventInfor+='<td style="border: 1px solid black;">'+listJoin[i]+'</td>'
-                  if(listJoin.length != 0){
-                    if(i < listUnJoin.length){
-                      eventInfor+='<td style="border: 1px solid black;">'+listUnJoin[i]+'</td>'
-                    }else{
-                      eventInfor+='<td style="border: 1px solid black;"></td>'
+              let maxValue = Math.max(
+                listJoin.length,
+                listUnJoin.length,
+                listUnResponse.length
+              );
+              console.log("max" + maxValue);
+              if (maxValue == listJoin.length) {
+                for (let i = 0; i < listJoin.length; i++) {
+                  eventInfor += "<tr>";
+                  eventInfor +=
+                    '<td style="border: 1px solid black;">' +
+                    listJoin[i] +
+                    "</td>";
+                  if (listJoin.length != 0) {
+                    if (i < listUnJoin.length) {
+                      eventInfor +=
+                        '<td style="border: 1px solid black;">' +
+                        listUnJoin[i] +
+                        "</td>";
+                    } else {
+                      eventInfor +=
+                        '<td style="border: 1px solid black;"></td>';
                     }
-                  }else{
-                    eventInfor+='<td style="border: 1px solid black;"></td>'
+                  } else {
+                    eventInfor += '<td style="border: 1px solid black;"></td>';
                   }
-                  if(listJoin.length != 0){
-                    if(i < listUnResponse.length - 1){
-                      eventInfor+='<td style="border: 1px solid black;">'+listUnResponse[i]+'</td>'
-                    }else{
-                      eventInfor+='<td style="border: 1px solid black;"></td>'
+                  if (listJoin.length != 0) {
+                    if (i < listUnResponse.length - 1) {
+                      eventInfor +=
+                        '<td style="border: 1px solid black;">' +
+                        listUnResponse[i] +
+                        "</td>";
+                    } else {
+                      eventInfor +=
+                        '<td style="border: 1px solid black;"></td>';
                     }
-                  }else{
-                    eventInfor+='<td style="border: 1px solid black;"></td>'
+                  } else {
+                    eventInfor += '<td style="border: 1px solid black;"></td>';
                   }
-                  eventInfor+='</tr>'
+                  eventInfor += "</tr>";
                 }
               }
-              if(maxValue == listUnJoin.length){
-                for(let i = 0; i < listUnJoin.length;i++){
-                  eventInfor+='<tr>'
-                  if(listJoin.length != 0){
-                    if(i < listJoin.length){
-                      eventInfor+='<td style="border: 1px solid black;">'+listJoin[i]+'</td>'
-                    }else{
-                      eventInfor+='<td style="border: 1px solid black;"></td>'
+              if (maxValue == listUnJoin.length) {
+                for (let i = 0; i < listUnJoin.length; i++) {
+                  eventInfor += "<tr>";
+                  if (listJoin.length != 0) {
+                    if (i < listJoin.length) {
+                      eventInfor +=
+                        '<td style="border: 1px solid black;">' +
+                        listJoin[i] +
+                        "</td>";
+                    } else {
+                      eventInfor +=
+                        '<td style="border: 1px solid black;"></td>';
                     }
-                  }else{
-                    eventInfor+='<td style="border: 1px solid black;"></td>'
+                  } else {
+                    eventInfor += '<td style="border: 1px solid black;"></td>';
                   }
-                  eventInfor+='<td style="border: 1px solid black;">'+listUnJoin[i]+'</td>'
-                  if(listUnResponse.length != 0){
-                    if(i < listUnResponse.length - 1){
-                      eventInfor+='<td style="border: 1px solid black;">'+listUnResponse[i]+'</td>'
-                    }else{
-                      eventInfor+='<td style="border: 1px solid black;"></td>'
+                  eventInfor +=
+                    '<td style="border: 1px solid black;">' +
+                    listUnJoin[i] +
+                    "</td>";
+                  if (listUnResponse.length != 0) {
+                    if (i < listUnResponse.length - 1) {
+                      eventInfor +=
+                        '<td style="border: 1px solid black;">' +
+                        listUnResponse[i] +
+                        "</td>";
+                    } else {
+                      eventInfor +=
+                        '<td style="border: 1px solid black;"></td>';
                     }
-                  }else{
-                    eventInfor+='<td style="border: 1px solid black;"></td>'
+                  } else {
+                    eventInfor += '<td style="border: 1px solid black;"></td>';
                   }
-                  eventInfor+='</tr>'
+                  eventInfor += "</tr>";
                 }
               }
-              if(maxValue == listUnResponse.length){
-                for(let i = 0; i < listUnResponse.length;i++){
-                  console.log(listUnResponse)
-                  eventInfor+='<tr>'
-                  if(listJoin.length != 0){
-                    if(i < listJoin.length - 1){
-                      eventInfor+='<td style="border: 1px solid black;">'+listJoin[i]+'</td>'
-                    }else{
-                      eventInfor+='<td style="border: 1px solid black;"></td>'
+              if (maxValue == listUnResponse.length) {
+                for (let i = 0; i < listUnResponse.length; i++) {
+                  console.log(listUnResponse);
+                  eventInfor += "<tr>";
+                  if (listJoin.length != 0) {
+                    if (i < listJoin.length - 1) {
+                      eventInfor +=
+                        '<td style="border: 1px solid black;">' +
+                        listJoin[i] +
+                        "</td>";
+                    } else {
+                      eventInfor +=
+                        '<td style="border: 1px solid black;"></td>';
                     }
-                  }else{
-                    eventInfor+='<td style="border: 1px solid black;"></td>'
+                  } else {
+                    eventInfor += '<td style="border: 1px solid black;"></td>';
                   }
-                  if(listUnJoin.length != 0){
-                    if(i < listUnJoin.length){
-                      eventInfor+='<td style="border: 1px solid black;">'+listUnJoin[i]+'</td>'
-                    }else{
-                      eventInfor+='<td style="border: 1px solid black;"></td>'
+                  if (listUnJoin.length != 0) {
+                    if (i < listUnJoin.length) {
+                      eventInfor +=
+                        '<td style="border: 1px solid black;">' +
+                        listUnJoin[i] +
+                        "</td>";
+                    } else {
+                      eventInfor +=
+                        '<td style="border: 1px solid black;"></td>';
                     }
-                  }else{
-                    eventInfor+='<td style="border: 1px solid black;"></td>'
-                  } 
-                  eventInfor+='<td style="border: 1px solid black;">'+listUnResponse[i]+'</td>'
-                  eventInfor+='</tr>'
+                  } else {
+                    eventInfor += '<td style="border: 1px solid black;"></td>';
+                  }
+                  eventInfor +=
+                    '<td style="border: 1px solid black;">' +
+                    listUnResponse[i] +
+                    "</td>";
+                  eventInfor += "</tr>";
                 }
               }
-              console.log(eventInfor)
+              console.log(eventInfor);
             } else {
               console.log("vào else");
             }
@@ -1210,7 +1248,7 @@ export default {
           .catch((e) => {
             console.log(e);
           });
-          eventInfor+='</table>'
+        eventInfor += "</table>";
       }
       await HTTP.post("export-pdf", {
         htmlContent: eventInfor,
@@ -1400,6 +1438,7 @@ export default {
           .then((response) => {
             if (response.data.success == true) {
               this.memberRole = response.data.data.RoleID;
+              console.log(this.memberRole);
             } else {
               if (response.data.status_code == 402) {
                 localStorage.removeItem("CodeID");

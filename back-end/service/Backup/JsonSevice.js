@@ -16,10 +16,10 @@ async function exportData(memberIDs) {
         const familyMembers = await queryDatabase('genealogy.familymember', memberIDs);
         const memberIdToIndexMap = await createMemberIdToIndexMap(familyMembers);
 
-        const educations = await queryDatabase('genealogy.education', memberIDs);
-        const jobs = await queryDatabase('genealogy.job', memberIDs);
-        const contacts = await queryDatabase('genealogy.contact', memberIDs);
-        const marriages = await queryDatabase('genealogy.marriage', memberIDs);
+        const educations = await queryEducationDatabase(memberIDs);
+        const jobs = await queryJobDatabase(memberIDs);
+        const contacts = await queryContactDatabase(memberIDs);
+        const marriages = await queryMarriageDatabase(memberIDs);
 
         const workbook = new Excel.Workbook();
         await addDataToSheet(workbook, 'Family Member Data', familyMembers, memberIdToIndexMap);
@@ -123,6 +123,49 @@ async function queryDatabase(tableName, memberIDs) {
     }
 }
 
+async function queryContactDatabase(memberIDs) {
+    return new Promise((resolve, reject) => {
+        const query = `SELECT MemberID, Address, Phone, Email, FacebookUrl, Zalo FROM genealogy.contact WHERE MemberID IN (${memberIDs.join(',')})`;
+        db.connection.query(query, (err, rows) => {
+            if (err) {
+                console.error('Lỗi truy vấn bảng genealogy.contact:', err);
+                reject({ error: 'Lỗi truy vấn bảng genealogy.contact', originalError: err });
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+}
+
+async function queryEducationDatabase(memberIDs) {
+    return new Promise((resolve, reject) => {
+        const query = `SELECT MemberID, School, Description, StartDate, EndDate FROM genealogy.education WHERE MemberID IN (${memberIDs.join(',')})`;
+        db.connection.query(query, (err, rows) => {
+            if (err) {
+                console.error('Lỗi truy vấn bảng genealogy.education:', err);
+                reject({ error: 'Lỗi truy vấn bảng genealogy.education', originalError: err });
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+}
+
+async function queryJobDatabase(memberIDs) {
+    return new Promise((resolve, reject) => {
+        const query = `SELECT MemberID, Organization, OrganizationAddress, Role, JobName, StartDate, EndDate FROM genealogy.job WHERE MemberID IN (${memberIDs.join(',')})`;
+        db.connection.query(query, (err, rows) => {
+            if (err) {
+                console.error('Lỗi truy vấn bảng genealogy.job:', err);
+                reject({ error: 'Lỗi truy vấn bảng genealogy.job', originalError: err });
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+}
+
+
 
 function queryWithPromise(query, params = []) {
     return new Promise((resolve, reject) => {
@@ -164,6 +207,22 @@ async function truncateTablesForMember(memberID) {
     }
 }
 
+async function queryMarriageDatabase(memberIDs) {
+    return new Promise((resolve, reject) => {
+        const query = `SELECT husbandID, wifeID,CodeID,MarriageNumber 
+                FROM marriage WHERE husbandID IN (${memberIDs.join(',')}) OR wifeID IN (${memberIDs.join(',')})`;
+        db.connection.query(query, (err, rows) => {
+            if (err) {
+                console.error('Error querying table marriage:', err);
+                reject({ error: 'Error querying table marriage', originalError: err });
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+}
+
+
 async function clearTree(memberIDs) {
     try {
         const truncatePromises = [];
@@ -203,29 +262,25 @@ async function updateCodeIDForMember(memberID, newCodeID) {
 }
 
 
-async function importData(file) {
+async function importData(file, codeID) {
     try {
         const workbook = new Excel.Workbook();
         await workbook.xlsx.readFile(file);
 
         const familyWorksheet = workbook.getWorksheet('Family Member Data');
-        const codeIDFromExcel = familyWorksheet.getRow(2).getCell(22).value;
-        const insertPromises = [
-            insertDataToTable(familyWorksheet, 'genealogy.familymember', codeIDFromExcel),
-            // insertDataToTable(workbook.getWorksheet('Contact Data'), 'genealogy.contact'),
-            // insertDataToTable(workbook.getWorksheet('Education Data'), 'genealogy.education'),
-            // insertDataToTable(workbook.getWorksheet('Job Data'), 'genealogy.job'),
-            // insertDataToTable(workbook.getWorksheet('Marriage Data'), 'genealogy.marriage')
-        ]
+        const contactWorksheet = workbook.getWorksheet('Contact Data');
+        const educationWorksheet = workbook.getWorksheet('Education Data');
+        const jobWorksheet = workbook.getWorksheet('Job Data');
+        
+        let arrayInsert = await insertDataToTable(familyWorksheet, 'genealogy.familymember', codeID)
+        console.log("arr :" + arrayInsert)
 
-        const insertResults = await Promise.all(insertPromises);
-        const allInsertsSuccessful = insertResults.every(result => result.every(res => res));
+        await insertDataToTable2(contactWorksheet, 'genealogy.contact', arrayInsert)
+        await insertDataToTable2(educationWorksheet, 'genealogy.education', arrayInsert)
+        await insertDataToTable2(jobWorksheet, 'genealogy.job', arrayInsert)
+        await insertDataToTableMarriage(workbook.getWorksheet('Marriage Data'), 'genealogy.marriage', arrayInsert)
 
-        if (!allInsertsSuccessful) {
-            return false;
-        }
-        console.log(allInsertsSuccessful)
-        return allInsertsSuccessful;
+        return true;
     } catch (error) {
         console.error('Lỗi khi xử lý dữ liệu:', error);
         throw error;
@@ -238,6 +293,7 @@ async function insertDataToTable(worksheet, tableName, codeID) {
     try {
         const headers = worksheet.getRow(1).values.filter(header => header !== '');
         const isFamilyMemberTable = tableName === 'genealogy.familymember';
+
 
         // Lấy danh sách các cột cần chèn ngoại trừ cột MemberID
         const columnsToInsert = headers.filter(header => header !== 'MemberID');
@@ -281,12 +337,12 @@ async function insertDataToTable(worksheet, tableName, codeID) {
                 queries.push(query);
             }
         }
-
+        let arrayInsert = []
         // Thực hiện chèn vào database
         const results = await Promise.all(queries.map(query =>
             queryWithPromise(query)
                 .then(result => {
-                    console.log("Inserted row:", result);
+                    arrayInsert.push(result.insertId);
                     return result;
                 })
                 .catch(error => {
@@ -301,7 +357,8 @@ async function insertDataToTable(worksheet, tableName, codeID) {
             await updateFatherMotherID(codeID);
         }
 
-        return results;
+
+        return arrayInsert;
     } catch (error) {
         console.error('Error inserting data into table', tableName, error);
         throw error;
@@ -309,25 +366,112 @@ async function insertDataToTable(worksheet, tableName, codeID) {
 }
 
 
+async function insertDataToTable2(worksheet, tableName, insertArr) {
+    try {
+        // Khai báo biến headers là mảng các tiêu đề cột lấy từ hàng 1 của worksheet
+        const headers = worksheet.getRow(1).values;
+        // Khai báo biến columnsToInsert là mảng các tiêu đề cột khác rỗng
+        const columnsToInsert = headers.filter(header => header !== '');
+        // Khai báo mảng trống để chứa các câu lệnh INSERT
+        const queries = [];
+        // Khai báo mảng trống để chứa dữ liệu các hàng
+        const worksheetData = [];
+        // In ra mảng các tiêu đề cột cần insert
+        console.log("Column to insert : " + columnsToInsert)
+        // Duyệt từ hàng 2 đến hàng cuối cùng
+        for (let rowNumber = 2; rowNumber <= worksheet.rowCount; rowNumber++) {
+            // Lấy dữ liệu hàng hiện tại
+            let row = worksheet.getRow(rowNumber);
+            // Khai báo mảng để chứa dữ liệu đã định dạng của hàng
+            let formattedValues = [];
+            // In ra độ dài mảng headers
+            console.log("header length : " + headers.length)
+            // Duyệt từ cột 1 đến cột cuối cùng
+            for (let i = 1; i <= headers.length - 1; i++) {
+                // Lấy giá trị của ô hiện tại
+                let cellValue = row.getCell(i).value;
+                // Khai báo biến chứa giá trị đã định dạng
+                let formattedValue = '';
+                // Kiểm tra giá trị ô
+                // Nếu null hoặc rỗng thì gán là NULL
+                if (cellValue === null || cellValue === '') {
+                    formattedValue = 'NULL';
+                    // Nếu là chuỗi thì thêm dấu nháy kép
+                } else if (typeof cellValue === 'string') {
+                    formattedValue = `'${cellValue.replace(/'/g, "''")}'`;
+                    // Nếu là ngày thì định dạng ngày
+                } else if (cellValue instanceof Date) {
+                    let formattedDate = `${cellValue.getFullYear()}-${(cellValue.getMonth() + 1).toString().padStart(2, '0')}-${cellValue.getDate().toString().padStart(2, '0')}`;
+                    formattedValue = `'${formattedDate}'`;
+                    // Ngược lại giữ nguyên giá trị
+                } else {
+                    formattedValue = cellValue;
+                }
+                // Thêm giá trị đã định dạng vào mảng
+                formattedValues.push(formattedValue);
+            }
+            // In ra mảng giá trị đã định dạng
+            console.log("formattedValues : " + formattedValues)
+            // Thêm mảng giá trị đã định dạng của hàng vào mảng chứa dữ liệu
+            worksheetData.push(formattedValues);
+        }
+        // In ra mảng chứa dữ liệu đã định dạng
+        console.log("worksheetData : " + worksheetData)
+        // In ra độ dài mảng chứa dữ liệu
+        console.log("worksheetData length: " + worksheetData.length)
+        // Duyệt mảng chứa dữ liệu
+        for (let j = 0; j < worksheetData.length; j++) {
+            // Duyệt mảng chứa các giá trị index cần insert
+            for (let k = 0; k < insertArr.length; k++) {
+                // Nếu giá trị index đầu tiên của hàng = vị trí trong mảng insert
+                if (worksheetData[j][0] == (k + 1)) {
+                    // Gán giá trị tại vị trí đó trong mảng insert thay cho index
+                    worksheetData[j][0] = insertArr[k];
+                    // Thoát vòng lặp for k
+                    break;
+                }
+            }
+
+        }
+        console.log("columnsToInsert : " + columnsToInsert)
+        console.log("worksheetData : " + worksheetData)
+        // Construct and push the INSERT query
+        for (let k = 0; k < worksheetData.length; k++) {
+            let query = `INSERT INTO ${tableName} (${columnsToInsert}) VALUES (${worksheetData[k]})`;
+            console.log("query: " + query);
+            queries.push(query);
+
+        }
+        // Thực hiện chèn vào cơ sở dữ liệu
+        let results = await Promise.all(queries.map(query =>
+            queryWithPromise(query)
+                .then(result => {
+                    return result;
+                })
+                .catch(error => {
+                    console.error("Error inserting row:", error);
+                    throw error;
+                })
+        ));
+
+        return { results };
+    } catch (error) {
+        console.error('Error inserting data into table', tableName, error);
+    }
+}
+
+
 async function updateFatherMotherID(codeID) {
     try {
-        const memberIDIndexMap = {};
 
-        // Get database MemberIDs after inserting from Excel
+        const memberIDIndexMap = await createMemberIDIndexMap(codeID);
+        console.log(memberIDIndexMap)
         const databaseMembers = await queryFamilyMembers(codeID);
-        console.log('databaseMembers: ' + JSON.stringify(databaseMembers, null, 2))
-
-        // Create a map between Excel index and Database MemberID
         databaseMembers.forEach((member, index) => {
-            let dbMemberID = member['MemberID'];
-            console.log('dbMemberID: ' + dbMemberID)
-            memberIDIndexMap[index + 1] = dbMemberID; // Assuming the database index starts from 1
+            const dbMemberID = member['MemberID'];
+            memberIDIndexMap[index + 1] = dbMemberID;
         });
 
-        console.log('memberIDIndexMap: ' + JSON.stringify(memberIDIndexMap, null, 2))
-
-
-        // Update FatherID and MotherID in the database using Excel's MemberID
         const updateQueries = [];
 
         databaseMembers.forEach((member, index) => {
@@ -340,7 +484,6 @@ async function updateFatherMotherID(codeID) {
             if (fatherID !== null && memberIDIndexMap[fatherID]) {
                 const newFatherID = memberIDIndexMap[fatherID];
                 const fatherUpdateQuery = `UPDATE genealogy.familymember SET FatherID = ${newFatherID} WHERE MemberID = ${newMemberID}`;
-                console.log('fatherUpdateQuery: ' + fatherUpdateQuery)
                 updateQueries.push(fatherUpdateQuery);
             }
 
@@ -350,21 +493,20 @@ async function updateFatherMotherID(codeID) {
                 updateQueries.push(motherUpdateQuery);
             }
         });
-
+        console.log("Execute update queries")
         // Execute update queries
-        // await Promise.all(updateQueries.map(query =>
-        //     queryWithPromise(query)
-        //         .then(result => {
-        //             console.log("Updated row:", result);
-        //             return result;
-        //         })
-        //         .catch(error => {
-        //             console.error("Error updating row:", error);
-        //             throw error;
-        //         })
-        // ));
+        await Promise.all(updateQueries.map(query =>
+            queryWithPromise(query)
+                .then(result => {
+                    return result;
+                })
+                .catch(error => {
+                    console.error("Error updating row:", error);
+                    throw error;
+                })
+        ));
 
-        // console.log('FatherID and MotherID updated successfully.');
+        console.log('FatherID and MotherID updated successfully.');
 
     } catch (error) {
         console.error('Error updating Family Member IDs:', error);
@@ -372,24 +514,138 @@ async function updateFatherMotherID(codeID) {
     }
 }
 
+async function insertDataToTableMarriage(worksheet, tableName, insertArr) {
+    try {
+        console.log("Bắt đầu insert marriage")
+        // Khai báo biến headers là mảng các tiêu đề cột lấy từ hàng 1 của worksheet
+        const headers = worksheet.getRow(1).values;
+        // Khai báo biến columnsToInsert là mảng các tiêu đề cột khác rỗng
+        const columnsToInsert = headers.filter(header => header !== '');
+        // Khai báo mảng trống để chứa các câu lệnh INSERT
+        const queries = [];
+        // Khai báo mảng trống để chứa dữ liệu các hàng
+        const worksheetData = [];
+        // In ra mảng các tiêu đề cột cần insert
+        console.log("Column to insert : " + columnsToInsert)
+        // Duyệt từ hàng 2 đến hàng cuối cùng
+        for (let rowNumber = 2; rowNumber <= worksheet.rowCount; rowNumber++) {
+            // Lấy dữ liệu hàng hiện tại
+            let row = worksheet.getRow(rowNumber);
+            // Khai báo mảng để chứa dữ liệu đã định dạng của hàng
+            let formattedValues = [];
+            // In ra độ dài mảng headers
+            console.log("header length : " + headers.length)
+            // Duyệt từ cột 1 đến cột cuối cùng
+            for (let i = 1; i <= headers.length - 1; i++) {
+                // Lấy giá trị của ô hiện tại
+                let cellValue = row.getCell(i).value;
+                // Khai báo biến chứa giá trị đã định dạng
+                let formattedValue = '';
+                // Kiểm tra giá trị ô
+                // Nếu null hoặc rỗng thì gán là NULL
+                if (cellValue === null || cellValue === '') {
+                    formattedValue = 'NULL';
+                    // Nếu là chuỗi thì thêm dấu nháy kép
+                } else if (typeof cellValue === 'string') {
+                    formattedValue = `'${cellValue.replace(/'/g, "''")}'`;
+                    // Nếu là ngày thì định dạng ngày
+                }
+                else {
+                    formattedValue = cellValue;
+                }
+                // Thêm giá trị đã định dạng vào mảng
+                formattedValues.push(formattedValue);
+            }
+            // In ra mảng giá trị đã định dạng
+            console.log("formattedValues : " + formattedValues)
+            // Thêm mảng giá trị đã định dạng của hàng vào mảng chứa dữ liệu
+            worksheetData.push(formattedValues);
+        }
+        // In ra mảng chứa dữ liệu đã định dạng
+        console.log("worksheetData : " + worksheetData)
+        // In ra độ dài mảng chứa dữ liệu
+        console.log("worksheetData length: " + worksheetData.length)
+        // Duyệt mảng chứa dữ liệu
+        for (let j = 0; j < worksheetData.length; j++) {
+            // Duyệt mảng chứa các giá trị index cần insert
+            for (let k = 0; k < insertArr.length; k++) {
+                // Nếu giá trị index đầu tiên của hàng = vị trí trong mảng insert
+                if (worksheetData[j][0] == (k + 1)) {
+                    // Gán giá trị tại vị trí đó trong mảng insert thay cho index
+                    worksheetData[j][0] = insertArr[k];
+                    // Thoát vòng lặp for k
+                    break;
+                }
+            }
+
+        }
+         // Duyệt mảng chứa dữ liệu
+         for (let j = 0; j < worksheetData.length; j++) {
+            // Duyệt mảng chứa các giá trị index cần insert
+            for (let k = 0; k < insertArr.length; k++) {
+                // Nếu giá trị index đầu tiên của hàng = vị trí trong mảng insert
+                if (worksheetData[j][1] == (k + 1)) {
+                    // Gán giá trị tại vị trí đó trong mảng insert thay cho index
+                    worksheetData[j][1] = insertArr[k];
+                    // Thoát vòng lặp for k
+                    break;
+                }
+            }
+
+        }
+        console.log("columnsToInsert : " + columnsToInsert)
+        console.log("worksheetData : " + worksheetData)
+        // Construct and push the INSERT query
+        for (let k = 0; k < worksheetData.length; k++) {
+            let query = `INSERT INTO ${tableName} (${columnsToInsert}) VALUES (${worksheetData[k]})`;
+            console.log("query: " + query);
+            queries.push(query);
+
+        }
+        // Thực hiện chèn vào cơ sở dữ liệu
+        let results = await Promise.all(queries.map(query =>
+            queryWithPromise(query)
+                .then(result => {
+                    return result;
+                })
+                .catch(error => {
+                    console.error("Error inserting row:", error);
+                    throw error;
+                })
+        ));
+
+        return { results };
+    }
+    catch (error) {
+        console.error('Error inserting data into table', tableName, error);
+    }
+}
 
 
 // Hàm truy vấn danh sách Family Members sau khi đã insert
 async function queryFamilyMembers(codeID) {
     return new Promise((resolve, reject) => {
-        const query = 'SELECT MemberID, FatherID, MotherID FROM genealogy.familymember where CodeID = ? Order By  MemberID';
+        const query = 'SELECT MemberID, FatherID, MotherID FROM genealogy.familymember where CodeID = ? Order by MemberID';
 
         db.connection.query(query, [codeID], (error, results) => {
             if (error) {
                 reject(error);
             } else {
-
-                console.log("Results: " + JSON.stringify(results, null, 2))
                 resolve(results);
             }
         });
     });
 }
 
+async function createMemberIDIndexMap(codeID) {
+    const memberIDIndexMap = {};
+    const databaseMembers = await queryFamilyMembers(codeID);
 
-module.exports = { exportData, clearTree, importData, createMemberIdToIndexMap };
+    databaseMembers.forEach((member, index) => {
+        const dbMemberID = member['MemberID'];
+        memberIDIndexMap[index + 1] = dbMemberID;
+    });
+
+    return memberIDIndexMap;
+}
+module.exports = { exportData, clearTree, importData, createMemberIdToIndexMap, queryContactDatabase, queryMarriageDatabase };

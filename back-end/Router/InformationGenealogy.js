@@ -29,7 +29,7 @@ const initWebRouter = (app) => {
     // Create a new FamilyHistory
     router.post('/familyhistory', authMiddleware.authenticateAndAuthorize(2), CoreFunction.isChecksumValid ,FamilyHistoryController.addFamilyHistory);
     // Retrieve a single FamilyHistory with id
-    router.get('/familyhistory', authMiddleware.authenticateAndAuthorize(2), CoreFunction.isChecksumValid, FamilyHistoryController.getFamilyHistory);
+    router.get('/familyhistory', authMiddleware.authenticateAndAuthorize(3), CoreFunction.isChecksumValid, FamilyHistoryController.getFamilyHistory);
     // Update a FamilyHistory with id
     router.put('/familyhistory', authMiddleware.authenticateAndAuthorize(2), CoreFunction.isChecksumValid, FamilyHistoryController.updateFamilyHistory);
     // Delete a FamilyHistory with id
