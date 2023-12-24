@@ -742,7 +742,7 @@
                       <!-- <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" v-bind="props"></VuePhoneNumberInput> -->
                       <div class="col-2 d-flex align-items-center justify-content-center">(+84)</div>
                       <div class="col-10">
-                        <input class="form-control modal-item w-100 h-100" type="text"/>
+                        <input class="form-control modal-item w-100 h-100" type="text" />
                       </div>
                     </div>
                     <div class="pb-2 ps-1" style="position: relative;width: 50%;">
@@ -954,20 +954,20 @@ export default {
   components: {
     // VuePhoneNumberInput,
   },
-  data() {      
+  data() {
     return {
-        // props: {
-  //       clearable: true,
-  //       fetchCountry: true,
-  //       preferredCountries: ["US", "GB"],
-  //       noExample: false,
-  //       translations: {
-  //         countrySelectorLabel: "Country code",
-  //         countrySelectorError: "Error",
-  //         phoneNumberLabel: "Nhập số điện thoại",
-  //         example: "Example:",
-  //       },
-  //     },
+      // props: {
+      //       clearable: true,
+      //       fetchCountry: true,
+      //       preferredCountries: ["US", "GB"],
+      //       noExample: false,
+      //       translations: {
+      //         countrySelectorLabel: "Country code",
+      //         countrySelectorError: "Error",
+      //         phoneNumberLabel: "Nhập số điện thoại",
+      //         example: "Example:",
+      //       },
+      //     },
       idParent: null,
       ResultRelationship: null,
       ListCity: null,
@@ -1892,14 +1892,16 @@ export default {
             // this.nodes.length = this.nodes.length - 1;
             this.removeFromSelectedNodes(this.CurrentIdMember);
             this.NotificationsScuccess(response.data.message);
-            this.getListUnspecifiedMembers();
+            setTimeout(() => {
+              this.getListUnspecifiedMembers();
+            }, 2000);
 
             this.$modal.hide("select-opts-mdl");
             this.$modal.hide("view-member-mdl");
             this.getListMember();
             this.closeCfDelModal();
             this.getListMemberHasPhone();
-            this.getListMemberHasEmail();            
+            this.getListMemberHasEmail();
           } else {
             this.NotificationsDelete(response.data.message);
           }
@@ -2634,7 +2636,9 @@ export default {
           .then((response) => {
             this.ListUnspecifiedMembers = response.data;
             console.log("111111111");
-            console.log('ListUnspecifiedMembers: ' + this.ListUnspecifiedMembers);
+            console.log(
+              "ListUnspecifiedMembers: " + this.ListUnspecifiedMembers
+            );
           })
           .catch((e) => {
             console.log(e);
