@@ -148,12 +148,12 @@ var addMember = async (req, res) => {
                     return res.send(Response.badRequestResponse(null, errorMessage));
                 }
                 // check dob, LunarDob, 2 thứ này phải trước hơn người hiện tại
-                if(CoreFunction.isDataDateExist(req.body.Dob) && new Date(req.body.Dob) > new Date(currentMember[0].Dob)
-                    || CoreFunction.isDataDateExist(req.body.LunarDob) && new Date(req.body.LunarDob) > new Date(currentMember[0].LunarDob)){
+                if (CoreFunction.isDataDateExist(req.body.Dob) && new Date(req.body.Dob) > new Date(currentMember[0].Dob)
+                    || CoreFunction.isDataDateExist(req.body.LunarDob) && new Date(req.body.LunarDob) > new Date(currentMember[0].LunarDob)) {
                     let errorMessage = 'Ngày sinh phải trước người hiện tại';
                     return res.send(Response.badRequestResponse(null, errorMessage));
                 }
-                
+
                 // nếu vào trường hợp thêm cha
                 if (req.body.Male == 1) {
                     console.log("Đã vào trường hợp thêm cha");
@@ -342,8 +342,8 @@ var addChild = async (req, res) => {
             parentGeneration = fatherData[0].Generation;
         }
         // check dob, LunarDob, 2 thứ này phải sau người hiện tại
-        if(CoreFunction.isDataDateExist(req.body.Dob) && new Date(req.body.Dob) < new Date(fatherData[0].Dob)
-            || CoreFunction.isDataDateExist(req.body.LunarDob) && new Date(req.body.LunarDob) < new Date(fatherData[0].LunarDob)){
+        if (CoreFunction.isDataDateExist(req.body.Dob) && new Date(req.body.Dob) < new Date(fatherData[0].Dob)
+            || CoreFunction.isDataDateExist(req.body.LunarDob) && new Date(req.body.LunarDob) < new Date(fatherData[0].LunarDob)) {
             let errorMessage = 'Ngày sinh phải sau người hiện tại';
             return res.send(Response.badRequestResponse(null, errorMessage));
         }
@@ -443,13 +443,16 @@ var addMarriage = async (req, res) => {
                 }
             }
             // nếu vẫn có người sống thì trả về lỗi
-            if (Array.isArray(listHusband) && listHusband.length > 0) {
-                for (let i = 0; i < listHusband.length; i++) {
-                    if (listHusband[i].IsDead == 0) {
-                        return res.send(Response.badRequestResponse(null, "Vẫn còn chồng đang sống, không thể thêm chồng"));
+            if (req.body.IsDead == 0 || req.body.IsDead == false) {
+                if (Array.isArray(listHusband) && listHusband.length > 0) {
+                    for (let i = 0; i < listHusband.length; i++) {
+                        if (listHusband[i].IsDead == 0) {
+                            return res.send(Response.badRequestResponse(null, "Vẫn còn chồng đang sống, không thể thêm chồng"));
+                        }
                     }
                 }
             }
+
             // tìm số lần kết hôn của vợ
             let countMarriage = await MarriageManagement.getWifeMaxMarriageNumber(req.body.CurrentMemberID, currentMember[0].CodeID);
             console.log("countMarriage: ", countMarriage);
@@ -476,10 +479,12 @@ var addMarriage = async (req, res) => {
                 }
             }
             // nếu vẫn có người sống thì trả về lỗi
-            if (Array.isArray(listWife) && listWife.length > 0) {
-                for (let i = 0; i < listWife.length; i++) {
-                    if (listWife[i].IsDead == 0) {
-                        return res.send(Response.badRequestResponse(null, "Vẫn còn vợ đang sống, không thể thêm vợ"));
+            if (req.body.IsDead == 0 || req.body.IsDead == false) {
+                if (Array.isArray(listWife) && listWife.length > 0) {
+                    for (let i = 0; i < listWife.length; i++) {
+                        if (listWife[i].IsDead == 0) {
+                            return res.send(Response.badRequestResponse(null, "Vẫn còn vợ đang sống, không thể thêm vợ"));
+                        }
                     }
                 }
             }
