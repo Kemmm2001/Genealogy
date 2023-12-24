@@ -214,13 +214,15 @@ function UpdateMemberRelated(member, listMember) {
         }
         // tìm tất cả người có mối quan hệ vợ chồng với memberId
         let marriedMember = await MarriageManagement.getMarriageByHusbandIDOrWifeID(member.MemberID, member.MemberID);
+        console.log("marriageMember length: " + marriedMember.length)
+        console.log("marriedMember: " + JSON.stringify(marriedMember));
         if (marriedMember.length == 0) {
             console.log(`marriedMember của member.MemberID : ${member.MemberID} là null`);
             resolve();
         } else {
             for (let married of marriedMember) {
                 // xóa mối quan hệ vợ chồng
-                await MarriageManagement.deleteMarriage(married.MarriageID);
+                await MarriageManagement.deleteMarriage(married.marriageID);
                 let children = [];
                 if (married.husbandID == member.MemberID) {
                     // cho generation của vợ = 0
