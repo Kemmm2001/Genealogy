@@ -19,7 +19,7 @@ async function exportData(memberIDs) {
         const educations = await queryDatabase('genealogy.education', memberIDs);
         const jobs = await queryDatabase('genealogy.job', memberIDs);
         const contacts = await queryContactDatabase(memberIDs);
-        const marriages = await queryDatabase('genealogy.marriage', memberIDs);
+        const marriages = await queryMarriageDatabase(memberIDs);
 
         const workbook = new Excel.Workbook();
         await addDataToSheet(workbook, 'Family Member Data', familyMembers, memberIdToIndexMap);
@@ -181,7 +181,8 @@ async function truncateTablesForMember(memberID) {
 
 async function queryMarriageDatabase(memberIDs) {
     return new Promise((resolve, reject) => {
-        const query = `SELECT * FROM marriage WHERE husbandID IN (${memberIDs.join(',')}) OR wifeID IN (${memberIDs.join(',')})`;
+        const query = `SELECT husbandID, wifeID,CodeID,MarriageNumber 
+                FROM marriage WHERE husbandID IN (${memberIDs.join(',')}) OR wifeID IN (${memberIDs.join(',')})`;
         db.connection.query(query, (err, rows) => {
             if (err) {
                 console.error('Error querying table marriage:', err);
@@ -247,7 +248,7 @@ async function importData(file) {
         insertDataToTable2(contactWorksheet, 'genealogy.contact', arrayInsert)
         // insertDataToTable2(workbook.getWorksheet('Education Data'), 'genealogy.education')
         // insertDataToTable2(workbook.getWorksheet('Job Data'), 'genealogy.job')
-        // insertDataToTable(workbook.getWorksheet('Marriage Data'), 'genealogy.marriage')
+        insertDataToTableMarriage(workbook.getWorksheet('Marriage Data'), 'genealogy.marriage', arrayInsert)
 
 
 
@@ -486,6 +487,98 @@ async function updateFatherMotherID(codeID) {
     }
 }
 
+async function insertDataToTableMarriage(worksheet, tableName, insertArr) {
+    try {
+        // Khai báo biến headers là mảng các tiêu đề cột lấy từ hàng 1 của worksheet
+        const headers = worksheet.getRow(1).values;
+        // Khai báo biến columnsToInsert là mảng các tiêu đề cột khác rỗng
+        const columnsToInsert = headers.filter(header => header !== '');
+        // Khai báo mảng trống để chứa các câu lệnh INSERT
+        const queries = [];
+        // Khai báo mảng trống để chứa dữ liệu các hàng
+        const worksheetData = [];
+        // In ra mảng các tiêu đề cột cần insert
+        console.log("Column to insert : " + columnsToInsert)
+        // Duyệt từ hàng 2 đến hàng cuối cùng
+        for (let rowNumber = 2; rowNumber <= worksheet.rowCount; rowNumber++) {
+            // Lấy dữ liệu hàng hiện tại
+            let row = worksheet.getRow(rowNumber);
+            // Khai báo mảng để chứa dữ liệu đã định dạng của hàng
+            let formattedValues = [];
+            // In ra độ dài mảng headers
+            console.log("header length : " + headers.length)
+            // Duyệt từ cột 1 đến cột cuối cùng
+            for (let i = 1; i <= headers.length - 1; i++) {
+                // Lấy giá trị của ô hiện tại
+                let cellValue = row.getCell(i).value;
+                // Khai báo biến chứa giá trị đã định dạng
+                let formattedValue = '';
+                // Kiểm tra giá trị ô
+                // Nếu null hoặc rỗng thì gán là NULL
+                if (cellValue === null || cellValue === '') {
+                    formattedValue = 'NULL';
+                    // Nếu là chuỗi thì thêm dấu nháy kép
+                } else if (typeof cellValue === 'string') {
+                    formattedValue = `'${cellValue.replace(/'/g, "''")}'`;
+                    // Nếu là ngày thì định dạng ngày
+                }
+                else {
+                    formattedValue = cellValue;
+                }
+                // Thêm giá trị đã định dạng vào mảng
+                formattedValues.push(formattedValue);
+            }
+            // In ra mảng giá trị đã định dạng
+            console.log("formattedValues : " + formattedValues)
+            // Thêm mảng giá trị đã định dạng của hàng vào mảng chứa dữ liệu
+            worksheetData.push(formattedValues);
+        }
+        // In ra mảng chứa dữ liệu đã định dạng
+        console.log("worksheetData : " + worksheetData)
+        // In ra độ dài mảng chứa dữ liệu
+        console.log("worksheetData length: " + worksheetData.length)
+        // Duyệt mảng chứa dữ liệu
+        for (let j = 0; j < worksheetData.length; j++) {
+            // Duyệt mảng chứa các giá trị index cần insert
+            for (let k = 0; k < insertArr.length; k++) {
+                // Nếu giá trị index đầu tiên của hàng = vị trí trong mảng insert
+                if (worksheetData[j][0] == (k + 1)) {
+                    // Gán giá trị tại vị trí đó trong mảng insert thay cho index
+                    worksheetData[j][0] = insertArr[k];
+                    // Thoát vòng lặp for k
+                    break;
+                }
+            }
+
+        }
+        console.log("columnsToInsert : " + columnsToInsert)
+        console.log("worksheetData : " + worksheetData)
+        // Construct and push the INSERT query
+        for (let k = 0; k < worksheetData.length; k++) {
+            let query = `INSERT INTO ${tableName} (${columnsToInsert}) VALUES (${worksheetData[k]})`;
+            console.log("query: " + query);
+            queries.push(query);
+
+        }
+        // Thực hiện chèn vào cơ sở dữ liệu
+        let results = await Promise.all(queries.map(query =>
+            queryWithPromise(query)
+                .then(result => {
+                    return result;
+                })
+                .catch(error => {
+                    console.error("Error inserting row:", error);
+                    throw error;
+                })
+        ));
+                
+        return { results };
+    }
+    catch (error) {
+        console.error('Error inserting data into table', tableName, error);
+    }
+}
+
 
 // Hàm truy vấn danh sách Family Members sau khi đã insert
 async function queryFamilyMembers(codeID) {
@@ -513,4 +606,4 @@ async function createMemberIDIndexMap(codeID) {
 
     return memberIDIndexMap;
 }
-module.exports = { exportData, clearTree, importData, createMemberIdToIndexMap, queryContactDatabase };
+module.exports = { exportData, clearTree, importData, createMemberIdToIndexMap, queryContactDatabase, queryMarriageDatabase };
