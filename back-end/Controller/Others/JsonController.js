@@ -54,20 +54,18 @@ const clearTree = async function (req, res) {
 
 var importData = async function (req, res) {
   try {
-    const file = req.file.path;
-    let codeID = req.body.codeID;
-    console.log('codeID: ' + codeID)
-    let doesExist = await UserService.checkCodeID(codeID);
-    if (doesExist > 0) {
-      let result = await JsonService.importData(file, codeID);
+    let file = req.file.path;
+    // let doesExist = await UserService.checkCodeID(codeID);
+    // if (doesExist > 0) {
+      let result = await JsonService.importData(file);
 
       if (result) {
         return res.send(Response.successResponse(null, 'Import thành công'));
       } else {
         return res.send(Response.internalServerErrorResponse());
       }
-    }
-    return res.send(Response.dataNotFoundResponse(null, 'Không có codeId'));
+  // }
+    // return res.send(Response.dataNotFoundResponse(null, 'Không có codeId'));
   } catch (error) {
     return res.send(Response.internalServerErrorResponse());
 

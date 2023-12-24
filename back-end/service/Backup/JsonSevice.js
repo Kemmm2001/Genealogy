@@ -1,20 +1,32 @@
 const db = require("../../Models/ConnectDB");
 const Excel = require('exceljs');
 const { v4: uuidv4 } = require('uuid');
+
+async function createMemberIdToIndexMap(familyMembers) {
+    let memberIdToIndex = {};
+
+    familyMembers.forEach((row, index) => {
+        memberIdToIndex[row['MemberID']] = index + 1;
+    });
+
+    return memberIdToIndex;
+}
 async function exportData(memberIDs) {
     try {
         const familyMembers = await queryDatabase('genealogy.familymember', memberIDs);
+        const memberIdToIndexMap = await createMemberIdToIndexMap(familyMembers);
+
         const educations = await queryDatabase('genealogy.education', memberIDs);
         const jobs = await queryDatabase('genealogy.job', memberIDs);
         const contacts = await queryDatabase('genealogy.contact', memberIDs);
         const marriages = await queryDatabase('genealogy.marriage', memberIDs);
 
         const workbook = new Excel.Workbook();
-        await addDataToSheet(workbook, 'Family Member Data', familyMembers);
-        await addDataToSheet(workbook, 'Education Data', educations);
-        await addDataToSheet(workbook, 'Job Data', jobs);
-        await addDataToSheet(workbook, 'Contact Data', contacts);
-        await addDataToSheet(workbook, 'Marriage Data', marriages);
+        await addDataToSheet(workbook, 'Family Member Data', familyMembers, memberIdToIndexMap);
+        await addDataToSheet(workbook, 'Education Data', educations, memberIdToIndexMap);
+        await addDataToSheet(workbook, 'Job Data', jobs, memberIdToIndexMap);
+        await addDataToSheet(workbook, 'Contact Data', contacts, memberIdToIndexMap);
+        await addDataToSheet(workbook, 'Marriage Data', marriages, memberIdToIndexMap);
 
         const fileName = `/uploads/excel/Backup/all_members_${uuidv4()}.xlsx`;
         await workbook.xlsx.writeFile(fileName);
@@ -27,18 +39,20 @@ async function exportData(memberIDs) {
     }
 }
 
-async function addDataToSheet(workbook, sheetName, data) {
+async function addDataToSheet(workbook, sheetName, data, memberIdToIndexMap) {
     const worksheet = workbook.addWorksheet(sheetName);
 
     if (data.length > 0) {
         const headers = Object.keys(data[0]);
         worksheet.addRow(headers);
 
-        data.forEach(row => {
+
+        data.forEach((row, index) => {
+            const rowIndex = index + 1;
             const rowValues = headers.map(header => {
-                // Check if the current value is a Date object
-                if (row[header] instanceof Date) {
-                    // Format the date as yyyy-mm-dd
+                // Kiểm tra nếu giá trị hiện tại là một đối tượng Date
+                if (typeof row[header] === 'object' && row[header] instanceof Date) {
+                    // Format ngày thành chuỗi 'yyyy-mm-dd'
                     const year = row[header].getFullYear();
                     const month = `${row[header].getMonth() + 1}`.padStart(2, '0');
                     const day = `${row[header].getDate()}`.padStart(2, '0');
@@ -46,6 +60,31 @@ async function addDataToSheet(workbook, sheetName, data) {
                 }
                 return row[header];
             });
+
+            if (sheetName === 'Family Member Data') {
+
+                rowValues[headers.indexOf('MemberID')] = rowIndex;
+
+                if (row['FatherID'] && memberIdToIndexMap[row['FatherID']]) {
+                    rowValues[headers.indexOf('FatherID')] = memberIdToIndexMap[row['FatherID']];
+                }
+                if (row['MotherID'] && memberIdToIndexMap[row['MotherID']]) {
+                    rowValues[headers.indexOf('MotherID')] = memberIdToIndexMap[row['MotherID']];
+
+                }
+
+            } else if (sheetName === 'Marriage Data') {
+                if (row['husbandID'] && memberIdToIndexMap[row['husbandID']]) {
+                    rowValues[headers.indexOf('husbandID')] = memberIdToIndexMap[row['husbandID']];
+                }
+                if (row['wifeID'] && memberIdToIndexMap[row['wifeID']]) {
+                    rowValues[headers.indexOf('wifeID')] = memberIdToIndexMap[row['wifeID']];
+                }
+            } else {
+                if (row['MemberID'] && memberIdToIndexMap[row['MemberID']]) {
+                    rowValues[headers.indexOf('MemberID')] = memberIdToIndexMap[row['MemberID']];
+                }
+            }
             worksheet.addRow(rowValues);
         });
     }
@@ -164,64 +203,27 @@ async function updateCodeIDForMember(memberID, newCodeID) {
 }
 
 
-async function importData(file, codeID) {
+async function importData(file) {
     try {
         const workbook = new Excel.Workbook();
         await workbook.xlsx.readFile(file);
 
         const familyWorksheet = workbook.getWorksheet('Family Member Data');
-
-        const truncatePromises = [];
-        for (let rowNumber = 2; rowNumber <= familyWorksheet.rowCount; rowNumber++) {
-            const row = familyWorksheet.getRow(rowNumber);
-            const values = row.values;
-            const memberID = values[1];
-            const truncatePromise = truncateTablesForMember(memberID);
-            truncatePromises.push(truncatePromise);
-        }
-
-        const truncateResults = await Promise.all(truncatePromises);
-        const allTruncatesSuccessful = truncateResults.every(result => result);
-
-        if (!allTruncatesSuccessful) {
-            return false;
-        }
-
-        const insertPromises = [
-            insertDataToTable(familyWorksheet, 'genealogy.familymember'),
-            insertDataToTable(workbook.getWorksheet('Contact Data'), 'genealogy.contact'),
-            insertDataToTable(workbook.getWorksheet('Education Data'), 'genealogy.education'),
-            insertDataToTable(workbook.getWorksheet('Job Data'), 'genealogy.job'),
-            insertDataToTable(workbook.getWorksheet('Marriage Data'), 'genealogy.marriage')
-        ];
-
-        const insertResults = await Promise.all(insertPromises);
-        const allInsertsSuccessful = insertResults.every(result => result.every(res => res));
-
-        if (!allInsertsSuccessful) {
-            return false;
-        }
-        console.log(allInsertsSuccessful)
-
+        const contactWorksheet = workbook.getWorksheet('Contact Data');
         const codeIDFromExcel = familyWorksheet.getRow(2).getCell(22).value;
-        console.log(codeIDFromExcel)
-        if (codeIDFromExcel !== codeID) {
-            const updateCodeIDPromises = [];
-            for (let rowNumber = 2; rowNumber <= familyWorksheet.rowCount; rowNumber++) {
-                const row = familyWorksheet.getRow(rowNumber);
-                const values = row.values;
-                const memberID = values[1];
-                const updatePromise = updateCodeIDForMember(memberID, codeID);
-                updateCodeIDPromises.push(updatePromise);
-            }
+        let arrayInsert = await insertDataToTable(familyWorksheet, 'genealogy.familymember', codeIDFromExcel)
+        console.log("arr :" + arrayInsert)
 
-            const updateResults = await Promise.all(updateCodeIDPromises);
-            const allUpdatesSuccessful = updateResults.every(result => result);
-            console.log(allUpdatesSuccessful)
-            return allUpdatesSuccessful;
-        }
+        insertDataToTable2(contactWorksheet, 'genealogy.contact', arrayInsert)
+        // insertDataToTable2(workbook.getWorksheet('Education Data'), 'genealogy.education')
+        // insertDataToTable2(workbook.getWorksheet('Job Data'), 'genealogy.job')
+        // insertDataToTable(workbook.getWorksheet('Marriage Data'), 'genealogy.marriage')
 
-        return allInsertsSuccessful;
+
+
+
+
+        return true;
     } catch (error) {
         console.error('Lỗi khi xử lý dữ liệu:', error);
         throw error;
@@ -230,45 +232,60 @@ async function importData(file, codeID) {
 
 
 
-async function insertDataToTable(worksheet, tableName) {
+async function insertDataToTable(worksheet, tableName, codeID) {
     try {
         const headers = worksheet.getRow(1).values.filter(header => header !== '');
+        const isFamilyMemberTable = tableName === 'genealogy.familymember';
+
+
+        // Lấy danh sách các cột cần chèn ngoại trừ cột MemberID
+        const columnsToInsert = headers.filter(header => header !== 'MemberID');
 
         const queries = [];
+        const memberIDIndexMap = {}; // Ánh xạ MemberID và index tương ứng
 
         for (let rowNumber = 2; rowNumber <= worksheet.rowCount; rowNumber++) {
             const row = worksheet.getRow(rowNumber);
             const formattedValues = [];
 
             for (let i = 1; i <= headers.length; i++) {
-                const cellValue = row.getCell(i).value;
-                let formattedValue = '';
+                // Bỏ qua cột MemberID khi tạo giá trị format
+                if (headers[i - 1] !== 'MemberID') {
+                    const cellValue = row.getCell(i).value;
+                    let formattedValue = '';
 
-                if (cellValue === null || cellValue === '') {
-                    formattedValue = 'NULL';
-                } else if (typeof cellValue === 'string') {
-                    // Escape single quotes in string values
-                    formattedValue = `'${cellValue.replace(/'/g, "''")}'`;
-                } else if (cellValue instanceof Date) {
-                    const formattedDate = `${cellValue.getFullYear()}-${(cellValue.getMonth() + 1).toString().padStart(2, '0')}-${cellValue.getDate().toString().padStart(2, '0')}`;
-                    formattedValue = `'${formattedDate}'`;
-                }
-                else {
-                    formattedValue = cellValue;
-                }
+                    if (cellValue === null || cellValue === '') {
+                        formattedValue = 'NULL';
+                    } else if (typeof cellValue === 'string') {
+                        formattedValue = `'${cellValue.replace(/'/g, "''")}'`;
+                    } else if (cellValue instanceof Date) {
+                        const formattedDate = `${cellValue.getFullYear()}-${(cellValue.getMonth() + 1).toString().padStart(2, '0')}-${cellValue.getDate().toString().padStart(2, '0')}`;
+                        formattedValue = `'${formattedDate}'`;
+                    } else {
+                        formattedValue = cellValue;
+                    }
 
-                formattedValues.push(formattedValue);
+                    formattedValues.push(formattedValue);
+                }
             }
 
-            const query = `INSERT INTO ${tableName} (${headers.join(',')}) VALUES (${formattedValues.join(',')})`;
-            console.log(query)
-            queries.push(query);
-        }
+            const query = `INSERT INTO ${tableName} (${columnsToInsert.join(',')}) VALUES (${formattedValues.join(',')})`;
 
+            if (isFamilyMemberTable) {
+                queries.push(query);
+
+                // Lưu ánh xạ MemberID và index tương ứng
+                memberIDIndexMap[row.values[1]] = rowNumber;
+            } else {
+                queries.push(query);
+            }
+        }
+        let arrayInsert = []
+        // Thực hiện chèn vào database
         const results = await Promise.all(queries.map(query =>
             queryWithPromise(query)
                 .then(result => {
-                    console.log("Inserted row:", result);
+                    arrayInsert.push(result.insertId);
                     return result;
                 })
                 .catch(error => {
@@ -277,7 +294,14 @@ async function insertDataToTable(worksheet, tableName) {
                 })
         ));
 
-        return results;
+        // Nếu là bảng familymember, thực hiện cập nhật FatherID và MotherID
+        if (isFamilyMemberTable) {
+            // Thực hiện cập nhật FatherID và MotherID
+            await updateFatherMotherID(codeID);
+        }
+
+
+        return arrayInsert;
     } catch (error) {
         console.error('Error inserting data into table', tableName, error);
         throw error;
@@ -285,4 +309,165 @@ async function insertDataToTable(worksheet, tableName) {
 }
 
 
-module.exports = { exportData, clearTree, importData };
+async function insertDataToTable2(worksheet, tableName, insertArr) {
+    try {
+        console.log("vào đây");
+        const headers = worksheet.getRow(1).values;
+        
+        const columnsToInsert = headers.filter(header => header !== '');
+        let memberIDIndex = columnsToInsert.indexOf('MemberID');
+        const queries = [];
+        const worksheetData = [];
+
+        for (let rowNumber = 2; rowNumber <= worksheet.rowCount; rowNumber++) {
+            let row = worksheet.getRow(rowNumber);
+            let formattedValues = [];
+            console.log("header length : " + headers.length)
+            for (let i = 1; i <= headers.length-1; i++) {
+                let cellValue = row.getCell(i).value;
+                let formattedValue = '';
+
+                if (cellValue === null || cellValue === '') {
+                    formattedValue = 'NULL';
+                } else if (typeof cellValue === 'string') {
+                    formattedValue = `'${cellValue.replace(/'/g, "''")}'`;
+                } else if (cellValue instanceof Date) {
+                    let formattedDate = `${cellValue.getFullYear()}-${(cellValue.getMonth() + 1).toString().padStart(2, '0')}-${cellValue.getDate().toString().padStart(2, '0')}`;
+                    formattedValue = `'${formattedDate}'`;
+                } else {
+                    formattedValue = cellValue;
+                }
+
+                formattedValues.push(formattedValue);
+                console.log({formattedValues})
+            }
+            console.log("formattedValues : " + formattedValues)
+            worksheetData.push(formattedValues); // Push formatted row values as an array
+        }
+        console.log("worksheetData : " + worksheetData)
+        console.log("worksheetData length: " + worksheetData.length)
+
+        for (let i = 0; i < insertArr.length; i++) {
+        
+            for (let j = 0; j < worksheetData.length; j++) {
+                console.log("worksheetData[j][1] : " + worksheetData[j][1])
+                console.log("insertArr[i]" + insertArr[i])
+                for(let k = 0; k< insertArr.length; k++){
+                    if (worksheetData[j][1] == i) {
+                        worksheetData[j][1] = insertArr[k]; // Gắn giá trị index
+                        break;
+                    }
+                }
+              
+                
+            } 
+            
+    }
+    console.log("columnsToInsert : " + columnsToInsert)
+    console.log("worksheetData : " + worksheetData)
+    // Construct and push the INSERT query
+    for (let k = 0; k < worksheetData.length; k++) {
+        let query = `INSERT INTO ${tableName} (${columnsToInsert}) VALUES (${worksheetData[k]})`;
+        console.log("query: " + query);
+        queries.push(query);
+
+    }
+        // Thực hiện chèn vào cơ sở dữ liệu
+        let results = await Promise.all(queries.map(query =>
+            queryWithPromise(query)
+                .then(result => {
+                    return result;
+                })
+                .catch(error => {
+                    console.error("Error inserting row:", error);
+                    throw error;
+                })
+        ));
+
+        return { results };
+    } catch (error) {
+        console.error('Error inserting data into table', tableName, error);
+    }
+}
+
+async function updateFatherMotherID(codeID) {
+    try {
+
+        const memberIDIndexMap = await createMemberIDIndexMap(codeID);
+        console.log(memberIDIndexMap)
+        const databaseMembers = await queryFamilyMembers(codeID);
+        databaseMembers.forEach((member, index) => {
+            const dbMemberID = member['MemberID'];
+            memberIDIndexMap[index + 1] = dbMemberID;
+        });
+
+        const updateQueries = [];
+
+        databaseMembers.forEach((member, index) => {
+            const dbMemberID = member['MemberID'];
+            const newMemberID = memberIDIndexMap[index + 1];
+
+            const fatherID = member['FatherID'];
+            const motherID = member['MotherID'];
+
+            if (fatherID !== null && memberIDIndexMap[fatherID]) {
+                const newFatherID = memberIDIndexMap[fatherID];
+                const fatherUpdateQuery = `UPDATE genealogy.familymember SET FatherID = ${newFatherID} WHERE MemberID = ${newMemberID}`;
+                updateQueries.push(fatherUpdateQuery);
+            }
+
+            if (motherID !== null && memberIDIndexMap[motherID]) {
+                const newMotherID = memberIDIndexMap[motherID];
+                const motherUpdateQuery = `UPDATE genealogy.familymember SET MotherID = ${newMotherID} WHERE MemberID = ${newMemberID}`;
+                updateQueries.push(motherUpdateQuery);
+            }
+        });
+        console.log("Execute update queries")
+        // Execute update queries
+        await Promise.all(updateQueries.map(query =>
+            queryWithPromise(query)
+                .then(result => {
+                    return result;
+                })
+                .catch(error => {
+                    console.error("Error updating row:", error);
+                    throw error;
+                })
+        ));
+
+        console.log('FatherID and MotherID updated successfully.');
+
+    } catch (error) {
+        console.error('Error updating Family Member IDs:', error);
+        throw error;
+    }
+}
+
+
+// Hàm truy vấn danh sách Family Members sau khi đã insert
+async function queryFamilyMembers(codeID) {
+    return new Promise((resolve, reject) => {
+        const query = 'SELECT MemberID, FatherID, MotherID FROM genealogy.familymember where CodeID = ? Order by MemberID';
+
+        db.connection.query(query, [codeID], (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        });
+    });
+}
+
+async function createMemberIDIndexMap(codeID) {
+    const memberIDIndexMap = {};
+    const databaseMembers = await queryFamilyMembers(codeID);
+
+    databaseMembers.forEach((member, index) => {
+        const dbMemberID = member['MemberID'];
+        memberIDIndexMap[index + 1] = dbMemberID;
+    });
+
+    return memberIDIndexMap;
+}
+module.exports = { exportData, clearTree, importData, createMemberIdToIndexMap };
