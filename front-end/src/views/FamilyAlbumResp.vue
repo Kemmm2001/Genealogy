@@ -8,7 +8,7 @@
             <input v-model="keySearch" @change="searchAlbumPhoto()" type="text" class="form-control modal-item m-0" placeholder="Nhập tên album..." />
           </div>
         </div>
-        <div class="col-md-6 d-flex align-items-center" style="justify-content: right;">
+        <div v-if="memberRole != 3" class="col-md-6 d-flex align-items-center" style="justify-content: right;">
           <button @click=" showCfDel()" class="btn bg-primary text-white articlelist-item articlelist-item-button text-center my-4 mx-2" :disabled="isButtonDisabledAlbum" style="outline: none; border: none;">Xóa album</button>
           <button @click="openAddAlbumModal()" class="btn bg-primary text-white articlelist-item articlelist-item-button text-center my-4 mx-2">Tạo album</button>
         </div>
@@ -85,7 +85,7 @@
               </div>
             </div>
           </div>
-          <div class="mdl-footer">
+          <div v-if="memberRole != 3 " class="mdl-footer">
             <div class="h-100 d-flex align-items-center justify-content-end">
               <div class="pe-2">
                 <button class="bg-primary text-white btn" @click="updateAlbum()">Cập nhật</button>
@@ -178,7 +178,7 @@
             </div>
           </div>
           <div class="mdl-footer">
-            <div class="h-100 d-flex align-items-center justify-content-end">
+            <div v-if="memberRole != 3" class="h-100 d-flex align-items-center justify-content-end">
               <div class="pe-2">
                 <button class="btn btn-primary text-white" @click="checkAddPhotoModalOpen(), openAddPhotoModal()">Thêm ảnh vào album</button>
               </div>
@@ -307,6 +307,7 @@ export default {
       isCheckAlbum: null,
       isCheckPhoto: null,
       isCheckPhotoAdd: null,
+      memberRole: null,
 
       ListAlbumRemove: [],
       ListPhotoRemove: [],
@@ -476,8 +477,8 @@ export default {
       this.$modal.hide("edit-album-mdl");
       this.isButtonDisabled = true;
     },
-    exportPDF(){
-      let abc = `<h2> ${abc.nam} qưeqwewqewq </h2>`
+    exportPDF() {
+      let abc = `<h2> ${abc.nam} qưeqwewqewq </h2>`;
     },
     //Lưu Tùng Lâm
     openAddPhotoModal() {
@@ -832,6 +833,31 @@ export default {
     closeCfDelModal() {
       this.$modal.hide("cfdel-mdl");
     },
+    getMemberRole() {
+      try {
+        HTTP.post("roleAccount", {
+          accountID: localStorage.getItem("accountID"),
+          codeID: localStorage.getItem("CodeID"),
+        })
+          .then((response) => {
+            if (response.data.success == true) {
+              this.memberRole = response.data.data.RoleID;
+              console.log(this.memberRole);
+            } else {
+              if (response.data.status_code == 402) {
+                localStorage.removeItem("CodeID");
+                localStorage.removeItem("accountID");
+                this.$router.push("/login");
+              }
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    },
     NotificationsDelete(messagee) {
       new Snackbar(messagee, {
         position: "bottom-right",
@@ -869,6 +895,7 @@ export default {
         this.$router.push("/login");
       }
     }
+    this.getMemberRole();
     this.albumPhoto.CodeID = this.CodeID;
     this.getAlbumPhotoByCodeId();
   },

@@ -3,7 +3,7 @@
     <div class="sidebar" :class="{ expand: expandSidebar }" @mouseover="sidebarHover()" @mouseleave="siderbarLeave()">
       <div class="content-display" style="display: grid; grid-template-rows: 50% 50%; position: relative;">
         <div class="w-100 d-flex flex-row pt-2">
-          <div v-if="memberRole != 3" class="col-6 ps-2 pe-1">
+          <div v-if="memberRole == 1" class="col-6 ps-2 pe-1">
             <div class="w-100 h-100">
               <button @click="openNotiModal()" style="width:100%; font-size: 15px; color:white" type="button" class="m-0 d-flex align-items-center justify-content-center btn btn-secondary w-100 h-100">Tạo thông báo</button>
             </div>
@@ -14,7 +14,7 @@
             </div>
           </div>
         </div>
-        <div v-if="memberRole != 3" class="w-100 d-flex flex-row pt-2">
+        <div v-if="memberRole == 1" class="w-100 d-flex flex-row pt-2">
           <div class="col-6 ps-2 pe-1">
             <div class="w-100 h-100">
               <button @click="BackUpdata()" style="width:100%; font-size: 15px; color:white" type="button" class="btn btn-secondary h-100 m-0 d-flex align-items-center justify-content-center">Lưu trữ dữ liệu</button>
@@ -52,14 +52,14 @@
             <div v-if="ListUnspecifiedMembers" class="d-flex flex-column w-100" style="overflow-y: auto; flex-grow: 1; cursor: pointer">
               <div v-for="list in ListUnspecifiedMembers" :key="list.id" @click="handleLeftClickUnspecifiedMembers(list.MemberID)" class="list-item ellipsis-text w-100">{{ list.MemberName }}</div>
             </div>
-            <div class="center-content" v-if="nodes.length == 0">Danh sách chưa có thành viên</div>
+            <div class="center-content" v-if="ListUnspecifiedMembers.length == 0">Danh sách chưa có thành viên</div>
           </div>
         </div>
       </div>
     </div>
     <div class="content">
       <div v-show="nodes.length != 0" id="tree" ref="tree"></div>
-      <div v-show="nodes.length == 0" class="center-content">
+      <div v-show="checkNodes == 0" class="center-content">
         <div @click="openMemberModal('AddFirst', 'cụ tổ')" class="btn bg-primary text-white d-flex flex-row align-items-center">
           <div style="padding-right: 8px;">Thêm thông tin cụ tổ</div>
           <svg style="fill: white;" class="add-member-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -94,7 +94,7 @@
           </div>
         </div>
         <div @click="advancedFilterDown = !advancedFilterDown" class="d-flex flex-column align-items-center justify-content-center h-100">
-          <div class="filter-text" v-if="!advancedFilterDown" style="color: white; font-family: 'QuicksandBold'">Bộ lọc nâng cao</div>
+          <div class="filter-text" v-if="!advancedFilterDown" style="color: white; font-family: 'QuicksandBold'">Bộ lọc</div>
           <div>
             <svg :class="{ rotateDown: !advancedFilterDown }" class="advanced-filter-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
               <path d="M246.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 109.3 361.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160zm160 352l-160-160c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 301.3 361.4 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3z" />
@@ -737,9 +737,21 @@
                       <label class="form-label" for="select">Địa Chỉ (Quận/Huyện)</label>
                     </div>
                   </div>
-                  <div style="display:flex">
-                    <div class="pb-2 pe-1" style="position: relative; width: 50%;">
+                  <div style="display: flex">
+                    <!-- <div class="pb-2 pe-1" style="position: relative; width: 50%;">
                       <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" v-bind="props"></VuePhoneNumberInput>
+                    </div>-->
+                    <div class="pb-2 pe-1 d-flex" style="position: relative; width: 50%;">
+                      <div style="border:1px solid lightsteelblue;border-top-left-radius: 5px;border-bottom-left-radius: 5px" class="col-2 d-flex align-items-center justify-content-evenly">
+                        <div class="col-6 h-100 d-flex align-items-center">
+                          <img class="w-100" src="../assets/Flag_of_Vietnam.png" />
+                        </div>
+                        <div>(+84)</div>
+                      </div>
+                      <div class="col-10 position-relative">
+                        <input style="border-top-left-radius: 0px;border-bottom-left-radius: 0px" v-model="objMemberContact.Phone" type="text" class="form-control modal-item w-100 h-100 phonenum" placeholder :controls="false" />
+                        <label class="form-label" for="input" :class="{ 'active': objMemberContact.Phone }">Số điện thoại</label>
+                      </div>
                     </div>
                     <div class="pb-2 ps-1" style="position: relative;width: 50%;">
                       <input v-model="objMemberContact.Email" type="email" class="form-control modal-item" placeholder />
@@ -943,27 +955,27 @@ import { HTTP } from "../assets/js/baseAPI.js";
 import { LunarDate } from "vietnamese-lunar-calendar";
 import { convertLunar2Solar } from "vietnamese-lunar-calendar/build/solar-lunar";
 import { getLocalTimezone } from "vietnamese-lunar-calendar/build/solar-lunar/utils";
-import VuePhoneNumberInput from "vue-phone-number-input";
+// import VuePhoneNumberInput from "vue-phone-number-input";
 import "vue-phone-number-input/dist/vue-phone-number-input.css";
 
 export default {
   components: {
-    VuePhoneNumberInput,
+    // VuePhoneNumberInput,
   },
   data() {
     return {
-      props: {
-        clearable: true,
-        fetchCountry: true,
-        preferredCountries: ["US", "GB"],
-        noExample: false,
-        translations: {
-          countrySelectorLabel: "Country code",
-          countrySelectorError: "Error",
-          phoneNumberLabel: "Nhập số điện thoại",
-          example: "Example:",
-        },
-      },
+      // props: {
+      //       clearable: true,
+      //       fetchCountry: true,
+      //       preferredCountries: ["US", "GB"],
+      //       noExample: false,
+      //       translations: {
+      //         countrySelectorLabel: "Country code",
+      //         countrySelectorError: "Error",
+      //         phoneNumberLabel: "Nhập số điện thoại",
+      //         example: "Example:",
+      //       },
+      //     },
       idParent: null,
       ResultRelationship: null,
       ListCity: null,
@@ -1137,6 +1149,7 @@ export default {
 
       heightLarger: null,
       checkUpdate: false,
+      checkNodes: null,
     };
   },
   methods: {
@@ -1204,22 +1217,13 @@ export default {
       this.family.onRedraw(() => {
         var nodeElement;
         if (this.selectedNodes.length != 0) {
+          console.log(this.selectedNodes);
           for (let i = 0; i < this.selectedNodes.length; i++) {
             nodeElement = document.querySelector(
               '[data-n-id="' + this.selectedNodes[i] + '"]'
             );
             if (nodeElement != null) {
               nodeElement.classList.add("selected");
-            }
-          }
-        }
-        if (this.selectedNodesCompare.length != 0) {
-          for (let i = 0; i < this.selectedNodesCompare.length; i++) {
-            nodeElement = document.querySelector(
-              '[data-n-id="' + this.selectedNodesCompare[i] + '"]'
-            );
-            if (nodeElement != null) {
-              nodeElement.classList.add("selected-compare");
             }
           }
         }
@@ -1230,6 +1234,17 @@ export default {
             );
             if (nodeElement != null) {
               nodeElement.classList.add("notselected");
+            }
+          }
+        }
+
+        if (this.selectedNodesCompare.length != 0) {
+          for (let i = 0; i < this.selectedNodesCompare.length; i++) {
+            nodeElement = document.querySelector(
+              '[data-n-id="' + this.selectedNodesCompare[i] + '"]'
+            );
+            if (nodeElement != null) {
+              nodeElement.classList.add("selected-compare");
             }
           }
         }
@@ -1277,7 +1292,35 @@ export default {
     getViewBox() {
       return this.family.getViewBox();
     },
-    importData() {},
+    ImportMember() {
+      let formData = new FormData();
+      formData.append("xlsx", this.fileBackup);
+      let id = this.nodes.map((item) => item.id);
+      HTTP.post("clear-tree", {
+        memberIDs: id,
+      }).then(() => {
+        HTTP.post("import", formData)
+          .then((respone) => {
+            console.log(respone.data);
+            if (respone.data.success) {
+              this.NotificationsScuccess(respone.data.message);
+              this.setDefautAction();
+              this.getListMember();
+              this.getListUnspecifiedMembers();
+              this.closeModalAddMemberFromList();
+              this.getListMemberHasPhone();
+              this.getListMemberHasEmail();
+              this.closeCfDelModal();
+              this.fileBackup = null;
+            } else {
+              this.NotificationsDelete(respone.data.message);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      });
+    },
     //Nguyễn Lê Hùng
     BackUpdata() {
       let id = this.nodes.map((item) => item.id);
@@ -1463,6 +1506,10 @@ export default {
     },
     //Nguyễn Lê Hùng:
     sendEmailToMember() {
+      let filteredMembers = this.listMemberHasEmail.filter((member) =>
+        this.ListPhoneToSendMessage.includes(member.MemberID)
+      );
+      let ListEmail = filteredMembers.map((member) => member.Email);
       if (this.canSendMessage) {
         this.canSendMessage = false;
         if (
@@ -1470,12 +1517,8 @@ export default {
           this.subjectEmail != "" &&
           this.contentEmail != null &&
           this.contentEmail != "" &&
-          this.ListPhoneToSendMessage.length > 0
+          ListEmail.length > 0
         ) {
-          let filteredMembers = this.listMemberHasEmail.filter((member) =>
-            this.ListPhoneToSendMessage.includes(member.MemberID)
-          );
-          let ListEmail = filteredMembers.map((member) => member.Email);
           console.log("ListEmail: " + ListEmail);
           HTTP.post("send-email", {
             ListEmail: ListEmail,
@@ -1501,7 +1544,7 @@ export default {
             .catch((e) => {
               console.log(e);
             });
-        } else if (this.ListPhoneToSendMessage.length == 0) {
+        } else if (ListEmail == 0) {
           this.canSendMessage = true;
           this.NotificationsDelete(
             "Hãy chọn những người bạn muốn gửi thông báo"
@@ -1515,19 +1558,17 @@ export default {
 
     //Nguyễn Lê Hùng
     sendMessageToMember() {
+      let filteredMembers = this.listMemberHasPhone.filter((member) =>
+        this.ListPhoneToSendMessage.includes(member.MemberID)
+      );
+      let ListPhone = filteredMembers.map((member) => member.Phone);
       if (this.canSendMessage) {
-        console.log("vào đoạn này");
         this.canSendMessage = false;
         if (
           this.contentMessage != null &&
-          this.ListPhoneToSendMessage.length > 0 &&
+          ListPhone.length > 0 &&
           this.contentMessage != ""
         ) {
-          let filteredMembers = this.listMemberHasPhone.filter((member) =>
-            this.ListPhoneToSendMessage.includes(member.MemberID)
-          );
-          let ListPhone = filteredMembers.map((member) => member.Phone);
-          console.log("ListPhone: " + ListPhone);
           HTTP.post("send-sms", {
             ListPhone: ListPhone,
             contentMessage: this.contentMessage,
@@ -1546,7 +1587,7 @@ export default {
             .catch((e) => {
               console.log(e);
             });
-        } else if (this.ListPhoneToSendMessage.length == 0) {
+        } else if (ListPhone.length == 0) {
           this.canSendMessage = true;
           this.NotificationsDelete(
             "Hãy chọn những người bạn muốn gửi thông báo"
@@ -1859,7 +1900,10 @@ export default {
             // this.nodes.length = this.nodes.length - 1;
             this.removeFromSelectedNodes(this.CurrentIdMember);
             this.NotificationsScuccess(response.data.message);
-            this.getListUnspecifiedMembers();
+            setTimeout(() => {
+              this.getListUnspecifiedMembers();
+            }, 2000);
+
             this.$modal.hide("select-opts-mdl");
             this.$modal.hide("view-member-mdl");
             this.getListMember();
@@ -2016,30 +2060,6 @@ export default {
           });
       }
     },
-    ImportMember() {
-      let formData = new FormData();
-      formData.append("xlsx", this.fileBackup);
-      HTTP.post("import", formData)
-        .then((respone) => {
-          console.log(respone.data);
-          if (respone.data.success) {
-            this.NotificationsScuccess(respone.data.message);
-            this.setDefautAction();
-            this.getListMember();
-            this.getListUnspecifiedMembers();
-            this.closeModalAddMemberFromList();
-            this.getListMemberHasPhone();
-            this.getListMemberHasEmail();
-            this.closeCfDelModal();
-            this.fileBackup = null;
-          } else {
-            this.NotificationsDelete(respone.data.message);
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
 
     getFileImportMember(event) {
       this.fileBackup = event.target.files[0];
@@ -2091,6 +2111,37 @@ export default {
         this.heightLarger = true;
       }
     },
+    addContact() {
+      if (
+        this.objMemberContact.Phone != null ||
+        this.objMemberContact.Address != null ||
+        this.objMemberContact.Email != null ||
+        this.FacebookUrl != null ||
+        this.objMemberContact.Zalo != null
+      ) {
+        this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
+        HTTP.post("addContact", {
+          memberId: this.newIdMember,
+          Address: this.objMemberContact.Address,
+          Phone: this.objMemberContact.Phone,
+          Email: this.objMemberContact.Email,
+          FacebookUrl: this.objMemberContact.FacebookUrl,
+          Zalo: this.objMemberContact.Zalo,
+        })
+          .then((response) => {
+            if (response.data.success == true) {
+              this.getListMemberHasPhone();
+              this.getListMemberHasEmail();
+              this.selectDistrictMember = null;
+            } else {
+              this.NotificationsDelete(response.data.message);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
+    },
     //Nguyễn Lê Hùng
     addMemberChild(FatherID, MotherID) {
       HTTP.post("add-child", {
@@ -2130,33 +2181,7 @@ export default {
           }
           this.newIdMember = response.data.data.MemberID;
           console.log("newIdMember: " + this.newIdMember);
-          if (
-            this.objMemberContact.Phone != null ||
-            this.objMemberContact.Address != null ||
-            this.objMemberContact.Email != null ||
-            this.FacebookUrl != null ||
-            this.objMemberContact.Zalo != null
-          ) {
-            this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
-            HTTP.post("addContact", {
-              memberId: this.newIdMember,
-              Address: this.objMemberContact.Address,
-              Phone: this.objMemberContact.Phone,
-              Email: this.objMemberContact.Email,
-              FacebookUrl: this.objMemberContact.FacebookUrl,
-              Zalo: this.objMemberContact.Zalo,
-            })
-              .then((response) => {
-                if (response.data.success == true) {
-                  this.getListMemberHasPhone();
-                  this.getListMemberHasEmail();
-                  this.selectDistrictMember = null;
-                }
-              })
-              .catch((e) => {
-                console.log(e);
-              });
-          }
+          this.addContact();
         })
         .catch((e) => {
           console.log(e);
@@ -2202,33 +2227,7 @@ export default {
             this.NotificationsDelete(response.data.message);
           }
           this.newIdMember = response.data.data.MemberID;
-          if (
-            this.objMemberContact.Phone != null ||
-            this.objMemberContact.Address != null ||
-            this.objMemberContact.Email != null ||
-            this.FacebookUrl != null ||
-            this.objMemberContact.Zalo != null
-          ) {
-            this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
-            HTTP.post("addContact", {
-              memberId: this.newIdMember,
-              Address: this.objMemberContact.Address,
-              Phone: this.objMemberContact.Phone,
-              Email: this.objMemberContact.Email,
-              FacebookUrl: this.objMemberContact.FacebookUrl,
-              Zalo: this.objMemberContact.Zalo,
-            })
-              .then((response) => {
-                if (response.data.success == true) {
-                  this.getListMemberHasPhone();
-                  this.getListMemberHasEmail();
-                  this.selectDistrictMember = null;
-                }
-              })
-              .catch((e) => {
-                console.log(e);
-              });
-          }
+          this.addContact();
         })
         .catch((e) => {
           console.log(e);
@@ -2236,99 +2235,98 @@ export default {
     },
     //Nguyễn Lê Hùng
     addMember() {
-      console.log("Token: " + VueCookies.get("accessToken"));
-      let FatherID;
-      let MotherID;
-      if (this.action == "AddNormal") {
-        this.generationMember = 0;
+      let result = true;
+      let resultPhone = true;
+      if (this.objMemberContact.Email) {
+        result = this.isEmailValid(this.objMemberContact.Email);
       }
-      if (this.action == "AddChild") {
-        console.log("vào add child");
-        if (this.isFather) {
-          FatherID = this.CurrentIdMember;
-          MotherID = this.idParent;
-        } else {
-          FatherID = this.idParent;
-          MotherID = this.CurrentIdMember;
-        }
-        this.addMemberChild(FatherID, MotherID);
-        console.log("FatherID: " + FatherID);
-        console.log("MotherID: " + MotherID);
-      } else if (this.action == "AddMarriage") {
-        this.addMemberMarried();
-      } else {
-        console.log("vào add mare");
-        HTTP.post("member", {
-          CurrentMemberID: this.CurrentIdMember,
-          MemberName: this.objMemberInfor.MemberName,
-          NickName: this.objMemberInfor.NickName,
-          BirthOrder: this.objMemberInfor.BirthOrder,
-          Origin: this.objMemberInfor.Origin,
-          NationalityID: this.objMemberInfor.NationalityID,
-          ReligionID: this.objMemberInfor.ReligionID,
-          Dob: this.objMemberInfor.Dob,
-          LunarDob: this.objMemberInfor.LunarDob,
-          birthPlace: this.objMemberInfor.BirthPlace,
-          IsDead: this.IsDead,
-          Dod: this.objMemberInfor.Dod,
-          LunarDod: this.objMemberInfor.LunarDod,
-          PlaceOfDeath: this.objMemberInfor.PlaceOfDeath,
-          GraveSite: this.objMemberInfor.GraveSite,
-          Note: this.objMemberInfor.Note,
-          CurrentGeneration: this.generationMember,
-          BloodType: this.objMemberInfor.BloodType,
-          Male: this.objMemberInfor.Male,
-          CodeID: this.CodeID,
-          Action: this.action,
-        })
-          .then((response) => {
-            if (this.action == "AddNormal") {
-              this.getListUnspecifiedMembers();
-            }
-            if (response.data.success == true) {
-              this.isUpdateAvatar = false;
-              this.action = null;
-              this.$modal.hide("select-opts-mdl");
-              this.$modal.hide("view-member-mdl");
-              this.$modal.hide("select-opts-mdl");
-              console.log("getlist");
-              this.getListMember();
-              this.NotificationsScuccess(response.data.message);
+      if (this.objMemberContact.Phone) {
+        resultPhone = this.validatePhoneNumber(this.objMemberContact.Phone);
+      }
+      if (resultPhone) {
+        if (result) {
+          console.log("Token: " + VueCookies.get("accessToken"));
+          let FatherID;
+          let MotherID;
+          if (this.action == "AddNormal") {
+            this.generationMember = 0;
+          }
+          if (this.action == "AddChild") {
+            console.log("vào add child");
+            if (this.isFather) {
+              FatherID = this.CurrentIdMember;
+              MotherID = this.idParent;
             } else {
-              this.NotificationsDelete(response.data.message);
+              FatherID = this.idParent;
+              MotherID = this.CurrentIdMember;
             }
-            this.newIdMember = response.data.data.MemberID;
-            if (
-              this.objMemberContact.Phone != null ||
-              this.objMemberContact.Address != null ||
-              this.objMemberContact.Email != null ||
-              this.FacebookUrl != null ||
-              this.objMemberContact.Zalo != null
-            ) {
-              this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
-              HTTP.post("addContact", {
-                memberId: this.newIdMember,
-                Address: this.objMemberContact.Address,
-                Phone: this.objMemberContact.Phone,
-                Email: this.objMemberContact.Email,
-                FacebookUrl: this.objMemberContact.FacebookUrl,
-                Zalo: this.objMemberContact.Zalo,
+            this.addMemberChild(FatherID, MotherID);
+            console.log("FatherID: " + FatherID);
+            console.log("MotherID: " + MotherID);
+          } else if (this.action == "AddMarriage") {
+            this.addMemberMarried();
+          } else {
+            console.log("vào add mare");
+            if (this.objMemberInfor.Male == 0 && this.generationMember == 1) {
+              this.NotificationsDelete("Cụ tổ không thể thêm mẹ");
+            } else {
+              HTTP.post("member", {
+                CurrentMemberID: this.CurrentIdMember,
+                MemberName: this.objMemberInfor.MemberName,
+                NickName: this.objMemberInfor.NickName,
+                BirthOrder: this.objMemberInfor.BirthOrder,
+                Origin: this.objMemberInfor.Origin,
+                NationalityID: this.objMemberInfor.NationalityID,
+                ReligionID: this.objMemberInfor.ReligionID,
+                Dob: this.objMemberInfor.Dob,
+                LunarDob: this.objMemberInfor.LunarDob,
+                birthPlace: this.objMemberInfor.BirthPlace,
+                IsDead: this.IsDead,
+                Dod: this.objMemberInfor.Dod,
+                LunarDod: this.objMemberInfor.LunarDod,
+                PlaceOfDeath: this.objMemberInfor.PlaceOfDeath,
+                GraveSite: this.objMemberInfor.GraveSite,
+                Note: this.objMemberInfor.Note,
+                CurrentGeneration: this.generationMember,
+                BloodType: this.objMemberInfor.BloodType,
+                Male: this.objMemberInfor.Male,
+                CodeID: this.CodeID,
+                Action: this.action,
               })
                 .then((response) => {
+                  if (this.action == "AddNormal") {
+                    this.getListUnspecifiedMembers();
+                  }
                   if (response.data.success == true) {
-                    this.getListMemberHasPhone();
-                    this.getListMemberHasEmail();
-                    this.selectDistrictMember = null;
+                    this.isUpdateAvatar = false;
+                    this.action = null;
+                    this.$modal.hide("select-opts-mdl");
+                    this.$modal.hide("view-member-mdl");
+                    this.$modal.hide("select-opts-mdl");
+                    console.log("getlist");
+                    this.newIdMember = response.data.data.MemberID;
+                    this.addContact();
+                    if (this.generationMember == 1) {
+                      this.CurrentIdMember = this.newIdMember;
+                      this.setPaternalAncestor();
+                    } else {
+                      this.getListMember();
+                    }
+                    this.NotificationsScuccess(response.data.message);
+                  } else {
+                    this.NotificationsDelete(response.data.message);
                   }
                 })
                 .catch((e) => {
                   console.log(e);
                 });
             }
-          })
-          .catch((e) => {
-            console.log(e);
-          });
+          }
+        } else {
+          this.NotificationsDelete("Email không hợp lệ");
+        }
+      } else {
+        this.NotificationsDelete("Số điện thoại không hợp lệ");
       }
     },
     getRemainingEmail() {
@@ -2422,80 +2420,95 @@ export default {
           console.log(e);
         });
     },
+    isEmailValid(email) {
+      // Sử dụng biểu thức chính quy để kiểm tra định dạng email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    },
     //Nguyễn Lê Hùng
     updateInformation() {
-      if (this.objMemberInfor.BirthOrder == null) {
-        console.log("vào đây");
-        this.objMemberInfor.BirthOrder = 1;
+      let result = true;
+      if (this.objMemberContact.Email) {
+        result = this.isEmailValid(this.objMemberContact.Email);
       }
-      if (this.selectDistrictMember != null) {
-        this.objMemberContact.Address =
-          this.objMemberContact.Address + "-" + this.selectDistrictMember;
-      }
-      if (this.selectCityMember == null) {
-        this.objMemberContact.Address = null;
-      }
-      HTTP.put("member", {
-        MemberID: this.CurrentIdMember,
-        MemberName: this.objMemberInfor.MemberName,
-        NickName: this.objMemberInfor.NickName,
-        BirthOrder: this.objMemberInfor.BirthOrder,
-        Origin: this.objMemberInfor.Origin,
-        NationalityID: this.objMemberInfor.NationalityID,
-        ReligionID: this.objMemberInfor.ReligionID,
-        Dob: this.objMemberInfor.Dob,
-        LunarDob: this.objMemberInfor.LunarDob,
-        birthPlace: this.objMemberInfor.BirthPlace,
-        IsDead: this.IsDead,
-        Dod: this.objMemberInfor.Dod,
-        LunarDod: this.objMemberInfor.LunarDod,
-        PlaceOfDeath: this.objMemberInfor.PlaceOfDeath,
-        GraveSite: this.objMemberInfor.GraveSite,
-        Note: this.objMemberInfor.Note,
-        CurrentGeneration: this.generationMember,
-        BloodType: this.objMemberInfor.BloodType,
-        Male: this.objMemberInfor.Male,
-        CodeID: this.CodeID,
-        Action: this.action,
-      })
-        .then((response) => {
-          if (response.data.success == true) {
-            this.isUpdateAvatar = false;
-            this.getListUnspecifiedMembers();
-            this.NotificationsScuccess(response.data.message);
-            if (this.objMemberContact.Phone != null) {
-              this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
-            }
-            HTTP.put("updateContact", {
-              MemberID: this.CurrentIdMember,
-              Address: this.objMemberContact.Address,
-              Phone: this.objMemberContact.Phone,
-              Email: this.objMemberContact.Email,
-              FacebookUrl: this.objMemberContact.FacebookUrl,
-              Zalo: this.objMemberContact.Zalo,
-            })
-              .then((respone) => {
-                if (respone.data.success == true) {
-                  this.checkUpdate = true;
-                  console.log("vào đâyyyy");
-                  this.closeMemberModal();
-                  this.getListMember();
-                  this.getListMemberHasPhone();
-                  this.getListMemberHasEmail();
-                } else {
-                  this.NotificationsDelete("Có lỗi hệ thống");
-                }
-              })
-              .catch(() => {
-                this.NotificationsDelete("Có lỗi hệ thống");
-              });
-          } else {
-            this.NotificationsDelete(response.data.message);
-          }
+      if (result) {
+        if (this.objMemberInfor.BirthOrder == null) {
+          console.log("vào đây");
+          this.objMemberInfor.BirthOrder = 1;
+        }
+        if (this.selectDistrictMember != null) {
+          this.objMemberContact.Address =
+            this.objMemberContact.Address + "-" + this.selectDistrictMember;
+        }
+        if (this.selectCityMember == null) {
+          this.objMemberContact.Address = null;
+        }
+        HTTP.put("member", {
+          MemberID: this.CurrentIdMember,
+          MemberName: this.objMemberInfor.MemberName,
+          NickName: this.objMemberInfor.NickName,
+          BirthOrder: this.objMemberInfor.BirthOrder,
+          Origin: this.objMemberInfor.Origin,
+          NationalityID: this.objMemberInfor.NationalityID,
+          ReligionID: this.objMemberInfor.ReligionID,
+          Dob: this.objMemberInfor.Dob,
+          LunarDob: this.objMemberInfor.LunarDob,
+          birthPlace: this.objMemberInfor.BirthPlace,
+          IsDead: this.IsDead,
+          Dod: this.objMemberInfor.Dod,
+          LunarDod: this.objMemberInfor.LunarDod,
+          PlaceOfDeath: this.objMemberInfor.PlaceOfDeath,
+          GraveSite: this.objMemberInfor.GraveSite,
+          Note: this.objMemberInfor.Note,
+          CurrentGeneration: this.generationMember,
+          BloodType: this.objMemberInfor.BloodType,
+          Male: this.objMemberInfor.Male,
+          CodeID: this.CodeID,
+          Action: this.action,
         })
-        .catch((e) => {
-          console.log(e);
-        });
+          .then((response) => {
+            if (response.data.success == true) {
+              this.isUpdateAvatar = false;
+              this.getListUnspecifiedMembers();
+              this.NotificationsScuccess(response.data.message);
+              if (this.objMemberContact.Phone != null) {
+                this.objMemberContact.Phone =
+                  "+84" + this.objMemberContact.Phone;
+              }
+              console.log("CurrentIdMember: " + this.CurrentIdMember);
+              this.closeMemberModal();
+              this.getListMember();
+              HTTP.put("updateContact", {
+                MemberID: this.CurrentIdMember,
+                Address: this.objMemberContact.Address,
+                Phone: this.objMemberContact.Phone,
+                Email: this.objMemberContact.Email,
+                FacebookUrl: this.objMemberContact.FacebookUrl,
+                Zalo: this.objMemberContact.Zalo,
+              })
+                .then((respone) => {
+                  if (respone.data.success == true) {
+                    this.checkUpdate = true;
+                    console.log("vào đâyyyy");
+                    this.getListMemberHasPhone();
+                    this.getListMemberHasEmail();
+                    this.GetListFilterMember();
+                  }
+                })
+                .catch(() => {
+                  this.NotificationsDelete("Có lỗi hệ thống");
+                });
+              this.GetListFilterMember();
+            } else {
+              this.NotificationsDelete(response.data.message);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } else {
+        this.NotificationsDelete("Email không hợp lệ");
+      }
     },
     //Nguyễn Lê Hùng
     selectRowJob(job) {
@@ -2516,6 +2529,13 @@ export default {
       this.objMemberEducation.EndDate = this.formatDate(
         this.objMemberEducation.EndDate
       );
+    },
+    validatePhoneNumber(phone) {
+      // Biểu thức chính quy để kiểm tra số điện thoại
+      const phoneRegex = /^\d{10,11}$/;
+
+      // Kiểm tra xem số điện thoại có khớp với biểu thức chính quy không
+      return phoneRegex.test(phone);
     },
     //Nguyễn Lê Hùng
     GetListFilterMember() {
@@ -2592,6 +2612,7 @@ export default {
     },
     handleRightClick(id) {
       if (this.memberRole != 3) {
+        console.log("Vào đây");
         this.OnpenModal_SelectOption(id);
       }
     },
@@ -2613,15 +2634,15 @@ export default {
         this.nodes.forEach((node) => {
           if (memberIds.includes(node.id)) {
             nodeElement = this.family.getNodeElement(node.id);
+            this.selectedNodes.push(node.id);
             if (nodeElement != null) {
               nodeElement.classList.add("selected");
-              this.selectedNodes.push(node.id);
             }
           } else {
             nodeElement = this.family.getNodeElement(node.id);
+            this.notSelectedNodes.push(node.id);
             if (nodeElement != null) {
               nodeElement.classList.add("notselected");
-              this.notSelectedNodes.push(node.id);
             }
           }
         });
@@ -2635,6 +2656,10 @@ export default {
         })
           .then((response) => {
             this.ListUnspecifiedMembers = response.data;
+            console.log("111111111");
+            console.log(
+              "ListUnspecifiedMembers: " + this.ListUnspecifiedMembers
+            );
           })
           .catch((e) => {
             console.log(e);
@@ -2650,6 +2675,7 @@ export default {
     openModalAddMemberFromList() {
       this.TitleModal = " Mối quan hệ ";
       this.$modal.show("add-relation-mdl");
+      this.ListUnspecifiedMembers = null;
     },
     openNotiModal() {
       this.ListPhoneToSendMessage = [];
@@ -2787,32 +2813,36 @@ export default {
     },
 
     OnpenModal_SelectOption(id) {
-      this.parentRelationship = null;
-      this.selectedInfor();
-      let foundNode = this.nodes.find((node) => node.id == id);
-      this.CurrentIdToLinkRelationship = foundNode.id;
-      this.getLinkRelationship(foundNode);
-      console.log("parentRelationship: " + this.parentRelationship);
-      if (foundNode.gender == "female") {
-        this.isFather = false;
-      } else {
-        this.isFather = true;
-      }
+      console.log("vào đây");
+      console.log("memberRole: " + this.memberRole);
+      if (this.memberRole != 3) {
+        this.parentRelationship = null;
+        this.selectedInfor();
+        let foundNode = this.nodes.find((node) => node.id == id);
+        this.CurrentIdToLinkRelationship = foundNode.id;
+        this.getLinkRelationship(foundNode);
+        console.log("parentRelationship: " + this.parentRelationship);
+        if (foundNode.gender == "female") {
+          this.isFather = false;
+        } else {
+          this.isFather = true;
+        }
 
-      this.getAllMarriedInMember(foundNode.pids);
-      this.setFunctionCanDo(foundNode);
-      this.TitleModal = foundNode.name;
-      console.log("TitleModal: " + this.TitleModal);
-      this.generationMember = foundNode.generation;
-      if (this.nodeRightClickHighLight != null) {
-        this.removeFromSelectedNodes(this.nodeRightClickHighLight);
-      }
-      this.highLightSelectNode(id);
-      this.nodeRightClickHighLight = id;
-      this.$modal.show("select-opts-mdl");
-      this.CurrentIdMember = id;
+        this.getAllMarriedInMember(foundNode.pids);
+        this.setFunctionCanDo(foundNode);
+        this.TitleModal = foundNode.name;
+        console.log("TitleModal: " + this.TitleModal);
+        this.generationMember = foundNode.generation;
+        if (this.nodeRightClickHighLight != null) {
+          this.removeFromSelectedNodes(this.nodeRightClickHighLight);
+        }
+        this.highLightSelectNode(id);
+        this.nodeRightClickHighLight = id;
+        this.$modal.show("select-opts-mdl");
+        this.CurrentIdMember = id;
 
-      this.objMemberInfor = {};
+        this.objMemberInfor = {};
+      }
       //  this.removeFromSelectedNodes(id);
     },
     getAllMarriedInMember(membersArray) {
@@ -2925,6 +2955,7 @@ export default {
               this.numberDeath = 0;
               if (response.data.success == true) {
                 this.nodes = response.data.data;
+                this.checkNodes = 1;
                 console.log(this.nodes);
                 for (let i = 0; i < this.nodes.length; i++) {
                   if (this.nodes[i].pids.length > 1) {
@@ -2964,6 +2995,8 @@ export default {
                 this.family.config.roots = this.nodes[0].id;
                 this.family.draw();
                 //  this.mytree(this.$refs.tree, this.nodes);
+              } else {
+                this.checkNodes = 0;
               }
               //  this.family.load(this.nodes);
             })

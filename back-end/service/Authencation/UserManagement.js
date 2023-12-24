@@ -1,3 +1,5 @@
+const FreeSMS = process.env.FREE_SMS_EVERY_DAY
+const FreeEmail = process.env.FREE_EMAIL_EVERY_DAY
 const db = require("../../Models/ConnectDB")
 
 function checkMail(email) {
@@ -158,7 +160,7 @@ function checkAccountID(accountID) {
 function create(username, email, password) {
   return new Promise((resolve, reject) => {
     const query = 'INSERT INTO genealogy.account (Username, Email, Password,FreeSMS,FreeEmail, IsActive) VALUES (?, ?, ? , ? , ?, 0)';
-    const values = [username, email, password, 5, 5];
+    const values = [username, email, password, FreeSMS, FreeEmail];
 
     db.connection.query(query, values, (err, results) => {
       if (err) {
@@ -473,7 +475,7 @@ function insertAccountFamily(accountID, codeID, roleID) {
       db.connection.query(query, values, (err, results) => {
         if (err) {
           console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-          reject(err);
+          resolve(false);
         } else {
           console.log('Dữ liệu đã được cập nhật thành công.');
           resolve(results);
@@ -646,5 +648,5 @@ module.exports = {
   insertAccountFamilyTree, checkCodeCreatedByID, getHistoryLoginCodeID, ChangePassword, getListRoleMember, UpdateAccount, UpdatePassword,
   checkToken, changeUsername, getInformationGenealogy, UpdateRegisterToken, checkRegisterToken,
   UpdateActive, DeleteRePasssToken, DeleteRegisterToken, getRoleAccount, getAllRoleAccount, getAccountByAccountID, refreshFreeSMS,
-  setFreeEmail, setFreeSMS, updateDateLoginGenealogy,getAccount
+  setFreeEmail, setFreeSMS, updateDateLoginGenealogy, getAccount
 }

@@ -1,5 +1,6 @@
 const ContactManagementService = require('../../service/FamilyGenealogy/ContactManagement');
 const Response = require("../../Utils/Response");
+const validator = require('validator');
 
 
 //Nguyễn Lê Hùng
@@ -31,6 +32,10 @@ var InsertContactMember = async (req, res) => {
             objData.Email = req.body.Email;
             objData.FacebookUrl = req.body.FacebookUrl;
             objData.Zalo = req.body.Zalo;
+            if (!validator.isEmail(objData.Email)) {
+                return res.send(Response.internalServerErrorResponse(null, 'Email không hợp lệ'));
+            }
+
             let result = await ContactManagementService.InsertContactMember(objData);
             if (result) {
                 return res.send(Response.successResponse())
@@ -57,6 +62,9 @@ var updateContactMember = async (req, res) => {
             objData.Email = req.body.Email;
             objData.FacebookUrl = req.body.FacebookUrl;
             objData.Zalo = req.body.Zalo;
+            if (!validator.isEmail(objData.Email)) {
+                return res.send(Response.internalServerErrorResponse(null, 'Email không hợp lệ'));
+            }
             let GetConTactByMemberID = await ContactManagementService.GetContactByMemberID(req.body.MemberID);
             if (GetConTactByMemberID.length > 0) {
                 let result = await ContactManagementService.UpdateContactByID(objData);

@@ -14,18 +14,30 @@ var compareMember = async (req, res) => {
         let generationMember1 = await CompareMemberService.getGenerationByID(req.query.MemberID1);
         let generationMember2 = await CompareMemberService.getGenerationByID(req.query.MemberID2);
 
+        console.log("vào đâyy")
+
         //Kiểm tra xem người đó có phải làm dâu hoặc làm rể không và gán id mới nhất 
-        idMember1 = await CompareMemberService.checkBrideOrGroom(req.query.MemberID1)
-        if (idMember1 != req.query.MemberID1) {
-            Flag = true
+        let newIdMember1 = await CompareMemberService.checkBrideOrGroom(req.query.MemberID1)     
+        console.log('newIdMember1: ' + newIdMember1)  
+        if (!newIdMember1) {
+            idMember1 == newIdMember1
+            if (idMember1 != req.query.MemberID1) {
+                Flag = true
+            }
+        }else{
+            console.log("avc")
         }
 
 
-        idMember2 = await CompareMemberService.checkBrideOrGroom(req.query.MemberID2)
-        if (idMember2 != req.query.MemberID2) {
-            Flag = true
+        let newIdMember2 = await CompareMemberService.checkBrideOrGroom(req.query.MemberID2)
+        if (newIdMember2) {
+            idMember2 = newIdMember2
+            if (idMember2 != req.query.MemberID2) {
+                Flag = true
+            }
         }
 
+        console.log("đã vào đâyy")
         let DefferenceGeneration = generationMember2[0].Generation - generationMember1[0].Generation;
         if (DefferenceGeneration == 0) {
             console.log("vào 0")

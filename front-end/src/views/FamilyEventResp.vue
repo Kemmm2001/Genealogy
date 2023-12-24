@@ -95,10 +95,10 @@
           </div>
         </div>
         <div class="h-100 d-flex">
-          <div class="py-1 d-flex align-items-center" @click="showAddEventModal()">
+          <div v-if="memberRole != 3" class="py-1 d-flex align-items-center" @click="showAddEventModal()">
             <button class="btn bg-primary text-white d-flex align-items-center m-0" style="height: fit-content;">Thêm sự kiện</button>
           </div>
-          <div class="ps-2 y-1 d-flex align-items-center" @click="exportPdf()">
+          <div v-if="memberRole != 3" class="ps-2 y-1 d-flex align-items-center" @click="exportPdf()">
             <button class="btn bg-primary text-white d-flex align-items-center m-0" style="height: fit-content;">Export PDF</button>
           </div>
         </div>
@@ -126,9 +126,9 @@
                   <td>{{ event.Status == 1 ? "Chưa kết thúc" : "Đã Kết Thúc" }}</td>
                   <td @click="showEditEventModal(event.EventID)">{{ event.Place }}</td>
                   <td>
-                    <div v-if="memberRole != 3" class="h-100 w-100 d-flex align-items-center justify-content-center">
+                    <div class="h-100 w-100 d-flex align-items-center justify-content-center">
                       <div v-if="checkEventNotificationSent(event.EventID)" @click="showParticipantList(event.EventID)" class="btn bg-primary text-white">Tham gia sự kiện</div>
-                      <div v-else-if="!checkEventNotificationSent(event.EventID) && event.Status == 1" @click="showMemberList(event.EventID)" class="btn bg-primary text-white">Thông báo</div>
+                      <div v-else-if="!checkEventNotificationSent(event.EventID) && event.Status == 1 && memberRole == 1" @click="showMemberList(event.EventID)" class="btn bg-primary text-white">Thông báo</div>
                     </div>
                   </td>
                 </tr>
@@ -144,7 +144,7 @@
 
     <!-- Modal -->
     <!-- Thêm sự kiện -->
-    <div class="add-event-container">
+    <div class="add-event-container" style="z-index:999">
       <modal name="add-event-mdl">
         <div class="mdl-container">
           <div class="mdl-title">
@@ -202,14 +202,14 @@
             </div>
           </div>
           <div class="mdl-footer">
-            <div class="h-100 d-flex align-items-center justify-content-end">
+            <div v-if="memberRole != 3" class="h-100 d-flex align-items-center justify-content-end">
               <div v-if="isAdd" class="pe-2">
                 <button @click="addEvent()" class="bg-primary text-white btn mx-2">Thêm</button>
               </div>
               <div v-else class="pe-2">
                 <button @click="updateEvent()" class="bg-primary text-white btn mx-2">Lưu</button>
               </div>
-              <div class="pe-2">
+              <div v-if="!isAdd && !isView" class="pe-2">
                 <button @click="removeEvent()" class="bg-danger text-white btn mx-2">Xóa sự kiện</button>
               </div>
             </div>
@@ -384,7 +384,7 @@
         <div class="mdl-container">
           <div class="mdl-title">
             <div style="font-family: 'QuicksandBold';">{{titleInfor}}</div>
-            <div class="mdl-close" @click="closeMemberList()">
+            <div class="mdl-close" @click="closeViewEventattendance()">
               <svg class="h-100" style="cursor: pointer;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
               </svg>
@@ -409,13 +409,23 @@
                 </div>
               </div>
               <div class="w-100 pt-2" style="overflow-y: auto; flex-grow: 1;">
-                <div v-for="list in listMemberHasEmail" :key="list.id" class="noti-modal-member d-flex flex-row align-items-center px-2" :class="{ chosen: ListMemberToSendEmail.includes(list.MemberID) }" @click="toggleSelection(list.MemberID)">
-                  <div>
-                    <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                      <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
-                    </svg>
+                <div v-for="list in listMemberHasEmail" :key="list.id">
+                  <div v-if="!checkExistMember(list.MemberID)" class="noti-modal-member d-flex flex-row align-items-center px-2" :class="{ chosen: ListMemberToSendEmail.includes(list.MemberID) }" @click="toggleSelection(list.MemberID)">
+                    <div>
+                      <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                        <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
+                      </svg>
+                    </div>
+                    <div class="d-flex justify-content-center" style="flex-grow: 1;">{{ list.MemberName }}</div>
                   </div>
-                  <div class="d-flex justify-content-center" style="flex-grow: 1;">{{ list.MemberName }}</div>
+                  <div v-else class="noti-modal-member d-flex flex-row align-items-center px-2 member-selected">
+                    <div>
+                      <svg class="noti-modal-member-ava" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                        <path d="M224 256A128 128 0 1 1 224 0a128 128 0 1 1 0 256zM209.1 359.2l-18.6-31c-6.4-10.7 1.3-24.2 13.7-24.2H224h19.7c12.4 0 20.1 13.6 13.7 24.2l-18.6 31 33.4 123.9 36-146.9c2-8.1 9.8-13.4 17.9-11.3c70.1 17.6 121.9 81 121.9 156.4c0 17-13.8 30.7-30.7 30.7H285.5c-2.1 0-4-.4-5.8-1.1l.3 1.1H168l.3-1.1c-1.8 .7-3.8 1.1-5.8 1.1H30.7C13.8 512 0 498.2 0 481.3c0-75.5 51.9-138.9 121.9-156.4c8.1-2 15.9 3.3 17.9 11.3l36 146.9 33.4-123.9z" />
+                      </svg>
+                    </div>
+                    <div class="d-flex justify-content-center" style="flex-grow: 1;">{{ list.MemberName }}</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -423,10 +433,7 @@
           <div class="mdl-footer">
             <div class="h-100 d-flex align-items-center justify-content-end">
               <div class="pe-2">
-                <div @click="sendMessageToConfirmEvent()" class="bg-primary text-white btn mx-2">Gửi</div>
-              </div>
-              <div class="pe-2">
-                <div @click="sendMessageToConfirmEvent('sendAll')" class="bg-primary text-white btn mx-2">Gửi cho tất cả</div>
+                <div @click="updateTimeEventattendance()" class="bg-primary text-white btn mx-2">Cập nhập</div>
               </div>
             </div>
           </div>
@@ -435,7 +442,7 @@
     </div>
 
     <!-- Danh sách sự kiện có trong ngày -->
-    <div class="event-modal-container">
+    <div class="event-modal-container" style="z-index:998">
       <modal name="event-modal">
         <div class="w-100 h-100 add-head-modal">
           <div class="d-flex flex-row w-100 align-items-center position-relative">
@@ -520,6 +527,7 @@ export default {
 
       filterStatus: null,
       filterRepeat: null,
+      listMemberHasSentInvitations: [],
 
       isAdd: false,
       endHour: null,
@@ -550,6 +558,7 @@ export default {
       listEventAttendance: [],
       ListEventNotificationSent: null,
       currentEventID: null,
+      isView: false,
     };
   },
   computed: {
@@ -602,6 +611,13 @@ export default {
               (element) => element.MemberID
             );
           }
+          if (this.formHour === null) {
+            this.formHour = 0;
+          }
+
+          if (this.formMinute === null) {
+            this.formMinute = 0;
+          }
           let result = new Date(
             `${this.formDate}T${String(this.formHour).padStart(
               2,
@@ -610,7 +626,8 @@ export default {
           );
 
           let currentDateTime = new Date();
-
+          console.log("result: " + result);
+          console.log("currentDateTime: " + currentDateTime);
           if (result > currentDateTime) {
             HTTP.get("getIdAndEmail", {
               params: {
@@ -733,6 +750,7 @@ export default {
       if (dateCheck == "30/11/2023") {
         console.log(1);
       }
+      this.isView = true;
       this.showEventModal();
     },
     checkDateEvent(dateCheck) {
@@ -780,8 +798,40 @@ export default {
         },
       });
     },
+    updateTimeEventattendance() {
+      if (this.ListMemberToSendEmail.length > 0) {
+        this.sendMessageToConfirmEvent();
+      } else {
+        console.log("vào dâyy");
+        if (this.formHour == null) {
+          this.formHour = 0;
+        }
+
+        if (this.formMinute == null) {
+          this.formMinute = 0;
+        }
+        let startDateObj = new Date(
+          `${this.formDate}T${String(this.formHour).padStart(2, "0")}:${String(
+            this.formMinute
+          ).padStart(2, "0")}`
+        );
+        let newDateTime = this.getTimeFormat(startDateObj);
+        console.log("newDateTime: " + newDateTime);
+        HTTP.put("updateTimeEvent", {
+          EventID: this.currentEventID,
+          NewDateTime: newDateTime,
+        }).then((respone) => {
+          if (respone.data.success) {
+            this.NotificationsScuccess("Cập nhập thành công");
+          } else {
+            this.NotificationsScuccess("Có lỗi sẩy ra");
+          }
+        });
+      }
+      this.showParticipantList(this.currentEventID);
+      this.closeViewEventattendance();
+    },
     getListEvent() {
-      console.log(11);
       HTTP.get("event", {
         params: {
           CodeID: this.CodeID,
@@ -820,6 +870,16 @@ export default {
           });
       }
     },
+    checkExistMember(MemberID) {
+      let isMemberIDExist = this.listMemberHasSentInvitations.some(
+        (item) => item.MemberID === MemberID
+      );
+      if (isMemberIDExist) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     getInforEventattendance(title) {
       this.titleInfor = title;
       HTTP.get("inforEventattendance", {
@@ -828,10 +888,20 @@ export default {
         },
       }).then((respone) => {
         if (respone.data.success) {
-          this.$modal.show("view-detail-mdl");
           console.log(respone.data);
+          this.listMemberHasSentInvitations = respone.data.data;
+          let dateForm = respone.data.data[0].FormEndDate;
+          let dateFromBackend = new Date(dateForm);
+
+          this.formHour = dateFromBackend.getHours();
+          this.formMinute = dateFromBackend.getMinutes();
+          this.formDate = dateFromBackend.toISOString().split("T")[0];
+          this.$modal.show("view-detail-mdl");
         }
       });
+    },
+    closeViewEventattendance() {
+      this.$modal.hide("view-detail-mdl");
     },
     searchEvent() {
       HTTP.post("searchEvent", {
@@ -992,8 +1062,10 @@ export default {
           "</p>" +
           "<p> Note: " +
           this.listEvent[i].Note +
-          "</p>" +
-          "<b>Danh sách người tham gia sự kiện</b>";
+          "</p>";
+        eventInfor += '<table style="border: 1px solid black;">';
+        eventInfor +=
+          '<tr><th style="border: 1px solid black;">Danh sách người tham gia sự kiện</th><th style="border: 1px solid black;">Danh sách người không tham gia sự kiện</th><th style="border: 1px solid black;">Danh sách người chưa phản hồi</th></tr>';
         await HTTP.get("eventAttendance", {
           params: {
             EventID: this.listEvent[i].EventID,
@@ -1003,10 +1075,172 @@ export default {
             if (respone.data.success == true) {
               this.listEventAttendance = respone.data.data;
               console.log(this.listEventAttendance);
+
+              // let check = 0;
+              // for (let j = 0; j < this.listEventAttendance.length; j++) {
+              //   if(this.listEventAttendance[j].IsGoing == 1){
+              //     eventInfor +=
+              //     '<p>' + this.listEventAttendance[j].MemberName + '</p>';
+              //     check = 1;
+              //   }
+              // }
+              // if(check == 0){
+              //   eventInfor += '<p></p>'
+              // }else{
+              //   check = 0;
+              // }
+              // eventInfor += '<b>Danh sách người không tham gia sự kiện</b>'
+              // for (let j = 0; j < this.listEventAttendance.length; j++) {
+              //   if(this.listEventAttendance[j].IsGoing == 0){
+              //     eventInfor +=
+              //     '<p>' + this.listEventAttendance[j].MemberName + '</p>';
+              //     check = 1;
+              //   }
+              // }
+              // if(check == 0){
+              //   eventInfor += '<p></p>'
+              // }else{
+              //   check = 0;
+              // }
+              // eventInfor += '<b>Danh sách người chưa phản hồi</b>'
+              let listJoin = [];
+              let listUnJoin = [];
+              let listUnResponse = [];
               for (let j = 0; j < this.listEventAttendance.length; j++) {
-                eventInfor +=
-                  "<p>" + this.listEventAttendance[j].MemberName + "</p>";
+                if (this.listEventAttendance[j].IsGoing == 1) {
+                  listJoin.push(this.listEventAttendance[j].MemberName);
+                }
+                if (this.listEventAttendance[j].IsGoing == 0) {
+                  listUnJoin.push(this.listEventAttendance[j].MemberName);
+                }
+                if (this.listEventAttendance[j].IsGoing == -1) {
+                  listUnResponse.push(this.listEventAttendance[j].MemberName);
+                }
               }
+              console.log(listJoin);
+              console.log(listUnJoin);
+              console.log(listUnResponse);
+              // if(check == 0){
+              //   eventInfor += '<p></p>'
+              // }else{
+              //   check = 0;
+              // }
+              let maxValue = Math.max(
+                listJoin.length,
+                listUnJoin.length,
+                listUnResponse.length
+              );
+              console.log("max" + maxValue);
+              if (maxValue == listJoin.length) {
+                for (let i = 0; i < listJoin.length; i++) {
+                  eventInfor += "<tr>";
+                  eventInfor +=
+                    '<td style="border: 1px solid black;">' +
+                    listJoin[i] +
+                    "</td>";
+                  if (listJoin.length != 0) {
+                    if (i < listUnJoin.length) {
+                      eventInfor +=
+                        '<td style="border: 1px solid black;">' +
+                        listUnJoin[i] +
+                        "</td>";
+                    } else {
+                      eventInfor +=
+                        '<td style="border: 1px solid black;"></td>';
+                    }
+                  } else {
+                    eventInfor += '<td style="border: 1px solid black;"></td>';
+                  }
+                  if (listJoin.length != 0) {
+                    if (i < listUnResponse.length - 1) {
+                      eventInfor +=
+                        '<td style="border: 1px solid black;">' +
+                        listUnResponse[i] +
+                        "</td>";
+                    } else {
+                      eventInfor +=
+                        '<td style="border: 1px solid black;"></td>';
+                    }
+                  } else {
+                    eventInfor += '<td style="border: 1px solid black;"></td>';
+                  }
+                  eventInfor += "</tr>";
+                }
+              }
+              if (maxValue == listUnJoin.length) {
+                for (let i = 0; i < listUnJoin.length; i++) {
+                  eventInfor += "<tr>";
+                  if (listJoin.length != 0) {
+                    if (i < listJoin.length) {
+                      eventInfor +=
+                        '<td style="border: 1px solid black;">' +
+                        listJoin[i] +
+                        "</td>";
+                    } else {
+                      eventInfor +=
+                        '<td style="border: 1px solid black;"></td>';
+                    }
+                  } else {
+                    eventInfor += '<td style="border: 1px solid black;"></td>';
+                  }
+                  eventInfor +=
+                    '<td style="border: 1px solid black;">' +
+                    listUnJoin[i] +
+                    "</td>";
+                  if (listUnResponse.length != 0) {
+                    if (i < listUnResponse.length - 1) {
+                      eventInfor +=
+                        '<td style="border: 1px solid black;">' +
+                        listUnResponse[i] +
+                        "</td>";
+                    } else {
+                      eventInfor +=
+                        '<td style="border: 1px solid black;"></td>';
+                    }
+                  } else {
+                    eventInfor += '<td style="border: 1px solid black;"></td>';
+                  }
+                  eventInfor += "</tr>";
+                }
+              }
+              if (maxValue == listUnResponse.length) {
+                for (let i = 0; i < listUnResponse.length; i++) {
+                  console.log(listUnResponse);
+                  eventInfor += "<tr>";
+                  if (listJoin.length != 0) {
+                    if (i < listJoin.length - 1) {
+                      eventInfor +=
+                        '<td style="border: 1px solid black;">' +
+                        listJoin[i] +
+                        "</td>";
+                    } else {
+                      eventInfor +=
+                        '<td style="border: 1px solid black;"></td>';
+                    }
+                  } else {
+                    eventInfor += '<td style="border: 1px solid black;"></td>';
+                  }
+                  if (listUnJoin.length != 0) {
+                    if (i < listUnJoin.length) {
+                      eventInfor +=
+                        '<td style="border: 1px solid black;">' +
+                        listUnJoin[i] +
+                        "</td>";
+                    } else {
+                      eventInfor +=
+                        '<td style="border: 1px solid black;"></td>';
+                    }
+                  } else {
+                    eventInfor += '<td style="border: 1px solid black;"></td>';
+                  }
+                  eventInfor +=
+                    '<td style="border: 1px solid black;">' +
+                    listUnResponse[i] +
+                    "</td>";
+                  eventInfor += "</tr>";
+                }
+              }
+              console.log(eventInfor);
             } else {
               console.log("vào else");
             }
@@ -1014,6 +1248,7 @@ export default {
           .catch((e) => {
             console.log(e);
           });
+        eventInfor += "</table>";
       }
       await HTTP.post("export-pdf", {
         htmlContent: eventInfor,
@@ -1091,6 +1326,7 @@ export default {
     },
     showEditEventModal(id) {
       this.isAdd = false;
+      this.isView = false;
       this.eventFamily = {};
       this.titleModal = "Sửa thông tin sự kiện";
       HTTP.get("inforEvent", {
@@ -1202,6 +1438,7 @@ export default {
           .then((response) => {
             if (response.data.success == true) {
               this.memberRole = response.data.data.RoleID;
+              console.log(this.memberRole);
             } else {
               if (response.data.status_code == 402) {
                 localStorage.removeItem("CodeID");
@@ -1235,6 +1472,10 @@ export default {
     },
     showMemberList(EventID) {
       this.currentEventID = EventID;
+      this.ListMemberToSendEmail = [];
+      this.formDate = null;
+      this.formHour = null;
+      this.formMinute = null;
       this.$modal.show("view-member-mdl");
     },
     closeMemberList() {
@@ -1313,5 +1554,9 @@ td.ngaythang {
 td.ngaythang:hover {
   cursor: pointer;
   background-color: lightblue;
+}
+
+.member-selected {
+  background: #cdcdd9;
 }
 </style>

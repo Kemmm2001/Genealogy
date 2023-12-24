@@ -56,9 +56,9 @@
     </div>
     <div class="member-list">
       <div class="content">
-        <div v-if="memberRole != 3" class="d-flex align-items-center">
+        <div class="d-flex align-items-center">
           <div class>
-            <button @click="openEditHeadModal()" class="btn text-white" :disabled="isButtonDisabled"
+            <button v-if="memberRole != 3" @click="openEditHeadModal()" class="btn text-white" :disabled="isButtonDisabled"
               :class="{ 'bg-primary': !isButtonDisabled, 'bg-info': isButtonDisabled }">Chỉnh sửa</button>
           </div>
         </div>
@@ -359,8 +359,20 @@
                     </div>
                   </div>
                   <div style="display:flex">
-                    <div class="pb-2 pe-1" style="position: relative; width: 50%;">
+                    <!-- <div class="pb-2 pe-1" style="position: relative; width: 50%;">
                       <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" v-bind="props"></VuePhoneNumberInput>
+                    </div> -->
+                    <div class="pb-2 pe-1 d-flex" style="position: relative; width: 50%;">
+                      <div class="col-2 d-flex align-items-center justify-content-evenly">
+                        <div class="col-6 h-100 d-flex align-items-center">
+                          <img class="w-100" src="../assets/Flag_of_Vietnam.png"/>
+                        </div>
+                        <div>(+84)</div>
+                      </div>
+                      <div class="col-10 position-relative">
+                        <input v-model="objMemberContact.Phone" type="text" class="form-control modal-item w-100 h-100" placeholder />
+                        <label class="form-label" for="input" :class="{ 'active': objMemberContact.Phone }">Số điện thoại</label>
+                      </div>
                     </div>
                     <div class="pb-2 ps-1" style="position: relative;width: 50%;">
                       <input v-model="objMemberContact.Email" type="email" class="form-control modal-item" placeholder />
@@ -739,10 +751,95 @@ export default {
       dobSort: true,
       genAscending: false,
       dobAscending: true,
+
+      props: {
+        clearable: true,
+        fetchCountry: true,
+        preferredCountries: ["US", "GB"],
+        noExample: false,
+        translations: {
+          countrySelectorLabel: "Country code",
+          countrySelectorError: "Error",
+          phoneNumberLabel: "Nhập số điện thoại",
+          example: "Example:",
+        },
+      },
+      ListCity: null,
+      selectCityMember: null,
+      selectDistrictMember: null,
+      isFather: null,
+      action: null,
+      ListDistrictMember: null,
+      heightLarger: null,
     };
   },
 
   methods: {
+    getAdressMember(addressString) {
+      let addressParts = addressString.split("-");
+      let SelectCityName = addressParts[0].trim();
+      let SelectDistinName =
+        addressParts.length > 1 ? addressParts[1].trim() : null;
+
+      this.selectCityMember = this.ListCity.find(
+        (city) => city.name === SelectCityName
+      );
+      this.selectCityMember = this.selectCityMember.id;
+      if (SelectDistinName != null) {
+        this.selectDistrictMember = SelectDistinName;
+        HTTP.get("district", {
+          params: {
+            cityID: this.selectCityMember,
+          },
+        })
+          .then((response) => {
+            this.ListDistrictMember = response.data;
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
+    },
+    getListCity() {
+      try {
+        HTTP.get("province", {})
+          .then((response) => {
+            this.ListCity = response.data;
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    getListDistrictMember() {
+      let selectedCity = this.ListCity.find(
+        (city) => city.id == this.selectCityMember
+      );
+      console.log(this.selectCityMember);
+      if (selectedCity != null) {
+        this.objMemberContact.Address = selectedCity.name;
+      } else {
+        this.objMemberContact.Address = null;
+      }
+
+      if (this.selectCityMember == null) {
+        this.ListDistrictMember = null;
+      } else {
+        HTTP.get("district", {
+          params: {
+            cityID: this.selectCityMember,
+          },
+        })
+          .then((response) => {
+            this.ListDistrictMember = response.data;
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
+    },
     getImageSize() {
       const img = document.getElementById("myImage");
       // Lấy kích thước của hình ảnh
@@ -909,13 +1006,14 @@ export default {
       this.filter();
     },
     updateEducationMember() {
-      HTTP.put("updateEducation", {
+      let data = {
         School: this.objMemberEducation.School,
         Description: this.objMemberEducation.Description,
         StartDate: this.objMemberEducation.StartDate,
         EndDate: this.objMemberEducation.EndDate,
         EducationID: this.EducationIdToUpdate,
-      }).then(() => {
+      };
+      HTTP.put("updateEducation", data).then(() => {
         this.getListEducationMember();
         this.NotificationsScuccess("Sửa thông tin giáo dục thành công");
         this.refreshInputJobAndEducation();
@@ -953,7 +1051,7 @@ export default {
       }
     },
     updateJobMember() {
-      HTTP.put("updateJob", {
+      let data = {
         JobID: this.JobIDToUpdate,
         Organization: this.objMemberJob.Organization,
         OrganizationAddress: this.objMemberJob.OrganizationAddress,
@@ -961,7 +1059,8 @@ export default {
         JobName: this.objMemberJob.JobName,
         StartDate: this.objMemberJob.StartDate,
         EndDate: this.objMemberJob.EndDate,
-      }).then(() => {
+      };
+      HTTP.put("updateJob", data).then(() => {
         this.getListJobMember();
         this.NotificationsScuccess("Sửa thông tin nghề nghiệp thành công");
         this.refreshInputJobAndEducation();
@@ -970,11 +1069,18 @@ export default {
 
     updateInformation() {
       console.log(111)
-      if (this.selectDistrictMember != null) {
-        this.objMemberContact.Address =
-          this.objMemberContact.Address + "-" + this.selectDistrictMember;
-      }
-      HTTP.put("member", {
+      if (this.objMemberInfor.BirthOrder == null) {
+          console.log("vào đây");
+          this.objMemberInfor.BirthOrder = 1;
+        }
+        if (this.selectDistrictMember != null) {
+          this.objMemberContact.Address =
+            this.objMemberContact.Address + "-" + this.selectDistrictMember;
+        }
+        if (this.selectCityMember == null) {
+          this.objMemberContact.Address = null;
+        }
+      let data = {
         MemberID: this.CurrentIdMember,
         MemberName: this.objMemberInfor.MemberName,
         NickName: this.objMemberInfor.NickName,
@@ -996,7 +1102,8 @@ export default {
         Male: this.objMemberInfor.Male,
         CodeID: this.CodeID,
         Action: this.action,
-      })
+      };
+      HTTP.put("member", data)
         .then((response) => {
           if (response.data.success == true) {
             this.isUpdateAvatar = false;
@@ -1004,14 +1111,15 @@ export default {
             if (this.objMemberContact.Phone != null) {
               this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
             }
-            HTTP.put("updateContact", {
+            data = {
               MemberID: this.CurrentIdMember,
               Address: this.objMemberContact.Address,
               Phone: this.objMemberContact.Phone,
               Email: this.objMemberContact.Email,
               FacebookUrl: this.objMemberContact.FacebookUrl,
               Zalo: this.objMemberContact.Zalo,
-            }).then(() => {
+            };
+            HTTP.put("updateContact", data).then(() => {
               this.$modal.hide("view-member-mdl");
               this.getListMemberInGenalogy();
             });
@@ -1058,12 +1166,15 @@ export default {
     },
     getInforMember(id) {
       this.CurrentIdMember = id;
+      let params = {
+        memberId: id,
+      };
       HTTP.get("InforMember", {
-        params: {
-          memberId: id,
-        },
+        params
       })
         .then((response) => {
+          this.selectCityMember = null;
+          this.selectDistrictMember = null;
           this.objMember = response.data.data;
           if (this.objMember.infor.length > 0) {
             this.objMemberInfor = this.objMember.infor[0];
@@ -1073,9 +1184,23 @@ export default {
               this.objMemberInfor.LunarDob
             );
             this.objMemberInfor.Dod = this.formatDate(this.objMemberInfor.Dod);
+            this.objMemberInfor.LunarDod = this.formatDate(
+              this.objMemberInfor.LunarDod)
+            this.avatarSrc = this.objMemberInfor.Image;
+            console.log("avatarSrc: " + this.avatarSrc);
           }
           if (this.objMember.contact.length > 0) {
             this.objMemberContact = this.objMember.contact[0];
+            if (
+              this.objMemberContact.Address != undefined &&
+              this.objMemberContact.Address != null
+            ) {
+              this.getAdressMember(this.objMemberContact.Address);
+            }
+          }
+          if (response.data.data.MarriageNumber != null) {
+            this.objMemberInfor.MarriageNumber =
+              response.data.data.MarriageNumber;
           }
           this.ListMemberEducation = this.objMember.education;
           this.ListMemberJob = this.objMember.job;
@@ -1230,10 +1355,11 @@ export default {
     },
 
     getListMemberInGenalogy() {
+      let params = {
+        CodeID: this.CodeID,
+      };
       HTTP.get("membersInGenealogy", {
-        params: {
-          CodeID: this.CodeID,
-        },
+        params
       }).then((response) => {
         if (response.data.success == true) {
           this.memberList = response.data.data;
@@ -1261,10 +1387,11 @@ export default {
     },
     getMemberRole() {
       try {
-        HTTP.post("roleAccount", {
+        let data = {
           accountID: localStorage.getItem("accountID"),
           codeID: localStorage.getItem("CodeID"),
-        })
+        };
+        HTTP.post("roleAccount", data)
           .then((response) => {
             if (response.data.success == true) {
               this.memberRole = response.data.data.RoleID;
@@ -1297,6 +1424,7 @@ export default {
       this.getListNationality();
       this.getListReligion();
       this.getMemberRole();
+      this.getListCity();
     }
   },
 };

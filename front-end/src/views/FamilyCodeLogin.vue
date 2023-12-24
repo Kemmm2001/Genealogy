@@ -142,6 +142,7 @@ export default {
     takeAccountId() {
       if (localStorage.getItem("accountID") != null) {
         this.accountID = localStorage.getItem("accountID");
+        console.log('accountID: ' + this.accountID)
         this.getHistoryCodeID();
       } else {
         HTTPP.get("protected-route")
@@ -156,7 +157,7 @@ export default {
           })
           .catch((e) => {
             console.log(e);
-          });        
+          });
       }
     },
     NotificationsDelete(messagee) {
@@ -277,8 +278,8 @@ export default {
       const day = String(date.getDate()).padStart(2, "0");
       const hours = String(date.getHours()).padStart(2, "0");
       const minutes = String(date.getMinutes()).padStart(2, "0");
-      // const seconds = String(date.getSeconds()).padStart(2, "0");     
-      return `${hours} Giờ :${minutes} Phút Ngày: ${day}-${month}-${year}`
+      // const seconds = String(date.getSeconds()).padStart(2, "0");
+      return `${hours} Giờ :${minutes} Phút Ngày: ${day}-${month}-${year}`;
     },
 
     moveToLeft() {
