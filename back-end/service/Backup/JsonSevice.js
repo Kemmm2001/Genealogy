@@ -13,7 +13,7 @@ async function createMemberIdToIndexMap(familyMembers) {
 }
 async function exportData(memberIDs) {
     try {
-        const familyMembers = await queryDatabase('genealogy.familymember', memberIDs);
+        const familyMembers = await queryDatabase(memberIDs);
         const memberIdToIndexMap = await createMemberIdToIndexMap(familyMembers);
 
         const educations = await queryEducationDatabase(memberIDs);
@@ -91,36 +91,19 @@ async function addDataToSheet(workbook, sheetName, data, memberIdToIndexMap) {
 }
 
 
-async function queryDatabase(tableName, memberIDs) {
-    if (tableName === 'genealogy.marriage') {
-        // Construct a query to fetch marriages related to the provided memberIDs
-        const query = `SELECT * FROM ${tableName} WHERE husbandID IN (${memberIDs.join(',')}) OR wifeID IN (${memberIDs.join(',')})`;
+async function queryDatabase( memberIDs) {
+    return new Promise((resolve, reject) => {
+        const query = `SELECT MemberID, FatherID, MotherID, MemberName, NickName, BirthOrder, Origin, NationalityID, ReligionID, Dob, LunarDob, BirthPlace, IsDead, Dod, LunarDod, PlaceOfDeath, GraveSite, Note, Generation, BloodType, Male, Image, RoleID FROM genealogy.familymember WHERE MemberID IN (${memberIDs.join(',')})`;
 
-        return new Promise((resolve, reject) => {
-            db.connection.query(query, (err, rows) => {
-                if (err) {
-                    console.error(`Lỗi truy vấn bảng ${tableName}:`, err);
-                    reject({ error: `Lỗi truy vấn bảng ${tableName}`, originalError: err });
-                } else {
-                    resolve(rows);
-                }
-            });
+        db.connection.query(query, (err, rows) => {
+            if (err) {
+                console.error(`Lỗi truy vấn bảng familymember`, err);
+                reject({ error: `Lỗi truy vấn bảng familymember`, originalError: err });
+            } else {
+                resolve(rows);
+            }
         });
-    } else {
-        // For other tables, maintain the original query logic
-        return new Promise((resolve, reject) => {
-            const query = `SELECT * FROM ${tableName} WHERE MemberID IN (${memberIDs.join(',')})`;
-
-            db.connection.query(query, (err, rows) => {
-                if (err) {
-                    console.error(`Lỗi truy vấn bảng ${tableName}:`, err);
-                    reject({ error: `Lỗi truy vấn bảng ${tableName}`, originalError: err });
-                } else {
-                    resolve(rows);
-                }
-            });
-        });
-    }
+    });
 }
 
 async function queryContactDatabase(memberIDs) {
@@ -271,7 +254,7 @@ async function importData(file, codeID) {
         const contactWorksheet = workbook.getWorksheet('Contact Data');
         const educationWorksheet = workbook.getWorksheet('Education Data');
         const jobWorksheet = workbook.getWorksheet('Job Data');
-        
+
         let arrayInsert = await insertDataToTable(familyWorksheet, 'genealogy.familymember', codeID)
         console.log("arr :" + arrayInsert)
 
@@ -296,15 +279,16 @@ async function insertDataToTable(worksheet, tableName, codeID) {
 
 
         // Lấy danh sách các cột cần chèn ngoại trừ cột MemberID
-        const columnsToInsert = headers.filter(header => header !== 'MemberID');
-
-        const queries = [];
+        let columnsToInsert = headers.filter(header => header !== 'MemberID');
+        columnsToInsert.push('CodeID')
+        console.log(columnsToInsert)
+        let queries = [];
         const memberIDIndexMap = {}; // Ánh xạ MemberID và index tương ứng
 
         for (let rowNumber = 2; rowNumber <= worksheet.rowCount; rowNumber++) {
             const row = worksheet.getRow(rowNumber);
             const formattedValues = [];
-
+        
             for (let i = 1; i <= headers.length; i++) {
                 // Bỏ qua cột MemberID khi tạo giá trị format
                 if (headers[i - 1] !== 'MemberID') {
@@ -323,20 +307,24 @@ async function insertDataToTable(worksheet, tableName, codeID) {
                     }
 
                     formattedValues.push(formattedValue);
+                    
                 }
             }
+            formattedValues.push(codeID)
 
             const query = `INSERT INTO ${tableName} (${columnsToInsert.join(',')}) VALUES (${formattedValues.join(',')})`;
 
             if (isFamilyMemberTable) {
                 queries.push(query);
-
+                console.log(query)
                 // Lưu ánh xạ MemberID và index tương ứng
                 memberIDIndexMap[row.values[1]] = rowNumber;
             } else {
                 queries.push(query);
             }
         }
+        console.log("total queries : " + queries);
+        console.log("length queries : " + queries.length)
         let arrayInsert = []
         // Thực hiện chèn vào database
         const results = await Promise.all(queries.map(query =>
@@ -347,7 +335,6 @@ async function insertDataToTable(worksheet, tableName, codeID) {
                 })
                 .catch(error => {
                     console.error("Error inserting row:", error);
-                    throw error;
                 })
         ));
 
@@ -361,7 +348,6 @@ async function insertDataToTable(worksheet, tableName, codeID) {
         return arrayInsert;
     } catch (error) {
         console.error('Error inserting data into table', tableName, error);
-        throw error;
     }
 }
 
@@ -579,8 +565,8 @@ async function insertDataToTableMarriage(worksheet, tableName, insertArr) {
             }
 
         }
-         // Duyệt mảng chứa dữ liệu
-         for (let j = 0; j < worksheetData.length; j++) {
+        // Duyệt mảng chứa dữ liệu
+        for (let j = 0; j < worksheetData.length; j++) {
             // Duyệt mảng chứa các giá trị index cần insert
             for (let k = 0; k < insertArr.length; k++) {
                 // Nếu giá trị index đầu tiên của hàng = vị trí trong mảng insert
@@ -625,7 +611,7 @@ async function insertDataToTableMarriage(worksheet, tableName, insertArr) {
 // Hàm truy vấn danh sách Family Members sau khi đã insert
 async function queryFamilyMembers(codeID) {
     return new Promise((resolve, reject) => {
-        const query = 'SELECT MemberID, FatherID, MotherID FROM genealogy.familymember where CodeID = ? Order by MemberID';
+        const query = 'SELECT MemberID, FatherID, MotherID FROM genealogy.familymember where CodeID = ? and Generation != 0 Order by MemberID';
 
         db.connection.query(query, [codeID], (error, results) => {
             if (error) {
