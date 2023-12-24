@@ -109,8 +109,8 @@ router-link-exact-active {
 }
 
 .navbar-grid-container .navbar-item-theme-user{
-    display: grid;
-    grid-template-columns: 50% 50%;
+    display: flex;
+    justify-content: end;
 }
 
 .navbar-item{
