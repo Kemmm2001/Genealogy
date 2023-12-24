@@ -2074,19 +2074,29 @@ export default {
       }
     },
     addContact() {
+      if (this.objMemberContact.Address == "") {
+        this.objMemberContact.Address = null;
+      }
+      if (this.objMemberContact.Phone == "") {
+        this.objMemberContact.Phone = null;
+      }
+      if (this.objMemberContact.Email == "") {
+        this.objMemberContact.Email = null;
+      }
+      if (this.objMemberContact.FacebookUrl == "") {
+        this.objMemberContact.FacebookUrl = null;
+      }
+      if (this.objMemberContact.Zalo == "") {
+        this.objMemberContact.Zalo = null;
+      }
+
       if (
-        this.objMemberContact.Address != null &&
-        this.objMemberContact.Address != "" &&
-        this.objMemberContact.Phone != null &&
-        this.objMemberContact.Phone != "" &&
-        this.objMemberContact.Email != null &&
-        this.objMemberContact.Email != "" &&
-        this.objMemberContact.FacebookUrl != null &&
-        this.objMemberContact.FacebookUrl != "" &&
-        this.objMemberContact.Zalo != null &&
-        this.objMemberContact.Zalo != ""
+        this.objMemberContact.Address != null ||
+        this.objMemberContact.Phone != null ||
+        this.objMemberContact.Email != null ||
+        this.objMemberContact.FacebookUrl != null ||
+        this.objMemberContact.Zalo != null
       ) {
-        this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
         HTTP.post("addContact", {
           memberId: this.newIdMember,
           Address: this.objMemberContact.Address,
@@ -2457,39 +2467,28 @@ export default {
                 }
                 console.log("Phone: " + this.objMemberContact.Phone);
                 console.log("CurrentIdMember: " + this.CurrentIdMember);
-                if (
-                  this.objMemberContact.Address != null &&
-                  this.objMemberContact.Address != "" &&
-                  this.objMemberContact.Phone != null &&
-                  this.objMemberContact.Phone != "" &&
-                  this.objMemberContact.Email != null &&
-                  this.objMemberContact.Email != "" &&
-                  this.objMemberContact.FacebookUrl != null &&
-                  this.objMemberContact.FacebookUrl != "" &&
-                  this.objMemberContact.Zalo != null &&
-                  this.objMemberContact.Zalo != ""
-                ) {
-                  HTTP.put("updateContact", {
-                    MemberID: this.CurrentIdMember,
-                    Address: this.objMemberContact.Address,
-                    Phone: this.objMemberContact.Phone,
-                    Email: this.objMemberContact.Email,
-                    FacebookUrl: this.objMemberContact.FacebookUrl,
-                    Zalo: this.objMemberContact.Zalo,
+
+                HTTP.put("updateContact", {
+                  MemberID: this.CurrentIdMember,
+                  Address: this.objMemberContact.Address,
+                  Phone: this.objMemberContact.Phone,
+                  Email: this.objMemberContact.Email,
+                  FacebookUrl: this.objMemberContact.FacebookUrl,
+                  Zalo: this.objMemberContact.Zalo,
+                })
+                  .then((respone) => {
+                    if (respone.data.success == true) {
+                      this.checkUpdate = true;
+                      console.log("vào đâyyyy");
+                      this.getListMemberHasPhone();
+                      this.getListMemberHasEmail();
+                      this.GetListFilterMember();
+                    }
                   })
-                    .then((respone) => {
-                      if (respone.data.success == true) {
-                        this.checkUpdate = true;
-                        console.log("vào đâyyyy");
-                        this.getListMemberHasPhone();
-                        this.getListMemberHasEmail();
-                        this.GetListFilterMember();
-                      }
-                    })
-                    .catch(() => {
-                      this.NotificationsDelete("Có lỗi hệ thống");
-                    });
-                }
+                  .catch(() => {
+                    this.NotificationsDelete("Có lỗi hệ thống");
+                  });
+
                 this.GetListFilterMember();
                 this.closeMemberModal();
                 this.getListMember();
@@ -2528,11 +2527,12 @@ export default {
       );
     },
     validatePhoneNumber(phone) {
-      // Biểu thức chính quy để kiểm tra số điện thoại
-      const phoneRegex = /^\d{10,11}$/;
-
-      // Kiểm tra xem số điện thoại có khớp với biểu thức chính quy không
-      return phoneRegex.test(phone);
+      const validationRegex = /^\d{9,10}$/;
+      if (phone.match(validationRegex)) {
+        return true;
+      } else {
+        return false;
+      }
     },
     //Nguyễn Lê Hùng
     GetListFilterMember() {
