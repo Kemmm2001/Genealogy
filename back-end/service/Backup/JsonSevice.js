@@ -262,7 +262,7 @@ async function updateCodeIDForMember(memberID, newCodeID) {
 }
 
 
-async function importData(file) {
+async function importData(file, codeID) {
     try {
         const workbook = new Excel.Workbook();
         await workbook.xlsx.readFile(file);
@@ -271,8 +271,8 @@ async function importData(file) {
         const contactWorksheet = workbook.getWorksheet('Contact Data');
         const educationWorksheet = workbook.getWorksheet('Education Data');
         const jobWorksheet = workbook.getWorksheet('Job Data');
-        const codeIDFromExcel = familyWorksheet.getRow(2).getCell(22).value;
-        let arrayInsert = await insertDataToTable(familyWorksheet, 'genealogy.familymember', codeIDFromExcel)
+        
+        let arrayInsert = await insertDataToTable(familyWorksheet, 'genealogy.familymember', codeID)
         console.log("arr :" + arrayInsert)
 
         await insertDataToTable2(contactWorksheet, 'genealogy.contact', arrayInsert)
