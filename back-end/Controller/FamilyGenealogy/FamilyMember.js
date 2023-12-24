@@ -510,9 +510,10 @@ var addMarriage = async (req, res) => {
 
 // nguyễn anh tuấn
 var isBirthOrderExist = (memberID, birthOrder, listBirthOrderExist) => {
-    console.log("Vào hàm isBirthOrderExist");
+    console.log(`Vào hàm isBirthOrderExist với memberID: ${memberID}, birthOrder: ${birthOrder}, listBirthOrderExist: ${listBirthOrderExist}`);
     for (let i = 0; i < listBirthOrderExist.length; i++) {
         if (listBirthOrderExist[i].BirthOrder == birthOrder && listBirthOrderExist[i].MemberID != memberID) {
+            console.log(`Đã vào trường hợp birthOrder đã tồn tại với memberID: ${listBirthOrderExist[i].MemberID}`);
             return true;
         }
     }
