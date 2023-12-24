@@ -126,9 +126,9 @@
                   <td>{{ event.Status == 1 ? "Chưa kết thúc" : "Đã Kết Thúc" }}</td>
                   <td @click="showEditEventModal(event.EventID)">{{ event.Place }}</td>
                   <td>
-                    <div v-if="memberRole != 3" class="h-100 w-100 d-flex align-items-center justify-content-center">
+                    <div class="h-100 w-100 d-flex align-items-center justify-content-center">
                       <div v-if="checkEventNotificationSent(event.EventID)" @click="showParticipantList(event.EventID)" class="btn bg-primary text-white">Tham gia sự kiện</div>
-                      <div v-else-if="!checkEventNotificationSent(event.EventID) && event.Status == 1" @click="showMemberList(event.EventID)" class="btn bg-primary text-white">Thông báo</div>
+                      <div v-else-if="!checkEventNotificationSent(event.EventID) && event.Status == 1 && memberRole == 1" @click="showMemberList(event.EventID)" class="btn bg-primary text-white">Thông báo</div>
                     </div>
                   </td>
                 </tr>
