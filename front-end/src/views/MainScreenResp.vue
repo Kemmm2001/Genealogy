@@ -3,7 +3,7 @@
     <div class="sidebar" :class="{ expand: expandSidebar }" @mouseover="sidebarHover()" @mouseleave="siderbarLeave()">
       <div class="content-display" style="display: grid; grid-template-rows: 50% 50%; position: relative;">
         <div class="w-100 d-flex flex-row pt-2">
-          <div v-if="memberRole != 3" class="col-6 ps-2 pe-1">
+          <div v-if="memberRole == 1" class="col-6 ps-2 pe-1">
             <div class="w-100 h-100">
               <button @click="openNotiModal()" style="width:100%; font-size: 15px; color:white" type="button" class="m-0 d-flex align-items-center justify-content-center btn btn-secondary w-100 h-100">Tạo thông báo</button>
             </div>
@@ -14,7 +14,7 @@
             </div>
           </div>
         </div>
-        <div v-if="memberRole != 3" class="w-100 d-flex flex-row pt-2">
+        <div v-if="memberRole == 1" class="w-100 d-flex flex-row pt-2">
           <div class="col-6 ps-2 pe-1">
             <div class="w-100 h-100">
               <button @click="BackUpdata()" style="width:100%; font-size: 15px; color:white" type="button" class="btn btn-secondary h-100 m-0 d-flex align-items-center justify-content-center">Lưu trữ dữ liệu</button>
@@ -2495,7 +2495,7 @@ export default {
                 .catch(() => {
                   this.NotificationsDelete("Có lỗi hệ thống");
                 });
-                this.GetListFilterMember();
+              this.GetListFilterMember();
             } else {
               this.NotificationsDelete(response.data.message);
             }
@@ -2602,6 +2602,7 @@ export default {
     },
     handleRightClick(id) {
       if (this.memberRole != 3) {
+        console.log("Vào đây");
         this.OnpenModal_SelectOption(id);
       }
     },
@@ -2802,32 +2803,36 @@ export default {
     },
 
     OnpenModal_SelectOption(id) {
-      this.parentRelationship = null;
-      this.selectedInfor();
-      let foundNode = this.nodes.find((node) => node.id == id);
-      this.CurrentIdToLinkRelationship = foundNode.id;
-      this.getLinkRelationship(foundNode);
-      console.log("parentRelationship: " + this.parentRelationship);
-      if (foundNode.gender == "female") {
-        this.isFather = false;
-      } else {
-        this.isFather = true;
-      }
+      console.log("vào đây");
+      console.log("memberRole: " + this.memberRole);
+      if (this.memberRole != 3) {
+        this.parentRelationship = null;
+        this.selectedInfor();
+        let foundNode = this.nodes.find((node) => node.id == id);
+        this.CurrentIdToLinkRelationship = foundNode.id;
+        this.getLinkRelationship(foundNode);
+        console.log("parentRelationship: " + this.parentRelationship);
+        if (foundNode.gender == "female") {
+          this.isFather = false;
+        } else {
+          this.isFather = true;
+        }
 
-      this.getAllMarriedInMember(foundNode.pids);
-      this.setFunctionCanDo(foundNode);
-      this.TitleModal = foundNode.name;
-      console.log("TitleModal: " + this.TitleModal);
-      this.generationMember = foundNode.generation;
-      if (this.nodeRightClickHighLight != null) {
-        this.removeFromSelectedNodes(this.nodeRightClickHighLight);
-      }
-      this.highLightSelectNode(id);
-      this.nodeRightClickHighLight = id;
-      this.$modal.show("select-opts-mdl");
-      this.CurrentIdMember = id;
+        this.getAllMarriedInMember(foundNode.pids);
+        this.setFunctionCanDo(foundNode);
+        this.TitleModal = foundNode.name;
+        console.log("TitleModal: " + this.TitleModal);
+        this.generationMember = foundNode.generation;
+        if (this.nodeRightClickHighLight != null) {
+          this.removeFromSelectedNodes(this.nodeRightClickHighLight);
+        }
+        this.highLightSelectNode(id);
+        this.nodeRightClickHighLight = id;
+        this.$modal.show("select-opts-mdl");
+        this.CurrentIdMember = id;
 
-      this.objMemberInfor = {};
+        this.objMemberInfor = {};
+      }
       //  this.removeFromSelectedNodes(id);
     },
     getAllMarriedInMember(membersArray) {
