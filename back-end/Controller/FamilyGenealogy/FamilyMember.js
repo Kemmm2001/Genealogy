@@ -986,6 +986,7 @@ var deleteMember = async (req, res) => {
         dataRes = {
             MemberID: req.query.MemberID,
         }
+        console.log('dataRes: ' + dataRes)
         return res.send(Response.successResponse(dataRes));
     } catch (e) {
         console.log("Error: " + e);
