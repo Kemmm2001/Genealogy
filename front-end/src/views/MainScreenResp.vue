@@ -94,7 +94,7 @@
           </div>
         </div>
         <div @click="advancedFilterDown = !advancedFilterDown" class="d-flex flex-column align-items-center justify-content-center h-100">
-          <div class="filter-text" v-if="!advancedFilterDown" style="color: white; font-family: 'QuicksandBold'">Bộ lọc nâng cao</div>
+          <div class="filter-text" v-if="!advancedFilterDown" style="color: white; font-family: 'QuicksandBold'">Bộ lọc</div>
           <div>
             <svg :class="{ rotateDown: !advancedFilterDown }" class="advanced-filter-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
               <path d="M246.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 109.3 361.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160zm160 352l-160-160c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 301.3 361.4 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3z" />
@@ -737,9 +737,21 @@
                       <label class="form-label" for="select">Địa Chỉ (Quận/Huyện)</label>
                     </div>
                   </div>
-                  <div style="display:flex">
-                    <div class="pb-2 pe-1" style="position: relative; width: 50%;">
+                  <div style="display: flex">
+                    <!-- <div class="pb-2 pe-1" style="position: relative; width: 50%;">
                       <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" v-bind="props"></VuePhoneNumberInput>
+                    </div>-->
+                    <div class="pb-2 pe-1 d-flex" style="position: relative; width: 50%;">
+                      <div class="col-2 d-flex align-items-center justify-content-evenly">
+                        <div class="col-6 h-100 d-flex align-items-center">
+                          <img class="w-100" src="../assets/Flag_of_Vietnam.png" />
+                        </div>
+                        <div>(+84)</div>
+                      </div>
+                      <div class="col-10 position-relative">
+                        <input v-model="objMemberContact.Phone" type="number" class="form-control modal-item w-100 h-100 phonenum" placeholder />
+                        <label class="form-label" for="input" :class="{ 'active': objMemberContact.Phone }">Số điện thoại</label>
+                      </div>
                     </div>
                     <div class="pb-2 ps-1" style="position: relative;width: 50%;">
                       <input v-model="objMemberContact.Email" type="email" class="form-control modal-item" placeholder />
@@ -943,27 +955,27 @@ import { HTTP } from "../assets/js/baseAPI.js";
 import { LunarDate } from "vietnamese-lunar-calendar";
 import { convertLunar2Solar } from "vietnamese-lunar-calendar/build/solar-lunar";
 import { getLocalTimezone } from "vietnamese-lunar-calendar/build/solar-lunar/utils";
-import VuePhoneNumberInput from "vue-phone-number-input";
+// import VuePhoneNumberInput from "vue-phone-number-input";
 import "vue-phone-number-input/dist/vue-phone-number-input.css";
 
 export default {
   components: {
-    VuePhoneNumberInput,
+    // VuePhoneNumberInput,
   },
   data() {
     return {
-      props: {
-        clearable: true,
-        fetchCountry: true,
-        preferredCountries: ["US", "GB"],
-        noExample: false,
-        translations: {
-          countrySelectorLabel: "Country code",
-          countrySelectorError: "Error",
-          phoneNumberLabel: "Nhập số điện thoại",
-          example: "Example:",
-        },
-      },
+      // props: {
+      //       clearable: true,
+      //       fetchCountry: true,
+      //       preferredCountries: ["US", "GB"],
+      //       noExample: false,
+      //       translations: {
+      //         countrySelectorLabel: "Country code",
+      //         countrySelectorError: "Error",
+      //         phoneNumberLabel: "Nhập số điện thoại",
+      //         example: "Example:",
+      //       },
+      //     },
       idParent: null,
       ResultRelationship: null,
       ListCity: null,
@@ -1205,7 +1217,7 @@ export default {
       this.family.onRedraw(() => {
         var nodeElement;
         if (this.selectedNodes.length != 0) {
-          console.log(this.selectedNodes)
+          console.log(this.selectedNodes);
           for (let i = 0; i < this.selectedNodes.length; i++) {
             nodeElement = document.querySelector(
               '[data-n-id="' + this.selectedNodes[i] + '"]'
@@ -1225,7 +1237,7 @@ export default {
             }
           }
         }
-        
+
         if (this.selectedNodesCompare.length != 0) {
           for (let i = 0; i < this.selectedNodesCompare.length; i++) {
             nodeElement = document.querySelector(
@@ -1236,7 +1248,6 @@ export default {
             }
           }
         }
-        
       });
 
       if (this.memberRole != 3) {
@@ -1836,7 +1847,7 @@ export default {
         });
     },
     //Nguyễn Lê Hùng
-    async removeMember() {
+    removeMember() {
       HTTP.get("deleteContact", {
         params: {
           MemberID: this.CurrentIdMember,
@@ -1889,6 +1900,9 @@ export default {
             // this.nodes.length = this.nodes.length - 1;
             this.removeFromSelectedNodes(this.CurrentIdMember);
             this.NotificationsScuccess(response.data.message);
+            setTimeout(() => {
+              this.getListUnspecifiedMembers();
+            }, 2000);
 
             this.$modal.hide("select-opts-mdl");
             this.$modal.hide("view-member-mdl");
@@ -1896,7 +1910,6 @@ export default {
             this.closeCfDelModal();
             this.getListMemberHasPhone();
             this.getListMemberHasEmail();
-            this.getListUnspecifiedMembers();
           } else {
             this.NotificationsDelete(response.data.message);
           }
@@ -2227,7 +2240,10 @@ export default {
     },
     //Nguyễn Lê Hùng
     addMember() {
-      let result = this.isEmailValid(this.objMemberContact.Email);
+      let result = true;
+      if (this.objMemberContact.Email) {
+        result = this.isEmailValid(this.objMemberContact.Email);
+      }
       if (result) {
         console.log("Token: " + VueCookies.get("accessToken"));
         let FatherID;
@@ -2408,7 +2424,10 @@ export default {
     },
     //Nguyễn Lê Hùng
     updateInformation() {
-      let result = this.isEmailValid(this.objMemberContact.Email);
+      let result = true;
+      if (this.objMemberContact.Email) {
+        result = this.isEmailValid(this.objMemberContact.Email);
+      }
       if (result) {
         if (this.objMemberInfor.BirthOrder == null) {
           console.log("vào đây");
@@ -2454,6 +2473,8 @@ export default {
                   "+84" + this.objMemberContact.Phone;
               }
               console.log("CurrentIdMember: " + this.CurrentIdMember);
+              this.closeMemberModal();
+              this.getListMember();
               HTTP.put("updateContact", {
                 MemberID: this.CurrentIdMember,
                 Address: this.objMemberContact.Address,
@@ -2466,15 +2487,15 @@ export default {
                   if (respone.data.success == true) {
                     this.checkUpdate = true;
                     console.log("vào đâyyyy");
-                    this.closeMemberModal();
-                    this.getListMember();
                     this.getListMemberHasPhone();
                     this.getListMemberHasEmail();
+                    this.GetListFilterMember();
                   }
                 })
                 .catch(() => {
                   this.NotificationsDelete("Có lỗi hệ thống");
                 });
+                this.GetListFilterMember();
             } else {
               this.NotificationsDelete(response.data.message);
             }
@@ -2625,7 +2646,9 @@ export default {
           .then((response) => {
             this.ListUnspecifiedMembers = response.data;
             console.log("111111111");
-            console.log(this.ListUnspecifiedMembers);
+            console.log(
+              "ListUnspecifiedMembers: " + this.ListUnspecifiedMembers
+            );
           })
           .catch((e) => {
             console.log(e);
@@ -2641,6 +2664,7 @@ export default {
     openModalAddMemberFromList() {
       this.TitleModal = " Mối quan hệ ";
       this.$modal.show("add-relation-mdl");
+      this.ListUnspecifiedMembers = null;
     },
     openNotiModal() {
       this.ListPhoneToSendMessage = [];

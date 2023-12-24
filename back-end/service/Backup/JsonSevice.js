@@ -46,7 +46,7 @@ async function addDataToSheet(workbook, sheetName, data, memberIdToIndexMap) {
         const headers = Object.keys(data[0]);
         worksheet.addRow(headers);
 
-    
+
         data.forEach((row, index) => {
             const rowIndex = index + 1;
             const rowValues = headers.map(header => {
@@ -60,17 +60,17 @@ async function addDataToSheet(workbook, sheetName, data, memberIdToIndexMap) {
                 }
                 return row[header];
             });
-     
+
             if (sheetName === 'Family Member Data') {
-     
+
                 rowValues[headers.indexOf('MemberID')] = rowIndex;
-                
+
                 if (row['FatherID'] && memberIdToIndexMap[row['FatherID']]) {
                     rowValues[headers.indexOf('FatherID')] = memberIdToIndexMap[row['FatherID']];
                 }
                 if (row['MotherID'] && memberIdToIndexMap[row['MotherID']]) {
                     rowValues[headers.indexOf('MotherID')] = memberIdToIndexMap[row['MotherID']];
-                
+
                 }
 
             } else if (sheetName === 'Marriage Data') {
@@ -210,22 +210,6 @@ async function importData(file) {
 
         const familyWorksheet = workbook.getWorksheet('Family Member Data');
         const codeIDFromExcel = familyWorksheet.getRow(2).getCell(22).value;
-        // const truncatePromises = [];
-        // for (let rowNumber = 2; rowNumber <= familyWorksheet.rowCount; rowNumber++) {
-        //     const row = familyWorksheet.getRow(rowNumber);
-        //     const values = row.values;
-        //     const memberID = values[1];
-        //     const truncatePromise = truncateTablesForMember(memberID);
-        //     truncatePromises.push(truncatePromise);
-        // }
-
-        // const truncateResults = await Promise.all(truncatePromises);
-        // const allTruncatesSuccessful = truncateResults.every(result => result);
-
-        // if (!allTruncatesSuccessful) {
-        //     return false;
-        // }
-
         const insertPromises = [
             insertDataToTable(familyWorksheet, 'genealogy.familymember', codeIDFromExcel),
             // insertDataToTable(workbook.getWorksheet('Contact Data'), 'genealogy.contact'),
@@ -241,24 +225,6 @@ async function importData(file) {
             return false;
         }
         console.log(allInsertsSuccessful)
-
-        // console.log(codeIDFromExcel)
-        // if (codeIDFromExcel !== codeID) {
-        //     const updateCodeIDPromises = [];
-        //     for (let rowNumber = 2; rowNumber <= familyWorksheet.rowCount; rowNumber++) {
-        //         const row = familyWorksheet.getRow(rowNumber);
-        //         const values = row.values;
-        //         const memberID = values[1];
-        //         const updatePromise = updateCodeIDForMember(memberID, codeID);
-        //         updateCodeIDPromises.push(updatePromise);
-        //     }
-
-        //     const updateResults = await Promise.all(updateCodeIDPromises);
-        //     const allUpdatesSuccessful = updateResults.every(result => result);
-        //     console.log(allUpdatesSuccessful)
-        //     return allUpdatesSuccessful;
-        // }
-
         return allInsertsSuccessful;
     } catch (error) {
         console.error('Lỗi khi xử lý dữ liệu:', error);
@@ -273,32 +239,38 @@ async function insertDataToTable(worksheet, tableName, codeID) {
         const headers = worksheet.getRow(1).values.filter(header => header !== '');
         const isFamilyMemberTable = tableName === 'genealogy.familymember';
 
+        // Lấy danh sách các cột cần chèn ngoại trừ cột MemberID
+        const columnsToInsert = headers.filter(header => header !== 'MemberID');
+
         const queries = [];
-        const memberIDIndexMap = {};
+        const memberIDIndexMap = {}; // Ánh xạ MemberID và index tương ứng
 
         for (let rowNumber = 2; rowNumber <= worksheet.rowCount; rowNumber++) {
             const row = worksheet.getRow(rowNumber);
             const formattedValues = [];
 
             for (let i = 1; i <= headers.length; i++) {
-                const cellValue = row.getCell(i).value;
-                let formattedValue = '';
+                // Bỏ qua cột MemberID khi tạo giá trị format
+                if (headers[i - 1] !== 'MemberID') {
+                    const cellValue = row.getCell(i).value;
+                    let formattedValue = '';
 
-                if (cellValue === null || cellValue === '') {
-                    formattedValue = 'NULL';
-                } else if (typeof cellValue === 'string') {
-                    formattedValue = `'${cellValue.replace(/'/g, "''")}'`;
-                } else if (cellValue instanceof Date) {
-                    const formattedDate = `${cellValue.getFullYear()}-${(cellValue.getMonth() + 1).toString().padStart(2, '0')}-${cellValue.getDate().toString().padStart(2, '0')}`;
-                    formattedValue = `'${formattedDate}'`;
-                } else {
-                    formattedValue = cellValue;
+                    if (cellValue === null || cellValue === '') {
+                        formattedValue = 'NULL';
+                    } else if (typeof cellValue === 'string') {
+                        formattedValue = `'${cellValue.replace(/'/g, "''")}'`;
+                    } else if (cellValue instanceof Date) {
+                        const formattedDate = `${cellValue.getFullYear()}-${(cellValue.getMonth() + 1).toString().padStart(2, '0')}-${cellValue.getDate().toString().padStart(2, '0')}`;
+                        formattedValue = `'${formattedDate}'`;
+                    } else {
+                        formattedValue = cellValue;
+                    }
+
+                    formattedValues.push(formattedValue);
                 }
-
-                formattedValues.push(formattedValue);
             }
 
-            const query = `INSERT INTO ${tableName} (${headers.join(',')}) VALUES (${formattedValues.join(',')})`;
+            const query = `INSERT INTO ${tableName} (${columnsToInsert.join(',')}) VALUES (${formattedValues.join(',')})`;
 
             if (isFamilyMemberTable) {
                 queries.push(query);
@@ -310,92 +282,109 @@ async function insertDataToTable(worksheet, tableName, codeID) {
             }
         }
 
+        // Thực hiện chèn vào database
+        const results = await Promise.all(queries.map(query =>
+            queryWithPromise(query)
+                .then(result => {
+                    console.log("Inserted row:", result);
+                    return result;
+                })
+                .catch(error => {
+                    console.error("Error inserting row:", error);
+                    throw error;
+                })
+        ));
+
+        // Nếu là bảng familymember, thực hiện cập nhật FatherID và MotherID
         if (isFamilyMemberTable) {
-            const results = await Promise.all(queries.map(query =>
-                queryWithPromise(query)
-                    .then(result => {
-                        console.log("Inserted row:", result);
-                        return result;
-                    })
-                    .catch(error => {
-                        console.error("Error inserting row:", error);
-                        throw error;
-                    })
-            ));
-
             // Thực hiện cập nhật FatherID và MotherID
-            await updateFatherMotherID(memberIDIndexMap, codeID);
-            
-            return results;
-        } else {
-            const results = await Promise.all(queries.map(query =>
-                queryWithPromise(query)
-                    .then(result => {
-                        console.log("Inserted row:", result);
-                        return result;
-                    })
-                    .catch(error => {
-                        console.error("Error inserting row:", error);
-                        throw error;
-                    })
-            ));
-
-            return results;
+            await updateFatherMotherID(codeID);
         }
+
+        return results;
     } catch (error) {
         console.error('Error inserting data into table', tableName, error);
         throw error;
     }
 }
 
-async function updateFatherMotherID(memberIDIndexMap, codeID) {
-    const updateQueries = [];
-    const familyMembers = await queryFamilyMembers(codeID); // Lấy danh sách family members sau khi đã insert
 
-    familyMembers.forEach(member => {
-        const memberID = member['MemberID'];
-        const index = memberIDIndexMap[memberID];
+async function updateFatherMotherID(codeID) {
+    try {
+        const memberIDIndexMap = {};
 
-        const fatherID = member['FatherID'];
-        const motherID = member['MotherID'];
+        // Get database MemberIDs after inserting from Excel
+        const databaseMembers = await queryFamilyMembers(codeID);
+        console.log('databaseMembers: ' + JSON.stringify(databaseMembers, null, 2))
 
-        // Nếu có FatherID và MotherID, cập nhật chúng bằng index tương ứng
-        if (fatherID && memberIDIndexMap[fatherID]) {
-            const newFatherID = memberIDIndexMap[fatherID];
-            const fatherUpdateQuery = `UPDATE genealogy.familymember SET FatherID = ${newFatherID} WHERE MemberID = ${index}`;
-            updateQueries.push(fatherUpdateQuery);
-        }
+        // Create a map between Excel index and Database MemberID
+        databaseMembers.forEach((member, index) => {
+            let dbMemberID = member['MemberID'];
+            console.log('dbMemberID: ' + dbMemberID)
+            memberIDIndexMap[index + 1] = dbMemberID; // Assuming the database index starts from 1
+        });
 
-        if (motherID && memberIDIndexMap[motherID]) {
-            const newMotherID = memberIDIndexMap[motherID];
-            const motherUpdateQuery = `UPDATE genealogy.familymember SET MotherID = ${newMotherID} WHERE MemberID = ${index}`;
-            updateQueries.push(motherUpdateQuery);
-        }
-    });
+        console.log('memberIDIndexMap: ' + JSON.stringify(memberIDIndexMap, null, 2))
 
-    // Thực hiện các truy vấn cập nhật
-    await Promise.all(updateQueries.map(query =>
-        queryWithPromise(query)
-            .then(result => {
-                console.log("Updated row:", result);
-                return result;
-            })
-            .catch(error => {
-                console.error("Error updating row:", error);
-                throw error;
-            })
-    ));
+
+        // Update FatherID and MotherID in the database using Excel's MemberID
+        const updateQueries = [];
+
+        databaseMembers.forEach((member, index) => {
+            const dbMemberID = member['MemberID'];
+            const newMemberID = memberIDIndexMap[index + 1];
+
+            const fatherID = member['FatherID'];
+            const motherID = member['MotherID'];
+
+            if (fatherID !== null && memberIDIndexMap[fatherID]) {
+                const newFatherID = memberIDIndexMap[fatherID];
+                const fatherUpdateQuery = `UPDATE genealogy.familymember SET FatherID = ${newFatherID} WHERE MemberID = ${newMemberID}`;
+                console.log('fatherUpdateQuery: ' + fatherUpdateQuery)
+                updateQueries.push(fatherUpdateQuery);
+            }
+
+            if (motherID !== null && memberIDIndexMap[motherID]) {
+                const newMotherID = memberIDIndexMap[motherID];
+                const motherUpdateQuery = `UPDATE genealogy.familymember SET MotherID = ${newMotherID} WHERE MemberID = ${newMemberID}`;
+                updateQueries.push(motherUpdateQuery);
+            }
+        });
+
+        // Execute update queries
+        // await Promise.all(updateQueries.map(query =>
+        //     queryWithPromise(query)
+        //         .then(result => {
+        //             console.log("Updated row:", result);
+        //             return result;
+        //         })
+        //         .catch(error => {
+        //             console.error("Error updating row:", error);
+        //             throw error;
+        //         })
+        // ));
+
+        // console.log('FatherID and MotherID updated successfully.');
+
+    } catch (error) {
+        console.error('Error updating Family Member IDs:', error);
+        throw error;
+    }
 }
+
+
 
 // Hàm truy vấn danh sách Family Members sau khi đã insert
 async function queryFamilyMembers(codeID) {
     return new Promise((resolve, reject) => {
-        const query = 'SELECT MemberID, FatherID, MotherID FROM genealogy.familymember where CodeID = ?';
+        const query = 'SELECT MemberID, FatherID, MotherID FROM genealogy.familymember where CodeID = ? Order By  MemberID';
 
-        db.connection.query(query,[codeID], (error, results) => {
+        db.connection.query(query, [codeID], (error, results) => {
             if (error) {
                 reject(error);
             } else {
+
+                console.log("Results: " + JSON.stringify(results, null, 2))
                 resolve(results);
             }
         });
@@ -403,4 +392,4 @@ async function queryFamilyMembers(codeID) {
 }
 
 
-module.exports = { exportData, clearTree, importData,createMemberIdToIndexMap };
+module.exports = { exportData, clearTree, importData, createMemberIdToIndexMap };
