@@ -2672,7 +2672,7 @@ export default {
     openModalAddMemberFromList() {
       this.TitleModal = " Mối quan hệ ";
       this.$modal.show("add-relation-mdl");
-      this.ListUnspecifiedMembers = null;
+      this.ListUnspecifiedMembers = [];
     },
     openNotiModal() {
       this.ListPhoneToSendMessage = [];
