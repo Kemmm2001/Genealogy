@@ -337,6 +337,8 @@ async function insertDataToTable(worksheet, tableName, codeID) {
                 queries.push(query);
             }
         }
+        console.log("total queries : " + queries);
+        console.log("length queries : " + queries.length)
         let arrayInsert = []
         // Thực hiện chèn vào database
         const results = await Promise.all(queries.map(query =>
@@ -347,7 +349,6 @@ async function insertDataToTable(worksheet, tableName, codeID) {
                 })
                 .catch(error => {
                     console.error("Error inserting row:", error);
-                    throw error;
                 })
         ));
 
@@ -361,7 +362,6 @@ async function insertDataToTable(worksheet, tableName, codeID) {
         return arrayInsert;
     } catch (error) {
         console.error('Error inserting data into table', tableName, error);
-        throw error;
     }
 }
 
@@ -625,7 +625,7 @@ async function insertDataToTableMarriage(worksheet, tableName, insertArr) {
 // Hàm truy vấn danh sách Family Members sau khi đã insert
 async function queryFamilyMembers(codeID) {
     return new Promise((resolve, reject) => {
-        const query = 'SELECT MemberID, FatherID, MotherID FROM genealogy.familymember where CodeID = ? Order by MemberID';
+        const query = 'SELECT MemberID, FatherID, MotherID FROM genealogy.familymember where CodeID = ? and Generation != 0 Order by MemberID';
 
         db.connection.query(query, [codeID], (error, results) => {
             if (error) {

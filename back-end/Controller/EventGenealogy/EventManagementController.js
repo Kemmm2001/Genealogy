@@ -387,7 +387,7 @@ async function SetHistorySendEmailandSMS(Content, CodeID, res) {
 function ExecuteSendSNS(ToPhoneNumber, Message) {
     try {
         let objData = {};
-        objData.ToPhoneNumber = ToPhoneNumber;
+        objData.ToPhoneNumber = "+84" + ToPhoneNumber;
         objData.Message = Message;
         let result = SystemAction.SendSMSCore(objData);
         if (result == true) {
