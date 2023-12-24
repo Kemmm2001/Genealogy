@@ -151,7 +151,6 @@
 
 @media screen and (min-width: 1800px){
     .main-grid-container .mems .title{
-        font-size: 120% !important;
         min-height: 64px;
     }
 

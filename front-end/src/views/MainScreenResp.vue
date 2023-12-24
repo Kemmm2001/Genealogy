@@ -94,7 +94,7 @@
           </div>
         </div>
         <div @click="advancedFilterDown = !advancedFilterDown" class="d-flex flex-column align-items-center justify-content-center h-100">
-          <div class="filter-text" v-if="!advancedFilterDown" style="color: white; font-family: 'QuicksandBold'">Bộ lọc nâng cao</div>
+          <div class="filter-text" v-if="!advancedFilterDown" style="color: white; font-family: 'QuicksandBold'">Bộ lọc</div>
           <div>
             <svg :class="{ rotateDown: !advancedFilterDown }" class="advanced-filter-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
               <path d="M246.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 109.3 361.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160zm160 352l-160-160c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 301.3 361.4 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3z" />
@@ -737,12 +737,20 @@
                       <label class="form-label" for="select">Địa Chỉ (Quận/Huyện)</label>
                     </div>
                   </div>
-                  <div style="display:flex">
+                  <div style="display: flex">
+                    <!-- <div class="pb-2 pe-1" style="position: relative; width: 50%;">
+                      <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" v-bind="props"></VuePhoneNumberInput>
+                    </div>-->
                     <div class="pb-2 pe-1 d-flex" style="position: relative; width: 50%;">
-                      <!-- <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" v-bind="props"></VuePhoneNumberInput> -->
-                      <div class="col-2 d-flex align-items-center justify-content-center">(+84)</div>
-                      <div class="col-10">
-                        <input class="form-control modal-item w-100 h-100" type="text"/>
+                      <div class="col-2 d-flex align-items-center justify-content-evenly">
+                        <div class="col-6 h-100 d-flex align-items-center">
+                          <img class="w-100" src="../assets/Flag_of_Vietnam.png" />
+                        </div>
+                        <div>(+84)</div>
+                      </div>
+                      <div class="col-10 position-relative">
+                        <input v-model="objMemberContact.Phone" type="number" class="form-control modal-item w-100 h-100 phonenum" placeholder />
+                        <label class="form-label" for="input" :class="{ 'active': objMemberContact.Phone }">Số điện thoại</label>
                       </div>
                     </div>
                     <div class="pb-2 ps-1" style="position: relative;width: 50%;">
@@ -954,20 +962,20 @@ export default {
   components: {
     // VuePhoneNumberInput,
   },
-  data() {      
+  data() {
     return {
-        // props: {
-  //       clearable: true,
-  //       fetchCountry: true,
-  //       preferredCountries: ["US", "GB"],
-  //       noExample: false,
-  //       translations: {
-  //         countrySelectorLabel: "Country code",
-  //         countrySelectorError: "Error",
-  //         phoneNumberLabel: "Nhập số điện thoại",
-  //         example: "Example:",
-  //       },
-  //     },
+      // props: {
+      //       clearable: true,
+      //       fetchCountry: true,
+      //       preferredCountries: ["US", "GB"],
+      //       noExample: false,
+      //       translations: {
+      //         countrySelectorLabel: "Country code",
+      //         countrySelectorError: "Error",
+      //         phoneNumberLabel: "Nhập số điện thoại",
+      //         example: "Example:",
+      //       },
+      //     },
       idParent: null,
       ResultRelationship: null,
       ListCity: null,
@@ -1839,7 +1847,7 @@ export default {
         });
     },
     //Nguyễn Lê Hùng
-    async removeMember() {
+    removeMember() {
       HTTP.get("deleteContact", {
         params: {
           MemberID: this.CurrentIdMember,
@@ -1892,14 +1900,16 @@ export default {
             // this.nodes.length = this.nodes.length - 1;
             this.removeFromSelectedNodes(this.CurrentIdMember);
             this.NotificationsScuccess(response.data.message);
-            this.getListUnspecifiedMembers();
+            setTimeout(() => {
+              this.getListUnspecifiedMembers();
+            }, 2000);
 
             this.$modal.hide("select-opts-mdl");
             this.$modal.hide("view-member-mdl");
             this.getListMember();
             this.closeCfDelModal();
             this.getListMemberHasPhone();
-            this.getListMemberHasEmail();            
+            this.getListMemberHasEmail();
           } else {
             this.NotificationsDelete(response.data.message);
           }
@@ -2636,7 +2646,9 @@ export default {
           .then((response) => {
             this.ListUnspecifiedMembers = response.data;
             console.log("111111111");
-            console.log('ListUnspecifiedMembers: ' + this.ListUnspecifiedMembers);
+            console.log(
+              "ListUnspecifiedMembers: " + this.ListUnspecifiedMembers
+            );
           })
           .catch((e) => {
             console.log(e);
@@ -2652,6 +2664,7 @@ export default {
     openModalAddMemberFromList() {
       this.TitleModal = " Mối quan hệ ";
       this.$modal.show("add-relation-mdl");
+      this.ListUnspecifiedMembers = null;
     },
     openNotiModal() {
       this.ListPhoneToSendMessage = [];
