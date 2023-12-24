@@ -150,10 +150,6 @@
 }
 
 @media screen and (min-width: 1800px){
-    .main-grid-container .mems .title{
-        min-height: 64px;
-    }
-
     .main-grid-container .select-opts-container .vm--container{
         width: 28% !important;
     }

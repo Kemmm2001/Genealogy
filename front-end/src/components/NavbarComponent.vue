@@ -66,7 +66,7 @@
         </router-link>
       </div>
     </div>
-    <div class="navbar-item-theme-user">
+    <div class="navbar-item-theme-user position-relative">
       <!-- <div @click="darkMode = !darkMode" class="d-flex" style="justify-content: end;">
         <button class="btn p-0" style="border: none; outline: none;">
           <svg v-if="!darkMode" class="night-icon" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="36px" viewBox="0 0 24 24" width="36px" fill="#000000">
@@ -85,7 +85,7 @@
           </svg>
         </button>
       </div> -->
-      <div class="navbar-item-content d-flex flex-row justify-content-center position-relative">
+      <div class="navbar-item-content d-flex flex-row justify-content-center">
         <div @mouseenter="expandAccountManage = true;" @mouseleave="expandAccountManage = false;" style="padding-right: 20px; overflow: hidden;" class="align-items-center d-flex">
           <div :class="{ 'header-selected': currentPath === '/profile' }" class="navbar-item d-flex flex-row w-100 p-1" style="overflow: hidden;">
             <div>
@@ -110,11 +110,11 @@
           </div>
         </div>
       </div>
-      <div class="user-extended d-flex flex-column position-absolute" :class="{ expandContent: expandAccountManage }">
+      <!-- <div class="user-extended d-flex flex-column position-absolute" :class="{ expandContent: expandAccountManage }">
         <router-link to="/profile">
           <div :class="{ 'header-selected': currentPath === '/profile' }" @click="setSelectedHead('/profile')" v-show="expandAccountManage" class="navbar-extended-content p-2 m-1">Tài khoản</div>
         </router-link>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
