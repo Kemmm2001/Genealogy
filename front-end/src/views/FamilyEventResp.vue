@@ -1072,6 +1072,7 @@ export default {
           },
         })
           .then((respone) => {
+            console.log(JSON.stringify(respone.data, null, 2));
             if (respone.data.success == true) {
               this.listEventAttendance = respone.data.data;
               console.log(this.listEventAttendance);
@@ -1255,6 +1256,17 @@ export default {
       })
         .then((respone) => {
           if (respone.data.success == true) {
+            let newWindow = window.open(
+              `https://giaphanguoiviet.com${respone.data.data.fileName}`,
+              "_blank"
+            );
+            if (newWindow) {
+              this.NotificationsScuccess(respone.data.message);
+            } else {
+              this.NotificationsDelete(
+                "Không thể mở cửa sổ mới. Vui lòng kiểm tra cài đặt trình duyệt của bạn."
+              );
+            }
             this.NotificationsScuccess(respone.data.message);
           } else {
             this.NotificationsDelete(respone.data.message);
