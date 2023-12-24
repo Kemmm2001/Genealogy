@@ -1892,14 +1892,14 @@ export default {
             // this.nodes.length = this.nodes.length - 1;
             this.removeFromSelectedNodes(this.CurrentIdMember);
             this.NotificationsScuccess(response.data.message);
+            this.getListUnspecifiedMembers();
 
             this.$modal.hide("select-opts-mdl");
             this.$modal.hide("view-member-mdl");
             this.getListMember();
             this.closeCfDelModal();
             this.getListMemberHasPhone();
-            this.getListMemberHasEmail();
-            this.getListUnspecifiedMembers();
+            this.getListMemberHasEmail();            
           } else {
             this.NotificationsDelete(response.data.message);
           }
@@ -2634,7 +2634,7 @@ export default {
           .then((response) => {
             this.ListUnspecifiedMembers = response.data;
             console.log("111111111");
-            console.log(this.ListUnspecifiedMembers);
+            console.log('ListUnspecifiedMembers: ' + this.ListUnspecifiedMembers);
           })
           .catch((e) => {
             console.log(e);
