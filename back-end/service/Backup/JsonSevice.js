@@ -16,8 +16,8 @@ async function exportData(memberIDs) {
         const familyMembers = await queryDatabase('genealogy.familymember', memberIDs);
         const memberIdToIndexMap = await createMemberIdToIndexMap(familyMembers);
 
-        const educations = await queryDatabase('genealogy.education', memberIDs);
-        const jobs = await queryDatabase('genealogy.job', memberIDs);
+        const educations = await queryEducationDatabase(memberIDs);
+        const jobs = await queryJobDatabase(memberIDs);
         const contacts = await queryContactDatabase(memberIDs);
         const marriages = await queryMarriageDatabase(memberIDs);
 
@@ -137,6 +137,34 @@ async function queryContactDatabase(memberIDs) {
     });
 }
 
+async function queryEducationDatabase(memberIDs) {
+    return new Promise((resolve, reject) => {
+        const query = `SELECT MemberID, School, Description, StartDate, EndDate FROM genealogy.education WHERE MemberID IN (${memberIDs.join(',')})`;
+        db.connection.query(query, (err, rows) => {
+            if (err) {
+                console.error('Lỗi truy vấn bảng genealogy.education:', err);
+                reject({ error: 'Lỗi truy vấn bảng genealogy.education', originalError: err });
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+}
+
+async function queryJobDatabase(memberIDs) {
+    return new Promise((resolve, reject) => {
+        const query = `SELECT MemberID, Organization, OrganizationAddress, Role, JobName, StartDate, EndDate FROM genealogy.job WHERE MemberID IN (${memberIDs.join(',')})`;
+        db.connection.query(query, (err, rows) => {
+            if (err) {
+                console.error('Lỗi truy vấn bảng genealogy.job:', err);
+                reject({ error: 'Lỗi truy vấn bảng genealogy.job', originalError: err });
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+}
+
 
 
 function queryWithPromise(query, params = []) {
@@ -241,18 +269,16 @@ async function importData(file) {
 
         const familyWorksheet = workbook.getWorksheet('Family Member Data');
         const contactWorksheet = workbook.getWorksheet('Contact Data');
+        const educationWorksheet = workbook.getWorksheet('Education Data');
+        const jobWorksheet = workbook.getWorksheet('Job Data');
         const codeIDFromExcel = familyWorksheet.getRow(2).getCell(22).value;
         let arrayInsert = await insertDataToTable(familyWorksheet, 'genealogy.familymember', codeIDFromExcel)
         console.log("arr :" + arrayInsert)
 
-        insertDataToTable2(contactWorksheet, 'genealogy.contact', arrayInsert)
-        // insertDataToTable2(workbook.getWorksheet('Education Data'), 'genealogy.education')
-        // insertDataToTable2(workbook.getWorksheet('Job Data'), 'genealogy.job')
-        insertDataToTableMarriage(workbook.getWorksheet('Marriage Data'), 'genealogy.marriage', arrayInsert)
-
-
-
-
+        await insertDataToTable2(contactWorksheet, 'genealogy.contact', arrayInsert)
+        await insertDataToTable2(educationWorksheet, 'genealogy.education', arrayInsert)
+        await insertDataToTable2(jobWorksheet, 'genealogy.job', arrayInsert)
+        await insertDataToTableMarriage(workbook.getWorksheet('Marriage Data'), 'genealogy.marriage', arrayInsert)
 
         return true;
     } catch (error) {
@@ -434,6 +460,7 @@ async function insertDataToTable2(worksheet, tableName, insertArr) {
     }
 }
 
+
 async function updateFatherMotherID(codeID) {
     try {
 
@@ -571,7 +598,7 @@ async function insertDataToTableMarriage(worksheet, tableName, insertArr) {
                     throw error;
                 })
         ));
-                
+
         return { results };
     }
     catch (error) {
