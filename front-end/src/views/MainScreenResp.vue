@@ -740,10 +740,7 @@
                   <div style="display:flex">
                     <div class="pb-2 pe-1 d-flex" style="position: relative; width: 50%;">
                       <!-- <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" v-bind="props"></VuePhoneNumberInput> -->
-                      <div class="col-2 d-flex align-items-center justify-content-center">(+84)</div>
-                      <div class="col-10">
-                        <input class="form-control modal-item w-100 h-100" type="text" />
-                      </div>
+                    
                     </div>
                     <div class="pb-2 ps-1" style="position: relative;width: 50%;">
                       <input v-model="objMemberContact.Email" type="email" class="form-control modal-item" placeholder />
