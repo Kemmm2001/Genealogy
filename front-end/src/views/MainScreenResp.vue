@@ -1,27 +1,27 @@
 <template>
   <div class="main-grid-container">
     <div class="sidebar" :class="{ expand: expandSidebar }" @mouseover="sidebarHover()" @mouseleave="siderbarLeave()">
-      <div class="content-display" style="display: grid; grid-template-rows: 50% 50%; position: relative;">
-        <div class="w-100 d-flex flex-row pt-2">
+      <div class="content-display" style="display: grid; grid-template-rows: 50% 50%; position: relative;" :class="{'d-flex' : memberRole === 3, 'align-items-center' : memberRole === 3}">
+        <div class="w-100 d-flex flex-row pt-2" :class="{'justify-content-center' : memberRole === 3}">
           <div v-if="memberRole == 1" class="col-6 ps-2 pe-1">
-            <div class="w-100 h-100">
+            <div class="">
               <button @click="openNotiModal()" style="width:100%; font-size: 15px; color:white" type="button" class="m-0 d-flex align-items-center justify-content-center btn btn-secondary w-100 h-100">Tạo thông báo</button>
             </div>
           </div>
           <div class="col-6 ps-1 pe-2">
-            <div class="w-100 h-100">
+            <div class="">
               <button @click="openCompareModal()" type="button" style="width:100%; font-size: 15px; color:white" class="d-flex align-items-center justify-content-center" :class="{ 'm-0': true, 'btn': true, ' w-100': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">Xác định quan hệ</button>
             </div>
           </div>
         </div>
         <div v-if="memberRole == 1" class="w-100 d-flex flex-row pt-2">
           <div class="col-6 ps-2 pe-1">
-            <div class="w-100 h-100">
+            <div class="">
               <button @click="BackUpdata()" style="width:100%; font-size: 15px; color:white" type="button" class="btn btn-secondary h-100 m-0 d-flex align-items-center justify-content-center">Lưu trữ dữ liệu</button>
             </div>
           </div>
           <div class="col-6 ps-1 pe-2">
-            <div class="w-100 h-100">
+            <div class="">
               <label for="upload" style="width:100%; font-size: 15px; color:white" type="button" class="d-flex align-items-center justify-content-center btn btn-secondary h-100">Xuất dữ liệu vào</label>
               <input ref="importFile" id="upload" type="file" style="display: none" @change="getFileImportMember($event)" />
             </div>
@@ -754,7 +754,7 @@
                       </div>
                     </div>
                     <div class="pb-2 ps-1" style="position: relative;width: 50%;">
-                      <input v-model="objMemberContact.Email" type="email" class="form-control modal-item" placeholder />
+                      <input v-model="objMemberContact.Email" type="email" class="form-control modal-item"/>
                       <label class="form-label" for="input" :class="{ 'active': objMemberContact.Email }">Email</label>
                     </div>
                   </div>
