@@ -204,8 +204,8 @@
             </div>
           </div>
           <div class="mdl-body">
-            <div class="add-photo-body">
-              <div class="add-photo-list d-flex" style="height: calc(100% - 58px);">
+            <div class="add-photo-body h-100">
+              <div class="add-photo-list h-100 d-flex">
                 <div class="d-flex flex-row w-100 h-100" style="flex-wrap: wrap; overflow-y: auto; justify-content: center">
                   <div class="add-photo d-flex flex-row position-relative" v-for="(photo, index) in FamilyPhotoListAddShow" :key="index" @click="clickPhotoAdd(index)">
                     <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background-color: #000;">
