@@ -22,7 +22,7 @@
     margin: auto;
     width: auto;
     height: 45%;
-    width: 40%;
+    width: 50%;
     border-radius: 0.375rem;
 }
 
@@ -197,7 +197,7 @@
     }
 }
 
-@media (max-height: 900px) {
+@media (min-height: 700px) {
     .login-form-container{
         height: 60% !important;
     }

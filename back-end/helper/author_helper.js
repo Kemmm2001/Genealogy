@@ -4,7 +4,7 @@ const Response = require('../Utils/Response')
 
 module.exports = {
     authenticateAndAuthorize: (requiredRole) => {
-        return async (req, res, next) => {
+        return async (req, res, next) => {           
             try {
                 jwtUtils.verifyGenealogyToken(req, res, async (error) => {
                     if (error) {
@@ -20,9 +20,7 @@ module.exports = {
                     }
                     let insertId = req.payload.insertId;
                     let codeId = req.payload.codeId;
-                    let roleId = await userService.getRoleID(insertId, codeId);
-
-                    console.log('roleId: ' + roleId)
+                    let roleId = await userService.getRoleID(insertId, codeId);                    
 
                     if (!roleId) {
                         return res.send(Response.dataNotFoundResponse(null, "Chưa có roleID"));

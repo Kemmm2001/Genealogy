@@ -71,6 +71,7 @@
 .profile-grid-container{
     display: grid;
     grid-template-columns: 17% 83%;
+    background-color: #FFFFFF;
 }
 
 .profile-grid-container .profile-sidebar{
@@ -109,5 +110,11 @@
 @media (min-width: 900px) {
     .profile-grid-container .profile-sidebar .btn, .profile-grid-container .profile-content .content, .profile-grid-container .profile-content input, .profile-grid-container .profile-content select, .profile-grid-container .profile-content option{
         font-size: 15px;
+    }
+}
+
+@media (min-width: 1500px) {
+    .profile-grid-container input, .profile-grid-container .family-account-item{
+        min-height: 48px;
     }
 }
