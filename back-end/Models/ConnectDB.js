@@ -16,16 +16,16 @@ connection.connect(function (err) {
     console.log('Kết nối thành công vào cơ sở dữ liệu MySQL');
   }
 });
-const connectDB = async () => {
-  try {
-      await mongoose.connect("mongodb+srv://tanhatanh76:3EyJL0rTTXFHEUWf@cluster0.fg0f0hz.mongodb.net/capstone_project?retryWrites=true&w=majority", {
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
-      });
-      console.log("Kết nối mongodb thành công");
-  } catch (error) {
-      console.log("Lỗi kết nối database:", error.message);
-  }
-}
-connectDB()
+// const connectDB = async () => {
+//   try {
+//       await mongoose.connect("mongodb+srv://tanhatanh76:3EyJL0rTTXFHEUWf@cluster0.fg0f0hz.mongodb.net/capstone_project?retryWrites=true&w=majority", {
+//           useNewUrlParser: true,
+//           useUnifiedTopology: true,
+//       });
+//       console.log("Kết nối mongodb thành công");
+//   } catch (error) {
+//       console.log("Lỗi kết nối database:", error.message);
+//   }
+// }
+// connectDB()
 module.exports = { connection };
