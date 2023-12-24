@@ -737,10 +737,21 @@
                       <label class="form-label" for="select">Địa Chỉ (Quận/Huyện)</label>
                     </div>
                   </div>
-                  <div style="display:flex">
+                  <div style="display: flex">
+                    <!-- <div class="pb-2 pe-1" style="position: relative; width: 50%;">
+                      <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" v-bind="props"></VuePhoneNumberInput>
+                    </div> -->
                     <div class="pb-2 pe-1 d-flex" style="position: relative; width: 50%;">
-                      <!-- <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" v-bind="props"></VuePhoneNumberInput> -->
-                    
+                      <div class="col-2 d-flex align-items-center justify-content-evenly">
+                        <div class="col-6 h-100 d-flex align-items-center">
+                          <img class="w-100" src="../assets/Flag_of_Vietnam.png"/>
+                        </div>
+                        <div>(+84)</div>
+                      </div>
+                      <div class="col-10 position-relative">
+                        <input v-model="objMemberContact.Phone" type="number" class="form-control modal-item w-100 h-100 phonenum" placeholder />
+                        <label class="form-label" for="input" :class="{ 'active': objMemberContact.Phone }">Số điện thoại</label>
+                      </div>
                     </div>
                     <div class="pb-2 ps-1" style="position: relative;width: 50%;">
                       <input v-model="objMemberContact.Email" type="email" class="form-control modal-item" placeholder />
