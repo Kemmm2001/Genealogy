@@ -18,7 +18,7 @@ async function exportData(memberIDs) {
 
         const educations = await queryDatabase('genealogy.education', memberIDs);
         const jobs = await queryDatabase('genealogy.job', memberIDs);
-        const contacts = await queryDatabase('genealogy.contact', memberIDs);
+        const contacts = await queryContactDatabase(memberIDs);
         const marriages = await queryDatabase('genealogy.marriage', memberIDs);
 
         const workbook = new Excel.Workbook();
@@ -122,6 +122,21 @@ async function queryDatabase(tableName, memberIDs) {
         });
     }
 }
+
+async function queryContactDatabase(memberIDs) {
+    return new Promise((resolve, reject) => {
+        const query = `SELECT MemberID, Address, Phone, Email, FacebookUrl, Zalo FROM genealogy.contact WHERE MemberID IN (${memberIDs.join(',')})`;
+        db.connection.query(query, (err, rows) => {
+            if (err) {
+                console.error('Lỗi truy vấn bảng genealogy.contact:', err);
+                reject({ error: 'Lỗi truy vấn bảng genealogy.contact', originalError: err });
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+}
+
 
 
 function queryWithPromise(query, params = []) {
@@ -311,67 +326,80 @@ async function insertDataToTable(worksheet, tableName, codeID) {
 
 async function insertDataToTable2(worksheet, tableName, insertArr) {
     try {
-        console.log("vào đây");
+        // Khai báo biến headers là mảng các tiêu đề cột lấy từ hàng 1 của worksheet
         const headers = worksheet.getRow(1).values;
-        
+        // Khai báo biến columnsToInsert là mảng các tiêu đề cột khác rỗng
         const columnsToInsert = headers.filter(header => header !== '');
-        let memberIDIndex = columnsToInsert.indexOf('MemberID');
+        // Khai báo mảng trống để chứa các câu lệnh INSERT
         const queries = [];
+        // Khai báo mảng trống để chứa dữ liệu các hàng
         const worksheetData = [];
-
+        // In ra mảng các tiêu đề cột cần insert
+        console.log("Column to insert : " + columnsToInsert)
+        // Duyệt từ hàng 2 đến hàng cuối cùng
         for (let rowNumber = 2; rowNumber <= worksheet.rowCount; rowNumber++) {
+            // Lấy dữ liệu hàng hiện tại
             let row = worksheet.getRow(rowNumber);
+            // Khai báo mảng để chứa dữ liệu đã định dạng của hàng
             let formattedValues = [];
+            // In ra độ dài mảng headers
             console.log("header length : " + headers.length)
-            for (let i = 1; i <= headers.length-1; i++) {
+            // Duyệt từ cột 1 đến cột cuối cùng
+            for (let i = 1; i <= headers.length - 1; i++) {
+                // Lấy giá trị của ô hiện tại
                 let cellValue = row.getCell(i).value;
+                // Khai báo biến chứa giá trị đã định dạng
                 let formattedValue = '';
-
+                // Kiểm tra giá trị ô
+                // Nếu null hoặc rỗng thì gán là NULL
                 if (cellValue === null || cellValue === '') {
                     formattedValue = 'NULL';
+                    // Nếu là chuỗi thì thêm dấu nháy kép
                 } else if (typeof cellValue === 'string') {
                     formattedValue = `'${cellValue.replace(/'/g, "''")}'`;
+                    // Nếu là ngày thì định dạng ngày
                 } else if (cellValue instanceof Date) {
                     let formattedDate = `${cellValue.getFullYear()}-${(cellValue.getMonth() + 1).toString().padStart(2, '0')}-${cellValue.getDate().toString().padStart(2, '0')}`;
                     formattedValue = `'${formattedDate}'`;
+                    // Ngược lại giữ nguyên giá trị
                 } else {
                     formattedValue = cellValue;
                 }
-
+                // Thêm giá trị đã định dạng vào mảng
                 formattedValues.push(formattedValue);
-                console.log({formattedValues})
             }
+            // In ra mảng giá trị đã định dạng
             console.log("formattedValues : " + formattedValues)
-            worksheetData.push(formattedValues); // Push formatted row values as an array
+            // Thêm mảng giá trị đã định dạng của hàng vào mảng chứa dữ liệu
+            worksheetData.push(formattedValues);
         }
+        // In ra mảng chứa dữ liệu đã định dạng
         console.log("worksheetData : " + worksheetData)
+        // In ra độ dài mảng chứa dữ liệu
         console.log("worksheetData length: " + worksheetData.length)
-
-        for (let i = 0; i < insertArr.length; i++) {
-        
-            for (let j = 0; j < worksheetData.length; j++) {
-                console.log("worksheetData[j][1] : " + worksheetData[j][1])
-                console.log("insertArr[i]" + insertArr[i])
-                for(let k = 0; k< insertArr.length; k++){
-                    if (worksheetData[j][1] == i) {
-                        worksheetData[j][1] = insertArr[k]; // Gắn giá trị index
-                        break;
-                    }
+        // Duyệt mảng chứa dữ liệu
+        for (let j = 0; j < worksheetData.length; j++) {
+            // Duyệt mảng chứa các giá trị index cần insert
+            for (let k = 0; k < insertArr.length; k++) {
+                // Nếu giá trị index đầu tiên của hàng = vị trí trong mảng insert
+                if (worksheetData[j][0] == (k + 1)) {
+                    // Gán giá trị tại vị trí đó trong mảng insert thay cho index
+                    worksheetData[j][0] = insertArr[k];
+                    // Thoát vòng lặp for k
+                    break;
                 }
-              
-                
-            } 
-            
-    }
-    console.log("columnsToInsert : " + columnsToInsert)
-    console.log("worksheetData : " + worksheetData)
-    // Construct and push the INSERT query
-    for (let k = 0; k < worksheetData.length; k++) {
-        let query = `INSERT INTO ${tableName} (${columnsToInsert}) VALUES (${worksheetData[k]})`;
-        console.log("query: " + query);
-        queries.push(query);
+            }
 
-    }
+        }
+        console.log("columnsToInsert : " + columnsToInsert)
+        console.log("worksheetData : " + worksheetData)
+        // Construct and push the INSERT query
+        for (let k = 0; k < worksheetData.length; k++) {
+            let query = `INSERT INTO ${tableName} (${columnsToInsert}) VALUES (${worksheetData[k]})`;
+            console.log("query: " + query);
+            queries.push(query);
+
+        }
         // Thực hiện chèn vào cơ sở dữ liệu
         let results = await Promise.all(queries.map(query =>
             queryWithPromise(query)
@@ -470,4 +498,4 @@ async function createMemberIDIndexMap(codeID) {
 
     return memberIDIndexMap;
 }
-module.exports = { exportData, clearTree, importData, createMemberIdToIndexMap };
+module.exports = { exportData, clearTree, importData, createMemberIdToIndexMap, queryContactDatabase };
