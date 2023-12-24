@@ -3248,11 +3248,19 @@ export default {
       this.extendedNote = true;
     },
     selectEmail() {
+      this.checkWithFilter = false;
+      this.checkAll = false;
+      this.toggleSelectAll();
+      this.toggleSelectWithFilter();
       this.emailSelected = true;
       this.smsSelected = false;
       this.expandEventListSMS = false;
     },
     selectSMS() {
+      this.checkWithFilter = false;
+      this.checkAll = false;
+      this.toggleSelectAll();
+      this.toggleSelectWithFilter();
       this.smsSelected = true;
       this.emailSelected = false;
       this.expandCreateEmail = false;
