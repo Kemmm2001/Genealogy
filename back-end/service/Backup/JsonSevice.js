@@ -207,6 +207,21 @@ async function truncateTablesForMember(memberID) {
     }
 }
 
+async function queryMarriageDatabase(memberIDs) {
+    return new Promise((resolve, reject) => {
+        const query = `SELECT * FROM marriage WHERE husbandID IN (${memberIDs.join(',')}) OR wifeID IN (${memberIDs.join(',')})`;
+        db.connection.query(query, (err, rows) => {
+            if (err) {
+                console.error('Error querying table marriage:', err);
+                reject({ error: 'Error querying table marriage', originalError: err });
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+}
+
+
 async function clearTree(memberIDs) {
     try {
         const truncatePromises = [];
