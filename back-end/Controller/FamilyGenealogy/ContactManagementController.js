@@ -32,10 +32,12 @@ var InsertContactMember = async (req, res) => {
             objData.Email = req.body.Email;
             objData.FacebookUrl = req.body.FacebookUrl;
             objData.Zalo = req.body.Zalo;
-            if (!validator.isEmail(objData.Email)) {
-                return res.send(Response.internalServerErrorResponse(null, 'Email không hợp lệ'));
-            }
+            if (objData.Email) {
+                if (!validator.isEmail(objData.Email)) {
+                    return res.send(Response.internalServerErrorResponse(null, 'Email không hợp lệ'));
+                }
 
+            }
             let result = await ContactManagementService.InsertContactMember(objData);
             if (result) {
                 return res.send(Response.successResponse())
@@ -65,6 +67,10 @@ var updateContactMember = async (req, res) => {
             objData.Email = req.body.Email;
             objData.FacebookUrl = req.body.FacebookUrl;
             objData.Zalo = req.body.Zalo;
+            if (!objData.Address && !objData.Phone && !objData.Email && !objData.FacebookUrl && !objData.Zalo) {
+                console.log("đã qua đâyyyyyyyyyyyyyy")
+                return res.send(Response.internalServerErrorResponse())
+            }
             if (objData.Email) {
                 if (!validator.isEmail(objData.Email)) {
                     return res.send(Response.internalServerErrorResponse(null, 'Email không hợp lệ'));
