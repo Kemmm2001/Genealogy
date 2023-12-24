@@ -740,11 +740,11 @@
                   <div style="display: flex">
                     <!-- <div class="pb-2 pe-1" style="position: relative; width: 50%;">
                       <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" v-bind="props"></VuePhoneNumberInput>
-                    </div> -->
+                    </div>-->
                     <div class="pb-2 pe-1 d-flex" style="position: relative; width: 50%;">
                       <div class="col-2 d-flex align-items-center justify-content-evenly">
                         <div class="col-6 h-100 d-flex align-items-center">
-                          <img class="w-100" src="../assets/Flag_of_Vietnam.png"/>
+                          <img class="w-100" src="../assets/Flag_of_Vietnam.png" />
                         </div>
                         <div>(+84)</div>
                       </div>
@@ -1847,7 +1847,7 @@ export default {
         });
     },
     //Nguyễn Lê Hùng
-    async removeMember() {
+    removeMember() {
       HTTP.get("deleteContact", {
         params: {
           MemberID: this.CurrentIdMember,
@@ -2662,6 +2662,7 @@ export default {
     openModalAddMemberFromList() {
       this.TitleModal = " Mối quan hệ ";
       this.$modal.show("add-relation-mdl");
+      this.ListUnspecifiedMembers = null;
     },
     openNotiModal() {
       this.ListPhoneToSendMessage = [];
