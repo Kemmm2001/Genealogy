@@ -1412,7 +1412,25 @@ export default {
         return false;
       }
     },
-
+    updateStatusEvent() {
+      try {
+        HTTP.put("updateStatusEvent", {
+          CodeID: this.CodeID,
+        })
+          .then((respone) => {
+            if (respone.data.success == true) {
+              console.log("Update status event thành công");
+            } else {
+              console.log("Update status event thất bại");
+            }
+          })
+          .catch(() => {
+            this.NotificationsDelete("Có lỗi hệ thống");
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    },
     getListEventNotificationSent() {
       HTTP.get("ListEventNotiSent", {
         params: {
@@ -1502,6 +1520,7 @@ export default {
       this.getDayOfMonth();
       this.getListEvent();
       this.getListEventNotificationSent();
+      this.updateStatusEvent();
     }
   },
 };

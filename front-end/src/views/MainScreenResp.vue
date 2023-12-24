@@ -4,24 +4,24 @@
       <div class="content-display" style="display: grid; grid-template-rows: 50% 50%; position: relative;" :class="{'d-flex' : memberRole === 3, 'align-items-center' : memberRole === 3}">
         <div class="w-100 d-flex flex-row pt-2" :class="{'justify-content-center' : memberRole === 3}">
           <div v-if="memberRole == 1" class="col-6 ps-2 pe-1">
-            <div class="">
+            <div class>
               <button @click="openNotiModal()" style="width:100%; font-size: 15px; color:white" type="button" class="m-0 d-flex align-items-center justify-content-center btn btn-secondary w-100 h-100">Tạo thông báo</button>
             </div>
           </div>
           <div class="col-6 ps-1 pe-2">
-            <div class="">
+            <div class>
               <button @click="openCompareModal()" type="button" style="width:100%; font-size: 15px; color:white" class="d-flex align-items-center justify-content-center" :class="{ 'm-0': true, 'btn': true, ' w-100': true, 'h-100': true, 'btn-secondary': !isCompare, 'btn-primary': isCompare }">Xác định quan hệ</button>
             </div>
           </div>
         </div>
         <div v-if="memberRole == 1" class="w-100 d-flex flex-row pt-2">
           <div class="col-6 ps-2 pe-1">
-            <div class="">
+            <div class>
               <button @click="BackUpdata()" style="width:100%; font-size: 15px; color:white" type="button" class="btn btn-secondary h-100 m-0 d-flex align-items-center justify-content-center">Lưu trữ dữ liệu</button>
             </div>
           </div>
           <div class="col-6 ps-1 pe-2">
-            <div class="">
+            <div class>
               <label for="upload" style="width:100%; font-size: 15px; color:white" type="button" class="d-flex align-items-center justify-content-center btn btn-secondary h-100">Xuất dữ liệu vào</label>
               <input ref="importFile" id="upload" type="file" style="display: none" @change="getFileImportMember($event)" />
             </div>
@@ -738,9 +738,6 @@
                     </div>
                   </div>
                   <div style="display: flex">
-                    <!-- <div class="pb-2 pe-1" style="position: relative; width: 50%;">
-                      <VuePhoneNumberInput ref="phoneNumberInput" v-model="objMemberContact.Phone" v-bind="props"></VuePhoneNumberInput>
-                    </div>-->
                     <div class="pb-2 pe-1 d-flex" style="position: relative; width: 50%;">
                       <div style="border:1px solid lightsteelblue;border-top-left-radius: 5px;border-bottom-left-radius: 5px" class="col-2 d-flex align-items-center justify-content-evenly">
                         <div class="col-6 h-100 d-flex align-items-center">
@@ -750,11 +747,11 @@
                       </div>
                       <div class="col-10 position-relative">
                         <input style="border-top-left-radius: 0px;border-bottom-left-radius: 0px" v-model="objMemberContact.Phone" type="text" class="form-control modal-item w-100 h-100 phonenum" placeholder :controls="false" />
-                        <label class="form-label" for="input" :class="{ 'active': objMemberContact.Phone }">Số điện thoại</label>
+                        <label class="form-label" for="input" :class="{ 'active': objMemberContact.Phone != undefined && objMemberContact.Phone != null}">Số điện thoại</label>
                       </div>
                     </div>
                     <div class="pb-2 ps-1" style="position: relative;width: 50%;">
-                      <input v-model="objMemberContact.Email" type="email" class="form-control modal-item"/>
+                      <input v-model="objMemberContact.Email" type="text" class="form-control modal-item" placeholder />
                       <label class="form-label" for="input" :class="{ 'active': objMemberContact.Email }">Email</label>
                     </div>
                   </div>
@@ -955,27 +952,11 @@ import { HTTP } from "../assets/js/baseAPI.js";
 import { LunarDate } from "vietnamese-lunar-calendar";
 import { convertLunar2Solar } from "vietnamese-lunar-calendar/build/solar-lunar";
 import { getLocalTimezone } from "vietnamese-lunar-calendar/build/solar-lunar/utils";
-// import VuePhoneNumberInput from "vue-phone-number-input";
 import "vue-phone-number-input/dist/vue-phone-number-input.css";
 
 export default {
-  components: {
-    // VuePhoneNumberInput,
-  },
   data() {
     return {
-      // props: {
-      //       clearable: true,
-      //       fetchCountry: true,
-      //       preferredCountries: ["US", "GB"],
-      //       noExample: false,
-      //       translations: {
-      //         countrySelectorLabel: "Country code",
-      //         countrySelectorError: "Error",
-      //         phoneNumberLabel: "Nhập số điện thoại",
-      //         example: "Example:",
-      //       },
-      //     },
       idParent: null,
       ResultRelationship: null,
       ListCity: null,
@@ -1469,26 +1450,7 @@ export default {
       this.generationMember = this.objMemberInfor.Generation;
       this.IsDead = this.objMemberInfor.IsDead;
     },
-    //Nguyễn Lê Hùng
-    updateStatusEvent() {
-      try {
-        HTTP.put("updateStatusEvent", {
-          CodeID: this.CodeID,
-        })
-          .then((respone) => {
-            if (respone.data.success == true) {
-              console.log("Update status event thành công");
-            } else {
-              console.log("Update status event thất bại");
-            }
-          })
-          .catch(() => {
-            this.NotificationsDelete("Có lỗi hệ thống");
-          });
-      } catch (error) {
-        console.log(error);
-      }
-    },
+
     //Nguyễn Lê Hùng
     getMaxMarriage(id) {
       let count = 0;
@@ -1795,8 +1757,8 @@ export default {
           console.log("result: " + this.objMemberInfor.PlaceOfDeath);
           if (this.objMember.contact.length > 0) {
             this.objMemberContact = this.objMember.contact[0];
-            console.log(this.objMemberContact);
             console.log(this.objMember.contact);
+            console.log("contact: " + this.objMemberContact.Email);
             if (
               this.objMemberContact.Address != undefined &&
               this.objMemberContact.Address != null
@@ -2113,11 +2075,16 @@ export default {
     },
     addContact() {
       if (
-        this.objMemberContact.Phone != null ||
-        this.objMemberContact.Address != null ||
-        this.objMemberContact.Email != null ||
-        this.FacebookUrl != null ||
-        this.objMemberContact.Zalo != null
+        this.objMemberContact.Address != null &&
+        this.objMemberContact.Address != "" &&
+        this.objMemberContact.Phone != null &&
+        this.objMemberContact.Phone != "" &&
+        this.objMemberContact.Email != null &&
+        this.objMemberContact.Email != "" &&
+        this.objMemberContact.FacebookUrl != null &&
+        this.objMemberContact.FacebookUrl != "" &&
+        this.objMemberContact.Zalo != null &&
+        this.objMemberContact.Zalo != ""
       ) {
         this.objMemberContact.Phone = "+84" + this.objMemberContact.Phone;
         HTTP.post("addContact", {
@@ -2243,6 +2210,8 @@ export default {
       if (this.objMemberContact.Phone) {
         resultPhone = this.validatePhoneNumber(this.objMemberContact.Phone);
       }
+
+      console.log("email: " + JSON.stringify(this.objMemberContact, null, 2));
       if (resultPhone) {
         if (result) {
           console.log("Token: " + VueCookies.get("accessToken"));
@@ -2428,86 +2397,114 @@ export default {
     //Nguyễn Lê Hùng
     updateInformation() {
       let result = true;
+      let resultPhone = true;
+      console.log("Phone: " + this.objMemberContact.Phone);
       if (this.objMemberContact.Email) {
         result = this.isEmailValid(this.objMemberContact.Email);
       }
-      if (result) {
-        if (this.objMemberInfor.BirthOrder == null) {
-          console.log("vào đây");
-          this.objMemberInfor.BirthOrder = 1;
-        }
-        if (this.selectDistrictMember != null) {
-          this.objMemberContact.Address =
-            this.objMemberContact.Address + "-" + this.selectDistrictMember;
-        }
-        if (this.selectCityMember == null) {
-          this.objMemberContact.Address = null;
-        }
-        HTTP.put("member", {
-          MemberID: this.CurrentIdMember,
-          MemberName: this.objMemberInfor.MemberName,
-          NickName: this.objMemberInfor.NickName,
-          BirthOrder: this.objMemberInfor.BirthOrder,
-          Origin: this.objMemberInfor.Origin,
-          NationalityID: this.objMemberInfor.NationalityID,
-          ReligionID: this.objMemberInfor.ReligionID,
-          Dob: this.objMemberInfor.Dob,
-          LunarDob: this.objMemberInfor.LunarDob,
-          birthPlace: this.objMemberInfor.BirthPlace,
-          IsDead: this.IsDead,
-          Dod: this.objMemberInfor.Dod,
-          LunarDod: this.objMemberInfor.LunarDod,
-          PlaceOfDeath: this.objMemberInfor.PlaceOfDeath,
-          GraveSite: this.objMemberInfor.GraveSite,
-          Note: this.objMemberInfor.Note,
-          CurrentGeneration: this.generationMember,
-          BloodType: this.objMemberInfor.BloodType,
-          Male: this.objMemberInfor.Male,
-          CodeID: this.CodeID,
-          Action: this.action,
-        })
-          .then((response) => {
-            if (response.data.success == true) {
-              this.isUpdateAvatar = false;
-              this.getListUnspecifiedMembers();
-              this.NotificationsScuccess(response.data.message);
-              if (this.objMemberContact.Phone != null) {
-                this.objMemberContact.Phone =
-                  "+84" + this.objMemberContact.Phone;
-              }
-              console.log("CurrentIdMember: " + this.CurrentIdMember);
-              this.closeMemberModal();
-              this.getListMember();
-              HTTP.put("updateContact", {
-                MemberID: this.CurrentIdMember,
-                Address: this.objMemberContact.Address,
-                Phone: this.objMemberContact.Phone,
-                Email: this.objMemberContact.Email,
-                FacebookUrl: this.objMemberContact.FacebookUrl,
-                Zalo: this.objMemberContact.Zalo,
-              })
-                .then((respone) => {
-                  if (respone.data.success == true) {
-                    this.checkUpdate = true;
-                    console.log("vào đâyyyy");
-                    this.getListMemberHasPhone();
-                    this.getListMemberHasEmail();
-                    this.GetListFilterMember();
-                  }
-                })
-                .catch(() => {
-                  this.NotificationsDelete("Có lỗi hệ thống");
-                });
-              this.GetListFilterMember();
-            } else {
-              this.NotificationsDelete(response.data.message);
-            }
+      if (this.objMemberContact.Phone) {
+        resultPhone = this.validatePhoneNumber(this.objMemberContact.Phone);
+      }
+      if (resultPhone) {
+        if (result) {
+          if (this.objMemberInfor.BirthOrder == null) {
+            this.objMemberInfor.BirthOrder = 1;
+          }
+          if (this.selectDistrictMember != null) {
+            this.objMemberContact.Address =
+              this.objMemberContact.Address + "-" + this.selectDistrictMember;
+          }
+          if (this.selectCityMember == null) {
+            this.objMemberContact.Address = null;
+          }
+          HTTP.put("member", {
+            MemberID: this.CurrentIdMember,
+            MemberName: this.objMemberInfor.MemberName,
+            NickName: this.objMemberInfor.NickName,
+            BirthOrder: this.objMemberInfor.BirthOrder,
+            Origin: this.objMemberInfor.Origin,
+            NationalityID: this.objMemberInfor.NationalityID,
+            ReligionID: this.objMemberInfor.ReligionID,
+            Dob: this.objMemberInfor.Dob,
+            LunarDob: this.objMemberInfor.LunarDob,
+            birthPlace: this.objMemberInfor.BirthPlace,
+            IsDead: this.IsDead,
+            Dod: this.objMemberInfor.Dod,
+            LunarDod: this.objMemberInfor.LunarDod,
+            PlaceOfDeath: this.objMemberInfor.PlaceOfDeath,
+            GraveSite: this.objMemberInfor.GraveSite,
+            Note: this.objMemberInfor.Note,
+            CurrentGeneration: this.generationMember,
+            BloodType: this.objMemberInfor.BloodType,
+            Male: this.objMemberInfor.Male,
+            CodeID: this.CodeID,
+            Action: this.action,
           })
-          .catch((e) => {
-            console.log(e);
-          });
+            .then((response) => {
+              if (response.data.success == true) {
+                this.isUpdateAvatar = false;
+                this.getListUnspecifiedMembers();
+                this.NotificationsScuccess(response.data.message);
+                if (this.objMemberContact.Phone == "") {
+                  this.objMemberContact.Phone = null;
+                }
+                if (
+                  this.objMemberContact.Phone == null &&
+                  this.objMemberContact.Phone != undefined
+                ) {
+                  this.objMemberContact.Phone =
+                    "+84" + this.objMemberContact.Phone;
+                }
+                console.log("Phone: " + this.objMemberContact.Phone);
+                console.log("CurrentIdMember: " + this.CurrentIdMember);
+                if (
+                  this.objMemberContact.Address != null &&
+                  this.objMemberContact.Address != "" &&
+                  this.objMemberContact.Phone != null &&
+                  this.objMemberContact.Phone != "" &&
+                  this.objMemberContact.Email != null &&
+                  this.objMemberContact.Email != "" &&
+                  this.objMemberContact.FacebookUrl != null &&
+                  this.objMemberContact.FacebookUrl != "" &&
+                  this.objMemberContact.Zalo != null &&
+                  this.objMemberContact.Zalo != ""
+                ) {
+                  HTTP.put("updateContact", {
+                    MemberID: this.CurrentIdMember,
+                    Address: this.objMemberContact.Address,
+                    Phone: this.objMemberContact.Phone,
+                    Email: this.objMemberContact.Email,
+                    FacebookUrl: this.objMemberContact.FacebookUrl,
+                    Zalo: this.objMemberContact.Zalo,
+                  })
+                    .then((respone) => {
+                      if (respone.data.success == true) {
+                        this.checkUpdate = true;
+                        console.log("vào đâyyyy");
+                        this.getListMemberHasPhone();
+                        this.getListMemberHasEmail();
+                        this.GetListFilterMember();
+                      }
+                    })
+                    .catch(() => {
+                      this.NotificationsDelete("Có lỗi hệ thống");
+                    });
+                }
+                this.GetListFilterMember();
+                this.closeMemberModal();
+                this.getListMember();
+              } else {
+                this.NotificationsDelete(response.data.message);
+              }
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        } else {
+          this.NotificationsDelete("Email không hợp lệ");
+        }
       } else {
-        this.NotificationsDelete("Email không hợp lệ");
+        this.NotificationsDelete("Số điện thoại không hợp lệ");
       }
     },
     //Nguyễn Lê Hùng
@@ -2706,7 +2703,13 @@ export default {
       this.isAdd = true;
       this.isEdit = false;
       this.objMemberInfor = {};
-      this.objMemberContact = {};
+      this.objMemberContact.ContactID = 0;
+      this.objMemberContact.MemberID = 0;
+      this.objMemberContact.Address = null;
+      this.objMemberContact.Phone = null;
+      this.objMemberContact.Email = null;
+      this.objMemberContact.FacebookUrl = null;
+      this.objMemberContact.Zalo = null;
       this.objMemberJob = {};
       this.objMemberEducation = {};
       this.selectDistrictMember = null;
@@ -2731,7 +2734,6 @@ export default {
       this.objMemberInfor.BloodType = null;
       this.objMemberInfor.NationalityID = 1;
       this.objMemberInfor.ReligionID = 1;
-      this.objMemberContact = {};
       this.TitleModal = "Thêm mối quan hệ " + title;
       this.action = action;
       if (this.action == "AddMother" || this.action == "AddWife") {
@@ -3307,7 +3309,6 @@ export default {
       this.getListMemberHasEmail();
       this.getListMemberHasPhone();
       this.getListHistoryEmail();
-      this.updateStatusEvent();
       this.getRemainingSMS();
       this.getRemainingEmail();
       this.mytree(this.$refs.tree, this.nodes);

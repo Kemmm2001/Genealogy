@@ -55,6 +55,9 @@ var updateContactMember = async (req, res) => {
     try {
         let objData = {};
         let member = await ContactManagementService.findMember(req.body.MemberID);
+        console.log('req: ' + JSON.stringify(req.body, null, 2))
+
+
         if (member.length > 0) {
             objData.memberId = req.body.MemberID;
             objData.Address = req.body.Address;
@@ -62,11 +65,15 @@ var updateContactMember = async (req, res) => {
             objData.Email = req.body.Email;
             objData.FacebookUrl = req.body.FacebookUrl;
             objData.Zalo = req.body.Zalo;
-            if (!validator.isEmail(objData.Email)) {
-                return res.send(Response.internalServerErrorResponse(null, 'Email không hợp lệ'));
+            if (objData.Email) {
+                if (!validator.isEmail(objData.Email)) {
+                    return res.send(Response.internalServerErrorResponse(null, 'Email không hợp lệ'));
+                }
             }
+            console.log("đã qua đây")
             let GetConTactByMemberID = await ContactManagementService.GetContactByMemberID(req.body.MemberID);
             if (GetConTactByMemberID.length > 0) {
+                console.log("vào if")
                 let result = await ContactManagementService.UpdateContactByID(objData);
                 if (result) {
                     return res.send(Response.successResponse(null, 'Update successfully'))
@@ -74,6 +81,7 @@ var updateContactMember = async (req, res) => {
                     return res.send(Response.internalServerErrorResponse())
                 }
             } else {
+                console.log("vào else")
                 let result = await ContactManagementService.InsertContactMember(objData)
                 if (result) {
                     return res.send(Response.successResponse(null, 'Update successfully'))
