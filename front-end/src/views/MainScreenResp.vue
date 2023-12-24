@@ -22,7 +22,7 @@
           </div>
           <div class="col-6 ps-1 pe-2">
             <div class>
-              <label for="upload" style="width:100%; font-size: 15px; color:white" type="button" class="d-flex align-items-center justify-content-center btn btn-secondary h-100">Xuất dữ liệu vào</label>
+              <label for="upload" style="width:100%; font-size: 15px; color:white" type="button" class="d-flex align-items-center justify-content-center btn btn-secondary h-100">Nhập dữ liệu vào</label>
               <input ref="importFile" id="upload" type="file" style="display: none" @change="getFileImportMember($event)" />
             </div>
           </div>
@@ -3250,11 +3250,19 @@ export default {
       this.extendedNote = true;
     },
     selectEmail() {
+      this.checkWithFilter = false;
+      this.checkAll = false;
+      this.toggleSelectAll();
+      this.toggleSelectWithFilter();
       this.emailSelected = true;
       this.smsSelected = false;
       this.expandEventListSMS = false;
     },
     selectSMS() {
+      this.checkWithFilter = false;
+      this.checkAll = false;
+      this.toggleSelectAll();
+      this.toggleSelectWithFilter();
       this.smsSelected = true;
       this.emailSelected = false;
       this.expandCreateEmail = false;

@@ -261,7 +261,7 @@ async function importData(file, codeID) {
         await insertDataToTable2(contactWorksheet, 'genealogy.contact', arrayInsert)
         await insertDataToTable2(educationWorksheet, 'genealogy.education', arrayInsert)
         await insertDataToTable2(jobWorksheet, 'genealogy.job', arrayInsert)
-        await insertDataToTableMarriage(workbook.getWorksheet('Marriage Data'), 'genealogy.marriage', arrayInsert)
+        await insertDataToTableMarriage(workbook.getWorksheet('Marriage Data'), 'genealogy.marriage', arrayInsert,codeID)
 
         return true;
     } catch (error) {
@@ -500,7 +500,7 @@ async function updateFatherMotherID(codeID) {
     }
 }
 
-async function insertDataToTableMarriage(worksheet, tableName, insertArr) {
+async function insertDataToTableMarriage(worksheet, tableName, insertArr,codeID) {
     try {
         console.log("Bắt đầu insert marriage")
         // Khai báo biến headers là mảng các tiêu đề cột lấy từ hàng 1 của worksheet
@@ -583,6 +583,8 @@ async function insertDataToTableMarriage(worksheet, tableName, insertArr) {
         console.log("worksheetData : " + worksheetData)
         // Construct and push the INSERT query
         for (let k = 0; k < worksheetData.length; k++) {
+            // thay giá trị thứ 2 thành codeID
+            worksheetData[k][2] = codeID;
             let query = `INSERT INTO ${tableName} (${columnsToInsert}) VALUES (${worksheetData[k]})`;
             console.log("query: " + query);
             queries.push(query);
