@@ -516,6 +516,7 @@ async function updateFatherMotherID(codeID) {
 
 async function insertDataToTableMarriage(worksheet, tableName, insertArr) {
     try {
+        console.log("Bắt đầu insert marriage")
         // Khai báo biến headers là mảng các tiêu đề cột lấy từ hàng 1 của worksheet
         const headers = worksheet.getRow(1).values;
         // Khai báo biến columnsToInsert là mảng các tiêu đề cột khác rỗng
@@ -572,6 +573,20 @@ async function insertDataToTableMarriage(worksheet, tableName, insertArr) {
                 if (worksheetData[j][0] == (k + 1)) {
                     // Gán giá trị tại vị trí đó trong mảng insert thay cho index
                     worksheetData[j][0] = insertArr[k];
+                    // Thoát vòng lặp for k
+                    break;
+                }
+            }
+
+        }
+         // Duyệt mảng chứa dữ liệu
+         for (let j = 0; j < worksheetData.length; j++) {
+            // Duyệt mảng chứa các giá trị index cần insert
+            for (let k = 0; k < insertArr.length; k++) {
+                // Nếu giá trị index đầu tiên của hàng = vị trí trong mảng insert
+                if (worksheetData[j][1] == (k + 1)) {
+                    // Gán giá trị tại vị trí đó trong mảng insert thay cho index
+                    worksheetData[j][1] = insertArr[k];
                     // Thoát vòng lặp for k
                     break;
                 }
